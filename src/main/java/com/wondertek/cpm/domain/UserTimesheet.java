@@ -19,7 +19,11 @@ import java.util.Objects;
 public class UserTimesheet implements Serializable {
 
     private static final long serialVersionUID = 1L;
-
+    
+    public static final Integer TYPE_PUBLIC = 1;
+    public static final Integer TYPE_CONTRACT = 2;
+    public static final Integer TYPE_PROJECT = 3;
+    
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -50,7 +54,10 @@ public class UserTimesheet implements Serializable {
 
     @Column(name = "status_")
     private Integer status;		//	状态（可用，删除）
-
+    
+    @Column(name = "work_area")
+    private String workArea;	//		地区
+    
     @Column(name = "creator_")
     private String creator;
 
@@ -97,7 +104,15 @@ public class UserTimesheet implements Serializable {
         this.userId = userId;
     }
 
-    public Integer getType() {
+    public String getUserName() {
+		return userName;
+	}
+
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
+
+	public Integer getType() {
         return type;
     }
 
@@ -162,7 +177,15 @@ public class UserTimesheet implements Serializable {
         this.acceptInput = acceptInput;
     }
 
-    public Integer getStatus() {
+    public String getWorkArea() {
+		return workArea;
+	}
+
+	public void setWorkArea(String workArea) {
+		this.workArea = workArea;
+	}
+
+	public Integer getStatus() {
         return status;
     }
 
@@ -175,7 +198,7 @@ public class UserTimesheet implements Serializable {
         this.status = status;
     }
 
-    public String getCreator() {
+	public String getCreator() {
         return creator;
     }
 

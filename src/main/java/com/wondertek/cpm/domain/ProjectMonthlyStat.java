@@ -13,9 +13,9 @@ import java.util.Objects;
  * 项目月统计
  */
 @Entity
-@Table(name = "w_project_weekly_stat")
+@Table(name = "w_project_monthly_stat")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-@Document(indexName = "projectweeklystat")
+@Document(indexName = "projectMonthlyStat")
 public class ProjectMonthlyStat implements Serializable {
 
     private static final long serialVersionUID = 1L;

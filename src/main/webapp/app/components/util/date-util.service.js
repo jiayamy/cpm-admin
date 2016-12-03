@@ -13,6 +13,7 @@
             convertDateTimeFromServer : convertDateTimeFromServer,
             convertLocalDateFromServer : convertLocalDateFromServer,
             convertLocalDateToServer : convertLocalDateToServer,
+            convertLocalDateToFormat : convertLocalDateToFormat,
             dateformat : dateformat
         };
 
@@ -41,7 +42,15 @@
                 return null;
             }
         }
-
+        
+        function convertLocalDateToFormat (date,format) {
+            if (date) {
+                return $filter('date')(date, format);
+            } else {
+                return null;
+            }
+        }
+        
         function dateformat () {
             return 'yyyy-MM-dd';
         }

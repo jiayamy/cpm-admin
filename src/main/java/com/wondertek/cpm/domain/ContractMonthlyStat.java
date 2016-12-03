@@ -25,7 +25,7 @@ public class ContractMonthlyStat implements Serializable {
     private Long id;
 
     @Column(name = "contract_id")
-    private Double contractId;				//	合同主键
+    private Long contractId;				//	合同主键
 
     @Column(name = "finish_rate")
     private Double finishRate;				//	完成率
@@ -80,16 +80,16 @@ public class ContractMonthlyStat implements Serializable {
         this.id = id;
     }
 
-    public Double getContractId() {
+    public Long getContractId() {
         return contractId;
     }
 
-    public ContractMonthlyStat contractId(Double contractId) {
+    public ContractMonthlyStat contractId(Long contractId) {
         this.contractId = contractId;
         return this;
     }
 
-    public void setContractId(Double contractId) {
+    public void setContractId(Long contractId) {
         this.contractId = contractId;
     }
 

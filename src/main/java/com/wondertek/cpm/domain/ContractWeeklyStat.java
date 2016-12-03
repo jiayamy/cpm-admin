@@ -25,7 +25,7 @@ public class ContractWeeklyStat implements Serializable {
     private Long id;
 
     @Column(name = "contract_id")
-    private Double contractId;			//字段描述同ContractMonthlyStat
+    private Long contractId;			//字段描述同ContractMonthlyStat
 
     @Column(name = "finish_rate")
     private Double finishRate;
@@ -80,16 +80,16 @@ public class ContractWeeklyStat implements Serializable {
         this.id = id;
     }
 
-    public Double getContractId() {
+    public Long getContractId() {
         return contractId;
     }
 
-    public ContractWeeklyStat contractId(Double contractId) {
+    public ContractWeeklyStat contractId(Long contractId) {
         this.contractId = contractId;
         return this;
     }
 
-    public void setContractId(Double contractId) {
+    public void setContractId(Long contractId) {
         this.contractId = contractId;
     }
 
