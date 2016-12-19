@@ -1,0 +1,155 @@
+{
+  "generator-jhipster": {
+    "jhipsterVersion": "3.12.1",
+    "baseName": "cpm",
+    "packageName": "com.wondertek.cpm",
+    "packageFolder": "com/wondertek/cpm",
+    "serverPort": "8080",
+    "authenticationType": "session",
+    "hibernateCache": "ehcache",
+    "clusteredHttpSession": false,
+    "websocket": false,
+    "databaseType": "sql",
+    "devDatabaseType": "mysql",
+    "prodDatabaseType": "mysql",
+    "searchEngine": "elasticsearch",
+    "messageBroker": false,
+    "buildTool": "maven",
+    "enableSocialSignIn": false,
+    "rememberMeKey": "0c230850e903b9c4ff4efd191e04b1dd87ab06e0",
+    "useSass": false,
+    "applicationType": "monolith",
+    "testFrameworks": [
+      "gatling"
+    ],
+    "jhiPrefix": "jhi",
+    "otherModules": [
+      {
+        "name": "generator-jhipster-vuejs",
+        "version": "0.0.3"
+      },
+      {
+        "name": "generator-jhipster-swagger-cli",
+        "version": "2.0.5"
+      },
+      {
+        "name": "generator-jhipster-material",
+        "version": "0.0.0"
+      },
+      {
+        "name": "generator-jhipster-entity-audit",
+        "version": "2.2.2"
+      },
+      {
+        "name": "generator-jhipster-stormpath",
+        "version": "0.0.3"
+      },
+      {
+        "name": "generator-jhipster-module",
+        "version": "1.1.0"
+      },
+      {
+        "name": "generator-jhipster-nav-element",
+        "version": "0.0.5"
+      },
+      {
+        "name": "generator-jhipster-gitlab-ci-build-status",
+        "version": "0.0.1"
+      },
+      {
+        "name": "generator-jhipster-angular-ui",
+        "version": "0.0.2"
+      },
+      {
+        "name": "generator-jhipster-webservice",
+        "version": "0.1.0"
+      },
+      {
+        "name": "generator-jhipster-ionic",
+        "version": "2.1.6"
+      },
+      {
+        "name": "generator-jhipster-mssql",
+        "version": "2.1.1"
+      },
+      {
+        "name": "generator-jhipster-google-analytics",
+        "version": "0.0.1"
+      },
+      {
+        "name": "generator-jhipster-debian-packager",
+        "version": "1.0.1"
+      },
+      {
+        "name": "generator-jhipster-darktheme",
+        "version": "0.0.7"
+      },
+      {
+        "name": "generator-jhipster-react",
+        "version": "0.0.0"
+      },
+      {
+        "name": "generator-jhipster-google-maps",
+        "version": "0.0.1"
+      },
+      {
+        "name": "generator-jhipster-leaflet",
+        "version": "1.0.0"
+      },
+      {
+        "name": "generator-jhipster-elasticsearch-reindexer",
+        "version": "0.2.0"
+      },
+      {
+        "name": "generator-jhipster-bootstrap-material-design",
+        "version": "3.5.1"
+      },
+      {
+        "name": "generator-jhipster-entity-audit-and-delete",
+        "version": "2.2.2"
+      },
+      {
+        "name": "generator-jhipster-bootswatch",
+        "version": "1.0.2"
+      },
+      {
+        "name": "generator-jhipster-spring-social-connectors",
+        "version": "0.0.1"
+      },
+      {
+        "name": "generator-jhipster-docker",
+        "version": "2.2.0"
+      },
+      {
+        "name": "generator-jhipster-swagger2markup",
+        "version": "1.1.0"
+      },
+      {
+        "name": "generator-jhipster-ci",
+        "version": "1.0.0"
+      },
+      {
+        "name": "generator-jhipster-transasia",
+        "version": "1.0.6"
+      },
+      {
+        "name": "generator-jhipster-fortune",
+        "version": "0.0.2"
+      },
+      {
+        "name": "generator-jhipster-basic-auth",
+        "version": "1.0.1"
+      },
+      {
+        "name": "generator-jhipster-angular-datatables",
+        "version": "1.2.0"
+      }
+    ],
+    "enableTranslation": true,
+    "nativeLanguage": "zh-cn",
+    "languages": [
+      "zh-cn",
+      "en"
+    ]
+  }
+}
