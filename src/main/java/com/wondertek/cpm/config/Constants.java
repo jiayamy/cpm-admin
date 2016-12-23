@@ -24,4 +24,6 @@ public final class Constants {
 
     private Constants() {
     }
+    
+    public static final int QUERY_PAGE_MAX_SIZE = 2000;
 }

@@ -170,6 +170,40 @@
                                  constraintName="fk_evt_pers_audit_evt_data"
                                  referencedColumnNames="event_id"
                                  referencedTableName="jhi_persistent_audit_event"/>
+		<!-- 20161223 -->                      
+		<createTable tableName="w_project_info">
+            <column name="id" type="bigint" autoIncrement="${autoIncrement}">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="serial_num" type="varchar(20)">
+                <constraints unique="true" nullable="false"/>
+            </column>
+            <column name="contract_id" type="bigint"/>
+            <column name="budget_id" type="bigint"/>
+            <column name="name_" type="varchar(200)"/>
+            <column name="pm_" type="varchar(100)"/>
+            <column name="dept_" type="varchar(100)"/>
+            <column name="start_day" type="timestamp"/>
+            <column name="end_day" type="timestamp"/>
+            <column name="budget_total" type="DOUBLE PRECISION(15,2)"/>
+            <column name="status_" type="int"/>
+            <column name="create_time" type="timestamp" defaultValueDate="${now}"/>
+            <column name="creator_" type="varchar(100)"/>
+            <column name="update_time" type="timestamp" defaultValueDate="${now}"/>
+            <column name="updator_" type="varchar(100)"/>
+        </createTable>
+        <createIndex indexName="idx_wpi_serialnum"
+            tableName="w_project_info"
+            unique="true">
+            <column name="serial_num" type="varchar(20)"/>
+        </createIndex>
+        <!--
+        <addForeignKeyConstraint baseColumnNames="contract_id"
+                                 baseTableName="w_project_info"
+                                 constraintName="fk_wpi_wci_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="w_contract_info"/>
+		-->
     </changeSet>
 
 </databaseChangeLog>
