@@ -1,0 +1,23 @@
+{
+    "priceList": {
+        "title": "PriceList",
+        "filter": {
+            "title1": "Filter by name",
+            "title2": "Filter by type",
+            "title3": "Filter by source",
+        },
+        "table": {
+            "header": {
+                "name": "Name",
+                "type": "Type",
+                "unitPrice": "Unit price",
+                "unit": "Unit",
+                "source": "Source",
+                "creator": "Creator",
+                "creationTime": "Creation time",
+                "updater": "Updater",
+                "updateTime": "Update time"
+            }
+        }
+    }
+}
