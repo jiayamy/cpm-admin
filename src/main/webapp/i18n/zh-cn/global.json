@@ -1,6 +1,6 @@
 {
     "global": {
-        "title": "Cpm",
+        "title": "网达合同项目管理系统",
         "browsehappy": "您目前使用<strong>过于老旧</strong>的浏览器, 建议您<a href=\"http://browsehappy.com/?locale=en\">升级浏览器</a>让您有更佳的上网体验.",
         "menu": {
             "home": "首页",
@@ -46,7 +46,8 @@
         "messages": {
             "info": {
                 "authenticated": "如果您要<a class=\"alert-link\" href=\"\" ng-click=\"vm.login()\">登录</a>, 您可以使用默认账号:<br/>- 管理员 (账号=\"admin\"和密码=\"admin\") <br/>- 普通用户 (账号=\"user\"和密码=\"user\").",
-                "register": "您还没有账号？<a class=\"alert-link\" href=\"\" ng-click=\"vm.register()\">注册一个新账号</a>"
+                "register": "您还没有账号？<a class=\"alert-link\" href=\"\" ng-click=\"vm.register()\">注册一个新账号</a>",
+                "desc":"统筹调配 科学管理<br/>合理风控 目标高效"
             },
             "error": {
                 "dontmatch" : "您输入的密码和确认密码不匹配!"
@@ -119,5 +120,5 @@
         "emailexists": "该邮箱已被使用!",
         "idexists": "新建的 {{entityName}} 不能包含ID"
     },
-    "footer": "这里是页脚"
+    "footer": "© 2009-2016 上海网达软件股份有限公司 版权所有 沪ICP备 10042738号-1"
 }
