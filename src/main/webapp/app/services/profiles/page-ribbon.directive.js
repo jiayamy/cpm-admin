@@ -22,7 +22,7 @@
                 if (response.ribbonEnv) {
                     scope.ribbonEnv = response.ribbonEnv;
                     element.addClass(response.ribbonEnv);
-                    element.removeClass('hidden');
+                    //element.removeClass('hidden');
                 }
             });
         }

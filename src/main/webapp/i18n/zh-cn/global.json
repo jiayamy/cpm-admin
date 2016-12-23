@@ -5,6 +5,12 @@
         "menu": {
             "home": "首页",
             "jhipster-needle-menu-add-element": "JHipster will add additional menu entries here (do not translate!)",
+            "contract":{
+            	"main":"合同管理",
+            	"budget":"合同预算信息",
+            	"procurement":"采购子项目",
+            	"priceList":"产品定价单"
+            },
             "entities": {
                 "main": "数据",
                 "jhipster-needle-menu-add-entry": "JHipster will add additional entities here (do not translate!)"
@@ -88,7 +94,8 @@
             "edit": "编辑",
             "open": "Open",
             "save": "保存",
-            "view": "查看"
+            "view": "查看",
+            "add": "新增"
         },
         "detail": {
             "field": "字段",
