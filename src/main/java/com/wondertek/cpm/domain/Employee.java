@@ -9,57 +9,56 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-
+/**
+ * 员工信息
+ * 
+ * */
 @Entity
 @Table(name = "employee")
-@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class Employee {
 	@Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
-	private Integer id;
+	private Integer id;                       //主键
 	
-	@Column(name = "serial_number", length = 20)
-	private Integer serial_number;
+	@Column(name = "serial_number")
+	private Integer serialNumber;   //员工工号
 	
-	@Column(name = "name_", length = 25)
-	private String name;
+	@Column(name = "name_")
+	private String name;                  //员工姓名
 	
-	@Column(name = "department_", length = 25)
-	private String department;
+	@Column(name = "department_")
+	private String department;       //所属部门
 	
-	@Column(name = "station_", length = 25)
-	private String station;
+	@Column(name = "station_")
+	private String station;               //岗位
 	
-	@Column(name = "rank_", length = 25)
-	private String rank;
+	@Column(name = "rank_")
+	private String rank;					  //级别
 	
-	@Column(name = "gender_", length = 25)
-	private String gender;
+	@Column(name = "gender_")
+	private String gender;              //性别
 	
 	@Column(name = "birthday_")
-	private Date birthday;
+	private Date birthday;             //生日
 	
-	@Column(name = "telephone_", length = 25)
-	private String telephone;
+	@Column(name = "telephone_")
+	private String telephone;         //电话
 	
-	@Column(name = "email_", length = 50)
-	private String email;
+	@Column(name = "email_")
+	private String email;                //邮箱
 	
-	@Column(name = "creator_", length = 50)
-	private String creator;
+	@Column(name = "creator_")
+	private String creator;            //创建者
 	
 	@Column(name = "creator_time")
-	private Date creatorTime;
+	private Date creatorTime;      //创建时间
 	
-	@Column(name = "creator_", length = 50)
-	private String updator;
+	@Column(name = "updator_")
+	private String updator;           //修改者
 	
 	@Column(name = "updator_time")
-	private Date updatorTime;
-	
+	private Date updatorTime;	//修改时间
 	
 	public Integer getId() {
 		return id;
@@ -67,11 +66,11 @@ public class Employee {
 	public void setId(Integer id) {
 		this.id = id;
 	}	
-	public Integer getSerial_number() {
-		return serial_number;
+	public Integer getSerialNumber() {
+		return serialNumber;
 	}
-	public void setSerial_number(Integer serial_number) {
-		this.serial_number = serial_number;
+	public void setSerialNumber(Integer serialNumber) {
+		this.serialNumber = serialNumber;
 	}
 	public String getName() {
 		return name;
@@ -157,7 +156,7 @@ public class Employee {
 		result = prime * result + ((gender == null) ? 0 : gender.hashCode());
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
-		result = prime * result + ((serial_number == null) ? 0 : serial_number.hashCode());
+		result = prime * result + ((serialNumber == null) ? 0 : serialNumber.hashCode());
 		result = prime * result + ((rank == null) ? 0 : rank.hashCode());
 		result = prime * result + ((station == null) ? 0 : station.hashCode());
 		result = prime * result + ((telephone == null) ? 0 : telephone.hashCode());
@@ -214,10 +213,10 @@ public class Employee {
 				return false;
 		} else if (!name.equals(other.name))
 			return false;
-		if (serial_number == null) {
-			if (other.serial_number != null)
+		if (serialNumber == null) {
+			if (other.serialNumber != null)
 				return false;
-		} else if (!serial_number.equals(other.serial_number))
+		} else if (!serialNumber.equals(other.serialNumber))
 			return false;
 		if (rank == null) {
 			if (other.rank != null)
@@ -248,7 +247,7 @@ public class Employee {
 	}
 	@Override
 	public String toString() {
-		return "Employee [id=" + id + ", serial_number=" + serial_number + ", name=" + name + ", department=" + department
+		return "Employee [id=" + id + ", serialNumber=" + serialNumber + ", name=" + name + ", department=" + department
 				+ ", station=" + station + ", rank=" + rank + ", gender=" + gender + ", birthday=" + birthday
 				+ ", telephone=" + telephone + ", email=" + email + ", creator=" + creator + ", creatorTime="
 				+ creatorTime + ", updator=" + updator + ", updatorTime=" + updatorTime + "]";
