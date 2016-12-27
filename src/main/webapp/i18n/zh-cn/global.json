@@ -5,11 +5,41 @@
         "menu": {
             "home": "首页",
             "jhipster-needle-menu-add-element": "JHipster will add additional menu entries here (do not translate!)",
+            "timesheet":{
+            	"main":"日报管理",
+                "userTimesheet": "员工日报"
+            },
+            "info":{
+	        	"main":"基础信息",
+                "deptType": "部门类型",
+                "deptInfo": "部门信息",
+	            "userManagement":"用户管理",
+                "userCost": "员工成本",
+                "holidayInfo": "节假日信息"
+	        },
             "contract":{
             	"main":"合同管理",
-            	"budget":"合同预算信息",
-            	"procurement":"采购子项目",
-            	"priceList":"产品定价单"
+                "contractInfo": "合同信息",
+                "contractReceive": "合同回款",
+                "contractUser": "合同人员",
+                "contractBudget": "合同预算",
+                "purchaseItem": "采购子项",
+                "productPrice": "产品定价单",
+                "contractCost": "合同成本",
+                "contractTimesheet": "合同工时"
+            },
+            "project":{
+            	"main":"项目管理",
+                "projectInfo": "项目信息",
+                "projectUser": "项目人员",
+                "projectCost": "项目成本",
+                "projectTimesheet": "项目工时",
+                "projectFinishInfo": "项目完成情况"
+            },
+            "stat":{
+            	"main":"统计报表",
+                "contractWeeklyStat": "合同周统计",
+                "projectWeeklyStat": "项目周统计"
             },
             "entities": {
                 "main": "数据",

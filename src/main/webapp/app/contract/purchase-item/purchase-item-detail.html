@@ -1,0 +1,79 @@
+
+<div>
+    <h2><span data-translate="cpmApp.purchaseItem.detail.title">Purchase Item</span> {{vm.purchaseItem.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="dl-horizontal jh-entity-details">
+        <dt><span data-translate="cpmApp.purchaseItem.contractId">Contract Id</span></dt>
+        <dd>
+            <span>{{vm.purchaseItem.contractId}}</span>
+        </dd>
+        <dt><span data-translate="cpmApp.purchaseItem.budgetId">Budget Id</span></dt>
+        <dd>
+            <span>{{vm.purchaseItem.budgetId}}</span>
+        </dd>
+        <dt><span data-translate="cpmApp.purchaseItem.name">Name</span></dt>
+        <dd>
+            <span>{{vm.purchaseItem.name}}</span>
+        </dd>
+        <dt><span data-translate="cpmApp.purchaseItem.quantity">Quantity</span></dt>
+        <dd>
+            <span>{{vm.purchaseItem.quantity}}</span>
+        </dd>
+        <dt><span data-translate="cpmApp.purchaseItem.price">Price</span></dt>
+        <dd>
+            <span>{{vm.purchaseItem.price}}</span>
+        </dd>
+        <dt><span data-translate="cpmApp.purchaseItem.units">Units</span></dt>
+        <dd>
+            <span>{{vm.purchaseItem.units}}</span>
+        </dd>
+        <dt><span data-translate="cpmApp.purchaseItem.type">Type</span></dt>
+        <dd>
+            <span>{{vm.purchaseItem.type}}</span>
+        </dd>
+        <dt><span data-translate="cpmApp.purchaseItem.source">Source</span></dt>
+        <dd>
+            <span>{{vm.purchaseItem.source}}</span>
+        </dd>
+        <dt><span data-translate="cpmApp.purchaseItem.purchaser">Purchaser</span></dt>
+        <dd>
+            <span>{{vm.purchaseItem.purchaser}}</span>
+        </dd>
+        <dt><span data-translate="cpmApp.purchaseItem.totalAmount">Total Amount</span></dt>
+        <dd>
+            <span>{{vm.purchaseItem.totalAmount}}</span>
+        </dd>
+        <dt><span data-translate="cpmApp.purchaseItem.status">Status</span></dt>
+        <dd>
+            <span>{{vm.purchaseItem.status}}</span>
+        </dd>
+        <dt><span data-translate="cpmApp.purchaseItem.creator">Creator</span></dt>
+        <dd>
+            <span>{{vm.purchaseItem.creator}}</span>
+        </dd>
+        <dt><span data-translate="cpmApp.purchaseItem.createTime">Create Time</span></dt>
+        <dd>
+            <span>{{vm.purchaseItem.createTime | date:'medium'}}</span>
+        </dd>
+        <dt><span data-translate="cpmApp.purchaseItem.updator">Updator</span></dt>
+        <dd>
+            <span>{{vm.purchaseItem.updator}}</span>
+        </dd>
+        <dt><span data-translate="cpmApp.purchaseItem.updateTime">Update Time</span></dt>
+        <dd>
+            <span>{{vm.purchaseItem.updateTime | date:'medium'}}</span>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            ui-sref="{{ vm.previousState }}"
+            class="btn btn-info">
+        <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span data-translate="entity.action.back"> Back</span>
+    </button>
+
+    <button type="button" ui-sref="purchase-item-detail.edit({id:vm.purchaseItem.id})" class="btn btn-primary">
+        <span class="glyphicon glyphicon-pencil"></span>
+        <span class="hidden-xs hidden-sm" data-translate="entity.action.edit"> Edit</span>
+    </button>
+</div>

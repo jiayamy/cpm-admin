@@ -1,0 +1,59 @@
+
+<div>
+    <h2><span data-translate="cpmApp.contractUser.detail.title">Contract User</span> {{vm.contractUser.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="dl-horizontal jh-entity-details">
+        <dt><span data-translate="cpmApp.contractUser.contractId">Contract Id</span></dt>
+        <dd>
+            <span>{{vm.contractUser.contractId}}</span>
+        </dd>
+        <dt><span data-translate="cpmApp.contractUser.userId">User Id</span></dt>
+        <dd>
+            <span>{{vm.contractUser.userId}}</span>
+        </dd>
+        <dt><span data-translate="cpmApp.contractUser.userName">User Name</span></dt>
+        <dd>
+            <span>{{vm.contractUser.userName}}</span>
+        </dd>
+        <dt><span data-translate="cpmApp.contractUser.deptId">Dept Id</span></dt>
+        <dd>
+            <span>{{vm.contractUser.deptId}}</span>
+        </dd>
+        <dt><span data-translate="cpmApp.contractUser.joinDay">Join Day</span></dt>
+        <dd>
+            <span>{{vm.contractUser.joinDay | date:'medium'}}</span>
+        </dd>
+        <dt><span data-translate="cpmApp.contractUser.leaveDay">Leave Day</span></dt>
+        <dd>
+            <span>{{vm.contractUser.leaveDay | date:'medium'}}</span>
+        </dd>
+        <dt><span data-translate="cpmApp.contractUser.creator">Creator</span></dt>
+        <dd>
+            <span>{{vm.contractUser.creator}}</span>
+        </dd>
+        <dt><span data-translate="cpmApp.contractUser.createTime">Create Time</span></dt>
+        <dd>
+            <span>{{vm.contractUser.createTime | date:'medium'}}</span>
+        </dd>
+        <dt><span data-translate="cpmApp.contractUser.updator">Updator</span></dt>
+        <dd>
+            <span>{{vm.contractUser.updator}}</span>
+        </dd>
+        <dt><span data-translate="cpmApp.contractUser.updateTime">Update Time</span></dt>
+        <dd>
+            <span>{{vm.contractUser.updateTime | date:'medium'}}</span>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            ui-sref="{{ vm.previousState }}"
+            class="btn btn-info">
+        <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span data-translate="entity.action.back"> Back</span>
+    </button>
+
+    <button type="button" ui-sref="contract-user-detail.edit({id:vm.contractUser.id})" class="btn btn-primary">
+        <span class="glyphicon glyphicon-pencil"></span>
+        <span class="hidden-xs hidden-sm" data-translate="entity.action.edit"> Edit</span>
+    </button>
+</div>

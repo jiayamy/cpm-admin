@@ -1,0 +1,34 @@
+{
+    "cpmApp": {
+        "contractCost" : {
+            "home": {
+                "title": "Contract Costs",
+                "createLabel": "Create a new Contract Cost",
+                "createOrEditLabel": "Create or edit a Contract Cost",
+                "search": "Search for Contract Cost"
+            },
+            "created": "A new Contract Cost is created with identifier {{ param }}",
+            "updated": "A Contract Cost is updated with identifier {{ param }}",
+            "deleted": "A Contract Cost is deleted with identifier {{ param }}",
+            "delete": {
+                "question": "Are you sure you want to delete Contract Cost {{ id }}?"
+            },
+            "detail": {
+                "title": "Contract Cost"
+            },
+            "contractId": "Contract Id",
+            "budgetId": "Budget Id",
+            "deptId": "Dept Id",
+            "dept": "Dept",
+            "name": "Name",
+            "type": "Type",
+            "total": "Total",
+            "costDesc": "Cost Desc",
+            "status": "Status",
+            "creator": "Creator",
+            "createTime": "Create Time",
+            "updator": "Updator",
+            "updateTime": "Update Time"
+        }
+    }
+}

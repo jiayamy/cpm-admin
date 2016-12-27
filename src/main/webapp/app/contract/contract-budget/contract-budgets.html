@@ -1,0 +1,99 @@
+<div>
+    <h2 data-translate="cpmApp.contractBudget.home.title">Contract Budgets</h2>
+    <jhi-alert></jhi-alert>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xs-4 no-padding-left">
+                <button class="btn btn-primary" ui-sref="contract-budget.new" >
+                    <span class="glyphicon glyphicon-plus"></span>
+                    <span class="hidden-xs"  data-translate="cpmApp.contractBudget.home.createLabel">
+                        Create new Contract Budget
+                    </span>
+                </button>
+            </div>
+            <div class="col-xs-8 no-padding-right">
+                <form name="searchForm" class="form-inline">
+                    <div class="input-group pull-right" >
+                        <input type="text" class="form-control" ng-model="vm.searchQuery" id="searchQuery" placeholder="{{ 'cpmApp.contractBudget.home.search' | translate }}">
+                        <span  class="input-group-btn width-min" >
+                            <button class="btn btn-info" ng-click="vm.search(vm.searchQuery)">
+                                <span class="glyphicon glyphicon-search"></span>
+                            </button>
+                        </span>
+                        <span class="input-group-btn width-min" ng-if="vm.currentSearch">
+                            <button class="btn btn-info" ng-click="vm.clear()">
+                                <span class="glyphicon glyphicon-trash"></span>
+                            </button>
+                        </span>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <br/>
+    <div class="table-responsive">
+        <table class="jh-table table table-striped">
+            <thead>
+                <tr jh-sort="vm.predicate" ascending="vm.reverse" callback="vm.transition()">
+                    <th jh-sort-by="id"><span data-translate="global.field.id">ID</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="contractId"><span data-translate="cpmApp.contractBudget.contractId">Contract Id</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="type"><span data-translate="cpmApp.contractBudget.type">Type</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="userId"><span data-translate="cpmApp.contractBudget.userId">User Id</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="userName"><span data-translate="cpmApp.contractBudget.userName">User Name</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="dept"><span data-translate="cpmApp.contractBudget.dept">Dept</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="purchaseType"><span data-translate="cpmApp.contractBudget.purchaseType">Purchase Type</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="budgetTotal"><span data-translate="cpmApp.contractBudget.budgetTotal">Budget Total</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="status"><span data-translate="cpmApp.contractBudget.status">Status</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="creator"><span data-translate="cpmApp.contractBudget.creator">Creator</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="createTime"><span data-translate="cpmApp.contractBudget.createTime">Create Time</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="updator"><span data-translate="cpmApp.contractBudget.updator">Updator</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="updateTime"><span data-translate="cpmApp.contractBudget.updateTime">Update Time</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="contractBudget in vm.contractBudgets track by contractBudget.id">
+                    <td><a ui-sref="contract-budget-detail({id:contractBudget.id})">{{contractBudget.id}}</a></td>
+                    <td>{{contractBudget.contractId}}</td>
+                    <td>{{contractBudget.type}}</td>
+                    <td>{{contractBudget.userId}}</td>
+                    <td>{{contractBudget.userName}}</td>
+                    <td>{{contractBudget.dept}}</td>
+                    <td>{{contractBudget.purchaseType}}</td>
+                    <td>{{contractBudget.budgetTotal}}</td>
+                    <td>{{contractBudget.status}}</td>
+                    <td>{{contractBudget.creator}}</td>
+                    <td>{{contractBudget.createTime | date:'medium'}}</td>
+                    <td>{{contractBudget.updator}}</td>
+                    <td>{{contractBudget.updateTime | date:'medium'}}</td>
+                    <td class="text-right">
+                        <div class="btn-group flex-btn-group-container">
+                            <button type="submit"
+                                    ui-sref="contract-budget-detail({id:contractBudget.id})"
+                                    class="btn btn-info btn-sm">
+                                <span class="glyphicon glyphicon-eye-open"></span>
+                                <span class="hidden-xs hidden-sm" data-translate="entity.action.view"></span>
+                            </button>
+                            <button type="submit"
+                                    ui-sref="contract-budget.edit({id:contractBudget.id})"
+                                    class="btn btn-primary btn-sm">
+                                <span class="glyphicon glyphicon-pencil"></span>
+                                <span class="hidden-xs hidden-sm" data-translate="entity.action.edit"></span>
+                            </button>
+                            <button type="submit"
+                                    ui-sref="contract-budget.delete({id:contractBudget.id})"
+                                    class="btn btn-danger btn-sm">
+                                <span class="glyphicon glyphicon-remove-circle"></span>
+                                <span class="hidden-xs hidden-sm" data-translate="entity.action.delete"></span>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="text-center">
+        <jhi-item-count page="vm.page" total="vm.queryCount" items-per-page="vm.itemsPerPage"></jhi-item-count>
+        <uib-pagination class="pagination-sm" total-items="vm.totalItems" items-per-page="vm.itemsPerPage" ng-model="vm.page" ng-change="vm.transition()"></uib-pagination>
+    </div>
+</div>

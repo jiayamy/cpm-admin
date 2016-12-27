@@ -1,0 +1,59 @@
+
+<div>
+    <h2><span data-translate="cpmApp.projectCost.detail.title">Project Cost</span> {{vm.projectCost.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="dl-horizontal jh-entity-details">
+        <dt><span data-translate="cpmApp.projectCost.projectId">Project Id</span></dt>
+        <dd>
+            <span>{{vm.projectCost.projectId}}</span>
+        </dd>
+        <dt><span data-translate="cpmApp.projectCost.name">Name</span></dt>
+        <dd>
+            <span>{{vm.projectCost.name}}</span>
+        </dd>
+        <dt><span data-translate="cpmApp.projectCost.type">Type</span></dt>
+        <dd>
+            <span>{{vm.projectCost.type}}</span>
+        </dd>
+        <dt><span data-translate="cpmApp.projectCost.total">Total</span></dt>
+        <dd>
+            <span>{{vm.projectCost.total}}</span>
+        </dd>
+        <dt><span data-translate="cpmApp.projectCost.costDesc">Cost Desc</span></dt>
+        <dd>
+            <span>{{vm.projectCost.costDesc}}</span>
+        </dd>
+        <dt><span data-translate="cpmApp.projectCost.status">Status</span></dt>
+        <dd>
+            <span>{{vm.projectCost.status}}</span>
+        </dd>
+        <dt><span data-translate="cpmApp.projectCost.creator">Creator</span></dt>
+        <dd>
+            <span>{{vm.projectCost.creator}}</span>
+        </dd>
+        <dt><span data-translate="cpmApp.projectCost.createTime">Create Time</span></dt>
+        <dd>
+            <span>{{vm.projectCost.createTime | date:'medium'}}</span>
+        </dd>
+        <dt><span data-translate="cpmApp.projectCost.updator">Updator</span></dt>
+        <dd>
+            <span>{{vm.projectCost.updator}}</span>
+        </dd>
+        <dt><span data-translate="cpmApp.projectCost.updateTime">Update Time</span></dt>
+        <dd>
+            <span>{{vm.projectCost.updateTime | date:'medium'}}</span>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            ui-sref="{{ vm.previousState }}"
+            class="btn btn-info">
+        <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span data-translate="entity.action.back"> Back</span>
+    </button>
+
+    <button type="button" ui-sref="project-cost-detail.edit({id:vm.projectCost.id})" class="btn btn-primary">
+        <span class="glyphicon glyphicon-pencil"></span>
+        <span class="hidden-xs hidden-sm" data-translate="entity.action.edit"> Edit</span>
+    </button>
+</div>

@@ -1,0 +1,99 @@
+<div>
+    <h2 data-translate="cpmApp.contractTimesheet.home.title">Contract Timesheets</h2>
+    <jhi-alert></jhi-alert>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xs-4 no-padding-left">
+                <button class="btn btn-primary" ui-sref="contract-timesheet.new" >
+                    <span class="glyphicon glyphicon-plus"></span>
+                    <span class="hidden-xs"  data-translate="cpmApp.contractTimesheet.home.createLabel">
+                        Create new Contract Timesheet
+                    </span>
+                </button>
+            </div>
+            <div class="col-xs-8 no-padding-right">
+                <form name="searchForm" class="form-inline">
+                    <div class="input-group pull-right" >
+                        <input type="text" class="form-control" ng-model="vm.searchQuery" id="searchQuery" placeholder="{{ 'cpmApp.contractTimesheet.home.search' | translate }}">
+                        <span  class="input-group-btn width-min" >
+                            <button class="btn btn-info" ng-click="vm.search(vm.searchQuery)">
+                                <span class="glyphicon glyphicon-search"></span>
+                            </button>
+                        </span>
+                        <span class="input-group-btn width-min" ng-if="vm.currentSearch">
+                            <button class="btn btn-info" ng-click="vm.clear()">
+                                <span class="glyphicon glyphicon-trash"></span>
+                            </button>
+                        </span>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <br/>
+    <div class="table-responsive">
+        <table class="jh-table table table-striped">
+            <thead>
+                <tr jh-sort="vm.predicate" ascending="vm.reverse" callback="vm.transition()">
+                    <th jh-sort-by="id"><span data-translate="global.field.id">ID</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="contractId"><span data-translate="cpmApp.contractTimesheet.contractId">Contract Id</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="deptId"><span data-translate="cpmApp.contractTimesheet.deptId">Dept Id</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="dept"><span data-translate="cpmApp.contractTimesheet.dept">Dept</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="userId"><span data-translate="cpmApp.contractTimesheet.userId">User Id</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="realInput"><span data-translate="cpmApp.contractTimesheet.realInput">Real Input</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="acceptInput"><span data-translate="cpmApp.contractTimesheet.acceptInput">Accept Input</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="workDay"><span data-translate="cpmApp.contractTimesheet.workDay">Work Day</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="status"><span data-translate="cpmApp.contractTimesheet.status">Status</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="creator"><span data-translate="cpmApp.contractTimesheet.creator">Creator</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="createTime"><span data-translate="cpmApp.contractTimesheet.createTime">Create Time</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="updator"><span data-translate="cpmApp.contractTimesheet.updator">Updator</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="updateTime"><span data-translate="cpmApp.contractTimesheet.updateTime">Update Time</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="contractTimesheet in vm.contractTimesheets track by contractTimesheet.id">
+                    <td><a ui-sref="contract-timesheet-detail({id:contractTimesheet.id})">{{contractTimesheet.id}}</a></td>
+                    <td>{{contractTimesheet.contractId}}</td>
+                    <td>{{contractTimesheet.deptId}}</td>
+                    <td>{{contractTimesheet.dept}}</td>
+                    <td>{{contractTimesheet.userId}}</td>
+                    <td>{{contractTimesheet.realInput}}</td>
+                    <td>{{contractTimesheet.acceptInput}}</td>
+                    <td>{{contractTimesheet.workDay}}</td>
+                    <td>{{contractTimesheet.status}}</td>
+                    <td>{{contractTimesheet.creator}}</td>
+                    <td>{{contractTimesheet.createTime | date:'medium'}}</td>
+                    <td>{{contractTimesheet.updator}}</td>
+                    <td>{{contractTimesheet.updateTime | date:'medium'}}</td>
+                    <td class="text-right">
+                        <div class="btn-group flex-btn-group-container">
+                            <button type="submit"
+                                    ui-sref="contract-timesheet-detail({id:contractTimesheet.id})"
+                                    class="btn btn-info btn-sm">
+                                <span class="glyphicon glyphicon-eye-open"></span>
+                                <span class="hidden-xs hidden-sm" data-translate="entity.action.view"></span>
+                            </button>
+                            <button type="submit"
+                                    ui-sref="contract-timesheet.edit({id:contractTimesheet.id})"
+                                    class="btn btn-primary btn-sm">
+                                <span class="glyphicon glyphicon-pencil"></span>
+                                <span class="hidden-xs hidden-sm" data-translate="entity.action.edit"></span>
+                            </button>
+                            <button type="submit"
+                                    ui-sref="contract-timesheet.delete({id:contractTimesheet.id})"
+                                    class="btn btn-danger btn-sm">
+                                <span class="glyphicon glyphicon-remove-circle"></span>
+                                <span class="hidden-xs hidden-sm" data-translate="entity.action.delete"></span>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="text-center">
+        <jhi-item-count page="vm.page" total="vm.queryCount" items-per-page="vm.itemsPerPage"></jhi-item-count>
+        <uib-pagination class="pagination-sm" total-items="vm.totalItems" items-per-page="vm.itemsPerPage" ng-model="vm.page" ng-change="vm.transition()"></uib-pagination>
+    </div>
+</div>

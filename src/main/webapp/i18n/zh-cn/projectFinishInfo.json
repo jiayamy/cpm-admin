@@ -1,0 +1,25 @@
+{
+    "cpmApp": {
+        "projectFinishInfo" : {
+            "home": {
+                "title": "Project Finish Infos",
+                "createLabel": "Create a new Project Finish Info",
+                "createOrEditLabel": "Create or edit a Project Finish Info",
+                "search": "Search for Project Finish Info"
+            },
+            "created": "A new Project Finish Info is created with identifier {{ param }}",
+            "updated": "A Project Finish Info is updated with identifier {{ param }}",
+            "deleted": "A Project Finish Info is deleted with identifier {{ param }}",
+            "delete": {
+                "question": "Are you sure you want to delete Project Finish Info {{ id }}?"
+            },
+            "detail": {
+                "title": "Project Finish Info"
+            },
+            "projectId": "Project Id",
+            "finishRate": "Finish Rate",
+            "creator": "Creator",
+            "createTime": "Create Time"
+        }
+    }
+}

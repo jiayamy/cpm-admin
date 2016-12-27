@@ -1,0 +1,95 @@
+<div>
+    <h2 data-translate="cpmApp.projectTimesheet.home.title">Project Timesheets</h2>
+    <jhi-alert></jhi-alert>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xs-4 no-padding-left">
+                <button class="btn btn-primary" ui-sref="project-timesheet.new" >
+                    <span class="glyphicon glyphicon-plus"></span>
+                    <span class="hidden-xs"  data-translate="cpmApp.projectTimesheet.home.createLabel">
+                        Create new Project Timesheet
+                    </span>
+                </button>
+            </div>
+            <div class="col-xs-8 no-padding-right">
+                <form name="searchForm" class="form-inline">
+                    <div class="input-group pull-right" >
+                        <input type="text" class="form-control" ng-model="vm.searchQuery" id="searchQuery" placeholder="{{ 'cpmApp.projectTimesheet.home.search' | translate }}">
+                        <span  class="input-group-btn width-min" >
+                            <button class="btn btn-info" ng-click="vm.search(vm.searchQuery)">
+                                <span class="glyphicon glyphicon-search"></span>
+                            </button>
+                        </span>
+                        <span class="input-group-btn width-min" ng-if="vm.currentSearch">
+                            <button class="btn btn-info" ng-click="vm.clear()">
+                                <span class="glyphicon glyphicon-trash"></span>
+                            </button>
+                        </span>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <br/>
+    <div class="table-responsive">
+        <table class="jh-table table table-striped">
+            <thead>
+                <tr jh-sort="vm.predicate" ascending="vm.reverse" callback="vm.transition()">
+                    <th jh-sort-by="id"><span data-translate="global.field.id">ID</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="projectId"><span data-translate="cpmApp.projectTimesheet.projectId">Project Id</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="userId"><span data-translate="cpmApp.projectTimesheet.userId">User Id</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="realInput"><span data-translate="cpmApp.projectTimesheet.realInput">Real Input</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="acceptInput"><span data-translate="cpmApp.projectTimesheet.acceptInput">Accept Input</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="workDay"><span data-translate="cpmApp.projectTimesheet.workDay">Work Day</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="status"><span data-translate="cpmApp.projectTimesheet.status">Status</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="creator"><span data-translate="cpmApp.projectTimesheet.creator">Creator</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="createTime"><span data-translate="cpmApp.projectTimesheet.createTime">Create Time</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="updator"><span data-translate="cpmApp.projectTimesheet.updator">Updator</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="updateTime"><span data-translate="cpmApp.projectTimesheet.updateTime">Update Time</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="projectTimesheet in vm.projectTimesheets track by projectTimesheet.id">
+                    <td><a ui-sref="project-timesheet-detail({id:projectTimesheet.id})">{{projectTimesheet.id}}</a></td>
+                    <td>{{projectTimesheet.projectId}}</td>
+                    <td>{{projectTimesheet.userId}}</td>
+                    <td>{{projectTimesheet.realInput}}</td>
+                    <td>{{projectTimesheet.acceptInput}}</td>
+                    <td>{{projectTimesheet.workDay}}</td>
+                    <td>{{projectTimesheet.status}}</td>
+                    <td>{{projectTimesheet.creator}}</td>
+                    <td>{{projectTimesheet.createTime | date:'medium'}}</td>
+                    <td>{{projectTimesheet.updator}}</td>
+                    <td>{{projectTimesheet.updateTime | date:'medium'}}</td>
+                    <td class="text-right">
+                        <div class="btn-group flex-btn-group-container">
+                            <button type="submit"
+                                    ui-sref="project-timesheet-detail({id:projectTimesheet.id})"
+                                    class="btn btn-info btn-sm">
+                                <span class="glyphicon glyphicon-eye-open"></span>
+                                <span class="hidden-xs hidden-sm" data-translate="entity.action.view"></span>
+                            </button>
+                            <button type="submit"
+                                    ui-sref="project-timesheet.edit({id:projectTimesheet.id})"
+                                    class="btn btn-primary btn-sm">
+                                <span class="glyphicon glyphicon-pencil"></span>
+                                <span class="hidden-xs hidden-sm" data-translate="entity.action.edit"></span>
+                            </button>
+                            <button type="submit"
+                                    ui-sref="project-timesheet.delete({id:projectTimesheet.id})"
+                                    class="btn btn-danger btn-sm">
+                                <span class="glyphicon glyphicon-remove-circle"></span>
+                                <span class="hidden-xs hidden-sm" data-translate="entity.action.delete"></span>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="text-center">
+        <jhi-item-count page="vm.page" total="vm.queryCount" items-per-page="vm.itemsPerPage"></jhi-item-count>
+        <uib-pagination class="pagination-sm" total-items="vm.totalItems" items-per-page="vm.itemsPerPage" ng-model="vm.page" ng-change="vm.transition()"></uib-pagination>
+    </div>
+</div>

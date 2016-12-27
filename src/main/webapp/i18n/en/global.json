@@ -2,15 +2,45 @@
     "global": {
         "title": "Cpm",
         "browsehappy": "You are using an <strong>outdated</strong> browser. Please <a href=\"http://browsehappy.com/?locale=en\">upgrade your browser</a> to improve your experience.",
-        "contract":{
-            	"main":"contract",
-            	"budget":"budget",
-            	"procurement":"procurement",
-            	"priceList":"priceList"
-            },
         "menu": {
             "home": "Home",
             "jhipster-needle-menu-add-element": "JHipster will add additional menu entries here (do not translate!)",
+	        "timesheet":{
+	        	"main":"User View",
+	            "userTimesheet": "User Timesheet"
+	        },
+	        "info":{
+	        	"main":"Info",
+	            "deptType": "Dept Type",
+	            "deptInfo": "Dept Info",
+	            "userManagement":"User management",
+	            "userCost": "User Cost",
+	            "holidayInfo": "Holiday Info"
+	        },
+	        "contract":{
+	        	"main":"Contract",
+	            "contractInfo": "Contract Info",
+	            "contractReceive": "Contract Receive",
+	            "contractUser": "Contract User",
+	            "contractBudget": "Contract Budget",
+	            "purchaseItem": "Purchase Item",
+	            "productPrice": "Product Price",
+	            "contractCost": "Contract Cost",
+	            "contractTimesheet": "Contract Timesheet"
+	        },
+	        "project":{
+            	"main":"Project",
+                "projectInfo": "Project Info",
+                "projectUser": "Project User",
+                "projectCost": "Project Cost",
+                "projectTimesheet": "Project Timesheet",
+                "projectFinishInfo": "Project Finish Info"
+            },
+            "stat":{
+            	"main":"Stat",
+                "contractWeeklyStat": "Contract Weekly Stat",
+                "projectWeeklyStat": "Project Weekly Stat"
+            },
             "entities": {
                 "main": "Entities",
                 "jhipster-needle-menu-add-entry": "JHipster will add additional entities here (do not translate!)"

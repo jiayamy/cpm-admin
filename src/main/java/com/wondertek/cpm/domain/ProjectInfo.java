@@ -1,312 +1,332 @@
 package com.wondertek.cpm.domain;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.springframework.data.elasticsearch.annotations.Document;
+
+import javax.persistence.*;
 import java.io.Serializable;
-import java.util.Date;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-
-import com.fasterxml.jackson.annotation.JsonFormat;
+import java.time.ZonedDateTime;
+import java.util.Objects;
 
 /**
  * 项目信息
  */
 @Entity
-@Table(name = "W_PROJECT_INFO")
+@Table(name = "w_project_info")
+@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+@Document(indexName = "projectinfo")
 public class ProjectInfo implements Serializable {
-	private static final long serialVersionUID = 6937142017155503769L;
 
-	@Id
+    private static final long serialVersionUID = 1L;
+
+    @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;			//项目主键
-    
-    @Column(name="SERIAL_NUM")
-    private String serialNum;	//项目编号
+    private Long id;
 
-    @Column(name="CONTRACT_ID")
-    private Long contractId;	//合同主键
+    @Column(name = "serial_num")
+    private String serialNum;		//	项目编号
 
-    @Column(name="BUDGET_ID")
-    private Long budgetId;		//合同预算主键
-    
-    @Column(name="NAME_")
-    private String name;		//项目名称
-    
-    @Column(name="PM_")
-    private String pm;			//项目经理
-    
-    @Column(name="DEPT_")
-    private String dept;		//所属部门
-    
-    @Temporal(TemporalType.TIMESTAMP)
-    @JsonFormat(locale = "zh", timezone = "GMT+8", pattern = "yyyy-MM-dd")
-    @Column(name="START_DAY")
-    private Date startDay;		//开始日期
-    
-    @Temporal(TemporalType.TIMESTAMP)
-    @JsonFormat(locale = "zh", timezone = "GMT+8", pattern = "yyyy-MM-dd")
-    @Column(name="END_DAY")
-    private Date endDay;		//结束日期
-    
-    @Column(name="BUDGET_TOTAL")
-    private Double budgetTotal;	//预算总额
-    
-    @Column(name="STATUS_")
-    private int status;			//状态（1开发中，2结项，3删除）
-    
-    @Temporal(TemporalType.TIMESTAMP)
-    @JsonFormat(locale = "zh", timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
-    @Column(name="CREATE_TIME")
-    private Date createTime;	//创建时间
-    
-    @Column(name="CREATOR_")
-    private String creator;		//创建人
-    
-    @Temporal(TemporalType.TIMESTAMP)
-    @JsonFormat(locale = "zh", timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
-    @Column(name="UPDATE_TIME")
-    private Date updateTime;	//更新时间
-    
-    @Column(name="UPDATOR_")
-    private String updator;		//更新人
+    @Column(name = "contract_id")
+    private Long contractId;		//	合同主键 
 
-	public Long getId() {
-		return id;
+    @Column(name = "budget_id")
+    private Long budgetId;			//	合同预算主键
+
+    @Column(name = "name_")
+    private String name;			//	项目名称
+
+    @Column(name = "pm_id")
+    private Long pmId;				//	项目经理ID（对应一个具体的员工，弹窗选择员工）
+
+    @Column(name = "pm_")
+    private String pm;				//	项目经理（对应一个具体的员工，弹窗选择员工）
+    
+    @Column(name = "dept_id")
+    private Long deptId;			//	所属部门（跟着项目经理走，用户所属部门，只展示，不可更改）
+
+    @Column(name = "dept_")
+    private String dept;			//	所属部门（跟着项目经理走，用户所属部门，只展示，不可更改）
+    
+    @Column(name = "start_day")
+    private ZonedDateTime startDay;	//	开始日期
+
+    @Column(name = "end_day")
+    private ZonedDateTime endDay;	//	结束日期
+
+    @Column(name = "budget_total")
+    private Double budgetTotal;		//	预算总额
+
+    @Column(name = "status_")
+    private Integer status;			//	状态（开发中，结项，删除）
+
+    @Column(name = "finish_rate")
+    private Double finishRate;			//	完成率（只展示）
+    
+    @Column(name = "creator_")
+    private String creator;			//
+
+    @Column(name = "create_time")
+    private ZonedDateTime createTime;
+
+    @Column(name = "updator_")
+    private String updator;
+
+    @Column(name = "update_time")
+    private ZonedDateTime updateTime;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getSerialNum() {
+        return serialNum;
+    }
+
+    public ProjectInfo serialNum(String serialNum) {
+        this.serialNum = serialNum;
+        return this;
+    }
+
+    public void setSerialNum(String serialNum) {
+        this.serialNum = serialNum;
+    }
+
+    public Long getContractId() {
+        return contractId;
+    }
+
+    public ProjectInfo contractId(Long contractId) {
+        this.contractId = contractId;
+        return this;
+    }
+
+    public void setContractId(Long contractId) {
+        this.contractId = contractId;
+    }
+
+    public Long getBudgetId() {
+        return budgetId;
+    }
+
+    public ProjectInfo budgetId(Long budgetId) {
+        this.budgetId = budgetId;
+        return this;
+    }
+
+    public void setBudgetId(Long budgetId) {
+        this.budgetId = budgetId;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public ProjectInfo name(String name) {
+        this.name = name;
+        return this;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Long getPmId() {
+		return pmId;
 	}
 
-	public void setId(Long id) {
-		this.id = id;
+	public void setPmId(Long pmId) {
+		this.pmId = pmId;
 	}
 
-	public String getSerialNum() {
-		return serialNum;
+	public Long getDeptId() {
+		return deptId;
 	}
 
-	public void setSerialNum(String serialNum) {
-		this.serialNum = serialNum;
-	}
-
-	public Long getContractId() {
-		return contractId;
-	}
-
-	public void setContractId(Long contractId) {
-		this.contractId = contractId;
-	}
-
-	public Long getBudgetId() {
-		return budgetId;
-	}
-
-	public void setBudgetId(Long budgetId) {
-		this.budgetId = budgetId;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
+	public void setDeptId(Long deptId) {
+		this.deptId = deptId;
 	}
 
 	public String getPm() {
 		return pm;
 	}
 
-	public void setPm(String pm) {
-		this.pm = pm;
-	}
-
 	public String getDept() {
 		return dept;
+	}
+
+	public Double getFinishRate() {
+		return finishRate;
+	}
+
+	public void setFinishRate(Double finishRate) {
+		this.finishRate = finishRate;
+	}
+
+	public void setPm(String pm) {
+		this.pm = pm;
 	}
 
 	public void setDept(String dept) {
 		this.dept = dept;
 	}
 
-	public Date getStartDay() {
-		return startDay;
-	}
+    public ProjectInfo pm(String pm) {
+        this.pm = pm;
+        return this;
+    }
 
-	public void setStartDay(Date startDay) {
-		this.startDay = startDay;
-	}
+    public ProjectInfo dept(String dept) {
+        this.dept = dept;
+        return this;
+    }
 
-	public Date getEndDay() {
-		return endDay;
-	}
+    public ZonedDateTime getStartDay() {
+        return startDay;
+    }
 
-	public void setEndDay(Date endDay) {
-		this.endDay = endDay;
-	}
+    public ProjectInfo startDay(ZonedDateTime startDay) {
+        this.startDay = startDay;
+        return this;
+    }
 
-	public Double getBudgetTotal() {
-		return budgetTotal;
-	}
+    public void setStartDay(ZonedDateTime startDay) {
+        this.startDay = startDay;
+    }
 
-	public void setBudgetTotal(Double budgetTotal) {
-		this.budgetTotal = budgetTotal;
-	}
+    public ZonedDateTime getEndDay() {
+        return endDay;
+    }
 
-	public int getStatus() {
-		return status;
-	}
+    public ProjectInfo endDay(ZonedDateTime endDay) {
+        this.endDay = endDay;
+        return this;
+    }
 
-	public void setStatus(int status) {
-		this.status = status;
-	}
+    public void setEndDay(ZonedDateTime endDay) {
+        this.endDay = endDay;
+    }
 
-	public Date getCreateTime() {
-		return createTime;
-	}
+    public Double getBudgetTotal() {
+        return budgetTotal;
+    }
 
-	public void setCreateTime(Date createTime) {
-		this.createTime = createTime;
-	}
+    public ProjectInfo budgetTotal(Double budgetTotal) {
+        this.budgetTotal = budgetTotal;
+        return this;
+    }
 
-	public String getCreator() {
-		return creator;
-	}
+    public void setBudgetTotal(Double budgetTotal) {
+        this.budgetTotal = budgetTotal;
+    }
 
-	public void setCreator(String creator) {
-		this.creator = creator;
-	}
+    public Integer getStatus() {
+        return status;
+    }
 
-	public Date getUpdateTime() {
-		return updateTime;
-	}
+    public ProjectInfo status(Integer status) {
+        this.status = status;
+        return this;
+    }
 
-	public void setUpdateTime(Date updateTime) {
-		this.updateTime = updateTime;
-	}
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
 
-	public String getUpdator() {
-		return updator;
-	}
+    public String getCreator() {
+        return creator;
+    }
 
-	public void setUpdator(String updator) {
-		this.updator = updator;
-	}
+    public ProjectInfo creator(String creator) {
+        this.creator = creator;
+        return this;
+    }
 
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((budgetId == null) ? 0 : budgetId.hashCode());
-		result = prime * result + ((budgetTotal == null) ? 0 : budgetTotal.hashCode());
-		result = prime * result + ((contractId == null) ? 0 : contractId.hashCode());
-		result = prime * result + ((createTime == null) ? 0 : createTime.hashCode());
-		result = prime * result + ((creator == null) ? 0 : creator.hashCode());
-		result = prime * result + ((dept == null) ? 0 : dept.hashCode());
-		result = prime * result + ((endDay == null) ? 0 : endDay.hashCode());
-		result = prime * result + ((id == null) ? 0 : id.hashCode());
-		result = prime * result + ((name == null) ? 0 : name.hashCode());
-		result = prime * result + ((pm == null) ? 0 : pm.hashCode());
-		result = prime * result + ((serialNum == null) ? 0 : serialNum.hashCode());
-		result = prime * result + ((startDay == null) ? 0 : startDay.hashCode());
-		result = prime * result + status;
-		result = prime * result + ((updateTime == null) ? 0 : updateTime.hashCode());
-		result = prime * result + ((updator == null) ? 0 : updator.hashCode());
-		return result;
-	}
+    public void setCreator(String creator) {
+        this.creator = creator;
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		ProjectInfo other = (ProjectInfo) obj;
-		if (budgetId == null) {
-			if (other.budgetId != null)
-				return false;
-		} else if (!budgetId.equals(other.budgetId))
-			return false;
-		if (budgetTotal == null) {
-			if (other.budgetTotal != null)
-				return false;
-		} else if (!budgetTotal.equals(other.budgetTotal))
-			return false;
-		if (contractId == null) {
-			if (other.contractId != null)
-				return false;
-		} else if (!contractId.equals(other.contractId))
-			return false;
-		if (createTime == null) {
-			if (other.createTime != null)
-				return false;
-		} else if (!createTime.equals(other.createTime))
-			return false;
-		if (creator == null) {
-			if (other.creator != null)
-				return false;
-		} else if (!creator.equals(other.creator))
-			return false;
-		if (dept == null) {
-			if (other.dept != null)
-				return false;
-		} else if (!dept.equals(other.dept))
-			return false;
-		if (endDay == null) {
-			if (other.endDay != null)
-				return false;
-		} else if (!endDay.equals(other.endDay))
-			return false;
-		if (id == null) {
-			if (other.id != null)
-				return false;
-		} else if (!id.equals(other.id))
-			return false;
-		if (name == null) {
-			if (other.name != null)
-				return false;
-		} else if (!name.equals(other.name))
-			return false;
-		if (pm == null) {
-			if (other.pm != null)
-				return false;
-		} else if (!pm.equals(other.pm))
-			return false;
-		if (serialNum == null) {
-			if (other.serialNum != null)
-				return false;
-		} else if (!serialNum.equals(other.serialNum))
-			return false;
-		if (startDay == null) {
-			if (other.startDay != null)
-				return false;
-		} else if (!startDay.equals(other.startDay))
-			return false;
-		if (status != other.status)
-			return false;
-		if (updateTime == null) {
-			if (other.updateTime != null)
-				return false;
-		} else if (!updateTime.equals(other.updateTime))
-			return false;
-		if (updator == null) {
-			if (other.updator != null)
-				return false;
-		} else if (!updator.equals(other.updator))
-			return false;
-		return true;
-	}
+    public ZonedDateTime getCreateTime() {
+        return createTime;
+    }
 
-	@Override
-	public String toString() {
-		return "ProjectInfo [id=" + id + ", serialNum=" + serialNum + ", contractId=" + contractId + ", budgetId="
-				+ budgetId + ", name=" + name + ", pm=" + pm + ", dept=" + dept + ", startDay=" + startDay + ", endDay="
-				+ endDay + ", budgetTotal=" + budgetTotal + ", status=" + status + ", createTime=" + createTime
-				+ ", creator=" + creator + ", updateTime=" + updateTime + ", updator=" + updator + "]";
-	}
+    public ProjectInfo createTime(ZonedDateTime createTime) {
+        this.createTime = createTime;
+        return this;
+    }
+
+    public void setCreateTime(ZonedDateTime createTime) {
+        this.createTime = createTime;
+    }
+
+    public String getUpdator() {
+        return updator;
+    }
+
+    public ProjectInfo updator(String updator) {
+        this.updator = updator;
+        return this;
+    }
+
+    public void setUpdator(String updator) {
+        this.updator = updator;
+    }
+
+    public ZonedDateTime getUpdateTime() {
+        return updateTime;
+    }
+
+    public ProjectInfo updateTime(ZonedDateTime updateTime) {
+        this.updateTime = updateTime;
+        return this;
+    }
+
+    public void setUpdateTime(ZonedDateTime updateTime) {
+        this.updateTime = updateTime;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        ProjectInfo projectInfo = (ProjectInfo) o;
+        if (projectInfo.id == null || id == null) {
+            return false;
+        }
+        return Objects.equals(id, projectInfo.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
+    }
+
+    @Override
+    public String toString() {
+        return "ProjectInfo{" +
+            "id=" + id +
+            ", serialNum='" + serialNum + "'" +
+            ", contractId='" + contractId + "'" +
+            ", budgetId='" + budgetId + "'" +
+            ", name='" + name + "'" +
+            ", pm='" + pm + "'" +
+            ", dept='" + dept + "'" +
+            ", startDay='" + startDay + "'" +
+            ", endDay='" + endDay + "'" +
+            ", budgetTotal='" + budgetTotal + "'" +
+            ", status='" + status + "'" +
+            ", creator='" + creator + "'" +
+            ", createTime='" + createTime + "'" +
+            ", updator='" + updator + "'" +
+            ", updateTime='" + updateTime + "'" +
+            '}';
+    }
 }

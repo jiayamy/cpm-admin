@@ -1,0 +1,79 @@
+
+<div>
+    <h2><span data-translate="cpmApp.contractWeeklyStat.detail.title">Contract Weekly Stat</span> {{vm.contractWeeklyStat.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="dl-horizontal jh-entity-details">
+        <dt><span data-translate="cpmApp.contractWeeklyStat.contractId">Contract Id</span></dt>
+        <dd>
+            <span>{{vm.contractWeeklyStat.contractId}}</span>
+        </dd>
+        <dt><span data-translate="cpmApp.contractWeeklyStat.receiveTotal">Receive Total</span></dt>
+        <dd>
+            <span>{{vm.contractWeeklyStat.receiveTotal}}</span>
+        </dd>
+        <dt><span data-translate="cpmApp.contractWeeklyStat.costTotal">Cost Total</span></dt>
+        <dd>
+            <span>{{vm.contractWeeklyStat.costTotal}}</span>
+        </dd>
+        <dt><span data-translate="cpmApp.contractWeeklyStat.grossProfit">Gross Profit</span></dt>
+        <dd>
+            <span>{{vm.contractWeeklyStat.grossProfit}}</span>
+        </dd>
+        <dt><span data-translate="cpmApp.contractWeeklyStat.salesHumanCost">Sales Human Cost</span></dt>
+        <dd>
+            <span>{{vm.contractWeeklyStat.salesHumanCost}}</span>
+        </dd>
+        <dt><span data-translate="cpmApp.contractWeeklyStat.salesPayment">Sales Payment</span></dt>
+        <dd>
+            <span>{{vm.contractWeeklyStat.salesPayment}}</span>
+        </dd>
+        <dt><span data-translate="cpmApp.contractWeeklyStat.consultHumanCost">Consult Human Cost</span></dt>
+        <dd>
+            <span>{{vm.contractWeeklyStat.consultHumanCost}}</span>
+        </dd>
+        <dt><span data-translate="cpmApp.contractWeeklyStat.consultPayment">Consult Payment</span></dt>
+        <dd>
+            <span>{{vm.contractWeeklyStat.consultPayment}}</span>
+        </dd>
+        <dt><span data-translate="cpmApp.contractWeeklyStat.hardwarePurchase">Hardware Purchase</span></dt>
+        <dd>
+            <span>{{vm.contractWeeklyStat.hardwarePurchase}}</span>
+        </dd>
+        <dt><span data-translate="cpmApp.contractWeeklyStat.externalSoftware">External Software</span></dt>
+        <dd>
+            <span>{{vm.contractWeeklyStat.externalSoftware}}</span>
+        </dd>
+        <dt><span data-translate="cpmApp.contractWeeklyStat.internalSoftware">Internal Software</span></dt>
+        <dd>
+            <span>{{vm.contractWeeklyStat.internalSoftware}}</span>
+        </dd>
+        <dt><span data-translate="cpmApp.contractWeeklyStat.projectHumanCost">Project Human Cost</span></dt>
+        <dd>
+            <span>{{vm.contractWeeklyStat.projectHumanCost}}</span>
+        </dd>
+        <dt><span data-translate="cpmApp.contractWeeklyStat.projectPayment">Project Payment</span></dt>
+        <dd>
+            <span>{{vm.contractWeeklyStat.projectPayment}}</span>
+        </dd>
+        <dt><span data-translate="cpmApp.contractWeeklyStat.statWeek">Stat Week</span></dt>
+        <dd>
+            <span>{{vm.contractWeeklyStat.statWeek}}</span>
+        </dd>
+        <dt><span data-translate="cpmApp.contractWeeklyStat.createTime">Create Time</span></dt>
+        <dd>
+            <span>{{vm.contractWeeklyStat.createTime | date:'medium'}}</span>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            ui-sref="{{ vm.previousState }}"
+            class="btn btn-info">
+        <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span data-translate="entity.action.back"> Back</span>
+    </button>
+
+    <button type="button" ui-sref="contract-weekly-stat-detail.edit({id:vm.contractWeeklyStat.id})" class="btn btn-primary">
+        <span class="glyphicon glyphicon-pencil"></span>
+        <span class="hidden-xs hidden-sm" data-translate="entity.action.edit"> Edit</span>
+    </button>
+</div>

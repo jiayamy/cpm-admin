@@ -19,3 +19,13 @@ CREATE TABLE w_project_info
         PRIMARY KEY (id)
     )
     ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+ALTER TABLE jhi_user ADD (serial_num VARCHAR(10));
+ALTER TABLE jhi_user ADD (dept_id BIGINT);
+ALTER TABLE jhi_user ADD (is_manager INTEGER);
+ALTER TABLE jhi_user ADD (duty_ VARCHAR(100));
+ALTER TABLE jhi_user ADD (grade_ VARCHAR(100));
+ALTER TABLE jhi_user ADD (gender_ INTEGER);
+ALTER TABLE jhi_user ADD (birth_year VARCHAR(4));
+ALTER TABLE jhi_user ADD (birth_day VARCHAR(10));
+ALTER TABLE jhi_user ADD (telephone_ VARCHAR(20));

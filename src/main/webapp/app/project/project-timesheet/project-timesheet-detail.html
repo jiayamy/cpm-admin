@@ -1,0 +1,59 @@
+
+<div>
+    <h2><span data-translate="cpmApp.projectTimesheet.detail.title">Project Timesheet</span> {{vm.projectTimesheet.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="dl-horizontal jh-entity-details">
+        <dt><span data-translate="cpmApp.projectTimesheet.projectId">Project Id</span></dt>
+        <dd>
+            <span>{{vm.projectTimesheet.projectId}}</span>
+        </dd>
+        <dt><span data-translate="cpmApp.projectTimesheet.userId">User Id</span></dt>
+        <dd>
+            <span>{{vm.projectTimesheet.userId}}</span>
+        </dd>
+        <dt><span data-translate="cpmApp.projectTimesheet.realInput">Real Input</span></dt>
+        <dd>
+            <span>{{vm.projectTimesheet.realInput}}</span>
+        </dd>
+        <dt><span data-translate="cpmApp.projectTimesheet.acceptInput">Accept Input</span></dt>
+        <dd>
+            <span>{{vm.projectTimesheet.acceptInput}}</span>
+        </dd>
+        <dt><span data-translate="cpmApp.projectTimesheet.workDay">Work Day</span></dt>
+        <dd>
+            <span>{{vm.projectTimesheet.workDay}}</span>
+        </dd>
+        <dt><span data-translate="cpmApp.projectTimesheet.status">Status</span></dt>
+        <dd>
+            <span>{{vm.projectTimesheet.status}}</span>
+        </dd>
+        <dt><span data-translate="cpmApp.projectTimesheet.creator">Creator</span></dt>
+        <dd>
+            <span>{{vm.projectTimesheet.creator}}</span>
+        </dd>
+        <dt><span data-translate="cpmApp.projectTimesheet.createTime">Create Time</span></dt>
+        <dd>
+            <span>{{vm.projectTimesheet.createTime | date:'medium'}}</span>
+        </dd>
+        <dt><span data-translate="cpmApp.projectTimesheet.updator">Updator</span></dt>
+        <dd>
+            <span>{{vm.projectTimesheet.updator}}</span>
+        </dd>
+        <dt><span data-translate="cpmApp.projectTimesheet.updateTime">Update Time</span></dt>
+        <dd>
+            <span>{{vm.projectTimesheet.updateTime | date:'medium'}}</span>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            ui-sref="{{ vm.previousState }}"
+            class="btn btn-info">
+        <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span data-translate="entity.action.back"> Back</span>
+    </button>
+
+    <button type="button" ui-sref="project-timesheet-detail.edit({id:vm.projectTimesheet.id})" class="btn btn-primary">
+        <span class="glyphicon glyphicon-pencil"></span>
+        <span class="hidden-xs hidden-sm" data-translate="entity.action.edit"> Edit</span>
+    </button>
+</div>

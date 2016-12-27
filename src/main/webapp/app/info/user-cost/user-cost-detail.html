@@ -1,0 +1,55 @@
+
+<div>
+    <h2><span data-translate="cpmApp.userCost.detail.title">User Cost</span> {{vm.userCost.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="dl-horizontal jh-entity-details">
+        <dt><span data-translate="cpmApp.userCost.userId">User Id</span></dt>
+        <dd>
+            <span>{{vm.userCost.userId}}</span>
+        </dd>
+        <dt><span data-translate="cpmApp.userCost.costMonth">Cost Month</span></dt>
+        <dd>
+            <span>{{vm.userCost.costMonth}}</span>
+        </dd>
+        <dt><span data-translate="cpmApp.userCost.internalCost">Internal Cost</span></dt>
+        <dd>
+            <span>{{vm.userCost.internalCost}}</span>
+        </dd>
+        <dt><span data-translate="cpmApp.userCost.externalCost">External Cost</span></dt>
+        <dd>
+            <span>{{vm.userCost.externalCost}}</span>
+        </dd>
+        <dt><span data-translate="cpmApp.userCost.status">Status</span></dt>
+        <dd>
+            <span>{{vm.userCost.status}}</span>
+        </dd>
+        <dt><span data-translate="cpmApp.userCost.creator">Creator</span></dt>
+        <dd>
+            <span>{{vm.userCost.creator}}</span>
+        </dd>
+        <dt><span data-translate="cpmApp.userCost.createTime">Create Time</span></dt>
+        <dd>
+            <span>{{vm.userCost.createTime | date:'medium'}}</span>
+        </dd>
+        <dt><span data-translate="cpmApp.userCost.updator">Updator</span></dt>
+        <dd>
+            <span>{{vm.userCost.updator}}</span>
+        </dd>
+        <dt><span data-translate="cpmApp.userCost.updateTime">Update Time</span></dt>
+        <dd>
+            <span>{{vm.userCost.updateTime | date:'medium'}}</span>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            ui-sref="{{ vm.previousState }}"
+            class="btn btn-info">
+        <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span data-translate="entity.action.back"> Back</span>
+    </button>
+
+    <button type="button" ui-sref="user-cost-detail.edit({id:vm.userCost.id})" class="btn btn-primary">
+        <span class="glyphicon glyphicon-pencil"></span>
+        <span class="hidden-xs hidden-sm" data-translate="entity.action.edit"> Edit</span>
+    </button>
+</div>

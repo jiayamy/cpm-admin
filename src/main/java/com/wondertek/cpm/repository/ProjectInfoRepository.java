@@ -1,12 +1,15 @@
 package com.wondertek.cpm.repository;
 
-import org.springframework.data.jpa.repository.JpaRepository;
-
 import com.wondertek.cpm.domain.ProjectInfo;
 
+import org.springframework.data.jpa.repository.*;
+
+import java.util.List;
+
 /**
- * Spring Data JPA repository for the User entity.
+ * Spring Data JPA repository for the ProjectInfo entity.
  */
-public interface ProjectInfoRepository extends JpaRepository<ProjectInfo, Long> {
-	
-}	
+@SuppressWarnings("unused")
+public interface ProjectInfoRepository extends JpaRepository<ProjectInfo,Long> {
+
+}

@@ -715,10 +715,10 @@
                     <changeLogFile>src/main/resources/config/liquibase/master.xml</changeLogFile>
                     <diffChangeLogFile>src/main/resources/config/liquibase/changelog/${maven.build.timestamp}_changelog.xml</diffChangeLogFile>
                     <driver>com.mysql.jdbc.Driver</driver>
-                    <url>jdbc:mysql://localhost:3306/cpm</url>
+                    <url>jdbc:mysql://192.168.1.38:3306/wangda_cpm</url>
                     <defaultSchemaName>cpm</defaultSchemaName>
-                    <username>root</username>
-                    <password />
+                    <username>wangda_cpm</username>
+                    <password>wangda_cpm</password>
                     <referenceUrl>hibernate:spring:com.wondertek.cpm.domain?dialect=org.hibernate.dialect.MySQL5InnoDBDialect&amp;hibernate.physical_naming_strategy=org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy&amp;hibernate.implicit_naming_strategy=org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy</referenceUrl>
                     <verbose>true</verbose>
                     <logging>debug</logging>
@@ -737,8 +737,8 @@
                     <fork>true</fork>
                     <!--
                     Enable the line below to have remote debugging of your application on port 5005
-                    <jvmArguments>-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005</jvmArguments>
                     -->
+                    <jvmArguments>-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005</jvmArguments>
                 </configuration>
             </plugin>
             <!-- jhipster-needle-maven-add-plugin -->

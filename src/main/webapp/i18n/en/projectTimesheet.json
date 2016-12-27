@@ -1,0 +1,31 @@
+{
+    "cpmApp": {
+        "projectTimesheet" : {
+            "home": {
+                "title": "Project Timesheets",
+                "createLabel": "Create a new Project Timesheet",
+                "createOrEditLabel": "Create or edit a Project Timesheet",
+                "search": "Search for Project Timesheet"
+            },
+            "created": "A new Project Timesheet is created with identifier {{ param }}",
+            "updated": "A Project Timesheet is updated with identifier {{ param }}",
+            "deleted": "A Project Timesheet is deleted with identifier {{ param }}",
+            "delete": {
+                "question": "Are you sure you want to delete Project Timesheet {{ id }}?"
+            },
+            "detail": {
+                "title": "Project Timesheet"
+            },
+            "projectId": "Project Id",
+            "userId": "User Id",
+            "realInput": "Real Input",
+            "acceptInput": "Accept Input",
+            "workDay": "Work Day",
+            "status": "Status",
+            "creator": "Creator",
+            "createTime": "Create Time",
+            "updator": "Updator",
+            "updateTime": "Update Time"
+        }
+    }
+}

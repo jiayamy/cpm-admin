@@ -1,0 +1,55 @@
+
+<div>
+    <h2><span data-translate="cpmApp.contractReceive.detail.title">Contract Receive</span> {{vm.contractReceive.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="dl-horizontal jh-entity-details">
+        <dt><span data-translate="cpmApp.contractReceive.contractId">Contract Id</span></dt>
+        <dd>
+            <span>{{vm.contractReceive.contractId}}</span>
+        </dd>
+        <dt><span data-translate="cpmApp.contractReceive.receiveTotal">Receive Total</span></dt>
+        <dd>
+            <span>{{vm.contractReceive.receiveTotal}}</span>
+        </dd>
+        <dt><span data-translate="cpmApp.contractReceive.receiveDay">Receive Day</span></dt>
+        <dd>
+            <span>{{vm.contractReceive.receiveDay | date:'medium'}}</span>
+        </dd>
+        <dt><span data-translate="cpmApp.contractReceive.status">Status</span></dt>
+        <dd>
+            <span>{{vm.contractReceive.status}}</span>
+        </dd>
+        <dt><span data-translate="cpmApp.contractReceive.creator">Creator</span></dt>
+        <dd>
+            <span>{{vm.contractReceive.creator}}</span>
+        </dd>
+        <dt><span data-translate="cpmApp.contractReceive.createTime">Create Time</span></dt>
+        <dd>
+            <span>{{vm.contractReceive.createTime | date:'medium'}}</span>
+        </dd>
+        <dt><span data-translate="cpmApp.contractReceive.updator">Updator</span></dt>
+        <dd>
+            <span>{{vm.contractReceive.updator}}</span>
+        </dd>
+        <dt><span data-translate="cpmApp.contractReceive.updateTime">Update Time</span></dt>
+        <dd>
+            <span>{{vm.contractReceive.updateTime | date:'medium'}}</span>
+        </dd>
+        <dt><span data-translate="cpmApp.contractReceive.receiver">Receiver</span></dt>
+        <dd>
+            <span>{{vm.contractReceive.receiver}}</span>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            ui-sref="{{ vm.previousState }}"
+            class="btn btn-info">
+        <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span data-translate="entity.action.back"> Back</span>
+    </button>
+
+    <button type="button" ui-sref="contract-receive-detail.edit({id:vm.contractReceive.id})" class="btn btn-primary">
+        <span class="glyphicon glyphicon-pencil"></span>
+        <span class="hidden-xs hidden-sm" data-translate="entity.action.edit"> Edit</span>
+    </button>
+</div>

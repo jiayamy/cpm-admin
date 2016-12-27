@@ -1,0 +1,33 @@
+{
+    "cpmApp": {
+        "contractBudget" : {
+            "home": {
+                "title": "Contract Budgets",
+                "createLabel": "Create a new Contract Budget",
+                "createOrEditLabel": "Create or edit a Contract Budget",
+                "search": "Search for Contract Budget"
+            },
+            "created": "A new Contract Budget is created with identifier {{ param }}",
+            "updated": "A Contract Budget is updated with identifier {{ param }}",
+            "deleted": "A Contract Budget is deleted with identifier {{ param }}",
+            "delete": {
+                "question": "Are you sure you want to delete Contract Budget {{ id }}?"
+            },
+            "detail": {
+                "title": "Contract Budget"
+            },
+            "contractId": "Contract Id",
+            "type": "Type",
+            "userId": "User Id",
+            "userName": "User Name",
+            "dept": "Dept",
+            "purchaseType": "Purchase Type",
+            "budgetTotal": "Budget Total",
+            "status": "Status",
+            "creator": "Creator",
+            "createTime": "Create Time",
+            "updator": "Updator",
+            "updateTime": "Update Time"
+        }
+    }
+}

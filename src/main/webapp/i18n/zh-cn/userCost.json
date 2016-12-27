@@ -1,0 +1,30 @@
+{
+    "cpmApp": {
+        "userCost" : {
+            "home": {
+                "title": "User Costs",
+                "createLabel": "Create a new User Cost",
+                "createOrEditLabel": "Create or edit a User Cost",
+                "search": "Search for User Cost"
+            },
+            "created": "A new User Cost is created with identifier {{ param }}",
+            "updated": "A User Cost is updated with identifier {{ param }}",
+            "deleted": "A User Cost is deleted with identifier {{ param }}",
+            "delete": {
+                "question": "Are you sure you want to delete User Cost {{ id }}?"
+            },
+            "detail": {
+                "title": "User Cost"
+            },
+            "userId": "User Id",
+            "costMonth": "Cost Month",
+            "internalCost": "Internal Cost",
+            "externalCost": "External Cost",
+            "status": "Status",
+            "creator": "Creator",
+            "createTime": "Create Time",
+            "updator": "Updator",
+            "updateTime": "Update Time"
+        }
+    }
+}

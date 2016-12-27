@@ -1,0 +1,105 @@
+<div>
+    <h2 data-translate="cpmApp.contractWeeklyStat.home.title">Contract Weekly Stats</h2>
+    <jhi-alert></jhi-alert>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xs-4 no-padding-left">
+                <button class="btn btn-primary" ui-sref="contract-weekly-stat.new" >
+                    <span class="glyphicon glyphicon-plus"></span>
+                    <span class="hidden-xs"  data-translate="cpmApp.contractWeeklyStat.home.createLabel">
+                        Create new Contract Weekly Stat
+                    </span>
+                </button>
+            </div>
+            <div class="col-xs-8 no-padding-right">
+                <form name="searchForm" class="form-inline">
+                    <div class="input-group pull-right" >
+                        <input type="text" class="form-control" ng-model="vm.searchQuery" id="searchQuery" placeholder="{{ 'cpmApp.contractWeeklyStat.home.search' | translate }}">
+                        <span  class="input-group-btn width-min" >
+                            <button class="btn btn-info" ng-click="vm.search(vm.searchQuery)">
+                                <span class="glyphicon glyphicon-search"></span>
+                            </button>
+                        </span>
+                        <span class="input-group-btn width-min" ng-if="vm.currentSearch">
+                            <button class="btn btn-info" ng-click="vm.clear()">
+                                <span class="glyphicon glyphicon-trash"></span>
+                            </button>
+                        </span>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <br/>
+    <div class="table-responsive">
+        <table class="jh-table table table-striped">
+            <thead>
+                <tr jh-sort="vm.predicate" ascending="vm.reverse" callback="vm.transition()">
+                    <th jh-sort-by="id"><span data-translate="global.field.id">ID</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="contractId"><span data-translate="cpmApp.contractWeeklyStat.contractId">Contract Id</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="receiveTotal"><span data-translate="cpmApp.contractWeeklyStat.receiveTotal">Receive Total</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="costTotal"><span data-translate="cpmApp.contractWeeklyStat.costTotal">Cost Total</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="grossProfit"><span data-translate="cpmApp.contractWeeklyStat.grossProfit">Gross Profit</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="salesHumanCost"><span data-translate="cpmApp.contractWeeklyStat.salesHumanCost">Sales Human Cost</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="salesPayment"><span data-translate="cpmApp.contractWeeklyStat.salesPayment">Sales Payment</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="consultHumanCost"><span data-translate="cpmApp.contractWeeklyStat.consultHumanCost">Consult Human Cost</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="consultPayment"><span data-translate="cpmApp.contractWeeklyStat.consultPayment">Consult Payment</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="hardwarePurchase"><span data-translate="cpmApp.contractWeeklyStat.hardwarePurchase">Hardware Purchase</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="externalSoftware"><span data-translate="cpmApp.contractWeeklyStat.externalSoftware">External Software</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="internalSoftware"><span data-translate="cpmApp.contractWeeklyStat.internalSoftware">Internal Software</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="projectHumanCost"><span data-translate="cpmApp.contractWeeklyStat.projectHumanCost">Project Human Cost</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="projectPayment"><span data-translate="cpmApp.contractWeeklyStat.projectPayment">Project Payment</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="statWeek"><span data-translate="cpmApp.contractWeeklyStat.statWeek">Stat Week</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="createTime"><span data-translate="cpmApp.contractWeeklyStat.createTime">Create Time</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="contractWeeklyStat in vm.contractWeeklyStats track by contractWeeklyStat.id">
+                    <td><a ui-sref="contract-weekly-stat-detail({id:contractWeeklyStat.id})">{{contractWeeklyStat.id}}</a></td>
+                    <td>{{contractWeeklyStat.contractId}}</td>
+                    <td>{{contractWeeklyStat.receiveTotal}}</td>
+                    <td>{{contractWeeklyStat.costTotal}}</td>
+                    <td>{{contractWeeklyStat.grossProfit}}</td>
+                    <td>{{contractWeeklyStat.salesHumanCost}}</td>
+                    <td>{{contractWeeklyStat.salesPayment}}</td>
+                    <td>{{contractWeeklyStat.consultHumanCost}}</td>
+                    <td>{{contractWeeklyStat.consultPayment}}</td>
+                    <td>{{contractWeeklyStat.hardwarePurchase}}</td>
+                    <td>{{contractWeeklyStat.externalSoftware}}</td>
+                    <td>{{contractWeeklyStat.internalSoftware}}</td>
+                    <td>{{contractWeeklyStat.projectHumanCost}}</td>
+                    <td>{{contractWeeklyStat.projectPayment}}</td>
+                    <td>{{contractWeeklyStat.statWeek}}</td>
+                    <td>{{contractWeeklyStat.createTime | date:'medium'}}</td>
+                    <td class="text-right">
+                        <div class="btn-group flex-btn-group-container">
+                            <button type="submit"
+                                    ui-sref="contract-weekly-stat-detail({id:contractWeeklyStat.id})"
+                                    class="btn btn-info btn-sm">
+                                <span class="glyphicon glyphicon-eye-open"></span>
+                                <span class="hidden-xs hidden-sm" data-translate="entity.action.view"></span>
+                            </button>
+                            <button type="submit"
+                                    ui-sref="contract-weekly-stat.edit({id:contractWeeklyStat.id})"
+                                    class="btn btn-primary btn-sm">
+                                <span class="glyphicon glyphicon-pencil"></span>
+                                <span class="hidden-xs hidden-sm" data-translate="entity.action.edit"></span>
+                            </button>
+                            <button type="submit"
+                                    ui-sref="contract-weekly-stat.delete({id:contractWeeklyStat.id})"
+                                    class="btn btn-danger btn-sm">
+                                <span class="glyphicon glyphicon-remove-circle"></span>
+                                <span class="hidden-xs hidden-sm" data-translate="entity.action.delete"></span>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="text-center">
+        <jhi-item-count page="vm.page" total="vm.queryCount" items-per-page="vm.itemsPerPage"></jhi-item-count>
+        <uib-pagination class="pagination-sm" total-items="vm.totalItems" items-per-page="vm.itemsPerPage" ng-model="vm.page" ng-change="vm.transition()"></uib-pagination>
+    </div>
+</div>

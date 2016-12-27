@@ -1,0 +1,35 @@
+
+<div>
+    <h2><span data-translate="cpmApp.projectFinishInfo.detail.title">Project Finish Info</span> {{vm.projectFinishInfo.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="dl-horizontal jh-entity-details">
+        <dt><span data-translate="cpmApp.projectFinishInfo.projectId">Project Id</span></dt>
+        <dd>
+            <span>{{vm.projectFinishInfo.projectId}}</span>
+        </dd>
+        <dt><span data-translate="cpmApp.projectFinishInfo.finishRate">Finish Rate</span></dt>
+        <dd>
+            <span>{{vm.projectFinishInfo.finishRate}}</span>
+        </dd>
+        <dt><span data-translate="cpmApp.projectFinishInfo.creator">Creator</span></dt>
+        <dd>
+            <span>{{vm.projectFinishInfo.creator}}</span>
+        </dd>
+        <dt><span data-translate="cpmApp.projectFinishInfo.createTime">Create Time</span></dt>
+        <dd>
+            <span>{{vm.projectFinishInfo.createTime | date:'medium'}}</span>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            ui-sref="{{ vm.previousState }}"
+            class="btn btn-info">
+        <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span data-translate="entity.action.back"> Back</span>
+    </button>
+
+    <button type="button" ui-sref="project-finish-info-detail.edit({id:vm.projectFinishInfo.id})" class="btn btn-primary">
+        <span class="glyphicon glyphicon-pencil"></span>
+        <span class="hidden-xs hidden-sm" data-translate="entity.action.edit"> Edit</span>
+    </button>
+</div>

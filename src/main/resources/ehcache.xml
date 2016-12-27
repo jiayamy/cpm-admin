@@ -20,5 +20,41 @@
 
     <cache alias="com.wondertek.cpm.domain.User.persistentTokens" uses-template="simple"/>
 
+    <cache alias="com.wondertek.cpm.domain.DeptType" uses-template="simple"/>
+
+    <cache alias="com.wondertek.cpm.domain.DeptInfo" uses-template="simple"/>
+
+    <cache alias="com.wondertek.cpm.domain.UserCost" uses-template="simple"/>
+
+    <cache alias="com.wondertek.cpm.domain.HolidayInfo" uses-template="simple"/>
+
+    <cache alias="com.wondertek.cpm.domain.ProjectInfo" uses-template="simple"/>
+
+    <cache alias="com.wondertek.cpm.domain.ProjectUser" uses-template="simple"/>
+
+    <cache alias="com.wondertek.cpm.domain.ProjectCost" uses-template="simple"/>
+
+    <cache alias="com.wondertek.cpm.domain.ContractWeeklyStat" uses-template="simple"/>
+
+    <cache alias="com.wondertek.cpm.domain.ProjectWeeklyStat" uses-template="simple"/>
+
+    <cache alias="com.wondertek.cpm.domain.ContractInfo" uses-template="simple"/>
+
+    <cache alias="com.wondertek.cpm.domain.ContractReceive" uses-template="simple"/>
+
+    <cache alias="com.wondertek.cpm.domain.ContractUser" uses-template="simple"/>
+
+    <cache alias="com.wondertek.cpm.domain.ContractBudget" uses-template="simple"/>
+
+    <cache alias="com.wondertek.cpm.domain.PurchaseItem" uses-template="simple"/>
+
+    <cache alias="com.wondertek.cpm.domain.ProductPrice" uses-template="simple"/>
+
+    <cache alias="com.wondertek.cpm.domain.ContractCost" uses-template="simple"/>
+
+    <cache alias="com.wondertek.cpm.domain.UserTimesheet" uses-template="simple"/>
+
+    <cache alias="com.wondertek.cpm.domain.ProjectFinishInfo" uses-template="simple"/>
+
     <!-- jhipster-needle-ehcache-add-entry -->
 </config>

@@ -1,0 +1,31 @@
+{
+    "cpmApp": {
+        "contractUser" : {
+            "home": {
+                "title": "Contract Users",
+                "createLabel": "Create a new Contract User",
+                "createOrEditLabel": "Create or edit a Contract User",
+                "search": "Search for Contract User"
+            },
+            "created": "A new Contract User is created with identifier {{ param }}",
+            "updated": "A Contract User is updated with identifier {{ param }}",
+            "deleted": "A Contract User is deleted with identifier {{ param }}",
+            "delete": {
+                "question": "Are you sure you want to delete Contract User {{ id }}?"
+            },
+            "detail": {
+                "title": "Contract User"
+            },
+            "contractId": "Contract Id",
+            "userId": "User Id",
+            "userName": "User Name",
+            "deptId": "Dept Id",
+            "joinDay": "Join Day",
+            "leaveDay": "Leave Day",
+            "creator": "Creator",
+            "createTime": "Create Time",
+            "updator": "Updator",
+            "updateTime": "Update Time"
+        }
+    }
+}

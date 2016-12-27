@@ -1,8 +1,13 @@
+<script>
+var hipsterImageIndex = Math.round(Math.random()*5)+1;
+document.getElementById('jhipster-home-img').src="content/images/hipster_"+ hipsterImageIndex + ".png";
+</script>
 <div ng-cloak>
     <div class="row">
         <div class="col-md-4">
-            <span class="hipster img-responsive img-rounded">
-            </span>
+            <div class="img-responsive img-rounded" style="width:100%;display: inline-block;position:relative;height: 497px;">
+            	<img id="jhipster-home-img" alt="" src="" style="width:100%;top:20%;position:absolute;">
+            </div>
         </div>
         <div class="col-md-8">
             <h1 data-translate="home.title">网达软件 笃定力行</h1>

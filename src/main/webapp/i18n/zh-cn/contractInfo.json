@@ -1,0 +1,47 @@
+{
+    "cpmApp": {
+        "contractInfo" : {
+            "home": {
+                "title": "Contract Infos",
+                "createLabel": "Create a new Contract Info",
+                "createOrEditLabel": "Create or edit a Contract Info",
+                "search": "Search for Contract Info"
+            },
+            "created": "A new Contract Info is created with identifier {{ param }}",
+            "updated": "A Contract Info is updated with identifier {{ param }}",
+            "deleted": "A Contract Info is deleted with identifier {{ param }}",
+            "delete": {
+                "question": "Are you sure you want to delete Contract Info {{ id }}?"
+            },
+            "detail": {
+                "title": "Contract Info"
+            },
+            "serialNum": "Serial Num",
+            "name": "Name",
+            "amount": "Amount",
+            "type": "Type",
+            "isPrepared": "Is Prepared",
+            "isEpibolic": "Is Epibolic",
+            "startDay": "Start Day",
+            "endDay": "End Day",
+            "taxRate": "Tax Rate",
+            "taxes": "Taxes",
+            "shareRate": "Share Rate",
+            "shareCost": "Share Cost",
+            "paymentWay": "Payment Way",
+            "contractor": "Contractor",
+            "address": "Address",
+            "postcode": "Postcode",
+            "linkman": "Linkman",
+            "contactDept": "Contact Dept",
+            "telephone": "Telephone",
+            "receiveTotal": "Receive Total",
+            "finishRate": "Finish Rate",
+            "status": "Status",
+            "creator": "Creator",
+            "createTime": "Create Time",
+            "updator": "Updator",
+            "updateTime": "Update Time"
+        }
+    }
+}

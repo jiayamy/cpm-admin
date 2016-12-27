@@ -1,0 +1,120 @@
+
+<form name="editForm" role="form" novalidate ng-submit="vm.save()">
+
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+                ng-click="vm.clear()">&times;</button>
+        <h4 class="modal-title" id="myContractWeeklyStatLabel" data-translate="cpmApp.contractWeeklyStat.home.createOrEditLabel">Create or edit a Contract Weekly Stat</h4>
+    </div>
+    <div class="modal-body">
+        <jhi-alert-error></jhi-alert-error>
+        <div class="form-group" ng-show="vm.contractWeeklyStat.id">
+            <label for="id" data-translate="global.field.id">ID</label>
+            <input type="text" class="form-control" id="id" name="id"
+                    ng-model="vm.contractWeeklyStat.id" readonly />
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="cpmApp.contractWeeklyStat.contractId" for="field_contractId">Contract Id</label>
+            <input type="number" class="form-control" name="contractId" id="field_contractId"
+                    ng-model="vm.contractWeeklyStat.contractId"
+                     />
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="cpmApp.contractWeeklyStat.receiveTotal" for="field_receiveTotal">Receive Total</label>
+            <input type="number" class="form-control" name="receiveTotal" id="field_receiveTotal"
+                    ng-model="vm.contractWeeklyStat.receiveTotal"
+                     />
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="cpmApp.contractWeeklyStat.costTotal" for="field_costTotal">Cost Total</label>
+            <input type="number" class="form-control" name="costTotal" id="field_costTotal"
+                    ng-model="vm.contractWeeklyStat.costTotal"
+                     />
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="cpmApp.contractWeeklyStat.grossProfit" for="field_grossProfit">Gross Profit</label>
+            <input type="number" class="form-control" name="grossProfit" id="field_grossProfit"
+                    ng-model="vm.contractWeeklyStat.grossProfit"
+                     />
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="cpmApp.contractWeeklyStat.salesHumanCost" for="field_salesHumanCost">Sales Human Cost</label>
+            <input type="number" class="form-control" name="salesHumanCost" id="field_salesHumanCost"
+                    ng-model="vm.contractWeeklyStat.salesHumanCost"
+                     />
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="cpmApp.contractWeeklyStat.salesPayment" for="field_salesPayment">Sales Payment</label>
+            <input type="number" class="form-control" name="salesPayment" id="field_salesPayment"
+                    ng-model="vm.contractWeeklyStat.salesPayment"
+                     />
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="cpmApp.contractWeeklyStat.consultHumanCost" for="field_consultHumanCost">Consult Human Cost</label>
+            <input type="number" class="form-control" name="consultHumanCost" id="field_consultHumanCost"
+                    ng-model="vm.contractWeeklyStat.consultHumanCost"
+                     />
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="cpmApp.contractWeeklyStat.consultPayment" for="field_consultPayment">Consult Payment</label>
+            <input type="number" class="form-control" name="consultPayment" id="field_consultPayment"
+                    ng-model="vm.contractWeeklyStat.consultPayment"
+                     />
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="cpmApp.contractWeeklyStat.hardwarePurchase" for="field_hardwarePurchase">Hardware Purchase</label>
+            <input type="number" class="form-control" name="hardwarePurchase" id="field_hardwarePurchase"
+                    ng-model="vm.contractWeeklyStat.hardwarePurchase"
+                     />
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="cpmApp.contractWeeklyStat.externalSoftware" for="field_externalSoftware">External Software</label>
+            <input type="number" class="form-control" name="externalSoftware" id="field_externalSoftware"
+                    ng-model="vm.contractWeeklyStat.externalSoftware"
+                     />
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="cpmApp.contractWeeklyStat.internalSoftware" for="field_internalSoftware">Internal Software</label>
+            <input type="number" class="form-control" name="internalSoftware" id="field_internalSoftware"
+                    ng-model="vm.contractWeeklyStat.internalSoftware"
+                     />
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="cpmApp.contractWeeklyStat.projectHumanCost" for="field_projectHumanCost">Project Human Cost</label>
+            <input type="number" class="form-control" name="projectHumanCost" id="field_projectHumanCost"
+                    ng-model="vm.contractWeeklyStat.projectHumanCost"
+                     />
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="cpmApp.contractWeeklyStat.projectPayment" for="field_projectPayment">Project Payment</label>
+            <input type="number" class="form-control" name="projectPayment" id="field_projectPayment"
+                    ng-model="vm.contractWeeklyStat.projectPayment"
+                     />
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="cpmApp.contractWeeklyStat.statWeek" for="field_statWeek">Stat Week</label>
+            <input type="text" class="form-control" name="statWeek" id="field_statWeek"
+                    ng-model="vm.contractWeeklyStat.statWeek"
+                     />
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="cpmApp.contractWeeklyStat.createTime" for="field_createTime">Create Time</label>
+                <div class="input-group">
+                    <input id="field_createTime" type="text" class="form-control" name="createTime" datetime-picker="{{dateformat}}" ng-model="vm.contractWeeklyStat.createTime" is-open="vm.datePickerOpenStatus.createTime"
+                      />
+                    <span class="input-group-btn">
+                        <button type="button" class="btn btn-default" ng-click="vm.openCalendar('createTime')"><i class="glyphicon glyphicon-calendar"></i></button>
+                    </span>
+                </div>
+        </div>
+
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="vm.clear()">
+            <span class="glyphicon glyphicon-ban-circle"></span>&nbsp;<span data-translate="entity.action.cancel">Cancel</span>
+        </button>
+        <button type="submit" ng-disabled="editForm.$invalid || vm.isSaving" class="btn btn-primary">
+            <span class="glyphicon glyphicon-save"></span>&nbsp;<span data-translate="entity.action.save">Save</span>
+        </button>
+    </div>
+</form>

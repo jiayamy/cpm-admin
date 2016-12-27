@@ -1,0 +1,75 @@
+
+<div>
+    <h2><span data-translate="cpmApp.projectInfo.detail.title">Project Info</span> {{vm.projectInfo.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="dl-horizontal jh-entity-details">
+        <dt><span data-translate="cpmApp.projectInfo.serialNum">Serial Num</span></dt>
+        <dd>
+            <span>{{vm.projectInfo.serialNum}}</span>
+        </dd>
+        <dt><span data-translate="cpmApp.projectInfo.contractId">Contract Id</span></dt>
+        <dd>
+            <span>{{vm.projectInfo.contractId}}</span>
+        </dd>
+        <dt><span data-translate="cpmApp.projectInfo.budgetId">Budget Id</span></dt>
+        <dd>
+            <span>{{vm.projectInfo.budgetId}}</span>
+        </dd>
+        <dt><span data-translate="cpmApp.projectInfo.name">Name</span></dt>
+        <dd>
+            <span>{{vm.projectInfo.name}}</span>
+        </dd>
+        <dt><span data-translate="cpmApp.projectInfo.pm">Pm</span></dt>
+        <dd>
+            <span>{{vm.projectInfo.pm}}</span>
+        </dd>
+        <dt><span data-translate="cpmApp.projectInfo.dept">Dept</span></dt>
+        <dd>
+            <span>{{vm.projectInfo.dept}}</span>
+        </dd>
+        <dt><span data-translate="cpmApp.projectInfo.startDay">Start Day</span></dt>
+        <dd>
+            <span>{{vm.projectInfo.startDay | date:'medium'}}</span>
+        </dd>
+        <dt><span data-translate="cpmApp.projectInfo.endDay">End Day</span></dt>
+        <dd>
+            <span>{{vm.projectInfo.endDay | date:'medium'}}</span>
+        </dd>
+        <dt><span data-translate="cpmApp.projectInfo.budgetTotal">Budget Total</span></dt>
+        <dd>
+            <span>{{vm.projectInfo.budgetTotal}}</span>
+        </dd>
+        <dt><span data-translate="cpmApp.projectInfo.status">Status</span></dt>
+        <dd>
+            <span>{{vm.projectInfo.status}}</span>
+        </dd>
+        <dt><span data-translate="cpmApp.projectInfo.creator">Creator</span></dt>
+        <dd>
+            <span>{{vm.projectInfo.creator}}</span>
+        </dd>
+        <dt><span data-translate="cpmApp.projectInfo.createTime">Create Time</span></dt>
+        <dd>
+            <span>{{vm.projectInfo.createTime | date:'medium'}}</span>
+        </dd>
+        <dt><span data-translate="cpmApp.projectInfo.updator">Updator</span></dt>
+        <dd>
+            <span>{{vm.projectInfo.updator}}</span>
+        </dd>
+        <dt><span data-translate="cpmApp.projectInfo.updateTime">Update Time</span></dt>
+        <dd>
+            <span>{{vm.projectInfo.updateTime | date:'medium'}}</span>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            ui-sref="{{ vm.previousState }}"
+            class="btn btn-info">
+        <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span data-translate="entity.action.back"> Back</span>
+    </button>
+
+    <button type="button" ui-sref="project-info-detail.edit({id:vm.projectInfo.id})" class="btn btn-primary">
+        <span class="glyphicon glyphicon-pencil"></span>
+        <span class="hidden-xs hidden-sm" data-translate="entity.action.edit"> Edit</span>
+    </button>
+</div>

@@ -1,0 +1,29 @@
+{
+    "cpmApp": {
+        "deptInfo" : {
+            "home": {
+                "title": "Dept Infos",
+                "createLabel": "Create a new Dept Info",
+                "createOrEditLabel": "Create or edit a Dept Info",
+                "search": "Search for Dept Info"
+            },
+            "created": "A new Dept Info is created with identifier {{ param }}",
+            "updated": "A Dept Info is updated with identifier {{ param }}",
+            "deleted": "A Dept Info is deleted with identifier {{ param }}",
+            "delete": {
+                "question": "Are you sure you want to delete Dept Info {{ id }}?"
+            },
+            "detail": {
+                "title": "Dept Info"
+            },
+            "name": "Name",
+            "parentId": "Parent Id",
+            "type": "Type",
+            "status": "Status",
+            "creator": "Creator",
+            "createTime": "Create Time",
+            "updator": "Updator",
+            "updateTime": "Update Time"
+        }
+    }
+}

@@ -1,0 +1,26 @@
+{
+    "cpmApp": {
+        "projectWeeklyStat" : {
+            "home": {
+                "title": "Project Weekly Stats",
+                "createLabel": "Create a new Project Weekly Stat",
+                "createOrEditLabel": "Create or edit a Project Weekly Stat",
+                "search": "Search for Project Weekly Stat"
+            },
+            "created": "A new Project Weekly Stat is created with identifier {{ param }}",
+            "updated": "A Project Weekly Stat is updated with identifier {{ param }}",
+            "deleted": "A Project Weekly Stat is deleted with identifier {{ param }}",
+            "delete": {
+                "question": "Are you sure you want to delete Project Weekly Stat {{ id }}?"
+            },
+            "detail": {
+                "title": "Project Weekly Stat"
+            },
+            "projectId": "Project Id",
+            "humanCost": "Human Cost",
+            "payment": "Payment",
+            "statWeek": "Stat Week",
+            "createTime": "Create Time"
+        }
+    }
+}

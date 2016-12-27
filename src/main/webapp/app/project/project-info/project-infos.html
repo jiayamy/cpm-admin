@@ -1,0 +1,103 @@
+<div>
+    <h2 data-translate="cpmApp.projectInfo.home.title">Project Infos</h2>
+    <jhi-alert></jhi-alert>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xs-4 no-padding-left">
+                <button class="btn btn-primary" ui-sref="project-info.new" >
+                    <span class="glyphicon glyphicon-plus"></span>
+                    <span class="hidden-xs"  data-translate="cpmApp.projectInfo.home.createLabel">
+                        Create new Project Info
+                    </span>
+                </button>
+            </div>
+            <div class="col-xs-8 no-padding-right">
+                <form name="searchForm" class="form-inline">
+                    <div class="input-group pull-right" >
+                        <input type="text" class="form-control" ng-model="vm.searchQuery" id="searchQuery" placeholder="{{ 'cpmApp.projectInfo.home.search' | translate }}">
+                        <span  class="input-group-btn width-min" >
+                            <button class="btn btn-info" ng-click="vm.search(vm.searchQuery)">
+                                <span class="glyphicon glyphicon-search"></span>
+                            </button>
+                        </span>
+                        <span class="input-group-btn width-min" ng-if="vm.currentSearch">
+                            <button class="btn btn-info" ng-click="vm.clear()">
+                                <span class="glyphicon glyphicon-trash"></span>
+                            </button>
+                        </span>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <br/>
+    <div class="table-responsive">
+        <table class="jh-table table table-striped">
+            <thead>
+                <tr jh-sort="vm.predicate" ascending="vm.reverse" callback="vm.transition()">
+                    <th jh-sort-by="id"><span data-translate="global.field.id">ID</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="serialNum"><span data-translate="cpmApp.projectInfo.serialNum">Serial Num</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="contractId"><span data-translate="cpmApp.projectInfo.contractId">Contract Id</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="budgetId"><span data-translate="cpmApp.projectInfo.budgetId">Budget Id</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="name"><span data-translate="cpmApp.projectInfo.name">Name</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="pm"><span data-translate="cpmApp.projectInfo.pm">Pm</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="dept"><span data-translate="cpmApp.projectInfo.dept">Dept</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="startDay"><span data-translate="cpmApp.projectInfo.startDay">Start Day</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="endDay"><span data-translate="cpmApp.projectInfo.endDay">End Day</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="budgetTotal"><span data-translate="cpmApp.projectInfo.budgetTotal">Budget Total</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="status"><span data-translate="cpmApp.projectInfo.status">Status</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="creator"><span data-translate="cpmApp.projectInfo.creator">Creator</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="createTime"><span data-translate="cpmApp.projectInfo.createTime">Create Time</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="updator"><span data-translate="cpmApp.projectInfo.updator">Updator</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="updateTime"><span data-translate="cpmApp.projectInfo.updateTime">Update Time</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="projectInfo in vm.projectInfos track by projectInfo.id">
+                    <td><a ui-sref="project-info-detail({id:projectInfo.id})">{{projectInfo.id}}</a></td>
+                    <td>{{projectInfo.serialNum}}</td>
+                    <td>{{projectInfo.contractId}}</td>
+                    <td>{{projectInfo.budgetId}}</td>
+                    <td>{{projectInfo.name}}</td>
+                    <td>{{projectInfo.pm}}</td>
+                    <td>{{projectInfo.dept}}</td>
+                    <td>{{projectInfo.startDay | date:'medium'}}</td>
+                    <td>{{projectInfo.endDay | date:'medium'}}</td>
+                    <td>{{projectInfo.budgetTotal}}</td>
+                    <td>{{projectInfo.status}}</td>
+                    <td>{{projectInfo.creator}}</td>
+                    <td>{{projectInfo.createTime | date:'medium'}}</td>
+                    <td>{{projectInfo.updator}}</td>
+                    <td>{{projectInfo.updateTime | date:'medium'}}</td>
+                    <td class="text-right">
+                        <div class="btn-group flex-btn-group-container">
+                            <button type="submit"
+                                    ui-sref="project-info-detail({id:projectInfo.id})"
+                                    class="btn btn-info btn-sm">
+                                <span class="glyphicon glyphicon-eye-open"></span>
+                                <span class="hidden-xs hidden-sm" data-translate="entity.action.view"></span>
+                            </button>
+                            <button type="submit"
+                                    ui-sref="project-info.edit({id:projectInfo.id})"
+                                    class="btn btn-primary btn-sm">
+                                <span class="glyphicon glyphicon-pencil"></span>
+                                <span class="hidden-xs hidden-sm" data-translate="entity.action.edit"></span>
+                            </button>
+                            <button type="submit"
+                                    ui-sref="project-info.delete({id:projectInfo.id})"
+                                    class="btn btn-danger btn-sm">
+                                <span class="glyphicon glyphicon-remove-circle"></span>
+                                <span class="hidden-xs hidden-sm" data-translate="entity.action.delete"></span>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="text-center">
+        <jhi-item-count page="vm.page" total="vm.queryCount" items-per-page="vm.itemsPerPage"></jhi-item-count>
+        <uib-pagination class="pagination-sm" total-items="vm.totalItems" items-per-page="vm.itemsPerPage" ng-model="vm.page" ng-change="vm.transition()"></uib-pagination>
+    </div>
+</div>

@@ -19,7 +19,7 @@ import java.util.Set;
 import java.time.ZonedDateTime;
 
 /**
- * A user.
+ * 员工信息
  */
 @Entity
 @Table(name = "jhi_user")
@@ -37,26 +37,27 @@ public class User extends AbstractAuditingEntity implements Serializable {
     @Pattern(regexp = Constants.LOGIN_REGEX)
     @Size(min = 1, max = 50)
     @Column(length = 50, unique = true, nullable = false)
-    private String login;
+    private String login;						//登录用户名
 
     @JsonIgnore
     @NotNull
     @Size(min = 60, max = 60)
     @Column(name = "password_hash",length = 60)
-    private String password;
+    private String password;					//密码
 
     @Size(max = 50)
     @Column(name = "first_name", length = 50)
-    private String firstName;
+    @Deprecated
+    private String firstName;					//这个干掉，用lastName作为员工的真实姓名
 
     @Size(max = 50)
     @Column(name = "last_name", length = 50)
-    private String lastName;
+    private String lastName;					//员工真实姓名
 
     @Email
     @Size(max = 100)
     @Column(length = 100, unique = true)
-    private String email;
+    private String email;						//email
 
     @NotNull
     @Column(nullable = false)
@@ -78,6 +79,33 @@ public class User extends AbstractAuditingEntity implements Serializable {
     @Column(name = "reset_date", nullable = true)
     private ZonedDateTime resetDate = null;
 
+    @Column(name = "serial_num")
+    private String serialNum;				//工号
+
+    @Column(name = "dept_id")
+    private Long deptId;					//所属部门
+
+    @Column(name = "is_manager")
+    private Boolean isManager;				//管理人员（是/否，默认否）
+
+    @Column(name = "duty_")
+    private String duty;					//岗位
+
+    @Column(name = "grade_")
+    private String grade;					//级别
+
+    @Column(name = "gender_")
+    private Integer gender;					//性别
+
+    @Column(name = "birth_year")
+    private String birthYear;				//出生年
+
+    @Column(name = "birth_day")
+    private String birthDay;				//生日
+
+    @Column(name = "telephone_")
+    private String telephone;				//电话
+	
     @JsonIgnore
     @ManyToMany
     @JoinTable(
@@ -197,7 +225,79 @@ public class User extends AbstractAuditingEntity implements Serializable {
         this.persistentTokens = persistentTokens;
     }
 
-    @Override
+    public String getSerialNum() {
+		return serialNum;
+	}
+
+	public void setSerialNum(String serialNum) {
+		this.serialNum = serialNum;
+	}
+
+	public Long getDeptId() {
+		return deptId;
+	}
+
+	public void setDeptId(Long deptId) {
+		this.deptId = deptId;
+	}
+
+	public Boolean getIsManager() {
+		return isManager;
+	}
+
+	public void setIsManager(Boolean isManager) {
+		this.isManager = isManager;
+	}
+
+	public String getDuty() {
+		return duty;
+	}
+
+	public void setDuty(String duty) {
+		this.duty = duty;
+	}
+
+	public String getGrade() {
+		return grade;
+	}
+
+	public void setGrade(String grade) {
+		this.grade = grade;
+	}
+
+	public Integer getGender() {
+		return gender;
+	}
+
+	public void setGender(Integer gender) {
+		this.gender = gender;
+	}
+
+	public String getBirthYear() {
+		return birthYear;
+	}
+
+	public void setBirthYear(String birthYear) {
+		this.birthYear = birthYear;
+	}
+
+	public String getBirthDay() {
+		return birthDay;
+	}
+
+	public void setBirthDay(String birthDay) {
+		this.birthDay = birthDay;
+	}
+
+	public String getTelephone() {
+		return telephone;
+	}
+
+	public void setTelephone(String telephone) {
+		this.telephone = telephone;
+	}
+
+	@Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;

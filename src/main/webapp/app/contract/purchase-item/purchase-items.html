@@ -1,0 +1,105 @@
+<div>
+    <h2 data-translate="cpmApp.purchaseItem.home.title">Purchase Items</h2>
+    <jhi-alert></jhi-alert>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xs-4 no-padding-left">
+                <button class="btn btn-primary" ui-sref="purchase-item.new" >
+                    <span class="glyphicon glyphicon-plus"></span>
+                    <span class="hidden-xs"  data-translate="cpmApp.purchaseItem.home.createLabel">
+                        Create new Purchase Item
+                    </span>
+                </button>
+            </div>
+            <div class="col-xs-8 no-padding-right">
+                <form name="searchForm" class="form-inline">
+                    <div class="input-group pull-right" >
+                        <input type="text" class="form-control" ng-model="vm.searchQuery" id="searchQuery" placeholder="{{ 'cpmApp.purchaseItem.home.search' | translate }}">
+                        <span  class="input-group-btn width-min" >
+                            <button class="btn btn-info" ng-click="vm.search(vm.searchQuery)">
+                                <span class="glyphicon glyphicon-search"></span>
+                            </button>
+                        </span>
+                        <span class="input-group-btn width-min" ng-if="vm.currentSearch">
+                            <button class="btn btn-info" ng-click="vm.clear()">
+                                <span class="glyphicon glyphicon-trash"></span>
+                            </button>
+                        </span>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <br/>
+    <div class="table-responsive">
+        <table class="jh-table table table-striped">
+            <thead>
+                <tr jh-sort="vm.predicate" ascending="vm.reverse" callback="vm.transition()">
+                    <th jh-sort-by="id"><span data-translate="global.field.id">ID</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="contractId"><span data-translate="cpmApp.purchaseItem.contractId">Contract Id</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="budgetId"><span data-translate="cpmApp.purchaseItem.budgetId">Budget Id</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="name"><span data-translate="cpmApp.purchaseItem.name">Name</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="quantity"><span data-translate="cpmApp.purchaseItem.quantity">Quantity</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="price"><span data-translate="cpmApp.purchaseItem.price">Price</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="units"><span data-translate="cpmApp.purchaseItem.units">Units</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="type"><span data-translate="cpmApp.purchaseItem.type">Type</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="source"><span data-translate="cpmApp.purchaseItem.source">Source</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="purchaser"><span data-translate="cpmApp.purchaseItem.purchaser">Purchaser</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="totalAmount"><span data-translate="cpmApp.purchaseItem.totalAmount">Total Amount</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="status"><span data-translate="cpmApp.purchaseItem.status">Status</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="creator"><span data-translate="cpmApp.purchaseItem.creator">Creator</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="createTime"><span data-translate="cpmApp.purchaseItem.createTime">Create Time</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="updator"><span data-translate="cpmApp.purchaseItem.updator">Updator</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="updateTime"><span data-translate="cpmApp.purchaseItem.updateTime">Update Time</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="purchaseItem in vm.purchaseItems track by purchaseItem.id">
+                    <td><a ui-sref="purchase-item-detail({id:purchaseItem.id})">{{purchaseItem.id}}</a></td>
+                    <td>{{purchaseItem.contractId}}</td>
+                    <td>{{purchaseItem.budgetId}}</td>
+                    <td>{{purchaseItem.name}}</td>
+                    <td>{{purchaseItem.quantity}}</td>
+                    <td>{{purchaseItem.price}}</td>
+                    <td>{{purchaseItem.units}}</td>
+                    <td>{{purchaseItem.type}}</td>
+                    <td>{{purchaseItem.source}}</td>
+                    <td>{{purchaseItem.purchaser}}</td>
+                    <td>{{purchaseItem.totalAmount}}</td>
+                    <td>{{purchaseItem.status}}</td>
+                    <td>{{purchaseItem.creator}}</td>
+                    <td>{{purchaseItem.createTime | date:'medium'}}</td>
+                    <td>{{purchaseItem.updator}}</td>
+                    <td>{{purchaseItem.updateTime | date:'medium'}}</td>
+                    <td class="text-right">
+                        <div class="btn-group flex-btn-group-container">
+                            <button type="submit"
+                                    ui-sref="purchase-item-detail({id:purchaseItem.id})"
+                                    class="btn btn-info btn-sm">
+                                <span class="glyphicon glyphicon-eye-open"></span>
+                                <span class="hidden-xs hidden-sm" data-translate="entity.action.view"></span>
+                            </button>
+                            <button type="submit"
+                                    ui-sref="purchase-item.edit({id:purchaseItem.id})"
+                                    class="btn btn-primary btn-sm">
+                                <span class="glyphicon glyphicon-pencil"></span>
+                                <span class="hidden-xs hidden-sm" data-translate="entity.action.edit"></span>
+                            </button>
+                            <button type="submit"
+                                    ui-sref="purchase-item.delete({id:purchaseItem.id})"
+                                    class="btn btn-danger btn-sm">
+                                <span class="glyphicon glyphicon-remove-circle"></span>
+                                <span class="hidden-xs hidden-sm" data-translate="entity.action.delete"></span>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="text-center">
+        <jhi-item-count page="vm.page" total="vm.queryCount" items-per-page="vm.itemsPerPage"></jhi-item-count>
+        <uib-pagination class="pagination-sm" total-items="vm.totalItems" items-per-page="vm.itemsPerPage" ng-model="vm.page" ng-change="vm.transition()"></uib-pagination>
+    </div>
+</div>

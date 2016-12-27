@@ -1,0 +1,35 @@
+{
+    "cpmApp": {
+        "projectInfo" : {
+            "home": {
+                "title": "Project Infos",
+                "createLabel": "Create a new Project Info",
+                "createOrEditLabel": "Create or edit a Project Info",
+                "search": "Search for Project Info"
+            },
+            "created": "A new Project Info is created with identifier {{ param }}",
+            "updated": "A Project Info is updated with identifier {{ param }}",
+            "deleted": "A Project Info is deleted with identifier {{ param }}",
+            "delete": {
+                "question": "Are you sure you want to delete Project Info {{ id }}?"
+            },
+            "detail": {
+                "title": "Project Info"
+            },
+            "serialNum": "Serial Num",
+            "contractId": "Contract Id",
+            "budgetId": "Budget Id",
+            "name": "Name",
+            "pm": "Pm",
+            "dept": "Dept",
+            "startDay": "Start Day",
+            "endDay": "End Day",
+            "budgetTotal": "Budget Total",
+            "status": "Status",
+            "creator": "Creator",
+            "createTime": "Create Time",
+            "updator": "Updator",
+            "updateTime": "Update Time"
+        }
+    }
+}

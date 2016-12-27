@@ -1,0 +1,67 @@
+
+<div>
+    <h2><span data-translate="cpmApp.contractBudget.detail.title">Contract Budget</span> {{vm.contractBudget.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="dl-horizontal jh-entity-details">
+        <dt><span data-translate="cpmApp.contractBudget.contractId">Contract Id</span></dt>
+        <dd>
+            <span>{{vm.contractBudget.contractId}}</span>
+        </dd>
+        <dt><span data-translate="cpmApp.contractBudget.type">Type</span></dt>
+        <dd>
+            <span>{{vm.contractBudget.type}}</span>
+        </dd>
+        <dt><span data-translate="cpmApp.contractBudget.userId">User Id</span></dt>
+        <dd>
+            <span>{{vm.contractBudget.userId}}</span>
+        </dd>
+        <dt><span data-translate="cpmApp.contractBudget.userName">User Name</span></dt>
+        <dd>
+            <span>{{vm.contractBudget.userName}}</span>
+        </dd>
+        <dt><span data-translate="cpmApp.contractBudget.dept">Dept</span></dt>
+        <dd>
+            <span>{{vm.contractBudget.dept}}</span>
+        </dd>
+        <dt><span data-translate="cpmApp.contractBudget.purchaseType">Purchase Type</span></dt>
+        <dd>
+            <span>{{vm.contractBudget.purchaseType}}</span>
+        </dd>
+        <dt><span data-translate="cpmApp.contractBudget.budgetTotal">Budget Total</span></dt>
+        <dd>
+            <span>{{vm.contractBudget.budgetTotal}}</span>
+        </dd>
+        <dt><span data-translate="cpmApp.contractBudget.status">Status</span></dt>
+        <dd>
+            <span>{{vm.contractBudget.status}}</span>
+        </dd>
+        <dt><span data-translate="cpmApp.contractBudget.creator">Creator</span></dt>
+        <dd>
+            <span>{{vm.contractBudget.creator}}</span>
+        </dd>
+        <dt><span data-translate="cpmApp.contractBudget.createTime">Create Time</span></dt>
+        <dd>
+            <span>{{vm.contractBudget.createTime | date:'medium'}}</span>
+        </dd>
+        <dt><span data-translate="cpmApp.contractBudget.updator">Updator</span></dt>
+        <dd>
+            <span>{{vm.contractBudget.updator}}</span>
+        </dd>
+        <dt><span data-translate="cpmApp.contractBudget.updateTime">Update Time</span></dt>
+        <dd>
+            <span>{{vm.contractBudget.updateTime | date:'medium'}}</span>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            ui-sref="{{ vm.previousState }}"
+            class="btn btn-info">
+        <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span data-translate="entity.action.back"> Back</span>
+    </button>
+
+    <button type="button" ui-sref="contract-budget-detail.edit({id:vm.contractBudget.id})" class="btn btn-primary">
+        <span class="glyphicon glyphicon-pencil"></span>
+        <span class="hidden-xs hidden-sm" data-translate="entity.action.edit"> Edit</span>
+    </button>
+</div>

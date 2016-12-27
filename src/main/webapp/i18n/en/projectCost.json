@@ -1,0 +1,31 @@
+{
+    "cpmApp": {
+        "projectCost" : {
+            "home": {
+                "title": "Project Costs",
+                "createLabel": "Create a new Project Cost",
+                "createOrEditLabel": "Create or edit a Project Cost",
+                "search": "Search for Project Cost"
+            },
+            "created": "A new Project Cost is created with identifier {{ param }}",
+            "updated": "A Project Cost is updated with identifier {{ param }}",
+            "deleted": "A Project Cost is deleted with identifier {{ param }}",
+            "delete": {
+                "question": "Are you sure you want to delete Project Cost {{ id }}?"
+            },
+            "detail": {
+                "title": "Project Cost"
+            },
+            "projectId": "Project Id",
+            "name": "Name",
+            "type": "Type",
+            "total": "Total",
+            "costDesc": "Cost Desc",
+            "status": "Status",
+            "creator": "Creator",
+            "createTime": "Create Time",
+            "updator": "Updator",
+            "updateTime": "Update Time"
+        }
+    }
+}
