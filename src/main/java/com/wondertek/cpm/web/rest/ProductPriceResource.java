@@ -7,6 +7,7 @@ import com.wondertek.cpm.web.rest.util.HeaderUtil;
 import com.wondertek.cpm.web.rest.util.PaginationUtil;
 
 import io.swagger.annotations.ApiParam;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -17,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.inject.Inject;
+
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
@@ -140,11 +142,15 @@ public class ProductPriceResource {
      */
     @GetMapping("/_search/product-prices")
     @Timed
-    public ResponseEntity<List<ProductPrice>> searchProductPrices(@RequestParam String query, @ApiParam Pageable pageable)
+    public ResponseEntity<List<ProductPrice>> searchProductPrices(
+    		@RequestParam(value = "name") String name,
+    		@RequestParam(value = "type") String type,
+    		@RequestParam(value = "source") String source,
+    		@ApiParam Pageable pageable)
         throws URISyntaxException {
-        log.debug("REST request to search for a page of ProductPrices for query {}", query);
-        Page<ProductPrice> page = productPriceService.search(query, pageable);
-        HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/product-prices");
+        log.debug("REST request to search for a page of ProductPrices for query {}", name);
+        Page<ProductPrice> page = productPriceService.search(name,type,source, pageable);
+        HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(name,page, "/api/_search/product-prices");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
 

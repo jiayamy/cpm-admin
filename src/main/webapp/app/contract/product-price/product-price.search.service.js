@@ -11,7 +11,11 @@
         var resourceUrl =  'api/_search/product-prices/:id';
 
         return $resource(resourceUrl, {}, {
-            'query': { method: 'GET', isArray: true}
+        	'query': {
+                method: 'GET',
+                isArray: true,
+                params: {name: null, type: null, source: null}
+            }
         });
     }
 })();

@@ -14,12 +14,6 @@
             <div class="col-xs-8 no-padding-right">
                 <form name="searchForm" class="form-inline">
                     <div class="input-group pull-right" >
-                        <input type="text" class="form-control" ng-model="vm.searchQuery" id="searchQuery" placeholder="{{ 'cpmApp.productPrice.home.search' | translate }}">
-                        <span  class="input-group-btn width-min" >
-                            <button class="btn btn-info" ng-click="vm.search(vm.searchQuery)">
-                                <span class="glyphicon glyphicon-search"></span>
-                            </button>
-                        </span>
                         <span class="input-group-btn width-min" ng-if="vm.currentSearch">
                             <button class="btn btn-info" ng-click="vm.clear()">
                                 <span class="glyphicon glyphicon-trash"></span>
@@ -31,7 +25,35 @@
         </div>
     </div>
     <br/>
-    <div class="table-responsive">
+    <div class="col-md-5" style="width:auto;">
+            <p class="input-group">
+					<select id="" class="" ng-change="vm.onChangeData()" ng-model="type">
+						<option value="" data-translate="cpmApp.productPrice.home.search1">Please chose type</option>
+						<option value="0" data-translate="cpmApp.productPrice.home.hardware">Hardware</option>				                     	
+						<option value="1" data-translate="cpmApp.productPrice.home.software">Software</option>				                     												
+					</select>
+            </p>
+        </div>
+        <div class="col-md-5" style="width:auto;">
+            	<p class="input-group">
+					<select id="" class="" ng-change="vm.onChangeData()" ng-model="source">
+						<option value="" data-translate="cpmApp.productPrice.home.search2">Please chose source</option>
+						<option value="0" data-translate="cpmApp.productPrice.home.external">External</option>				                     	
+						<option value="1" data-translate="cpmApp.productPrice.home.inside">Inside</option>				                     												
+					</select>
+           	 	</p>
+        </div>
+        <div>
+        	<p class="input-group" style="width:25%">
+        		   <input type="text" class="form-control" ng-model="name" id="searchQuery" placeholder="{{ 'cpmApp.productPrice.home.search' | translate }}" ng-change="vm.onChangeData()">
+        	       <span  class="input-group-btn width-min" >
+                         <button class="btn btn-info" ng-click="name">
+                              <span class="glyphicon glyphicon-search"></span>
+                        </button>
+                 </span>
+        	</p>
+        </div>
+    <div>
         <table class="jh-table table table-striped">
             <thead>
                 <tr jh-sort="vm.predicate" ascending="vm.reverse" callback="vm.transition()">
