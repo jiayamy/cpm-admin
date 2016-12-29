@@ -23,6 +23,7 @@
                 },
                 setHidden = function () {
                     element.addClass('hidden');
+                    element.remove();
                 },
                 defineVisibility = function (reset) {
 
