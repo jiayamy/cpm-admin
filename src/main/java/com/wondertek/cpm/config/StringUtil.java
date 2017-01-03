@@ -242,6 +242,16 @@ public class StringUtil {
 		}
 		return ls;
 	}
+	public static List<Long> longArrayToLongArray(Long[] value){
+		List<Long> ls = new ArrayList<Long> ();
+		if(value == null || value.length == 0){
+			return ls;
+		}
+		for(int i = 0; i < value.length; i ++ ){
+			ls.add(value[i]);
+		}
+		return ls;
+	}
 	public static List<String> strToStrArray(String value, String splitChar){
 		List<String> ls = new ArrayList<String> ();
 		if(value == null || "".equals(value)){

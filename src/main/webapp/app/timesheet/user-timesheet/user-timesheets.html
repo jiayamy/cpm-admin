@@ -76,11 +76,9 @@
             <thead>
                 <tr jh-sort="vm.predicate" ascending="vm.reverse" callback="vm.transition()">
                     <th jh-sort-by="workDay"><span data-translate="cpmApp.userTimesheet.workDay">Work Day</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="userName"><span data-translate="cpmApp.userTimesheet.userName">User Name</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="type"><span data-translate="cpmApp.userTimesheet.type">Type</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="objName"><span data-translate="cpmApp.userTimesheet.objName">Obj Name</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="realInput"><span data-translate="cpmApp.userTimesheet.realInput">Real Input</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="status"><span data-translate="cpmApp.userTimesheet.status">Status</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="createTime"><span data-translate="cpmApp.userTimesheet.createTime">Create Time</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="updateTime"><span data-translate="cpmApp.userTimesheet.updateTime">Update Time</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th></th>
@@ -89,11 +87,9 @@
             <tbody>
                 <tr ng-repeat="userTimesheet in vm.userTimesheets track by userTimesheet.id">
                     <td><a ui-sref="user-timesheet-detail({id:userTimesheet.id})">{{userTimesheet.workDay}}</a></td>
-                    <td>{{userTimesheet.userName}}</td>
                     <td>{{userTimesheet.type}}</td>
                     <td>{{userTimesheet.objName}}</td>
                     <td>{{userTimesheet.realInput}}</td>
-                    <td>{{userTimesheet.status}}</td>
                     <td>{{userTimesheet.createTime | date:'medium'}}</td>
                     <td>{{userTimesheet.updateTime | date:'medium'}}</td>
                     <td class="text-right">

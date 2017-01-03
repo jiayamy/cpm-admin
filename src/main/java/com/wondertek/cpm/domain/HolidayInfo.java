@@ -28,7 +28,7 @@ public class HolidayInfo implements Serializable {
     private Long currDay;			//当前天，比如20161227
 
     @Column(name = "type_")
-    private Integer type;			//类型（正常工作日/正常假日/年假/国家假日）
+    private Integer type;			//类型（1正常工作日/2正常假日/3年假/4国家假日）
 
     @Column(name = "creator_")
     private String creator;

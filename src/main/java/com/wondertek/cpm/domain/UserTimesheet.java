@@ -20,6 +20,8 @@ public class UserTimesheet implements Serializable {
 
     private static final long serialVersionUID = 1L;
     
+    public static final Integer TYPE_DAY = -1;
+    public static final Integer TYPE_AREA = -2;
     public static final Integer TYPE_PUBLIC = 1;
     public static final Integer TYPE_CONTRACT = 2;
     public static final Integer TYPE_PROJECT = 3;
@@ -38,7 +40,7 @@ public class UserTimesheet implements Serializable {
     private String userName;	//		员工名字
     
     @Column(name = "type_")
-    private Integer type;		//	类型（合同、项目、公共成本）
+    private Integer type;		//	类型（2合同、3项目、1公共成本）
 
     @Column(name = "obj_id")
     private Long objId;			//	对象ID

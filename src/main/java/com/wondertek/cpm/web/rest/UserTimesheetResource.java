@@ -4,7 +4,9 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import javax.inject.Inject;
@@ -191,4 +193,25 @@ public class UserTimesheetResource {
         List<UserTimesheetForUser> list = userTimesheetService.queryEditByUser(workDayDate);
         return new ResponseEntity<>(list, null, HttpStatus.OK);
     }
+    
+    @PutMapping("/_edit/user-timesheets")
+    @Timed
+    public ResponseEntity<Map<String, Object>> updateEditByUser(@RequestBody List<UserTimesheetForUser> userTimesheetForUsers) throws URISyntaxException {
+        log.debug("REST request to update UserTimesheet : {}", userTimesheetForUsers);
+        Map<String,Object> resultMap = new HashMap<String,Object>(); 
+        if (userTimesheetForUsers == null || userTimesheetForUsers.isEmpty() || userTimesheetForUsers.size() < 3) {
+        	resultMap.put("message", "cpmApp.userTimesheet.save.paramError");
+        	resultMap.put("success", false);
+        	return new ResponseEntity<>(resultMap, null, HttpStatus.OK);
+        }
+        //日期，工作地点，日报
+        String[] messages = userTimesheetService.updateEditByUser(userTimesheetForUsers).split("#");
+        resultMap.put("message", messages[0]);
+        resultMap.put("success", messages[0].equals("cpmApp.userTimesheet.save.success"));
+        if(messages.length > 1){
+        	resultMap.put("param", messages[1]);
+        }
+    	return new ResponseEntity<>(resultMap, null, HttpStatus.OK);
+    }
+    
 }

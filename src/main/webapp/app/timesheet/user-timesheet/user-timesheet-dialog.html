@@ -1,39 +1,115 @@
-<form name="editForm" role="form" novalidate ng-submit="vm.save()">
-    <div class="table-responsive">
-        <table class="jh-table table table-striped">
-            <thead>
-                <tr>
-                    <th><span data-translate="cpmApp.userTimesheet.type" >Type</span></th>
-                    <th><span data-translate="cpmApp.userTimesheet.objName">Obj Name</span></th>
-                    <th><span data-translate="cpmApp.userTimesheet.monday">Monday</span></th>
-                    <th><span data-translate="cpmApp.userTimesheet.tuesday">Tuesday</span></th>
-                    <th><span data-translate="cpmApp.userTimesheet.wednesday">Wednesday</span></th>
-                    <th><span data-translate="cpmApp.userTimesheet.thursday">Thursday</span></th>
-                    <th><span data-translate="cpmApp.userTimesheet.friday">Friday</span></th>
-                    <th><span data-translate="cpmApp.userTimesheet.saturday">Saturday</span></th>
-                    <th><span data-translate="cpmApp.userTimesheet.sunday">Sunday</span></th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr ng-repeat="userTimesheet in vm.userTimesheets">
-                    <td>{{userTimesheet.type}}</td>
-                    <td>{{userTimesheet.objName}}</td>
-                    <td><input type="text" ng-model="userTimesheet.data1" required ng-minlength="1" ng-maxlength="4" style="width:40px;" /></td>
-                    <td><input type="text" ng-model="userTimesheet.data2" required ng-minlength="1" ng-maxlength="4" style="width:40px;" /></td>
-                    <td><input type="text" ng-model="userTimesheet.data3" required ng-minlength="1" ng-maxlength="4" style="width:40px;" /></td>
-                    <td><input type="text" ng-model="userTimesheet.data4" required ng-minlength="1" ng-maxlength="4" style="width:40px;" /></td>
-                    <td><input type="text" ng-model="userTimesheet.data5" required ng-minlength="1" ng-maxlength="4" style="width:40px;" /></td>
-                    <td><input type="text" ng-model="userTimesheet.data6" required ng-minlength="1" ng-maxlength="4" style="width:40px;" /></td>
-                    <td><input type="text" ng-model="userTimesheet.data7" required ng-minlength="1" ng-maxlength="4" style="width:40px;" /></td>
-                </tr>
-            </tbody>
-        </table>
+<div>
+    <h2 data-translate="cpmApp.userTimesheet.home.createOrEditLabel">User Timesheets</h2>
+    <div class="container-fluid">
+        <div class="row">
+        	<div class="col-sm-8">
+        	</div>
+            <div class="col-sm-4">
+                <p class="input-group">
+                    <input type="text" class="form-control" name="workDay" datetime-picker="yyyyMMdd" ng-change="vm.search(vm.searchQuery)"
+	           		 		enable-time="false" ng-model="vm.searchQuery.workDay" is-open="vm.datePickerOpenStatus.workDay"/>
+	          		<span class="input-group-btn">
+	           			<button type="button" class="btn btn-default" ng-click="vm.openCalendar('workDay')"><i class="glyphicon glyphicon-calendar"></i></button>
+	            	</span>
+                </p>
+            </div>
+        </div>
     </div>
-    <button type="button" ui-sref="{{vm.previousState}}" class="btn btn-info">
-        <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span data-translate="entity.action.back"> Back</span>
-    </button>
-    <button type="submit" class="btn btn-primary">
-        <span class="glyphicon glyphicon-pencil"></span>
-        <span class="hidden-xs hidden-sm" data-translate="entity.action.edit"> Edit</span>
-    </button>
-</form>
+    <jhi-alert></jhi-alert>
+	<form name="editForm" role="form" novalidate ng-submit="vm.save()">
+	    <div class="table-responsive">
+	        <table class="jh-table table table-striped">
+	            <thead>
+	                <tr>
+	                    <th><span data-translate="cpmApp.userTimesheet.type" >Type</span></th>
+	                    <th><span data-translate="cpmApp.userTimesheet.objName">Obj Name</span></th>
+	                    <th><span data-translate="cpmApp.userTimesheet.monday">Monday</span></th>
+	                    <th><span data-translate="cpmApp.userTimesheet.tuesday">Tuesday</span></th>
+	                    <th><span data-translate="cpmApp.userTimesheet.wednesday">Wednesday</span></th>
+	                    <th><span data-translate="cpmApp.userTimesheet.thursday">Thursday</span></th>
+	                    <th><span data-translate="cpmApp.userTimesheet.friday">Friday</span></th>
+	                    <th><span data-translate="cpmApp.userTimesheet.saturday">Saturday</span></th>
+	                    <th><span data-translate="cpmApp.userTimesheet.sunday">Sunday</span></th>
+	                </tr>
+	            </thead>
+	            <tbody>
+	            	<tr ng-repeat="userTimesheet in vm.days">
+	                    <td>{{userTimesheet.typeName}}</td>
+	                    <td>{{userTimesheet.objName}}</td>
+	                    <td>{{userTimesheet.data1}}</td>
+	                    <td>{{userTimesheet.data2}}</td>
+	                    <td>{{userTimesheet.data3}}</td>
+	                    <td>{{userTimesheet.data4}}</td>
+	                    <td>{{userTimesheet.data5}}</td>
+	                    <td>{{userTimesheet.data6}}</td>
+	                    <td>{{userTimesheet.data7}}</td>
+	                </tr>
+	                <tr ng-repeat="userTimesheet in vm.areas">
+	                    <td>{{userTimesheet.typeName}}</td>
+	                    <td>{{userTimesheet.objName}}</td>
+	                    <td>
+	                    	<select class="form-control" name="type" ng-model="userTimesheet.data1"
+				            	ng-options="allArea as allArea for allArea in vm.allAreas track by allArea" style="width: 80px;">
+				            	<option value="">--选择工作地点--</option>
+				            </select>
+	                    </td>
+	                    <td>
+	                    	<select class="form-control" name="type" ng-model="userTimesheet.data2"
+				            	ng-options="allArea as allArea for allArea in vm.allAreas track by allArea" style="width: 80px;">
+				            	<option value="">--选择工作地点--</option>
+				            </select>
+	                    </td>
+	                    <td>
+	                    	<select class="form-control" name="type" ng-model="userTimesheet.data3"
+				            	ng-options="allArea as allArea for allArea in vm.allAreas track by allArea" style="width: 80px;">
+				            	<option value="">--选择工作地点--</option>
+				            </select>
+	                    </td>
+	                    <td>
+	                    	<select class="form-control" name="type" ng-model="userTimesheet.data4"
+				            	ng-options="allArea as allArea for allArea in vm.allAreas track by allArea" style="width: 80px;">
+				            	<option value="">--选择工作地点--</option>
+				            </select>
+	                    </td>
+	                    <td>
+	                    	<select class="form-control" name="type" ng-model="userTimesheet.data5"
+				            	ng-options="allArea as allArea for allArea in vm.allAreas track by allArea" style="width: 80px;">
+				            	<option value="">--选择工作地点--</option>
+				            </select>
+	                    </td>
+	                    <td>
+	                    	<select class="form-control" name="type" ng-model="userTimesheet.data6"
+				            	ng-options="allArea as allArea for allArea in vm.allAreas track by allArea" style="width: 80px;">
+				            	<option value="">--选择工作地点--</option>
+				            </select>
+	                    </td>
+	                    <td>
+	                    	<select class="form-control" name="type" ng-model="userTimesheet.data7"
+				            	ng-options="allArea as allArea for allArea in vm.allAreas track by allArea" style="width: 80px;">
+				            	<option value="">--选择工作地点--</option>
+				            </select>
+	                    </td>
+	                </tr>
+	                <tr ng-repeat="userTimesheet in vm.userTimesheets">
+	                    <td>{{userTimesheet.typeName}}</td>
+	                    <td>{{userTimesheet.objName}}</td>
+	                    <td><input type="text" ng-model="userTimesheet.data1" required ng-minlength="1" style="width:80px;" /></td>
+	                    <td><input type="text" ng-model="userTimesheet.data2" required ng-minlength="1" style="width:80px;" /></td>
+	                    <td><input type="text" ng-model="userTimesheet.data3" required ng-minlength="1" style="width:80px;" /></td>
+	                    <td><input type="text" ng-model="userTimesheet.data4" required ng-minlength="1" style="width:80px;" /></td>
+	                    <td><input type="text" ng-model="userTimesheet.data5" required ng-minlength="1" style="width:80px;" /></td>
+	                    <td><input type="text" ng-model="userTimesheet.data6" required ng-minlength="1" style="width:80px;" /></td>
+	                    <td><input type="text" ng-model="userTimesheet.data7" required ng-minlength="1" style="width:80px;" /></td>
+	                </tr>
+	            </tbody>
+	        </table>
+	    </div>
+	    <button id="go_back" type="button" ui-sref="{{vm.previousState}}" class="btn btn-info">
+	        <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span data-translate="entity.action.back"> Back</span>
+	    </button>
+	    <button type="submit" class="btn btn-primary">
+	        <span class="glyphicon glyphicon-pencil"></span>
+	        <span class="hidden-xs hidden-sm" data-translate="entity.action.save"> Save</span>
+	    </button>
+	</form>
+</div>
