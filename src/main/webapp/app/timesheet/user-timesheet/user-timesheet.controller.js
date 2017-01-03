@@ -39,7 +39,11 @@
         vm.currentSearch.workDay = workDay;
         vm.currentSearch.type = type;
         vm.currentSearch.objName = pagingParams.objName;
-        
+        if (!vm.currentSearch.workDay && !vm.currentSearch.type && !vm.currentSearch.objName){
+        	vm.currentSearch.haveSearch = null;
+        }else{
+        	vm.currentSearch.haveSearch = true;
+        }
         vm.datePickerOpenStatus = {};
         vm.openCalendar = openCalendar;
         
@@ -126,6 +130,7 @@
             vm.predicate = '_score';
             vm.reverse = false;
             vm.currentSearch = searchQuery;
+            vm.currentSearch.haveSearch = true;
             vm.transition();
         }
 
@@ -135,6 +140,7 @@
             vm.predicate = 'id';
             vm.reverse = true;
             vm.currentSearch = {};
+            vm.currentSearch.haveSearch = null;
             vm.transition();
         }
         vm.datePickerOpenStatus.workDay = false;
