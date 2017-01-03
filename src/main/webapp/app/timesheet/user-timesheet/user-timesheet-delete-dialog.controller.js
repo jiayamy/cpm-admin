@@ -19,10 +19,12 @@
         }
 
         function confirmDelete (id) {
-            UserTimesheet.delete({id: id},
-                function () {
-                    $uibModalInstance.close(true);
-                });
+            UserTimesheet.delete(
+            	{id: id},
+	            function () {
+	                $uibModalInstance.close(true);
+	            }
+            );
         }
     }
 })();

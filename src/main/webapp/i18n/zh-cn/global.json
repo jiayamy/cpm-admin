@@ -155,7 +155,8 @@
         "Size": "域 {{fieldName}} 不满足最大/最小值限制!",
         "userexists": "该用户名已存在!",
         "emailexists": "该邮箱已被使用!",
-        "idexists": "新建的 {{entityName}} 不能包含ID"
+        "idexists": "新建的 {{entityName}} 不能包含ID",
+        "internalServerError":"出现未知异常"
     },
     "footer": "© 2009-2016 上海网达软件股份有限公司 版权所有 沪ICP备 10042738号-1"
 }

@@ -1,24 +1,12 @@
 
 <div>
-    <h2><span data-translate="cpmApp.userTimesheet.detail.title">User Timesheet</span> {{vm.userTimesheet.id}}</h2>
+    <h2><span data-translate="cpmApp.userTimesheet.detail.title">User Timesheet:</span> {{vm.userTimesheet.workDay}}</h2>
     <hr>
     <jhi-alert-error></jhi-alert-error>
     <dl class="dl-horizontal jh-entity-details">
-        <dt><span data-translate="cpmApp.userTimesheet.workDay">Work Day</span></dt>
-        <dd>
-            <span>{{vm.userTimesheet.workDay}}</span>
-        </dd>
-        <dt><span data-translate="cpmApp.userTimesheet.userId">User Id</span></dt>
-        <dd>
-            <span>{{vm.userTimesheet.userId}}</span>
-        </dd>
         <dt><span data-translate="cpmApp.userTimesheet.type">Type</span></dt>
         <dd>
-            <span>{{vm.userTimesheet.type}}</span>
-        </dd>
-        <dt><span data-translate="cpmApp.userTimesheet.objId">Obj Id</span></dt>
-        <dd>
-            <span>{{vm.userTimesheet.objId}}</span>
+            <span>{{vm.userTimesheet.typeName}}</span>
         </dd>
         <dt><span data-translate="cpmApp.userTimesheet.objName">Obj Name</span></dt>
         <dd>
@@ -28,35 +16,13 @@
         <dd>
             <span>{{vm.userTimesheet.realInput}}</span>
         </dd>
-        <dt><span data-translate="cpmApp.userTimesheet.acceptInput">Accept Input</span></dt>
-        <dd>
-            <span>{{vm.userTimesheet.acceptInput}}</span>
-        </dd>
         <dt><span data-translate="cpmApp.userTimesheet.status">Status</span></dt>
         <dd>
-            <span>{{vm.userTimesheet.status}}</span>
-        </dd>
-        <dt><span data-translate="cpmApp.userTimesheet.creator">Creator</span></dt>
-        <dd>
-            <span>{{vm.userTimesheet.creator}}</span>
-        </dd>
-        <dt><span data-translate="cpmApp.userTimesheet.createTime">Create Time</span></dt>
-        <dd>
-            <span>{{vm.userTimesheet.createTime | date:'medium'}}</span>
-        </dd>
-        <dt><span data-translate="cpmApp.userTimesheet.updator">Updator</span></dt>
-        <dd>
-            <span>{{vm.userTimesheet.updator}}</span>
-        </dd>
-        <dt><span data-translate="cpmApp.userTimesheet.updateTime">Update Time</span></dt>
-        <dd>
-            <span>{{vm.userTimesheet.updateTime | date:'medium'}}</span>
+            <span>{{vm.userTimesheet.statusName}}</span>
         </dd>
     </dl>
 
-    <button type="submit"
-            ui-sref="{{ vm.previousState }}"
-            class="btn btn-info">
+    <button type="submit" ui-sref="{{ vm.previousState }}" class="btn btn-info">
         <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span data-translate="entity.action.back"> Back</span>
     </button>
 

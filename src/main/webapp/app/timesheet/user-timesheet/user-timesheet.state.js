@@ -11,9 +11,9 @@
         $stateProvider
         .state('user-timesheet', {
             parent: 'timesheet',
-            url: '/user-timesheet?page&sort&search',
+            url: '/user-timesheet?page&sort&workDay&type&objName',
             data: {
-                authorities: ['ROLE_USER'],
+                authorities: ['ROLE_TIMESHEET'],
                 pageTitle: 'cpmApp.userTimesheet.home.title'
             },
             views: {
@@ -32,16 +32,20 @@
                     value: 'id,asc',
                     squash: true
                 },
-                search: null
+                workDay: null,
+                type:null,
+                objName:null
             },
             resolve: {
-                pagingParams: ['$stateParams', 'PaginationUtil', function ($stateParams, PaginationUtil) {
+                pagingParams: ["$state",'$stateParams', 'PaginationUtil', function ($state,$stateParams, PaginationUtil) {
                     return {
                         page: PaginationUtil.parsePage($stateParams.page),
                         sort: $stateParams.sort,
                         predicate: PaginationUtil.parsePredicate($stateParams.sort),
                         ascending: PaginationUtil.parseAscending($stateParams.sort),
-                        search: $stateParams.search
+                        workDay: $stateParams.workDay,
+                        type:$stateParams.type,
+                        objName:$stateParams.objName
                     };
                 }],
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
@@ -55,7 +59,7 @@
             parent: 'timesheet',
             url: '/user-timesheet/{id}',
             data: {
-                authorities: ['ROLE_USER'],
+                authorities: ['ROLE_TIMESHEET'],
                 pageTitle: 'cpmApp.userTimesheet.detail.title'
             },
             views: {
@@ -85,34 +89,41 @@
         })
         .state('user-timesheet-detail.edit', {
             parent: 'user-timesheet-detail',
-            url: '/detail/edit',
+            url: '/detail/edit/{id}',
             data: {
-                authorities: ['ROLE_USER']
+                authorities: ['ROLE_TIMESHEET']
             },
-            onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
-                $uibModal.open({
+            views: {
+                'content@': {
                     templateUrl: 'app/timesheet/user-timesheet/user-timesheet-dialog.html',
                     controller: 'UserTimesheetDialogController',
-                    controllerAs: 'vm',
-                    backdrop: 'static',
-                    size: 'lg',
-                    resolve: {
-                        entity: ['UserTimesheet', function(UserTimesheet) {
-                            return UserTimesheet.get({id : $stateParams.id}).$promise;
-                        }]
-                    }
-                }).result.then(function() {
-                    $state.go('^', {}, { reload: false });
-                }, function() {
-                    $state.go('^');
-                });
-            }]
+                    controllerAs: 'vm'
+                }
+            },
+            resolve: {
+	            translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
+	                $translatePartialLoader.addPart('userTimesheet');
+	                return $translate.refresh();
+	            }],
+	            entity: ['$stateParams', 'UserTimesheet', function($stateParams, UserTimesheet) {
+	                return UserTimesheet.get({id : $stateParams.id}).$promise;
+	            }],
+	            previousState: ["$state", function ($state) {
+	            	console.log($state.current.name);
+	                var currentStateData = {
+	                    name: $state.current.name || 'user-timesheet-detail',
+	                    params: $state.params,
+	                    url: $state.href($state.current.name, $state.params)
+	                };
+	                return currentStateData;
+	            }]
+            }
         })
         .state('user-timesheet.new', {
             parent: 'user-timesheet',
             url: '/new',
             data: {
-                authorities: ['ROLE_USER']
+                authorities: ['ROLE_TIMESHEET']
             },
             onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
                 $uibModal.open({
@@ -151,7 +162,7 @@
             parent: 'user-timesheet',
             url: '/{id}/edit',
             data: {
-                authorities: ['ROLE_USER']
+                authorities: ['ROLE_TIMESHEET']
             },
             onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
                 $uibModal.open({
@@ -176,7 +187,7 @@
             parent: 'user-timesheet',
             url: '/{id}/delete',
             data: {
-                authorities: ['ROLE_USER']
+                authorities: ['ROLE_TIMESHEET']
             },
             onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
                 $uibModal.open({

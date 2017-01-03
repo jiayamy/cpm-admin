@@ -2,8 +2,8 @@
     "cpmApp": {
         "userTimesheet" : {
             "home": {
-                "title": "User Timesheets",
-                "createLabel": "Create a new User Timesheet",
+                "title": "日报信息",
+                "createLabel": "添加日报",
                 "createOrEditLabel": "Create or edit a User Timesheet",
                 "search": "Search for User Timesheet"
             },
@@ -11,23 +11,31 @@
             "updated": "A User Timesheet is updated with identifier {{ param }}",
             "deleted": "A User Timesheet is deleted with identifier {{ param }}",
             "delete": {
-                "question": "Are you sure you want to delete User Timesheet {{ id }}?"
+                "question": "确定删除该日报?"
             },
             "detail": {
-                "title": "User Timesheet"
+                "title": "日报详情:"
             },
-            "workDay": "Work Day",
-            "userId": "User Id",
-            "type": "Type",
-            "objId": "Obj Id",
-            "objName": "Obj Name",
-            "realInput": "Real Input",
-            "acceptInput": "Accept Input",
-            "status": "Status",
-            "creator": "Creator",
-            "createTime": "Create Time",
-            "updator": "Updator",
-            "updateTime": "Update Time"
+            "workDay": "日期",
+            "userId": "员工ID",
+            "userName": "员工名字",
+            "type": "类型",
+            "objId": "对象ID",
+            "objName": "对象名称",
+            "realInput": "工时投入",
+            "acceptInput": "工时产出",
+            "status": "状态",
+            "creator": "创建者",
+            "createTime": "创建时间",
+            "updator": "更新者",
+            "updateTime": "更新时间",
+            "monday":"星期一",
+            "tuesday":"星期二",
+            "wednesday":"星期三",
+            "thursday":"星期四",
+            "friday":"星期五",
+            "saturday":"星期六",
+            "sunday":"星期日"
         }
     }
 }

@@ -1,11 +1,24 @@
 package com.wondertek.cpm.web.rest;
 
-import com.wondertek.cpm.CpmApp;
+import static com.wondertek.cpm.web.rest.TestUtil.sameInstant;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.hasItem;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.wondertek.cpm.domain.ContractWeeklyStat;
-import com.wondertek.cpm.repository.ContractWeeklyStatRepository;
-import com.wondertek.cpm.service.ContractWeeklyStatService;
-import com.wondertek.cpm.repository.search.ContractWeeklyStatSearchRepository;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+import java.util.List;
+
+import javax.inject.Inject;
+import javax.persistence.EntityManager;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -21,19 +34,11 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import java.time.Instant;
-import java.time.ZonedDateTime;
-import java.time.ZoneOffset;
-import java.time.ZoneId;
-import java.util.List;
-
-import static com.wondertek.cpm.web.rest.TestUtil.sameInstant;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.hasItem;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import com.wondertek.cpm.CpmApp;
+import com.wondertek.cpm.domain.ContractWeeklyStat;
+import com.wondertek.cpm.repository.ContractWeeklyStatRepository;
+import com.wondertek.cpm.repository.search.ContractWeeklyStatSearchRepository;
+import com.wondertek.cpm.service.ContractWeeklyStatService;
 
 /**
  * Test class for the ContractWeeklyStatResource REST controller.
@@ -44,8 +49,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(classes = CpmApp.class)
 public class ContractWeeklyStatResourceIntTest {
 
-    private static final Double DEFAULT_CONTRACT_ID = 1D;
-    private static final Double UPDATED_CONTRACT_ID = 2D;
+    private static final Long DEFAULT_CONTRACT_ID = 1l;
+    private static final Long UPDATED_CONTRACT_ID = 2l;
 
     private static final Double DEFAULT_RECEIVE_TOTAL = 1D;
     private static final Double UPDATED_RECEIVE_TOTAL = 2D;
