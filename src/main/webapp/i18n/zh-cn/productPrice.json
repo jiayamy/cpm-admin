@@ -2,29 +2,35 @@
     "cpmApp": {
         "productPrice" : {
             "home": {
-                "title": "Product Prices",
-                "createLabel": "Create a new Product Price",
-                "createOrEditLabel": "Create or edit a Product Price",
-                "search": "Search for Product Price"
+                "title": "产品定价单",
+                "createLabel": "创建一个新的产品定价单",
+                "createOrEditLabel": "创建或者编辑产品定价单",
+                "search": "根据产品名称筛选",
+                "search1": "----根据产品类型筛选----",
+                "search2": "----根据产品来源筛选----",
+                "hardware": "硬件",
+                "software": "软件",
+                "external": "外部",
+                "inside": "内部"
             },
-            "created": "A new Product Price is created with identifier {{ param }}",
-            "updated": "A Product Price is updated with identifier {{ param }}",
-            "deleted": "A Product Price is deleted with identifier {{ param }}",
+            "created": "产品定单 {{ param }} 创建成功",
+            "updated": "产品定单 {{ param }} 更新成功",
+            "deleted": "产品定单 {{ param }} 删除成功",
             "delete": {
-                "question": "Are you sure you want to delete Product Price {{ id }}?"
+                "question": "您确定要删除  {{ id }} 产品定价单?"
             },
             "detail": {
-                "title": "Product Price"
+                "title": "产品定价单"
             },
-            "name": "Name",
-            "type": "Type",
-            "units": "Units",
-            "price": "Price",
-            "source": "Source",
-            "creator": "Creator",
-            "createTime": "Create Time",
-            "updator": "Updator",
-            "updateTime": "Update Time"
+            "name": "产品名称",
+            "type": "产品类型",
+            "units": "产品单位",
+            "price": "产品单价",
+            "source": "产品来源",
+            "creator": "创建者",
+            "createTime": "创建时间",
+            "updator": "更新者",
+            "updateTime": "更新时间"
         }
     }
 }

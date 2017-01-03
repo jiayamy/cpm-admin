@@ -11,6 +11,11 @@
 
         return $resource(resourceUrl, {}, {
             'query': { method: 'GET', isArray: true},
+            'find': {
+                method: 'GET',
+                isArray: true,
+                params: {name: null, type: null, source: null}
+            },
             'get': {
                 method: 'GET',
                 transformResponse: function (data) {

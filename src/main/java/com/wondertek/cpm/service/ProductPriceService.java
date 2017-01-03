@@ -1,8 +1,11 @@
 package com.wondertek.cpm.service;
 
+import com.wondertek.cpm.config.StringUtil;
 import com.wondertek.cpm.domain.ProductPrice;
+import com.wondertek.cpm.repository.ProductPriceDao;
 import com.wondertek.cpm.repository.ProductPriceRepository;
 import com.wondertek.cpm.repository.search.ProductPriceSearchRepository;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -11,14 +14,14 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
+
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 import static org.elasticsearch.index.query.QueryBuilders.*;
 
 /**
- * Service Implementation for managing ProductPrice.
+ * Service Imppementation for managing ProductPrice.
  */
 @Service
 @Transactional
@@ -31,7 +34,9 @@ public class ProductPriceService {
 
     @Inject
     private ProductPriceSearchRepository productPriceSearchRepository;
-
+    
+    @Inject
+    private ProductPriceDao productPriceDao;
     /**
      * Save a productPrice.
      *
@@ -94,4 +99,26 @@ public class ProductPriceService {
         Page<ProductPrice> result = productPriceSearchRepository.search(queryStringQuery(query), pageable);
         return result;
     }
+
+	public Page<ProductPrice> search(String name, String type, String source,
+			Pageable pageable) {
+		StringBuffer hql = new StringBuffer();
+		hql.append("where 1=1");
+		List<Object> params = new ArrayList<Object>();
+		if (!StringUtil.isNullStr(name)) {
+			hql.append(" and pp.name like ?");
+			params.add("%"+name+"%");
+		}
+		if (!StringUtil.isNullStr(type)) {
+			hql.append(" and pp.type = ?");
+			params.add(Integer.valueOf(type));
+		}
+		if (!StringUtil.isNullStr(source)) {
+			hql.append(" and pp.source = ?");
+			params.add(Integer.valueOf(source));
+		}
+		String queryHql = "from ProductPrice pp " + hql.toString();
+		String countHql = "select count(pp.id) from ProductPrice pp " + hql.toString();
+		return productPriceDao.queryHqlPage(queryHql,countHql,params.toArray(),pageable);
+	}
 }
