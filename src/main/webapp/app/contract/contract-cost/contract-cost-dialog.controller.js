@@ -5,9 +5,9 @@
         .module('cpmApp')
         .controller('ContractCostDialogController', ContractCostDialogController);
 
-    ContractCostDialogController.$inject = ['$timeout', '$scope', '$stateParams', '$uibModalInstance', 'entity', 'ContractCost'];
+    ContractCostDialogController.$inject = ['$timeout', '$scope', '$stateParams', '$state', 'entity', 'ContractCost'];
 
-    function ContractCostDialogController ($timeout, $scope, $stateParams, $uibModalInstance, entity, ContractCost) {
+    function ContractCostDialogController ($timeout, $scope, $stateParams, $state, entity, ContractCost) {
         var vm = this;
 
         vm.contractCost = entity;
@@ -21,7 +21,7 @@
         });
 
         function clear () {
-            $uibModalInstance.dismiss('cancel');
+        	$state.go('contract-cost', null, { reload: 'contract-cost' });
         }
 
         function save () {
@@ -35,11 +35,12 @@
 
         function onSaveSuccess (result) {
             $scope.$emit('cpmApp:contractCostUpdate', result);
-            $uibModalInstance.close(result);
+            $state.go('contract-cost', null, { reload: 'contract-cost' });
             vm.isSaving = false;
         }
 
         function onSaveError () {
+        	$state.go('contract-cost');
             vm.isSaving = false;
         }
 

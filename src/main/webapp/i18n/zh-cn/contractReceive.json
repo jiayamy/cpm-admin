@@ -2,29 +2,29 @@
     "cpmApp": {
         "contractReceive" : {
             "home": {
-                "title": "Contract Receives",
-                "createLabel": "Create a new Contract Receive",
-                "createOrEditLabel": "Create or edit a Contract Receive",
-                "search": "Search for Contract Receive"
+                "title": "合同回款记录",
+                "createLabel": "创建一个回款记录",
+                "createOrEditLabel": "更新回款记录",
+                "search": "查询"
             },
-            "created": "A new Contract Receive is created with identifier {{ param }}",
-            "updated": "A Contract Receive is updated with identifier {{ param }}",
-            "deleted": "A Contract Receive is deleted with identifier {{ param }}",
+            "created": "创建回款记录{{ param }}",
+            "updated": "更新回款记录{{ param }}",
+            "deleted": "删除回款记录 {{ param }}",
             "delete": {
-                "question": "Are you sure you want to delete Contract Receive {{ id }}?"
+                "question": "确定删除回款记录{{ id }}?"
             },
             "detail": {
-                "title": "Contract Receive"
+                "title": "回款记录"
             },
-            "contractId": "Contract Id",
-            "receiveTotal": "Receive Total",
-            "receiveDay": "Receive Day",
-            "status": "Status",
-            "creator": "Creator",
-            "createTime": "Create Time",
-            "updator": "Updator",
-            "updateTime": "Update Time",
-            "receiver": "Receiver"
+            "contractId": "合同Id",
+            "receiveTotal": "回款金额",
+            "receiveDay": "回款时间",
+            "status": "状态",
+            "creator": "创建者",
+            "createTime": "创建时间",
+            "updator": "更新者",
+            "updateTime": "更新时间",
+            "receiver": "回款接收人"
         }
     }
 }

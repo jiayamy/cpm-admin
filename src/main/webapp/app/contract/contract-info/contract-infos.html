@@ -35,65 +35,57 @@
         <table class="jh-table table table-striped">
             <thead>
                 <tr jh-sort="vm.predicate" ascending="vm.reverse" callback="vm.transition()">
-                    <th jh-sort-by="id"><span data-translate="global.field.id">ID</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th ng-hide="vm" jh-sort-by="id"><span data-translate="global.field.id">ID</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="serialNum"><span data-translate="cpmApp.contractInfo.serialNum">Serial Num</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="name"><span data-translate="cpmApp.contractInfo.name">Name</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="amount"><span data-translate="cpmApp.contractInfo.amount">Amount</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="type"><span data-translate="cpmApp.contractInfo.type">Type</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="isPrepared"><span data-translate="cpmApp.contractInfo.isPrepared">Is Prepared</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="isEpibolic"><span data-translate="cpmApp.contractInfo.isEpibolic">Is Epibolic</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="startDay"><span data-translate="cpmApp.contractInfo.startDay">Start Day</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="endDay"><span data-translate="cpmApp.contractInfo.endDay">End Day</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="taxRate"><span data-translate="cpmApp.contractInfo.taxRate">Tax Rate</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="taxes"><span data-translate="cpmApp.contractInfo.taxes">Taxes</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="shareRate"><span data-translate="cpmApp.contractInfo.shareRate">Share Rate</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="shareCost"><span data-translate="cpmApp.contractInfo.shareCost">Share Cost</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th ng-hide="vm" jh-sort-by="startDay"><span data-translate="cpmApp.contractInfo.startDay">Start Day</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th ng-hide="vm" jh-sort-by="endDay"><span data-translate="cpmApp.contractInfo.endDay">End Day</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th ng-hide="vm" jh-sort-by="taxRate"><span data-translate="cpmApp.contractInfo.taxRate">Tax Rate</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th ng-hide="vm" jh-sort-by="taxes"><span data-translate="cpmApp.contractInfo.taxes">Taxes</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th ng-hide="vm" jh-sort-by="shareRate"><span data-translate="cpmApp.contractInfo.shareRate">Share Rate</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th ng-hide="vm" jh-sort-by="shareCost"><span data-translate="cpmApp.contractInfo.shareCost">Share Cost</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="paymentWay"><span data-translate="cpmApp.contractInfo.paymentWay">Payment Way</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="contractor"><span data-translate="cpmApp.contractInfo.contractor">Contractor</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="address"><span data-translate="cpmApp.contractInfo.address">Address</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="postcode"><span data-translate="cpmApp.contractInfo.postcode">Postcode</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="linkman"><span data-translate="cpmApp.contractInfo.linkman">Linkman</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="contactDept"><span data-translate="cpmApp.contractInfo.contactDept">Contact Dept</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="telephone"><span data-translate="cpmApp.contractInfo.telephone">Telephone</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th ng-hide="vm" jh-sort-by="address"><span data-translate="cpmApp.contractInfo.address">Address</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th ng-hide="vm" jh-sort-by="postcode"><span data-translate="cpmApp.contractInfo.postcode">Postcode</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th ng-hide="vm" jh-sort-by="linkman"><span data-translate="cpmApp.contractInfo.linkman">Linkman</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th ng-hide="vm" jh-sort-by="contactDept"><span data-translate="cpmApp.contractInfo.contactDept">Contact Dept</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th ng-hide="vm" jh-sort-by="telephone"><span data-translate="cpmApp.contractInfo.telephone">Telephone</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="receiveTotal"><span data-translate="cpmApp.contractInfo.receiveTotal">Receive Total</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="finishRate"><span data-translate="cpmApp.contractInfo.finishRate">Finish Rate</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="status"><span data-translate="cpmApp.contractInfo.status">Status</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="creator"><span data-translate="cpmApp.contractInfo.creator">Creator</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="createTime"><span data-translate="cpmApp.contractInfo.createTime">Create Time</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="updator"><span data-translate="cpmApp.contractInfo.updator">Updator</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="updateTime"><span data-translate="cpmApp.contractInfo.updateTime">Update Time</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th></th>
                 </tr>
             </thead>
             <tbody>
                 <tr ng-repeat="contractInfo in vm.contractInfos track by contractInfo.id">
-                    <td><a ui-sref="contract-info-detail({id:contractInfo.id})">{{contractInfo.id}}</a></td>
+                    <td ng-hide="vm"><a ui-sref="contract-info-detail({id:contractInfo.id})">{{contractInfo.id}}</a></td>
                     <td>{{contractInfo.serialNum}}</td>
                     <td>{{contractInfo.name}}</td>
                     <td>{{contractInfo.amount}}</td>
                     <td>{{contractInfo.type}}</td>
                     <td>{{contractInfo.isPrepared}}</td>
                     <td>{{contractInfo.isEpibolic}}</td>
-                    <td>{{contractInfo.startDay | date:'medium'}}</td>
-                    <td>{{contractInfo.endDay | date:'medium'}}</td>
-                    <td>{{contractInfo.taxRate}}</td>
-                    <td>{{contractInfo.taxes}}</td>
-                    <td>{{contractInfo.shareRate}}</td>
-                    <td>{{contractInfo.shareCost}}</td>
+                    <td ng-hide="vm">{{contractInfo.startDay | date:'medium'}}</td>
+                    <td ng-hide="vm">{{contractInfo.endDay | date:'medium'}}</td>
+                    <td ng-hide="vm">{{contractInfo.taxRate}}</td>
+                    <td ng-hide="vm">{{contractInfo.taxes}}</td>
+                    <td ng-hide="vm">{{contractInfo.shareRate}}</td>
+                    <td ng-hide="vm">{{contractInfo.shareCost}}</td>
                     <td>{{contractInfo.paymentWay}}</td>
                     <td>{{contractInfo.contractor}}</td>
-                    <td>{{contractInfo.address}}</td>
-                    <td>{{contractInfo.postcode}}</td>
-                    <td>{{contractInfo.linkman}}</td>
-                    <td>{{contractInfo.contactDept}}</td>
-                    <td>{{contractInfo.telephone}}</td>
-                    <td>{{contractInfo.receiveTotal}}</td>
+                    <td ng-hide="vm">{{contractInfo.address}}</td>
+                    <td ng-hide="vm">{{contractInfo.postcode}}</td>
+                    <td ng-hide="vm">{{contractInfo.linkman}}</td>
+                    <td ng-hide="vm">{{contractInfo.contactDept}}</td>
+                    <td ng-hide="vm">{{contractInfo.telephone}}</td>
+                    <td >{{contractInfo.receiveTotal}}</td>
                     <td>{{contractInfo.finishRate}}</td>
-                    <td>{{contractInfo.status}}</td>
-                    <td>{{contractInfo.creator}}</td>
-                    <td>{{contractInfo.createTime | date:'medium'}}</td>
-                    <td>{{contractInfo.updator}}</td>
-                    <td>{{contractInfo.updateTime | date:'medium'}}</td>
+                    <td >{{contractInfo.status}}</td>
                     <td class="text-right">
                         <div class="btn-group flex-btn-group-container">
                             <button type="submit"

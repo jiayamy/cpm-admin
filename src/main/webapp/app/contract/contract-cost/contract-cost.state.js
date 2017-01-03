@@ -83,95 +83,91 @@
                 }]
             }
         })
-        .state('contract-cost-detail.edit', {
-            parent: 'contract-cost-detail',
-            url: '/detail/edit',
-            data: {
-                authorities: ['ROLE_USER']
-            },
-            onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
-                $uibModal.open({
-                    templateUrl: 'app/contract/contract-cost/contract-cost-dialog.html',
-                    controller: 'ContractCostDialogController',
-                    controllerAs: 'vm',
-                    backdrop: 'static',
-                    size: 'lg',
-                    resolve: {
-                        entity: ['ContractCost', function(ContractCost) {
-                            return ContractCost.get({id : $stateParams.id}).$promise;
-                        }]
-                    }
-                }).result.then(function() {
-                    $state.go('^', {}, { reload: false });
-                }, function() {
-                    $state.go('^');
-                });
-            }]
-        })
-        .state('contract-cost.new', {
-            parent: 'contract-cost',
-            url: '/new',
-            data: {
-                authorities: ['ROLE_USER']
-            },
-            onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
-                $uibModal.open({
-                    templateUrl: 'app/contract/contract-cost/contract-cost-dialog.html',
-                    controller: 'ContractCostDialogController',
-                    controllerAs: 'vm',
-                    backdrop: 'static',
-                    size: 'lg',
-                    resolve: {
-                        entity: function () {
-                            return {
-                                contractId: null,
-                                budgetId: null,
-                                deptId: null,
-                                dept: null,
-                                name: null,
-                                type: null,
-                                total: null,
-                                costDesc: null,
-                                status: null,
-                                creator: null,
-                                createTime: null,
-                                updator: null,
-                                updateTime: null,
-                                id: null
-                            };
-                        }
-                    }
-                }).result.then(function() {
-                    $state.go('contract-cost', null, { reload: 'contract-cost' });
-                }, function() {
-                    $state.go('contract-cost');
-                });
-            }]
-        })
-        .state('contract-cost.edit', {
-            parent: 'contract-cost',
+        
+        .state('contract-cost-detail.edit',{
+        	parent: 'contract-cost',
             url: '/{id}/edit',
             data: {
                 authorities: ['ROLE_USER']
             },
-            onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
-                $uibModal.open({
-                    templateUrl: 'app/contract/contract-cost/contract-cost-dialog.html',
+            views:{
+            	'content@':{
+            		templateUrl: 'app/contract/contract-cost/contract-cost-dialog.html',
                     controller: 'ContractCostDialogController',
-                    controllerAs: 'vm',
-                    backdrop: 'static',
-                    size: 'lg',
-                    resolve: {
-                        entity: ['ContractCost', function(ContractCost) {
-                            return ContractCost.get({id : $stateParams.id}).$promise;
-                        }]
-                    }
-                }).result.then(function() {
-                    $state.go('contract-cost', null, { reload: 'contract-cost' });
-                }, function() {
-                    $state.go('^');
-                });
-            }]
+                    controllerAs: 'vm'
+            	}
+            },
+            resolve:{
+            	translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
+                    $translatePartialLoader.addPart('contractCost');
+                    return $translate.refresh();
+                }],
+                entity: ['$stateParams', 'ContractCost', function($stateParams, ContractCost) {
+                    return ContractCost.get({id : $stateParams.id}).$promise;
+                }]
+            }
+        })
+        .state('contract-cost.new',{
+        	parent: 'contract-cost',
+            url: '/new',
+            data: {
+                authorities: ['ROLE_USER']
+            },
+            views:{
+            	'content@':{
+	        		 templateUrl: 'app/contract/contract-cost/contract-cost-dialog.html',
+	                 controller: 'ContractCostDialogController',
+	                 controllerAs: 'vm'
+            	}
+            },
+        	resolve:{
+        		 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
+                     $translatePartialLoader.addPart('contractCost');
+                     return $translate.refresh();
+                 }],
+                 entity: function () {
+                     return {
+                         contractId: null,
+                         budgetId: null,
+                         deptId: null,
+                         dept: null,
+                         name: null,
+                         type: null,
+                         total: null,
+                         costDesc: null,
+                         status: null,
+                         creator: null,
+                         createTime: null,
+                         updator: null,
+                         updateTime: null,
+                         id: null
+                     };
+                 }
+                 
+        	}
+        })        
+        .state('contract-cost.edit',{
+        	parent: 'contract-cost',
+            url: '/{id}/edit',
+            data: {
+                authorities: ['ROLE_USER']
+            },
+            views:{
+            	'content@':{
+            		templateUrl: 'app/contract/contract-cost/contract-cost-dialog.html',
+                    controller: 'ContractCostDialogController',
+                    controllerAs: 'vm'
+            	}
+            },
+            resolve:{
+            	translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
+                    $translatePartialLoader.addPart('contractCost');
+                    return $translate.refresh();
+                }],
+                entity: ['$stateParams', 'ContractCost', function($stateParams, ContractCost) {
+                    return ContractCost.get({id : $stateParams.id}).$promise;
+                }]
+            }
         })
         .state('contract-cost.delete', {
             parent: 'contract-cost',

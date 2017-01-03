@@ -2,9 +2,7 @@
 <form name="editForm" role="form" novalidate ng-submit="vm.save()">
 
     <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
-                ng-click="vm.clear()">&times;</button>
-        <h4 class="modal-title" id="myContractInfoLabel" data-translate="cpmApp.contractInfo.home.createOrEditLabel">Create or edit a Contract Info</h4>
+        <h2 class="modal-title" id="myContractInfoLabel" data-translate="cpmApp.contractInfo.home.createOrEditLabel">Create or edit a Contract Info</h2>
     </div>
     <div class="modal-body">
         <jhi-alert-error></jhi-alert-error>
@@ -38,17 +36,20 @@
                      />
         </div>
         <div class="form-group">
-            <label class="control-label" data-translate="cpmApp.contractInfo.isPrepared" for="field_isPrepared">Is Prepared</label>
-            <input type="checkbox" class="form-control" name="isPrepared" id="field_isPrepared"
-                    ng-model="vm.contractInfo.isPrepared"
-                     />
+	       	<div class="col-sm-6">
+	       		  <label class="control-label" data-translate="cpmApp.contractInfo.isPrepared" for="field_isPrepared">
+	 				Is Prepared </label> 
+	 				<input type="checkbox" name="isPrepared" id="field_isPrepared"
+	                    		ng-model="vm.contractInfo.isPrepared"/>
+	        </div>
+	        <div class="col-sm-6">
+	         	<label class="control-label"  data-translate="cpmApp.contractInfo.isEpibolic" for="field_isEpibolic">
+	 				Is Epibolic </label>
+	 			<input type="checkbox" name="isEpibolic" id="field_isEpibolic"
+	 							ng-model="vm.contractInfo.isEpibolic"/>
+	        </div>
         </div>
-        <div class="form-group">
-            <label class="control-label" data-translate="cpmApp.contractInfo.isEpibolic" for="field_isEpibolic">Is Epibolic</label>
-            <input type="checkbox" class="form-control" name="isEpibolic" id="field_isEpibolic"
-                    ng-model="vm.contractInfo.isEpibolic"
-                     />
-        </div>
+      
         <div class="form-group">
             <label class="control-label" data-translate="cpmApp.contractInfo.startDay" for="field_startDay">Start Day</label>
                 <div class="input-group">
@@ -147,48 +148,15 @@
                     ng-model="vm.contractInfo.finishRate"
                      />
         </div>
-        <div class="form-group">
+         <div class="form-group">
             <label class="control-label" data-translate="cpmApp.contractInfo.status" for="field_status">Status</label>
             <input type="number" class="form-control" name="status" id="field_status"
                     ng-model="vm.contractInfo.status"
                      />
         </div>
-        <div class="form-group">
-            <label class="control-label" data-translate="cpmApp.contractInfo.creator" for="field_creator">Creator</label>
-            <input type="text" class="form-control" name="creator" id="field_creator"
-                    ng-model="vm.contractInfo.creator"
-                     />
-        </div>
-        <div class="form-group">
-            <label class="control-label" data-translate="cpmApp.contractInfo.createTime" for="field_createTime">Create Time</label>
-                <div class="input-group">
-                    <input id="field_createTime" type="text" class="form-control" name="createTime" datetime-picker="{{dateformat}}" ng-model="vm.contractInfo.createTime" is-open="vm.datePickerOpenStatus.createTime"
-                      />
-                    <span class="input-group-btn">
-                        <button type="button" class="btn btn-default" ng-click="vm.openCalendar('createTime')"><i class="glyphicon glyphicon-calendar"></i></button>
-                    </span>
-                </div>
-        </div>
-        <div class="form-group">
-            <label class="control-label" data-translate="cpmApp.contractInfo.updator" for="field_updator">Updator</label>
-            <input type="text" class="form-control" name="updator" id="field_updator"
-                    ng-model="vm.contractInfo.updator"
-                     />
-        </div>
-        <div class="form-group">
-            <label class="control-label" data-translate="cpmApp.contractInfo.updateTime" for="field_updateTime">Update Time</label>
-                <div class="input-group">
-                    <input id="field_updateTime" type="text" class="form-control" name="updateTime" datetime-picker="{{dateformat}}" ng-model="vm.contractInfo.updateTime" is-open="vm.datePickerOpenStatus.updateTime"
-                      />
-                    <span class="input-group-btn">
-                        <button type="button" class="btn btn-default" ng-click="vm.openCalendar('updateTime')"><i class="glyphicon glyphicon-calendar"></i></button>
-                    </span>
-                </div>
-        </div>
-
     </div>
     <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="vm.clear()">
+        <button type="button" class="btn btn-default" ng-click="vm.clear()">
             <span class="glyphicon glyphicon-ban-circle"></span>&nbsp;<span data-translate="entity.action.cancel">Cancel</span>
         </button>
         <button type="submit" ng-disabled="editForm.$invalid || vm.isSaving" class="btn btn-primary">

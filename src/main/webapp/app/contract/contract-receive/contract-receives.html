@@ -35,16 +35,12 @@
         <table class="jh-table table table-striped">
             <thead>
                 <tr jh-sort="vm.predicate" ascending="vm.reverse" callback="vm.transition()">
-                    <th jh-sort-by="id"><span data-translate="global.field.id">ID</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th ng-hide jh-sort-by="id"><span data-translate="global.field.id">ID</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="contractId"><span data-translate="cpmApp.contractReceive.contractId">Contract Id</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="receiveTotal"><span data-translate="cpmApp.contractReceive.receiveTotal">Receive Total</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="receiveDay"><span data-translate="cpmApp.contractReceive.receiveDay">Receive Day</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="status"><span data-translate="cpmApp.contractReceive.status">Status</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="creator"><span data-translate="cpmApp.contractReceive.creator">Creator</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="createTime"><span data-translate="cpmApp.contractReceive.createTime">Create Time</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="updator"><span data-translate="cpmApp.contractReceive.updator">Updator</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="updateTime"><span data-translate="cpmApp.contractReceive.updateTime">Update Time</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="receiver"><span data-translate="cpmApp.contractReceive.receiver">Receiver</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="status"><span data-translate="cpmApp.contractReceive.status">Status</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th></th>
                 </tr>
             </thead>
@@ -54,12 +50,8 @@
                     <td>{{contractReceive.contractId}}</td>
                     <td>{{contractReceive.receiveTotal}}</td>
                     <td>{{contractReceive.receiveDay | date:'medium'}}</td>
-                    <td>{{contractReceive.status}}</td>
-                    <td>{{contractReceive.creator}}</td>
-                    <td>{{contractReceive.createTime | date:'medium'}}</td>
-                    <td>{{contractReceive.updator}}</td>
-                    <td>{{contractReceive.updateTime | date:'medium'}}</td>
                     <td>{{contractReceive.receiver}}</td>
+                    <td>{{contractReceive.status}}</td>
                     <td class="text-right">
                         <div class="btn-group flex-btn-group-container">
                             <button type="submit"

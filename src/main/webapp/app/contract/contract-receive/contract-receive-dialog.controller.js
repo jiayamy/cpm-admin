@@ -5,9 +5,9 @@
         .module('cpmApp')
         .controller('ContractReceiveDialogController', ContractReceiveDialogController);
 
-    ContractReceiveDialogController.$inject = ['$timeout', '$scope', '$stateParams', '$uibModalInstance', 'entity', 'ContractReceive'];
+    ContractReceiveDialogController.$inject = ['$timeout', '$scope', '$stateParams', 'entity', 'ContractReceive', '$state'];
 
-    function ContractReceiveDialogController ($timeout, $scope, $stateParams, $uibModalInstance, entity, ContractReceive) {
+    function ContractReceiveDialogController ($timeout, $scope, $stateParams, entity, ContractReceive, $state) {
         var vm = this;
 
         vm.contractReceive = entity;
@@ -21,7 +21,7 @@
         });
 
         function clear () {
-            $uibModalInstance.dismiss('cancel');
+        	$state.go('contract-receive', null, { reload: 'contract-receive'});
         }
 
         function save () {
@@ -35,12 +35,14 @@
 
         function onSaveSuccess (result) {
             $scope.$emit('cpmApp:contractReceiveUpdate', result);
-            $uibModalInstance.close(result);
+            $state.go('contract-receive');
             vm.isSaving = false;
+           
         }
 
         function onSaveError () {
             vm.isSaving = false;
+            $state.go('contract-receive');
         }
 
         vm.datePickerOpenStatus.receiveDay = false;
