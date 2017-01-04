@@ -160,7 +160,7 @@ public class UserTimesheetService {
 		//添加第二行地区
 		UserTimesheetForUser areaTimesheet = getDefaultUserTimesheetForUser(null,UserTimesheet.TYPE_AREA,null,null,null);
 		//添加默认的公共成本
-		UserTimesheetForUser publicTimesheet = getDefaultUserTimesheetForUser(null,UserTimesheet.TYPE_PUBLIC,null,null,CpmConstants.DFAULT_USER_TIMESHEET_INPUT);
+		UserTimesheetForUser publicTimesheet = getDefaultUserTimesheetForUser(null,UserTimesheet.TYPE_PUBLIC,null,null,CpmConstants.DFAULT_USER_TIMESHEET_USER_INPUT);
 		//添加项目和合同
 		Optional<User> user = userRepository.findOneByLogin(SecurityUtils.getCurrentUserLogin());
     	if(user.isPresent()){
@@ -171,8 +171,8 @@ public class UserTimesheetService {
     		//转换为MAP
     		Map<String,Map<Long,UserTimesheet>> map = trans2Map(list);
     		//获取用户现有的所有项目和合同
-    		List<LongValue> ids = contractUserDao.getAllByUser(userId);
-    		ids.addAll(projectUserDao.getAllByUser(userId));
+    		List<LongValue> ids = contractUserDao.getByUserAndDay(userId,lds);
+    		ids.addAll(projectUserDao.getByUserAndDay(userId,lds));
     		
     		//添加默认的公共成本
     		String key = getTransMapKey(userId,UserTimesheet.TYPE_PUBLIC,null);
@@ -183,7 +183,7 @@ public class UserTimesheetService {
     		}
     		//现有的所有项目和合同
     		for(LongValue longValue : ids){
-    			UserTimesheetForUser timesheet = getDefaultUserTimesheetForUser(userId,longValue.getType(),longValue.getKey(),longValue.getVal(),CpmConstants.DFAULT_USER_TIMESHEET_INPUT);
+    			UserTimesheetForUser timesheet = getDefaultUserTimesheetForUser(userId,longValue.getType(),longValue.getKey(),longValue.getVal(),CpmConstants.DFAULT_USER_TIMESHEET_USER_INPUT);
     			key = getTransMapKey(userId,longValue.getType(),longValue.getKey());
     			childs = map.get(key);
         		if(childs != null){
@@ -207,7 +207,7 @@ public class UserTimesheetService {
 		Map<Long, UserTimesheet> childs = null;
 		for(String mapKey : map.keySet()){
 			childs = map.get(mapKey);
-			UserTimesheetForUser timesheet = getDefaultUserTimesheetForUser(userId,null,null,null,CpmConstants.DFAULT_USER_TIMESHEET_INPUT);
+			UserTimesheetForUser timesheet = getDefaultUserTimesheetForUser(userId,null,null,null,CpmConstants.DFAULT_USER_TIMESHEET_USER_INPUT);
 			for(Long workDay : childs.keySet()){
 				tmpTimesheet = childs.get(workDay);
 				timesheet.setType(tmpTimesheet.getType());
@@ -410,7 +410,7 @@ public class UserTimesheetService {
     	if(user.isPresent()){
     		User currUser = user.get();
     		Long userId = currUser.getId();
-    		String userName = currUser.getFirstName();
+    		String userName = currUser.getLogin();
     		//日期
     		UserTimesheetForUser dayTimesheet = userTimesheetForUsers.get(0);
     		Long[] lds = new Long[7];
@@ -540,6 +540,23 @@ public class UserTimesheetService {
         			}
         		}
     		}
+    		//判定是否超过今天
+    		Long today = StringUtil.nullToLong(DateUtil.formatDate(DateUtil.DATE_YYYYMMDD_PATTERN, new Date())).longValue();
+			if(td1 > 0 && today < lds[0]){
+				return "cpmApp.userTimesheet.save.overDay";
+			}else if(td2 > 0 && today < lds[1]){
+				return "cpmApp.userTimesheet.save.overDay";
+			}else if(td3 > 0 && today < lds[2]){
+				return "cpmApp.userTimesheet.save.overDay";
+			}else if(td4 > 0 && today < lds[3]){
+				return "cpmApp.userTimesheet.save.overDay";
+			}else if(td5 > 0 && today < lds[4]){
+				return "cpmApp.userTimesheet.save.overDay";
+			}else if(td6 > 0 && today < lds[5]){
+				return "cpmApp.userTimesheet.save.overDay";
+			}else if(td7 > 0 && today < lds[6]){
+				return "cpmApp.userTimesheet.save.overDay";
+			}
     		//判定是否假期
     		List<HolidayInfo> list = holidayInfoRepository.findHolidayByCurrDay(StringUtil.longArrayToLongArray(lds));
     		if(list != null && !list.isEmpty()){

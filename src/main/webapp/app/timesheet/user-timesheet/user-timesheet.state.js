@@ -109,7 +109,6 @@
 	                return UserTimesheet.get({id : $stateParams.id}).$promise;
 	            }],
 	            previousState: ["$state", function ($state) {
-	            	console.log($state.current.name);
 	                var currentStateData = {
 	                    name: $state.current.name || 'user-timesheet-detail',
 	                    params: $state.params,

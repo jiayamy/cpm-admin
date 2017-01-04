@@ -20,7 +20,6 @@
         vm.openCalendar = openCalendar;
         vm.searchQuery = {};
         if(entity && entity.workDay){
-        	console.log(entity.workDay);
         	var y = parseInt(entity.workDay/10000);
         	var m = parseInt((entity.workDay - y * 10000)/100) - 1;
         	var d = entity.workDay - y * 10000 - (m + 1) * 100;
@@ -121,7 +120,6 @@
             if(vm.userTimesheets && vm.userTimesheets.length > 0){
             	for(var i = 0; i< vm.userTimesheets.length ; i++){
             		tmp = vm.userTimesheets[i];
-            		console.log(tmp);
             		//校验是否为空
             		if(!tmp.data1 || !tmp.data2 || !tmp.data3 || !tmp.data4 
             				|| !tmp.data5|| !tmp.data6|| !tmp.data7){
@@ -167,7 +165,6 @@
             return false;
         }
         function onSaveSuccess (result) {
-        	console.log(result);
         	vm.isSaving = false;
         	if(result.data){
         		AlertService.error(result.data.message);
@@ -186,7 +183,6 @@
         }
 
         function onSaveError (result) {
-        	console.log(result);
             vm.isSaving = false;
             if(result.data){
         		AlertService.error(result.data.message);

@@ -6,7 +6,7 @@ package com.wondertek.cpm;
  */
 public class CpmConstants {
 
-	public static final String DFAULT_USER_TIMESHEET_INPUT = "8";
+	public static final String DFAULT_USER_TIMESHEET_USER_INPUT = "0";
 	
 	public static final String ORDER_IGNORE_SCORE = "_score";
 	

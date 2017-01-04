@@ -29,10 +29,26 @@ public class ProjectUserDaoImpl extends GenericDaoImpl<ProjectUser, Long> implem
 	}
 
 	@Override
-	public List<LongValue> getAllByUser(Long userId) {
-		List<Object[]> list = this.queryAllSql(
-				"select pu.project_id,pi.serial_num from w_project_user pu left join w_project_info pi on pu.project_id = pi.id where pi.id is not null and pu.user_id = ?",
-				new Object[]{userId});
+	public List<LongValue> getByUserAndDay(Long userId, Long[] weekDays) {
+		StringBuffer sql = new StringBuffer();
+		List<Object> params = new ArrayList<Object>();
+		sql.append("select pu.project_id,pi.serial_num from w_project_user pu left join w_project_info pi on pu.project_id = pi.id where pi.id is not null and pu.user_id = ?");
+		params.add(userId);
+		
+		if(weekDays != null && weekDays.length > 0){
+			sql.append(" and (");
+			for(int i = 0 ; i < weekDays.length; i++){
+				if(i != 0){
+					sql.append(" or ");
+				}
+				sql.append("(pu.join_day <= ? and (pu.leave_day is null or pu.leave_day >= ?))");
+				params.add(weekDays[i]);
+				params.add(weekDays[i]);
+			}
+			sql.append(")");
+		}
+		
+		List<Object[]> list = this.queryAllSql(sql.toString(),params.toArray());
 		List<LongValue> returnList = new ArrayList<LongValue>();
 		if(list != null){
 			for(Object[] o : list){
