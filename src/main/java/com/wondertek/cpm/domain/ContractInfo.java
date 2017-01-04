@@ -34,7 +34,7 @@ public class ContractInfo implements Serializable {
     private Double amount;				//	合同金额
 
     @Column(name = "type_")
-    private Integer type;				//	合同类型（产品/外包/硬件）
+    private Integer type;				//	合同类型（产品/外包/硬件/公共成本）
 
     @Column(name = "is_prepared")
     private Boolean isPrepared;			//	是否预立（正式合同/预立合同），预立合同可以转正式合同
@@ -43,16 +43,16 @@ public class ContractInfo implements Serializable {
     private Boolean isEpibolic;			//	是否外包（内部合同/外包合同）--- 
     
     @Column(name = "sales_man_id")
-    private Long salesmanId;			//	销售人员ID（界面选择员工信息）
+    private Long salesmanId;			//	负责人ID（界面选择员工信息）
     
     @Column(name = "sales_man")
-    private String salesman;			//	销售人员名称
+    private String salesman;			//	负责人名称
     
     @Column(name = "dept_id")
-    private Long deptId;				//	销售所属部门ID
+    private Long deptId;				//	负责人所属部门ID
     
     @Column(name = "dept_")
-    private String dept;				//	销售所属部门
+    private String dept;				//	负责人所属部门
     
     @Column(name = "start_day")
     private ZonedDateTime startDay;		//	开始日期,页面格式20161227
