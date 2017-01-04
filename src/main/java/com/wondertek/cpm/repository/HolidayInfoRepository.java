@@ -12,4 +12,6 @@ import java.util.List;
 @SuppressWarnings("unused")
 public interface HolidayInfoRepository extends JpaRepository<HolidayInfo,Long> {
 
+	@Query("select count(h.id) from HolidayInfo h where h.currDay=?1")
+	public int findByCurrDay(Long date);
 }

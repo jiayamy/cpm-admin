@@ -94,4 +94,27 @@ public class HolidayInfoService {
         Page<HolidayInfo> result = holidayInfoSearchRepository.search(queryStringQuery(query), pageable);
         return result;
     }
+    
+    /**
+     * save multiple holidayInfo.
+     * @param holidayInfos
+     * @return the list of entities
+     */
+    public List<HolidayInfo> save(List<HolidayInfo> holidayInfos) {
+        log.debug("Request to save HolidayInfo : {}", holidayInfos);
+        List<HolidayInfo> result = holidayInfoRepository.save(holidayInfos);
+        return result;
+    }
+    
+    /**
+     * Get multiple holidayInfo by currDay.
+     * @param date
+     * @return the list of entities.
+     */
+    @Transactional(readOnly = true)
+    public int findByCurrDay(Long date){
+    	log.debug("Request to get HolidayInfo :{}", date);
+    	int result = holidayInfoRepository.findByCurrDay(date);
+    	return result;
+    }
 }
