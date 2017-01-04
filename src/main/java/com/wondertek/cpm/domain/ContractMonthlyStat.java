@@ -23,54 +23,86 @@ public class ContractMonthlyStat implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-
+    /**
+     * 合同主键
+     */
     @Column(name = "contract_id")
-    private Long contractId;				//	合同主键
-
+    private Long contractId;
+    /**
+     * 完成率（从合同中获取或者从统计时间前最后一条完成详情中获取）
+     */
     @Column(name = "finish_rate")
-    private Double finishRate;				//	完成率
-    
+    private Double finishRate;
+    /**
+     * 合同回款总额（从合同中获取或者从统计时间前所有回款详情中相加）
+     */
     @Column(name = "receive_total")
-    private Double receiveTotal;			//	合同回款总额
-
+    private Double receiveTotal;
+    /**
+     * 所有成本(下面所有成本相加+公摊成本+税金)
+     */
     @Column(name = "cost_total")
-    private Double costTotal;				//	所有成本
-
+    private Double costTotal;
+    /**
+     * 合同毛利（回款总额-所有成本）
+     */
     @Column(name = "gross_profit")
-    private Double grossProfit;				//	合同毛利
-
+    private Double grossProfit;
+    /**
+     * 销售人工成本
+     */
     @Column(name = "sales_human_cost")
-    private Double salesHumanCost;			//	销售人工成本
-
+    private Double salesHumanCost;
+    /**
+     * 销售报销成本
+     */
     @Column(name = "sales_payment")
-    private Double salesPayment;			//	销售报销成本
-
+    private Double salesPayment;
+    /**
+     * 咨询人工成本
+     */
     @Column(name = "consult_human_cost")
-    private Double consultHumanCost;		//	咨询人工成本
-
+    private Double consultHumanCost;
+    /**
+     * 咨询报销成本
+     */
     @Column(name = "consult_payment")
-    private Double consultPayment;			//	咨询报销成本
-
+    private Double consultPayment;
+    /**
+     * 硬件采购成本
+     */
     @Column(name = "hardware_purchase")
-    private Double hardwarePurchase;		//	硬件采购成本
-
+    private Double hardwarePurchase;
+    /**
+     * 外部软件采购成本
+     */
     @Column(name = "external_software")
-    private Double externalSoftware;		//	外部软件采购成本
-
+    private Double externalSoftware;
+    /**
+     * 内容软件采购成本
+     */
     @Column(name = "internal_software")
-    private Double internalSoftware;		//	内容软件采购成本
-
+    private Double internalSoftware;
+    /**
+     * 项目人工成本
+     */
     @Column(name = "project_human_cost")
-    private Double projectHumanCost;		//	项目人工成本
-
+    private Double projectHumanCost;
+    /**
+     * 项目报销成本
+     */
     @Column(name = "project_payment")
-    private Double projectPayment;			//	项目报销成本
-
+    private Double projectPayment;
+    /**
+     * 统计月(或周),格式:201612
+     */
     @Column(name = "stat_week")
-    private Long statWeek;					//	统计月(或周),格式:201612
-
+    private Long statWeek;
+    /**
+     * 统计日期，当前时间
+     */
     @Column(name = "create_time")
-    private ZonedDateTime createTime;		//	统计日期
+    private ZonedDateTime createTime;
 
     public Long getId() {
         return id;

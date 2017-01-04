@@ -23,27 +23,41 @@ public class ContractUser implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-
+    /**
+     * 合同主键
+     */
     @Column(name = "contract_id")
-    private Long contractId;		//	合同主键
-
+    private Long contractId;
+    /**
+     * 人员ID，一个人可以在一个合同中出现多次，当时时间区间不能重叠，如果离开时间为空，则加盟日后的时间都不能再次新增该人员。
+     */
     @Column(name = "user_id")
-    private Long userId;			//	人员ID
-
+    private Long userId;
+    /**
+     * 人员名称
+     */
     @Column(name = "user_name")
-    private String userName;		//	人员名称
-
+    private String userName;
+    /**
+     * 所属部门ID（跟着人员ID的所属部门走，方便后面填写工时详情分数据权限）
+     */
     @Column(name = "dept_id")
-    private Long deptId;			//	所属部门ID（跟着人员ID的所属部门走，方便后面填写工时详情分数据权限）
-
+    private Long deptId;
+    /**
+     * 所属部门（跟着人员ID的所属部门走，方便后面填写工时详情分数据权限）
+     */
     @Column(name = "dept_")
-    private String dept;			//	所属部门（跟着人员ID的所属部门走，方便后面填写工时详情分数据权限）
-    
+    private String dept;
+    /**
+     * 加盟日，格式20161227，如果为空，则默认为当天
+     */
     @Column(name = "join_day")
-    private Long joinDay;			//	加盟日，格式20161227
-
+    private Long joinDay;
+    /**
+     * 离开日，格式20161227，为空则表示长时间在，删除该人员时，修改当前时间为离开日，记录不能物理删除
+     */
     @Column(name = "leave_day")
-    private Long leaveDay;			//	离开日，格式20161227
+    private Long leaveDay;
 
     @Column(name = "creator_")
     private String creator;

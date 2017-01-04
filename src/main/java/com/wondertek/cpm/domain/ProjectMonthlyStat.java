@@ -23,24 +23,36 @@ public class ProjectMonthlyStat implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-
+    /**
+     * 项目主键
+     */
     @Column(name = "project_id")
-    private Long projectId;			//	项目主键
-
+    private Long projectId;
+    /**
+     * 完成率
+     */
     @Column(name = "finish_rate")
-    private Double finishRate;		//	完成率
-    
+    private Double finishRate;
+    /**
+     * 项目人工成本
+     */
     @Column(name = "human_cost")
-    private Double humanCost;		//	项目人工成本
-
+    private Double humanCost;
+    /**
+     * 项目报销成本
+     */
     @Column(name = "payment_")
-    private Double payment;			//	项目报销成本
-
+    private Double payment;
+    /**
+     * 统计月(或周)，比如201612
+     */
     @Column(name = "stat_week")
-    private Long statWeek;			//	统计月(或周)，比如201612
-
+    private Long statWeek;
+    /**
+     * 统计日期
+     */
     @Column(name = "create_time")
-    private ZonedDateTime createTime;	//	统计日期
+    private ZonedDateTime createTime;
 
     public Long getId() {
         return id;

@@ -29,36 +29,56 @@ public class UserTimesheet implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-
+    /**
+     * 日期
+     */
     @Column(name = "work_day")
-    private Long workDay;		//	日期
-
+    private Long workDay;
+    /**
+     * 员工ID
+     */
     @Column(name = "user_id")
-    private Long userId;		//	员工ID
-
+    private Long userId;
+    /**
+     * 员工名字
+     */
     @Column(name = "user_name")
-    private String userName;	//		员工名字
-    
+    private String userName;
+    /**
+     * 类型（1公共成本/2合同/3项目）
+     */
     @Column(name = "type_")
-    private Integer type;		//	类型（2合同、3项目、1公共成本）
-
+    private Integer type;
+    /**
+     * 对象ID,项目或者合同ID，类型为公共成本时为空
+     */
     @Column(name = "obj_id")
-    private Long objId;			//	对象ID
-
+    private Long objId;
+    /**
+     * 对象名称
+     */
     @Column(name = "obj_name")
-    private String objName;		//	对象名称
-
+    private String objName;
+    /**
+     * 工时投入（实际投入工时，项目成本需要）
+     */
     @Column(name = "real_input")
-    private Double realInput;	//	工时投入（实际投入工时，项目成本需要）
-
+    private Double realInput;
+    /**
+     * 工时产出（认可工时，统计员工贡献度需要）
+     */
     @Column(name = "accept_input")
-    private Double acceptInput;	//	工时产出（认可工时，统计员工贡献度需要）
-
+    private Double acceptInput;
+    /**
+     * 状态（1可用，2删除）
+     */
     @Column(name = "status_")
-    private Integer status;		//	状态（可用，删除）
-    
+    private Integer status;
+    /**
+     * 工作地点
+     */
     @Column(name = "work_area")
-    private String workArea;	//		地区
+    private String workArea;
     
     @Column(name = "creator_")
     private String creator;

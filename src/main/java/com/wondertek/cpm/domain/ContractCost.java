@@ -23,33 +23,51 @@ public class ContractCost implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-
+    /**
+     * 合同主键
+     */
     @Column(name = "contract_id")
-    private Long contractId;			//	合同主键
-
+    private Long contractId;
+    /**
+     * 合同预算主键（可能为空）
+     */
     @Column(name = "budget_id")
-    private Long budgetId;				//	合同预算主键（可能为空）
-
+    private Long budgetId;
+    /**
+     * 所属部门ID（这个是部门，跟着输入人员的部门走）
+     */
     @Column(name = "dept_id")
-    private Long deptId;				//	所属部门ID（这个是部门，跟着输入人员的部门走）
-
+    private Long deptId;
+    /**
+     * 所属部门（这个是部门，跟着输入人员的部门走）
+     */
     @Column(name = "dept_")
-    private String dept;				//	所属部门（这个是部门，跟着输入人员的部门走）
-
+    private String dept;
+    /**
+     * 名称
+     */
     @Column(name = "name_")
-    private String name;				//	名称
-
+    private String name;
+    /**
+     * 成本类型（1工时、2差旅、3采购、4商务）(工时不可输入，是统计新增的。其他可新增)
+     */
     @Column(name = "type_")
-    private Integer type;				//	成本类型（工时、差旅、采购、商务）(工时不可输入，是统计新增的。其他可新增)
-
+    private Integer type;
+    /**
+     * 金额
+     */
     @Column(name = "total_")
-    private Double total;				//	金额
-
+    private Double total;
+    /**
+     * 描述
+     */
     @Column(name = "cost_desc")
-    private String costDesc;			//	描述
-
+    private String costDesc;
+    /**
+     * 状态（1可用，2删除）
+     */
     @Column(name = "status_")
-    private Integer status;				//	状态（可用，删除）
+    private Integer status;
 
     @Column(name = "creator_")
     private String creator;

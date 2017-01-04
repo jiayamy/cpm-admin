@@ -23,24 +23,36 @@ public class ProjectCost implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-
+    /**
+     * 项目主键
+     */
     @Column(name = "project_id")
-    private Long projectId;			//	项目主键
-
+    private Long projectId;
+    /**
+     * 名称
+     */
     @Column(name = "name_")
-    private String name;			//	名称
-
+    private String name;
+    /**
+     * 成本类型（工时、差旅、采购、商务）(工时不可输入，是统计新增的。其他可新增)
+     */
     @Column(name = "type_")
-    private Integer type;			//	成本类型（工时、差旅、采购、商务）(工时不可输入，是统计新增的。其他可新增)
-
+    private Integer type;
+    /**
+     * 金额
+     */
     @Column(name = "total_")
-    private Double total;			//	金额
-
+    private Double total;
+    /**
+     * 描述
+     */
     @Column(name = "cost_desc")
-    private String costDesc;		//	描述
-
+    private String costDesc;
+    /**
+     * 状态（1可用，2删除）
+     */
     @Column(name = "status_")
-    private Integer status;			//	状态（可用，删除）
+    private Integer status;
 
     @Column(name = "creator_")
     private String creator;

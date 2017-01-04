@@ -23,12 +23,16 @@ public class ProjectFinishInfo implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-
+    /**
+     * 项目主键
+     */
     @Column(name = "project_id")
-    private Long projectId;				//	项目主键
-
+    private Long projectId;
+    /**
+     * 完成率，单位 %
+     */
     @Column(name = "finish_rate")
-    private Double finishRate;			//	完成率
+    private Double finishRate;
 
     @Column(name = "creator_")
     private String creator;

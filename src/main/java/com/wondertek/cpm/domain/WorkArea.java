@@ -22,7 +22,9 @@ public class WorkArea implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-
+    /**
+     * 工作地点，如上海或公司本部、合肥分部均可
+     */
     @Column(name = "name_")
     private String name;
 

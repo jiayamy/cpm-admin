@@ -23,87 +23,141 @@ public class ContractInfo implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-
+    /**
+     * 合同编号
+     */
     @Column(name = "serial_num")
-    private String serialNum;			//	合同编号
-
+    private String serialNum;
+    /**
+     * 合同名称
+     */
     @Column(name = "name_")
-    private String name;				//	合同名称
-
+    private String name;
+    /**
+     * 合同金额
+     */
     @Column(name = "amount_")
-    private Double amount;				//	合同金额
-
+    private Double amount;
+    /**
+     * 合同类型（1产品/2外包/3硬件/4公共成本）
+     */
     @Column(name = "type_")
-    private Integer type;				//	合同类型（产品/外包/硬件/公共成本）
-
+    private Integer type;
+    /**
+     * 是否预立（false正式合同/true预立合同），预立合同可以转正式合同
+     */
     @Column(name = "is_prepared")
-    private Boolean isPrepared;			//	是否预立（正式合同/预立合同），预立合同可以转正式合同
-
+    private Boolean isPrepared;
+    /**
+     * 是否外包（false内部合同/true外包合同）
+     */
     @Column(name = "is_epibolic")
-    private Boolean isEpibolic;			//	是否外包（内部合同/外包合同）--- 
-    
+    private Boolean isEpibolic;
+    /**
+     * 负责人ID（界面选择员工信息）
+     */
     @Column(name = "sales_man_id")
-    private Long salesmanId;			//	负责人ID（界面选择员工信息）
-    
+    private Long salesmanId;
+    /**
+     * 负责人名称
+     */
     @Column(name = "sales_man")
-    private String salesman;			//	负责人名称
-    
+    private String salesman;
+    /**
+     * 负责人所属部门ID
+     */
     @Column(name = "dept_id")
-    private Long deptId;				//	负责人所属部门ID
-    
+    private Long deptId;
+    /**
+     * 负责人所属部门
+     */
     @Column(name = "dept_")
-    private String dept;				//	负责人所属部门
-    
+    private String dept;
+    /**
+     * 开始日期,页面格式20161227
+     */
     @Column(name = "start_day")
-    private ZonedDateTime startDay;		//	开始日期,页面格式20161227
-
+    private ZonedDateTime startDay;
+    /**
+     * 结束日期
+     */
     @Column(name = "end_day")
-    private ZonedDateTime endDay;		//	结束日期
-
+    private ZonedDateTime endDay;
+    /**
+     * 税率,单位：% 精确小数点后2位
+     */
     @Column(name = "tax_rate")
-    private Double taxRate;				//	税率,精确小数点后2位
-
+    private Double taxRate;
+    /**
+     * 税费（元）,精确小数点后2位
+     */
     @Column(name = "taxes_")
-    private Double taxes;				//	税费（元）,精确小数点后2位
-
+    private Double taxes;
+    /**
+     * 公摊比例，单位：%
+     */
     @Column(name = "share_rate")
-    private Double shareRate;			//	公摊比例
-
+    private Double shareRate;
+    /**
+     * 公摊成本（合同金额*公摊比例）
+     */
     @Column(name = "share_cost")
-    private Double shareCost;			//	公摊成本（合同金额*公摊比例）
-
+    private Double shareCost;
+    /**
+     * 付款方式（比如“3,6,1”）
+     */
     @Column(name = "payment_way")
-    private String paymentWay;			//	付款方式（比如“3,6,1”）
-
+    private String paymentWay;
+    /**
+     * 合同方（公司名称）
+     */
     @Column(name = "contractor_")
-    private String contractor;			//	合同方（公司名称）
-
+    private String contractor;
+    /**
+     * 合同方通信地址
+     */
     @Column(name = "address_")
-    private String address;				//	合同方通信地址
-
+    private String address;
+    /**
+     * 合同方邮编
+     */
     @Column(name = "postcode_")
-    private String postcode;			//	合同方邮编
-
+    private String postcode;
+    /**
+     * 合同方联系人
+     */
     @Column(name = "linkman_")
-    private String linkman;				//	合同方联系人
-
+    private String linkman;
+    /**
+     * 合同方联系部门
+     */
     @Column(name = "contact_dept")
-    private String contactDept;			//	合同方联系部门
-
+    private String contactDept;
+    /**
+     * 合同方电话
+     */
     @Column(name = "telephone_")
-    private String telephone;			//	合同方电话
-
+    private String telephone;
+    /**
+     * 收款总金额（不展示，每次更新收款时，都需要更新此字段）
+     */
     @Column(name = "receive_total")
-    private Double receiveTotal;		//	收款总金额（不展示）
-
+    private Double receiveTotal;
+    /**
+     * 合同累计完成金额（不展示）
+     */
     @Column(name = "finish_total")
-    private Double finishTotal;		//	合同累计完成金额（不展示）
-    
+    private Double finishTotal;
+    /**
+     * 完成率（只展示，页面有按钮设置完成率）
+     */
     @Column(name = "finish_rate")
-    private Double finishRate;			//	完成率（只展示）
-
+    private Double finishRate;
+    /**
+     * 状态（1可用/2完成/3删除）
+     */
     @Column(name = "status_")
-    private Integer status;				//	状态（可用，删除）
+    private Integer status;
 
     @Column(name = "creator_")
     private String creator;

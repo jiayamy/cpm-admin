@@ -1,14 +1,19 @@
 package com.wondertek.cpm.domain;
 
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.springframework.data.elasticsearch.annotations.Document;
-
-import javax.persistence.*;
-import javax.validation.constraints.*;
 import java.io.Serializable;
 import java.time.ZonedDateTime;
 import java.util.Objects;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.springframework.data.elasticsearch.annotations.Document;
 
 /**
  * 部门信息
@@ -24,23 +29,31 @@ public class DeptInfo implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-
-    @NotNull
-    @Size(min = 1, max = 100)
-    @Column(name = "name_", length = 100, nullable = false)
-    private String name;			//部门名称
-
+    /**
+     * 部门名称
+     */
+    @Column(name = "name_")
+    private String name;
+    /**
+     * 上级部门主键
+     */
     @Column(name = "parent_id")
-    private Long parentId;			//上级部门主键
-
+    private Long parentId;
+    /**
+     * 父级ID路径，到“父IDPATH/父ID/”。。顶层默认是“/”
+     */
     @Column(name = "id_path")
-    private String idPath;			//父级ID路径，到“父IDPATH/父ID/”。。顶层默认是“/”
-
+    private String idPath;
+    /**
+     * 部门类型
+     */
     @Column(name = "type_")
-    private Long type;				//部门类型
-
+    private Long type;
+    /**
+     * 状态（1可用，2删除），删除时必须部门下面都没人员
+     */
     @Column(name = "status_")
-    private Integer status;			//状态（可用，删除）
+    private Integer status;
     
     @Column(name = "creator_")
     private String creator;

@@ -410,7 +410,8 @@ public class UserTimesheetService {
     	if(user.isPresent()){
     		User currUser = user.get();
     		Long userId = currUser.getId();
-    		String userName = currUser.getLogin();
+    		String userName = currUser.getLastName();
+    		String updator = currUser.getLogin();
     		//日期
     		UserTimesheetForUser dayTimesheet = userTimesheetForUsers.get(0);
     		Long[] lds = new Long[7];
@@ -486,57 +487,57 @@ public class UserTimesheetService {
         		if(userTimesheetForUser.getId1() != null || d1 != 0){
         			if(userTimesheetForUser.getId1() != null){
         				ids.add(userTimesheetForUser.getId1());
-        				updateList.add(createUserTimesheet(userTimesheetForUser,userName,userTimesheetForUser.getId1(),d1,lds[0],areas[0]));
+        				updateList.add(createUserTimesheet(userTimesheetForUser,userName,updator,userTimesheetForUser.getId1(),d1,lds[0],areas[0]));
         			}else{
-        				saveList.add(createUserTimesheet(userTimesheetForUser,userName,userTimesheetForUser.getId1(),d1,lds[0],areas[0]));
+        				saveList.add(createUserTimesheet(userTimesheetForUser,userName,updator,userTimesheetForUser.getId1(),d1,lds[0],areas[0]));
         			}
         		}
         		if(userTimesheetForUser.getId2() != null || d2 != 0){
         			if(userTimesheetForUser.getId2() != null){
         				ids.add(userTimesheetForUser.getId2());
-        				updateList.add(createUserTimesheet(userTimesheetForUser,userName,userTimesheetForUser.getId2(),d2,lds[1],areas[1]));
+        				updateList.add(createUserTimesheet(userTimesheetForUser,userName,updator,userTimesheetForUser.getId2(),d2,lds[1],areas[1]));
         			}else{
-        				saveList.add(createUserTimesheet(userTimesheetForUser,userName,userTimesheetForUser.getId2(),d2,lds[1],areas[1]));
+        				saveList.add(createUserTimesheet(userTimesheetForUser,userName,updator,userTimesheetForUser.getId2(),d2,lds[1],areas[1]));
         			}
         		}
         		if(userTimesheetForUser.getId3() != null || d3 != 0){
         			if(userTimesheetForUser.getId3() != null){
         				ids.add(userTimesheetForUser.getId3());
-        				updateList.add(createUserTimesheet(userTimesheetForUser,userName,userTimesheetForUser.getId3(),d3,lds[2],areas[2]));
+        				updateList.add(createUserTimesheet(userTimesheetForUser,userName,updator,userTimesheetForUser.getId3(),d3,lds[2],areas[2]));
         			}else{
-        				saveList.add(createUserTimesheet(userTimesheetForUser,userName,userTimesheetForUser.getId3(),d3,lds[2],areas[2]));
+        				saveList.add(createUserTimesheet(userTimesheetForUser,userName,updator,userTimesheetForUser.getId3(),d3,lds[2],areas[2]));
         			}
         		}
         		if(userTimesheetForUser.getId4() != null || d4 != 0){
         			if(userTimesheetForUser.getId4() != null){
         				ids.add(userTimesheetForUser.getId4());
-        				updateList.add(createUserTimesheet(userTimesheetForUser,userName,userTimesheetForUser.getId4(),d4,lds[3],areas[3]));
+        				updateList.add(createUserTimesheet(userTimesheetForUser,userName,updator,userTimesheetForUser.getId4(),d4,lds[3],areas[3]));
         			}else{
-        				saveList.add(createUserTimesheet(userTimesheetForUser,userName,userTimesheetForUser.getId4(),d4,lds[3],areas[3]));
+        				saveList.add(createUserTimesheet(userTimesheetForUser,userName,updator,userTimesheetForUser.getId4(),d4,lds[3],areas[3]));
         			}
         		}
         		if(userTimesheetForUser.getId5() != null || d5 != 0){
         			if(userTimesheetForUser.getId5() != null){
         				ids.add(userTimesheetForUser.getId5());
-        				updateList.add(createUserTimesheet(userTimesheetForUser,userName,userTimesheetForUser.getId5(),d5,lds[4],areas[4]));
+        				updateList.add(createUserTimesheet(userTimesheetForUser,userName,updator,userTimesheetForUser.getId5(),d5,lds[4],areas[4]));
         			}else{
-        				saveList.add(createUserTimesheet(userTimesheetForUser,userName,userTimesheetForUser.getId5(),d5,lds[4],areas[4]));
+        				saveList.add(createUserTimesheet(userTimesheetForUser,userName,updator,userTimesheetForUser.getId5(),d5,lds[4],areas[4]));
         			}
         		}
         		if(userTimesheetForUser.getId6() != null || d6 != 0){
         			if(userTimesheetForUser.getId6() != null){
         				ids.add(userTimesheetForUser.getId6());
-        				updateList.add(createUserTimesheet(userTimesheetForUser,userName,userTimesheetForUser.getId6(),d6,lds[5],areas[5]));
+        				updateList.add(createUserTimesheet(userTimesheetForUser,userName,updator,userTimesheetForUser.getId6(),d6,lds[5],areas[5]));
         			}else{
-        				saveList.add(createUserTimesheet(userTimesheetForUser,userName,userTimesheetForUser.getId6(),d6,lds[5],areas[5]));
+        				saveList.add(createUserTimesheet(userTimesheetForUser,userName,updator,userTimesheetForUser.getId6(),d6,lds[5],areas[5]));
         			}
         		}
         		if(userTimesheetForUser.getId7() != null || d7 != 0){
         			if(userTimesheetForUser.getId7() != null){
         				ids.add(userTimesheetForUser.getId7());
-        				updateList.add(createUserTimesheet(userTimesheetForUser,userName,userTimesheetForUser.getId7(),d7,lds[6],areas[6]));
+        				updateList.add(createUserTimesheet(userTimesheetForUser,userName,updator,userTimesheetForUser.getId7(),d7,lds[6],areas[6]));
         			}else{
-        				saveList.add(createUserTimesheet(userTimesheetForUser,userName,userTimesheetForUser.getId7(),d7,lds[6],areas[6]));
+        				saveList.add(createUserTimesheet(userTimesheetForUser,userName,updator,userTimesheetForUser.getId7(),d7,lds[6],areas[6]));
         			}
         		}
     		}
@@ -637,11 +638,11 @@ public class UserTimesheetService {
     	}
 	}
 
-	private UserTimesheet createUserTimesheet(UserTimesheetForUser userTimesheetForUser, String userName, Long id, Double realInput,Long workDay,String workArea) {
+	private UserTimesheet createUserTimesheet(UserTimesheetForUser userTimesheetForUser,String userName, String updator, Long id, Double realInput,Long workDay,String workArea) {
 		UserTimesheet userTimesheet = new UserTimesheet();
 		userTimesheet.setAcceptInput(realInput);
 		userTimesheet.setCreateTime(ZonedDateTime.now());
-		userTimesheet.setCreator(userName);
+		userTimesheet.setCreator(updator);
 		userTimesheet.setId(id);
 		userTimesheet.setObjId(userTimesheetForUser.getObjId());
 		userTimesheet.setObjName(userTimesheetForUser.getObjName());
@@ -649,7 +650,7 @@ public class UserTimesheetService {
 		userTimesheet.setStatus(CpmConstants.STATUS_VALID);
 		userTimesheet.setType(userTimesheetForUser.getType());
 		userTimesheet.setUpdateTime(userTimesheet.getCreateTime());
-		userTimesheet.setUpdator(userName);
+		userTimesheet.setUpdator(updator);
 		userTimesheet.setUserId(userTimesheetForUser.getUserId());
 		userTimesheet.setUserName(userName);
 		userTimesheet.setWorkArea(workArea);

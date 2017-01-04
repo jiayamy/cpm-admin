@@ -32,7 +32,7 @@ public class ProjectUserDaoImpl extends GenericDaoImpl<ProjectUser, Long> implem
 	public List<LongValue> getByUserAndDay(Long userId, Long[] weekDays) {
 		StringBuffer sql = new StringBuffer();
 		List<Object> params = new ArrayList<Object>();
-		sql.append("select pu.project_id,pi.serial_num from w_project_user pu left join w_project_info pi on pu.project_id = pi.id where pi.id is not null and pu.user_id = ?");
+		sql.append("select distinct pu.project_id,pi.serial_num from w_project_user pu left join w_project_info pi on pu.project_id = pi.id where pi.id is not null and pu.user_id = ?");
 		params.add(userId);
 		
 		if(weekDays != null && weekDays.length > 0){

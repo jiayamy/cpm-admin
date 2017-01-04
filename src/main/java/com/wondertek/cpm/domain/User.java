@@ -32,41 +32,55 @@ public class User extends AbstractAuditingEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-
+    /**
+     * 登录用户名
+     */
     @NotNull
     @Pattern(regexp = Constants.LOGIN_REGEX)
     @Size(min = 1, max = 50)
     @Column(length = 50, unique = true, nullable = false)
-    private String login;						//登录用户名
-
+    private String login;
+    /**
+     * 密码
+     */
     @JsonIgnore
     @NotNull
     @Size(min = 60, max = 60)
     @Column(name = "password_hash",length = 60)
-    private String password;					//密码
-
+    private String password;
+    
     @Size(max = 50)
     @Column(name = "first_name", length = 50)
     @Deprecated
     private String firstName;					//这个干掉，用lastName作为员工的真实姓名
-
+    /**
+     * 员工真实姓名
+     */
     @Size(max = 50)
     @Column(name = "last_name", length = 50)
-    private String lastName;					//员工真实姓名
-
+    private String lastName;
+    /**
+     * EMAIL
+     */
     @Email
     @Size(max = 100)
     @Column(length = 100, unique = true)
-    private String email;						//email
-
+    private String email;
+    /**
+     * 是否激活
+     */
     @NotNull
     @Column(nullable = false)
     private boolean activated = false;
-
+    /**
+     * 语言
+     */
     @Size(min = 2, max = 5)
     @Column(name = "lang_key", length = 5)
     private String langKey;
-
+    /**
+     * 
+     */
     @Size(max = 20)
     @Column(name = "activation_key", length = 20)
     @JsonIgnore
@@ -78,33 +92,51 @@ public class User extends AbstractAuditingEntity implements Serializable {
 
     @Column(name = "reset_date", nullable = true)
     private ZonedDateTime resetDate = null;
-
+    /**
+     * 工号，唯一
+     */
     @Column(name = "serial_num")
-    private String serialNum;				//工号
-
+    private String serialNum;
+    /**
+     * 所属部门
+     */
     @Column(name = "dept_id")
-    private Long deptId;					//所属部门
-
+    private Long deptId;
+    /**
+     * 管理人员（true是/false否，默认否）
+     */
     @Column(name = "is_manager")
-    private Boolean isManager;				//管理人员（是/否，默认否）
-
+    private Boolean isManager;
+    /**
+     * 岗位
+     */
     @Column(name = "duty_")
-    private String duty;					//岗位
-
+    private String duty;
+    /**
+     * 级别
+     */
     @Column(name = "grade_")
-    private String grade;					//级别
-
+    private String grade;
+    /**
+     * 性别(1男/2女)
+     */
     @Column(name = "gender_")
-    private Integer gender;					//性别
-
+    private Integer gender;
+    /**
+     * 出生年,如1990
+     */
     @Column(name = "birth_year")
-    private String birthYear;				//出生年
-
+    private String birthYear;
+    /**
+     * 生日，如1212
+     */
     @Column(name = "birth_day")
-    private String birthDay;				//生日
-
+    private String birthDay;
+    /**
+     * 电话
+     */
     @Column(name = "telephone_")
-    private String telephone;				//电话
+    private String telephone;
 	
     @JsonIgnore
     @ManyToMany
@@ -144,11 +176,11 @@ public class User extends AbstractAuditingEntity implements Serializable {
     public void setPassword(String password) {
         this.password = password;
     }
-
+    @Deprecated
     public String getFirstName() {
         return firstName;
     }
-
+    @Deprecated
     public void setFirstName(String firstName) {
         this.firstName = firstName;
     }

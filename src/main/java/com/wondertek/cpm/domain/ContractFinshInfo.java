@@ -29,12 +29,16 @@ public class ContractFinshInfo implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-
+    /**
+     * 合同主键
+     */
     @Column(name = "contract_id")
-    private Long contractId;			//	合同主键
-
+    private Long contractId;
+    /**
+     * 完成率，实时更新到合同信息中，单位%，精确到小数点后2位，如80.05%就填写80.05
+     */
     @Column(name = "finish_rate")
-    private Double finishRate;			//	完成率，实时更新到合同信息中
+    private Double finishRate;
 
     @Column(name = "creator_")
     private String creator;

@@ -23,21 +23,31 @@ public class ContractReceive implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-
+    /**
+     * 合同主键 
+     */
     @Column(name = "contract_id")
-    private Long contractId;			//	合同主键 
-
+    private Long contractId;
+    /**
+     * 收款额---实时更新合同信息中的收款金额（根据状态为可用或删除来操作）
+     */
     @Column(name = "receive_total")
-    private Double receiveTotal;		//	收款额---实时更新合同信息中的收款金额（根据状态为可用或删除来操作）
-
+    private Double receiveTotal;
+    /**
+     * 收款时间(格式：20161227)
+     */
     @Column(name = "receive_day")
-    private Long receiveDay;			//	收款时间(格式：20161227)
-    
+    private Long receiveDay;
+    /**
+     * 收款人
+     */
     @Column(name = "receiver_")
-    private String receiver;			//		收款人
-
+    private String receiver;
+    /**
+     * 状态（1可用，2删除）
+     */
     @Column(name = "status_")
-    private Integer status;				//	状态（可用，删除）
+    private Integer status;
 
     @Column(name = "creator_")
     private String creator;

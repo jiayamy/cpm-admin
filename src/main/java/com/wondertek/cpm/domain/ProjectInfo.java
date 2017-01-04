@@ -23,48 +23,74 @@ public class ProjectInfo implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-
+    /**
+     * 项目编号
+     */
     @Column(name = "serial_num")
-    private String serialNum;		//	项目编号
-
+    private String serialNum;
+    /**
+     * 合同主键 
+     */
     @Column(name = "contract_id")
-    private Long contractId;		//	合同主键 
-
+    private Long contractId;
+    /**
+     * 合同预算主键
+     */
     @Column(name = "budget_id")
-    private Long budgetId;			//	合同预算主键
-
+    private Long budgetId;
+    /**
+     * 项目名称
+     */
     @Column(name = "name_")
-    private String name;			//	项目名称
-
+    private String name;
+    /**
+     * 项目经理ID（对应一个具体的员工，弹窗选择员工）
+     */
     @Column(name = "pm_id")
-    private Long pmId;				//	项目经理ID（对应一个具体的员工，弹窗选择员工）
-
+    private Long pmId;
+    /**
+     * 项目经理（对应一个具体的员工，弹窗选择员工）
+     */
     @Column(name = "pm_")
-    private String pm;				//	项目经理（对应一个具体的员工，弹窗选择员工）
-    
+    private String pm;
+    /**
+     * 所属部门（跟着项目经理走，用户所属部门，只展示，不可更改）
+     */
     @Column(name = "dept_id")
-    private Long deptId;			//	所属部门（跟着项目经理走，用户所属部门，只展示，不可更改）
-
+    private Long deptId;
+    /**
+     * 所属部门（跟着项目经理走，用户所属部门，只展示，不可更改）
+     */
     @Column(name = "dept_")
-    private String dept;			//	所属部门（跟着项目经理走，用户所属部门，只展示，不可更改）
-    
+    private String dept;
+    /**
+     * 开始日期
+     */
     @Column(name = "start_day")
-    private ZonedDateTime startDay;	//	开始日期
-
+    private ZonedDateTime startDay;
+    /**
+     * 结束日期
+     */
     @Column(name = "end_day")
-    private ZonedDateTime endDay;	//	结束日期
-
+    private ZonedDateTime endDay;
+    /**
+     * 预算总额
+     */
     @Column(name = "budget_total")
-    private Double budgetTotal;		//	预算总额
-
+    private Double budgetTotal;
+    /**
+     * 状态（1开发中/2结项/3删除）
+     */
     @Column(name = "status_")
-    private Integer status;			//	状态（开发中，结项，删除）
-
+    private Integer status;
+    /**
+     * 完成率（只展示）
+     */
     @Column(name = "finish_rate")
-    private Double finishRate;			//	完成率（只展示）
+    private Double finishRate;
     
     @Column(name = "creator_")
-    private String creator;			//
+    private String creator;
 
     @Column(name = "create_time")
     private ZonedDateTime createTime;
