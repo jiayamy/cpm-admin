@@ -15,7 +15,8 @@
                 "deptInfo": "部门信息",
 	            "userManagement":"用户管理",
                 "userCost": "员工成本",
-                "holidayInfo": "节假日信息"
+                "holidayInfo": "节假日信息",
+                "workArea": "工作地点"
 	        },
             "contract":{
             	"main":"合同管理",

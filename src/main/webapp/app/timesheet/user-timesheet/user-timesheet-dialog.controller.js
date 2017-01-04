@@ -5,16 +5,16 @@
         .module('cpmApp')
         .controller('UserTimesheetDialogController', UserTimesheetDialogController);
 
-    UserTimesheetDialogController.$inject = ['$timeout','$state','AlertService','DateUtils', '$scope', '$stateParams','previousState', 'entity', 'UserTimesheetSearch'];
+    UserTimesheetDialogController.$inject = ['$timeout','$state','AlertService','DateUtils', '$scope', '$stateParams','previousState', 'entity', 'UserTimesheetSearch','WorkArea'];
 
-    function UserTimesheetDialogController ($timeout,$state,AlertService,DateUtils, $scope, $stateParams,previousState, entity, UserTimesheetSearch) {
+    function UserTimesheetDialogController ($timeout,$state,AlertService,DateUtils, $scope, $stateParams,previousState, entity, UserTimesheetSearch, WorkArea) {
         var vm = this;
 
         vm.previousState = previousState.name;
         vm.userTimesheet = entity;
         vm.save = save;
         
-        vm.allAreas = ['上海','合肥','杭州'];
+        vm.allAreas = [];
         
         vm.datePickerOpenStatus = {};
         vm.openCalendar = openCalendar;
@@ -26,10 +26,16 @@
         	vm.searchQuery.workDay = new Date(""+y,""+m,""+d);
         }
         vm.search = search;
+        loadWorkArea();
         loadAll();
         
         function search(){
         	loadAll();
+        }
+        function loadWorkArea(){
+        	WorkArea.queryAll({},function onSuccess(data, headers) {
+        		vm.allAreas = data;
+        	})
         }
         function loadAll () {
         	var workDay = "";

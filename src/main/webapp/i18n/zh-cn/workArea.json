@@ -1,0 +1,22 @@
+{
+    "cpmApp": {
+        "workArea" : {
+            "home": {
+                "title": "工作地点",
+                "createLabel": "新增",
+                "createOrEditLabel": "新增工作地点",
+                "search": "搜索"
+            },
+            "created": "工作地点已创建",
+            "updated": "工作地点已更新",
+            "deleted": "主键为[{{ param }}]的工作地点已更新",
+            "delete": {
+                "question": "你确定需要删除主键为 {{ id }}的工作地点?"
+            },
+            "detail": {
+                "title": "工作地点信息"
+            },
+            "name": "地点"
+        }
+    }
+}

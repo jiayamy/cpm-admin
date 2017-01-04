@@ -1,7 +1,5 @@
 package com.wondertek.cpm.util;
 
-import java.util.Date;
-
 import com.wondertek.cpm.config.DateUtil;
 
 public class DateTest {

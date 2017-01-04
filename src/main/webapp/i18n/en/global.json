@@ -15,7 +15,8 @@
 	            "deptInfo": "Dept Info",
 	            "userManagement":"User management",
 	            "userCost": "User Cost",
-	            "holidayInfo": "Holiday Info"
+	            "holidayInfo": "Holiday Info",
+	            "workArea": "Work Area"
 	        },
 	        "contract":{
 	        	"main":"Contract",
