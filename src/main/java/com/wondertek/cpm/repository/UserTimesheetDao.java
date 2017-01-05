@@ -19,5 +19,8 @@ public interface UserTimesheetDao extends GenericDao<UserTimesheet, Long> {
 	 * @return
 	 */
 	public List<UserTimesheet> getByWorkDayAndUser(Long startDay, Long endDay, Long userId);
-
+	/**
+	 * 用户自己新增修改的
+	 */
+	public void saveByUser(List<UserTimesheet> saveList, List<UserTimesheet> updateList);
 }

@@ -329,4 +329,47 @@ public abstract class GenericDaoImpl<T, PK extends Serializable> implements Gene
 		}
 		return query.getSingleResult();
 	}
+
+	@Override
+	public int excuteSql(String excuteSql, Object[] params) {
+		return excuteSql(excuteSql,params,null);
+	}
+
+	@Override
+	public int excuteSql(String excuteSql, Object[] params, Map<String, Object> paramNameList) {
+		Query query = entityManager.createNativeQuery(excuteSql);
+		if (params != null) {
+			for (int i = 1; i <= params.length; i++) {
+				query.setParameter(i, params[i-1]);
+			}
+		}
+		if (paramNameList != null) {
+			for (Iterator<String> it = paramNameList.keySet().iterator(); it.hasNext();) {
+				String columnName = it.next();
+				query.setParameter(columnName, paramNameList.get(columnName));
+			}
+		}
+		return query.executeUpdate();
+	}
+
+	@Override
+	public int excuteHql(String excuteHql, Object[] params) {
+		return excuteHql(excuteHql,params,null);
+	}
+	@Override
+	public int excuteHql(String excuteHql, Object[] params, Map<String, Object> paramNameList) {
+		Query query = entityManager.createQuery(excuteHql);
+		if (params != null) {
+			for (int i = 0; i < params.length; i++) {
+				query.setParameter(i, params[i]);
+			}
+		}
+		if (paramNameList != null) {
+			for (Iterator<String> it = paramNameList.keySet().iterator(); it.hasNext();) {
+				String columnName = it.next();
+				query.setParameter(columnName, paramNameList.get(columnName));
+			}
+		}
+		return query.executeUpdate();
+	}
 }

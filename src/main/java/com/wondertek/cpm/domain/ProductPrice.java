@@ -23,21 +23,31 @@ public class ProductPrice implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-
+    /**
+     * 产品名称
+     */
     @Column(name = "name_")
-    private String name;		//	产品名称
-
+    private String name;
+    /**
+     * 产品类型（1硬件/2软件）
+     */
     @Column(name = "type_")
-    private Integer type;		//	产品类型（硬件/软件）
-
+    private Integer type;
+    /**
+     * 产品单位（同采购子项），下拉框选择
+     */
     @Column(name = "units_")
-    private String units;		//	产品单位（同采购子项）
-
+    private String units;
+    /**
+     * 产品单价（元）
+     */
     @Column(name = "price_")
-    private Double price;		//	产品单价（元）
-
+    private Double price;
+    /**
+     * 产品来源（1内部/2外部）
+     */
     @Column(name = "source_")
-    private Integer source;		//	产品来源（内部/外部）
+    private Integer source;
 
     @Column(name = "creator_")
     private String creator;

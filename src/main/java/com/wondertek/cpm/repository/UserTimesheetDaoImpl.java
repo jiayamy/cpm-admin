@@ -86,5 +86,21 @@ public class UserTimesheetDaoImpl extends GenericDaoImpl<UserTimesheet, Long> im
 		return this.queryAllHql("from UserTimesheet where workDay >= ? and workDay <= ? and status = ? and userId = ? order by workDay asc,id asc",
 				new Object[]{startDay,endDay,CpmConstants.STATUS_VALID,userId});
 	}
+
+	@Override
+	public void saveByUser(List<UserTimesheet> saveList,List<UserTimesheet> updateList) {
+		if(saveList != null && !saveList.isEmpty()){
+			for(UserTimesheet userTimesheet : saveList){
+				this.save(userTimesheet);
+			}
+		}
+		if(updateList != null && !updateList.isEmpty()){
+			for(UserTimesheet userTimesheet : updateList){
+				this.excuteHql("update UserTimesheet set realInput = ?,status = ?,workArea = ?,updator = ?,updateTime = ? where id = ?",
+						new Object[]{userTimesheet.getRealInput(),userTimesheet.getStatus(),userTimesheet.getWorkArea(),
+								userTimesheet.getUpdator(),userTimesheet.getUpdateTime(),userTimesheet.getId()});
+			}
+		}
+	}
 	
 }

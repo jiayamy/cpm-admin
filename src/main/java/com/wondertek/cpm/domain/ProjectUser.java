@@ -29,24 +29,36 @@ public class ProjectUser implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-
+    /**
+     * 项目主键
+     */
     @Column(name = "project_id")
-    private Long projectId;			//	项目主键
-
+    private Long projectId;
+    /**
+     * 人员ID 一个人可以在一个项目中出现多次，时间区间不能重叠，如果离开时间为空，则加盟日后的时间都不能再次新增该人员。
+     */
     @Column(name = "user_id")
-    private Long userId;			//	项目人员ID
-
+    private Long userId;
+    /**
+     * 项目人员名称
+     */
     @Column(name = "user_name")
-    private String userName;		//	项目人员名称
-
+    private String userName;
+    /**
+     * 人员角色（需求、开发、测试、研发、项目经理）
+     */
     @Column(name = "user_role")
-    private String userRole;		//	人员角色（需求、开发、测试、研发、项目经理）
-
+    private String userRole;
+    /**
+     * 加盟日，比如20161227
+     */
     @Column(name = "join_day")
-    private Long joinDay;			//	加盟日，比如20161227
-
+    private Long joinDay;
+    /**
+     * 离开日，比如20161227
+     */
     @Column(name = "leave_day")
-    private Long leaveDay;			//	离开日，比如20161227
+    private Long leaveDay;
 
     @Column(name = "creator_")
     private String creator;

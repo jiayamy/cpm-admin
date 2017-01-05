@@ -5,6 +5,7 @@ import com.wondertek.cpm.domain.HolidayInfo;
 import com.wondertek.cpm.service.HolidayInfoService;
 import com.wondertek.cpm.web.rest.util.HeaderUtil;
 import com.wondertek.cpm.web.rest.util.PaginationUtil;
+import com.wondertek.cpm.web.rest.util.TimerHolidayUtil;
 
 import io.swagger.annotations.ApiParam;
 import org.slf4j.Logger;
@@ -19,6 +20,8 @@ import org.springframework.web.bind.annotation.*;
 import javax.inject.Inject;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -92,6 +95,22 @@ public class HolidayInfoResource {
     public ResponseEntity<List<HolidayInfo>> getAllHolidayInfos(@ApiParam Pageable pageable)
         throws URISyntaxException {
         log.debug("REST request to get a page of HolidayInfos");
+        //初始化留着，把初始化方法修改下，以防定时任务不起作用
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.YEAR, cal.get(Calendar.YEAR));
+        cal.set(Calendar.MONTH, Calendar.DECEMBER);
+        cal.set(Calendar.DAY_OF_MONTH, cal.getActualMaximum(Calendar.DAY_OF_MONTH));
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+        Long dateTime = Long.valueOf(sdf.format(cal.getTime()));
+        int count = holidayInfoService.findByCurrDay(dateTime);
+        if(count<=0){
+        	List<HolidayInfo> lists = TimerHolidayUtil.holidayUpdate();
+        	if(lists != null && !lists.isEmpty()){
+        		//这个地方修改下，写到service里面去
+        		lists = holidayInfoService.save(lists);
+        	}
+        }
+        
         Page<HolidayInfo> page = holidayInfoService.findAll(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/holiday-infos");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);

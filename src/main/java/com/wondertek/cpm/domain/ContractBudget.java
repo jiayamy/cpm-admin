@@ -23,33 +23,51 @@ public class ContractBudget implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-
+    /**
+     * 合同主键 
+     */
     @Column(name = "contract_id")
-    private Long contractId;			//	合同主键 
-
+    private Long contractId;
+    /**
+     * 预算类型（1销售/2咨询/3内部采购单）
+     */
     @Column(name = "type_")
-    private Integer type;				//	预算类型（销售/咨询/内部采购单）
-
+    private Integer type;
+    /**
+     * 负责人ID（对应一个具体的员工，弹窗选择员工）
+     */
     @Column(name = "user_id")
-    private Long userId;				//	实施者ID（对应一个具体的员工，弹窗选择员工）
-
+    private Long userId;
+    /**
+     * 负责人名称
+     */
     @Column(name = "user_name")
-    private String userName;			//		实施者名称
-
+    private String userName;
+    /**
+     * 所属部门ID（跟着负责人走，用户所属部门，只展示，不可更改）
+     */
     @Column(name = "dept_id")
-    private Long deptId;				//	所属部门ID（跟着实施者走，用户所属部门，只展示，不可更改）
-    
+    private Long deptId;
+    /**
+     * 所属部门
+     */
     @Column(name = "dept_")
-    private String dept;				//	所属部门
-
+    private String dept;
+    /**
+     * 采购单类型（预算类型为内部采购单时填写，1硬件/2软件/3服务---服务可以创建项目，其他的不可以）
+     */
     @Column(name = "purchase_type")
-    private Integer purchaseType;		//	采购单类型（预算类型为内部采购单时填写，硬件/软件/服务---服务可以创建项目，其他的不可以）
-
+    private Integer purchaseType;
+    /**
+     * 预算金额
+     */
     @Column(name = "budget_total")
-    private Double budgetTotal;			//	预算金额
-
+    private Double budgetTotal;
+    /**
+     * 状态（1可用，2删除）
+     */
     @Column(name = "status_")
-    private Integer status;				//	状态（可用，删除）
+    private Integer status;
 
     @Column(name = "creator_")
     private String creator;

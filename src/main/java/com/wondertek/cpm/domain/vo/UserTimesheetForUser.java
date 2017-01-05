@@ -20,7 +20,8 @@ public class UserTimesheetForUser {
 	private String data7;		//	
 	private Long id7;			//		对应的ID
 	
-	public UserTimesheetForUser(String data1, String data2, String data3, String data4, String data5, String data6,String data7) {
+	public UserTimesheetForUser(Integer type, String data1, String data2, String data3, String data4, String data5, String data6,String data7) {
+		this.type = type;
 		this.data1 = data1;
 		this.data2 = data2;
 		this.data3 = data3;

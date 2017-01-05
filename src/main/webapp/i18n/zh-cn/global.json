@@ -15,7 +15,8 @@
                 "deptInfo": "部门信息",
 	            "userManagement":"用户管理",
                 "userCost": "员工成本",
-                "holidayInfo": "节假日信息"
+                "holidayInfo": "节假日信息",
+                "workArea": "工作地点"
 	        },
             "contract":{
             	"main":"合同管理",
@@ -81,7 +82,7 @@
         },
         "messages": {
             "info": {
-                "authenticated": "如果您要<a class=\"alert-link\" href=\"\" ng-click=\"vm.login()\">登录</a>, 您可以使用默认账号:<br/>- 管理员 (账号=\"admin\"和密码=\"admin\") <br/>- 普通用户 (账号=\"user\"和密码=\"user\").",
+                "authenticated": "",
                 "register": "您还没有账号？<a class=\"alert-link\" href=\"\" ng-click=\"vm.register()\">注册一个新账号</a>",
                 "desc":"统筹调配 科学管理<br/>合理风控 目标高效"
             },
@@ -156,7 +157,8 @@
         "userexists": "该用户名已存在!",
         "emailexists": "该邮箱已被使用!",
         "idexists": "新建的 {{entityName}} 不能包含ID",
-        "internalServerError":"出现未知异常"
+        "internalServerError":"错误:出现未知异常",
+        "methodNotSupported":"错误:没有该方法"
     },
-    "footer": "© 2009-2016 上海网达软件股份有限公司 版权所有 沪ICP备 10042738号-1"
+    "footer": "© 2009-2016 上海网达软件股份有限公司 版权所有"
 }

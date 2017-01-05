@@ -6,9 +6,9 @@ import com.wondertek.cpm.domain.vo.LongValue;
 
 public interface ContractUserDao extends GenericDao<ContractUser, Long> {
 	/**
-	 * 获取用户参与过的所有合同
+	 * 获取用户在某个时段参加过的合同
 	 * @return
 	 */
-	List<LongValue> getAllByUser(Long userId);
+	List<LongValue> getByUserAndDay(Long userId,Long[] weekDays);
 
 }

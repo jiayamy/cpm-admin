@@ -23,12 +23,16 @@ public class HolidayInfo implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-
+    /**
+     * 当前天，比如20161227，唯一性约束
+     */
     @Column(name = "curr_day")
-    private Long currDay;			//当前天，比如20161227
-
+    private Long currDay;
+    /**
+     * 类型（1正常工作日/2正常假日/3年假/4国家假日）
+     */
     @Column(name = "type_")
-    private Integer type;			//类型（正常工作日/正常假日/年假/国家假日）
+    private Integer type;
 
     @Column(name = "creator_")
     private String creator;

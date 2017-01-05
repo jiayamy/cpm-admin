@@ -23,11 +23,13 @@ public class DeptType implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-
+    /**
+     * 类型名称 (1管理/2销售/3产品咨询/4产品研发中心/5项目实施/6采购/7行政/8财务/9质量管理/10人力资源）
+     */
     @NotNull
     @Size(min = 1, max = 100)
     @Column(name = "name_", length = 100, nullable = false)
-    private String name;		//类型名称 (管理/销售/产品咨询/产品研发中心/项目实施/采购/行政/财务/质量管理/人力资源）
+    private String name;
 
     public Long getId() {
         return id;

@@ -29,7 +29,7 @@
                     squash: true
                 },
                 sort: {
-                    value: 'id,asc',
+                    value: 'workDay,desc',
                     squash: true
                 },
                 workDay: null,
@@ -109,7 +109,6 @@
 	                return UserTimesheet.get({id : $stateParams.id}).$promise;
 	            }],
 	            previousState: ["$state", function ($state) {
-	            	console.log($state.current.name);
 	                var currentStateData = {
 	                    name: $state.current.name || 'user-timesheet-detail',
 	                    params: $state.params,
@@ -125,38 +124,44 @@
             data: {
                 authorities: ['ROLE_TIMESHEET']
             },
-            onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
-                $uibModal.open({
+            views: {
+                'content@': {
                     templateUrl: 'app/timesheet/user-timesheet/user-timesheet-dialog.html',
                     controller: 'UserTimesheetDialogController',
-                    controllerAs: 'vm',
-                    backdrop: 'static',
-                    size: 'lg',
-                    resolve: {
-                        entity: function () {
-                            return {
-                                workDay: null,
-                                userId: null,
-                                type: null,
-                                objId: null,
-                                objName: null,
-                                realInput: null,
-                                acceptInput: null,
-                                status: null,
-                                creator: null,
-                                createTime: null,
-                                updator: null,
-                                updateTime: null,
-                                id: null
-                            };
-                        }
-                    }
-                }).result.then(function() {
-                    $state.go('user-timesheet', null, { reload: 'user-timesheet' });
-                }, function() {
-                    $state.go('user-timesheet');
-                });
-            }]
+                    controllerAs: 'vm'
+                }
+            },
+            resolve: {
+	            translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
+	                $translatePartialLoader.addPart('userTimesheet');
+	                return $translate.refresh();
+	            }],
+	            entity: ['$stateParams', 'UserTimesheet', function($stateParams, UserTimesheet) {
+	            	return {
+                        workDay: null,
+                        userId: null,
+                        type: null,
+                        objId: null,
+                        objName: null,
+                        realInput: null,
+                        acceptInput: null,
+                        status: null,
+                        creator: null,
+                        createTime: null,
+                        updator: null,
+                        updateTime: null,
+                        id: null
+                    };
+	            }],
+	            previousState: ["$state", function ($state) {
+	                var currentStateData = {
+	                    name: $state.current.name || 'user-timesheet',
+	                    params: $state.params,
+	                    url: $state.href($state.current.name, $state.params)
+	                };
+	                return currentStateData;
+	            }]
+            }
         })
         .state('user-timesheet.edit', {
             parent: 'user-timesheet',
@@ -164,24 +169,30 @@
             data: {
                 authorities: ['ROLE_TIMESHEET']
             },
-            onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
-                $uibModal.open({
+            views: {
+                'content@': {
                     templateUrl: 'app/timesheet/user-timesheet/user-timesheet-dialog.html',
                     controller: 'UserTimesheetDialogController',
-                    controllerAs: 'vm',
-                    backdrop: 'static',
-                    size: 'lg',
-                    resolve: {
-                        entity: ['UserTimesheet', function(UserTimesheet) {
-                            return UserTimesheet.get({id : $stateParams.id}).$promise;
-                        }]
-                    }
-                }).result.then(function() {
-                    $state.go('user-timesheet', null, { reload: 'user-timesheet' });
-                }, function() {
-                    $state.go('^');
-                });
-            }]
+                    controllerAs: 'vm'
+                }
+            },
+            resolve: {
+	            translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
+	                $translatePartialLoader.addPart('userTimesheet');
+	                return $translate.refresh();
+	            }],
+	            entity: ['$stateParams', 'UserTimesheet', function($stateParams, UserTimesheet) {
+	            	return UserTimesheet.get({id : $stateParams.id}).$promise;
+	            }],
+	            previousState: ["$state", function ($state) {
+	                var currentStateData = {
+	                    name: $state.current.name || 'user-timesheet',
+	                    params: $state.params,
+	                    url: $state.href($state.current.name, $state.params)
+	                };
+	                return currentStateData;
+	            }]
+            }
         })
         .state('user-timesheet.delete', {
             parent: 'user-timesheet',

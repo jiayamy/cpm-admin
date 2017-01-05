@@ -56,5 +56,7 @@
 
     <cache alias="com.wondertek.cpm.domain.ProjectFinishInfo" uses-template="simple"/>
 
+    <cache alias="com.wondertek.cpm.domain.WorkArea" uses-template="simple"/>
+
     <!-- jhipster-needle-ehcache-add-entry -->
 </config>

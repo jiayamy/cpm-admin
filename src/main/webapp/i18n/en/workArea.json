@@ -1,0 +1,22 @@
+{
+    "cpmApp": {
+        "workArea" : {
+            "home": {
+                "title": "Work Areas",
+                "createLabel": "Create a new Work Area",
+                "createOrEditLabel": "Create or edit a Work Area",
+                "search": "Search for Work Area"
+            },
+            "created": "A new Work Area is created with identifier {{ param }}",
+            "updated": "A Work Area is updated with identifier {{ param }}",
+            "deleted": "A Work Area is deleted with identifier {{ param }}",
+            "delete": {
+                "question": "Are you sure you want to delete Work Area {{ id }}?"
+            },
+            "detail": {
+                "title": "Work Area"
+            },
+            "name": "Name"
+        }
+    }
+}

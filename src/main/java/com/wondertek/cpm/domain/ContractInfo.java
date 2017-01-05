@@ -1,3 +1,4 @@
+
 package com.wondertek.cpm.domain;
 
 import org.hibernate.annotations.Cache;
@@ -618,3 +619,4 @@ public class ContractInfo implements Serializable {
             '}';
     }
 }
+

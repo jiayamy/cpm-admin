@@ -23,39 +23,61 @@ public class PurchaseItem implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-
+    /**
+     * 合同主键 
+     */
     @Column(name = "contract_id")
-    private Long contractId;		//	合同主键 
-
+    private Long contractId;
+    /**
+     * 合同预算主键
+     */
     @Column(name = "budget_id")
-    private Long budgetId;			//	合同预算主键
-
+    private Long budgetId;
+    /**
+     * 采购项目----采购的是什么？用户填写后，可以点击“参考价”显示该采购项目的产品定价单
+     */
     @Column(name = "name_")
-    private String name;			//	采购项目----采购的是什么？用户填写后，可以点击“参考价”显示该采购项目的产品定价单
-
+    private String name;
+    /**
+     * 采购数量
+     */
     @Column(name = "quantity_")
-    private Integer quantity;		//	采购数量
-
+    private Integer quantity;
+    /**
+     * 采购单价
+     */
     @Column(name = "price_")
-    private Double price;			//	采购单价
-
+    private Double price;
+    /**
+     * 采购单位
+     */
     @Column(name = "units_")
-    private String units;			//	采购单位
-
+    private String units;
+    /**
+     * 采购类型（硬件/软件）
+     */
     @Column(name = "type_")
-    private Integer type;			//	采购类型（硬件/软件）
-
+    private Integer type;
+    /**
+     * 采购来源（内部采购/外部采购）
+     */
     @Column(name = "source_")
-    private Integer source;			//	采购来源（内部采购/外部采购）
-
+    private Integer source;
+    /**
+     * 采购方（从哪里采购的）
+     */
     @Column(name = "purchaser_")
-    private String purchaser;		//	采购方（从哪里采购的）
-
+    private String purchaser;
+    /**
+     * 采购总金额（可以填写，也可以通过修改采购数量和采购单价相乘）
+     */
     @Column(name = "total_amount")
-    private Double totalAmount;		//	采购总金额（可以填写，也可以通过修改采购数量和采购单价相乘）
-
+    private Double totalAmount;
+    /**
+     * 状态（1可用，2删除）
+     */
     @Column(name = "status_")
-    private Integer status;			//	状态（可用，删除）
+    private Integer status;
 
     @Column(name = "creator_")
     private String creator;

@@ -23,24 +23,36 @@ public class UserCost implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-
+    /**
+     * 员工主键
+     */
     @Column(name = "user_id")
-    private Long userId;				//员工主键
-
+    private Long userId;
+    /**
+     * 员工名字
+     */
     @Column(name = "user_name")
-    private String userName;			//员工名字
-    
+    private String userName;
+    /**
+     * 所属年月，比如201612
+     */
     @Column(name = "cost_month")
-    private Long costMonth;				//所属年月，比如201612
-
+    private Long costMonth;
+    /**
+     * 内部成本，单位元
+     */
     @Column(name = "internal_cost")
-    private Double internalCost;		//内部成本
-
+    private Double internalCost;
+    /**
+     * 外部成本，单位元
+     */
     @Column(name = "external_cost")
-    private Double externalCost;		//外部成本
-
+    private Double externalCost;
+    /**
+     * 状态（1可用，2删除）
+     */
     @Column(name = "status_")
-    private Integer status;				//状态（可用，删除）
+    private Integer status;
 
     @Column(name = "creator_")
     private String creator;
