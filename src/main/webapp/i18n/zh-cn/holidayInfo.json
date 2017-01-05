@@ -2,26 +2,26 @@
     "cpmApp": {
         "holidayInfo" : {
             "home": {
-                "title": "Holiday Infos",
-                "createLabel": "Create a new Holiday Info",
-                "createOrEditLabel": "Create or edit a Holiday Info",
-                "search": "Search for Holiday Info"
+                "title": "节假日信息",
+                "createLabel": "新增",
+                "createOrEditLabel": "新增编辑节假日信息",
+                "search": "搜索节假日信息"
             },
-            "created": "A new Holiday Info is created with identifier {{ param }}",
-            "updated": "A Holiday Info is updated with identifier {{ param }}",
-            "deleted": "A Holiday Info is deleted with identifier {{ param }}",
+            "created": "创建成功",
+            "updated": "更新成功",
+            "deleted": "删除成功",
             "delete": {
-                "question": "Are you sure you want to delete Holiday Info {{ id }}?"
+                "question": "确定删除主键为： {{ id }}的节假日信息?"
             },
             "detail": {
-                "title": "Holiday Info"
+                "title": "节假日信息"
             },
-            "currDay": "Curr Day",
-            "type": "Type",
-            "creator": "Creator",
-            "createTime": "Create Time",
-            "updator": "Updator",
-            "updateTime": "Update Time"
+            "currDay": "日期",
+            "type": "类型",
+            "creator": "创建者",
+            "createTime": "创建时间",
+            "updator": "更新者",
+            "updateTime": "更新时间"
         }
     }
 }

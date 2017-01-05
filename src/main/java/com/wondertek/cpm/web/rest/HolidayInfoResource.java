@@ -95,7 +95,7 @@ public class HolidayInfoResource {
     public ResponseEntity<List<HolidayInfo>> getAllHolidayInfos(@ApiParam Pageable pageable)
         throws URISyntaxException {
         log.debug("REST request to get a page of HolidayInfos");
-        //����һ���ڵĹ����ա���Ϣ��
+        //初始化留着，把初始化方法修改下，以防定时任务不起作用
         Calendar cal = Calendar.getInstance();
         cal.set(Calendar.YEAR, cal.get(Calendar.YEAR));
         cal.set(Calendar.MONTH, Calendar.DECEMBER);
@@ -106,6 +106,7 @@ public class HolidayInfoResource {
         if(count<=0){
         	List<HolidayInfo> lists = TimerHolidayUtil.holidayUpdate();
         	if(lists != null && !lists.isEmpty()){
+        		//这个地方修改下，写到service里面去
         		lists = holidayInfoService.save(lists);
         	}
         }

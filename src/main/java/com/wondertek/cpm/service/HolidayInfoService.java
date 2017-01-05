@@ -1,21 +1,21 @@
 package com.wondertek.cpm.service;
 
-import com.wondertek.cpm.domain.HolidayInfo;
-import com.wondertek.cpm.repository.HolidayInfoRepository;
-import com.wondertek.cpm.repository.search.HolidayInfoSearchRepository;
+import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
+
+import java.util.List;
+
+import javax.inject.Inject;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.inject.Inject;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
-
-import static org.elasticsearch.index.query.QueryBuilders.*;
+import com.wondertek.cpm.domain.HolidayInfo;
+import com.wondertek.cpm.repository.HolidayInfoRepository;
+import com.wondertek.cpm.repository.search.HolidayInfoSearchRepository;
 
 /**
  * Service Implementation for managing HolidayInfo.
