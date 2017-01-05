@@ -8,13 +8,22 @@ public class DeptTree {
 	public static final int SELECTTYPE_DEPT = 2;
 	public static final int SELECTTYPE_USER = 3;
 	/**
-	 * 主键ID
+	 * 主键ID(员工或者部门ID)
 	 */
 	private Long objId;
 	/**
-	 * 名称
+	 * 名称（员工或者部门名称）
 	 */
 	private String name;
+	/**
+	 * 父节点ID（员工对应的是员工所属部门ID，部门对应的就是部门的上级部门ID）
+	 */
+	private Long parentId;
+	/**
+	 * 父节点名称（员工对应的是员工所属部门，部门对应的就是部门的上级部门）
+	 */
+	private String parentName;
+	
 	/**
 	 * 是否部门
 	 */
@@ -34,12 +43,26 @@ public class DeptTree {
 	
 	public DeptTree() {
 	}
-	public DeptTree(Long objId, String name, Boolean isDept, Boolean supportSelect, Boolean showChild) {
+	public DeptTree(Long objId, String name,Long parentId,String parentName, Boolean isDept, Boolean supportSelect, Boolean showChild) {
 		this.objId = objId;
 		this.name = name;
+		this.parentId = parentId;
+		this.parentName = parentName;
 		this.isDept = isDept;
 		this.supportSelect = supportSelect;
 		this.showChild = showChild;
+	}
+	public Long getParentId() {
+		return parentId;
+	}
+	public void setParentId(Long parentId) {
+		this.parentId = parentId;
+	}
+	public String getParentName() {
+		return parentName;
+	}
+	public void setParentName(String parentName) {
+		this.parentName = parentName;
 	}
 	public Long getObjId() {
 		return objId;

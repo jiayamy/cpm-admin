@@ -118,17 +118,17 @@ public class DeptInfoService {
 		Map<Long,List<DeptInfo>> childDepts = sortDeptByParent(allDeptInfo);
 		
 		//获取树形结构
-		getDeptAndUserTree(CpmConstants.DEFAULT_DEPT_TOPID,returnList,deptUsers,childDepts,selectType,showChild);
+		getDeptAndUserTree(CpmConstants.DEFAULT_DEPT_TOPID,CpmConstants.DEFAULT_BLANK,returnList,deptUsers,childDepts,selectType,showChild);
 		return returnList;
 	}
-	private void getDeptAndUserTree(Long parentId, List<DeptTree> returnList, Map<Long, List<User>> deptUsers, 
+	private void getDeptAndUserTree(Long parentId,String parentName, List<DeptTree> returnList, Map<Long, List<User>> deptUsers, 
 			Map<Long, List<DeptInfo>> childDepts, Integer selectType, Boolean showChild) {
 		//下面的所有用户
 		List<User> deptUser = deptUsers.get(parentId);
 		if(deptUser != null){
 			for(User user : deptUser){
 				//添加用户
-				returnList.add(new DeptTree(user.getId(),user.getLastName(),Boolean.FALSE,
+				returnList.add(new DeptTree(user.getId(),user.getLastName(),parentId,parentName,Boolean.FALSE,
 						(selectType == DeptTree.SELECTTYPE_ALL || selectType == DeptTree.SELECTTYPE_USER),
 						showChild));
 			}
@@ -138,11 +138,11 @@ public class DeptInfoService {
 		if(deptInfos != null){
 			for(DeptInfo deptInfo : deptInfos){
 				//添加部门，以及部门下的部门和人员
-				DeptTree deptTree = new DeptTree(deptInfo.getId(),deptInfo.getName(),Boolean.TRUE,
+				DeptTree deptTree = new DeptTree(deptInfo.getId(),deptInfo.getName(),parentId,parentName,Boolean.TRUE,
 										(selectType == DeptTree.SELECTTYPE_ALL || selectType == DeptTree.SELECTTYPE_DEPT),
 										showChild);
 				List<DeptTree> childs = new ArrayList<DeptTree>();
-				getDeptAndUserTree(deptInfo.getId(),childs,deptUsers,childDepts,selectType,showChild);
+				getDeptAndUserTree(deptInfo.getId(),deptInfo.getName(),childs,deptUsers,childDepts,selectType,showChild);
 				deptTree.setChildren(childs);
 				returnList.add(deptTree);
 			}
