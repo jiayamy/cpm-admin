@@ -16,7 +16,7 @@
 	            </div>
 			</div>
         </div>
-     		<form name="searchForm" class="form-horizontal">
+     	<form name="searchForm" class="form-horizontal">
 			<div class="form-group">
 	            <div class="col-sm-4">
 	          		<label class="col-sm-4 control-label" data-translate="cpmApp.userTimesheet.workDay">Work Day</label>
@@ -56,11 +56,11 @@
 	            	</div>
 	            	<div class="col-sm-8" >
 		            	<span  class="width-min" >
-	                        <button class="btn btn-info" ng-click="vm.search(vm.searchQuery)">
+	                        <button class="btn btn-info" ng-click="vm.search()">
 	                            <span class="glyphicon glyphicon-search"></span>
 	                        </button>
 	                    </span>
-	                    <span class="width-min" ng-if="vm.currentSearch.haveSearch">
+	                    <span class="width-min" ng-if="vm.haveSearch">
 	                        <button class="btn btn-info" ng-click="vm.clear()">
 	                            <span class="glyphicon glyphicon-trash"></span>
 	                        </button>

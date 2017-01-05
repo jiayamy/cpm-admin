@@ -35,14 +35,10 @@
         vm.searchQuery.workDay= workDay;
         vm.searchQuery.type = type;
         vm.searchQuery.objName = pagingParams.objName;
-        vm.currentSearch = {};
-        vm.currentSearch.workDay = workDay;
-        vm.currentSearch.type = type;
-        vm.currentSearch.objName = pagingParams.objName;
-        if (!vm.currentSearch.workDay && !vm.currentSearch.type && !vm.currentSearch.objName){
-        	vm.currentSearch.haveSearch = null;
+        if (!vm.searchQuery.workDay && !vm.searchQuery.type && !vm.searchQuery.objName){
+        	vm.haveSearch = null;
         }else{
-        	vm.currentSearch.haveSearch = true;
+        	vm.haveSearch = true;
         }
         vm.datePickerOpenStatus = {};
         vm.openCalendar = openCalendar;
@@ -115,32 +111,31 @@
             $state.transitionTo($state.$current, {
                 page: vm.page,
                 sort: vm.predicate + ',' + (vm.reverse ? 'asc' : 'desc'),
-                workDay: DateUtils.convertLocalDateToFormat(vm.currentSearch.workDay,"yyyyMMdd"),
-                type:vm.currentSearch.type != null ? vm.currentSearch.type.id : "",
-                objName:vm.currentSearch.objName
+                workDay: DateUtils.convertLocalDateToFormat(vm.searchQuery.workDay,"yyyyMMdd"),
+                type:vm.searchQuery.type != null ? vm.searchQuery.type.id : "",
+                objName:vm.searchQuery.objName
             });
         }
 
-        function search(searchQuery) {
-            if (!searchQuery.workDay && !searchQuery.type && !searchQuery.objName){
+        function search() {
+            if (!vm.searchQuery.workDay && !vm.searchQuery.type && !vm.searchQuery.objName){
                 return vm.clear();
             }
             vm.links = null;
             vm.page = 1;
-            vm.predicate = '_score';
+            vm.predicate = 'workDay';
             vm.reverse = false;
-            vm.currentSearch = searchQuery;
-            vm.currentSearch.haveSearch = true;
+            vm.haveSearch = true;
             vm.transition();
         }
 
         function clear() {
             vm.links = null;
             vm.page = 1;
-            vm.predicate = 'id';
-            vm.reverse = true;
-            vm.currentSearch = {};
-            vm.currentSearch.haveSearch = null;
+            vm.predicate = 'workDay';
+            vm.reverse = false;
+            vm.searchQuery = {};
+            vm.haveSearch = null;
             vm.transition();
         }
         vm.datePickerOpenStatus.workDay = false;
