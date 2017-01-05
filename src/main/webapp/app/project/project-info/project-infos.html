@@ -2,33 +2,72 @@
     <h2 data-translate="cpmApp.projectInfo.home.title">Project Infos</h2>
     <jhi-alert></jhi-alert>
     <div class="container-fluid">
-        <div class="row">
-            <div class="col-xs-4 no-padding-left">
-                <button class="btn btn-primary" ui-sref="project-info.new" >
-                    <span class="glyphicon glyphicon-plus"></span>
-                    <span class="hidden-xs"  data-translate="cpmApp.projectInfo.home.createLabel">
-                        Create new Project Info
-                    </span>
-                </button>
-            </div>
-            <div class="col-xs-8 no-padding-right">
-                <form name="searchForm" class="form-inline">
-                    <div class="input-group pull-right" >
-                        <input type="text" class="form-control" ng-model="vm.searchQuery" id="searchQuery" placeholder="{{ 'cpmApp.projectInfo.home.search' | translate }}">
-                        <span  class="input-group-btn width-min" >
-                            <button class="btn btn-info" ng-click="vm.search(vm.searchQuery)">
-                                <span class="glyphicon glyphicon-search"></span>
-                            </button>
-                        </span>
-                        <span class="input-group-btn width-min" ng-if="vm.currentSearch">
-                            <button class="btn btn-info" ng-click="vm.clear()">
-                                <span class="glyphicon glyphicon-trash"></span>
-                            </button>
-                        </span>
-                    </div>
-                </form>
-            </div>
+  		<div class="row form-horizontal">
+        	<div class="form-group">
+	            <div class="col-xs-4 no-padding-left">
+	                <button class="btn btn-primary" ui-sref="project-info.new" >
+	                    <span class="glyphicon glyphicon-plus"></span>
+	                    <span class="hidden-xs"  data-translate="cpmApp.projectInfo.home.createLabel">
+	                        Create new Project Info
+	                    </span>
+	                </button>
+	            </div>
+			</div>
         </div>
+        <form name="searchForm" class="form-horizontal">
+			<div class="form-group">
+	            <div class="col-sm-4">
+	          		<label class="col-sm-4 control-label" data-translate="cpmApp.projectInfo.contractId">Contract ID</label>
+		            <div class="col-sm-8">
+		            	<select class="form-control" name="type" ng-model="vm.searchQuery.contractId"
+			            	ng-options="contractInfo.val for contractInfo in vm.contractInfos track by contractInfo.key">
+			            	<option value="">--合同编号--</option>
+			            </select>
+		            </div>
+	            </div>
+	            <div class="col-sm-4">
+	          		<label class="col-sm-4 control-label" data-translate="cpmApp.projectInfo.serialNum">Serial Num</label>
+                    <div class="col-sm-8" >
+	                   	<input type="text" class="form-control" ng-model="vm.searchQuery.serialNum">
+                    </div>
+	            </div>
+	            <div class="col-sm-4">
+	            	<label class="col-sm-4 control-label" data-translate="cpmApp.projectInfo.name">Obj Name</label>
+                    <div class="col-sm-8" >
+	                   	<input type="text" class="form-control" ng-model="vm.searchQuery.name">
+                    </div>
+	            </div>
+            </div>
+            <div class="form-group">
+	            <div class="col-sm-4">
+	            	<label class="col-sm-4 control-label" data-translate="cpmApp.projectInfo.status">Status</label>
+		            <div class="col-sm-8">
+		            	<select class="form-control" name="type" ng-model="vm.searchQuery.status"
+			            	ng-options="prjStatus.val for prjStatus in vm.prjStatuss track by prjStatus.key">
+			            	<option value="">--类型--</option>
+			            </select>
+		            </div>
+	            </div>
+	            <div class="col-sm-4">
+	            </div>
+	            <div class="col-sm-4 pull-right input-group">
+	            	<div class="col-sm-4">
+	            	</div>
+	            	<div class="col-sm-8" >
+		            	<span  class="width-min" >
+	                        <button class="btn btn-info" ng-click="vm.search()">
+	                            <span class="glyphicon glyphicon-search"></span>
+	                        </button>
+	                    </span>
+	                    <span class="width-min" ng-if="vm.haveSearch">
+	                        <button class="btn btn-info" ng-click="vm.clear()">
+	                            <span class="glyphicon glyphicon-trash"></span>
+	                        </button>
+	                    </span>
+	            	</div>
+	            </div>
+            </div>
+		</form>
     </div>
     <br/>
     <div class="table-responsive">
@@ -42,9 +81,9 @@
                     <th jh-sort-by="name"><span data-translate="cpmApp.projectInfo.name">Name</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="pm"><span data-translate="cpmApp.projectInfo.pm">Pm</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="dept"><span data-translate="cpmApp.projectInfo.dept">Dept</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="budgetTotal"><span data-translate="cpmApp.projectInfo.budgetTotal">Budget Total</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="startDay"><span data-translate="cpmApp.projectInfo.startDay">Start Day</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="endDay"><span data-translate="cpmApp.projectInfo.endDay">End Day</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="budgetTotal"><span data-translate="cpmApp.projectInfo.budgetTotal">Budget Total</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="status"><span data-translate="cpmApp.projectInfo.status">Status</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="creator"><span data-translate="cpmApp.projectInfo.creator">Creator</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="createTime"><span data-translate="cpmApp.projectInfo.createTime">Create Time</span> <span class="glyphicon glyphicon-sort"></span></th>
@@ -62,9 +101,9 @@
                     <td>{{projectInfo.name}}</td>
                     <td>{{projectInfo.pm}}</td>
                     <td>{{projectInfo.dept}}</td>
+                    <td>{{projectInfo.budgetTotal}}</td>
                     <td>{{projectInfo.startDay | date:'medium'}}</td>
                     <td>{{projectInfo.endDay | date:'medium'}}</td>
-                    <td>{{projectInfo.budgetTotal}}</td>
                     <td>{{projectInfo.status}}</td>
                     <td>{{projectInfo.creator}}</td>
                     <td>{{projectInfo.createTime | date:'medium'}}</td>

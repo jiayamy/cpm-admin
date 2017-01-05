@@ -1,0 +1,40 @@
+<script type="text/ng-template" id="dept-info-query-template">
+	<div style="" >
+		<div class="" style="height:35px;">
+			<i class="text-success glyphicon" ng-class="{'glyphicon-menu-down':vm.isChildShowed(node), 'glyphicon-menu-right':!vm.isChildShowed(node)}" ng-if="node.isDept" 
+				style="background-color: #fdf9ed;width:25px;height:10px" ng-click="vm.showOrHiddenChild(node)"></i>
+			<i class="glyphicon" ng-class="node.isDept ? 'text-success glyphicon-home ':'text-warning glyphicon-user'"></i>			
+			<span><b>{{node.name}}</b></span>
+			&nbsp;&nbsp;&nbsp;
+			<i class="glyphicon glyphicon-ok" ng-if="node.supportSelect" ng-disabled="vm.isSaving" ng-click="vm.selectNode(node)"></i>
+	  	</div>
+		<ul  class="" ng-model="node.children" ng-if="node.showChild" style="list-style:none;">
+			<li class="" ng-repeat="node in node.children" ng-include="'dept-info-query-template'">
+			
+			</li>
+		</ul>
+	</div>
+</script>
+
+<form name="editForm" role="form" novalidate ng-submit="vm.save()" show-validation>
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+                ng-click="vm.clear()">&times;</button>
+        <h4 class="modal-title" id="myDeptInfoLabel" data-translate="cpmApp.deptInfo.home.createOrEditLabel">Create or edit a Dept Info</h4>
+    </div>
+    <div class="modal-body">
+        <jhi-alert-error></jhi-alert-error>
+		<div id="deptInfoTree" class="tree-demo jstree jstree-2 jstree-default jstree-checkbox-selection">
+			<ul class="stree-container-ul jstree-children"  >
+				<li class="jstree-node  jstree-open"  ng-repeat="node in vm.deptInfos" ng-include="'dept-info-query-template'" style="list-style:none;" >
+				
+				</li>
+			</ul>
+		</div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="vm.clear()">
+            <span class="glyphicon glyphicon-ban-circle"></span>&nbsp;<span data-translate="entity.action.close">Close</span>
+        </button>
+    </div>
+</form>

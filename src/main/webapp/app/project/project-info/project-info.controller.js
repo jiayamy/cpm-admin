@@ -18,26 +18,20 @@
         vm.clear = clear;
         vm.search = search;
         vm.loadAll = loadAll;
-        vm.searchQuery = pagingParams.search;
-        vm.currentSearch = pagingParams.search;
+        vm.searchQuery = {};
 
         loadAll();
 
         function loadAll () {
-            if (pagingParams.search) {
-                ProjectInfoSearch.query({
-                    query: pagingParams.search,
-                    page: pagingParams.page - 1,
-                    size: vm.itemsPerPage,
-                    sort: sort()
-                }, onSuccess, onError);
-            } else {
-                ProjectInfo.query({
-                    page: pagingParams.page - 1,
-                    size: vm.itemsPerPage,
-                    sort: sort()
-                }, onSuccess, onError);
-            }
+            ProjectInfo.query({
+            	contractId:vm.searchQuery.contractId,
+            	serialNum:vm.searchQuery.serialNum,
+            	name:vm.searchQuery.name,
+            	status:vm.searchQuery.status,
+                page: pagingParams.page - 1,
+                size: vm.itemsPerPage,
+                sort: sort()
+            }, onSuccess, onError);
             function sort() {
                 var result = [vm.predicate + ',' + (vm.reverse ? 'asc' : 'desc')];
                 if (vm.predicate !== 'id') {
@@ -66,19 +60,22 @@
             $state.transitionTo($state.$current, {
                 page: vm.page,
                 sort: vm.predicate + ',' + (vm.reverse ? 'asc' : 'desc'),
-                search: vm.currentSearch
+                contractId:vm.searchQuery.contractId,
+            	serialNum:vm.searchQuery.serialNum,
+            	name:vm.searchQuery.name,
+            	status:vm.searchQuery.status
             });
         }
 
-        function search(searchQuery) {
-            if (!searchQuery){
+        function search() {
+            if (!vm.searchQuery.contractId && !vm.searchQuery.serialNum
+            		&& !vm.searchQuery.name && !vm.searchQuery.status){
                 return vm.clear();
             }
             vm.links = null;
             vm.page = 1;
-            vm.predicate = '_score';
+            vm.predicate = 'id';
             vm.reverse = false;
-            vm.currentSearch = searchQuery;
             vm.transition();
         }
 
@@ -86,8 +83,8 @@
             vm.links = null;
             vm.page = 1;
             vm.predicate = 'id';
-            vm.reverse = true;
-            vm.currentSearch = null;
+            vm.reverse = false;
+            vm.searchQuery = {};
             vm.transition();
         }
     }

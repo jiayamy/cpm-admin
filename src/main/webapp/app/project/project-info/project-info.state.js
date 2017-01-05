@@ -11,7 +11,7 @@
         $stateProvider
         .state('project-info', {
             parent: 'project',
-            url: '/project-info?page&sort&search',
+            url: '/project-info',
             data: {
                 authorities: ['ROLE_USER'],
                 pageTitle: 'cpmApp.projectInfo.home.title'
@@ -29,10 +29,9 @@
                     squash: true
                 },
                 sort: {
-                    value: 'id,asc',
+                    value: 'id,desc',
                     squash: true
-                },
-                search: null
+                }
             },
             resolve: {
                 pagingParams: ['$stateParams', 'PaginationUtil', function ($stateParams, PaginationUtil) {
@@ -41,7 +40,10 @@
                         sort: $stateParams.sort,
                         predicate: PaginationUtil.parsePredicate($stateParams.sort),
                         ascending: PaginationUtil.parseAscending($stateParams.sort),
-                        search: $stateParams.search
+                        contractId: $stateParams.contractId,
+                        serialNum: $stateParams.serialNum,
+                        name: $stateParams.name,
+                        status: $stateParams.status
                     };
                 }],
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
@@ -193,6 +195,33 @@
                     }
                 }).result.then(function() {
                     $state.go('project-info', null, { reload: 'project-info' });
+                }, function() {
+                    $state.go('^');
+                });
+            }]
+        }).state('project-info-detail.query', {
+            parent: 'project-info-detail',
+            url: '/queryDept?selectType&showChild',
+            data: {
+                authorities: ['ROLE_USER']
+            },
+            onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
+                $uibModal.open({
+                    templateUrl: 'app/info/dept-info/dept-info-query.html',
+                    controller: 'DeptInfoQueryController',
+                    controllerAs: 'vm',
+                    backdrop: 'static',
+                    size: 'lg',
+                    resolve: {
+                        entity: function() {
+                            return {
+                            	selectType : $stateParams.selectType,
+                            	showChild : $stateParams.showChild
+                            }
+                        }
+                    }
+                }).result.then(function() {
+                    $state.go('^', {}, { reload: false });
                 }, function() {
                     $state.go('^');
                 });
