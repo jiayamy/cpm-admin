@@ -5,9 +5,9 @@
         .module('cpmApp')
         .controller('ContractInfoController', ContractInfoController);
 
-    ContractInfoController.$inject = ['$scope', '$state', 'ContractInfo', 'ContractInfoSearch', 'ParseLinks', 'AlertService', 'paginationConstants', 'pagingParams'];
+    ContractInfoController.$inject = ['$http','$scope', '$state', 'ContractInfo', 'ContractInfoSearch', 'ParseLinks', 'AlertService', 'paginationConstants', 'pagingParams'];
 
-    function ContractInfoController ($scope, $state, ContractInfo, ContractInfoSearch, ParseLinks, AlertService, paginationConstants, pagingParams) {
+    function ContractInfoController ($http,$scope, $state, ContractInfo, ContractInfoSearch, ParseLinks, AlertService, paginationConstants, pagingParams) {
         var vm = this;
 
         vm.loadPage = loadPage;
@@ -20,24 +20,101 @@
         vm.loadAll = loadAll;
         vm.searchQuery = pagingParams.search;
         vm.currentSearch = pagingParams.search;
-
+        
+        var name = pagingParams.name;
+        var type = pagingParams.type;
+        var isPrepared = pagingParams.isPrepared;
+        var isEpibolic = pagingParams.isEpibolic;
+        var salesman = pagingParams.salesman;
+        if(type){
+        	if(type == 1){
+        		type = { id: 1, name: '产品合同' };
+        	}else if(type == 2){
+        		type = { id: 2, name: '外包合同' };
+        	}else if(type == 3){
+        		type = { id: 3, name: '硬件合同' };
+        	}else if(type == 4){
+        		type = { id: 4, name: '公共成本' };
+        	}
+        }
+        if(isPrepared){
+        	if(isPrepareds == true){
+        		isPrepareds = { id: true, name: '正式合同' };
+        	}else if(isPrepareds == false){
+        		isPrepareds = { id: false, name: '预立合同' };
+        	}
+        }
+        if(isEpibolic){
+        	if(isEpibolics == true){
+        		isEpibolics = { id: true, name: '外包合同' };
+        	}else if(isEpibolics == false){
+        		isEpibolics = { id: false, name: '非外包合同' };
+        	}
+        }
+        if(salesman){
+        	
+        }
+        vm.types = [{ id: 1, name: '产品合同' }, { id: 2, name: '外包合同' },{ id: 3, name: '硬件合同' },{ id: 4, name: '公共成本' }];
+        vm.isPrepareds = [{ id: true, name: '正式合同' }, { id: false, name: '预立合同' }];
+        vm.isEpibolics = [{ id: 1, name: '外包合同' }, { id: 0, name: '非外包合同'}];
+//        loadSealesmans();
         loadAll();
-
+        //加载所有的sealsman,数据结构为
+        //[{ id: 1, name: '王大伟' }, { id: 2, name: '网小与'}];
+//        function loadSealesmans(){
+//        	$http.get("api/contract-infos/AllUserInfoVo")
+//  		  		 .success(function (response) {
+//			  			  vm.salesmans = response.sealesmans;
+//			  			  });
+//        }
         function loadAll () {
-            if (pagingParams.search) {
-                ContractInfoSearch.query({
-                    query: pagingParams.search,
-                    page: pagingParams.page - 1,
-                    size: vm.itemsPerPage,
-                    sort: sort()
-                }, onSuccess, onError);
-            } else {
-                ContractInfo.query({
-                    page: pagingParams.page - 1,
-                    size: vm.itemsPerPage,
-                    sort: sort()
-                }, onSuccess, onError);
-            }
+        	if(!pagingParams.name){
+        		pagingParams.name="";
+        	}
+        	if(!pagingParams.type){
+        		pagingParams.type="";
+        	}
+        	if(!pagingParams.isPrepared){
+        		pagingParams.isPrepared="";
+        	}
+        	if(!pagingParams.isEpibolic){
+        		pagingParams.isEpibolic="";
+        	}
+        	if(!pagingParams.salesman){
+        		pagingParams.salesman="";
+        	}
+	    	ContractInfo.query({
+	    		 name : pagingParams.name,
+	    		 type : pagingParams.type,
+	    		 isPrepared : pagingParams.isPrepared,
+	    		 isEpibolic : pagingParams.isEpibolic,
+	    		 salesman : pagingParams.salesman,
+	             page: pagingParams.page - 1,
+	             size: vm.itemsPerPage,
+	             sort: sort()
+	         }, onSuccess, onError);
+	    	
+	    	
+        	
+//            if (pagingParams.search) {
+//                ContractInfoSearch.query({
+//                    query: pagingParams.search,
+//                    page: pagingParams.page - 1,
+//                    size: vm.itemsPerPage,
+//                    sort: sort()
+//                }, onSuccess, onError);
+//            } else {
+//                ContractInfo.query({
+//                	name : pagingParams.name,
+//                	type : pagingParams.type,
+//                	isPrepared : pagingParams.isPrepared,
+//                	isEpibolic : pagingParams.isEpibolic,
+//                	salesman : pagingParams.salesman,
+//                    page: pagingParams.page - 1,
+//                    size: vm.itemsPerPage,
+//                    sort: sort()
+//                }, onSuccess, onError);
+//            }
             function sort() {
                 var result = [vm.predicate + ',' + (vm.reverse ? 'asc' : 'desc')];
                 if (vm.predicate !== 'id') {
@@ -49,13 +126,53 @@
                 vm.links = ParseLinks.parse(headers('link'));
                 vm.totalItems = headers('X-Total-Count');
                 vm.queryCount = vm.totalItems;
-                vm.contractInfos = data;
+                vm.contractInfos = handleData(data);
                 vm.page = pagingParams.page;
             }
             function onError(error) {
                 AlertService.error(error.data.message);
             }
         }
+        function handleData(data){
+        	if(data.length>0){
+        		for (var i = 0; i< data.length; i++) {
+        			//type的枚举
+					if(data[i].type==1){
+						data[i].type="产品合同";
+					}else if (data[i].type==2) {
+						data[i].type="外包合同";
+					}else if (data[i].type==3) {
+						data[i].type="硬件合同";
+					}else if (data[i].type==4) {
+						data[i].type="公共成本";
+					}
+					//status的枚举
+					if(data[i].status == 1){
+        				data[i].status = "可用";
+        			}else if(data[i].status == 2){
+        				data[i].status = "完成";
+        			}else if(data[i].status == 3){
+        				data[i].status = "删除";
+        			}
+					//是否预立
+					if(data[i].isPrepared == true){
+						data[i].isPrepared = "正式合同"
+					}else if (data[i].isPrepared == false) {
+						data[i].isPrepared = "预立合同"
+					}
+					//是否外包
+					if(data[i].isEpibolic == true){
+						data[i].isEpibolic = "外包"
+					}else if (data[i].isEpibolic == false) {
+						data[i].isEpibolic = "非外包"
+					}
+				}
+        	}
+        	return data;
+        }
+        
+        
+        
 
         function loadPage(page) {
             vm.page = page;
