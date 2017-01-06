@@ -11,7 +11,7 @@
         $stateProvider
         .state('contract-info', {
             parent: 'contract',
-            url: '/contract-info?page&sort&search',
+            url: '/contract-info?page&sort&search&name&type&isPrepared&isEpibolic&salesman',
             data: {
                 authorities: ['ROLE_USER'],
                 pageTitle: 'cpmApp.contractInfo.home.title'
@@ -32,7 +32,11 @@
                     value: 'id,asc',
                     squash: true
                 },
-                search: null
+                name:null,
+                type:null,
+                isPrepared:null,
+                isEpibolic:null,
+                salesman:null
             },
             resolve: {
                 pagingParams: ['$stateParams', 'PaginationUtil', function ($stateParams, PaginationUtil) {
@@ -41,7 +45,11 @@
                         sort: $stateParams.sort,
                         predicate: PaginationUtil.parsePredicate($stateParams.sort),
                         ascending: PaginationUtil.parseAscending($stateParams.sort),
-                        search: $stateParams.search
+                        name: $stateParams.name,
+                        type: $stateParams.type,
+                        isPrepared: $stateParams.isPrepared,
+                        isEpibolic: $stateParams.isEpibolic,
+                        salesman: $stateParams.salesman
                     };
                 }],
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {

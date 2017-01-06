@@ -12,16 +12,6 @@
 	                    </span>
 	                </button>
 	            </div>
-	            
-	            <div class="col-xs-2 no-padding-left">
-	                <button class="btn btn-primary" ui-sref="contract-info.new" >
-	                    <span class="glyphicon glyphicon-plus"></span>
-	                    <span class="hidden-xs"  data-translate="cpmApp.contractInfo.finishRate">
-	                        Create new Contract Info
-	                    </span>
-	                </button>
-	            </div>
-	            
 	            <div class="col-xs-8 no-padding-right">
 	            </div>
 	        </div>
@@ -78,11 +68,11 @@
 	            	</div>
 	            	<div class="col-sm-8" >
 		            	<span  class="width-min" >
-	                        <button class="btn btn-info" ng-click="vm.search(vm.searchQuery)">
+	                        <button class="btn btn-info" ng-click="vm.search()">
 	                            <span class="glyphicon glyphicon-search"></span>
 	                        </button>
 	                    </span>
-	                    <span class="width-min" ng-if="vm.currentSearch.haveSearch">
+	                    <span class="width-min" ng-if="vm.haveSearch">
 	                        <button class="btn btn-info" ng-click="vm.clear()">
 	                            <span class="glyphicon glyphicon-trash"></span>
 	                        </button>
@@ -156,6 +146,13 @@
                                 <span class="glyphicon glyphicon-eye-open"></span>
                                 <span class="hidden-xs hidden-sm" data-translate="entity.action.view"></span>
                             </button>
+                            <button type="submit"
+                                    ui-sref="contract-info.edit({id:contractInfo.id})"
+                                    class="btn btn-primary btn-sm">
+                                <span class="glyphicon glyphicon-pencil"></span>
+                                <span class="hidden-xs hidden-sm" data-translate="cpmApp.contractInfo.finishRate"></span>
+                            </button>
+                            
                             <button type="submit"
                                     ui-sref="contract-info.edit({id:contractInfo.id})"
                                     class="btn btn-primary btn-sm">

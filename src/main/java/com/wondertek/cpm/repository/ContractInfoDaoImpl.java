@@ -10,13 +10,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Order;
+import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.wondertek.cpm.CpmConstants;
 import com.wondertek.cpm.config.StringUtil;
 import com.wondertek.cpm.domain.ContractInfo;
-
-public class ContractDaoImpl extends GenericDaoImpl<ContractInfo, Long> implements ContractInfoDao {
+@Repository("contractInfoDao")
+public class ContractInfoDaoImpl extends GenericDaoImpl<ContractInfo, Long> implements ContractInfoDao {
 
 	@Autowired
 	private EntityManager entityManager;
@@ -80,8 +81,8 @@ public class ContractDaoImpl extends GenericDaoImpl<ContractInfo, Long> implemen
 			}
 		}
     	Page<ContractInfo> page = this.queryHqlPage(
-    			"form ContractInfo "+sb.toString()+orderHql.toString(),
-    			"select count(id) form ContractInfo "+sb.toString(), 
+    			"from ContractInfo "+sb.toString()+orderHql.toString(),
+    			"select count(id) from ContractInfo "+sb.toString(), 
     			params.toArray(), 
     			pageable);
     	

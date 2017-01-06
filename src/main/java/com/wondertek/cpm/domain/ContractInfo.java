@@ -55,7 +55,7 @@ public class ContractInfo implements Serializable {
     @Column(name = "is_epibolic")
     private Boolean isEpibolic;
     /**
-     * 负责人ID（界面选择员工信息）
+     * 销售ID（界面选择员工信息）
      */
     @Column(name = "sales_man_id")
     private Long salesmanId;

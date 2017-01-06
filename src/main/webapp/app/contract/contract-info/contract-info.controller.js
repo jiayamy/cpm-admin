@@ -7,7 +7,7 @@
 
     ContractInfoController.$inject = ['$http','$scope', '$state', 'ContractInfo', 'ContractInfoSearch', 'ParseLinks', 'AlertService', 'paginationConstants', 'pagingParams'];
 
-    function ContractInfoController ($http,$scope, $state, ContractInfo, ContractInfoSearch, ParseLinks, AlertService, paginationConstants, pagingParams) {
+    function ContractInfoController ($http, $scope, $state, ContractInfo, ContractInfoSearch, ParseLinks, AlertService, paginationConstants, pagingParams) {
         var vm = this;
 
         vm.loadPage = loadPage;
@@ -18,8 +18,7 @@
         vm.clear = clear;
         vm.search = search;
         vm.loadAll = loadAll;
-        vm.searchQuery = pagingParams.search;
-        vm.currentSearch = pagingParams.search;
+        vm.searchQuery = {};
         
         var name = pagingParams.name;
         var type = pagingParams.type;
@@ -37,27 +36,39 @@
         		type = { id: 4, name: '公共成本' };
         	}
         }
-        if(isPrepared){
+        if(isPrepared != null){
         	if(isPrepareds == true){
         		isPrepareds = { id: true, name: '正式合同' };
         	}else if(isPrepareds == false){
         		isPrepareds = { id: false, name: '预立合同' };
         	}
         }
-        if(isEpibolic){
+        if(isEpibolic != null){
         	if(isEpibolics == true){
         		isEpibolics = { id: true, name: '外包合同' };
         	}else if(isEpibolics == false){
         		isEpibolics = { id: false, name: '非外包合同' };
         	}
         }
-        if(salesman){
-        	
-        }
+//        if(salesman){
+//        	定义一salesman的json  装saleman 的数组
+//        }
+        vm.searchQuery.name=name;
+        vm.searchQuery.type=type;
+        vm.searchQuery.isPrepared=isPrepared;
+        vm.searchQuery.isEpibolic=isEpibolic;
+        vm.searchQuery.salesman=salesman;
+        
         vm.types = [{ id: 1, name: '产品合同' }, { id: 2, name: '外包合同' },{ id: 3, name: '硬件合同' },{ id: 4, name: '公共成本' }];
         vm.isPrepareds = [{ id: true, name: '正式合同' }, { id: false, name: '预立合同' }];
         vm.isEpibolics = [{ id: 1, name: '外包合同' }, { id: 0, name: '非外包合同'}];
 //        loadSealesmans();
+        if(!vm.searchQuery.name && !vm.searchQuery.type &&  !vm.searchQuery.isPrepared && !vm.searchQuery.isEpibolic && !vm.searchQuery.salesman){
+        	vm.haveSearch = null;
+        }else {
+			vm.haveSearch = true;
+		}
+        
         loadAll();
         //加载所有的sealsman,数据结构为
         //[{ id: 1, name: '王大伟' }, { id: 2, name: '网小与'}];
@@ -74,10 +85,10 @@
         	if(!pagingParams.type){
         		pagingParams.type="";
         	}
-        	if(!pagingParams.isPrepared){
+        	if(pagingParams.isPrepared){
         		pagingParams.isPrepared="";
         	}
-        	if(!pagingParams.isEpibolic){
+        	if(pagingParams.isEpibolic){
         		pagingParams.isEpibolic="";
         	}
         	if(!pagingParams.salesman){
@@ -170,9 +181,6 @@
         	}
         	return data;
         }
-        
-        
-        
 
         function loadPage(page) {
             vm.page = page;
@@ -183,19 +191,23 @@
             $state.transitionTo($state.$current, {
                 page: vm.page,
                 sort: vm.predicate + ',' + (vm.reverse ? 'asc' : 'desc'),
-                search: vm.currentSearch
+                name:vm.searchQuery.name,
+                type: vm.searchQuery.type != null ? vm.searchQuery.type.id : "",
+                isPrepared:vm.searchQuery.isPrepared,
+                isEpibolic:vm.searchQuery.isEpibolic,
+                salesman:vm.searchQuery.salesman != null ? vm.searchQuery.salesman.id : "",
             });
         }
 
-        function search(searchQuery) {
-            if (!searchQuery){
+        function search() {
+            if (!vm.searchQuery.name && !vm.searchQuery.type && !vm.searchQuery.isPrepared && !vm.searchQuery.isEpibolic && !vm.searchQuery.salesman){
                 return vm.clear();
             }
             vm.links = null;
             vm.page = 1;
             vm.predicate = '_score';
             vm.reverse = false;
-            vm.currentSearch = searchQuery;
+            vm.haveSearch = true;
             vm.transition();
         }
 
@@ -204,7 +216,7 @@
             vm.page = 1;
             vm.predicate = 'id';
             vm.reverse = true;
-            vm.currentSearch = null;
+            vm.haveSearch = null;
             vm.transition();
         }
     }
