@@ -29,7 +29,7 @@
                     squash: true
                 },
                 sort: {
-                    value: 'id,desc',
+                    value: 'wpi.id,desc',
                     squash: true
                 }
             },

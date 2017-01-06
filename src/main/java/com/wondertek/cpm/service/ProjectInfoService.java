@@ -1,21 +1,31 @@
 package com.wondertek.cpm.service;
 
-import com.wondertek.cpm.domain.ProjectInfo;
-import com.wondertek.cpm.repository.ProjectInfoRepository;
-import com.wondertek.cpm.repository.search.ProjectInfoSearchRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.stereotype.Service;
+import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
-import static org.elasticsearch.index.query.QueryBuilders.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.wondertek.cpm.domain.DeptInfo;
+import com.wondertek.cpm.domain.ProjectInfo;
+import com.wondertek.cpm.domain.User;
+import com.wondertek.cpm.domain.vo.LongValue;
+import com.wondertek.cpm.domain.vo.ProjectInfoVo;
+import com.wondertek.cpm.repository.ProjectInfoDao;
+import com.wondertek.cpm.repository.ProjectInfoRepository;
+import com.wondertek.cpm.repository.UserRepository;
+import com.wondertek.cpm.repository.search.ProjectInfoSearchRepository;
+import com.wondertek.cpm.security.SecurityUtils;
 
 /**
  * Service Implementation for managing ProjectInfo.
@@ -28,9 +38,14 @@ public class ProjectInfoService {
     
     @Inject
     private ProjectInfoRepository projectInfoRepository;
-
+    @Inject
+    private UserRepository userRepository;
+    
     @Inject
     private ProjectInfoSearchRepository projectInfoSearchRepository;
+    
+    @Autowired
+    private ProjectInfoDao projectInfoDao;
 
     /**
      * Save a projectInfo.
@@ -93,5 +108,35 @@ public class ProjectInfoService {
         log.debug("Request to search for a page of ProjectInfos for query {}", query);
         Page<ProjectInfo> result = projectInfoSearchRepository.search(queryStringQuery(query), pageable);
         return result;
+    }
+    /**
+     * 查询用户的所有项目，管理人员能看到部门下面所有人员的项目信息
+     */
+    @Transactional(readOnly = true)
+	public List<LongValue> queryUserContract() {
+    	List<LongValue> returnList = new ArrayList<LongValue>();
+    	List<Object[]> objs = userRepository.findUserInfoByLogin(SecurityUtils.getCurrentUserLogin());
+    	if(objs != null && !objs.isEmpty()){
+    		Object[] o = objs.get(0);
+    		User user = (User) o[0];
+    		DeptInfo deptInfo = (DeptInfo) o[1];
+    		
+    		returnList = projectInfoDao.queryUserContract(user,deptInfo);
+    	}
+		return returnList;
+	}
+    
+    public Page<ProjectInfoVo> getUserPage(ProjectInfo projectInfo, Pageable pageable){
+    	List<Object[]> objs = userRepository.findUserInfoByLogin(SecurityUtils.getCurrentUserLogin());
+    	if(objs != null && !objs.isEmpty()){
+    		Object[] o = objs.get(0);
+    		User user = (User) o[0];
+    		DeptInfo deptInfo = (DeptInfo) o[1];
+    		
+    		Page<ProjectInfoVo> page = projectInfoDao.getUserPage(projectInfo,pageable,user,deptInfo);
+        	return page;
+    	}else{
+    		return new PageImpl(new ArrayList<ProjectInfoVo>(), pageable, 0);
+    	}
     }
 }

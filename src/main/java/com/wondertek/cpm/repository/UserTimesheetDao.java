@@ -1,6 +1,5 @@
 package com.wondertek.cpm.repository;
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -13,7 +12,7 @@ public interface UserTimesheetDao extends GenericDao<UserTimesheet, Long> {
 	 * 获取用户自己看到的日报列表
 	 * @return
 	 */
-	public Page<UserTimesheet> getUserPage(UserTimesheet userTimesheet, Pageable pageable, Optional<User> user);
+	public Page<UserTimesheet> getUserPage(UserTimesheet userTimesheet, Pageable pageable, User user);
 	/**
 	 * 获取用户某个时间段中间的所有可用日报
 	 * @return

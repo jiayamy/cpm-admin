@@ -1,8 +1,11 @@
 package com.wondertek.cpm.config;
 
+import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -821,5 +824,16 @@ public class DateUtil {
 			}
 		}
 		return false;
+	}
+	/**
+	 * 数据库中的时间 转成ZondedDateTime
+	 * @param timestamp
+	 * @return
+	 */
+	public static ZonedDateTime getZonedDateTime(Timestamp timestamp){
+		if(timestamp == null){
+			return null;
+		}
+		return ZonedDateTime.of(timestamp.toLocalDateTime(), ZoneId.systemDefault());
 	}
 }
