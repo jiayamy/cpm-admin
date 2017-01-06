@@ -55,7 +55,7 @@ public class ProjectInfoDaoImpl extends GenericDaoImpl<ProjectInfo, Long> implem
 				
 				if(user.getIsManager()){
 					sql.append(" or d.id_path like ? or d.id = ?");
-					params.add(deptInfo.getIdPath() + "%");
+					params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
 					params.add(deptInfo.getId());
 				}
 				sql.append(" union all ");
@@ -64,7 +64,7 @@ public class ProjectInfoDaoImpl extends GenericDaoImpl<ProjectInfo, Long> implem
 				params.add(user.getId());
 				if(user.getIsManager()){
 					sql.append(" or f.id_path like ? or f.id = ?");
-					params.add(deptInfo.getIdPath() + "%");
+					params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
 					params.add(deptInfo.getId());
 				}
 				sql.append(") and e.type_ = ? and e.purchase_type = ?");
@@ -112,9 +112,9 @@ public class ProjectInfoDaoImpl extends GenericDaoImpl<ProjectInfo, Long> implem
 		if(user.getIsManager()){
 			whereSql.append(" or wdi.id_path like ? or wdi.id = ? or wdi2.id_path like ? or wdi2.id = ?");
 			
-			params.add(deptInfo.getIdPath() + "%");
+			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
 			params.add(deptInfo.getId());
-			params.add(deptInfo.getIdPath() + "%");
+			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
 			params.add(deptInfo.getId());
 		}
 		whereSql.append(")");
