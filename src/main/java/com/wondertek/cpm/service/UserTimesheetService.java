@@ -130,17 +130,28 @@ public class UserTimesheetService {
 //        result = userTimesheetSearchRepository.search(queryStringQuery(query), pageable);
         return result;
     }
-    
+    /**
+     * 获取员工自己查看的列表
+     * @param userTimesheet
+     * @param pageable
+     * @return
+     */
+    @Transactional(readOnly = true) 
     public Page<UserTimesheet> getUserPage(UserTimesheet userTimesheet, Pageable pageable){
     	Optional<User> user = userRepository.findOneByLogin(SecurityUtils.getCurrentUserLogin());
     	if(user.isPresent()){
-    		Page<UserTimesheet> page = userTimesheetDao.getUserPage(userTimesheet,pageable,user);
+    		Page<UserTimesheet> page = userTimesheetDao.getUserPage(userTimesheet,pageable,user.get());
         	return page;
     	}else{
     		return new PageImpl(new ArrayList<UserTimesheet>(), pageable, 0);
     	}
     }
-    
+    /**
+     * 获取编辑列表中的数据
+     * @param workDayDate
+     * @return
+     */
+    @Transactional(readOnly = true) 
 	public List<UserTimesheetForUser> queryEditByUser(Date workDayDate) {
 		//查询现有的所有日报
 		List<UserTimesheetForUser> returnList = new ArrayList<UserTimesheetForUser>();
@@ -398,7 +409,7 @@ public class UserTimesheetService {
 		}
 	}
 	/**
-	 * 用户编辑日报
+	 * 保存用户编辑的结果
 	 * @return
 	 */
 	public String updateEditByUser(List<UserTimesheetForUser> userTimesheetForUsers) {

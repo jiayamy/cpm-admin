@@ -2,7 +2,6 @@ package com.wondertek.cpm.repository;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import javax.persistence.EntityManager;
 
@@ -33,7 +32,7 @@ public class UserTimesheetDaoImpl extends GenericDaoImpl<UserTimesheet, Long> im
 	}
 
 	@Override
-	public Page<UserTimesheet> getUserPage(UserTimesheet userTimesheet, Pageable pageable, Optional<User> user) {
+	public Page<UserTimesheet> getUserPage(UserTimesheet userTimesheet, Pageable pageable, User user) {
 		StringBuffer sb = new StringBuffer();
     	List<Object> params = new ArrayList<Object>();
     	sb.append("where 1=1");
@@ -52,10 +51,10 @@ public class UserTimesheetDaoImpl extends GenericDaoImpl<UserTimesheet, Long> im
     	sb.append(" and status = ?");
     	params.add(CpmConstants.STATUS_VALID);
     	sb.append(" and userId = ?");
-    	params.add(user.get().getId());
+    	params.add(user.getId());
     	
     	StringBuffer orderHql = new StringBuffer();
-    	if(pageable.getSort() != null){
+    	if(pageable.getSort() != null){//页面都会有个默认排序
     		for (Order order : pageable.getSort()) {
     			if(CpmConstants.ORDER_IGNORE_SCORE.equalsIgnoreCase(order.getProperty())){
     				continue;

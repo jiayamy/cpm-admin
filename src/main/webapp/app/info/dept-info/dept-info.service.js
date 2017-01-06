@@ -22,7 +22,13 @@
                     return data;
                 }
             },
-            'update': { method:'PUT' }
+            'update': { method:'PUT' },
+            'getDeptAndUserTree':{
+            	method: 'GET',
+            	url:'api/dept-infos/getDeptAndUserTree',
+            	isArray: true
+            }
+            	
         });
     }
 })();

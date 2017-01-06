@@ -1,15 +1,15 @@
 package com.wondertek.cpm.repository;
 
-import com.wondertek.cpm.domain.User;
-
 import java.time.ZonedDateTime;
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
-import java.util.List;
-import java.util.Optional;
+import com.wondertek.cpm.domain.User;
 
 /**
  * Spring Data JPA repository for the User entity.
@@ -29,4 +29,10 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query(value = "select distinct user from User user left join fetch user.authorities",
         countQuery = "select count(user) from User user")
     Page<User> findAllWithAuthorities(Pageable pageable);
+
+    @Query("from User u where u.activated = ?1 order by id asc")
+	List<User> findAllByActivated(Boolean activated);
+    
+    @Query("select a,b,c from User a,DeptInfo b,DeptType c where a.deptId = b.id and b.type = c.id and a.login = ?1")
+	List<Object[]> findUserInfoByLogin(String login);
 }

@@ -124,10 +124,11 @@
             "cancel": "取消",
             "delete": "删除",
             "edit": "编辑",
-            "open": "Open",
+            "open": "打开",
             "save": "保存",
             "view": "查看",
-            "add": "新增"
+            "add": "新增",
+            "close":"关闭"
         },
         "detail": {
             "field": "字段",

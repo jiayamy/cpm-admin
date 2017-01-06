@@ -13,8 +13,8 @@
         vm.projectInfo = entity;
         vm.previousState = previousState.name;
 
-        var unsubscribe = $rootScope.$on('cpmApp:projectInfoUpdate', function(event, result) {
-            vm.projectInfo = result;
+        var unsubscribe = $rootScope.$on('cpmApp:deptInfoSelected', function(event, result) {
+            console.log(result);
         });
         $scope.$on('$destroy', unsubscribe);
     }

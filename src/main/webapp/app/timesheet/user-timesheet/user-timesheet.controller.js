@@ -48,13 +48,13 @@
         loadAll();
 
         function loadAll () {
-        	if(!pagingParams.workDay){
+        	if(pagingParams.workDay == undefined){
         		pagingParams.workDay = "";
         	}
-        	if(!pagingParams.type){
+        	if(pagingParams.type == undefined){
         		pagingParams.type = "";
         	}
-        	if(!pagingParams.objName){
+        	if(pagingParams.objName == undefined){
         		pagingParams.objName = "";
         	}
             UserTimesheet.query({

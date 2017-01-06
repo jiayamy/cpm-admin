@@ -11,6 +11,7 @@ import java.util.Objects;
 
 /**
  * 合同预算信息，除了采购单，其他可填可不填
+ * 改名为内部采购单，type默认都是3，purchaseType默认都展现
  */
 @Entity
 @Table(name = "w_contract_budget")
@@ -19,7 +20,14 @@ import java.util.Objects;
 public class ContractBudget implements Serializable {
 
     private static final long serialVersionUID = 1L;
-
+    public static final int TYPE_SALE = 1;
+    public static final int TYPE_CONSULATION = 2;
+    public static final int TYPE_PURCHASE = 3;
+    
+    public static final int PURCHASETYPE_HARDWARE = 1;
+    public static final int PURCHASETYPE_SOFTWARE = 2;
+    public static final int PURCHASETYPE_SERVICE = 3;
+    
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -28,6 +36,11 @@ public class ContractBudget implements Serializable {
      */
     @Column(name = "contract_id")
     private Long contractId;
+    /**
+     * 采购单名称
+     */
+    @Column(name = "name_")
+    private String name;
     /**
      * 预算类型（1销售/2咨询/3内部采购单）
      */
