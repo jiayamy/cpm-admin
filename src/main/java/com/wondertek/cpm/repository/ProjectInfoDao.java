@@ -26,4 +26,9 @@ public interface ProjectInfoDao extends GenericDao<ProjectInfo,Long> {
 	 * @return
 	 */
 	public Page<ProjectInfoVo> getUserPage(ProjectInfo projectInfo, Pageable pageable, User user, DeptInfo deptInfo);
+	/**
+	 * 有权限的查看项目信息
+	 * @return
+	 */
+	public ProjectInfoVo getUserProjectInfo(Long id, User user, DeptInfo deptInfo);
 }

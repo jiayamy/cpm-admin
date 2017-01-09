@@ -1,7 +1,6 @@
 package com.wondertek.cpm.repository;
 
 import java.sql.Timestamp;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -118,6 +117,7 @@ public class ProjectInfoDaoImpl extends GenericDaoImpl<ProjectInfo, Long> implem
 			params.add(deptInfo.getId());
 		}
 		whereSql.append(")");
+		
 		//页面搜索条件
 		if(projectInfo.getStatus() != null && projectInfo.getStatus() > 0){
 			whereSql.append(" and wpi.status_ = ?");
@@ -172,15 +172,14 @@ public class ProjectInfoDaoImpl extends GenericDaoImpl<ProjectInfo, Long> implem
 		
 		List<ProjectInfoVo> returnList = new ArrayList<ProjectInfoVo>();
 		if(page.getContent() != null){
-			DateTimeFormatter format = DateTimeFormatter.ofPattern(DateUtil.DATE_TIME_MS_PATTERN);
 			for(Object[] o : page.getContent()){
-				returnList.add(transProjectInfoVo(o,format));
+				returnList.add(transProjectInfoVo(o));
 			}
 		}
 		return new PageImpl(returnList, pageable, page.getTotalElements());
 	}
 
-	private ProjectInfoVo transProjectInfoVo(Object[] o, DateTimeFormatter format) {
+	private ProjectInfoVo transProjectInfoVo(Object[] o) {
 //		querySql.append("select wpi.id,wpi.serial_num,wpi.contract_id,wpi.budget_id,wpi.name_,wpi.pm_,wpi.dept_,
 //		wpi.start_day,wpi.end_day,wpi.budget_total,wpi.status_,wpi.finish_rate,wpi.creator_,wpi.create_time,
 //		wpi.updator_,wpi.update_time,");
@@ -212,5 +211,44 @@ public class ProjectInfoDaoImpl extends GenericDaoImpl<ProjectInfo, Long> implem
 		vo.setBudgetOriginal(StringUtil.nullToDouble(o[18]));
 		
 		return vo;
+	}
+
+	@Override
+	public ProjectInfoVo getUserProjectInfo(Long id, User user, DeptInfo deptInfo) {
+		StringBuffer querySql = new StringBuffer();
+		List<Object> params = new ArrayList<Object>();
+		
+		querySql.append("select wpi.id,wpi.serial_num,wpi.contract_id,wpi.budget_id,wpi.name_,wpi.pm_,wpi.dept_,wpi.start_day,wpi.end_day,wpi.budget_total,wpi.status_,wpi.finish_rate,wpi.creator_,wpi.create_time,wpi.updator_,wpi.update_time,");
+		querySql.append("wci.serial_num as contract_num,");
+		querySql.append("wcb.name_ as budget_name,wcb.budget_total as budget_original");
+		querySql.append(" from w_project_info wpi");
+		querySql.append(" left join w_contract_info wci on wci.id = wpi.contract_id");
+		querySql.append(" left join w_dept_info wdi on wdi.id = wpi.dept_id");
+		querySql.append(" left join w_contract_budget wcb on wcb.id = wpi.budget_id");
+		querySql.append(" left join w_dept_info wdi2 on wdi2.id = wcb.dept_id");
+		
+		querySql.append(" where (wpi.pm_id = ? or wpi.creator_ = ? or wcb.user_id = ?");
+		params.add(user.getId());
+		params.add(user.getLogin());
+		params.add(user.getId());
+
+		if(user.getIsManager()){
+			querySql.append(" or wdi.id_path like ? or wdi.id = ? or wdi2.id_path like ? or wdi2.id = ?");
+			
+			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
+			params.add(deptInfo.getId());
+			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
+			params.add(deptInfo.getId());
+		}
+		querySql.append(")");
+		
+		querySql.append(" and wpi.id = ?");
+		params.add(id);
+		
+		List<Object[]> list = this.queryAllSql(querySql.toString(), params.toArray());
+		if(list != null && !list.isEmpty()){
+			return transProjectInfoVo(list.get(0));
+		}
+		return null;
 	}
 }	

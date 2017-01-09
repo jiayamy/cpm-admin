@@ -2,6 +2,7 @@ package com.wondertek.cpm.service;
 
 import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
 
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,9 +17,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.wondertek.cpm.CpmConstants;
 import com.wondertek.cpm.domain.DeptInfo;
 import com.wondertek.cpm.domain.ProjectInfo;
 import com.wondertek.cpm.domain.User;
+import com.wondertek.cpm.domain.UserTimesheet;
 import com.wondertek.cpm.domain.vo.LongValue;
 import com.wondertek.cpm.domain.vo.ProjectInfoVo;
 import com.wondertek.cpm.repository.ProjectInfoDao;
@@ -41,8 +44,8 @@ public class ProjectInfoService {
     @Inject
     private UserRepository userRepository;
     
-    @Inject
-    private ProjectInfoSearchRepository projectInfoSearchRepository;
+//    @Inject
+//    private ProjectInfoSearchRepository projectInfoSearchRepository;
     
     @Autowired
     private ProjectInfoDao projectInfoDao;
@@ -56,7 +59,7 @@ public class ProjectInfoService {
     public ProjectInfo save(ProjectInfo projectInfo) {
         log.debug("Request to save ProjectInfo : {}", projectInfo);
         ProjectInfo result = projectInfoRepository.save(projectInfo);
-        projectInfoSearchRepository.save(result);
+//        projectInfoSearchRepository.save(result);
         return result;
     }
 
@@ -93,8 +96,15 @@ public class ProjectInfoService {
      */
     public void delete(Long id) {
         log.debug("Request to delete ProjectInfo : {}", id);
+        ProjectInfo projectInfo = projectInfoRepository.findOne(id);
+        if(projectInfo != null){
+        	projectInfo.setStatus(ProjectInfo.STATUS_DELETED);
+        	projectInfo.setUpdateTime(ZonedDateTime.now());
+        	projectInfo.setUpdator(SecurityUtils.getCurrentUserLogin());
+        	projectInfoRepository.save(projectInfo);
+        }
         projectInfoRepository.delete(id);
-        projectInfoSearchRepository.delete(id);
+//        projectInfoSearchRepository.delete(id);
     }
 
     /**
@@ -106,7 +116,8 @@ public class ProjectInfoService {
     @Transactional(readOnly = true)
     public Page<ProjectInfo> search(String query, Pageable pageable) {
         log.debug("Request to search for a page of ProjectInfos for query {}", query);
-        Page<ProjectInfo> result = projectInfoSearchRepository.search(queryStringQuery(query), pageable);
+        Page<ProjectInfo> result = null;
+//        Page<ProjectInfo> result = projectInfoSearchRepository.search(queryStringQuery(query), pageable);
         return result;
     }
     /**
@@ -139,4 +150,16 @@ public class ProjectInfoService {
     		return new PageImpl(new ArrayList<ProjectInfoVo>(), pageable, 0);
     	}
     }
+
+	public ProjectInfoVo getUserProjectInfo(Long id) {
+		List<Object[]> objs = userRepository.findUserInfoByLogin(SecurityUtils.getCurrentUserLogin());
+    	if(objs != null && !objs.isEmpty()){
+    		Object[] o = objs.get(0);
+    		User user = (User) o[0];
+    		DeptInfo deptInfo = (DeptInfo) o[1];
+    		
+    		return projectInfoDao.getUserProjectInfo(id,user,deptInfo);
+    	}
+		return null;
+	}
 }

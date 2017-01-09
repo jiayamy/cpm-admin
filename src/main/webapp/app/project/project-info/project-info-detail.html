@@ -8,17 +8,21 @@
         <dd>
             <span>{{vm.projectInfo.serialNum}}</span>
         </dd>
-        <dt><span data-translate="cpmApp.projectInfo.contractId">Contract Id</span></dt>
-        <dd>
-            <span>{{vm.projectInfo.contractId}}</span>
-        </dd>
-        <dt><span data-translate="cpmApp.projectInfo.budgetId">Budget Id</span></dt>
-        <dd>
-            <span>{{vm.projectInfo.budgetId}}</span>
-        </dd>
         <dt><span data-translate="cpmApp.projectInfo.name">Name</span></dt>
         <dd>
             <span>{{vm.projectInfo.name}}</span>
+        </dd>
+        <dt><span data-translate="cpmApp.projectInfo.contractId">Contract Num</span></dt>
+        <dd>
+            <span>{{vm.projectInfo.contractNum}}</span>
+        </dd>
+        <dt><span data-translate="cpmApp.projectInfo.budgetId">Budget Name</span></dt>
+        <dd>
+            <span>{{vm.projectInfo.budgetName}}</span>
+        </dd>
+        <dt><span data-translate="cpmApp.projectInfo.budgetOriginal">Budget Original</span></dt>
+        <dd>
+            <span>{{vm.projectInfo.budgetOriginal}}</span>
         </dd>
         <dt><span data-translate="cpmApp.projectInfo.pm">Pm</span></dt>
         <dd>
@@ -30,11 +34,11 @@
         </dd>
         <dt><span data-translate="cpmApp.projectInfo.startDay">Start Day</span></dt>
         <dd>
-            <span>{{vm.projectInfo.startDay | date:'medium'}}</span>
+            <span>{{vm.projectInfo.startDay | date:'shortDate'}}</span>
         </dd>
         <dt><span data-translate="cpmApp.projectInfo.endDay">End Day</span></dt>
         <dd>
-            <span>{{vm.projectInfo.endDay | date:'medium'}}</span>
+            <span>{{vm.projectInfo.endDay | date:'shortDate'}}</span>
         </dd>
         <dt><span data-translate="cpmApp.projectInfo.budgetTotal">Budget Total</span></dt>
         <dd>
@@ -42,7 +46,7 @@
         </dd>
         <dt><span data-translate="cpmApp.projectInfo.status">Status</span></dt>
         <dd>
-            <span>{{vm.projectInfo.status}}</span>
+            <span>{{vm.projectInfo.statusName}}</span>
         </dd>
         <dt><span data-translate="cpmApp.projectInfo.creator">Creator</span></dt>
         <dd>

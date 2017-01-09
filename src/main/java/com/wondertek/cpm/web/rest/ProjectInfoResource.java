@@ -136,9 +136,11 @@ public class ProjectInfoResource {
      */
     @GetMapping("/project-infos/{id}")
     @Timed
-    public ResponseEntity<ProjectInfo> getProjectInfo(@PathVariable Long id) {
+    public ResponseEntity<ProjectInfoVo> getProjectInfo(@PathVariable Long id) {
         log.debug("REST request to get ProjectInfo : {}", id);
-        ProjectInfo projectInfo = projectInfoService.findOne(id);
+//        ProjectInfo projectInfo = projectInfoService.findOne(id);
+        ProjectInfoVo projectInfo = projectInfoService.getUserProjectInfo(id);
+        
         return Optional.ofNullable(projectInfo)
             .map(result -> new ResponseEntity<>(
                 result,

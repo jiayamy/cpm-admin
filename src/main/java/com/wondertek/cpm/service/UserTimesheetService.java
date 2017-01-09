@@ -112,6 +112,8 @@ public class UserTimesheetService {
         UserTimesheet userTimesheet = userTimesheetRepository.findOne(id);
         if(userTimesheet != null){
         	userTimesheet.setStatus(CpmConstants.STATUS_DELETED);
+        	userTimesheet.setUpdateTime(ZonedDateTime.now());
+        	userTimesheet.setUpdator(SecurityUtils.getCurrentUserLogin());
         	userTimesheetRepository.save(userTimesheet);
         }
 //        userTimesheetSearchRepository.delete(id);

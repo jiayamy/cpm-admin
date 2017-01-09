@@ -20,6 +20,10 @@ public class ProjectInfo implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    public static final int STATUS_ADD = 1;
+    public static final int STATUS_CLOSED = 2;
+	public static final int STATUS_DELETED = 3;
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;

@@ -11,9 +11,9 @@
         $stateProvider
         .state('project-info', {
             parent: 'project',
-            url: '/project-info',
+            url: '/project-info?contractId&serialNum&name&status',
             data: {
-                authorities: ['ROLE_USER'],
+                authorities: ['ROLE_PROJECT_INFO'],
                 pageTitle: 'cpmApp.projectInfo.home.title'
             },
             views: {
@@ -54,10 +54,10 @@
             }
         })
         .state('project-info-detail', {
-            parent: 'project',
-            url: '/project-info/{id}',
+            parent: 'project-info',
+            url: '/{id}',
             data: {
-                authorities: ['ROLE_USER'],
+                authorities: ['ROLE_PROJECT_INFO'],
                 pageTitle: 'cpmApp.projectInfo.detail.title'
             },
             views: {
@@ -89,7 +89,7 @@
             parent: 'project-info-detail',
             url: '/detail/edit',
             data: {
-                authorities: ['ROLE_USER']
+                authorities: ['ROLE_PROJECT_INFO']
             },
             onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
                 $uibModal.open({
@@ -114,7 +114,7 @@
             parent: 'project-info',
             url: '/new',
             data: {
-                authorities: ['ROLE_USER']
+                authorities: ['ROLE_PROJECT_INFO']
             },
             onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
                 $uibModal.open({
@@ -155,7 +155,7 @@
             parent: 'project-info',
             url: '/{id}/edit',
             data: {
-                authorities: ['ROLE_USER']
+                authorities: ['ROLE_PROJECT_INFO']
             },
             onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
                 $uibModal.open({
@@ -180,7 +180,7 @@
             parent: 'project-info',
             url: '/{id}/delete',
             data: {
-                authorities: ['ROLE_USER']
+                authorities: ['ROLE_PROJECT_INFO']
             },
             onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
                 $uibModal.open({
@@ -203,7 +203,7 @@
             parent: 'project-info-detail',
             url: '/queryDept?selectType&showChild',
             data: {
-                authorities: ['ROLE_USER']
+                authorities: ['ROLE_PROJECT_INFO']
             },
             onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
                 $uibModal.open({
