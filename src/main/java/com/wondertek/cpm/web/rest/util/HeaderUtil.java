@@ -40,4 +40,11 @@ public final class HeaderUtil {
         headers.add("X-cpmApp-params", entityName);
         return headers;
     }
+    
+    public static HttpHeaders createError(String message, String param) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("X-cpmApp-error", message);
+        headers.add("X-cpmApp-params", param);
+        return headers;
+    }
 }

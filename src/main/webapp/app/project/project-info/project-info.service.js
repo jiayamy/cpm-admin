@@ -38,6 +38,11 @@
             	url:'api/project-infos/queryUserContract',
             	method:'GET',
             	isArray:true
+            },
+            'queryUserContractBudget':{
+            	url:'api/project-infos/queryUserContractBudget',
+            	method:'GET',
+            	isArray:true
             }
         });
     }

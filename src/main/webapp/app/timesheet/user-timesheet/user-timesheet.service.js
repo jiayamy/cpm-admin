@@ -18,7 +18,7 @@
                         data.createTime = DateUtils.convertDateTimeFromServer(data.createTime);
                         data.updateTime = DateUtils.convertDateTimeFromServer(data.updateTime);
                         if(data.type == 1){
-            				data.typeName = "公共成本";
+            				data.typeName = "无具体项目";
             			}else if(data.type == 2){
             				data.typeName = "合同";
             			}else if(data.type == 3){

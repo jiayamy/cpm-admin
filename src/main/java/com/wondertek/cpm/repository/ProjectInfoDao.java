@@ -31,4 +31,17 @@ public interface ProjectInfoDao extends GenericDao<ProjectInfo,Long> {
 	 * @return
 	 */
 	public ProjectInfoVo getUserProjectInfo(Long id, User user, DeptInfo deptInfo);
+	/**
+	 * 获取用户权限下的合同预算
+	 */
+	public List<LongValue> queryUserContractBudget(User user, DeptInfo deptInfo, Long contractId);
+	/**
+	 * 检查项目中的预算信息
+	 * @return
+	 */
+	public int checkByBudget(ProjectInfo projectInfo);
+	/**
+	 * 项目项目信息，一般也就编号
+	 */
+	public boolean checkByProject(String serialNum, Long id);
 }

@@ -25,7 +25,7 @@
         var type = pagingParams.type;
         if(type){
         	if(type == 1){
-        		type = { id: 1, name: '公共成本' };
+        		type = { id: 1, name: '无具体项目' };
         	}else if(type == 2){
         		type = { id: 2, name: '合同' };
         	}else if(type == 3){
@@ -43,7 +43,7 @@
         vm.datePickerOpenStatus = {};
         vm.openCalendar = openCalendar;
         
-        vm.types = [{ id: 1, name: '公共成本' }, { id: 2, name: '合同' }, { id: 3, name: '项目' }];
+        vm.types = [{ id: 1, name: '无具体项目' }, { id: 2, name: '合同' }, { id: 3, name: '项目' }];
         
         loadAll();
 
@@ -87,7 +87,7 @@
         	if(data.length > 0){
         		for(var i = 0; i< data.length ; i++){
         			if(data[i].type == 1){
-        				data[i].type = "公共成本";
+        				data[i].type = "无具体项目";
         			}else if(data[i].type == 2){
         				data[i].type = "合同";
         			}else if(data[i].type == 3){

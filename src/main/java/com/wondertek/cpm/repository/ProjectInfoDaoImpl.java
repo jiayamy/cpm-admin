@@ -70,7 +70,7 @@ public class ProjectInfoDaoImpl extends GenericDaoImpl<ProjectInfo, Long> implem
 				params.add(ContractBudget.TYPE_PURCHASE);
 				params.add(ContractBudget.PURCHASETYPE_SERVICE);
 			sql.append(") b");
-		sql.append(")");
+		sql.append(") order by a.id desc");
 		
 		List<Object[]> list = this.queryAllSql(sql.toString(), params.toArray());
 		
@@ -103,18 +103,22 @@ public class ProjectInfoDaoImpl extends GenericDaoImpl<ProjectInfo, Long> implem
 		whereSql.append(" left join w_contract_budget wcb on wcb.id = wpi.budget_id");
 		whereSql.append(" left join w_dept_info wdi2 on wdi2.id = wcb.dept_id");
 		
-		whereSql.append(" where (wpi.pm_id = ? or wpi.creator_ = ? or wcb.user_id = ?");
+		whereSql.append(" where (wpi.pm_id = ? or wpi.creator_ = ? or (wcb.user_id = ? and wcb.type_ = ? and wcb.purchase_type = ?)");
 		params.add(user.getId());
 		params.add(user.getLogin());
 		params.add(user.getId());
-
+		params.add(ContractBudget.TYPE_PURCHASE);
+		params.add(ContractBudget.PURCHASETYPE_SERVICE);
+		
 		if(user.getIsManager()){
-			whereSql.append(" or wdi.id_path like ? or wdi.id = ? or wdi2.id_path like ? or wdi2.id = ?");
+			whereSql.append(" or wdi.id_path like ? or wdi.id = ? or ((wdi2.id_path like ? or wdi2.id = ?) and wcb.type_ = ? and wcb.purchase_type = ?)");
 			
 			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
 			params.add(deptInfo.getId());
 			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
 			params.add(deptInfo.getId());
+			params.add(ContractBudget.TYPE_PURCHASE);
+			params.add(ContractBudget.PURCHASETYPE_SERVICE);
 		}
 		whereSql.append(")");
 		
@@ -227,18 +231,22 @@ public class ProjectInfoDaoImpl extends GenericDaoImpl<ProjectInfo, Long> implem
 		querySql.append(" left join w_contract_budget wcb on wcb.id = wpi.budget_id");
 		querySql.append(" left join w_dept_info wdi2 on wdi2.id = wcb.dept_id");
 		
-		querySql.append(" where (wpi.pm_id = ? or wpi.creator_ = ? or wcb.user_id = ?");
+		querySql.append(" where (wpi.pm_id = ? or wpi.creator_ = ? or (wcb.user_id = ? and wcb.type_ = ? and wcb.purchase_type = ?)");
 		params.add(user.getId());
 		params.add(user.getLogin());
 		params.add(user.getId());
-
+		params.add(ContractBudget.TYPE_PURCHASE);
+		params.add(ContractBudget.PURCHASETYPE_SERVICE);
+		
 		if(user.getIsManager()){
-			querySql.append(" or wdi.id_path like ? or wdi.id = ? or wdi2.id_path like ? or wdi2.id = ?");
+			querySql.append(" or wdi.id_path like ? or wdi.id = ? or ((wdi2.id_path like ? or wdi2.id = ?) and wcb.type_ = ? and wcb.purchase_type = ?)");
 			
 			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
 			params.add(deptInfo.getId());
 			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
 			params.add(deptInfo.getId());
+			params.add(ContractBudget.TYPE_PURCHASE);
+			params.add(ContractBudget.PURCHASETYPE_SERVICE);
 		}
 		querySql.append(")");
 		
@@ -250,5 +258,96 @@ public class ProjectInfoDaoImpl extends GenericDaoImpl<ProjectInfo, Long> implem
 			return transProjectInfoVo(list.get(0));
 		}
 		return null;
+	}
+
+	@Override
+	public List<LongValue> queryUserContractBudget(User user, DeptInfo deptInfo, Long contractId) {
+		StringBuffer querySql = new StringBuffer();
+		List<Object> params = new ArrayList<Object>();
+		//项目中已经有的合同预算，或者合同中新增的预算。
+		
+		querySql.append("select a.id,a.name_,a.contract_id from w_contract_budget a where a.id in(");
+		querySql.append("select distinct b.budget_id from (");
+		querySql.append("select c.budget_id as budget_id from w_project_info c left join w_dept_info d on d.id = c.dept_id");
+		querySql.append(" where (c.pm_id = ? or c.creator_ = ?");
+		params.add(user.getId());
+		params.add(user.getLogin());
+		
+		if(user.getIsManager()){
+			querySql.append(" or d.id_path like ? or d.id = ?");
+			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
+			params.add(deptInfo.getId());
+		}
+		querySql.append(") and c.contract_id = ?");
+		params.add(contractId);
+		querySql.append(" union all ");
+		
+		querySql.append("select e.id as budget_id from w_contract_budget e left join w_dept_info f on f.id = e.dept_id");
+		querySql.append(" where (e.user_id = ?");
+		params.add(user.getId());
+		if(user.getIsManager()){
+			querySql.append(" or f.id_path like ? or f.id = ?");
+			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
+			params.add(deptInfo.getId());
+		}
+		querySql.append(") and e.type_ = ? and e.purchase_type = ? and e.contract_id = ?");
+		params.add(ContractBudget.TYPE_PURCHASE);
+		params.add(ContractBudget.PURCHASETYPE_SERVICE);
+		params.add(contractId);
+		querySql.append(") b");
+		querySql.append(") order by a.id desc");
+		
+		List<Object[]> list = this.queryAllSql(querySql.toString(), params.toArray());
+		
+		List<LongValue> returnList = new ArrayList<LongValue>();
+		if(list != null){
+			for(Object[] o : list){
+				returnList.add(new LongValue(StringUtil.nullToLong(o[0]),StringUtil.null2Str(o[1]),StringUtil.nullToLong(o[2])));
+			}
+		}
+		return returnList;
+	}
+
+	@Override
+	public int checkByBudget(ProjectInfo projectInfo) {
+		StringBuffer querySql = new StringBuffer();
+		List<Object> params = new ArrayList<Object>();
+		querySql.append("select wcb.contract_id,wpi.id from w_contract_budget wcb left join w_project_info wpi on wpi.budget_id = wcb.id");
+		querySql.append(" where wcb.id = ?");
+		params.add(projectInfo.getBudgetId());
+		
+		List<Object[]> list = this.queryAllSql(querySql.toString(), params.toArray());
+		if(list == null || list.isEmpty()){
+			return 1;//预算不存在
+		}else if(list.size() > 1){
+			return 2;//该预算对应2个项目，数据不对，一般不存在
+		}
+		//查看预算ID对应的合同ID是否一致。
+		Object[] o = list.get(0);
+		if(StringUtil.nullToLong(o[0]).longValue() != projectInfo.getContractId()){
+			return 3;//该预算传值不一致
+		}
+		Long projectId = StringUtil.nullToCloneLong(o[1]);
+		if(projectInfo.getId() == null && projectId != null){//新增的，只有wpi.id不存在就可以
+			return 2;//该预算已经创建了项目
+		}else if(projectInfo.getId() != null && projectId == null){
+			return 4;//修改了项目的预算，不能修改
+		}else if(projectInfo.getId() != null && projectId != null && projectId.longValue() != projectInfo.getId()){//项目ID不一致
+			return 2;//该预算已经创建了项目
+		}
+		return 0;
+	}
+
+	@Override
+	public boolean checkByProject(String serialNum, Long id) {
+		StringBuffer countHql = new StringBuffer();
+		List<Object> params = new ArrayList<Object>();
+		countHql.append("select count(id) from ProjectInfo where serialNum = ?");
+		params.add(serialNum);
+		if(id != null){
+			countHql.append(" and id <> ?");
+			params.add(id);
+		}
+		return this.countHql(countHql.toString(), params.toArray()) > 0;
 	}
 }	
