@@ -18,6 +18,7 @@
         vm.previousState = previousState.name;
         vm.queryDept = previousState.queryDept;
         vm.contractChanged = contractChanged;
+        vm.budgetChanged = budgetChanged;
         
         vm.datePickerOpenStatus = {};
         vm.openCalendar = openCalendar;
@@ -78,6 +79,7 @@
 	        			if(!select){
 	        				vm.projectInfo.budgetId = vm.contractBudgets[0];
 	        			}
+	        			budgetChanged();
 	        		}
 	        	},
 	        	function(error){
@@ -85,6 +87,13 @@
 	        		vm.contractBudgets = [];
 	        	}
 	        );
+        }
+        function budgetChanged(){
+        	if(vm.projectInfo.budgetId && vm.projectInfo.budgetId.key){
+        		vm.projectInfo.budgetOriginal = vm.projectInfo.budgetId.p2;
+        	}else{
+        		vm.projectInfo.budgetOriginal = vm.projectInfo.budgetOriginal;
+        	}
         }
         function save () {
             vm.isSaving = true;
@@ -120,6 +129,7 @@
 	    		function(data, headers){
             		vm.isSaving = false;
 //            		AlertService.error(error.data.message);
+            		console.log(vm.previousState);
             		$state.go(vm.previousState);
 	        	},
 	        	function(error){

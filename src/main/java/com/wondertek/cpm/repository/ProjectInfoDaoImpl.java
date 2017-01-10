@@ -267,7 +267,7 @@ public class ProjectInfoDaoImpl extends GenericDaoImpl<ProjectInfo, Long> implem
 		List<Object> params = new ArrayList<Object>();
 		//项目中已经有的合同预算，或者合同中新增的预算。
 		
-		querySql.append("select a.id,a.name_,a.contract_id from w_contract_budget a where a.id in(");
+		querySql.append("select a.id,a.name_,a.contract_id,a.budget_total from w_contract_budget a where a.id in(");
 		querySql.append("select distinct b.budget_id from (");
 		querySql.append("select c.budget_id as budget_id from w_project_info c left join w_dept_info d on d.id = c.dept_id");
 		querySql.append(" where (c.pm_id = ? or c.creator_ = ?");
@@ -303,7 +303,7 @@ public class ProjectInfoDaoImpl extends GenericDaoImpl<ProjectInfo, Long> implem
 		List<LongValue> returnList = new ArrayList<LongValue>();
 		if(list != null){
 			for(Object[] o : list){
-				returnList.add(new LongValue(StringUtil.nullToLong(o[0]),StringUtil.null2Str(o[1]),StringUtil.nullToLong(o[2])));
+				returnList.add(new LongValue(StringUtil.nullToLong(o[0]),StringUtil.null2Str(o[1]),StringUtil.nullToLong(o[2]),StringUtil.nullToDouble(o[3])));
 			}
 		}
 		return returnList;

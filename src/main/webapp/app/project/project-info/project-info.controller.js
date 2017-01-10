@@ -28,6 +28,7 @@
 		}
         vm.searchQuery.serialNum = pagingParams.serialNum;
         vm.searchQuery.name = pagingParams.name;
+        vm.searchQuery.contractId = pagingParams.contractId;
         vm.contractInfos = [];
         
         if (!vm.searchQuery.contractId && !vm.searchQuery.serialNum

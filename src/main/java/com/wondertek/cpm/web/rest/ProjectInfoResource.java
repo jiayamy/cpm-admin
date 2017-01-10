@@ -93,6 +93,10 @@ public class ProjectInfoResource {
         	if(projectInfoVo == null){
         		return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.projectInfo.save.noPerm", "")).body(null);
         	}
+        	//是否已删除或者已结项
+        	if(projectInfoVo.getStatus() == ProjectInfo.STATUS_CLOSED || projectInfoVo.getStatus() == ProjectInfo.STATUS_DELETED){
+        		return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.projectInfo.save.statusError", "")).body(null);
+        	}
         	//
         	ProjectInfo oldProjectInfo = projectInfoService.findOne(projectInfo.getId());
         	projectInfo.setBudgetId(oldProjectInfo.getBudgetId());
@@ -113,6 +117,8 @@ public class ProjectInfoResource {
         	projectInfo.setCreator(oldProjectInfo.getCreator());
         	projectInfo.setStatus(oldProjectInfo.getStatus());
         	projectInfo.setFinishRate(oldProjectInfo.getFinishRate());
+        	projectInfo.setContractId(oldProjectInfo.getContractId());
+        	projectInfo.setBudgetId(oldProjectInfo.getBudgetId());
         }else{
         	projectInfo.setCreateTime(updateTime);
         	projectInfo.setCreator(updator);
@@ -124,7 +130,7 @@ public class ProjectInfoResource {
         
         ProjectInfo result = projectInfoService.save(projectInfo);
         if(isNew){
-        	return ResponseEntity.created(new URI("/api/project-infos/" + result.getId()))
+        	return ResponseEntity.ok()
                     .headers(HeaderUtil.createEntityCreationAlert("projectInfo", result.getId().toString()))
                     .body(result);
         }else{
@@ -197,6 +203,11 @@ public class ProjectInfoResource {
         if(projectInfo == null){
         	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.projectInfo.save.noPerm", "")).body(null);
         }
+        if(projectInfo.getStatus() == ProjectInfo.STATUS_CLOSED){
+        	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.projectInfo.delete.status2Error", "")).body(null);
+        }else if(projectInfo.getStatus() == ProjectInfo.STATUS_DELETED){
+        	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.projectInfo.delete.status3Error", "")).body(null);
+        }
         projectInfoService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert("projectInfo", id.toString())).build();
     }
@@ -234,9 +245,9 @@ public class ProjectInfoResource {
         	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.projectInfo.save.noPerm", "")).body(null);
         }
         if(projectInfo.getStatus() == ProjectInfo.STATUS_CLOSED){
-        	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.projectInfo.end.statusError1", "")).body(null);
+        	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.projectInfo.end.status2Error", "")).body(null);
         }else if(projectInfo.getStatus() == ProjectInfo.STATUS_DELETED){
-        	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.projectInfo.end.statusError2", "")).body(null);
+        	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.projectInfo.end.status3Error", "")).body(null);
         }
         projectInfoService.endProjectInfo(id);
         

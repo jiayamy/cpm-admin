@@ -55,7 +55,7 @@
         })
         .state('project-info-detail', {
             parent: 'project-info',
-            url: '/{id}/detail',
+            url: '/detail/{id}',
             data: {
                 authorities: ['ROLE_PROJECT_INFO'],
                 pageTitle: 'cpmApp.projectInfo.detail.title'
@@ -87,7 +87,7 @@
         })
         .state('project-info-detail.edit', {
             parent: 'project-info-detail',
-            url: '/detail/edit',
+            url: '/edit',
             data: {
                 authorities: ['ROLE_PROJECT_INFO'],
                 pageTitle: 'cpmApp.projectInfo.detail.title'
@@ -183,7 +183,8 @@
                         createTime: null,
                         updator: null,
                         updateTime: null,
-                        id: null
+                        id: null,
+                        budgetOriginal:0
                     };
                 },
                 previousState: ["$state", function ($state) {
@@ -227,7 +228,7 @@
         })
         .state('project-info.edit', {
             parent: 'project-info',
-            url: '/{id}/edit',
+            url: '/edit/{id}',
             data: {
                 authorities: ['ROLE_PROJECT_INFO'],
                 pageTitle: 'cpmApp.projectInfo.detail.title'
@@ -251,7 +252,7 @@
                 previousState: ["$state", function ($state) {
                     var currentStateData = {
                     	queryDept:'project-info.edit.queryDept',
-                        name: $state.current.name || 'project-info-detail',
+                        name: $state.current.name || 'project-info',
                         params: $state.params,
                         url: $state.href($state.current.name, $state.params)
                     };
@@ -289,7 +290,7 @@
         })
         .state('project-info.delete', {
             parent: 'project-info',
-            url: '/{id}/delete',
+            url: '/delete/{id}',
             data: {
                 authorities: ['ROLE_PROJECT_INFO']
             },
@@ -313,7 +314,7 @@
         })
         .state('project-info.end', {
             parent: 'project-info',
-            url: '/{id}/end',
+            url: '/end/{id}',
             data: {
                 authorities: ['ROLE_PROJECT_INFO']
             },
@@ -337,7 +338,7 @@
         })
         .state('project-info.finish', {
             parent: 'project-info',
-            url: '/{id}/finish',
+            url: '/finish/{id}',
             data: {
                 authorities: ['ROLE_PROJECT_INFO']
             },

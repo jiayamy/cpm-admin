@@ -13,7 +13,8 @@
                 "question": "确定删除编号为[ {{ id }}]的项目信息?"
             },
             "detail": {
-                "title": "项目信息"
+                "title": "项目信息",
+                "budgetOriginal":"采购单预算为:{{ budgetOriginal }}"
             },
             "save":{
             	"budgetError":"采购单与合同所属不一致，请重新选择合同",
@@ -27,12 +28,16 @@
             	"endDayError":"结束日期应在开始日期之后",
             	"statusError":"已结项或已删除的项目不可编辑"
             },
+            "delete":{
+            	"status2Error":"已结项的不可删除",
+            	"status3Error":"已删除的不可再执行删除"
+            },
             "end":{
             	"title":"结项信息",
             	"submit":"结项",
             	"question": "确定将编号为[ {{ id }}]的项目结项?",
-            	"statusError1":"项目状态为已结项的不可再执行结项操作",
-            	"statusError2":"项目状态为已删除的不可执行结项操作",
+            	"status2Error":"项目状态为已结项的不可再执行结项操作",
+            	"status3Error":"项目状态为已删除的不可执行结项操作",
             	"success":"项目结项成功"
             },
             "finish":{
