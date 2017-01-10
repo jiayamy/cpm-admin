@@ -1,7 +1,7 @@
 <h2><span data-translate="cpmApp.projectInfo.home.createOrEditLabel">Create or edit a Project Info</span></h2>
 <hr>
 <jhi-alert-error></jhi-alert-error>
-<form name="myForm" role="form" novalidate ng-submit="vm.save()">
+<form name="myForm" role="form" ng-submit="vm.save()">
 	<div class="container-fluid">
 		<div class="row form-horizontal">
 			<div class="form-group" ng-show="vm.projectInfo.id">
@@ -17,14 +17,14 @@
 				<div class="col-sm-6">
 					<label class="control-label" data-translate="cpmApp.projectInfo.contractId" for="field_contractId">Contract Id</label>
 	            	<select class="form-control" name="contractId" ng-model="vm.projectInfo.contractId" id="field_contractId"
-	            		ng-required="true" ng-change="vm.contractChanged()"
+	            		ng-required="true" ng-change="vm.contractChanged()" ng-disabled="vm.projectInfo.id"
 		            	ng-options="contractInfo.val for contractInfo in vm.contractInfos track by contractInfo.key">
 		            </select>
 				</div>
 				<div class="col-sm-6">
 	          		<label class="control-label" data-translate="cpmApp.projectInfo.budgetId" for="field_budgetId">Budget Id</label>
 	              	<select class="form-control" name="budgetId" ng-model="vm.projectInfo.budgetId" id="field_budgetId"
-	            		ng-required="true"
+	            		ng-required="true" ng-change="vm.budgetChanged()" ng-disabled="vm.projectInfo.id"
 		            	ng-options="contractBudget.val for contractBudget in vm.contractBudgets track by contractBudget.key">
 		            </select>
 				</div>
@@ -104,10 +104,15 @@
 	     		<div class="col-sm-6">
 	          		<label class="control-label" data-translate="cpmApp.projectInfo.budgetTotal" for="field_budgetTotal">Budget Total</label>
 	          		<input type="number" class="form-control" name="budgetTotal" id="field_budgetTotal"
-	              		ng-model="vm.projectInfo.budgetTotal"
+	              		ng-model="vm.projectInfo.budgetTotal" step="0.01" min="0"
 	                  	/>
 	                <div ng-show="myForm.budgetTotal.$dirty&&myForm.budgetTotal.$error.number" class="alert alert-danger help-block"> 
                     	必须为数字
+                	</div>
+                	<div ng-show="myForm.budgetTotal.$dirty&&myForm.budgetTotal.$error.min" class="alert alert-danger help-block"> 
+                		项目预算最小值为0
+           			</div>
+					<div class="alert help-block" data-translate="cpmApp.projectInfo.detail.budgetOriginal" translate-values="{budgetOriginal: '{{vm.projectInfo.budgetOriginal}}'}"> 
                 	</div>
 	   			</div>
 	     		<div class="col-sm-6">
