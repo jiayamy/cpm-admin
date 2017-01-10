@@ -41,10 +41,7 @@
                     <th jh-sort-by="userName"><span data-translate="cpmApp.projectUser.userName">User Name</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="userRole"><span data-translate="cpmApp.projectUser.userRole">User Role</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="joinDay"><span data-translate="cpmApp.projectUser.joinDay">Join Day</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="goodbyeDay"><span data-translate="cpmApp.projectUser.goodbyeDay">Goodbye Day</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="creator"><span data-translate="cpmApp.projectUser.creator">Creator</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="createTime"><span data-translate="cpmApp.projectUser.createTime">Create Time</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="updator"><span data-translate="cpmApp.projectUser.updator">Updator</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="leaveDay"><span data-translate="cpmApp.projectUser.leaveDay">Leave Day</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="updateTime"><span data-translate="cpmApp.projectUser.updateTime">Update Time</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th></th>
                 </tr>
@@ -56,11 +53,8 @@
                     <td>{{projectUser.userId}}</td>
                     <td>{{projectUser.userName}}</td>
                     <td>{{projectUser.userRole}}</td>
-                    <td>{{projectUser.joinDay | date:'medium'}}</td>
-                    <td>{{projectUser.goodbyeDay | date:'medium'}}</td>
-                    <td>{{projectUser.creator}}</td>
-                    <td>{{projectUser.createTime | date:'medium'}}</td>
-                    <td>{{projectUser.updator}}</td>
+                    <td>{{projectUser.joinDay}}</td>
+                    <td>{{projectUser.leaveDay}}</td>
                     <td>{{projectUser.updateTime | date:'medium'}}</td>
                     <td class="text-right">
                         <div class="btn-group flex-btn-group-container">

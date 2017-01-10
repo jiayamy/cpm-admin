@@ -2,30 +2,29 @@
     "cpmApp": {
         "projectUser" : {
             "home": {
-                "title": "Project Users",
-                "createLabel": "Create a new Project User",
-                "createOrEditLabel": "Create or edit a Project User",
-                "search": "Search for Project User"
+                "title": "项目人员信息",
+                "createLabel": "新增员工",
+                "createOrEditLabel": "项目人员"
             },
-            "created": "A new Project User is created with identifier {{ param }}",
-            "updated": "A Project User is updated with identifier {{ param }}",
-            "deleted": "A Project User is deleted with identifier {{ param }}",
+            "created": "新增成功",
+            "updated": "更新成功",
+            "deleted": "删除成功",
             "delete": {
-                "question": "Are you sure you want to delete Project User {{ id }}?"
+                "question": "你确定需要删除该用户{{param}}？?"
             },
             "detail": {
-                "title": "Project User"
+                "title": "项目人员信息"
             },
-            "projectId": "Project Id",
-            "userId": "User Id",
-            "userName": "User Name",
-            "userRole": "User Role",
-            "joinDay": "Join Day",
-            "goodbyeDay": "Goodbye Day",
-            "creator": "Creator",
-            "createTime": "Create Time",
-            "updator": "Updator",
-            "updateTime": "Update Time"
+            "projectId": "项目编号",
+            "userId": "员工ID",
+            "userName": "员工",
+            "userRole": "角色",
+            "joinDay": "加盟日",
+            "leaveDay": "离开日",
+            "creator": "创建者",
+            "createTime": "创建时间",
+            "updator": "更新者",
+            "updateTime": "更新时间"
         }
     }
 }
