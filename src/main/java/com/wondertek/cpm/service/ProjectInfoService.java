@@ -1,7 +1,6 @@
 package com.wondertek.cpm.service;
 
-import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
-
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,7 +23,6 @@ import com.wondertek.cpm.domain.vo.ProjectInfoVo;
 import com.wondertek.cpm.repository.ProjectInfoDao;
 import com.wondertek.cpm.repository.ProjectInfoRepository;
 import com.wondertek.cpm.repository.UserRepository;
-import com.wondertek.cpm.repository.search.ProjectInfoSearchRepository;
 import com.wondertek.cpm.security.SecurityUtils;
 
 /**
@@ -41,8 +39,8 @@ public class ProjectInfoService {
     @Inject
     private UserRepository userRepository;
     
-    @Inject
-    private ProjectInfoSearchRepository projectInfoSearchRepository;
+//    @Inject
+//    private ProjectInfoSearchRepository projectInfoSearchRepository;
     
     @Autowired
     private ProjectInfoDao projectInfoDao;
@@ -56,7 +54,7 @@ public class ProjectInfoService {
     public ProjectInfo save(ProjectInfo projectInfo) {
         log.debug("Request to save ProjectInfo : {}", projectInfo);
         ProjectInfo result = projectInfoRepository.save(projectInfo);
-        projectInfoSearchRepository.save(result);
+//        projectInfoSearchRepository.save(result);
         return result;
     }
 
@@ -93,8 +91,15 @@ public class ProjectInfoService {
      */
     public void delete(Long id) {
         log.debug("Request to delete ProjectInfo : {}", id);
-        projectInfoRepository.delete(id);
-        projectInfoSearchRepository.delete(id);
+        ProjectInfo projectInfo = projectInfoRepository.findOne(id);
+        if(projectInfo != null){
+        	projectInfo.setStatus(ProjectInfo.STATUS_DELETED);
+        	projectInfo.setUpdateTime(ZonedDateTime.now());
+        	projectInfo.setUpdator(SecurityUtils.getCurrentUserLogin());
+        	projectInfoRepository.save(projectInfo);
+        }
+//        projectInfoRepository.delete(id);
+//        projectInfoSearchRepository.delete(id);
     }
 
     /**
@@ -106,7 +111,8 @@ public class ProjectInfoService {
     @Transactional(readOnly = true)
     public Page<ProjectInfo> search(String query, Pageable pageable) {
         log.debug("Request to search for a page of ProjectInfos for query {}", query);
-        Page<ProjectInfo> result = projectInfoSearchRepository.search(queryStringQuery(query), pageable);
+        Page<ProjectInfo> result = null;
+//        Page<ProjectInfo> result = projectInfoSearchRepository.search(queryStringQuery(query), pageable);
         return result;
     }
     /**
@@ -125,7 +131,7 @@ public class ProjectInfoService {
     	}
 		return returnList;
 	}
-    
+    @Transactional(readOnly = true)
     public Page<ProjectInfoVo> getUserPage(ProjectInfo projectInfo, Pageable pageable){
     	List<Object[]> objs = userRepository.findUserInfoByLogin(SecurityUtils.getCurrentUserLogin());
     	if(objs != null && !objs.isEmpty()){
@@ -139,4 +145,37 @@ public class ProjectInfoService {
     		return new PageImpl(new ArrayList<ProjectInfoVo>(), pageable, 0);
     	}
     }
+    @Transactional(readOnly = true)
+	public ProjectInfoVo getUserProjectInfo(Long id) {
+		List<Object[]> objs = userRepository.findUserInfoByLogin(SecurityUtils.getCurrentUserLogin());
+    	if(objs != null && !objs.isEmpty()){
+    		Object[] o = objs.get(0);
+    		User user = (User) o[0];
+    		DeptInfo deptInfo = (DeptInfo) o[1];
+    		
+    		return projectInfoDao.getUserProjectInfo(id,user,deptInfo);
+    	}
+		return null;
+	}
+    @Transactional(readOnly = true)
+	public List<LongValue> queryUserContractBudget(Long contractId) {
+		List<LongValue> returnList = new ArrayList<LongValue>();
+    	List<Object[]> objs = userRepository.findUserInfoByLogin(SecurityUtils.getCurrentUserLogin());
+    	if(objs != null && !objs.isEmpty()){
+    		Object[] o = objs.get(0);
+    		User user = (User) o[0];
+    		DeptInfo deptInfo = (DeptInfo) o[1];
+    		
+    		returnList = projectInfoDao.queryUserContractBudget(user,deptInfo,contractId);
+    	}
+		return returnList;
+	}
+    @Transactional(readOnly = true)
+	public int checkByBudget(ProjectInfo projectInfo) {
+		return projectInfoDao.checkByBudget(projectInfo);
+	}
+    @Transactional(readOnly = true)
+	public boolean checkByProject(String serialNum, Long id) {
+		return projectInfoDao.checkByProject(serialNum,id);
+	}
 }

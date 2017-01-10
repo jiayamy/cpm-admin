@@ -56,8 +56,8 @@
             }
         })
         .state('user-timesheet-detail', {
-            parent: 'timesheet',
-            url: '/user-timesheet/{id}',
+            parent: 'user-timesheet',
+            url: '/{id}',
             data: {
                 authorities: ['ROLE_TIMESHEET'],
                 pageTitle: 'cpmApp.userTimesheet.detail.title'

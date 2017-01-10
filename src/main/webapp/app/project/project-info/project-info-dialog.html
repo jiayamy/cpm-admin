@@ -1,126 +1,127 @@
-
-<form name="editForm" role="form" novalidate ng-submit="vm.save()">
-
-    <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
-                ng-click="vm.clear()">&times;</button>
-        <h4 class="modal-title" id="myProjectInfoLabel" data-translate="cpmApp.projectInfo.home.createOrEditLabel">Create or edit a Project Info</h4>
-    </div>
-    <div class="modal-body">
-        <jhi-alert-error></jhi-alert-error>
-        <div class="form-group" ng-show="vm.projectInfo.id">
-            <label for="id" data-translate="global.field.id">ID</label>
-            <input type="text" class="form-control" id="id" name="id"
-                    ng-model="vm.projectInfo.id" readonly />
-        </div>
-        <div class="form-group">
-            <label class="control-label" data-translate="cpmApp.projectInfo.serialNum" for="field_serialNum">Serial Num</label>
-            <input type="text" class="form-control" name="serialNum" id="field_serialNum"
-                    ng-model="vm.projectInfo.serialNum"
-                     />
-        </div>
-        <div class="form-group">
-            <label class="control-label" data-translate="cpmApp.projectInfo.contractId" for="field_contractId">Contract Id</label>
-            <input type="number" class="form-control" name="contractId" id="field_contractId"
-                    ng-model="vm.projectInfo.contractId"
-                     />
-        </div>
-        <div class="form-group">
-            <label class="control-label" data-translate="cpmApp.projectInfo.budgetId" for="field_budgetId">Budget Id</label>
-            <input type="number" class="form-control" name="budgetId" id="field_budgetId"
-                    ng-model="vm.projectInfo.budgetId"
-                     />
-        </div>
-        <div class="form-group">
-            <label class="control-label" data-translate="cpmApp.projectInfo.name" for="field_name">Name</label>
-            <input type="text" class="form-control" name="name" id="field_name"
-                    ng-model="vm.projectInfo.name"
-                     />
-        </div>
-        <div class="form-group">
-            <label class="control-label" data-translate="cpmApp.projectInfo.pm" for="field_pm">Pm</label>
-            <input type="text" class="form-control" name="pm" id="field_pm"
-                    ng-model="vm.projectInfo.pm"
-                     />
-        </div>
-        <div class="form-group">
-            <label class="control-label" data-translate="cpmApp.projectInfo.dept" for="field_dept">Dept</label>
-            <input type="text" class="form-control" name="dept" id="field_dept"
-                    ng-model="vm.projectInfo.dept"
-                     />
-        </div>
-        <div class="form-group">
-            <label class="control-label" data-translate="cpmApp.projectInfo.startDay" for="field_startDay">Start Day</label>
-                <div class="input-group">
-                    <input id="field_startDay" type="text" class="form-control" name="startDay" datetime-picker="{{dateformat}}" ng-model="vm.projectInfo.startDay" is-open="vm.datePickerOpenStatus.startDay"
-                      />
-                    <span class="input-group-btn">
-                        <button type="button" class="btn btn-default" ng-click="vm.openCalendar('startDay')"><i class="glyphicon glyphicon-calendar"></i></button>
-                    </span>
-                </div>
-        </div>
-        <div class="form-group">
-            <label class="control-label" data-translate="cpmApp.projectInfo.endDay" for="field_endDay">End Day</label>
-                <div class="input-group">
-                    <input id="field_endDay" type="text" class="form-control" name="endDay" datetime-picker="{{dateformat}}" ng-model="vm.projectInfo.endDay" is-open="vm.datePickerOpenStatus.endDay"
-                      />
-                    <span class="input-group-btn">
-                        <button type="button" class="btn btn-default" ng-click="vm.openCalendar('endDay')"><i class="glyphicon glyphicon-calendar"></i></button>
-                    </span>
-                </div>
-        </div>
-        <div class="form-group">
-            <label class="control-label" data-translate="cpmApp.projectInfo.budgetTotal" for="field_budgetTotal">Budget Total</label>
-            <input type="number" class="form-control" name="budgetTotal" id="field_budgetTotal"
-                    ng-model="vm.projectInfo.budgetTotal"
-                     />
-        </div>
-        <div class="form-group">
-            <label class="control-label" data-translate="cpmApp.projectInfo.status" for="field_status">Status</label>
-            <input type="number" class="form-control" name="status" id="field_status"
-                    ng-model="vm.projectInfo.status"
-                     />
-        </div>
-        <div class="form-group">
-            <label class="control-label" data-translate="cpmApp.projectInfo.creator" for="field_creator">Creator</label>
-            <input type="text" class="form-control" name="creator" id="field_creator"
-                    ng-model="vm.projectInfo.creator"
-                     />
-        </div>
-        <div class="form-group">
-            <label class="control-label" data-translate="cpmApp.projectInfo.createTime" for="field_createTime">Create Time</label>
-                <div class="input-group">
-                    <input id="field_createTime" type="text" class="form-control" name="createTime" datetime-picker="{{dateformat}}" ng-model="vm.projectInfo.createTime" is-open="vm.datePickerOpenStatus.createTime"
-                      />
-                    <span class="input-group-btn">
-                        <button type="button" class="btn btn-default" ng-click="vm.openCalendar('createTime')"><i class="glyphicon glyphicon-calendar"></i></button>
-                    </span>
-                </div>
-        </div>
-        <div class="form-group">
-            <label class="control-label" data-translate="cpmApp.projectInfo.updator" for="field_updator">Updator</label>
-            <input type="text" class="form-control" name="updator" id="field_updator"
-                    ng-model="vm.projectInfo.updator"
-                     />
-        </div>
-        <div class="form-group">
-            <label class="control-label" data-translate="cpmApp.projectInfo.updateTime" for="field_updateTime">Update Time</label>
-                <div class="input-group">
-                    <input id="field_updateTime" type="text" class="form-control" name="updateTime" datetime-picker="{{dateformat}}" ng-model="vm.projectInfo.updateTime" is-open="vm.datePickerOpenStatus.updateTime"
-                      />
-                    <span class="input-group-btn">
-                        <button type="button" class="btn btn-default" ng-click="vm.openCalendar('updateTime')"><i class="glyphicon glyphicon-calendar"></i></button>
-                    </span>
-                </div>
-        </div>
-
-    </div>
-    <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="vm.clear()">
-            <span class="glyphicon glyphicon-ban-circle"></span>&nbsp;<span data-translate="entity.action.cancel">Cancel</span>
-        </button>
-        <button type="submit" ng-disabled="editForm.$invalid || vm.isSaving" class="btn btn-primary">
-            <span class="glyphicon glyphicon-save"></span>&nbsp;<span data-translate="entity.action.save">Save</span>
-        </button>
-    </div>
+<h2><span data-translate="cpmApp.projectInfo.home.createOrEditLabel">Create or edit a Project Info</span></h2>
+<hr>
+<jhi-alert-error></jhi-alert-error>
+<form name="myForm" role="form" novalidate ng-submit="vm.save()">
+	<div class="container-fluid">
+		<div class="row form-horizontal">
+			<div class="form-group" ng-show="vm.projectInfo.id">
+				<div class="col-sm-6">
+		         	<label for="id" data-translate="global.field.id">ID</label>
+		         	<input type="text" class="form-control" id="id" name="id"
+		                 ng-model="vm.projectInfo.id" readonly />
+		   		</div>
+		   		<div class="col-sm-6">
+		   		</div>
+			</div>
+	     	<div class="form-group">
+				<div class="col-sm-6">
+					<label class="control-label" data-translate="cpmApp.projectInfo.contractId" for="field_contractId">Contract Id</label>
+	            	<select class="form-control" name="contractId" ng-model="vm.projectInfo.contractId" id="field_contractId"
+	            		ng-required="true" ng-change="vm.contractChanged()"
+		            	ng-options="contractInfo.val for contractInfo in vm.contractInfos track by contractInfo.key">
+		            </select>
+				</div>
+				<div class="col-sm-6">
+	          		<label class="control-label" data-translate="cpmApp.projectInfo.budgetId" for="field_budgetId">Budget Id</label>
+	              	<select class="form-control" name="budgetId" ng-model="vm.projectInfo.budgetId" id="field_budgetId"
+	            		ng-required="true"
+		            	ng-options="contractBudget.val for contractBudget in vm.contractBudgets track by contractBudget.key">
+		            </select>
+				</div>
+	     	</div>
+	     	<div class="form-group">
+	     		<div class="col-sm-6">
+	          		<label class="control-label" data-translate="cpmApp.projectInfo.serialNum" for="field_serialNum">Serial Num</label>
+	       			<input type="text" class="form-control" name="serialNum" id="field_serialNum"
+	              		ng-model="vm.projectInfo.serialNum" ng-required="true" ng-minlength="1" ng-maxlength="20"
+	               		/>
+					<div ng-show="myForm.name.$dirty&&myForm.serialNum.$error.minlength" class="alert alert-danger help-block"> 
+                    	项目编号必填
+                	</div>
+                	<div ng-show="myForm.name.$dirty&&myForm.serialNum.$error.maxlength" class="alert alert-danger help-block"> 
+                    	项目编号不能大于20
+                	</div>
+				</div>
+				<div class="col-sm-6">
+					<label class="control-label" data-translate="cpmApp.projectInfo.name" for="field_name">Name</label>
+	         		<input type="text" class="form-control" name="name" id="field_name"
+	                 	ng-model="vm.projectInfo.name" ng-required="true" ng-minlength="1" ng-maxlength="100"
+	                  	/>
+	             	<div ng-show="myForm.name.$dirty&&myForm.name.$error.minlength" class="alert alert-danger help-block"> 
+                    	项目名称必填
+                	</div>
+                	<div ng-show="myForm.name.$dirty&&myForm.name.$error.maxlength" class="alert alert-danger help-block"> 
+                    	项目名称不能大于100
+                	</div>
+				</div>
+	     	</div>
+	     	<div class="form-group">
+	     		<div class="col-sm-6">
+	          		<label class="control-label" data-translate="cpmApp.projectInfo.pm" for="field_pm">Pm</label>
+	          		<div class="input-group">
+		          		<input type="text" class="form-control" name="pm" id="field_pm"
+		                  	ng-model="vm.projectInfo.pm" readonly ng-required="true" ng-minlength="1"
+	                   	/>
+	                   	<span class="input-group-btn">
+	                     	<button type="button" class="btn btn-default" ui-sref="{{vm.queryDept}}({selectType:3,showChild:true})"><i class="glyphicon glyphicon-user"></i></button>
+	                 	</span>
+	            	</div>
+	      		</div>
+				<div class="col-sm-6">
+	     			<label class="control-label" data-translate="cpmApp.projectInfo.dept" for="field_dept" >Dept</label>
+	  				<input type="text" class="form-control" name="dept" id="field_dept"
+	                  	ng-model="vm.projectInfo.dept" readonly ng-required="true" ng-minlength="1"
+	                   	/>
+				</div>
+	     	</div>
+     		<div class="form-group">
+	     		<div class="col-sm-6">
+	        	 	<label class="control-label" data-translate="cpmApp.projectInfo.startDay" for="field_startDay">Start Day</label>
+	             	<div class="input-group">
+	                 	<input id="field_startDay" type="text" class="form-control" name="startDay" datetime-picker="yyyy-MM-dd" enable-time="false"
+	                 	 ng-model="vm.projectInfo.startDay" is-open="vm.datePickerOpenStatus.startDay" readonly ng-required="true" ng-minlength="10"
+	                   	/>
+	                 	<span class="input-group-btn">
+	                     	<button type="button" class="btn btn-default" ng-click="vm.openCalendar('startDay')"><i class="glyphicon glyphicon-calendar"></i></button>
+	                 	</span>
+	             	</div>
+	             	<div ng-show="myForm.startDay.$dirty&&myForm.startDay.$error.minlength" class="alert alert-danger help-block"> 
+                    	开始日期必填
+                	</div>
+	         	</div>
+				<div class="col-sm-6">
+					<label class="control-label" data-translate="cpmApp.projectInfo.endDay" for="field_endDay">End Day</label>
+	             	<div class="input-group">
+	                 	<input id="field_endDay" type="text" class="form-control" name="endDay" datetime-picker="yyyy-MM-dd" enable-time="false" 
+	                 	ng-model="vm.projectInfo.endDay" is-open="vm.datePickerOpenStatus.endDay" readonly/>
+	                 	<span class="input-group-btn">
+	                     	<button type="button" class="btn btn-default" ng-click="vm.openCalendar('endDay')"><i class="glyphicon glyphicon-calendar"></i></button>
+	                 	</span>
+	             	</div>
+				</div>
+	     	</div>
+	     	<div class="form-group">
+	     		<div class="col-sm-6">
+	          		<label class="control-label" data-translate="cpmApp.projectInfo.budgetTotal" for="field_budgetTotal">Budget Total</label>
+	          		<input type="number" class="form-control" name="budgetTotal" id="field_budgetTotal"
+	              		ng-model="vm.projectInfo.budgetTotal"
+	                  	/>
+	                <div ng-show="myForm.budgetTotal.$dirty&&myForm.budgetTotal.$error.number" class="alert alert-danger help-block"> 
+                    	必须为数字
+                	</div>
+	   			</div>
+	     		<div class="col-sm-6">
+	     		</div>
+	     	</div>
+		</div>
+	</div>
+	<hr>
+	<button type="submit"
+        ui-sref="{{ vm.previousState }}"
+        class="btn btn-info">
+        <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span data-translate="entity.action.back"> Back</span>
+    </button>
+    <button type="submit" ng-disabled="!myForm.$valid || vm.isSaving" class="btn btn-primary">
+        <span class="glyphicon glyphicon-save"></span>&nbsp;<span data-translate="entity.action.save">Save</span>
+    </button>
 </form>
