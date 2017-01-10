@@ -2,6 +2,8 @@ package com.wondertek.cpm.web.rest;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -14,10 +16,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,6 +31,8 @@ import com.wondertek.cpm.config.StringUtil;
 import com.wondertek.cpm.domain.ProjectInfo;
 import com.wondertek.cpm.domain.vo.LongValue;
 import com.wondertek.cpm.domain.vo.ProjectInfoVo;
+import com.wondertek.cpm.security.AuthoritiesConstants;
+import com.wondertek.cpm.security.SecurityUtils;
 import com.wondertek.cpm.service.ProjectInfoService;
 import com.wondertek.cpm.web.rest.util.HeaderUtil;
 import com.wondertek.cpm.web.rest.util.PaginationUtil;
@@ -47,57 +51,92 @@ public class ProjectInfoResource {
     @Inject
     private ProjectInfoService projectInfoService;
 
-    /**
-     * POST  /project-infos : Create a new projectInfo.
-     *
-     * @param projectInfo the projectInfo to create
-     * @return the ResponseEntity with status 201 (Created) and with body the new projectInfo, or with status 400 (Bad Request) if the projectInfo has already an ID
-     * @throws URISyntaxException if the Location URI syntax is incorrect
-     */
-    @PostMapping("/project-infos")
-    @Timed
-    public ResponseEntity<ProjectInfo> createProjectInfo(@RequestBody ProjectInfo projectInfo) throws URISyntaxException {
-        log.debug("REST request to save ProjectInfo : {}", projectInfo);
-        if (projectInfo.getId() != null) {
-            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("projectInfo", "idexists", "A new projectInfo cannot already have an ID")).body(null);
-        }
-        ProjectInfo result = projectInfoService.save(projectInfo);
-        return ResponseEntity.created(new URI("/api/project-infos/" + result.getId()))
-            .headers(HeaderUtil.createEntityCreationAlert("projectInfo", result.getId().toString()))
-            .body(result);
-    }
-
-    /**
-     * PUT  /project-infos : Updates an existing projectInfo.
-     *
-     * @param projectInfo the projectInfo to update
-     * @return the ResponseEntity with status 200 (OK) and with body the updated projectInfo,
-     * or with status 400 (Bad Request) if the projectInfo is not valid,
-     * or with status 500 (Internal Server Error) if the projectInfo couldnt be updated
-     * @throws URISyntaxException if the Location URI syntax is incorrect
-     */
     @PutMapping("/project-infos")
     @Timed
+    @Secured(AuthoritiesConstants.ROLE_PROJECT_INFO)
     public ResponseEntity<ProjectInfo> updateProjectInfo(@RequestBody ProjectInfo projectInfo) throws URISyntaxException {
         log.debug("REST request to update ProjectInfo : {}", projectInfo);
-        if (projectInfo.getId() == null) {
-            return createProjectInfo(projectInfo);
+        Boolean isNew = projectInfo.getId() == null;
+        //基本校验
+        if(projectInfo.getBudgetId() == null || projectInfo.getContractId() == null
+        		|| StringUtil.isNullStr(projectInfo.getPm()) || StringUtil.isNullStr(projectInfo.getDept())
+        		|| StringUtil.isNullStr(projectInfo.getSerialNum()) || StringUtil.isNullStr(projectInfo.getName())
+        		|| projectInfo.getStartDay() == null || projectInfo.getBudgetTotal() == null){
+        	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.projectInfo.save.requriedError", "")).body(null);
         }
+        if(isNew){
+        	if(projectInfo.getPmId() == null || projectInfo.getDeptId() == null){
+        		return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.projectInfo.save.requriedError", "")).body(null);
+        	}
+        }
+        //结束时间校验
+        if(projectInfo.getEndDay() != null && projectInfo.getEndDay().isBefore(projectInfo.getStartDay())){
+        	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.projectInfo.save.endDayError", "")).body(null);
+        }
+        //新增的时候，开始日期应在当天日期之后，暂不校验
+        
+        //查看项目预算是否已经被使用
+        int count = projectInfoService.checkByBudget(projectInfo);
+        if(count > 0){
+        	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.projectInfo.save.error" + count, "")).body(null);
+        }
+        boolean isExist = projectInfoService.checkByProject(projectInfo.getSerialNum(),projectInfo.getId());
+        if(isExist){
+        	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.projectInfo.save.existSerialNum" + count, "")).body(null);
+        }
+        //查看该用户是否有修改的权限
+        String updator = SecurityUtils.getCurrentUserLogin();
+        ZonedDateTime updateTime = ZonedDateTime.now();
+        if(!isNew){
+        	//是否有权限
+        	ProjectInfoVo projectInfoVo = projectInfoService.getUserProjectInfo(projectInfo.getId());
+        	if(projectInfoVo == null){
+        		return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.projectInfo.save.noPerm", "")).body(null);
+        	}
+        	//
+        	ProjectInfo oldProjectInfo = projectInfoService.findOne(projectInfo.getId());
+        	projectInfo.setBudgetId(oldProjectInfo.getBudgetId());
+        	projectInfo.setContractId(oldProjectInfo.getContractId());
+        	if(projectInfo.getPmId() == null){
+        		projectInfo.setPmId(oldProjectInfo.getPmId());
+        		projectInfo.setPm(oldProjectInfo.getPm());
+        	}
+        	if(projectInfo.getDeptId() == null){
+        		projectInfo.setDeptId(oldProjectInfo.getDeptId());
+        		projectInfo.setDept(oldProjectInfo.getDept());
+        	}
+        	if(oldProjectInfo.getStartDay().isBefore(projectInfo.getStartDay())){
+        		projectInfo.setStartDay(oldProjectInfo.getStartDay());
+        	}
+        	//不变的
+        	projectInfo.setCreateTime(oldProjectInfo.getCreateTime());
+        	projectInfo.setCreator(oldProjectInfo.getCreator());
+        	projectInfo.setStatus(oldProjectInfo.getStatus());
+        	projectInfo.setFinishRate(oldProjectInfo.getFinishRate());
+        }else{
+        	projectInfo.setCreateTime(updateTime);
+        	projectInfo.setCreator(updator);
+        	projectInfo.setStatus(ProjectInfo.STATUS_ADD);
+        	projectInfo.setFinishRate(0d);
+        }
+        projectInfo.setUpdateTime(updateTime);
+        projectInfo.setUpdator(updator);
+        
         ProjectInfo result = projectInfoService.save(projectInfo);
-        return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert("projectInfo", projectInfo.getId().toString()))
-            .body(result);
+        if(isNew){
+        	return ResponseEntity.created(new URI("/api/project-infos/" + result.getId()))
+                    .headers(HeaderUtil.createEntityCreationAlert("projectInfo", result.getId().toString()))
+                    .body(result);
+        }else{
+        	return ResponseEntity.ok()
+        			.headers(HeaderUtil.createEntityUpdateAlert("projectInfo", projectInfo.getId().toString()))
+        			.body(result);
+        }
     }
 
-    /**
-     * GET  /project-infos : get all the projectInfos.
-     *
-     * @param pageable the pagination information
-     * @return the ResponseEntity with status 200 (OK) and the list of projectInfos in body
-     * @throws URISyntaxException if there is an error to generate the pagination HTTP headers
-     */
     @GetMapping("/project-infos")
     @Timed
+    @Secured(AuthoritiesConstants.ROLE_PROJECT_INFO)
     public ResponseEntity<List<ProjectInfoVo>> getAllProjectInfos(
     		@RequestParam(value = "contractId") String contractId, 
     		@RequestParam(value = "serialNum") String serialNum, 
@@ -128,17 +167,14 @@ public class ProjectInfoResource {
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
 
-    /**
-     * GET  /project-infos/:id : get the "id" projectInfo.
-     *
-     * @param id the id of the projectInfo to retrieve
-     * @return the ResponseEntity with status 200 (OK) and with body the projectInfo, or with status 404 (Not Found)
-     */
     @GetMapping("/project-infos/{id}")
     @Timed
-    public ResponseEntity<ProjectInfo> getProjectInfo(@PathVariable Long id) {
+    @Secured(AuthoritiesConstants.ROLE_PROJECT_INFO)
+    public ResponseEntity<ProjectInfoVo> getProjectInfo(@PathVariable Long id) {
         log.debug("REST request to get ProjectInfo : {}", id);
-        ProjectInfo projectInfo = projectInfoService.findOne(id);
+//        ProjectInfo projectInfo = projectInfoService.findOne(id);
+        ProjectInfoVo projectInfo = projectInfoService.getUserProjectInfo(id);
+        
         return Optional.ofNullable(projectInfo)
             .map(result -> new ResponseEntity<>(
                 result,
@@ -154,38 +190,87 @@ public class ProjectInfoResource {
      */
     @DeleteMapping("/project-infos/{id}")
     @Timed
+    @Secured(AuthoritiesConstants.ROLE_PROJECT_INFO)
     public ResponseEntity<Void> deleteProjectInfo(@PathVariable Long id) {
         log.debug("REST request to delete ProjectInfo : {}", id);
+        ProjectInfoVo projectInfo = projectInfoService.getUserProjectInfo(id);
+        if(projectInfo == null){
+        	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.projectInfo.save.noPerm", "")).body(null);
+        }
         projectInfoService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert("projectInfo", id.toString())).build();
     }
 
-    /**
-     * SEARCH  /_search/project-infos?query=:query : search for the projectInfo corresponding
-     * to the query.
-     *
-     * @param query the query of the projectInfo search 
-     * @param pageable the pagination information
-     * @return the result of the search
-     * @throws URISyntaxException if there is an error to generate the pagination HTTP headers
-     */
-    @GetMapping("/_search/project-infos")
-    @Timed
-    public ResponseEntity<List<ProjectInfo>> searchProjectInfos(@RequestParam String query, @ApiParam Pageable pageable)
-        throws URISyntaxException {
-        log.debug("REST request to search for a page of ProjectInfos for query {}", query);
-        Page<ProjectInfo> page = projectInfoService.search(query, pageable);
-        HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/project-infos");
-        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
-    }
-
     @GetMapping("/project-infos/queryUserContract")
     @Timed
+    @Secured(AuthoritiesConstants.ROLE_PROJECT_INFO)
     public ResponseEntity<List<LongValue>> queryUserContract() throws URISyntaxException {
         log.debug("REST request to queryUserContract");
         List<LongValue> list = projectInfoService.queryUserContract();
         return new ResponseEntity<>(list, null, HttpStatus.OK);
     }
     
-
+    @GetMapping("/project-infos/queryUserContractBudget")
+    @Timed
+    @Secured(AuthoritiesConstants.ROLE_PROJECT_INFO)
+    public ResponseEntity<List<LongValue>> queryUserContractBudget(@RequestParam(value = "contractId") String contractId) throws URISyntaxException {
+        log.debug("REST request to queryUserContract");
+        Long contractIdLong = StringUtil.nullToCloneLong(contractId);
+        if(contractIdLong == null){
+        	return new ResponseEntity<>(new ArrayList<LongValue>(), null, HttpStatus.OK);
+        }
+        List<LongValue> list = projectInfoService.queryUserContractBudget(contractIdLong);
+        return new ResponseEntity<>(list, null, HttpStatus.OK);
+    }
+    
+    @GetMapping("/project-infos/end")
+    @Timed
+    @Secured(AuthoritiesConstants.ROLE_PROJECT_INFO)
+    public ResponseEntity<ProjectInfo> endProjectInfo(@RequestParam(value = "id") Long id) throws URISyntaxException {
+    	log.debug("REST request to endProjectInfo");
+    	//有没权限
+    	ProjectInfoVo projectInfo = projectInfoService.getUserProjectInfo(id);
+        if(projectInfo == null){
+        	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.projectInfo.save.noPerm", "")).body(null);
+        }
+        if(projectInfo.getStatus() == ProjectInfo.STATUS_CLOSED){
+        	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.projectInfo.end.statusError1", "")).body(null);
+        }else if(projectInfo.getStatus() == ProjectInfo.STATUS_DELETED){
+        	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.projectInfo.end.statusError2", "")).body(null);
+        }
+        projectInfoService.endProjectInfo(id);
+        
+    	return ResponseEntity.ok()
+    			.headers(HeaderUtil.createAlert("cpmApp.projectInfo.end.success", projectInfo.getId().toString()))
+    			.body(null);
+    }
+    
+    @GetMapping("/project-infos/finish")
+    @Timed
+    @Secured(AuthoritiesConstants.ROLE_PROJECT_INFO)
+    public ResponseEntity<ProjectInfo> finishProjectInfo(
+    		@RequestParam(value = "id") Long id,
+    		@RequestParam(value = "finishRate") Double finishRate
+    		) throws URISyntaxException {
+    	log.debug("REST request to endProjectInfo");
+    	//有没权限
+    	ProjectInfoVo projectInfo = projectInfoService.getUserProjectInfo(id);
+        if(projectInfo == null){
+        	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.projectInfo.save.noPerm", "")).body(null);
+        }
+        if(finishRate < 0){
+        	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.projectInfo.finish.minError", "")).body(null);
+        }
+        if(finishRate > 100){
+        	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.projectInfo.finish.maxError", "")).body(null);
+        }
+        if(projectInfo.getStatus() == ProjectInfo.STATUS_CLOSED || projectInfo.getStatus() == ProjectInfo.STATUS_DELETED){
+        	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.projectInfo.finish.statusError", "")).body(null);
+        }
+        projectInfoService.finishProjectInfo(id,finishRate);
+        
+    	return ResponseEntity.ok()
+    			.headers(HeaderUtil.createAlert("cpmApp.projectInfo.finish.success", projectInfo.getId().toString()))
+    			.body(null);
+    }
 }

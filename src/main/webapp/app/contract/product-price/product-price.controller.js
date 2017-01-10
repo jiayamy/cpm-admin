@@ -5,12 +5,10 @@
         .module('cpmApp')
         .controller('ProductPriceController', ProductPriceController);
 
-    ProductPriceController.$inject = ['$scope', '$state', 'ProductPrice', 'ProductPriceSearch', 'ParseLinks', 'AlertService', 'paginationConstants', 'pagingParams'];
+    ProductPriceController.$inject = ['$scope', '$state', 'ProductPrice', 'ParseLinks', 'AlertService', 'paginationConstants', 'pagingParams'];
 
-    function ProductPriceController ($scope, $state, ProductPrice, ProductPriceSearch, ParseLinks, AlertService, paginationConstants, pagingParams) {
+    function ProductPriceController ($scope, $state, ProductPrice, ParseLinks, AlertService, paginationConstants, pagingParams) {
         var vm = this;
-        vm.price = null;
-        vm.links = null;
         vm.loadPage = loadPage;
         vm.predicate = pagingParams.predicate;
         vm.reverse = pagingParams.ascending;
@@ -19,27 +17,58 @@
         vm.clear = clear;
         vm.search = search;
         vm.loadAll = loadAll;
-        vm.searchQuery = pagingParams.search;
-        vm.currentSearch = pagingParams.search;
-        vm.onChangeData = onChangeData;
-        vm.onChangeData();
+        vm.searchQuery = {};
+        var source = pagingParams.source;
+        if(source){
+        	if(source == 0){
+        		source = { id: 0, name: '外部' };
+        	}else if(source == 1){
+        		source = { id: 1, name: '内部' };
+        	}
+        }
+        var type = pagingParams.type;
+        if(type){
+        	if(type == 0){
+        		type = { id: 0, name: '硬件' };
+        	}else if(type == 1){
+        		type = { id: 1, name: '软件' };
+        	}
+        }
+        vm.searchQuery.source= source;
+        vm.searchQuery.type = type;
+        vm.searchQuery.name = pagingParams.name;
+        vm.currentSearch = {};
+        vm.currentSearch.source = source;
+        vm.currentSearch.type = type;
+        vm.currentSearch.name = pagingParams.name;
+        if (!vm.currentSearch.source && !vm.currentSearch.type && !vm.currentSearch.name){
+        	vm.currentSearch.haveSearch = null;
+        }else{
+        	vm.currentSearch.haveSearch = true;
+        }
+        vm.types = [{ id: 0, name: '硬件' }, { id: 1, name: '软件' }];
+        vm.sources = [{ id: 0, name: '外部' }, { id: 1, name: '内部' }];
+        
         loadAll();
 
         function loadAll () {
-            if (pagingParams.search) {
-                ProductPriceSearch.query({
-                    query: pagingParams.search,
-                    page: pagingParams.page - 1,
-                    size: vm.itemsPerPage,
-                    sort: sort()
-                }, onSuccess, onError);
-            } else {
-                ProductPrice.query({
-                    page: pagingParams.page - 1,
-                    size: vm.itemsPerPage,
-                    sort: sort()
-                }, onSuccess, onError);
-            }
+        	if(!pagingParams.type){
+        		pagingParams.type = "";
+        	}
+        	if(!pagingParams.source){
+        		pagingParams.source = "";
+        	}
+        	if(!pagingParams.name){
+        		pagingParams.name = "";
+        	}
+        	ProductPrice.query({
+        		source: pagingParams.source,
+            	type: pagingParams.type,
+            	name: pagingParams.name,
+                page: pagingParams.page - 1,
+                size: vm.itemsPerPage,
+                sort: sort()
+            }, onSuccess, onError);
             function sort() {
                 var result = [vm.predicate + ',' + (vm.reverse ? 'asc' : 'desc')];
                 if (vm.predicate !== 'id') {
@@ -51,48 +80,47 @@
                 vm.links = ParseLinks.parse(headers('link'));
                 vm.totalItems = headers('X-Total-Count');
                 vm.queryCount = vm.totalItems;
-                vm.productPrices = data;
+                vm.productPrices = handleData(data);
                 vm.page = pagingParams.page;
             }
             function onError(error) {
                 AlertService.error(error.data.message);
             }
         }
-        function onChangeData () {
-        	var name = $scope.name;
-        	if(name == undefined){
-        		name = "";
+        function handleData(data){
+        	if(data.length > 0){
+        		for(var i = 0; i< data.length ; i++){
+        			if(data[i].type == 0){
+        				data[i].type = "硬件";
+        			}else if(data[i].type == 1){
+        				data[i].type = "软件";
+        			}
+        			if(data[i].source == 0){
+        				data[i].source = "外部";
+        			}else if(data[i].source == 1){
+        				data[i].source = "内部";
+        			}
+        		}
         	}
-        	var type = $scope.type;
-        	if(type == undefined){
-        		type = "";
-        	}
-        	var source = $scope.source;
-            if (source == undefined) {
-				source = "";
-			}
-            ProductPriceSearch.query({page: vm.page -1, size: 2, name: name, type: type,source: source}, function(result, headers){
-                vm.price = result;
-                vm.links = ParseLinks.parse(headers('link'));
-                vm.totalItems = headers('X-Total-Count');
-            });
-      }
+        	return data;
+        }
         function loadPage(page) {
             vm.page = page;
             vm.transition();
-            vm.onChangeData();
         }
 
         function transition() {
             $state.transitionTo($state.$current, {
                 page: vm.page,
                 sort: vm.predicate + ',' + (vm.reverse ? 'asc' : 'desc'),
-                search: vm.currentSearch
+                type:vm.currentSearch.type != null ? vm.currentSearch.type.id : "",
+                source:vm.currentSearch.source != null ? vm.currentSearch.source.id : "",
+                name:vm.currentSearch.name
             });
         }
 
         function search(searchQuery) {
-            if (!searchQuery){
+            if (!searchQuery.type && !searchQuery.source && !searchQuery.name){
                 return vm.clear();
             }
             vm.links = null;
@@ -100,6 +128,8 @@
             vm.predicate = '_score';
             vm.reverse = false;
             vm.currentSearch = searchQuery;
+            console.log(searchQuery);
+            vm.currentSearch.haveSearch = true;
             vm.transition();
         }
 
@@ -108,7 +138,8 @@
             vm.page = 1;
             vm.predicate = 'id';
             vm.reverse = true;
-            vm.currentSearch = null;
+            vm.currentSearch = {};
+            vm.currentSearch.haveSearch = null;
             vm.transition();
         }
     }

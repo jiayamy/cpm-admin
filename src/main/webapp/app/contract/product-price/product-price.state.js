@@ -11,7 +11,7 @@
         $stateProvider
         .state('product-price', {
             parent: 'contract',
-            url: '/product-price?page&sort&search',
+            url: '/product-price?page&sort&type&source&name',
             data: {
                 authorities: ['ROLE_USER'],
                 pageTitle: 'cpmApp.productPrice.home.title'
@@ -32,16 +32,20 @@
                     value: 'id,asc',
                     squash: true
                 },
-                search: null
+                type: null,
+                source: null,
+                name: null
             },
             resolve: {
-                pagingParams: ['$stateParams', 'PaginationUtil', function ($stateParams, PaginationUtil) {
+                pagingParams: ["$state",'$stateParams', 'PaginationUtil', function ($state,$stateParams, PaginationUtil) {
                     return {
                         page: PaginationUtil.parsePage($stateParams.page),
                         sort: $stateParams.sort,
                         predicate: PaginationUtil.parsePredicate($stateParams.sort),
                         ascending: PaginationUtil.parseAscending($stateParams.sort),
-                        search: $stateParams.search
+                        type: $stateParams.type,
+                        source: $stateParams.source,
+                        name: $stateParams.name
                     };
                 }],
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {

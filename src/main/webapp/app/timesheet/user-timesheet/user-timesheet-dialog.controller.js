@@ -72,7 +72,7 @@
         			}else if(data[i].type == -2){
         				data[i].typeName = "工作地点";
         			}else if(data[i].type == 1){
-        				data[i].typeName = "公共成本";
+        				data[i].typeName = "无具体项目";
         			}else if(data[i].type == 2){
         				data[i].typeName = "合同";
         			}else if(data[i].type == 3){

@@ -22,7 +22,9 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -95,23 +97,29 @@ public class HolidayInfoResource {
     public ResponseEntity<List<HolidayInfo>> getAllHolidayInfos(@ApiParam Pageable pageable)
         throws URISyntaxException {
         log.debug("REST request to get a page of HolidayInfos");
-        //初始化留着，把初始化方法修改下，以防定时任务不起作用
+        //初始化，以防定时任务不起作用
         Calendar cal = Calendar.getInstance();
-        cal.set(Calendar.YEAR, cal.get(Calendar.YEAR));
-        cal.set(Calendar.MONTH, Calendar.DECEMBER);
-        cal.set(Calendar.DAY_OF_MONTH, cal.getActualMaximum(Calendar.DAY_OF_MONTH));
+        cal.set(Calendar.YEAR, cal.get(Calendar.YEAR)+1);
+        cal.add(Calendar.MONTH, -1);
+        cal.set(Calendar.DAY_OF_MONTH, 1);
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
         Long dateTime = Long.valueOf(sdf.format(cal.getTime()));
         int count = holidayInfoService.findByCurrDay(dateTime);
-        if(count<=0){
-        	List<HolidayInfo> lists = TimerHolidayUtil.holidayUpdate();
-        	if(lists != null && !lists.isEmpty()){
-        		//这个地方修改下，写到service里面去
-        		lists = holidayInfoService.save(lists);
-        	}
-        }
+        List<HolidayInfo> lists = null;
+        try {
+			if(count<=0){
+				lists = TimerHolidayUtil.holidayUpdate();
+				holidayInfoService.save(lists);
+			}else{
+				lists = TimerHolidayUtil.holidayMonthUpdate();
+				holidayInfoService.save(lists);
+			}
+		} catch (Exception e) {
+			log.error("HolidayInfo update error:",e);
+		}
         
         Page<HolidayInfo> page = holidayInfoService.findAll(pageable);
+        
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/holiday-infos");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
@@ -149,21 +157,29 @@ public class HolidayInfoResource {
     }
 
     /**
-     * SEARCH  /_search/holiday-infos?query=:query : search for the holidayInfo corresponding
+     * SEARCH  /_search/holiday-infos?fromCurrDay=:fromCurrDay&toCurrDay=:toCurrDay : search for the holidayInfo corresponding
      * to the query.
      *
-     * @param query the query of the holidayInfo search 
+     * @param query the fromCurrDay,toCurrDay of the holidayInfo search 
      * @param pageable the pagination information
      * @return the result of the search
      * @throws URISyntaxException if there is an error to generate the pagination HTTP headers
      */
     @GetMapping("/_search/holiday-infos")
     @Timed
-    public ResponseEntity<List<HolidayInfo>> searchHolidayInfos(@RequestParam String query, @ApiParam Pageable pageable)
+    public ResponseEntity<List<HolidayInfo>> searchHolidayInfos(
+        		@RequestParam(value = "fromCurrDay",required=false) Long fromCurrDay,
+        		@RequestParam(value = "toCurrDay",required=false) Long toCurrDay,
+    			@ApiParam Pageable pageable)
         throws URISyntaxException {
-        log.debug("REST request to search for a page of HolidayInfos for query {}", query);
-        Page<HolidayInfo> page = holidayInfoService.search(query, pageable);
-        HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/holiday-infos");
+        log.debug("REST request to search for a page of HolidayInfos for fromCurrDay and toCurrDay {}"+fromCurrDay+","+toCurrDay);
+        Map<String,Long> searchCondition = new HashMap<String,Long>();
+        searchCondition.put("fromCurrDay", fromCurrDay);
+        searchCondition.put("toCurrDay", toCurrDay);
+		Page<HolidayInfo> page = holidayInfoService.getHolidayInfoPage(searchCondition,pageable);
+		HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/_search/holiday-infos");
+//        Page<HolidayInfo> page = holidayInfoService.search(query, pageable);
+//        HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/holiday-infos");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
 

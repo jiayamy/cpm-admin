@@ -4,7 +4,7 @@
             "home": {
                 "title": "Dept Infos",
                 "createLabel": "Create a new Dept Info",
-                "createOrEditLabel": "Create or edit a Dept Info",
+                "createOrEditLabel": "组织信息",
                 "search": "Search for Dept Info"
             },
             "created": "A new Dept Info is created with identifier {{ param }}",

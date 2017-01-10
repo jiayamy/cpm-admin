@@ -1,6 +1,8 @@
 package com.wondertek.cpm.service;
 
+import com.wondertek.cpm.CpmConstants;
 import com.wondertek.cpm.domain.ContractCost;
+import com.wondertek.cpm.repository.ContractCostDao;
 import com.wondertek.cpm.repository.ContractCostRepository;
 import com.wondertek.cpm.repository.search.ContractCostSearchRepository;
 import org.slf4j.Logger;
@@ -31,6 +33,9 @@ public class ContractCostService {
 
     @Inject
     private ContractCostSearchRepository contractCostSearchRepository;
+    
+    @Inject
+    private ContractCostDao contractCostDao;
 
     /**
      * Save a contractCost.
@@ -78,6 +83,11 @@ public class ContractCostService {
      */
     public void delete(Long id) {
         log.debug("Request to delete ContractCost : {}", id);
+        ContractCost contractCost = contractCostRepository.findOne(id);
+        if (contractCost != null) {
+			contractCost.setStatus(CpmConstants.STATUS_DELETED);
+			contractCostRepository.save(contractCost);
+		}
         contractCostRepository.delete(id);
         contractCostSearchRepository.delete(id);
     }

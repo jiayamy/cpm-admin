@@ -9,7 +9,7 @@
 
     function ProjectInfoController ($scope, $state, ProjectInfo, ProjectInfoSearch, ParseLinks, AlertService, paginationConstants, pagingParams) {
         var vm = this;
-
+        console.log(pagingParams);
         vm.loadPage = loadPage;
         vm.predicate = pagingParams.predicate;
         vm.reverse = pagingParams.ascending;
@@ -29,6 +29,13 @@
         vm.searchQuery.serialNum = pagingParams.serialNum;
         vm.searchQuery.name = pagingParams.name;
         vm.contractInfos = [];
+        
+        if (!vm.searchQuery.contractId && !vm.searchQuery.serialNum
+        		&& !vm.searchQuery.name && !vm.searchQuery.status){
+        	vm.haveSearch = null;
+        }else{
+        	vm.haveSearch = true;
+        }
         
         loadContract();
         function loadContract(){
@@ -84,11 +91,25 @@
                 vm.links = ParseLinks.parse(headers('link'));
                 vm.totalItems = headers('X-Total-Count');
                 vm.queryCount = vm.totalItems;
-                vm.projectInfos = data;
+                vm.projectInfos = handleData(data);
                 vm.page = pagingParams.page;
             }
             function onError(error) {
                 AlertService.error(error.data.message);
+            }
+            function handleData(data){
+            	if(data.length > 0){
+            		for(var i = 0; i< data.length ; i++){
+            			if(data[i].status == 1){
+            				data[i].status = "开发中";
+            			}else if(data[i].status == 2){
+            				data[i].status = "已结项";
+            			}else if(data[i].status == 3){
+            				data[i].status = "已删除";
+            			}
+            		}
+            	}
+            	return data;
             }
         }
 
@@ -101,15 +122,14 @@
             $state.transitionTo($state.$current, {
                 page: vm.page,
                 sort: vm.predicate + ',' + (vm.reverse ? 'asc' : 'desc'),
-                contractId:vm.searchQuery.contractId,
+                contractId:vm.searchQuery.contractId ? vm.searchQuery.contractId.key : "",
             	serialNum:vm.searchQuery.serialNum,
             	name:vm.searchQuery.name,
-            	status:vm.searchQuery.status
+            	status:vm.searchQuery.status ? vm.searchQuery.status.key : ""
             });
         }
 
         function search() {
-        	console.log(vm.searchQuery);
             if (!vm.searchQuery.contractId && !vm.searchQuery.serialNum
             		&& !vm.searchQuery.name && !vm.searchQuery.status){
                 return vm.clear();
@@ -118,6 +138,7 @@
             vm.page = 1;
             vm.predicate = 'wpi.id';
             vm.reverse = false;
+            vm.haveSearch = true;
             vm.transition();
         }
 
@@ -127,6 +148,7 @@
             vm.predicate = 'wpi.id';
             vm.reverse = false;
             vm.searchQuery = {};
+            vm.haveSearch = null;
             vm.transition();
         }
     }

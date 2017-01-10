@@ -2,33 +2,33 @@
     "cpmApp": {
         "contractCost" : {
             "home": {
-                "title": "Contract Costs",
-                "createLabel": "Create a new Contract Cost",
-                "createOrEditLabel": "Create or edit a Contract Cost",
-                "search": "Search for Contract Cost"
+                "title": "合同成本信息",
+                "createLabel": "新建合同成本信息",
+                "createOrEditLabel": "更改合同成本信息",
+                "search": "查询"
             },
-            "created": "A new Contract Cost is created with identifier {{ param }}",
-            "updated": "A Contract Cost is updated with identifier {{ param }}",
-            "deleted": "A Contract Cost is deleted with identifier {{ param }}",
+            "created": "创建合同成本信息 {{ param }}",
+            "updated": "更改合同成本信息{{ param }}",
+            "deleted": "删除合同成本信息 {{ param }}",
             "delete": {
-                "question": "Are you sure you want to delete Contract Cost {{ id }}?"
+                "question": "确定删除合同成本记录 {{ id }}?"
             },
             "detail": {
-                "title": "Contract Cost"
+                "title": "合同成本信息"
             },
-            "contractId": "Contract Id",
-            "budgetId": "Budget Id",
-            "deptId": "Dept Id",
-            "dept": "Dept",
-            "name": "Name",
-            "type": "Type",
-            "total": "Total",
-            "costDesc": "Cost Desc",
-            "status": "Status",
-            "creator": "Creator",
-            "createTime": "Create Time",
-            "updator": "Updator",
-            "updateTime": "Update Time"
+            "contractId": "合同基本信息Id",
+            "budgetId": "合同预算Id",
+            "deptId": "部门Id",
+            "dept": "部门",
+            "name": "名称",
+            "type": "成本类型",
+            "total": "成本金额",
+            "costDesc": "成本描述",
+            "status": "状态",
+            "creator": "创建者",
+            "createTime": "创建时间",
+            "updator": "更新者",
+            "updateTime": "更新时间"
         }
     }
 }

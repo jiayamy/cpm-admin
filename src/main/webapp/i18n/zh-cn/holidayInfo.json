@@ -5,7 +5,9 @@
                 "title": "节假日信息",
                 "createLabel": "新增",
                 "createOrEditLabel": "新增编辑节假日信息",
-                "search": "搜索节假日信息"
+                "search": "搜索节假日信息",
+                "fromCurrDay":"开始日期",
+            	"toCurrDay":"结束日期"
             },
             "created": "创建成功",
             "updated": "更新成功",

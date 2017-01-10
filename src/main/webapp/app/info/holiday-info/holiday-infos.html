@@ -3,7 +3,7 @@
     <jhi-alert></jhi-alert>
     <div class="container-fluid">
         <div class="row">
-            <div class="col-xs-4 no-padding-left">
+            <div class="col-xs-12 no-padding-left">
                 <button class="btn btn-primary" ui-sref="holiday-info.new" >
                     <span class="glyphicon glyphicon-plus"></span>
                     <span class="hidden-xs"  data-translate="cpmApp.holidayInfo.home.createLabel">
@@ -11,24 +11,61 @@
                     </span>
                 </button>
             </div>
-            <div class="col-xs-8 no-padding-right">
-                <form name="searchForm" class="form-inline">
-                    <div class="input-group pull-right" >
-                        <input type="text" class="form-control" ng-model="vm.searchQuery" id="searchQuery" placeholder="{{ 'cpmApp.holidayInfo.home.search' | translate }}">
-                        <span  class="input-group-btn width-min" >
-                            <button class="btn btn-info" ng-click="vm.search(vm.searchQuery)">
-                                <span class="glyphicon glyphicon-search"></span>
-                            </button>
-                        </span>
-                        <span class="input-group-btn width-min" ng-if="vm.currentSearch">
-                            <button class="btn btn-info" ng-click="vm.clear()">
-                                <span class="glyphicon glyphicon-trash"></span>
-                            </button>
-                        </span>
-                    </div>
-                </form>
-            </div>
+            <form name="searchForm" class="form-horizontal">
+				<div class="form-group">
+					<!--开始日期：fromCurrDay -->
+					<div class="col-xs-5">
+						<label class="col-xs-4 control-label" data-translate="cpmApp.holidayInfo.home.fromCurrDay">From CurrDay</label>
+						<div class="col-xs-8">
+							<p class="input-group">
+								<input id="search_fromCurrDay" type="text" class="form-control" name="fromCurrDay" datetime-picker="yyyyMMdd"
+									enable-time="false" ng-model="vm.searchQuery.fromCurrDay" is-open="vm.datePickerOpenStatus.fromCurrDay" /> 
+									<span class="input-group-btn">
+										<button type="button" class="btn btn-default" ng-click="vm.openCalendar('fromCurrDay')">
+											<i class="glyphicon glyphicon-calendar"></i>
+										</button>
+									</span>
+							</p>
+						</div>
+					</div>
+					<!--开始日期：fromCurrDay -->
+					<!--结束日期：toCurrDay -->
+					<div class="col-xs-5">
+						<label class="col-xs-4 control-label" data-translate="cpmApp.holidayInfo.home.toCurrDay">From CurrDay</label>
+						<div class="col-xs-8">
+							<p class="input-group">
+								<input id="search_toCurrDay" type="text" class="form-control" name="toCurrDay" datetime-picker="yyyyMMdd" enable-time="false"
+									ng-model="vm.searchQuery.toCurrDay" is-open="vm.datePickerOpenStatus.toCurrDay" /> 
+									<span class="input-group-btn">
+										<button type="button" class="btn btn-default" ng-click="vm.openCalendar('toCurrDay')">
+											<i class="glyphicon glyphicon-calendar"></i>
+										</button>
+									</span>
+							</p>
+						</div>
+					</div>
+					<!--结束日期：toCurrDay -->
+					<div class="col-xs-2 no-padding-right">
+						<form name="searchForm" class="form-inline">
+							<div class="input-group pull-right">
+								<!-- <input type="text" class="form-control" ng-model="vm.searchQuery" placeholder="{{ 'cpmApp.holidayInfo.home.search' | translate }}"> -->
+								<span class="input-group-btn width-min">
+									<button class="btn btn-info" ng-click="vm.search()">
+										<span class="glyphicon glyphicon-search"></span>
+									</button>
+								</span> 
+								<span class="input-group-btn width-min" ng-if="vm.haveSearch">
+									<button class="btn btn-info" ng-click="vm.clear()">
+										<span class="glyphicon glyphicon-trash"></span>
+									</button>
+								</span>
+							</div>
+						</form>
+					</div>
+				</div>
+			</form>
         </div>
+        
     </div>
     <br/>
     <div class="table-responsive">

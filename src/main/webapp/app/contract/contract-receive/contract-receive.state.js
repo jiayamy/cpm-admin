@@ -46,6 +46,7 @@
                 }],
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                     $translatePartialLoader.addPart('contractReceive');
+                    $translatePartialLoader.addPart('contractInfo');
                     $translatePartialLoader.addPart('global');
                     return $translate.refresh();
                 }]
@@ -83,92 +84,116 @@
                 }]
             }
         })
-        .state('contract-receive-detail.edit', {
-            parent: 'contract-receive-detail',
-            url: '/detail/edit',
+        
+        .state('contract-receive-detail.edit',{
+        	parent: 'contract-receive',
+        	url: '/{id}/edit',
             data: {
                 authorities: ['ROLE_USER']
             },
-            onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
-                $uibModal.open({
-                    templateUrl: 'app/contract/contract-receive/contract-receive-dialog.html',
+            views:{
+            	'content@':{
+            		templateUrl: 'app/contract/contract-receive/contract-receive-dialog.html',
                     controller: 'ContractReceiveDialogController',
-                    controllerAs: 'vm',
-                    backdrop: 'static',
-                    size: 'lg',
-                    resolve: {
-                        entity: ['ContractReceive', function(ContractReceive) {
-                            return ContractReceive.get({id : $stateParams.id}).$promise;
-                        }]
-                    }
-                }).result.then(function() {
-                    $state.go('^', {}, { reload: false });
-                }, function() {
-                    $state.go('^');
-                });
-            }]
-        })
-        .state('contract-receive.new', {
-            parent: 'contract-receive',
-            url: '/new',
-            data: {
-                authorities: ['ROLE_USER']
+                    controllerAs: 'vm'
+            	}
             },
-            onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
-                $uibModal.open({
-                    templateUrl: 'app/contract/contract-receive/contract-receive-dialog.html',
-                    controller: 'ContractReceiveDialogController',
-                    controllerAs: 'vm',
-                    backdrop: 'static',
-                    size: 'lg',
-                    resolve: {
-                        entity: function () {
-                            return {
-                                contractId: null,
-                                receiveTotal: null,
-                                receiveDay: null,
-                                status: null,
-                                creator: null,
-                                createTime: null,
-                                updator: null,
-                                updateTime: null,
-                                receiver: null,
-                                id: null
-                            };
-                        }
-                    }
-                }).result.then(function() {
-                    $state.go('contract-receive', null, { reload: 'contract-receive' });
-                }, function() {
-                    $state.go('contract-receive');
-                });
-            }]
+            resolve:{
+            	translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
+                     $translatePartialLoader.addPart('contractReceive');
+                     return $translate.refresh();
+                 }],
+                 entity: ['$stateParams', 'ContractReceive', function($stateParams, ContractReceive) {
+                     return ContractReceive.get({id : $stateParams.id}).$promise;
+                 }]
+            }
         })
-        .state('contract-receive.edit', {
-            parent: 'contract-receive',
+        
+        .state('contract-receive.new',{
+        	parent:'contract-receive',
+        	url:'/new',
+        	data:{
+        		 authorities: ['ROLE_USER']
+        	},
+        	views:{
+        		'content@':{
+        		   templateUrl: 'app/contract/contract-receive/contract-receive-dialog.html',
+                   controller: 'ContractReceiveDialogController',
+                   controllerAs: 'vm'
+        		}
+        	},
+        	resolve:{
+	    		 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
+	                 $translatePartialLoader.addPart('contractReceive');
+	                 return $translate.refresh();
+	             }],
+	             entity: function () {
+	             return {
+	                   contractId: null,
+	                   receiveTotal: null,
+	                   receiveDay: null,
+	                   status: null,
+	                   creator: null,
+	                   createTime: null,
+	                   updator: null,
+	                   updateTime: null,
+	                   receiver: null,
+	                   id: null
+	               };
+	           }
+        	}
+        })
+        
+
+        .state('contract-receive.edit',{
+        	parent: 'contract-receive',
             url: '/{id}/edit',
             data: {
                 authorities: ['ROLE_USER']
             },
-            onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
-                $uibModal.open({
-                    templateUrl: 'app/contract/contract-receive/contract-receive-dialog.html',
-                    controller: 'ContractReceiveDialogController',
-                    controllerAs: 'vm',
-                    backdrop: 'static',
-                    size: 'lg',
-                    resolve: {
-                        entity: ['ContractReceive', function(ContractReceive) {
-                            return ContractReceive.get({id : $stateParams.id}).$promise;
-                        }]
-                    }
-                }).result.then(function() {
-                    $state.go('contract-receive', null, { reload: 'contract-receive' });
-                }, function() {
-                    $state.go('^');
-                });
-            }]
+            views:{
+            	'content@':{
+            	   templateUrl: 'app/contract/contract-receive/contract-receive-dialog.html',
+     	           controller: 'ContractReceiveDialogController',
+     	           controllerAs: 'vm'
+            	}
+            },
+            resolve:{
+            	translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
+                    $translatePartialLoader.addPart('contractReceive');
+                    return $translate.refresh();
+                }],
+                entity: ['$stateParams', 'ContractReceive', function($stateParams, ContractReceive) {
+                    return ContractReceive.get({id : $stateParams.id}).$promise;
+                }]
+            }
         })
+        
+//        .state('contract-receive.edit', {
+//            parent: 'contract-receive',
+//            url: '/{id}/edit',
+//            data: {
+//                authorities: ['ROLE_USER']
+//            },
+//            onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
+//                $uibModal.open({
+//                    templateUrl: 'app/contract/contract-receive/contract-receive-dialog.html',
+//                    controller: 'ContractReceiveDialogController',
+//                    controllerAs: 'vm',
+//                    backdrop: 'static',
+//                    size: 'lg',
+//                    resolve: {
+//                        entity: ['ContractReceive', function(ContractReceive) {
+//                            return ContractReceive.get({id : $stateParams.id}).$promise;
+//                        }]
+//                    }
+//                }).result.then(function() {
+//                    $state.go('contract-receive', null, { reload: 'contract-receive' });
+//                }, function() {
+//                    $state.go('^');
+//                });
+//            }]
+//        })
         .state('contract-receive.delete', {
             parent: 'contract-receive',
             url: '/{id}/delete',

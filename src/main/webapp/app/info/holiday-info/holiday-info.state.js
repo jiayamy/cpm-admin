@@ -11,9 +11,10 @@
         $stateProvider
         .state('holiday-info', {
             parent: 'info',
-            url: '/holiday-info?page&sort&search',
+            url: '/holiday-info?page&sort&fromCurrDay&toCurrDay',
             data: {
-                authorities: ['ROLE_USER'],
+//            	authorities: ['ROLE_USER'],
+                authorities: ['ROLE_INFO_BASIC'],
                 pageTitle: 'cpmApp.holidayInfo.home.title'
             },
             views: {
@@ -29,10 +30,12 @@
                     squash: true
                 },
                 sort: {
-                    value: 'currDay,desc',
+                    value: 'currDay,asc',
                     squash: true
                 },
-                search: null
+//                search: null,
+                fromCurrDay: null,
+                toCurrDay: null
             },
             resolve: {
                 pagingParams: ['$stateParams', 'PaginationUtil', function ($stateParams, PaginationUtil) {
@@ -41,7 +44,9 @@
                         sort: $stateParams.sort,
                         predicate: PaginationUtil.parsePredicate($stateParams.sort),
                         ascending: PaginationUtil.parseAscending($stateParams.sort),
-                        search: $stateParams.search
+//                        search: $stateParams.search,
+                        fromCurrDay:$stateParams.fromCurrDay,
+                        toCurrDay:$stateParams.toCurrDay
                     };
                 }],
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
@@ -55,7 +60,7 @@
             parent: 'info',
             url: '/holiday-info/{id}',
             data: {
-                authorities: ['ROLE_USER'],
+                authorities: ['ROLE_INFO_BASIC'],
                 pageTitle: 'cpmApp.holidayInfo.detail.title'
             },
             views: {
@@ -87,7 +92,7 @@
             parent: 'holiday-info-detail',
             url: '/detail/edit',
             data: {
-                authorities: ['ROLE_USER']
+                authorities: ['ROLE_INFO_BASIC']
             },
             onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
                 $uibModal.open({
@@ -112,7 +117,7 @@
             parent: 'holiday-info',
             url: '/new',
             data: {
-                authorities: ['ROLE_USER']
+                authorities: ['ROLE_INFO_BASIC']
             },
             onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
                 $uibModal.open({
@@ -145,7 +150,7 @@
             parent: 'holiday-info',
             url: '/{id}/edit',
             data: {
-                authorities: ['ROLE_USER']
+                authorities: ['ROLE_INFO_BASIC']
             },
             onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
                 $uibModal.open({
@@ -170,7 +175,7 @@
             parent: 'holiday-info',
             url: '/{id}/delete',
             data: {
-                authorities: ['ROLE_USER']
+                authorities: ['ROLE_INFO_BASIC']
             },
             onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
                 $uibModal.open({

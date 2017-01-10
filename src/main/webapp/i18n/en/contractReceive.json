@@ -10,6 +10,7 @@
             "created": "A new Contract Receive is created with identifier {{ param }}",
             "updated": "A Contract Receive is updated with identifier {{ param }}",
             "deleted": "A Contract Receive is deleted with identifier {{ param }}",
+            "import": "import excel",
             "delete": {
                 "question": "Are you sure you want to delete Contract Receive {{ id }}?"
             },

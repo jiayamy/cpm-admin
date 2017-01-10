@@ -6,7 +6,8 @@
 
     ContractInfo.$inject = ['$resource', 'DateUtils'];
 
-    function ContractInfo ($resource, DateUtils) {
+    function ContractInfo ($resource, DateUtils,$http) {
+    	
         var resourceUrl =  'api/contract-infos/:id';
 
         return $resource(resourceUrl, {}, {
