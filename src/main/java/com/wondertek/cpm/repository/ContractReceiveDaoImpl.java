@@ -19,7 +19,7 @@ public class ContractReceiveDaoImpl extends GenericDaoImpl<ContractReceive, Long
 
 	@Override
 	public EntityManager getEntityManager() {
-		return null;
+		return entityManager;
 	}
 
 }
