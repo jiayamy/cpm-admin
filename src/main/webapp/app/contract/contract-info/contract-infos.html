@@ -55,13 +55,15 @@
 		            </div>
 	            </div>
 	            <div class="col-sm-4">
-	            	<label class="col-sm-4 control-label" data-translate="cpmApp.contractInfo.salesman">Salesman</label>
-                   <div class="col-sm-8">
-		                <select class="form-control" name="salesman" ng-model="vm.searchQuery.salesman"
-			            	ng-options="salesman.name for salesman in vm.salesmans track by salesman.id">
-			            	<option value="">--选择负责人员--</option>
-			            </select>
-		            </div>
+	            	<div class="col-sm-4">
+	            		<button class=" btn btn-primary" ui-sref="contract-info.query({selectType:2,showChild:true})" >
+	                    <span class="glyphicon glyphicon-plus"></span>
+	                    <span class="hidden-xs"  data-translate="cpmApp.contractInfo.salesman">
+	                       	 负责人
+	                    </span>
+	                </button>
+	            	</div>
+	            	
 	            </div>
 	            <div class="col-sm-4 pull-right input-group">
 	            	<div class="col-sm-4">
@@ -92,6 +94,8 @@
                     <th jh-sort-by="name"><span data-translate="cpmApp.contractInfo.name">Name</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="amount"><span data-translate="cpmApp.contractInfo.amount">Amount</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="type"><span data-translate="cpmApp.contractInfo.type">Type</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="salesman"><span data-translate="cpmApp.contractInfo.salesman">salesman</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    
                     <th jh-sort-by="isPrepared"><span data-translate="cpmApp.contractInfo.isPrepared">Is Prepared</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="isEpibolic"><span data-translate="cpmApp.contractInfo.isEpibolic">Is Epibolic</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th ng-hide="vm" jh-sort-by="startDay"><span data-translate="cpmApp.contractInfo.startDay">Start Day</span> <span class="glyphicon glyphicon-sort"></span></th>
@@ -120,6 +124,7 @@
                     <td>{{contractInfo.name}}</td>
                     <td>{{contractInfo.amount}}</td>
                     <td>{{contractInfo.type}}</td>
+                    <td>{{contractInfo.salesman}}</td>
                     <td>{{contractInfo.isPrepared}}</td>
                     <td>{{contractInfo.isEpibolic}}</td>
                     <td ng-hide="vm">{{contractInfo.startDay | date:'medium'}}</td>

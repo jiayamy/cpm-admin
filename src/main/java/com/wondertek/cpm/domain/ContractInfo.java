@@ -1,4 +1,3 @@
-
 package com.wondertek.cpm.domain;
 
 import org.hibernate.annotations.Cache;
@@ -55,7 +54,7 @@ public class ContractInfo implements Serializable {
     @Column(name = "is_epibolic")
     private Boolean isEpibolic;
     /**
-     * 销售ID（界面选择员工信息）
+     * 负责人ID（界面选择员工信息）
      */
     @Column(name = "sales_man_id")
     private Long salesmanId;
@@ -74,6 +73,28 @@ public class ContractInfo implements Serializable {
      */
     @Column(name = "dept_")
     private String dept;
+    
+    /**
+     * 咨询人ID（界面选择员工信息）
+     */
+    @Column(name = "consultants_id")
+    private Long consultantsId;
+    /**
+     * 咨询人名称
+     */
+    @Column(name = "consultants_")
+    private String consultants;
+    /**
+     * 咨询人所属部门ID
+     */
+    @Column(name = "consultants_dept_id")
+    private Long consultantsDeptId;
+    /**
+     * 咨询人所属部门
+     */
+    @Column(name = "consultants_dept")
+    private String consultantsDept;
+    
     /**
      * 开始日期,页面格式20161227
      */

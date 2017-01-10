@@ -1,5 +1,6 @@
 package com.wondertek.cpm.service;
 
+import com.wondertek.cpm.CpmConstants;
 import com.wondertek.cpm.domain.ContractInfo;
 import com.wondertek.cpm.repository.ContractInfoDao;
 import com.wondertek.cpm.repository.ContractInfoRepository;
@@ -81,8 +82,11 @@ public class ContractInfoService {
      */
     public void delete(Long id) {
         log.debug("Request to delete ContractInfo : {}", id);
-        contractInfoRepository.delete(id);
-        contractInfoSearchRepository.delete(id);
+        ContractInfo contractInfo = contractInfoRepository.findOne(id);
+        if (contractInfo != null) {
+        	contractInfo.setStatus(CpmConstants.STATUS_DELETED);
+            contractInfoSearchRepository.save(contractInfo);
+		}
     }
 
     /**

@@ -10,6 +10,7 @@
             "created": "创建回款记录{{ param }}",
             "updated": "更新回款记录{{ param }}",
             "deleted": "删除回款记录 {{ param }}",
+            "import": "导入excel",
             "delete": {
                 "question": "确定删除回款记录{{ id }}?"
             },
