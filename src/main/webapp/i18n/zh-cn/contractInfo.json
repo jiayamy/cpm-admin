@@ -2,46 +2,49 @@
     "cpmApp": {
         "contractInfo" : {
             "home": {
-                "title": "Contract Infos",
-                "createLabel": "Create a new Contract Info",
-                "createOrEditLabel": "Create or edit a Contract Info",
-                "search": "Search for Contract Info"
+                "title": "合同信息",
+                "createLabel": "新建合同",
+                "createOrEditLabel": "新建合同信息",
+                "search": "查找合同"
             },
-            "created": "A new Contract Info is created with identifier {{ param }}",
-            "updated": "A Contract Info is updated with identifier {{ param }}",
-            "deleted": "A Contract Info is deleted with identifier {{ param }}",
+            "created": "新合同创建的id {{ param }}",
+            "updated": "修改合同的id{{ param }}",
+            "deleted": "删除合同的id {{ param }}",
             "delete": {
-                "question": "Are you sure you want to delete Contract Info {{ id }}?"
+                "question": "确定删除合同 {{ id }}?"
             },
             "detail": {
-                "title": "Contract Info"
+                "title": "合同基本信息"
             },
-            "serialNum": "Serial Num",
-            "name": "Name",
-            "amount": "Amount",
-            "type": "Type",
-            "isPrepared": "Is Prepared",
-            "isEpibolic": "Is Epibolic",
-            "startDay": "Start Day",
-            "endDay": "End Day",
-            "taxRate": "Tax Rate",
-            "taxes": "Taxes",
-            "shareRate": "Share Rate",
-            "shareCost": "Share Cost",
-            "paymentWay": "Payment Way",
-            "contractor": "Contractor",
-            "address": "Address",
-            "postcode": "Postcode",
-            "linkman": "Linkman",
-            "contactDept": "Contact Dept",
-            "telephone": "Telephone",
-            "receiveTotal": "Receive Total",
-            "finishRate": "Finish Rate",
-            "status": "Status",
-            "creator": "Creator",
-            "createTime": "Create Time",
-            "updator": "Updator",
-            "updateTime": "Update Time"
+            "serialNum": "合同编号",
+            "name": "合同名称",
+            "amount": "合同金额",
+            "type": "合同类型",
+            "isPrepared": "是否预立",
+            "isEpibolic": "是否外包",
+            "salesman":"负责人员",
+           	"dept":"负责人员所属部门",
+            "startDay": "开始日期",
+            "endDay": "结束日期",
+            "taxRate": "税率",
+            "taxes": "税费",
+            "shareRate": "公摊税率",
+            "shareCost": "公摊成本",
+            "paymentWay": "付款方式",
+            "contractor": "合同方公司",
+            "address": "合同方通信地址",
+            "postcode": "合同方方邮编",
+            "linkman": "合同方联系人",
+            "contactDept": "合同方联系部门",
+            "telephone": "合同方电话",
+            "receiveTotal": "回款总额",
+           	"finishTotal":"合同累计完成金额",
+            "finishRate": "合同完成率",
+            "status": "状态",
+            "creator": "创建者",
+            "createTime": "创建时间",
+            "updator": "更新者",
+            "updateTime": "更新时间"
         }
     }
 }
