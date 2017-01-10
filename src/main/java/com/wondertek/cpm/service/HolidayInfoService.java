@@ -2,18 +2,22 @@ package com.wondertek.cpm.service;
 
 import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.wondertek.cpm.domain.HolidayInfo;
+import com.wondertek.cpm.repository.HolidayInfoDao;
 import com.wondertek.cpm.repository.HolidayInfoRepository;
 import com.wondertek.cpm.repository.search.HolidayInfoSearchRepository;
 
@@ -31,6 +35,9 @@ public class HolidayInfoService {
 
     @Inject
     private HolidayInfoSearchRepository holidayInfoSearchRepository;
+    
+    @Autowired
+    private HolidayInfoDao holidayInfoDao;
 
     /**
      * Save a holidayInfo.
@@ -102,7 +109,24 @@ public class HolidayInfoService {
      */
     public List<HolidayInfo> save(List<HolidayInfo> holidayInfos) {
         log.debug("Request to save HolidayInfo : {}", holidayInfos);
-        List<HolidayInfo> result = holidayInfoRepository.save(holidayInfos);
+        List<HolidayInfo> result = null;
+        List<HolidayInfo> removedHolidayInfos = new ArrayList<HolidayInfo>();
+        if(holidayInfos != null && !holidayInfos.isEmpty()){
+        	List<Long> existHolidayCurrDays = holidayInfoRepository.findCurrdaysByCurrDay(holidayInfos.get(0).getCurrDay());
+        	if(existHolidayCurrDays != null && !existHolidayCurrDays.isEmpty()){
+        		for(HolidayInfo hi:holidayInfos){
+        			if(existHolidayCurrDays.contains(hi.getCurrDay())){
+        				removedHolidayInfos.add(hi);
+        			}
+        		}
+        		if(!removedHolidayInfos.isEmpty()){
+        			holidayInfos.removeAll(removedHolidayInfos);
+        		}
+        	}
+        	if (!holidayInfos.isEmpty()) {
+				result = holidayInfoRepository.save(holidayInfos);
+			}
+        }
         return result;
     }
     
@@ -116,5 +140,17 @@ public class HolidayInfoService {
     	log.debug("Request to get HolidayInfo :{}", date);
     	int result = holidayInfoRepository.findByCurrDay(date);
     	return result;
+    }
+    
+    /**
+     * 查看满足搜索条件的节日信息列表
+     * @param searchCondition
+     * @param pageable
+     * @return
+     */
+    @Transactional(readOnly = true)
+    public Page<HolidayInfo> getHolidayInfoPage(Map<String,Long> searchCondition,Pageable pageable){
+    	Page<HolidayInfo> page = holidayInfoDao.getHolidayInfoPage(searchCondition, pageable);
+    	return page;
     }
 }

@@ -5,9 +5,9 @@
         .module('cpmApp')
         .controller('HolidayInfoController', HolidayInfoController);
 
-    HolidayInfoController.$inject = ['$scope', '$state', 'HolidayInfo', 'HolidayInfoSearch', 'ParseLinks', 'AlertService', 'paginationConstants', 'pagingParams'];
+    HolidayInfoController.$inject = ['$scope', '$state','DateUtils', 'HolidayInfo', 'HolidayInfoSearch', 'ParseLinks', 'AlertService', 'paginationConstants', 'pagingParams'];
 
-    function HolidayInfoController ($scope, $state, HolidayInfo, HolidayInfoSearch, ParseLinks, AlertService, paginationConstants, pagingParams) {
+    function HolidayInfoController ($scope, $state,DateUtils, HolidayInfo, HolidayInfoSearch, ParseLinks, AlertService, paginationConstants, pagingParams) {
         var vm = this;
 
         vm.loadPage = loadPage;
@@ -18,15 +18,42 @@
         vm.clear = clear;
         vm.search = search;
         vm.loadAll = loadAll;
-        vm.searchQuery = pagingParams.search;
-        vm.currentSearch = pagingParams.search;
+//        vm.searchQuery = pagingParams.search;
+        vm.searchQuery = {};
+//        vm.currentSearch = pagingParams.search;
+        var fromCurrDay = pagingParams.fromCurrDay;
+        if(fromCurrDay && fromCurrDay.length == 8){
+        	fromCurrDay = new Date(fromCurrDay.substring(0,4),parseInt(fromCurrDay.substring(4,6))-1,fromCurrDay.substring(6,8));
+        }
+        var toCurrDay = pagingParams.toCurrDay;
+        if(toCurrDay && toCurrDay.length == 8){
+        	toCurrDay = new Date(toCurrDay.substring(0,4),parseInt(toCurrDay.substring(4,6))-1,toCurrDay.substring(6,8));
+        }
+        vm.searchQuery.fromCurrDay = fromCurrDay;
+        vm.searchQuery.toCurrDay = toCurrDay;
+        if (!vm.searchQuery.fromCurrDay && !vm.searchQuery.toCurrDay){
+        	vm.haveSearch = null;
+        }else{
+        	vm.haveSearch = true;
+        }
 
         loadAll();
 
         function loadAll () {
-            if (pagingParams.search) {
+            if (pagingParams.fromCurrDay || pagingParams.toCurrDay) {
+            	if(pagingParams.fromCurrDay == undefined){
+            		pagingParams.fromCurrDay = "";
+            	}
+            	if(pagingParams.toCurrDay == undefined){
+            		pagingParams.toCurrDay = "";
+            	}
+            	if(pagingParams.search == undefined){
+            		pagingParams.search = "";
+            	}
                 HolidayInfoSearch.query({
-                    query: pagingParams.search,
+                	fromCurrDay:pagingParams.fromCurrDay,
+                	toCurrDay:pagingParams.toCurrDay,
+//                    query: pagingParams.search,
                     page: pagingParams.page - 1,
                     size: vm.itemsPerPage,
                     sort: sort()
@@ -66,19 +93,23 @@
             $state.transitionTo($state.$current, {
                 page: vm.page,
                 sort: vm.predicate + ',' + (vm.reverse ? 'asc' : 'desc'),
-                search: vm.currentSearch
+//                search: vm.currentSearch,
+                fromCurrDay:DateUtils.convertLocalDateToFormat(vm.searchQuery.fromCurrDay,"yyyyMMdd"),	//
+                toCurrDay:DateUtils.convertLocalDateToFormat(vm.searchQuery.toCurrDay,"yyyyMMdd")		//
             });
         }
 
-        function search(searchQuery) {
-            if (!searchQuery){
+//        function search(searchQuery) {
+        function search() {
+            if (!vm.searchQuery.fromCurrDay && !vm.searchQuery.toCurrDay){
                 return vm.clear();
             }
             vm.links = null;
             vm.page = 1;
             vm.predicate = '_score';
             vm.reverse = false;
-            vm.currentSearch = searchQuery;
+            vm.haveSearch = true;
+//            vm.currentSearch = searchQuery;
             vm.transition();
         }
 
@@ -87,8 +118,19 @@
             vm.page = 1;
             vm.predicate = 'id';
             vm.reverse = true;
-            vm.currentSearch = null;
+            vm.haveSearch = false;
+//            vm.currentSearch = null;
+            vm.searchQuery.fromCurrDay = null;
+            vm.searchQuery.toCurrDay = null;
             vm.transition();
+        }
+        
+        vm.datePickerOpenStatus={};
+        vm.openCalendar = openCalendar;
+        vm.datePickerOpenStatus.fromCurrDay = false;
+        vm.datePickerOpenStatus.toCurrDay = false;
+        function openCalendar (date) {
+            vm.datePickerOpenStatus[date] = true;
         }
     }
 })();
