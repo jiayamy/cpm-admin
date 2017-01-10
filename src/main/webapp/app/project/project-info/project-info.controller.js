@@ -30,6 +30,13 @@
         vm.searchQuery.name = pagingParams.name;
         vm.contractInfos = [];
         
+        if (!vm.searchQuery.contractId && !vm.searchQuery.serialNum
+        		&& !vm.searchQuery.name && !vm.searchQuery.status){
+        	vm.haveSearch = null;
+        }else{
+        	vm.haveSearch = true;
+        }
+        
         loadContract();
         function loadContract(){
         	ProjectInfo.queryUserContract({
@@ -131,6 +138,7 @@
             vm.page = 1;
             vm.predicate = 'wpi.id';
             vm.reverse = false;
+            vm.haveSearch = true;
             vm.transition();
         }
 
@@ -140,6 +148,7 @@
             vm.predicate = 'wpi.id';
             vm.reverse = false;
             vm.searchQuery = {};
+            vm.haveSearch = null;
             vm.transition();
         }
     }

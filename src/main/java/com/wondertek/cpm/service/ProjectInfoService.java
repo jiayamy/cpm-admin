@@ -178,4 +178,16 @@ public class ProjectInfoService {
 	public boolean checkByProject(String serialNum, Long id) {
 		return projectInfoDao.checkByProject(serialNum,id);
 	}
+    /**
+     * 项目完成率
+     */
+	public int finishProjectInfo(Long id, Double finishRate) {
+		return projectInfoDao.finishProjectInfo(id,finishRate,SecurityUtils.getCurrentUserLogin());
+	}
+	/**
+	 * 项目结项
+	 */
+	public int endProjectInfo(Long id) {
+		return projectInfoDao.endProjectInfo(id,SecurityUtils.getCurrentUserLogin());
+	}
 }

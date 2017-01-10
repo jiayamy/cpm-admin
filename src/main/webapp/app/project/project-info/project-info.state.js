@@ -310,29 +310,50 @@
                     $state.go('^');
                 });
             }]
-        }).state('project-info-detail.query', {
-            parent: 'project-info-detail',
-            url: '/queryDept?selectType&showChild',
+        })
+        .state('project-info.end', {
+            parent: 'project-info',
+            url: '/{id}/end',
             data: {
                 authorities: ['ROLE_PROJECT_INFO']
             },
             onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
                 $uibModal.open({
-                    templateUrl: 'app/info/dept-info/dept-info-query.html',
-                    controller: 'DeptInfoQueryController',
+                    templateUrl: 'app/project/project-info/project-info-end-dialog.html',
+                    controller: 'ProjectInfoEndController',
                     controllerAs: 'vm',
-                    backdrop: 'static',
-                    size: 'lg',
+                    size: 'md',
                     resolve: {
-                        entity: function() {
-                            return {
-                            	selectType : $stateParams.selectType,
-                            	showChild : $stateParams.showChild
-                            }
-                        }
+                        entity: ['ProjectInfo', function(ProjectInfo) {
+                            return ProjectInfo.get({id : $stateParams.id}).$promise;
+                        }]
                     }
                 }).result.then(function() {
-                    $state.go('^', {}, { reload: false });
+                    $state.go('project-info', null, { reload: 'project-info' });
+                }, function() {
+                    $state.go('^');
+                });
+            }]
+        })
+        .state('project-info.finish', {
+            parent: 'project-info',
+            url: '/{id}/finish',
+            data: {
+                authorities: ['ROLE_PROJECT_INFO']
+            },
+            onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
+                $uibModal.open({
+                    templateUrl: 'app/project/project-info/project-info-finish-dialog.html',
+                    controller: 'ProjectInfoFinishController',
+                    controllerAs: 'vm',
+                    size: 'md',
+                    resolve: {
+                        entity: ['ProjectInfo', function(ProjectInfo) {
+                            return ProjectInfo.get({id : $stateParams.id}).$promise;
+                        }]
+                    }
+                }).result.then(function() {
+                    $state.go('project-info', null, { reload: 'project-info' });
                 }, function() {
                     $state.go('^');
                 });

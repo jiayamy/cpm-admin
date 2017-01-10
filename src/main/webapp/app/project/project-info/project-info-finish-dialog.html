@@ -1,0 +1,36 @@
+<form name="myForm" ng-submit="vm.confirmFinish(vm.projectInfo.id)">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+                ng-click="vm.clear()">&times;</button>
+        <h4 class="modal-title" data-translate="cpmApp.projectInfo.finish.title">Project Finish operation</h4>
+    </div>
+    <div class="modal-body">
+        <jhi-alert-error></jhi-alert-error>
+        <div class="form-group">
+            <label class="control-label" data-translate="cpmApp.projectInfo.serialNum" for="field_serialNum">Serial Num</label>
+            <input type="text" class="form-control" name="creator" id="field_serialNum"
+                    ng-model="vm.projectInfo.serialNum" readOnly
+                     />
+        </div>
+       	<div class="form-group">
+            <label class="control-label" data-translate="cpmApp.projectInfo.finishRate" for="field_finishRate">Finish Rate</label>
+            <input type="number" class="form-control" name="finishRate" id="field_finishRate"
+                    ng-model="vm.projectInfo.finishRate" step="0.01" min="0" max="100"
+                     />
+			<div ng-show="myForm.finishRate.$dirty&&myForm.finishRate.$error.min" class="alert alert-danger help-block" data-translate="cpmApp.projectInfo.finish.minError"> 
+               	
+           	</div>
+           	<div ng-show="myForm.finishRate.$dirty&&myForm.finishRate.$error.max" class="alert alert-danger help-block" data-translate="cpmApp.projectInfo.finish.maxError"> 
+               	
+           	</div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="vm.clear()">
+            <span class="glyphicon glyphicon-ban-circle"></span>&nbsp;<span data-translate="entity.action.cancel">Cancel</span>
+        </button>
+        <button type="submit" ng-disabled="myForm.$invalid" class="btn btn-warning">
+            <span class="glyphicon glyphicon-indent-left"></span>&nbsp;<span data-translate="cpmApp.projectInfo.finish.submit">Finish</span>
+        </button>
+    </div>
+</form>

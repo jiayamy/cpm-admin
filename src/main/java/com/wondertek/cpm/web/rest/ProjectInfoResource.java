@@ -20,7 +20,6 @@ import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -109,6 +108,9 @@ public class ProjectInfoResource {
         	if(oldProjectInfo.getStartDay().isBefore(projectInfo.getStartDay())){
         		projectInfo.setStartDay(oldProjectInfo.getStartDay());
         	}
+        	//不变的
+        	projectInfo.setCreateTime(oldProjectInfo.getCreateTime());
+        	projectInfo.setCreator(oldProjectInfo.getCreator());
         	projectInfo.setStatus(oldProjectInfo.getStatus());
         	projectInfo.setFinishRate(oldProjectInfo.getFinishRate());
         }else{
@@ -191,6 +193,10 @@ public class ProjectInfoResource {
     @Secured(AuthoritiesConstants.ROLE_PROJECT_INFO)
     public ResponseEntity<Void> deleteProjectInfo(@PathVariable Long id) {
         log.debug("REST request to delete ProjectInfo : {}", id);
+        ProjectInfoVo projectInfo = projectInfoService.getUserProjectInfo(id);
+        if(projectInfo == null){
+        	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.projectInfo.save.noPerm", "")).body(null);
+        }
         projectInfoService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert("projectInfo", id.toString())).build();
     }
@@ -215,5 +221,56 @@ public class ProjectInfoResource {
         }
         List<LongValue> list = projectInfoService.queryUserContractBudget(contractIdLong);
         return new ResponseEntity<>(list, null, HttpStatus.OK);
+    }
+    
+    @GetMapping("/project-infos/end")
+    @Timed
+    @Secured(AuthoritiesConstants.ROLE_PROJECT_INFO)
+    public ResponseEntity<ProjectInfo> endProjectInfo(@RequestParam(value = "id") Long id) throws URISyntaxException {
+    	log.debug("REST request to endProjectInfo");
+    	//有没权限
+    	ProjectInfoVo projectInfo = projectInfoService.getUserProjectInfo(id);
+        if(projectInfo == null){
+        	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.projectInfo.save.noPerm", "")).body(null);
+        }
+        if(projectInfo.getStatus() == ProjectInfo.STATUS_CLOSED){
+        	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.projectInfo.end.statusError1", "")).body(null);
+        }else if(projectInfo.getStatus() == ProjectInfo.STATUS_DELETED){
+        	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.projectInfo.end.statusError2", "")).body(null);
+        }
+        projectInfoService.endProjectInfo(id);
+        
+    	return ResponseEntity.ok()
+    			.headers(HeaderUtil.createAlert("cpmApp.projectInfo.end.success", projectInfo.getId().toString()))
+    			.body(null);
+    }
+    
+    @GetMapping("/project-infos/finish")
+    @Timed
+    @Secured(AuthoritiesConstants.ROLE_PROJECT_INFO)
+    public ResponseEntity<ProjectInfo> finishProjectInfo(
+    		@RequestParam(value = "id") Long id,
+    		@RequestParam(value = "finishRate") Double finishRate
+    		) throws URISyntaxException {
+    	log.debug("REST request to endProjectInfo");
+    	//有没权限
+    	ProjectInfoVo projectInfo = projectInfoService.getUserProjectInfo(id);
+        if(projectInfo == null){
+        	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.projectInfo.save.noPerm", "")).body(null);
+        }
+        if(finishRate < 0){
+        	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.projectInfo.finish.minError", "")).body(null);
+        }
+        if(finishRate > 100){
+        	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.projectInfo.finish.maxError", "")).body(null);
+        }
+        if(projectInfo.getStatus() == ProjectInfo.STATUS_CLOSED || projectInfo.getStatus() == ProjectInfo.STATUS_DELETED){
+        	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.projectInfo.finish.statusError", "")).body(null);
+        }
+        projectInfoService.finishProjectInfo(id,finishRate);
+        
+    	return ResponseEntity.ok()
+    			.headers(HeaderUtil.createAlert("cpmApp.projectInfo.finish.success", projectInfo.getId().toString()))
+    			.body(null);
     }
 }

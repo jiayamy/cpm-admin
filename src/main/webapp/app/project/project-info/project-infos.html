@@ -84,6 +84,7 @@
                     <th class="hidden-xs" jh-sort-by="wpi.budget_total"><span data-translate="cpmApp.projectInfo.budgetTotal">Budget Total</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="wpi.start_day"><span data-translate="cpmApp.projectInfo.startDay">Start Day</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="wpi.end_day"><span data-translate="cpmApp.projectInfo.endDay">End Day</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="wpi.finish_rate"><span data-translate="cpmApp.projectInfo.finishRate">Finish Rate</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="wpi.status_"><span data-translate="cpmApp.projectInfo.status">Status</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th class="hidden-xs" jh-sort-by="wpi.creator_"><span data-translate="cpmApp.projectInfo.creator">Creator</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th class="hidden-xs" jh-sort-by="wpi.create_time"><span data-translate="cpmApp.projectInfo.createTime">Create Time</span> <span class="glyphicon glyphicon-sort"></span></th>
@@ -104,6 +105,7 @@
                     <td class="hidden-xs">{{projectInfo.budgetTotal}}</td>
                     <td>{{projectInfo.startDay | date:'shortDate'}}</td>
                     <td>{{projectInfo.endDay | date:'shortDate'}}</td>
+                    <td>{{projectInfo.finishRate}}%</td>
                     <td>{{projectInfo.status}}</td>
                     <td class="hidden-xs">{{projectInfo.creator}}</td>
                     <td class="hidden-xs">{{projectInfo.createTime | date:'medium'}}</td>
@@ -115,19 +117,26 @@
                                     ui-sref="project-info-detail({id:projectInfo.id})"
                                     class="btn btn-info btn-sm">
                                 <span class="glyphicon glyphicon-eye-open"></span>
-                                <span class="hidden-xs hidden-sm" data-translate="entity.action.view"></span>
                             </button>
                             <button type="submit"
                                     ui-sref="project-info.edit({id:projectInfo.id})"
                                     class="btn btn-primary btn-sm">
                                 <span class="glyphicon glyphicon-pencil"></span>
-                                <span class="hidden-xs hidden-sm" data-translate="entity.action.edit"></span>
+                            </button>
+                            <button type="submit"
+                                    ui-sref="project-info.finish({id:projectInfo.id})"
+                                    class="btn btn-warning btn-sm">
+                                <span class="glyphicon glyphicon-indent-left"></span>
+                            </button>
+                            <button type="submit"
+                                    ui-sref="project-info.end({id:projectInfo.id})"
+                                    class="btn btn-success btn-sm">
+                                <span class="glyphicon glyphicon-off"></span>
                             </button>
                             <button type="submit"
                                     ui-sref="project-info.delete({id:projectInfo.id})"
                                     class="btn btn-danger btn-sm">
                                 <span class="glyphicon glyphicon-remove-circle"></span>
-                                <span class="hidden-xs hidden-sm" data-translate="entity.action.delete"></span>
                             </button>
                         </div>
                     </td>

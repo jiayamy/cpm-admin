@@ -10,7 +10,7 @@
             "updated": "修改成功",
             "deleted": "删除成功",
             "delete": {
-                "question": "确定删除主键为： {{ id }} 的项目信息?"
+                "question": "确定删除编号为[ {{ id }}]的项目信息?"
             },
             "detail": {
                 "title": "项目信息"
@@ -24,7 +24,24 @@
             	"noPerm":"无此权限",
             	"existSerialNum":"项目编号已存在，请选择其他编号",
             	"requriedError":"必填参数为空",
-            	"endDayError":"结束日期应在开始日期之后"
+            	"endDayError":"结束日期应在开始日期之后",
+            	"statusError":"已结项或已删除的项目不可编辑"
+            },
+            "end":{
+            	"title":"结项信息",
+            	"submit":"结项",
+            	"question": "确定将编号为[ {{ id }}]的项目结项?",
+            	"statusError1":"项目状态为已结项的不可再执行结项操作",
+            	"statusError2":"项目状态为已删除的不可执行结项操作",
+            	"success":"项目结项成功"
+            },
+            "finish":{
+            	"title":"项目完成率信息",
+            	"submit":"提交",
+            	"minError":"完成率最小值为0",
+            	"maxError":"完成率最大值为100",
+            	"statusError":"项目状态为已结项或已删除的不可修改完成率",
+            	"success":"设置完成率成功"
             },
             "serialNum": "项目编号",
             "contractId": "合同编号",
@@ -36,6 +53,7 @@
             "startDay": "开始日期",
             "endDay": "结束日期",
             "budgetTotal": "项目预算",
+            "finishRate":"完成率",
             "status": "状态",
             "creator": "创建者",
             "createTime": "创建时间",

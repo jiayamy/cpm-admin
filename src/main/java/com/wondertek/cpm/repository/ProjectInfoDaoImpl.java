@@ -1,6 +1,7 @@
 package com.wondertek.cpm.repository;
 
 import java.sql.Timestamp;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -349,5 +350,15 @@ public class ProjectInfoDaoImpl extends GenericDaoImpl<ProjectInfo, Long> implem
 			params.add(id);
 		}
 		return this.countHql(countHql.toString(), params.toArray()) > 0;
+	}
+
+	@Override
+	public int finishProjectInfo(Long id, Double finishRate, String updator) {
+		return this.excuteHql("update ProjectInfo set finishRate = ? , updator = ?, updateTime = ? where id = ?", new Object[]{finishRate,updator,ZonedDateTime.now(),id});
+	}
+
+	@Override
+	public int endProjectInfo(Long id, String updator) {
+		return this.excuteHql("update ProjectInfo set status = ? , updator = ?, updateTime = ? where id = ?", new Object[]{ProjectInfo.STATUS_CLOSED,updator,ZonedDateTime.now(),id});
 	}
 }	
