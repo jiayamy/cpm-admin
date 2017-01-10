@@ -1,21 +1,21 @@
 package com.wondertek.cpm.service;
 
-import com.wondertek.cpm.domain.ContractReceive;
-import com.wondertek.cpm.repository.ContractReceiveRepository;
-import com.wondertek.cpm.repository.search.ContractReceiveSearchRepository;
+import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
+
+import javax.inject.Inject;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.inject.Inject;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
-
-import static org.elasticsearch.index.query.QueryBuilders.*;
+import com.wondertek.cpm.CpmConstants;
+import com.wondertek.cpm.domain.ContractReceive;
+import com.wondertek.cpm.repository.ContractReceiveDao;
+import com.wondertek.cpm.repository.ContractReceiveRepository;
+import com.wondertek.cpm.repository.search.ContractReceiveSearchRepository;
 
 /**
  * Service Implementation for managing ContractReceive.
@@ -31,6 +31,9 @@ public class ContractReceiveService {
 
     @Inject
     private ContractReceiveSearchRepository contractReceiveSearchRepository;
+    
+    @Inject
+    private ContractReceiveDao contractReceiveDao;
 
     /**
      * Save a contractReceive.
@@ -78,8 +81,9 @@ public class ContractReceiveService {
      */
     public void delete(Long id) {
         log.debug("Request to delete ContractReceive : {}", id);
-        contractReceiveRepository.delete(id);
-        contractReceiveSearchRepository.delete(id);
+        ContractReceive contractReceive = contractReceiveRepository.findOne(id);
+        contractReceive.setStatus(CpmConstants.STATUS_DELETED);
+        contractReceiveRepository.save(contractReceive);
     }
 
     /**

@@ -1,6 +1,8 @@
 package com.wondertek.cpm.service;
 
+import com.wondertek.cpm.CpmConstants;
 import com.wondertek.cpm.domain.ContractInfo;
+import com.wondertek.cpm.repository.ContractInfoDao;
 import com.wondertek.cpm.repository.ContractInfoRepository;
 import com.wondertek.cpm.repository.search.ContractInfoSearchRepository;
 import org.slf4j.Logger;
@@ -31,7 +33,9 @@ public class ContractInfoService {
 
     @Inject
     private ContractInfoSearchRepository contractInfoSearchRepository;
-
+    
+    @Inject
+    private ContractInfoDao contractInfoDao;
     /**
      * Save a contractInfo.
      *
@@ -78,8 +82,11 @@ public class ContractInfoService {
      */
     public void delete(Long id) {
         log.debug("Request to delete ContractInfo : {}", id);
-        contractInfoRepository.delete(id);
-        contractInfoSearchRepository.delete(id);
+        ContractInfo contractInfo = contractInfoRepository.findOne(id);
+        if (contractInfo != null) {
+        	contractInfo.setStatus(CpmConstants.STATUS_DELETED);
+            contractInfoSearchRepository.save(contractInfo);
+		}
     }
 
     /**
@@ -90,8 +97,16 @@ public class ContractInfoService {
      */
     @Transactional(readOnly = true)
     public Page<ContractInfo> search(String query, Pageable pageable) {
-        log.debug("Request to search for a page of ContractInfos for query {}", query);
+    	log.debug("Request to search for a page of ContractInfos for query {}", query);
         Page<ContractInfo> result = contractInfoSearchRepository.search(queryStringQuery(query), pageable);
         return result;
     }
+    
+	public Page<ContractInfo> getContractInfoPage(ContractInfo contractInfo, Pageable pageable) {
+		Page<ContractInfo> page = contractInfoDao.getContractInfoPage(contractInfo, pageable);
+		return page;
+	}
+
+	
+
 }

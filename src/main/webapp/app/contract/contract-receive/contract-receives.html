@@ -1,7 +1,63 @@
 <div>
     <h2 data-translate="cpmApp.contractReceive.home.title">Contract Receives</h2>
     <jhi-alert></jhi-alert>
-    <div class="container-fluid">
+     <div class="container-fluid">
+    	<div class="row form-horizontal">
+	        <div class="form-group">
+	            <div class="col-xs-3 no-padding-left">
+	                <button class="btn btn-primary" ui-sref="contract-receive.new" >
+	                    <span class="glyphicon glyphicon-plus"></span>
+	                    <span class="hidden-xs"  data-translate="cpmApp.contractReceive.home.createLabel">
+	                        Create new Contract Receive
+	                    </span>
+                	</button>
+	            </div>
+	            <div class="col-xs-2 no-padding-left">
+	                <button class="btn btn-primary" ui-sref="contract-receive.new" >
+	                    <span class="glyphicon glyphicon-plus"></span>
+	                    <span class="hidden-xs"  data-translate="cpmApp.contractReceive.import">
+	                        	导入excel
+	                    </span>
+                	</button>
+	            </div>
+	            <div class="col-xs-8 no-padding-right">
+	            </div>
+	        </div>
+	     </div>
+       	<form name="searchForm" class="form-horizontal">
+	      <div class="form-group">
+	            <div class="col-sm-4">
+	            	<label class="col-sm-4 control-label" data-translate="cpmApp.contractInfo.name">ContractInfo Name</label>
+		            <div class="col-sm-8">
+		                <select class="form-control" name="isEpibolic" ng-model="vm.searchQuery.isEpibolic"
+			            	ng-options="isEpibolic.name for isEpibolic in vm.isEpibolics track by isEpibolic.id">
+			            	<option value="">--选择合同名称--</option>
+			            </select>
+		            </div>
+	            </div>
+	            <div class="col-sm-4 pull-right input-group">
+	            	<div class="col-sm-4">
+	            	</div>
+	            	<div class="col-sm-8" >
+		            	<span  class="width-min" >
+	                         <button class="btn btn-info" ng-click="vm.search(vm.searchQuery)">
+                                <span class="glyphicon glyphicon-search"></span>
+                            </button>
+	                    </span>
+	                    <span class="width-min" ng-if="vm.haveSearch">
+	                        <button class="btn btn-info" ng-click="vm.clear()">
+                                <span class="glyphicon glyphicon-trash"></span>
+                            </button>
+	                    </span>
+	            	</div>
+	            </div>
+            </div>
+        </form>
+    </div>
+    
+    
+  
+    <!-- <div class="container-fluid">
         <div class="row">
             <div class="col-xs-4 no-padding-left">
                 <button class="btn btn-primary" ui-sref="contract-receive.new" >
@@ -29,22 +85,19 @@
                 </form>
             </div>
         </div>
-    </div>
+    </div> -->
+    
     <br/>
     <div class="table-responsive">
         <table class="jh-table table table-striped">
             <thead>
                 <tr jh-sort="vm.predicate" ascending="vm.reverse" callback="vm.transition()">
-                    <th jh-sort-by="id"><span data-translate="global.field.id">ID</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th ng-hide jh-sort-by="id"><span data-translate="global.field.id">ID</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="contractId"><span data-translate="cpmApp.contractReceive.contractId">Contract Id</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="receiveTotal"><span data-translate="cpmApp.contractReceive.receiveTotal">Receive Total</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="receiveDay"><span data-translate="cpmApp.contractReceive.receiveDay">Receive Day</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="status"><span data-translate="cpmApp.contractReceive.status">Status</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="creator"><span data-translate="cpmApp.contractReceive.creator">Creator</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="createTime"><span data-translate="cpmApp.contractReceive.createTime">Create Time</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="updator"><span data-translate="cpmApp.contractReceive.updator">Updator</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="updateTime"><span data-translate="cpmApp.contractReceive.updateTime">Update Time</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="receiver"><span data-translate="cpmApp.contractReceive.receiver">Receiver</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="status"><span data-translate="cpmApp.contractReceive.status">Status</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th></th>
                 </tr>
             </thead>
@@ -54,12 +107,8 @@
                     <td>{{contractReceive.contractId}}</td>
                     <td>{{contractReceive.receiveTotal}}</td>
                     <td>{{contractReceive.receiveDay | date:'medium'}}</td>
-                    <td>{{contractReceive.status}}</td>
-                    <td>{{contractReceive.creator}}</td>
-                    <td>{{contractReceive.createTime | date:'medium'}}</td>
-                    <td>{{contractReceive.updator}}</td>
-                    <td>{{contractReceive.updateTime | date:'medium'}}</td>
                     <td>{{contractReceive.receiver}}</td>
+                    <td>{{contractReceive.status}}</td>
                     <td class="text-right">
                         <div class="btn-group flex-btn-group-container">
                             <button type="submit"
@@ -91,3 +140,4 @@
         <uib-pagination class="pagination-sm" total-items="vm.totalItems" items-per-page="vm.itemsPerPage" ng-model="vm.page" ng-change="vm.transition()"></uib-pagination>
     </div>
 </div>
+ 
