@@ -10,7 +10,9 @@
             "updated": "修改成功",
             "deleted": "删除成功",
             "delete": {
-                "question": "确定删除编号为[ {{ id }}]的项目信息?"
+                "question": "确定删除编号为[ {{ id }}]的项目信息?",
+                "status2Error":"已结项的不可删除",
+            	"status3Error":"已删除的不可再执行删除"
             },
             "detail": {
                 "title": "项目信息",
@@ -27,10 +29,6 @@
             	"requriedError":"必填参数为空",
             	"endDayError":"结束日期应在开始日期之后",
             	"statusError":"已结项或已删除的项目不可编辑"
-            },
-            "delete":{
-            	"status2Error":"已结项的不可删除",
-            	"status3Error":"已删除的不可再执行删除"
             },
             "end":{
             	"title":"结项信息",
