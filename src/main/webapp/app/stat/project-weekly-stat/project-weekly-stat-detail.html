@@ -8,6 +8,10 @@
         <dd>
             <span>{{vm.projectWeeklyStat.projectId}}</span>
         </dd>
+        <dt><span data-translate="cpmApp.projectWeeklyStat.finishRate">Finish Rage</span></dt>
+        <dd>
+            <span>{{vm.projectWeeklyStat.finishRate}}%</span>
+        </dd>
         <dt><span data-translate="cpmApp.projectWeeklyStat.humanCost">Human Cost</span></dt>
         <dd>
             <span>{{vm.projectWeeklyStat.humanCost}}</span>
@@ -32,8 +36,4 @@
         <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span data-translate="entity.action.back"> Back</span>
     </button>
 
-    <button type="button" ui-sref="project-weekly-stat-detail.edit({id:vm.projectWeeklyStat.id})" class="btn btn-primary">
-        <span class="glyphicon glyphicon-pencil"></span>
-        <span class="hidden-xs hidden-sm" data-translate="entity.action.edit"> Edit</span>
-    </button>
 </div>

@@ -40,7 +40,9 @@
             "stat":{
             	"main":"Stat",
                 "contractWeeklyStat": "Contract Weekly Stat",
-                "projectWeeklyStat": "Project Weekly Stat"
+                "contractMonthlyStat": "Contract Monthly Stat",
+                "projectWeeklyStat": "Project Weekly Stat",
+                "projectMonthlyStat": "Project Monthly Stat"
             },
             "entities": {
                 "main": "Entities",

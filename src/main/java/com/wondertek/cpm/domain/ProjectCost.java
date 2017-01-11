@@ -19,7 +19,9 @@ import java.util.Objects;
 public class ProjectCost implements Serializable {
 
     private static final long serialVersionUID = 1L;
-
+    
+    public static final Integer TYPE_HUMAN_COST = 1;
+    
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
