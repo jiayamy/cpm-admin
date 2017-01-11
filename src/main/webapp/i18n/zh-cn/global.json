@@ -40,7 +40,9 @@
             "stat":{
             	"main":"统计报表",
                 "contractWeeklyStat": "合同周统计",
-                "projectWeeklyStat": "项目周统计"
+                "contractMonthlyStat": "合同月统计",
+                "projectWeeklyStat": "项目周统计",
+                "projectMonthlyStat": "项目月统计"
             },
             "entities": {
                 "main": "数据",

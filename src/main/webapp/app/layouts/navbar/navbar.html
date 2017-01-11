@@ -37,10 +37,22 @@
                                 <span data-translate="global.menu.stat.contractWeeklyStat">Contract Weekly Stat</span>
                             </a>
                         </li>
+                        <li ui-sref-active="active" has-authority="ROLE_STAT_CONTRACT">
+                            <a ui-sref="contract-monthly-stat" ng-click="vm.collapseNavbar()">
+                                <span class="glyphicon glyphicon-asterisk"></span>&nbsp;
+                                <span data-translate="global.menu.stat.contractMonthlyStat">Contract Monthly Stat</span>
+                            </a>
+                        </li>
                         <li ui-sref-active="active" has-authority="ROLE_STAT_PROJECT">
                             <a ui-sref="project-weekly-stat" ng-click="vm.collapseNavbar()">
                                 <span class="glyphicon glyphicon-asterisk"></span>&nbsp;
                                 <span data-translate="global.menu.stat.projectWeeklyStat">Project Weekly Stat</span>
+                            </a>
+                        </li>
+                        <li ui-sref-active="active" has-authority="ROLE_STAT_PROJECT">
+                            <a ui-sref="project-monthly-stat" ng-click="vm.collapseNavbar()">
+                                <span class="glyphicon glyphicon-asterisk"></span>&nbsp;
+                                <span data-translate="global.menu.stat.projectMonthlyStat">Project Monthly Stat</span>
                             </a>
                         </li>
                     </ul>

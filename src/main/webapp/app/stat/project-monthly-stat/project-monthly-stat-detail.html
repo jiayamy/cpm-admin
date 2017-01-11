@@ -1,0 +1,39 @@
+
+<div>
+    <h2><span data-translate="cpmApp.projectMonthlyStat.detail.title">Project Monthly Stat</span> {{vm.projectMonthlyStat.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="dl-horizontal jh-entity-details">
+        <dt><span data-translate="cpmApp.projectMonthlyStat.projectId">Project Id</span></dt>
+        <dd>
+            <span>{{vm.projectMonthlyStat.projectId}}</span>
+        </dd>
+        <dt><span data-translate="cpmApp.projectMonthlyStat.finishRate">Finish Rage</span></dt>
+        <dd>
+            <span>{{vm.projectMonthlyStat.finishRate}}%</span>
+        </dd>
+        <dt><span data-translate="cpmApp.projectMonthlyStat.humanCost">Human Cost</span></dt>
+        <dd>
+            <span>{{vm.projectMonthlyStat.humanCost}}</span>
+        </dd>
+        <dt><span data-translate="cpmApp.projectMonthlyStat.payment">Payment</span></dt>
+        <dd>
+            <span>{{vm.projectMonthlyStat.payment}}</span>
+        </dd>
+        <dt><span data-translate="cpmApp.projectMonthlyStat.statWeek">Stat Week</span></dt>
+        <dd>
+            <span>{{vm.projectMonthlyStat.statWeek}}</span>
+        </dd>
+        <dt><span data-translate="cpmApp.projectMonthlyStat.createTime">Create Time</span></dt>
+        <dd>
+            <span>{{vm.projectMonthlyStat.createTime | date:'medium'}}</span>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            ui-sref="{{ vm.previousState }}"
+            class="btn btn-info">
+        <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span data-translate="entity.action.back"> Back</span>
+    </button>
+
+</div>

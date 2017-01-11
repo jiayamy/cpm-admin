@@ -1,0 +1,40 @@
+{
+    "cpmApp": {
+        "contractMonthlyStat" : {
+            "home": {
+                "title": "Contract Monthly Stats",
+                "createLabel": "Create a new Contract Monthly Stat",
+                "createOrEditLabel": "Create or edit a Contract Monthly Stat",
+                "search": "Search for Contract Monthly Stat"
+            },
+            "created": "A new Contract Monthly Stat is created with identifier {{ param }}",
+            "updated": "A Contract Monthly Stat is updated with identifier {{ param }}",
+            "deleted": "A Contract Monthly Stat is deleted with identifier {{ param }}",
+            "delete": {
+                "question": "Are you sure you want to delete Contract Monthly Stat {{ id }}?"
+            },
+            "detail": {
+                "title": "Contract Monthly Stat"
+            },
+            "fromDate" : "Create Date From",
+            "toDate" : "Create Date End",
+            "statDate" : "Stat Week",
+            "contractId": "Contract Id",
+            "finishRate" : "Finish Rate",
+            "receiveTotal": "Receive Total",
+            "costTotal": "Cost Total",
+            "grossProfit": "Gross Profit",
+            "salesHumanCost": "Sales Human Cost",
+            "salesPayment": "Sales Payment",
+            "consultHumanCost": "Consult Human Cost",
+            "consultPayment": "Consult Payment",
+            "hardwarePurchase": "Hardware Purchase",
+            "externalSoftware": "External Software",
+            "internalSoftware": "Internal Software",
+            "projectHumanCost": "Project Human Cost",
+            "projectPayment": "Project Payment",
+            "statWeek": "Stat Week",
+            "createTime": "Create Time"
+        }
+    }
+}
