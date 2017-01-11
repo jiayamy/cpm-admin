@@ -14,11 +14,32 @@
             convertLocalDateFromServer : convertLocalDateFromServer,
             convertLocalDateToServer : convertLocalDateToServer,
             convertLocalDateToFormat : convertLocalDateToFormat,
+            convertYYYYMMDDDayToDate : convertYYYYMMDDDayToDate,
+            convertDayToDate:convertDayToDate,
             dateformat : dateformat
         };
 
         return service;
 
+        function convertDayToDate(date){
+        	if(date){
+        		date = date + "";
+        		date = date.replace(new RegExp("-","gm"),"");
+        		if(date.length == 8){
+        			return new Date(date.substring(0,4),parseInt(date.substring(4,6))-1,date.substring(6,8));
+        		}
+        	}
+        	return null;
+        }
+        function convertYYYYMMDDDayToDate (date){
+        	if(date){
+        		date = date + "";
+        		if(date.length == 8){
+        			return new Date(date.substring(0,4),parseInt(date.substring(4,6))-1,date.substring(6,8));
+        		}
+        	}
+        	return null;
+        }
         function convertDateTimeFromServer (date) {
             if (date) {
                 return new Date(date);

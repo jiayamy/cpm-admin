@@ -53,6 +53,11 @@
             	url:'api/project-infos/finish',
             	method:'GET',
             	isArray:true
+            },
+            'queryProjectInfo':{
+            	url:'api/project-infos/queryUserProject',
+            	method:'GET',
+            	isArray:true
             }
         });
     }

@@ -284,4 +284,13 @@ public class ProjectInfoResource {
     			.headers(HeaderUtil.createAlert("cpmApp.projectInfo.finish.success", projectInfo.getId().toString()))
     			.body(null);
     }
+    
+    @GetMapping("/project-infos/queryUserProject")
+    @Timed
+    @Secured(AuthoritiesConstants.ROLE_PROJECT_INFO)
+    public ResponseEntity<List<LongValue>> queryUserProject() throws URISyntaxException {
+        log.debug("REST request to queryUserContract");
+        List<LongValue> list = projectInfoService.queryUserProject();
+        return new ResponseEntity<>(list, null, HttpStatus.OK);
+    }
 }

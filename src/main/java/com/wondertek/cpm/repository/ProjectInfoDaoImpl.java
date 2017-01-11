@@ -361,4 +361,34 @@ public class ProjectInfoDaoImpl extends GenericDaoImpl<ProjectInfo, Long> implem
 	public int endProjectInfo(Long id, String updator) {
 		return this.excuteHql("update ProjectInfo set status = ? , updator = ?, updateTime = ? where id = ?", new Object[]{ProjectInfo.STATUS_CLOSED,updator,ZonedDateTime.now(),id});
 	}
+
+	@Override
+	public List<LongValue> queryUserProject(User user, DeptInfo deptInfo) {
+		StringBuffer querySql = new StringBuffer();
+		List<Object> params = new ArrayList<Object>();
+		
+		querySql.append(" select wpi.id,wpi.serial_num from w_project_info wpi");
+		querySql.append(" left join w_dept_info wdi on wpi.dept_id = wdi.id");
+		
+		querySql.append(" where (wpi.pm_id = ? or wpi.creator_ = ?");
+		params.add(user.getId());
+		params.add(user.getLogin());
+		
+		if(user.getIsManager()){
+			querySql.append(" or wdi.id_path like ? or wdi.id = ?");
+			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
+			params.add(deptInfo.getId());
+		}
+		querySql.append(")");
+		
+		List<Object[]> list = this.queryAllSql(querySql.toString(), params.toArray());
+		
+		List<LongValue> returnList = new ArrayList<LongValue>();
+		if(list != null){
+			for(Object[] o : list){
+				returnList.add(new LongValue(StringUtil.nullToLong(o[0]),StringUtil.null2Str(o[1])));
+			}
+		}
+		return returnList;
+	}
 }	

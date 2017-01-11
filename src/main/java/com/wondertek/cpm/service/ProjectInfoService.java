@@ -190,4 +190,17 @@ public class ProjectInfoService {
 	public int endProjectInfo(Long id) {
 		return projectInfoDao.endProjectInfo(id,SecurityUtils.getCurrentUserLogin());
 	}
+
+	public List<LongValue> queryUserProject() {
+		List<LongValue> returnList = new ArrayList<LongValue>();
+    	List<Object[]> objs = userRepository.findUserInfoByLogin(SecurityUtils.getCurrentUserLogin());
+    	if(objs != null && !objs.isEmpty()){
+    		Object[] o = objs.get(0);
+    		User user = (User) o[0];
+    		DeptInfo deptInfo = (DeptInfo) o[1];
+    		
+    		returnList = projectInfoDao.queryUserProject(user,deptInfo);
+    	}
+		return returnList;
+	}
 }

@@ -11,46 +11,81 @@
                     </span>
                 </button>
             </div>
-            <div class="col-xs-8 no-padding-right">
-                <form name="searchForm" class="form-inline">
-                    <div class="input-group pull-right" >
-                        <input type="text" class="form-control" ng-model="vm.searchQuery" id="searchQuery" placeholder="{{ 'cpmApp.projectUser.home.search' | translate }}">
-                        <span  class="input-group-btn width-min" >
-                            <button class="btn btn-info" ng-click="vm.search(vm.searchQuery)">
-                                <span class="glyphicon glyphicon-search"></span>
-                            </button>
-                        </span>
-                        <span class="input-group-btn width-min" ng-if="vm.currentSearch">
-                            <button class="btn btn-info" ng-click="vm.clear()">
-                                <span class="glyphicon glyphicon-trash"></span>
-                            </button>
-                        </span>
+		</div>
+		<form name="searchForm" class="form-horizontal">
+			<div class="form-group">
+	            <div class="col-sm-6">
+	          		<label class="col-sm-4 control-label" data-translate="cpmApp.projectUser.projectId">Project ID</label>
+		            <div class="col-sm-8">
+		            	<select class="form-control" ng-model="vm.searchQuery.projectId"
+			            	ng-options="projectInfo.val for projectInfo in vm.projectInfos track by projectInfo.key">
+			            	<option value="">--项目编号--</option>
+			            </select>
+		            </div>
+	            </div>
+	            <div class="col-sm-6">
+	          		<label class="col-sm-4 control-label" data-translate="cpmApp.projectUser.userName">User Name</label>
+                    <div class="col-sm-8" >
+	                   	<div class="input-group">
+			          		<input type="text" class="form-control" name="userName"
+			                  	ng-model="vm.searchQuery.userName" readonly ng-required="true" ng-minlength="1"
+		                   	/>
+		                   	<span class="input-group-btn">
+		                     	<button type="button" class="btn btn-default" ui-sref="project-user.queryDept({selectType:3,showChild:true})"><i class="glyphicon glyphicon-user"></i></button>
+		                 	</span>
+		            	</div>
                     </div>
-                </form>
+	            </div>
+	            <div class="col-sm-6" ng-show="false">
+	            	<label class="col-sm-4 control-label" data-translate="cpmApp.projectUser.userId">User Id</label>
+                    <div class="col-sm-8" >
+	                   	<input type="text" class="form-control" name="userId"
+			                  	ng-model="vm.searchQuery.userId"
+		                   	/>
+                    </div>
+	            </div>
             </div>
-        </div>
+            <div class="form-group">
+	            <div class="col-sm-6">
+	            </div>
+	            <div class="col-sm-6 pull-right input-group">
+	            	<div class="col-sm-4">
+	            	</div>
+	            	<div class="col-sm-8" >
+		            	<span  class="width-min" >
+	                        <button class="btn btn-info" ng-click="vm.search()">
+	                            <span class="glyphicon glyphicon-search"></span>
+	                        </button>
+	                    </span>
+	                    <span class="width-min" ng-if="vm.haveSearch">
+	                        <button class="btn btn-info" ng-click="vm.clear()">
+	                            <span class="glyphicon glyphicon-trash"></span>
+	                        </button>
+	                    </span>
+	            	</div>
+	            </div>
+            </div>
+		</form>
     </div>
     <br/>
     <div class="table-responsive">
         <table class="jh-table table table-striped">
             <thead>
                 <tr jh-sort="vm.predicate" ascending="vm.reverse" callback="vm.transition()">
-                    <th jh-sort-by="id"><span data-translate="global.field.id">ID</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="projectId"><span data-translate="cpmApp.projectUser.projectId">Project Id</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="userId"><span data-translate="cpmApp.projectUser.userId">User Id</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="userName"><span data-translate="cpmApp.projectUser.userName">User Name</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="userRole"><span data-translate="cpmApp.projectUser.userRole">User Role</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="joinDay"><span data-translate="cpmApp.projectUser.joinDay">Join Day</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="leaveDay"><span data-translate="cpmApp.projectUser.leaveDay">Leave Day</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="updateTime"><span data-translate="cpmApp.projectUser.updateTime">Update Time</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="wpu.id"><span data-translate="global.field.id">ID</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="wpi.serial_num"><span data-translate="cpmApp.projectUser.projectId">Project Id</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="wpu.user_name"><span data-translate="cpmApp.projectUser.userName">User Name</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="wpu.user_role"><span data-translate="cpmApp.projectUser.userRole">User Role</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="wpu.join_day"><span data-translate="cpmApp.projectUser.joinDay">Join Day</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="wpu.leave_day"><span data-translate="cpmApp.projectUser.leaveDay">Leave Day</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="wpu.update_time"><span data-translate="cpmApp.projectUser.updateTime">Update Time</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th></th>
                 </tr>
             </thead>
             <tbody>
                 <tr ng-repeat="projectUser in vm.projectUsers track by projectUser.id">
                     <td><a ui-sref="project-user-detail({id:projectUser.id})">{{projectUser.id}}</a></td>
-                    <td>{{projectUser.projectId}}</td>
-                    <td>{{projectUser.userId}}</td>
+                    <td>{{projectUser.projectNum}}</td>
                     <td>{{projectUser.userName}}</td>
                     <td>{{projectUser.userRole}}</td>
                     <td>{{projectUser.joinDay}}</td>

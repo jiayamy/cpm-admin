@@ -10,10 +10,18 @@
             "updated": "更新成功",
             "deleted": "删除成功",
             "delete": {
-                "question": "你确定需要删除该用户{{param}}？?"
+                "question": "你确定需要删除该用户{{param}}？"
             },
             "detail": {
                 "title": "项目人员信息"
+            },
+            "save":{
+            	"paramNone":"必填字段为空",
+            	"dayError":"离开日应不早于加盟日",
+            	"userIdError":"在加盟日至离开日时间内，该用户已经被安排到该项目中，勿重复添加",
+            	"idNone":"数据错误，请刷新后操作",
+            	"projectIdError":"项目不允许重新选择",
+            	"noPerm":"无权操作"
             },
             "projectId": "项目编号",
             "userId": "员工ID",

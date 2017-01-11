@@ -110,7 +110,7 @@
             }
         },
         "field": {
-            "id" : "ID"
+            "id" : "序号"
         },
         "ribbon": {
             "dev":"Development"

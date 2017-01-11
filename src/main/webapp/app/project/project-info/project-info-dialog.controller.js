@@ -11,10 +11,6 @@
         var vm = this;
 
         vm.projectInfo = entity;
-        if(vm.projectInfo.type){
-        	
-        }
-        console.log(vm.projectInfo);
         vm.previousState = previousState.name;
         vm.queryDept = previousState.queryDept;
         vm.contractChanged = contractChanged;
@@ -97,7 +93,6 @@
         }
         function save () {
             vm.isSaving = true;
-            console.log(vm.projectInfo);
             var projectInfo = {};
             projectInfo.id = vm.projectInfo.id;
             projectInfo.serialNum = vm.projectInfo.serialNum;
@@ -129,7 +124,6 @@
 	    		function(data, headers){
             		vm.isSaving = false;
 //            		AlertService.error(error.data.message);
-            		console.log(vm.previousState);
             		$state.go(vm.previousState);
 	        	},
 	        	function(error){

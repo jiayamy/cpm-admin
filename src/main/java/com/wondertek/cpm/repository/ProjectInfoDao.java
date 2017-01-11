@@ -52,4 +52,8 @@ public interface ProjectInfoDao extends GenericDao<ProjectInfo,Long> {
 	 * 项目结项
 	 */
 	public int endProjectInfo(Long id, String updator);
+	/**
+	 * 查询用户能看到的项目信息
+	 */
+	public List<LongValue> queryUserProject(User user, DeptInfo deptInfo);
 }
