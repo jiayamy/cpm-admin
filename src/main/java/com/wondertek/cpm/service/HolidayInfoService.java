@@ -136,9 +136,9 @@ public class HolidayInfoService {
      * @return the list of entities.
      */
     @Transactional(readOnly = true)
-    public int findByCurrDay(Long date){
+    public HolidayInfo findByCurrDay(Long date){
     	log.debug("Request to get HolidayInfo :{}", date);
-    	int result = holidayInfoRepository.findByCurrDay(date);
+    	HolidayInfo result = holidayInfoRepository.findByCurrDay(date);
     	return result;
     }
     

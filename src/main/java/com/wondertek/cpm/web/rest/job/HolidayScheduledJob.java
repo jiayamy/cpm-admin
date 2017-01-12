@@ -33,10 +33,10 @@ public class HolidayScheduledJob {
 		cal.set(Calendar.DAY_OF_MONTH, 1);
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
 		Long dateTime = Long.valueOf(sdf.format(cal.getTime()));
-		int count = holidayInfoService.findByCurrDay(dateTime);
+		HolidayInfo holiResult = holidayInfoService.findByCurrDay(dateTime);
 		List<HolidayInfo> lists = null;
 		try {
-			if(count<=0){
+			if(holiResult==null){
 				lists = TimerHolidayUtil.holidayUpdate();
 				holidayInfoService.save(lists);
 			}else{
@@ -46,6 +46,6 @@ public class HolidayScheduledJob {
 		} catch (Exception e) {
 			log.error("HolidayInfo update error:", e);
 		}
-		log.debug("REST to update HolidayInfo : {}", count);
+		log.debug("REST to update HolidayInfo : {}", holiResult);
 	}
 }
