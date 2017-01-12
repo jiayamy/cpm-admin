@@ -1,16 +1,24 @@
 package com.wondertek.cpm.service;
 
+import com.wondertek.cpm.CpmConstants;
+import com.wondertek.cpm.config.StringUtil;
 import com.wondertek.cpm.domain.ContractBudget;
+import com.wondertek.cpm.domain.vo.ContractBudgetVo;
+import com.wondertek.cpm.repository.ContractBudgetDao;
 import com.wondertek.cpm.repository.ContractBudgetRepository;
 import com.wondertek.cpm.repository.search.ContractBudgetSearchRepository;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort.Order;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -31,6 +39,9 @@ public class ContractBudgetService {
 
     @Inject
     private ContractBudgetSearchRepository contractBudgetSearchRepository;
+    
+    @Inject
+    private ContractBudgetDao contractBudgetDao;
 
     /**
      * Save a contractBudget.
@@ -94,4 +105,14 @@ public class ContractBudgetService {
         Page<ContractBudget> result = contractBudgetSearchRepository.search(queryStringQuery(query), pageable);
         return result;
     }
+
+	public Page<ContractBudgetVo> searchPage(String name,
+			String serialNum,Pageable pageable) {
+		Page<ContractBudgetVo> page = contractBudgetDao.getPageByParams(name,serialNum,pageable);
+		return page;
+	}
+
+	public ContractBudget findOneById(Long id) {
+		return contractBudgetRepository.findOneById(id);
+	}
 }

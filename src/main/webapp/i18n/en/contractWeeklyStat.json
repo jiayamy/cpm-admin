@@ -16,7 +16,11 @@
             "detail": {
                 "title": "Contract Weekly Stat"
             },
+            "fromDate" : "Create Date From",
+            "toDate" : "Create Date End",
+            "statDate" : "Stat Week",
             "contractId": "Contract Id",
+            "finishRate" : "Finish Rate",
             "receiveTotal": "Receive Total",
             "costTotal": "Cost Total",
             "grossProfit": "Gross Profit",

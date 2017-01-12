@@ -11,7 +11,7 @@
         $stateProvider
         .state('contract-budget', {
             parent: 'contract',
-            url: '/contract-budget?page&sort&search',
+            url: '/contract-budget?page&sort&serialNum&name',
             data: {
                 authorities: ['ROLE_USER'],
                 pageTitle: 'cpmApp.contractBudget.home.title'
@@ -29,19 +29,22 @@
                     squash: true
                 },
                 sort: {
-                    value: 'id,asc',
+                    value: 'cb.id,asc',
                     squash: true
                 },
-                search: null
+                serialNum: null,
+                name: null
             },
             resolve: {
-                pagingParams: ['$stateParams', 'PaginationUtil', function ($stateParams, PaginationUtil) {
+                pagingParams: ["$state",'$stateParams', 'PaginationUtil', function ($state,$stateParams, PaginationUtil) {
                     return {
                         page: PaginationUtil.parsePage($stateParams.page),
                         sort: $stateParams.sort,
                         predicate: PaginationUtil.parsePredicate($stateParams.sort),
                         ascending: PaginationUtil.parseAscending($stateParams.sort),
-                        search: $stateParams.search
+                        serialNum: $stateParams.serialNum,
+                        name: $stateParams.name
+                        
                     };
                 }],
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
@@ -153,24 +156,30 @@
             data: {
                 authorities: ['ROLE_USER']
             },
-            onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
-                $uibModal.open({
+            views: {
+            	'content@': {
                     templateUrl: 'app/contract/contract-budget/contract-budget-dialog.html',
-                    controller: 'ContractBudgetDialogController',
-                    controllerAs: 'vm',
-                    backdrop: 'static',
-                    size: 'lg',
-                    resolve: {
-                        entity: ['ContractBudget', function(ContractBudget) {
-                            return ContractBudget.get({id : $stateParams.id}).$promise;
-                        }]
-                    }
-                }).result.then(function() {
-                    $state.go('contract-budget', null, { reload: 'contract-budget' });
-                }, function() {
-                    $state.go('^');
-                });
-            }]
+                    controller: 'ContractBudgetController',
+                    controllerAs: 'vm'
+                }
+            },
+            resolve: {
+            	translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
+	                $translatePartialLoader.addPart('contractBudget');
+	                return $translate.refresh();
+                }],
+                entity: ['$stateParams','ContractBudget', function($stateParams,ContractBudget) {
+                    return ContractBudget.get({id : $stateParams.id}).$promise;
+                 }],
+                 previousState: ["$state", function ($state) {
+ 	                var currentStateData = {
+ 	                    name: $state.current.name || 'contract-budget',
+ 	                    params: $state.params,
+ 	                    url: $state.href($state.current.name, $state.params)
+ 	                };
+ 	                return currentStateData;
+ 	            }]
+             }
         })
         .state('contract-budget.delete', {
             parent: 'contract-budget',

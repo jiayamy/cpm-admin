@@ -11,7 +11,7 @@
         $stateProvider
         .state('project-weekly-stat', {
             parent: 'stat',
-            url: '/project-weekly-stat?page&sort&search',
+            url: '/project-weekly-stat?page&sort&fromDate&toDate&statDate',
             data: {
                 authorities: ['ROLE_USER'],
                 pageTitle: 'cpmApp.projectWeeklyStat.home.title'
@@ -32,7 +32,9 @@
                     value: 'id,asc',
                     squash: true
                 },
-                search: null
+                fromDate : null,
+                toDate: null,
+                statDate: null
             },
             resolve: {
                 pagingParams: ['$stateParams', 'PaginationUtil', function ($stateParams, PaginationUtil) {
@@ -41,7 +43,9 @@
                         sort: $stateParams.sort,
                         predicate: PaginationUtil.parsePredicate($stateParams.sort),
                         ascending: PaginationUtil.parseAscending($stateParams.sort),
-                        search: $stateParams.search
+                        fromDate: $stateParams.fromDate,
+                        toDate: $stateParams.toDate,
+                        statDate: $stateParams.statDate
                     };
                 }],
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
@@ -82,112 +86,6 @@
                     return currentStateData;
                 }]
             }
-        })
-        .state('project-weekly-stat-detail.edit', {
-            parent: 'project-weekly-stat-detail',
-            url: '/detail/edit',
-            data: {
-                authorities: ['ROLE_USER']
-            },
-            onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
-                $uibModal.open({
-                    templateUrl: 'app/stat/project-weekly-stat/project-weekly-stat-dialog.html',
-                    controller: 'ProjectWeeklyStatDialogController',
-                    controllerAs: 'vm',
-                    backdrop: 'static',
-                    size: 'lg',
-                    resolve: {
-                        entity: ['ProjectWeeklyStat', function(ProjectWeeklyStat) {
-                            return ProjectWeeklyStat.get({id : $stateParams.id}).$promise;
-                        }]
-                    }
-                }).result.then(function() {
-                    $state.go('^', {}, { reload: false });
-                }, function() {
-                    $state.go('^');
-                });
-            }]
-        })
-        .state('project-weekly-stat.new', {
-            parent: 'project-weekly-stat',
-            url: '/new',
-            data: {
-                authorities: ['ROLE_USER']
-            },
-            onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
-                $uibModal.open({
-                    templateUrl: 'app/stat/project-weekly-stat/project-weekly-stat-dialog.html',
-                    controller: 'ProjectWeeklyStatDialogController',
-                    controllerAs: 'vm',
-                    backdrop: 'static',
-                    size: 'lg',
-                    resolve: {
-                        entity: function () {
-                            return {
-                                projectId: null,
-                                humanCost: null,
-                                payment: null,
-                                statWeek: null,
-                                createTime: null,
-                                id: null
-                            };
-                        }
-                    }
-                }).result.then(function() {
-                    $state.go('project-weekly-stat', null, { reload: 'project-weekly-stat' });
-                }, function() {
-                    $state.go('project-weekly-stat');
-                });
-            }]
-        })
-        .state('project-weekly-stat.edit', {
-            parent: 'project-weekly-stat',
-            url: '/{id}/edit',
-            data: {
-                authorities: ['ROLE_USER']
-            },
-            onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
-                $uibModal.open({
-                    templateUrl: 'app/stat/project-weekly-stat/project-weekly-stat-dialog.html',
-                    controller: 'ProjectWeeklyStatDialogController',
-                    controllerAs: 'vm',
-                    backdrop: 'static',
-                    size: 'lg',
-                    resolve: {
-                        entity: ['ProjectWeeklyStat', function(ProjectWeeklyStat) {
-                            return ProjectWeeklyStat.get({id : $stateParams.id}).$promise;
-                        }]
-                    }
-                }).result.then(function() {
-                    $state.go('project-weekly-stat', null, { reload: 'project-weekly-stat' });
-                }, function() {
-                    $state.go('^');
-                });
-            }]
-        })
-        .state('project-weekly-stat.delete', {
-            parent: 'project-weekly-stat',
-            url: '/{id}/delete',
-            data: {
-                authorities: ['ROLE_USER']
-            },
-            onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
-                $uibModal.open({
-                    templateUrl: 'app/stat/project-weekly-stat/project-weekly-stat-delete-dialog.html',
-                    controller: 'ProjectWeeklyStatDeleteController',
-                    controllerAs: 'vm',
-                    size: 'md',
-                    resolve: {
-                        entity: ['ProjectWeeklyStat', function(ProjectWeeklyStat) {
-                            return ProjectWeeklyStat.get({id : $stateParams.id}).$promise;
-                        }]
-                    }
-                }).result.then(function() {
-                    $state.go('project-weekly-stat', null, { reload: 'project-weekly-stat' });
-                }, function() {
-                    $state.go('^');
-                });
-            }]
         });
     }
 

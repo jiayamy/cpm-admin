@@ -19,12 +19,7 @@
         vm.datePickerOpenStatus = {};
         vm.openCalendar = openCalendar;
         vm.searchQuery = {};
-        if(entity && entity.workDay){
-        	var y = parseInt(entity.workDay/10000);
-        	var m = parseInt((entity.workDay - y * 10000)/100) - 1;
-        	var d = entity.workDay - y * 10000 - (m + 1) * 100;
-        	vm.searchQuery.workDay = new Date(""+y,""+m,""+d);
-        }
+        vm.searchQuery.workDay = DateUtils.convertDayToDate(entity.workDay);
         vm.search = search;
         loadWorkArea();
         loadAll();

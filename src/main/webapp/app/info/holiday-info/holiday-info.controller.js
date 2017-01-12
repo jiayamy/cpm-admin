@@ -19,16 +19,8 @@
         vm.search = search;
         vm.loadAll = loadAll;
         vm.searchQuery = {};
-        var fromCurrDay = pagingParams.fromCurrDay;
-        if(fromCurrDay && fromCurrDay.length == 8){
-        	fromCurrDay = new Date(fromCurrDay.substring(0,4),parseInt(fromCurrDay.substring(4,6))-1,fromCurrDay.substring(6,8));
-        }
-        var toCurrDay = pagingParams.toCurrDay;
-        if(toCurrDay && toCurrDay.length == 8){
-        	toCurrDay = new Date(toCurrDay.substring(0,4),parseInt(toCurrDay.substring(4,6))-1,toCurrDay.substring(6,8));
-        }
-        vm.searchQuery.fromCurrDay = fromCurrDay;
-        vm.searchQuery.toCurrDay = toCurrDay;
+        vm.searchQuery.fromCurrDay = DateUtils.convertDayToDate(pagingParams.fromCurrDay);;
+        vm.searchQuery.toCurrDay = DateUtils.convertDayToDate(pagingParams.toCurrDay);;
         if (!vm.searchQuery.fromCurrDay && !vm.searchQuery.toCurrDay){
         	vm.haveSearch = null;
         }else{
@@ -51,7 +43,6 @@
                     size: vm.itemsPerPage,
                     sort: sort()
                 }, onSuccess, onError);
-//            }
             function sort() {
                 var result = [vm.predicate + ',' + (vm.reverse ? 'asc' : 'desc')];
                 if (vm.predicate !== 'id') {

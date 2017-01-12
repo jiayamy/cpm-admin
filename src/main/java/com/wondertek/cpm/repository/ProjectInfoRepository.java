@@ -9,7 +9,8 @@ import java.util.List;
 /**
  * Spring Data JPA repository for the ProjectInfo entity.
  */
-@SuppressWarnings("unused")
 public interface ProjectInfoRepository extends JpaRepository<ProjectInfo,Long> {
-
+	
+	@Query(" from ProjectInfo where contractId = ?1 and status = 1 ")
+	List<ProjectInfo> findByContractId(Long contractId);
 }

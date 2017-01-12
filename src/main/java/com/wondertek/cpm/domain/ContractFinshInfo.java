@@ -21,7 +21,7 @@ import org.springframework.data.elasticsearch.annotations.Document;
 @Entity
 @Table(name = "w_contract_finish_info")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-@Document(indexName = "contractFinshInfo")
+@Document(indexName = "contractfinshinfo")
 public class ContractFinshInfo implements Serializable {
 
     private static final long serialVersionUID = 1L;

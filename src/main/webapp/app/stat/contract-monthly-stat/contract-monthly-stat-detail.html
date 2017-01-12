@@ -1,0 +1,83 @@
+
+<div>
+    <h2><span data-translate="cpmApp.contractMonthlyStat.detail.title">Contract Monthly Stat</span> {{vm.contractMonthlyStat.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="dl-horizontal jh-entity-details">
+        <dt><span data-translate="cpmApp.contractMonthlyStat.contractId">Contract Id</span></dt>
+        <dd>
+            <span>{{vm.contractMonthlyStat.contractId}}</span>
+        </dd>
+        <dt><span data-translate="cpmApp.contractMonthlyStat.finishRate">Finish Rate</span></dt>
+        <dd>
+            <span>{{vm.contractMonthlyStat.finishRate}}%</span>
+        </dd>
+        <dt><span data-translate="cpmApp.contractMonthlyStat.receiveTotal">Receive Total</span></dt>
+        <dd>
+            <span>{{vm.contractMonthlyStat.receiveTotal}}</span>
+        </dd>
+        <dt><span data-translate="cpmApp.contractMonthlyStat.costTotal">Cost Total</span></dt>
+        <dd>
+            <span>{{vm.contractMonthlyStat.costTotal}}</span>
+        </dd>
+        <dt><span data-translate="cpmApp.contractMonthlyStat.grossProfit">Gross Profit</span></dt>
+        <dd>
+            <span>{{vm.contractMonthlyStat.grossProfit}}</span>
+        </dd>
+        <dt><span data-translate="cpmApp.contractMonthlyStat.salesHumanCost">Sales Human Cost</span></dt>
+        <dd>
+            <span>{{vm.contractMonthlyStat.salesHumanCost}}</span>
+        </dd>
+        <dt><span data-translate="cpmApp.contractMonthlyStat.salesPayment">Sales Payment</span></dt>
+        <dd>
+            <span>{{vm.contractMonthlyStat.salesPayment}}</span>
+        </dd>
+        <dt><span data-translate="cpmApp.contractMonthlyStat.consultHumanCost">Consult Human Cost</span></dt>
+        <dd>
+            <span>{{vm.contractMonthlyStat.consultHumanCost}}</span>
+        </dd>
+        <dt><span data-translate="cpmApp.contractMonthlyStat.consultPayment">Consult Payment</span></dt>
+        <dd>
+            <span>{{vm.contractMonthlyStat.consultPayment}}</span>
+        </dd>
+        <dt><span data-translate="cpmApp.contractMonthlyStat.hardwarePurchase">Hardware Purchase</span></dt>
+        <dd>
+            <span>{{vm.contractMonthlyStat.hardwarePurchase}}</span>
+        </dd>
+        <dt><span data-translate="cpmApp.contractMonthlyStat.externalSoftware">External Software</span></dt>
+        <dd>
+            <span>{{vm.contractMonthlyStat.externalSoftware}}</span>
+        </dd>
+        <dt><span data-translate="cpmApp.contractMonthlyStat.internalSoftware">Internal Software</span></dt>
+        <dd>
+            <span>{{vm.contractMonthlyStat.internalSoftware}}</span>
+        </dd>
+        <dt><span data-translate="cpmApp.contractMonthlyStat.projectHumanCost">Project Human Cost</span></dt>
+        <dd>
+            <span>{{vm.contractMonthlyStat.projectHumanCost}}</span>
+        </dd>
+        <dt><span data-translate="cpmApp.contractMonthlyStat.projectPayment">Project Payment</span></dt>
+        <dd>
+            <span>{{vm.contractMonthlyStat.projectPayment}}</span>
+        </dd>
+        <dt><span data-translate="cpmApp.contractMonthlyStat.statWeek">Stat Week</span></dt>
+        <dd>
+            <span>{{vm.contractMonthlyStat.statWeek}}</span>
+        </dd>
+        <dt><span data-translate="cpmApp.contractMonthlyStat.createTime">Create Time</span></dt>
+        <dd>
+            <span>{{vm.contractMonthlyStat.createTime | date:'medium'}}</span>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            ui-sref="{{ vm.previousState }}"
+            class="btn btn-info">
+        <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span data-translate="entity.action.back"> Back</span>
+    </button>
+
+<!--     <button type="button" ui-sref="contract-weekly-stat-detail.edit({id:vm.contractWeeklyStat.id})" class="btn btn-primary"> -->
+<!--         <span class="glyphicon glyphicon-pencil"></span> -->
+<!--         <span class="hidden-xs hidden-sm" data-translate="entity.action.edit"> Edit</span> -->
+<!--     </button> -->
+</div>

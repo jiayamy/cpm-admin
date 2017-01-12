@@ -1,6 +1,7 @@
 package com.wondertek.cpm.repository;
 
 import java.sql.Timestamp;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,7 +46,7 @@ public class ProjectInfoDaoImpl extends GenericDaoImpl<ProjectInfo, Long> implem
 		List<Object> params = new ArrayList<Object>();
 		//只有项目经理，预算指定经理，项目创建人，项目部门以上部门管理人员能看到对应的项目
 		
-		sql.append("select a.id,a.serial_num from w_contract_info a where a.id in(");
+		sql.append("select a.id,a.serial_num,a.name_ from w_contract_info a where a.id in(");
 			sql.append("select distinct b.contract_id from (");
 				sql.append("select c.contract_id as contract_id from w_project_info c left join w_dept_info d on d.id = c.dept_id");
 				sql.append(" where c.pm_id = ? or c.creator_ = ?");
@@ -77,7 +78,7 @@ public class ProjectInfoDaoImpl extends GenericDaoImpl<ProjectInfo, Long> implem
 		List<LongValue> returnList = new ArrayList<LongValue>();
 		if(list != null){
 			for(Object[] o : list){
-				returnList.add(new LongValue(StringUtil.nullToLong(o[0]),StringUtil.null2Str(o[1])));
+				returnList.add(new LongValue(StringUtil.nullToLong(o[0]),StringUtil.null2Str(o[1]) + ":" + StringUtil.null2Str(o[2])));
 			}
 		}
 		return returnList;
@@ -266,7 +267,7 @@ public class ProjectInfoDaoImpl extends GenericDaoImpl<ProjectInfo, Long> implem
 		List<Object> params = new ArrayList<Object>();
 		//项目中已经有的合同预算，或者合同中新增的预算。
 		
-		querySql.append("select a.id,a.name_,a.contract_id from w_contract_budget a where a.id in(");
+		querySql.append("select a.id,a.name_,a.contract_id,a.budget_total from w_contract_budget a where a.id in(");
 		querySql.append("select distinct b.budget_id from (");
 		querySql.append("select c.budget_id as budget_id from w_project_info c left join w_dept_info d on d.id = c.dept_id");
 		querySql.append(" where (c.pm_id = ? or c.creator_ = ?");
@@ -302,7 +303,7 @@ public class ProjectInfoDaoImpl extends GenericDaoImpl<ProjectInfo, Long> implem
 		List<LongValue> returnList = new ArrayList<LongValue>();
 		if(list != null){
 			for(Object[] o : list){
-				returnList.add(new LongValue(StringUtil.nullToLong(o[0]),StringUtil.null2Str(o[1]),StringUtil.nullToLong(o[2])));
+				returnList.add(new LongValue(StringUtil.nullToLong(o[0]),StringUtil.null2Str(o[1]),StringUtil.nullToLong(o[2]),StringUtil.nullToDouble(o[3])));
 			}
 		}
 		return returnList;
@@ -349,5 +350,45 @@ public class ProjectInfoDaoImpl extends GenericDaoImpl<ProjectInfo, Long> implem
 			params.add(id);
 		}
 		return this.countHql(countHql.toString(), params.toArray()) > 0;
+	}
+
+	@Override
+	public int finishProjectInfo(Long id, Double finishRate, String updator) {
+		return this.excuteHql("update ProjectInfo set finishRate = ? , updator = ?, updateTime = ? where id = ?", new Object[]{finishRate,updator,ZonedDateTime.now(),id});
+	}
+
+	@Override
+	public int endProjectInfo(Long id, String updator) {
+		return this.excuteHql("update ProjectInfo set status = ? , updator = ?, updateTime = ? where id = ?", new Object[]{ProjectInfo.STATUS_CLOSED,updator,ZonedDateTime.now(),id});
+	}
+
+	@Override
+	public List<LongValue> queryUserProject(User user, DeptInfo deptInfo) {
+		StringBuffer querySql = new StringBuffer();
+		List<Object> params = new ArrayList<Object>();
+		
+		querySql.append(" select wpi.id,wpi.serial_num,wpi.name_ from w_project_info wpi");
+		querySql.append(" left join w_dept_info wdi on wpi.dept_id = wdi.id");
+		
+		querySql.append(" where (wpi.pm_id = ? or wpi.creator_ = ?");
+		params.add(user.getId());
+		params.add(user.getLogin());
+		
+		if(user.getIsManager()){
+			querySql.append(" or wdi.id_path like ? or wdi.id = ?");
+			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
+			params.add(deptInfo.getId());
+		}
+		querySql.append(")");
+		
+		List<Object[]> list = this.queryAllSql(querySql.toString(), params.toArray());
+		
+		List<LongValue> returnList = new ArrayList<LongValue>();
+		if(list != null){
+			for(Object[] o : list){
+				returnList.add(new LongValue(StringUtil.nullToLong(o[0]),StringUtil.null2Str(o[1]) + ":" + StringUtil.null2Str(o[2])));
+			}
+		}
+		return returnList;
 	}
 }	

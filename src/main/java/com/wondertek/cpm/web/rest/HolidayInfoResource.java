@@ -78,9 +78,6 @@ public class HolidayInfoResource {
     @Timed
     public ResponseEntity<HolidayInfo> updateHolidayInfo(@RequestBody HolidayInfo holidayInfo) throws URISyntaxException {
         log.debug("REST request to update HolidayInfo : {}", holidayInfo);
-//        if (holidayInfo.getId() == null) {
-//            return createHolidayInfo(holidayInfo);
-//        }
         if(holidayInfo.getCurrDay() == null || holidayInfo.getType() == null){
         	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.holidayInfo.save.requriedError", "")).body(null);
         }
@@ -98,9 +95,6 @@ public class HolidayInfoResource {
         	findHoliday.setCreateTime(updateTime);
         	findHoliday.setCreator(updator);
         	findHoliday.setCurrDay(holidayInfo.getCurrDay());
-//        	findHoliday.setType(holidayInfo.getType());
-//        	findHoliday.setUpdateTime(updateTime);
-//        	findHoliday.setUpdator(updator);
         }
         findHoliday.setType(holidayInfo.getType());
     	findHoliday.setUpdateTime(updateTime);
@@ -115,9 +109,6 @@ public class HolidayInfoResource {
         			.headers(HeaderUtil.createEntityUpdateAlert("holidayInfo", findHoliday.getId().toString()))
         			.body(result);
         }
-//        return ResponseEntity.ok()
-//            .headers(HeaderUtil.createEntityUpdateAlert("holidayInfo", holidayInfo.getId().toString()))
-//            .body(result);
     }
 
     /**

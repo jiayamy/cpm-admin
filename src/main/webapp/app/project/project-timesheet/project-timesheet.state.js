@@ -13,7 +13,7 @@
             parent: 'project',
             url: '/project-timesheet?page&sort&search',
             data: {
-                authorities: ['ROLE_USER'],
+                authorities: ['ROLE_PROJECT_TIMESHEET'],
                 pageTitle: 'cpmApp.projectTimesheet.home.title'
             },
             views: {
@@ -55,7 +55,7 @@
             parent: 'project',
             url: '/project-timesheet/{id}',
             data: {
-                authorities: ['ROLE_USER'],
+                authorities: ['ROLE_PROJECT_TIMESHEET'],
                 pageTitle: 'cpmApp.projectTimesheet.detail.title'
             },
             views: {
@@ -87,7 +87,7 @@
             parent: 'project-timesheet-detail',
             url: '/detail/edit',
             data: {
-                authorities: ['ROLE_USER']
+                authorities: ['ROLE_PROJECT_TIMESHEET']
             },
             onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
                 $uibModal.open({
@@ -112,7 +112,7 @@
             parent: 'project-timesheet',
             url: '/new',
             data: {
-                authorities: ['ROLE_USER']
+                authorities: ['ROLE_PROJECT_TIMESHEET']
             },
             onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
                 $uibModal.open({
@@ -149,7 +149,7 @@
             parent: 'project-timesheet',
             url: '/{id}/edit',
             data: {
-                authorities: ['ROLE_USER']
+                authorities: ['ROLE_PROJECT_TIMESHEET']
             },
             onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
                 $uibModal.open({
@@ -174,7 +174,7 @@
             parent: 'project-timesheet',
             url: '/{id}/delete',
             data: {
-                authorities: ['ROLE_USER']
+                authorities: ['ROLE_PROJECT_TIMESHEET']
             },
             onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
                 $uibModal.open({

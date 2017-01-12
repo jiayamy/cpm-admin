@@ -8,6 +8,10 @@
         <dd>
             <span>{{vm.contractWeeklyStat.contractId}}</span>
         </dd>
+        <dt><span data-translate="cpmApp.contractWeeklyStat.finishRate">Finish Rate</span></dt>
+        <dd>
+            <span>{{vm.contractWeeklyStat.finishRate}}%</span>
+        </dd>
         <dt><span data-translate="cpmApp.contractWeeklyStat.receiveTotal">Receive Total</span></dt>
         <dd>
             <span>{{vm.contractWeeklyStat.receiveTotal}}</span>
@@ -72,8 +76,5 @@
         <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span data-translate="entity.action.back"> Back</span>
     </button>
 
-    <button type="button" ui-sref="contract-weekly-stat-detail.edit({id:vm.contractWeeklyStat.id})" class="btn btn-primary">
-        <span class="glyphicon glyphicon-pencil"></span>
-        <span class="hidden-xs hidden-sm" data-translate="entity.action.edit"> Edit</span>
-    </button>
+
 </div>

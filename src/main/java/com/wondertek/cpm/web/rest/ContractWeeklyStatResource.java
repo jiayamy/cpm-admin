@@ -89,10 +89,14 @@ public class ContractWeeklyStatResource {
      */
     @GetMapping("/contract-weekly-stats")
     @Timed
-    public ResponseEntity<List<ContractWeeklyStat>> getAllContractWeeklyStats(@ApiParam Pageable pageable)
+    public ResponseEntity<List<ContractWeeklyStat>> getAllContractWeeklyStats(
+    		@ApiParam(value="fromDate") @RequestParam(value="fromDate") String fromDate,
+    		@ApiParam(value="toDate") @RequestParam(value="toDate") String toDate,
+    		@ApiParam(value="statDate") @RequestParam(value="statDate") String statDate,
+    		@ApiParam Pageable pageable)
         throws URISyntaxException {
         log.debug("REST request to get a page of ContractWeeklyStats");
-        Page<ContractWeeklyStat> page = contractWeeklyStatService.findAll(pageable);
+        Page<ContractWeeklyStat> page = contractWeeklyStatService.getStatPage(fromDate, toDate, statDate, pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/contract-weekly-stats");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }

@@ -115,24 +115,6 @@
 	                return currentStateData;
 	            }]
             }
-//            onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
-//                $uibModal.open({
-//                    templateUrl: 'app/info/holiday-info/holiday-info-dialog.html',
-//                    controller: 'HolidayInfoDialogController',
-//                    controllerAs: 'vm',
-//                    backdrop: 'static',
-//                    size: 'lg',
-//                    resolve: {
-//                        entity: ['HolidayInfo', function(HolidayInfo) {
-//                            return HolidayInfo.get({id : $stateParams.id}).$promise;
-//                        }]
-//                    }
-//                }).result.then(function() {
-//                    $state.go('^', {}, { reload: false });
-//                }, function() {
-//                    $state.go('^');
-//                });
-//            }]
         })
         .state('holiday-info.new', {
             parent: 'holiday-info',
@@ -165,32 +147,6 @@
                     };
                 }
             }
-//            onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
-//                $uibModal.open({
-//                    templateUrl: 'app/info/holiday-info/holiday-info-dialog.html',
-//                    controller: 'HolidayInfoDialogController',
-//                    controllerAs: 'vm',
-//                    backdrop: 'static',
-//                    size: 'lg',
-//                    resolve: {
-//                        entity: function () {
-//                            return {
-//                                currDay: null,
-//                                type: null,
-//                                creator: null,
-//                                createTime: null,
-//                                updator: null,
-//                                updateTime: null,
-//                                id: null
-//                            };
-//                        }
-//                    }
-//                }).result.then(function() {
-//                    $state.go('holiday-info', null, { reload: 'holiday-info' });
-//                }, function() {
-//                    $state.go('holiday-info');
-//                });
-//            }]
         })
         .state('holiday-info.edit', {
             parent: 'holiday-info',
@@ -222,24 +178,6 @@
 	                return currentStateData;
 	            }]
             }
-//            onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
-//                $uibModal.open({
-//                    templateUrl: 'app/info/holiday-info/holiday-info-dialog.html',
-//                    controller: 'HolidayInfoDialogController',
-//                    controllerAs: 'vm',
-//                    backdrop: 'static',
-//                    size: 'lg',
-//                    resolve: {
-//                        entity: ['HolidayInfo', function(HolidayInfo) {
-//                            return HolidayInfo.get({id : $stateParams.id}).$promise;
-//                        }]
-//                    }
-//                }).result.then(function() {
-//                    $state.go('holiday-info', null, { reload: 'holiday-info' });
-//                }, function() {
-//                    $state.go('^');
-//                });
-//            }]
         })
         .state('holiday-info.delete', {
             parent: 'holiday-info',

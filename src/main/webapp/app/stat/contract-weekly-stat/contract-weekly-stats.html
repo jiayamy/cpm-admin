@@ -3,31 +3,67 @@
     <jhi-alert></jhi-alert>
     <div class="container-fluid">
         <div class="row">
-            <div class="col-xs-4 no-padding-left">
-                <button class="btn btn-primary" ui-sref="contract-weekly-stat.new" >
-                    <span class="glyphicon glyphicon-plus"></span>
-                    <span class="hidden-xs"  data-translate="cpmApp.contractWeeklyStat.home.createLabel">
-                        Create new Contract Weekly Stat
-                    </span>
-                </button>
-            </div>
-            <div class="col-xs-8 no-padding-right">
-                <form name="searchForm" class="form-inline">
-                    <div class="input-group pull-right" >
-                        <input type="text" class="form-control" ng-model="vm.searchQuery" id="searchQuery" placeholder="{{ 'cpmApp.contractWeeklyStat.home.search' | translate }}">
-                        <span  class="input-group-btn width-min" >
-                            <button class="btn btn-info" ng-click="vm.search(vm.searchQuery)">
-                                <span class="glyphicon glyphicon-search"></span>
-                            </button>
-                        </span>
-                        <span class="input-group-btn width-min" ng-if="vm.currentSearch">
-                            <button class="btn btn-info" ng-click="vm.clear()">
-                                <span class="glyphicon glyphicon-trash"></span>
-                            </button>
-                        </span>
-                    </div>
-                </form>
-            </div>
+            <form name="searchForm" class="form-horizontal">
+	           <div class="form-group">
+	               <div class="col-sm-4">
+	               		<div class="row">
+							<label class="col-sm-4 control-label" data-translate="cpmApp.contractWeeklyStat.fromDate">From Date</label>
+				            <div class="col-sm-8">
+				                <p class="input-group">
+				                    <input id="search_fromDate" type="text" class="form-control" name="fromDate" datetime-picker="yyyyMMdd"
+					           		 		enable-time="false" ng-model="vm.searchQuery.fromDate" is-open="vm.datePickerOpenStatus.fromDate"/>
+					          		<span class="input-group-btn">
+					           			<button type="button" class="btn btn-default" ng-click="vm.openCalendar('fromDate')"><i class="glyphicon glyphicon-calendar"></i></button>
+					            	</span>
+				                </p>
+				            </div>
+	               		</div>
+					</div>
+		            <div class="col-sm-4">
+			            <div class="row">
+			          		<label class="col-sm-4 control-label" data-translate="cpmApp.contractWeeklyStat.toDate">To Date</label>
+				            <div class="col-sm-8">
+				                <p class="input-group">
+				                    <input id="search_toDate" type="text" class="form-control" name="toDate" datetime-picker="yyyyMMdd"
+					           		 		enable-time="false" ng-model="vm.searchQuery.toDate" is-open="vm.datePickerOpenStatus.toDate"/>
+					          		<span class="input-group-btn">
+					           			<button type="button" class="btn btn-default" ng-click="vm.openCalendar('toDate')"><i class="glyphicon glyphicon-calendar"></i></button>
+					            	</span>
+				                </p>
+				            </div>
+				         </div>
+		            </div>
+		            <div class="col-sm-4">
+		            	<div class="row">
+			            	<div class="input-group pull-right" >
+			                   <label class="col-sm-3 control-label" data-translate="cpmApp.contractWeeklyStat.statDate">Stat Date</label>
+					            <div class="col-sm-5">
+					                <p class="input-group row">
+					                    <input id="search_statDate" type="text" class="form-control" name="statDate" datetime-picker="yyyyMMdd"
+						           		 		enable-time="false" ng-model="vm.searchQuery.statDate" is-open="vm.datePickerOpenStatus.statDate"/>
+						          		<span class="input-group-btn">
+						           			<button type="button" class="btn btn-default" ng-click="vm.openCalendar('statDate')"><i class="glyphicon glyphicon-calendar"></i></button>
+						            	</span>
+					                </p>
+					            </div>
+			                   <span  class="width-min input-group-btn col-sm-2" >
+			                   		<div class="row">
+				                        <button class="btn btn-info" ng-click="vm.search()">
+				                            <span class="glyphicon glyphicon-search"></span>
+				                        </button>
+				                    </div>
+			                    </span>
+			                    <span class="width-min input-group-btn col-sm-2" ng-if="vm.haveSearch">
+			                        <button class="btn btn-info" ng-click="vm.clear()">
+			                            <span class="glyphicon glyphicon-trash"></span>
+			                        </button>
+			                    </span>
+			               </div>
+			             </div>
+		            </div>
+
+				</div>
+           </form>
         </div>
     </div>
     <br/>
@@ -80,18 +116,7 @@
                                 <span class="glyphicon glyphicon-eye-open"></span>
                                 <span class="hidden-xs hidden-sm" data-translate="entity.action.view"></span>
                             </button>
-                            <button type="submit"
-                                    ui-sref="contract-weekly-stat.edit({id:contractWeeklyStat.id})"
-                                    class="btn btn-primary btn-sm">
-                                <span class="glyphicon glyphicon-pencil"></span>
-                                <span class="hidden-xs hidden-sm" data-translate="entity.action.edit"></span>
-                            </button>
-                            <button type="submit"
-                                    ui-sref="contract-weekly-stat.delete({id:contractWeeklyStat.id})"
-                                    class="btn btn-danger btn-sm">
-                                <span class="glyphicon glyphicon-remove-circle"></span>
-                                <span class="hidden-xs hidden-sm" data-translate="entity.action.delete"></span>
-                            </button>
+
                         </div>
                     </td>
                 </tr>

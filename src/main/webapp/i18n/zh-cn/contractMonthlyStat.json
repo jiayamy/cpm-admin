@@ -1,0 +1,40 @@
+{
+    "cpmApp": {
+        "contractMonthlyStat" : {
+            "home": {
+                "title": "合同月报统计",
+                "createLabel": "Create a new Contract Monthly Stat",
+                "createOrEditLabel": "Create or edit a Contract Monthly Stat",
+                "search": "Search for Contract Monthly Stat"
+            },
+            "created": "A new Contract Monthly Stat is created with identifier {{ param }}",
+            "updated": "A Contract Monthly Stat is updated with identifier {{ param }}",
+            "deleted": "A Contract Monthly Stat is deleted with identifier {{ param }}",
+            "delete": {
+                "question": "Are you sure you want to delete Contract Monthly Stat {{ id }}?"
+            },
+            "detail": {
+                "title": "合同月报统计"
+            },
+            "fromDate" : "创建日期开始",
+            "toDate" : "创建日期结束",
+            "statDate" : "统计月",
+            "contractId": "合同主键",
+            "finishRate" : "完成率",
+            "receiveTotal": "回款总额",
+            "costTotal": "所有成本",
+            "grossProfit": "合同毛利",
+            "salesHumanCost": "销售人工成本",
+            "salesPayment": "销售报销成本",
+            "consultHumanCost": "咨询人工成本",
+            "consultPayment": "咨询报销成本",
+            "hardwarePurchase": "硬件成本",
+            "externalSoftware": "外部软件成本",
+            "internalSoftware": "内容软件成本",
+            "projectHumanCost": "项目人工成本",
+            "projectPayment": "项目报销成本",
+            "statWeek": "统计月",
+            "createTime": "统计日期"
+        }
+    }
+}

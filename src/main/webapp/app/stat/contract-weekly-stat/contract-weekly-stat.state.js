@@ -11,7 +11,7 @@
         $stateProvider
         .state('contract-weekly-stat', {
             parent: 'stat',
-            url: '/contract-weekly-stat?page&sort&search',
+            url: '/contract-weekly-stat?page&sort&fromDate&toDate&statDate',
             data: {
                 authorities: ['ROLE_USER'],
                 pageTitle: 'cpmApp.contractWeeklyStat.home.title'
@@ -32,7 +32,9 @@
                     value: 'id,asc',
                     squash: true
                 },
-                search: null
+                fromDate : null,
+                toDate: null,
+                statDate: null
             },
             resolve: {
                 pagingParams: ['$stateParams', 'PaginationUtil', function ($stateParams, PaginationUtil) {
@@ -41,7 +43,9 @@
                         sort: $stateParams.sort,
                         predicate: PaginationUtil.parsePredicate($stateParams.sort),
                         ascending: PaginationUtil.parseAscending($stateParams.sort),
-                        search: $stateParams.search
+                        fromDate: $stateParams.fromDate,
+                        toDate: $stateParams.toDate,
+                        statDate: $stateParams.statDate
                     };
                 }],
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
@@ -82,122 +86,6 @@
                     return currentStateData;
                 }]
             }
-        })
-        .state('contract-weekly-stat-detail.edit', {
-            parent: 'contract-weekly-stat-detail',
-            url: '/detail/edit',
-            data: {
-                authorities: ['ROLE_USER']
-            },
-            onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
-                $uibModal.open({
-                    templateUrl: 'app/stat/contract-weekly-stat/contract-weekly-stat-dialog.html',
-                    controller: 'ContractWeeklyStatDialogController',
-                    controllerAs: 'vm',
-                    backdrop: 'static',
-                    size: 'lg',
-                    resolve: {
-                        entity: ['ContractWeeklyStat', function(ContractWeeklyStat) {
-                            return ContractWeeklyStat.get({id : $stateParams.id}).$promise;
-                        }]
-                    }
-                }).result.then(function() {
-                    $state.go('^', {}, { reload: false });
-                }, function() {
-                    $state.go('^');
-                });
-            }]
-        })
-        .state('contract-weekly-stat.new', {
-            parent: 'contract-weekly-stat',
-            url: '/new',
-            data: {
-                authorities: ['ROLE_USER']
-            },
-            onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
-                $uibModal.open({
-                    templateUrl: 'app/stat/contract-weekly-stat/contract-weekly-stat-dialog.html',
-                    controller: 'ContractWeeklyStatDialogController',
-                    controllerAs: 'vm',
-                    backdrop: 'static',
-                    size: 'lg',
-                    resolve: {
-                        entity: function () {
-                            return {
-                                contractId: null,
-                                receiveTotal: null,
-                                costTotal: null,
-                                grossProfit: null,
-                                salesHumanCost: null,
-                                salesPayment: null,
-                                consultHumanCost: null,
-                                consultPayment: null,
-                                hardwarePurchase: null,
-                                externalSoftware: null,
-                                internalSoftware: null,
-                                projectHumanCost: null,
-                                projectPayment: null,
-                                statWeek: null,
-                                createTime: null,
-                                id: null
-                            };
-                        }
-                    }
-                }).result.then(function() {
-                    $state.go('contract-weekly-stat', null, { reload: 'contract-weekly-stat' });
-                }, function() {
-                    $state.go('contract-weekly-stat');
-                });
-            }]
-        })
-        .state('contract-weekly-stat.edit', {
-            parent: 'contract-weekly-stat',
-            url: '/{id}/edit',
-            data: {
-                authorities: ['ROLE_USER']
-            },
-            onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
-                $uibModal.open({
-                    templateUrl: 'app/stat/contract-weekly-stat/contract-weekly-stat-dialog.html',
-                    controller: 'ContractWeeklyStatDialogController',
-                    controllerAs: 'vm',
-                    backdrop: 'static',
-                    size: 'lg',
-                    resolve: {
-                        entity: ['ContractWeeklyStat', function(ContractWeeklyStat) {
-                            return ContractWeeklyStat.get({id : $stateParams.id}).$promise;
-                        }]
-                    }
-                }).result.then(function() {
-                    $state.go('contract-weekly-stat', null, { reload: 'contract-weekly-stat' });
-                }, function() {
-                    $state.go('^');
-                });
-            }]
-        })
-        .state('contract-weekly-stat.delete', {
-            parent: 'contract-weekly-stat',
-            url: '/{id}/delete',
-            data: {
-                authorities: ['ROLE_USER']
-            },
-            onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
-                $uibModal.open({
-                    templateUrl: 'app/stat/contract-weekly-stat/contract-weekly-stat-delete-dialog.html',
-                    controller: 'ContractWeeklyStatDeleteController',
-                    controllerAs: 'vm',
-                    size: 'md',
-                    resolve: {
-                        entity: ['ContractWeeklyStat', function(ContractWeeklyStat) {
-                            return ContractWeeklyStat.get({id : $stateParams.id}).$promise;
-                        }]
-                    }
-                }).result.then(function() {
-                    $state.go('contract-weekly-stat', null, { reload: 'contract-weekly-stat' });
-                }, function() {
-                    $state.go('^');
-                });
-            }]
         });
     }
 

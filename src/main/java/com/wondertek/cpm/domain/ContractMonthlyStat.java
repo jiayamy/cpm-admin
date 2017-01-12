@@ -15,7 +15,7 @@ import java.util.Objects;
 @Entity
 @Table(name = "w_contract_monthly_stat")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-@Document(indexName = "contractMonthlyStat")
+@Document(indexName = "contractmonthlystat")
 public class ContractMonthlyStat implements Serializable {
 
     private static final long serialVersionUID = 1L;

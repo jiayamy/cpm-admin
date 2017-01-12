@@ -1,12 +1,12 @@
 package com.wondertek.cpm.web.rest;
 
-import com.codahale.metrics.annotation.Timed;
-import com.wondertek.cpm.domain.ProjectCost;
-import com.wondertek.cpm.service.ProjectCostService;
-import com.wondertek.cpm.web.rest.util.HeaderUtil;
-import com.wondertek.cpm.web.rest.util.PaginationUtil;
+import java.net.URISyntaxException;
+import java.time.ZonedDateTime;
+import java.util.List;
+import java.util.Optional;
 
-import io.swagger.annotations.ApiParam;
+import javax.inject.Inject;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -14,17 +14,26 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
-import javax.inject.Inject;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
+import com.codahale.metrics.annotation.Timed;
+import com.wondertek.cpm.CpmConstants;
+import com.wondertek.cpm.config.StringUtil;
+import com.wondertek.cpm.domain.ProjectCost;
+import com.wondertek.cpm.domain.vo.ProjectCostVo;
+import com.wondertek.cpm.security.SecurityUtils;
+import com.wondertek.cpm.service.ProjectCostService;
+import com.wondertek.cpm.web.rest.util.HeaderUtil;
+import com.wondertek.cpm.web.rest.util.PaginationUtil;
 
-import static org.elasticsearch.index.query.QueryBuilders.*;
+import io.swagger.annotations.ApiParam;
 
 /**
  * REST controller for managing ProjectCost.
@@ -39,26 +48,6 @@ public class ProjectCostResource {
     private ProjectCostService projectCostService;
 
     /**
-     * POST  /project-costs : Create a new projectCost.
-     *
-     * @param projectCost the projectCost to create
-     * @return the ResponseEntity with status 201 (Created) and with body the new projectCost, or with status 400 (Bad Request) if the projectCost has already an ID
-     * @throws URISyntaxException if the Location URI syntax is incorrect
-     */
-    @PostMapping("/project-costs")
-    @Timed
-    public ResponseEntity<ProjectCost> createProjectCost(@RequestBody ProjectCost projectCost) throws URISyntaxException {
-        log.debug("REST request to save ProjectCost : {}", projectCost);
-        if (projectCost.getId() != null) {
-            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("projectCost", "idexists", "A new projectCost cannot already have an ID")).body(null);
-        }
-        ProjectCost result = projectCostService.save(projectCost);
-        return ResponseEntity.created(new URI("/api/project-costs/" + result.getId()))
-            .headers(HeaderUtil.createEntityCreationAlert("projectCost", result.getId().toString()))
-            .body(result);
-    }
-
-    /**
      * PUT  /project-costs : Updates an existing projectCost.
      *
      * @param projectCost the projectCost to update
@@ -69,15 +58,54 @@ public class ProjectCostResource {
      */
     @PutMapping("/project-costs")
     @Timed
-    public ResponseEntity<ProjectCost> updateProjectCost(@RequestBody ProjectCost projectCost) throws URISyntaxException {
+    public ResponseEntity<Boolean> updateProjectCost(@RequestBody ProjectCost projectCost) throws URISyntaxException {
         log.debug("REST request to update ProjectCost : {}", projectCost);
-        if (projectCost.getId() == null) {
-            return createProjectCost(projectCost);
+        Boolean isNew = projectCost.getId() == null;
+        if(projectCost.getProjectId() == null || projectCost.getType() == null || projectCost.getCostDay() == null
+        		|| StringUtil.isNullStr(projectCost.getName()) || projectCost.getTotal() == null || projectCost.getTotal() < 0){
+        	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.projectCost.save.paramNone", "")).body(null);
         }
+        if(projectCost.getType() == ProjectCost.TYPE_HUMAN_COST){
+        	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.projectCost.save.type1Error", "")).body(null);
+        }
+        String updator = SecurityUtils.getCurrentUserLogin();
+        ZonedDateTime updateTime = ZonedDateTime.now();
+        if(isNew){
+        	projectCost.setStatus(CpmConstants.STATUS_VALID);
+        	projectCost.setCreateTime(updateTime);
+        	projectCost.setCreator(updator);
+        }else{
+        	ProjectCostVo projectCostVo = projectCostService.getProjectCost(projectCost.getId());
+        	if(projectCostVo == null){
+        		return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.projectCost.save.noPerm", "")).body(null);
+        	}
+        	ProjectCost old = projectCostService.findOne(projectCost.getId());
+        	if(old == null){
+        		return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.projectCost.save.idNone", "")).body(null);
+        	}else if(old.getProjectId() != projectCost.getProjectId().longValue()){
+        		return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.projectCost.save.projectIdError", "")).body(null);
+        	}else if(old.getStatus() == CpmConstants.STATUS_DELETED){
+        		return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.projectCost.save.statue2Error", "")).body(null);
+        	}else if(old.getType().intValue() != projectCost.getType()){
+        		return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.projectCost.save.type1Error", "")).body(null);
+        	}
+        	projectCost.setStatus(old.getStatus());
+        	projectCost.setCreateTime(old.getCreateTime());
+        	projectCost.setCreator(old.getCreator());
+        }
+        projectCost.setUpdateTime(updateTime);
+        projectCost.setUpdator(updator);
+        
         ProjectCost result = projectCostService.save(projectCost);
-        return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert("projectCost", projectCost.getId().toString()))
-            .body(result);
+        if(isNew){
+        	return ResponseEntity.ok()
+                    .headers(HeaderUtil.createEntityCreationAlert("projectCost", result.getId().toString()))
+                    .body(isNew);
+        }else{
+        	return ResponseEntity.ok()
+        			.headers(HeaderUtil.createEntityUpdateAlert("projectCost", result.getId().toString()))
+        			.body(isNew);
+        }
     }
 
     /**
@@ -89,10 +117,20 @@ public class ProjectCostResource {
      */
     @GetMapping("/project-costs")
     @Timed
-    public ResponseEntity<List<ProjectCost>> getAllProjectCosts(@ApiParam Pageable pageable)
+    public ResponseEntity<List<ProjectCostVo>> getAllProjectCosts(
+    		@RequestParam(value = "projectId") Long projectId, 
+    		@RequestParam(value = "type") Integer type, 
+    		@RequestParam(value = "name") String name, 
+    		@ApiParam Pageable pageable)
         throws URISyntaxException {
         log.debug("REST request to get a page of ProjectCosts");
-        Page<ProjectCost> page = projectCostService.findAll(pageable);
+        ProjectCost projectCost = new ProjectCost();
+        projectCost.setProjectId(projectId);
+        projectCost.setType(type);
+        projectCost.setName(name);
+        
+        Page<ProjectCostVo> page = projectCostService.getUserPage(projectCost,pageable);
+        
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/project-costs");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
@@ -105,9 +143,10 @@ public class ProjectCostResource {
      */
     @GetMapping("/project-costs/{id}")
     @Timed
-    public ResponseEntity<ProjectCost> getProjectCost(@PathVariable Long id) {
+    public ResponseEntity<ProjectCostVo> getProjectCost(@PathVariable Long id) {
         log.debug("REST request to get ProjectCost : {}", id);
-        ProjectCost projectCost = projectCostService.findOne(id);
+//        ProjectCost projectCost = projectCostService.findOne(id);
+        ProjectCostVo projectCost = projectCostService.getProjectCost(id);
         return Optional.ofNullable(projectCost)
             .map(result -> new ResponseEntity<>(
                 result,
@@ -125,6 +164,16 @@ public class ProjectCostResource {
     @Timed
     public ResponseEntity<Void> deleteProjectCost(@PathVariable Long id) {
         log.debug("REST request to delete ProjectCost : {}", id);
+        ProjectCostVo projectCost = projectCostService.getProjectCost(id);
+        if(projectCost == null){
+        	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.projectCost.save.noPerm", "")).body(null);
+        }
+        if(projectCost.getStatus() == CpmConstants.STATUS_DELETED){
+        	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.projectCost.delete.status2Error", "")).body(null);
+        }
+        if(projectCost.getType() == ProjectCost.TYPE_HUMAN_COST){
+        	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.projectCost.delete.type1Error", "")).body(null);
+        }
         projectCostService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert("projectCost", id.toString())).build();
     }

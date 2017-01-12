@@ -5,13 +5,13 @@
         .module('cpmApp')
         .controller('ContractBudgetDialogController', ContractBudgetDialogController);
 
-    ContractBudgetDialogController.$inject = ['$timeout', '$scope', '$stateParams', '$uibModalInstance', 'entity', 'ContractBudget'];
+    ContractBudgetDialogController.$inject = ['$timeout', '$scope', '$stateParams','previousState', 'entity', 'ContractBudget'];
 
-    function ContractBudgetDialogController ($timeout, $scope, $stateParams, $uibModalInstance, entity, ContractBudget) {
+    function ContractBudgetDialogController ($timeout, $scope, $stateParams,previousState, entity, ContractBudget) {
         var vm = this;
-
+        
+        vm.previousState = previousState.name;
         vm.contractBudget = entity;
-        vm.clear = clear;
         vm.datePickerOpenStatus = {};
         vm.openCalendar = openCalendar;
         vm.save = save;
@@ -19,10 +19,6 @@
         $timeout(function (){
             angular.element('.form-group:eq(1)>input').focus();
         });
-
-        function clear () {
-            $uibModalInstance.dismiss('cancel');
-        }
 
         function save () {
             vm.isSaving = true;
@@ -33,10 +29,27 @@
             }
         }
 
+//        function onSaveSuccess (result) {
+//            $scope.$emit('cpmApp:contractBudgetUpdate', result);
+//            $uibModalInstance.close(result);
+//            vm.isSaving = false;
+//        }
         function onSaveSuccess (result) {
-            $scope.$emit('cpmApp:contractBudgetUpdate', result);
-            $uibModalInstance.close(result);
-            vm.isSaving = false;
+        	vm.isSaving = false;
+        	if(result.data){
+        		AlertService.error(result.data.message);
+        	}else if(result.message){
+        		if(result.message == "cpmApp.contranctBudget.save.success"){
+        			AlertService.success(result.message);
+        			$state.go("user-timesheet", null, { reload: true });
+        		}else if(result.message && result.param){
+        			var param = {};
+        			param.param = result.param;
+        			AlertService.error(result.message,param);
+        		}else{
+        			AlertService.error(result.message);
+        		}
+        	}
         }
 
         function onSaveError () {

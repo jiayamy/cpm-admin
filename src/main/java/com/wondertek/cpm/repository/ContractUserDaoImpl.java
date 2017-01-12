@@ -32,7 +32,7 @@ public class ContractUserDaoImpl extends GenericDaoImpl<ContractUser, Long> impl
 	public List<LongValue> getByUserAndDay(Long userId,Long[] weekDays) {
 		StringBuffer sql = new StringBuffer();
 		List<Object> params = new ArrayList<Object>();
-		sql.append("select distinct cu.contract_id,ci.serial_num from w_contract_user cu left join w_contract_info ci on cu.contract_id = ci.id where ci.id is not null and cu.user_id = ?");
+		sql.append("select distinct cu.contract_id,ci.serial_num,ci.name_ from w_contract_user cu left join w_contract_info ci on cu.contract_id = ci.id where ci.id is not null and cu.user_id = ?");
 		params.add(userId);
 		if(weekDays != null && weekDays.length > 0){
 			sql.append(" and (");
@@ -51,7 +51,7 @@ public class ContractUserDaoImpl extends GenericDaoImpl<ContractUser, Long> impl
 		List<LongValue> returnList = new ArrayList<LongValue>();
 		if(list != null){
 			for(Object[] o : list){
-				returnList.add(new LongValue(StringUtil.nullToLong(o[0]),UserTimesheet.TYPE_CONTRACT,StringUtil.null2Str(o[1])));
+				returnList.add(new LongValue(StringUtil.nullToLong(o[0]),UserTimesheet.TYPE_CONTRACT,StringUtil.null2Str(o[1]) + ":" + StringUtil.null2Str(o[2])));
 			}
 		}
 		return returnList;
