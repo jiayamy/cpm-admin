@@ -41,6 +41,11 @@ public class ProjectCost implements Serializable {
     @Column(name = "type_")
     private Integer type;
     /**
+     * 成本日期
+     */
+    @Column(name="COST_DAY")
+    private Long costDay;
+    /**
      * 金额
      */
     @Column(name = "total_")
@@ -115,7 +120,15 @@ public class ProjectCost implements Serializable {
         this.type = type;
     }
 
-    public Double getTotal() {
+    public Long getCostDay() {
+		return costDay;
+	}
+
+	public void setCostDay(Long costDay) {
+		this.costDay = costDay;
+	}
+
+	public Double getTotal() {
         return total;
     }
 

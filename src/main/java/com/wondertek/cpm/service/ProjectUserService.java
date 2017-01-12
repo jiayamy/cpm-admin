@@ -1,5 +1,6 @@
 package com.wondertek.cpm.service;
 
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -107,6 +108,8 @@ public class ProjectUserService {
         		if(projectUser.getJoinDay() > leaveDay){
         			projectUser.setJoinDay(leaveDay);
         		}
+        		projectUser.setUpdateTime(ZonedDateTime.now());
+        		projectUser.setUpdator(SecurityUtils.getCurrentUserLogin());
         		projectUserRepository.save(projectUser);
         	}
         }

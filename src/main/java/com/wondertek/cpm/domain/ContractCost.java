@@ -1,13 +1,19 @@
 package com.wondertek.cpm.domain;
 
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.springframework.data.elasticsearch.annotations.Document;
-
-import javax.persistence.*;
 import java.io.Serializable;
 import java.time.ZonedDateTime;
 import java.util.Objects;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.springframework.data.elasticsearch.annotations.Document;
 
 /**
  * 合同成本信息
@@ -55,6 +61,11 @@ public class ContractCost implements Serializable {
      */
     @Column(name = "type_")
     private Integer type;
+    /**
+     * 成本日期
+     */
+    @Column(name="COST_DAY")
+    private Long costDay;
     /**
      * 金额
      */
@@ -169,7 +180,15 @@ public class ContractCost implements Serializable {
         this.type = type;
     }
 
-    public Double getTotal() {
+    public Long getCostDay() {
+		return costDay;
+	}
+
+	public void setCostDay(Long costDay) {
+		this.costDay = costDay;
+	}
+
+	public Double getTotal() {
         return total;
     }
 

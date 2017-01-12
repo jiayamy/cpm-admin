@@ -3,8 +3,8 @@
         "projectUser" : {
             "home": {
                 "title": "项目人员信息",
-                "createLabel": "新增员工",
-                "createOrEditLabel": "项目人员"
+                "createLabel": "新增",
+                "createOrEditLabel": "项目人员信息"
             },
             "created": "新增成功",
             "updated": "更新成功",
