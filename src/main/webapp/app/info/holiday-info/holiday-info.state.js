@@ -13,7 +13,6 @@
             parent: 'info',
             url: '/holiday-info?page&sort&fromCurrDay&toCurrDay',
             data: {
-//            	authorities: ['ROLE_USER'],
                 authorities: ['ROLE_INFO_BASIC'],
                 pageTitle: 'cpmApp.holidayInfo.home.title'
             },
@@ -30,10 +29,9 @@
                     squash: true
                 },
                 sort: {
-                    value: 'currDay,asc',
+                    value: 'currDay,desc',
                     squash: true
                 },
-//                search: null,
                 fromCurrDay: null,
                 toCurrDay: null
             },
@@ -44,7 +42,6 @@
                         sort: $stateParams.sort,
                         predicate: PaginationUtil.parsePredicate($stateParams.sort),
                         ascending: PaginationUtil.parseAscending($stateParams.sort),
-//                        search: $stateParams.search,
                         fromCurrDay:$stateParams.fromCurrDay,
                         toCurrDay:$stateParams.toCurrDay
                     };
@@ -94,57 +91,106 @@
             data: {
                 authorities: ['ROLE_INFO_BASIC']
             },
-            onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
-                $uibModal.open({
+            views: {
+                'content@': {
                     templateUrl: 'app/info/holiday-info/holiday-info-dialog.html',
                     controller: 'HolidayInfoDialogController',
-                    controllerAs: 'vm',
-                    backdrop: 'static',
-                    size: 'lg',
-                    resolve: {
-                        entity: ['HolidayInfo', function(HolidayInfo) {
-                            return HolidayInfo.get({id : $stateParams.id}).$promise;
-                        }]
-                    }
-                }).result.then(function() {
-                    $state.go('^', {}, { reload: false });
-                }, function() {
-                    $state.go('^');
-                });
-            }]
+                    controllerAs: 'vm'
+                }
+            },
+            resolve: {
+	            translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
+	                $translatePartialLoader.addPart('holidayInfo');
+	                return $translate.refresh();
+	            }],
+	            entity: ['$stateParams', 'HolidayInfo', function($stateParams, HolidayInfo) {
+	                return HolidayInfo.get({id : $stateParams.id}).$promise;
+	            }],
+	            previousState: ["$state", function ($state) {
+	                var currentStateData = {
+	                    name: $state.current.name || 'holiday-info-detail',
+	                    params: $state.params,
+	                    url: $state.href($state.current.name, $state.params)
+	                };
+	                return currentStateData;
+	            }]
+            }
+//            onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
+//                $uibModal.open({
+//                    templateUrl: 'app/info/holiday-info/holiday-info-dialog.html',
+//                    controller: 'HolidayInfoDialogController',
+//                    controllerAs: 'vm',
+//                    backdrop: 'static',
+//                    size: 'lg',
+//                    resolve: {
+//                        entity: ['HolidayInfo', function(HolidayInfo) {
+//                            return HolidayInfo.get({id : $stateParams.id}).$promise;
+//                        }]
+//                    }
+//                }).result.then(function() {
+//                    $state.go('^', {}, { reload: false });
+//                }, function() {
+//                    $state.go('^');
+//                });
+//            }]
         })
         .state('holiday-info.new', {
             parent: 'holiday-info',
             url: '/new',
+            pageTitle: 'cpmApp.holidayInfo.home.createOrEditLabel',
             data: {
                 authorities: ['ROLE_INFO_BASIC']
             },
-            onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
-                $uibModal.open({
+            views: {
+                'content@': {
                     templateUrl: 'app/info/holiday-info/holiday-info-dialog.html',
                     controller: 'HolidayInfoDialogController',
-                    controllerAs: 'vm',
-                    backdrop: 'static',
-                    size: 'lg',
-                    resolve: {
-                        entity: function () {
-                            return {
-                                currDay: null,
-                                type: null,
-                                creator: null,
-                                createTime: null,
-                                updator: null,
-                                updateTime: null,
-                                id: null
-                            };
-                        }
-                    }
-                }).result.then(function() {
-                    $state.go('holiday-info', null, { reload: 'holiday-info' });
-                }, function() {
-                    $state.go('holiday-info');
-                });
-            }]
+                    controllerAs: 'vm'
+                }
+            },
+            resolve: {
+            	translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
+                    $translatePartialLoader.addPart('holidayInfo');
+                    return $translate.refresh();
+                }],
+                entity: function () {
+                    return {
+                        currDay: null,
+                        type: null,
+                        creator: null,
+                        createTime: null,
+                        updator: null,
+                        updateTime: null,
+                        id: null
+                    };
+                }
+            }
+//            onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
+//                $uibModal.open({
+//                    templateUrl: 'app/info/holiday-info/holiday-info-dialog.html',
+//                    controller: 'HolidayInfoDialogController',
+//                    controllerAs: 'vm',
+//                    backdrop: 'static',
+//                    size: 'lg',
+//                    resolve: {
+//                        entity: function () {
+//                            return {
+//                                currDay: null,
+//                                type: null,
+//                                creator: null,
+//                                createTime: null,
+//                                updator: null,
+//                                updateTime: null,
+//                                id: null
+//                            };
+//                        }
+//                    }
+//                }).result.then(function() {
+//                    $state.go('holiday-info', null, { reload: 'holiday-info' });
+//                }, function() {
+//                    $state.go('holiday-info');
+//                });
+//            }]
         })
         .state('holiday-info.edit', {
             parent: 'holiday-info',
@@ -152,24 +198,48 @@
             data: {
                 authorities: ['ROLE_INFO_BASIC']
             },
-            onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
-                $uibModal.open({
+            views: {
+                'content@': {
                     templateUrl: 'app/info/holiday-info/holiday-info-dialog.html',
                     controller: 'HolidayInfoDialogController',
-                    controllerAs: 'vm',
-                    backdrop: 'static',
-                    size: 'lg',
-                    resolve: {
-                        entity: ['HolidayInfo', function(HolidayInfo) {
-                            return HolidayInfo.get({id : $stateParams.id}).$promise;
-                        }]
-                    }
-                }).result.then(function() {
-                    $state.go('holiday-info', null, { reload: 'holiday-info' });
-                }, function() {
-                    $state.go('^');
-                });
-            }]
+                    controllerAs: 'vm'
+                }
+            },
+            resolve: {
+	            translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
+	                $translatePartialLoader.addPart('holidayInfo');
+	                return $translate.refresh();
+	            }],
+	            entity: ['$stateParams', 'HolidayInfo', function($stateParams, HolidayInfo) {
+	                return HolidayInfo.get({id : $stateParams.id}).$promise;
+	            }],
+	            previousState: ["$state", function ($state) {
+	                var currentStateData = {
+	                    name: $state.current.name || 'holiday-info-detail',
+	                    params: $state.params,
+	                    url: $state.href($state.current.name, $state.params)
+	                };
+	                return currentStateData;
+	            }]
+            }
+//            onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
+//                $uibModal.open({
+//                    templateUrl: 'app/info/holiday-info/holiday-info-dialog.html',
+//                    controller: 'HolidayInfoDialogController',
+//                    controllerAs: 'vm',
+//                    backdrop: 'static',
+//                    size: 'lg',
+//                    resolve: {
+//                        entity: ['HolidayInfo', function(HolidayInfo) {
+//                            return HolidayInfo.get({id : $stateParams.id}).$promise;
+//                        }]
+//                    }
+//                }).result.then(function() {
+//                    $state.go('holiday-info', null, { reload: 'holiday-info' });
+//                }, function() {
+//                    $state.go('^');
+//                });
+//            }]
         })
         .state('holiday-info.delete', {
             parent: 'holiday-info',
