@@ -69,7 +69,8 @@
             <thead>
                 <tr jh-sort="vm.predicate" ascending="vm.reverse" callback="vm.transition()">
                     <th jh-sort-by="wpc.name"><span data-translate="cpmApp.projectCost.name">Name</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="wpc.projectId"><span data-translate="cpmApp.projectCost.projectId">Project Id</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="wpi.serialNum"><span data-translate="cpmApp.projectCost.projectId">Project Num</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="wpi.name"><span data-translate="cpmApp.projectCost.projectName">Project Name</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="wpc.type"><span data-translate="cpmApp.projectCost.type">Type</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="wpc.costDay"><span data-translate="cpmApp.projectCost.costDay">Day</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="wpc.total"><span data-translate="cpmApp.projectCost.total">Total</span> <span class="glyphicon glyphicon-sort"></span></th>
@@ -81,7 +82,8 @@
             <tbody>
                 <tr ng-repeat="projectCost in vm.projectCosts track by projectCost.id">
                     <td><a ui-sref="project-cost-detail({id:projectCost.id})">{{projectCost.name}}</a></td>
-                    <td>{{projectCost.projectId}}</td>
+                    <td>{{projectCost.projectNum}}</td>
+                    <td>{{projectCost.projectName}}</td>
                     <td>{{projectCost.typeName}}</td>
                     <td>{{projectCost.costDay}}</td>
                     <td>{{projectCost.total}}</td>

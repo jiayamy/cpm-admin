@@ -12,6 +12,10 @@
 	            		ng-required="true" ng-disabled="vm.projectCost.id"
 		            	ng-options="projectInfo.val for projectInfo in vm.projectInfos track by projectInfo.key">
 		         	</select>
+	                <div class="help-block"
+	                   ng-hide="vm.projectCost.projectId" data-translate="entity.validation.required" style="color:red">
+	                    This field is required.
+	                </div>
         		</div>
         		<div class="col-sm-6">
         		</div>
@@ -22,6 +26,10 @@
 	            	<input type="text" class="form-control" name="name" id="field_name" ng-required="true" 
 	                    ng-model="vm.projectCost.name"
 	                     />
+	                <div class="help-block"
+	                   ng-show="myForm.name.$error.required" data-translate="entity.validation.required" style="color:red">
+	                    This field is required.
+	                </div>
         		</div>
 				<div class="col-sm-6">
 					<label class="control-label" data-translate="cpmApp.projectCost.type" for="field_type">Type</label>
@@ -29,6 +37,10 @@
 	            		ng-required="true" ng-disabled="vm.projectCost.id"
 		            	ng-options="type.val for type in vm.types track by type.key">
 		         	</select>
+		         	<div class="help-block"
+	                   ng-hide="vm.projectCost.type" data-translate="entity.validation.required" style="color:red">
+	                    This field is required.
+	                </div>
 				</div>
         	</div>
 			<div class="form-group">
@@ -43,12 +55,20 @@
 	                        <button type="button" class="btn btn-default" ng-click="vm.openCalendar('costDay')"><i class="glyphicon glyphicon-calendar"></i></button>
 	                    </span>
 	                </div>
+	                <div class="help-block"
+	                   ng-hide="vm.projectCost.costDay" data-translate="entity.validation.required" style="color:red">
+	                    This field is required.
+	                </div>
         		</div>
 				<div class="col-sm-6">
 					<label class="control-label" data-translate="cpmApp.projectCost.total" for="field_total">Total</label>
 	            	<input type="number" class="form-control" name="total" id="field_total"
 	                    ng-model="vm.projectCost.total" step="0.01" min="0" ng-required="true"
 	                     />
+					<div class="help-block"
+	                   ng-show="myForm.total.$error.required" data-translate="entity.validation.required" style="color:red">
+	                    This field is required.
+	                </div>
 				</div>
         	</div>
         	<div class="form-group">

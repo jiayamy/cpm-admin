@@ -73,7 +73,8 @@
             <thead>
                 <tr jh-sort="vm.predicate" ascending="vm.reverse" callback="vm.transition()">
                     <th jh-sort-by="wpu.id"><span data-translate="global.field.id">ID</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="wpi.serial_num"><span data-translate="cpmApp.projectUser.projectId">Project Id</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="wpi.serial_num"><span data-translate="cpmApp.projectUser.projectId">Project Num</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="wpi.name_"><span data-translate="cpmApp.projectUser.projectName">Project Name</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="wpu.user_name"><span data-translate="cpmApp.projectUser.userName">User Name</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="wpu.user_role"><span data-translate="cpmApp.projectUser.userRole">User Role</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="wpu.join_day"><span data-translate="cpmApp.projectUser.joinDay">Join Day</span> <span class="glyphicon glyphicon-sort"></span></th>
@@ -86,6 +87,7 @@
                 <tr ng-repeat="projectUser in vm.projectUsers track by projectUser.id">
                     <td><a ui-sref="project-user-detail({id:projectUser.id})">{{projectUser.id}}</a></td>
                     <td>{{projectUser.projectNum}}</td>
+                    <td>{{projectUser.projectName}}</td>
                     <td>{{projectUser.userName}}</td>
                     <td>{{projectUser.userRole}}</td>
                     <td>{{projectUser.joinDay}}</td>

@@ -14,91 +14,11 @@
         </div>
         <div class="navbar-collapse" uib-collapse="vm.isNavbarCollapsed" ng-switch="vm.isAuthenticated()">
             <ul class="nav navbar-nav navbar-right">
-                <li ui-sref-active="active">
+                <li ui-sref-active="active" ng-show="false">
                     <a ui-sref="home" ng-click="vm.collapseNavbar()">
                         <span class="glyphicon glyphicon-home"></span>
                         <span class="hidden-sm" data-translate="global.menu.home">Home</span>
                     </a>
-                </li>
-				<li ng-class="{active: vm.$state.includes('stat')}" has-authority="ROLE_STAT" ng-switch-when="true" uib-dropdown class="dropdown pointer">
-                    <a class="dropdown-toggle" uib-dropdown-toggle href="" id="entity-menu">
-                        <span>
-                            <span class="glyphicon glyphicon-th-list"></span>
-                            <span class="hidden-sm" data-translate="global.menu.stat.main">
-                                Stat
-                            </span>
-                            <b class="caret"></b>
-                        </span>
-                    </a>
-                    <ul class="dropdown-menu" uib-dropdown-menu>
-                        <li ui-sref-active="active" has-authority="ROLE_STAT_CONTRACT">
-                            <a ui-sref="contract-weekly-stat" ng-click="vm.collapseNavbar()">
-                                <span class="glyphicon glyphicon-asterisk"></span>&nbsp;
-                                <span data-translate="global.menu.stat.contractWeeklyStat">Contract Weekly Stat</span>
-                            </a>
-                        </li>
-                        <li ui-sref-active="active" has-authority="ROLE_STAT_CONTRACT">
-                            <a ui-sref="contract-monthly-stat" ng-click="vm.collapseNavbar()">
-                                <span class="glyphicon glyphicon-asterisk"></span>&nbsp;
-                                <span data-translate="global.menu.stat.contractMonthlyStat">Contract Monthly Stat</span>
-                            </a>
-                        </li>
-                        <li ui-sref-active="active" has-authority="ROLE_STAT_PROJECT">
-                            <a ui-sref="project-weekly-stat" ng-click="vm.collapseNavbar()">
-                                <span class="glyphicon glyphicon-asterisk"></span>&nbsp;
-                                <span data-translate="global.menu.stat.projectWeeklyStat">Project Weekly Stat</span>
-                            </a>
-                        </li>
-                        <li ui-sref-active="active" has-authority="ROLE_STAT_PROJECT">
-                            <a ui-sref="project-monthly-stat" ng-click="vm.collapseNavbar()">
-                                <span class="glyphicon glyphicon-asterisk"></span>&nbsp;
-                                <span data-translate="global.menu.stat.projectMonthlyStat">Project Monthly Stat</span>
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-                <li ng-class="{active: vm.$state.includes('project')}" has-authority="ROLE_PROJECT" ng-switch-when="true" uib-dropdown class="dropdown pointer">
-                    <a class="dropdown-toggle" uib-dropdown-toggle href="" id="entity-menu">
-                        <span>
-                            <span class="glyphicon glyphicon-th-list"></span>
-                            <span class="hidden-sm" data-translate="global.menu.project.main">
-                                Project
-                            </span>
-                            <b class="caret"></b>
-                        </span>
-                    </a>
-                    <ul class="dropdown-menu" uib-dropdown-menu>
-                        <li ui-sref-active="active" has-authority="ROLE_PROJECT_INFO">
-                            <a ui-sref="project-info" ng-click="vm.collapseNavbar()">
-                                <span class="glyphicon glyphicon-asterisk"></span>&nbsp;
-                                <span data-translate="global.menu.project.projectInfo">Project Info</span>
-                            </a>
-                        </li>
-                        <li ui-sref-active="active" has-authority="ROLE_PROJECT_USER">
-                            <a ui-sref="project-user" ng-click="vm.collapseNavbar()">
-                                <span class="glyphicon glyphicon-asterisk"></span>&nbsp;
-                                <span data-translate="global.menu.project.projectUser">Project User</span>
-                            </a>
-                        </li>
-                        <li ui-sref-active="active" has-authority="ROLE_PROJECT_COST">
-                            <a ui-sref="project-cost" ng-click="vm.collapseNavbar()">
-                                <span class="glyphicon glyphicon-asterisk"></span>&nbsp;
-                                <span data-translate="global.menu.project.projectCost">Project Cost</span>
-                            </a>
-                        </li>
-                        <li ui-sref-active="active" has-authority="ROLE_PROJECT_TIMESHEET">
-                            <a ui-sref="project-timesheet" ng-click="vm.collapseNavbar()">
-                                <span class="glyphicon glyphicon-asterisk"></span>&nbsp;
-                                <span data-translate="global.menu.project.projectTimesheet">Project Timesheet</span>
-                            </a>
-                        </li>
-                        <li ui-sref-active="active" has-authority="ROLE_PROJECT_FINISH">
-                            <a ui-sref="project-finish-info" ng-click="vm.collapseNavbar()">
-                                <span class="glyphicon glyphicon-asterisk"></span>&nbsp;
-                                <span data-translate="global.menu.project.projectFinishInfo">Project Finish Info</span>
-                            </a>
-                        </li>
-                    </ul>
                 </li>
                 <li ng-class="{active: vm.$state.includes('contract')}" has-authority="ROLE_CONTRACT" ng-switch-when="true" uib-dropdown class="dropdown pointer">
                     <a class="dropdown-toggle" uib-dropdown-toggle href="" id="entity-menu">
@@ -161,6 +81,105 @@
                         </li>
                     </ul>
                 </li>
+                <li ng-class="{active: vm.$state.includes('project')}" has-authority="ROLE_PROJECT" ng-switch-when="true" uib-dropdown class="dropdown pointer">
+                    <a class="dropdown-toggle" uib-dropdown-toggle href="" id="entity-menu">
+                        <span>
+                            <span class="glyphicon glyphicon-th-list"></span>
+                            <span class="hidden-sm" data-translate="global.menu.project.main">
+                                Project
+                            </span>
+                            <b class="caret"></b>
+                        </span>
+                    </a>
+                    <ul class="dropdown-menu" uib-dropdown-menu>
+                        <li ui-sref-active="active" has-authority="ROLE_PROJECT_INFO">
+                            <a ui-sref="project-info" ng-click="vm.collapseNavbar()">
+                                <span class="glyphicon glyphicon-asterisk"></span>&nbsp;
+                                <span data-translate="global.menu.project.projectInfo">Project Info</span>
+                            </a>
+                        </li>
+                        <li ui-sref-active="active" has-authority="ROLE_PROJECT_USER">
+                            <a ui-sref="project-user" ng-click="vm.collapseNavbar()">
+                                <span class="glyphicon glyphicon-asterisk"></span>&nbsp;
+                                <span data-translate="global.menu.project.projectUser">Project User</span>
+                            </a>
+                        </li>
+                        <li ui-sref-active="active" has-authority="ROLE_PROJECT_COST">
+                            <a ui-sref="project-cost" ng-click="vm.collapseNavbar()">
+                                <span class="glyphicon glyphicon-asterisk"></span>&nbsp;
+                                <span data-translate="global.menu.project.projectCost">Project Cost</span>
+                            </a>
+                        </li>
+                        <li ui-sref-active="active" has-authority="ROLE_PROJECT_TIMESHEET" ng-show="false">
+                            <a ui-sref="project-timesheet" ng-click="vm.collapseNavbar()">
+                                <span class="glyphicon glyphicon-asterisk"></span>&nbsp;
+                                <span data-translate="global.menu.project.projectTimesheet">Project Timesheet</span>
+                            </a>
+                        </li>
+                        <li ui-sref-active="active" has-authority="ROLE_PROJECT_FINISH" ng-show="false">
+                            <a ui-sref="project-finish-info" ng-click="vm.collapseNavbar()">
+                                <span class="glyphicon glyphicon-asterisk"></span>&nbsp;
+                                <span data-translate="global.menu.project.projectFinishInfo">Project Finish Info</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li ng-class="{active: vm.$state.includes('timesheet')}" has-authority="ROLE_TIMESHEET" ng-switch-when="true" uib-dropdown class="dropdown pointer">
+                    <a class="dropdown-toggle" uib-dropdown-toggle href="" id="entity-menu">
+                        <span>
+                            <span class="glyphicon glyphicon-th-list"></span>
+                            <span class="hidden-sm" data-translate="global.menu.timesheet.main">
+                                User View
+                            </span>
+                            <b class="caret"></b>
+                        </span>
+                    </a>
+                    <ul class="dropdown-menu" uib-dropdown-menu>
+                        <li ui-sref-active="active" has-authority="ROLE_TIMESHEET">
+                            <a ui-sref="user-timesheet" ng-click="vm.collapseNavbar()">
+                                <span class="glyphicon glyphicon-asterisk"></span>&nbsp;
+                                <span data-translate="global.menu.timesheet.userTimesheet">User Timesheet</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li ng-class="{active: vm.$state.includes('stat')}" has-authority="ROLE_STAT" ng-switch-when="true" uib-dropdown class="dropdown pointer">
+                    <a class="dropdown-toggle" uib-dropdown-toggle href="" id="entity-menu">
+                        <span>
+                            <span class="glyphicon glyphicon-th-list"></span>
+                            <span class="hidden-sm" data-translate="global.menu.stat.main">
+                                Stat
+                            </span>
+                            <b class="caret"></b>
+                        </span>
+                    </a>
+                    <ul class="dropdown-menu" uib-dropdown-menu>
+                        <li ui-sref-active="active" has-authority="ROLE_STAT_CONTRACT">
+                            <a ui-sref="contract-weekly-stat" ng-click="vm.collapseNavbar()">
+                                <span class="glyphicon glyphicon-asterisk"></span>&nbsp;
+                                <span data-translate="global.menu.stat.contractWeeklyStat">Contract Weekly Stat</span>
+                            </a>
+                        </li>
+                        <li ui-sref-active="active" has-authority="ROLE_STAT_CONTRACT">
+                            <a ui-sref="contract-monthly-stat" ng-click="vm.collapseNavbar()">
+                                <span class="glyphicon glyphicon-asterisk"></span>&nbsp;
+                                <span data-translate="global.menu.stat.contractMonthlyStat">Contract Monthly Stat</span>
+                            </a>
+                        </li>
+                        <li ui-sref-active="active" has-authority="ROLE_STAT_PROJECT">
+                            <a ui-sref="project-weekly-stat" ng-click="vm.collapseNavbar()">
+                                <span class="glyphicon glyphicon-asterisk"></span>&nbsp;
+                                <span data-translate="global.menu.stat.projectWeeklyStat">Project Weekly Stat</span>
+                            </a>
+                        </li>
+                        <li ui-sref-active="active" has-authority="ROLE_STAT_PROJECT">
+                            <a ui-sref="project-monthly-stat" ng-click="vm.collapseNavbar()">
+                                <span class="glyphicon glyphicon-asterisk"></span>&nbsp;
+                                <span data-translate="global.menu.stat.projectMonthlyStat">Project Monthly Stat</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
                 <li ng-class="{active: vm.$state.includes('info')}" has-authority="ROLE_INFO" ng-switch-when="true" uib-dropdown class="dropdown pointer">
                     <a class="dropdown-toggle" uib-dropdown-toggle href="" id="entity-menu">
                         <span>
@@ -206,25 +225,6 @@
                             <a ui-sref="work-area" ng-click="vm.collapseNavbar()">
                                 <span class="glyphicon glyphicon-asterisk"></span>&nbsp;
                                 <span data-translate="global.menu.info.workArea">Work Area</span>
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-                <li ng-class="{active: vm.$state.includes('timesheet')}" has-authority="ROLE_TIMESHEET" ng-switch-when="true" uib-dropdown class="dropdown pointer">
-                    <a class="dropdown-toggle" uib-dropdown-toggle href="" id="entity-menu">
-                        <span>
-                            <span class="glyphicon glyphicon-th-list"></span>
-                            <span class="hidden-sm" data-translate="global.menu.timesheet.main">
-                                User View
-                            </span>
-                            <b class="caret"></b>
-                        </span>
-                    </a>
-                    <ul class="dropdown-menu" uib-dropdown-menu>
-                        <li ui-sref-active="active" has-authority="ROLE_TIMESHEET">
-                            <a ui-sref="user-timesheet" ng-click="vm.collapseNavbar()">
-                                <span class="glyphicon glyphicon-asterisk"></span>&nbsp;
-                                <span data-translate="global.menu.timesheet.userTimesheet">User Timesheet</span>
                             </a>
                         </li>
                     </ul>
@@ -341,7 +341,7 @@
                         <!-- jhipster-needle-add-element-to-admin-menu - JHipster will add entities to the admin menu here -->
                     </ul>
                 </li>
-                <li ui-sref-active="active" uib-dropdown class="dropdown pointer" ng-controller="JhiLanguageController as languageVm">
+                <li ui-sref-active="active" uib-dropdown class="dropdown pointer" ng-controller="JhiLanguageController as languageVm" ng-show="false">
                     <a class="dropdown-toggle" uib-dropdown-toggle href="" ng-if="languageVm.languages.length > 1">
                         <span>
                             <span class="glyphicon glyphicon-flag"></span>

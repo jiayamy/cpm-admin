@@ -10,6 +10,8 @@ public class ProjectCostVo{
     
     private Long projectId;
     private String projectNum;
+    private String projectName;
+    
     private String name;
     private Integer type;
     private Long costDay;
@@ -24,7 +26,7 @@ public class ProjectCostVo{
     
 	public ProjectCostVo() {
 	}
-	public ProjectCostVo(ProjectCost projectCost, String projectNum) {
+	public ProjectCostVo(ProjectCost projectCost, String projectNum, String projectName) {
 		this.id = projectCost.getId();
 		this.projectId = projectCost.getProjectId();
 		this.name = projectCost.getName();
@@ -39,8 +41,15 @@ public class ProjectCostVo{
 		this.updateTime = projectCost.getUpdateTime();
 		
 		this.projectNum = projectNum;
+		this.projectName = projectName;
 	}
 	
+	public String getProjectName() {
+		return projectName;
+	}
+	public void setProjectName(String projectName) {
+		this.projectName = projectName;
+	}
 	public Long getId() {
 		return id;
 	}

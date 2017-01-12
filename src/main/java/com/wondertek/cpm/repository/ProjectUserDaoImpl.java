@@ -42,7 +42,7 @@ public class ProjectUserDaoImpl extends GenericDaoImpl<ProjectUser, Long> implem
 	public List<LongValue> getByUserAndDay(Long userId, Long[] weekDays) {
 		StringBuffer sql = new StringBuffer();
 		List<Object> params = new ArrayList<Object>();
-		sql.append("select distinct pu.project_id,pi.serial_num from w_project_user pu left join w_project_info pi on pu.project_id = pi.id where pi.id is not null and pu.user_id = ?");
+		sql.append("select distinct pu.project_id,pi.serial_num,pi.name_ from w_project_user pu left join w_project_info pi on pu.project_id = pi.id where pi.id is not null and pu.user_id = ?");
 		params.add(userId);
 		
 		if(weekDays != null && weekDays.length > 0){
@@ -62,7 +62,7 @@ public class ProjectUserDaoImpl extends GenericDaoImpl<ProjectUser, Long> implem
 		List<LongValue> returnList = new ArrayList<LongValue>();
 		if(list != null){
 			for(Object[] o : list){
-				returnList.add(new LongValue(StringUtil.nullToLong(o[0]),UserTimesheet.TYPE_PROJECT,StringUtil.null2Str(o[1])));
+				returnList.add(new LongValue(StringUtil.nullToLong(o[0]),UserTimesheet.TYPE_PROJECT,StringUtil.null2Str(o[1]) + ":" + StringUtil.null2Str(o[2])));
 			}
 		}
 		return returnList;
@@ -78,7 +78,7 @@ public class ProjectUserDaoImpl extends GenericDaoImpl<ProjectUser, Long> implem
 		List<Object> params = new ArrayList<Object>();
 		
 		querySql.append("select wpu.id,wpu.project_id,wpu.user_id,wpu.user_name,wpu.user_role,wpu.join_day,wpu.leave_day,wpu.creator_,wpu.create_time,wpu.updator_,wpu.update_time");
-		querySql.append(",wpi.serial_num");
+		querySql.append(",wpi.serial_num,wpi.name_");
 		
 		countSql.append("select count(wpu.id)");
 		
@@ -161,6 +161,7 @@ public class ProjectUserDaoImpl extends GenericDaoImpl<ProjectUser, Long> implem
 		vo.setUpdateTime(DateUtil.getZonedDateTime((Timestamp) o[10]));
 		
 		vo.setProjectNum(StringUtil.null2Str(o[11]));
+		vo.setProjectName(StringUtil.null2Str(o[12]));
 		return vo;
 	}
 
@@ -169,7 +170,7 @@ public class ProjectUserDaoImpl extends GenericDaoImpl<ProjectUser, Long> implem
 		StringBuffer queryHql = new StringBuffer();
 		List<Object> params = new ArrayList<Object>();
 		
-		queryHql.append("select wpu,wpi.serialNum");
+		queryHql.append("select wpu,wpi.serialNum,wpi.name");
 		queryHql.append(" from ProjectUser wpu");
 		queryHql.append(" left join ProjectInfo wpi on wpi.id = wpu.projectId ");
 		queryHql.append(" left join DeptInfo wdi on wdi.id = wpi.deptId");
@@ -187,7 +188,7 @@ public class ProjectUserDaoImpl extends GenericDaoImpl<ProjectUser, Long> implem
 		
 		List<Object[]> list = this.queryAllHql(queryHql.toString(),params.toArray());
 		if(list != null && !list.isEmpty()){
-			return new ProjectUserVo((ProjectUser)list.get(0)[0],StringUtil.null2Str(list.get(0)[1]));
+			return new ProjectUserVo((ProjectUser)list.get(0)[0],StringUtil.null2Str(list.get(0)[1]),StringUtil.null2Str(list.get(0)[2]));
 		}
 		return null;
 	}

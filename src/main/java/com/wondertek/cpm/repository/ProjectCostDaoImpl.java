@@ -43,7 +43,7 @@ public class ProjectCostDaoImpl extends GenericDaoImpl<ProjectCost, Long> implem
 		StringBuffer orderHql = new StringBuffer();
 		List<Object> params = new ArrayList<Object>();
 		
-		queryHql.append("select wpc,wpi.serialNum");
+		queryHql.append("select wpc,wpi.serialNum,wpi.name");
 		countHql.append("select count(wpc.id)");
 		
 		whereHql.append(" from ProjectCost wpc");
@@ -60,6 +60,8 @@ public class ProjectCostDaoImpl extends GenericDaoImpl<ProjectCost, Long> implem
 			params.add(deptInfo.getId());
 		}
 		whereHql.append(")");
+		whereHql.append(" and wpc.type > ?");	
+		params.add(ProjectCost.TYPE_HUMAN_COST);
 		
 		//查询条件
 		if(projectCost.getName() != null){
@@ -74,6 +76,7 @@ public class ProjectCostDaoImpl extends GenericDaoImpl<ProjectCost, Long> implem
 			whereHql.append(" and wpc.projectId = ?");
 			params.add(projectCost.getProjectId());
 		}
+		
 		queryHql.append(whereHql.toString());
 		countHql.append(whereHql.toString());
 		whereHql.setLength(0);
@@ -107,7 +110,7 @@ public class ProjectCostDaoImpl extends GenericDaoImpl<ProjectCost, Long> implem
 		List<ProjectCostVo> returnList = new ArrayList<ProjectCostVo>();
 		if(page.getContent() != null){
 			for(Object[] o : page.getContent()){
-				returnList.add(new ProjectCostVo((ProjectCost)o[0],StringUtil.null2Str(o[1])));
+				returnList.add(new ProjectCostVo((ProjectCost)o[0],StringUtil.null2Str(o[1]),StringUtil.null2Str(o[2])));
 			}
 		}
 		return new PageImpl(returnList, pageable, page.getTotalElements());
@@ -118,7 +121,7 @@ public class ProjectCostDaoImpl extends GenericDaoImpl<ProjectCost, Long> implem
 		StringBuffer queryHql = new StringBuffer();
 		List<Object> params = new ArrayList<Object>();
 		
-		queryHql.append("select wpc,wpi.serialNum");
+		queryHql.append("select wpc,wpi.serialNum,wpi.name");
 		queryHql.append(" from ProjectCost wpc");
 		queryHql.append(" left join ProjectInfo wpi on wpi.id = wpc.projectId ");
 		queryHql.append(" left join DeptInfo wdi on wdi.id = wpi.deptId");
@@ -136,7 +139,7 @@ public class ProjectCostDaoImpl extends GenericDaoImpl<ProjectCost, Long> implem
 		
 		List<Object[]> list = this.queryAllHql(queryHql.toString(),params.toArray());
 		if(list != null && !list.isEmpty()){
-			return new ProjectCostVo((ProjectCost)list.get(0)[0],StringUtil.null2Str(list.get(0)[1]));
+			return new ProjectCostVo((ProjectCost)list.get(0)[0],StringUtil.null2Str(list.get(0)[1]),StringUtil.null2Str(list.get(0)[2]));
 		}
 		return null;
 	}

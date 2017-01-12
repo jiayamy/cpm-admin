@@ -2,9 +2,9 @@
     "cpmApp": {
         "projectCost" : {
             "home": {
-                "title": "项目成本",
+                "title": "项目报销",
                 "createLabel": "新增",
-                "createOrEditLabel": "项目成本信息"
+                "createOrEditLabel": "项目报销信息"
             },
             "created": "新增成功",
             "updated": "修改成本",
@@ -26,6 +26,7 @@
             	"statue2Error":"状态为删除的数据不可编辑"
             },
             "projectId": "项目编号",
+            "projectName":"项目名称",
             "name": "名称",
             "type": "类型",
             "costDay": "日期",

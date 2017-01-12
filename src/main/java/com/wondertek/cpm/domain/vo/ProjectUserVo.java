@@ -9,6 +9,7 @@ public class ProjectUserVo {
 	
     private Long projectId;
     private String projectNum;
+    private String projectName;
     
     private Long userId;
     private String userName;
@@ -23,20 +24,7 @@ public class ProjectUserVo {
     
 	public ProjectUserVo() {
 	}
-	public ProjectUserVo(ProjectUser projectUser) {
-		this.id = projectUser.getId();
-		this.projectId = projectUser.getProjectId();
-		this.userId = projectUser.getUserId();
-		this.userName = projectUser.getUserName();
-		this.userRole = projectUser.getUserRole();
-		this.joinDay = projectUser.getJoinDay();
-		this.leaveDay = projectUser.getLeaveDay();
-		this.creator = projectUser.getCreator();
-		this.createTime = projectUser.getCreateTime();
-		this.updator = projectUser.getUpdator();
-		this.updateTime = projectUser.getUpdateTime();
-	}
-	public ProjectUserVo(ProjectUser projectUser, String projectNum) {
+	public ProjectUserVo(ProjectUser projectUser, String projectNum, String projectName) {
 		this.id = projectUser.getId();
 		this.projectId = projectUser.getProjectId();
 		this.userId = projectUser.getUserId();
@@ -50,8 +38,15 @@ public class ProjectUserVo {
 		this.updateTime = projectUser.getUpdateTime();
 		
 		this.projectNum = projectNum;
+		this.projectName = projectName;
 	}
 	
+	public String getProjectName() {
+		return projectName;
+	}
+	public void setProjectName(String projectName) {
+		this.projectName = projectName;
+	}
 	public Long getId() {
 		return id;
 	}
