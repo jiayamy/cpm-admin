@@ -5,9 +5,9 @@
         .module('cpmApp')
         .controller('ProjectCostController', ProjectCostController);
 
-    ProjectCostController.$inject = ['$scope', '$state', 'ProjectCost', 'ProjectCostSearch', 'ParseLinks', 'AlertService', 'paginationConstants', 'pagingParams'];
+    ProjectCostController.$inject = ['$scope', '$state', 'ProjectCost', 'ParseLinks', 'AlertService','ProjectInfo', 'paginationConstants', 'pagingParams'];
 
-    function ProjectCostController ($scope, $state, ProjectCost, ProjectCostSearch, ParseLinks, AlertService, paginationConstants, pagingParams) {
+    function ProjectCostController ($scope, $state, ProjectCost, ParseLinks, AlertService,ProjectInfo, paginationConstants, pagingParams) {
         var vm = this;
 
         vm.loadPage = loadPage;
@@ -18,30 +18,70 @@
         vm.clear = clear;
         vm.search = search;
         vm.loadAll = loadAll;
-        vm.searchQuery = pagingParams.search;
-        vm.currentSearch = pagingParams.search;
-
+        
+        vm.types = [{key:1,val:'工时'},{key:2,val:'差旅'},{key:3,val:'采购'},{key:4,val:'商务'}];
+        vm.statuss = [{key:1,val:'正常'},{key:2,val:'删除'}];
+        vm.searchQuery = {};
+        vm.searchQuery.projectId = pagingParams.projectId;
+        vm.searchQuery.type = pagingParams.type;
+        vm.searchQuery.name = pagingParams.name;
+        
+        if (!vm.searchQuery.projectId && !vm.searchQuery.type && !vm.searchQuery.name){
+        	vm.haveSearch = null;
+        }else{
+        	vm.haveSearch = true;
+        }
+        for(var i = 0; i < vm.types.length; i++){
+        	if(pagingParams.type == vm.types[i].key){
+        		vm.searchQuery.type = vm.types[i];
+        	}
+        }
+        vm.projectInfos = [];
+        loadProjectInfos();
+        function loadProjectInfos(){
+        	ProjectInfo.queryProjectInfo(
+        		{
+        			
+        		},
+        		function(data, headers){
+        			vm.projectInfos = data;
+            		if(vm.projectInfos && vm.projectInfos.length > 0){
+            			for(var i = 0; i < vm.projectInfos.length; i++){
+            				if(pagingParams.projectId == vm.projectInfos[i].key){
+            					vm.searchQuery.projectId = vm.projectInfos[i];
+            				}
+            			}
+            		}
+        		},
+        		function(error){
+        			AlertService.error(error.data.message);
+        		}
+        	);
+        }
+        
         loadAll();
-
         function loadAll () {
-            if (pagingParams.search) {
-                ProjectCostSearch.query({
-                    query: pagingParams.search,
-                    page: pagingParams.page - 1,
-                    size: vm.itemsPerPage,
-                    sort: sort()
-                }, onSuccess, onError);
-            } else {
-                ProjectCost.query({
-                    page: pagingParams.page - 1,
-                    size: vm.itemsPerPage,
-                    sort: sort()
-                }, onSuccess, onError);
-            }
+        	if(pagingParams.projectId == undefined){
+        		pagingParams.projectId = "";
+        	}
+        	if(pagingParams.type == undefined){
+        		pagingParams.type = "";
+        	}
+        	if(pagingParams.name == undefined){
+        		pagingParams.name = "";
+        	}
+            ProjectCost.query({
+            	projectId: pagingParams.projectId,
+               	type: pagingParams.type,
+                name: pagingParams.name,
+                page: pagingParams.page - 1,
+                size: vm.itemsPerPage,
+                sort: sort()
+            }, onSuccess, onError);
             function sort() {
                 var result = [vm.predicate + ',' + (vm.reverse ? 'asc' : 'desc')];
-                if (vm.predicate !== 'id') {
-                    result.push('id');
+                if (vm.predicate !== 'wpc.id') {
+                    result.push('wpc.id');
                 }
                 return result;
             }
@@ -49,11 +89,28 @@
                 vm.links = ParseLinks.parse(headers('link'));
                 vm.totalItems = headers('X-Total-Count');
                 vm.queryCount = vm.totalItems;
-                vm.projectCosts = data;
+                vm.projectCosts = handleData(data);
                 vm.page = pagingParams.page;
             }
             function onError(error) {
                 AlertService.error(error.data.message);
+            }
+            function handleData(data){
+            	if(data.length > 0){
+            		for(var i = 0; i< data.length ; i++){
+            			for(var j = 0; j < vm.types.length; j++){
+            	        	if(data[i].type == vm.types[j].key){
+            	        		data[i].typeName = vm.types[j].val;
+            	        	}
+            	        }
+            			for(var j = 0; j < vm.statuss.length; j++){
+            	        	if(data[i].status == vm.statuss[j].key){
+            	        		data[i].statusName = vm.statuss[j].val;
+            	        	}
+            	        }
+            		}
+            	}
+            	return data;
             }
         }
 
@@ -66,28 +123,33 @@
             $state.transitionTo($state.$current, {
                 page: vm.page,
                 sort: vm.predicate + ',' + (vm.reverse ? 'asc' : 'desc'),
-                search: vm.currentSearch
+                projectId:vm.searchQuery.projectId ? vm.searchQuery.projectId.key : "",
+                type:vm.searchQuery.type ? vm.searchQuery.type.key : "",
+                name:vm.searchQuery.name,
             });
         }
 
-        function search(searchQuery) {
-            if (!searchQuery){
+        function search() {
+        	if (!vm.searchQuery.projectId 
+        			&& !vm.searchQuery.type 
+        			&& !vm.searchQuery.name){
                 return vm.clear();
             }
             vm.links = null;
             vm.page = 1;
-            vm.predicate = '_score';
+            vm.predicate = 'wpc.id';
             vm.reverse = false;
-            vm.currentSearch = searchQuery;
+            vm.haveSearch = true;
             vm.transition();
         }
 
         function clear() {
             vm.links = null;
             vm.page = 1;
-            vm.predicate = 'id';
-            vm.reverse = true;
-            vm.currentSearch = null;
+            vm.predicate = 'wpc.id';
+            vm.reverse = false;
+            vm.searchQuery = {};
+            vm.haveSearch = null;
             vm.transition();
         }
     }

@@ -6,7 +6,7 @@
     <dl class="dl-horizontal jh-entity-details">
         <dt><span data-translate="cpmApp.projectCost.projectId">Project Id</span></dt>
         <dd>
-            <span>{{vm.projectCost.projectId}}</span>
+            <span>{{vm.projectCost.projectNum}}</span>
         </dd>
         <dt><span data-translate="cpmApp.projectCost.name">Name</span></dt>
         <dd>
@@ -14,7 +14,11 @@
         </dd>
         <dt><span data-translate="cpmApp.projectCost.type">Type</span></dt>
         <dd>
-            <span>{{vm.projectCost.type}}</span>
+            <span>{{vm.projectCost.typeName}}</span>
+        </dd>
+        <dt><span data-translate="cpmApp.projectCost.costDay">Day</span></dt>
+        <dd>
+            <span>{{vm.projectCost.costDay}}</span>
         </dd>
         <dt><span data-translate="cpmApp.projectCost.total">Total</span></dt>
         <dd>
@@ -26,7 +30,7 @@
         </dd>
         <dt><span data-translate="cpmApp.projectCost.status">Status</span></dt>
         <dd>
-            <span>{{vm.projectCost.status}}</span>
+            <span>{{vm.projectCost.statusName}}</span>
         </dd>
         <dt><span data-translate="cpmApp.projectCost.creator">Creator</span></dt>
         <dd>
@@ -52,7 +56,7 @@
         <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span data-translate="entity.action.back"> Back</span>
     </button>
 
-    <button type="button" ui-sref="project-cost-detail.edit({id:vm.projectCost.id})" class="btn btn-primary">
+    <button type="button" ui-sref="project-cost-detail.edit({id:vm.projectCost.id})" class="btn btn-primary"  ng-hide="{{vm.projectCost.type == 1}}">
         <span class="glyphicon glyphicon-pencil"></span>
         <span class="hidden-xs hidden-sm" data-translate="entity.action.edit"> Edit</span>
     </button>

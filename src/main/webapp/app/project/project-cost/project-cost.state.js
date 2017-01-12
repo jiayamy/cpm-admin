@@ -11,9 +11,9 @@
         $stateProvider
         .state('project-cost', {
             parent: 'project',
-            url: '/project-cost?page&sort&search',
+            url: '/project-cost?page&sort&projectId&name&type',
             data: {
-                authorities: ['ROLE_USER'],
+                authorities: ['ROLE_PROJECT_COST'],
                 pageTitle: 'cpmApp.projectCost.home.title'
             },
             views: {
@@ -29,10 +29,12 @@
                     squash: true
                 },
                 sort: {
-                    value: 'id,asc',
+                    value: 'wpc.id,asc',
                     squash: true
                 },
-                search: null
+                projectId: null,
+                type: null,
+                name: null
             },
             resolve: {
                 pagingParams: ['$stateParams', 'PaginationUtil', function ($stateParams, PaginationUtil) {
@@ -41,7 +43,9 @@
                         sort: $stateParams.sort,
                         predicate: PaginationUtil.parsePredicate($stateParams.sort),
                         ascending: PaginationUtil.parseAscending($stateParams.sort),
-                        search: $stateParams.search
+                        projectId: $stateParams.projectId,
+                        type: $stateParams.type,
+                        name: $stateParams.name
                     };
                 }],
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
@@ -52,10 +56,10 @@
             }
         })
         .state('project-cost-detail', {
-            parent: 'project',
-            url: '/project-cost/{id}',
+            parent: 'project-cost',
+            url: '/detail/{id}',
             data: {
-                authorities: ['ROLE_USER'],
+                authorities: ['ROLE_PROJECT_COST'],
                 pageTitle: 'cpmApp.projectCost.detail.title'
             },
             views: {
@@ -85,96 +89,118 @@
         })
         .state('project-cost-detail.edit', {
             parent: 'project-cost-detail',
-            url: '/detail/edit',
+            url: '/edit',
             data: {
-                authorities: ['ROLE_USER']
+                authorities: ['ROLE_PROJECT_COST'],
+                pageTitle: 'cpmApp.projectCost.detail.title'
             },
-            onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
-                $uibModal.open({
+            views: {
+                'content@': {
                     templateUrl: 'app/project/project-cost/project-cost-dialog.html',
                     controller: 'ProjectCostDialogController',
-                    controllerAs: 'vm',
-                    backdrop: 'static',
-                    size: 'lg',
-                    resolve: {
-                        entity: ['ProjectCost', function(ProjectCost) {
-                            return ProjectCost.get({id : $stateParams.id}).$promise;
-                        }]
-                    }
-                }).result.then(function() {
-                    $state.go('^', {}, { reload: false });
-                }, function() {
-                    $state.go('^');
-                });
-            }]
+                    controllerAs: 'vm'
+                }
+            },
+            resolve: {
+                translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
+                    $translatePartialLoader.addPart('projectCost');
+                    return $translate.refresh();
+                }],
+                entity: ['$stateParams', 'ProjectCost', function($stateParams, ProjectCost) {
+                    return ProjectCost.get({id : $stateParams.id}).$promise;
+                }],
+                previousState: ["$state", function ($state) {
+                    var currentStateData = {
+                        name: $state.current.name || 'project-cost-detail',
+                        params: $state.params,
+                        url: $state.href($state.current.name, $state.params)
+                    };
+                    return currentStateData;
+                }]
+            }
         })
         .state('project-cost.new', {
             parent: 'project-cost',
             url: '/new',
             data: {
-                authorities: ['ROLE_USER']
+                authorities: ['ROLE_PROJECT_COST'],
+                pageTitle: 'cpmApp.projectCost.detail.title'
             },
-            onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
-                $uibModal.open({
+            views: {
+                'content@': {
                     templateUrl: 'app/project/project-cost/project-cost-dialog.html',
                     controller: 'ProjectCostDialogController',
-                    controllerAs: 'vm',
-                    backdrop: 'static',
-                    size: 'lg',
-                    resolve: {
-                        entity: function () {
-                            return {
-                                projectId: null,
-                                name: null,
-                                type: null,
-                                total: null,
-                                costDesc: null,
-                                status: null,
-                                creator: null,
-                                createTime: null,
-                                updator: null,
-                                updateTime: null,
-                                id: null
-                            };
-                        }
-                    }
-                }).result.then(function() {
-                    $state.go('project-cost', null, { reload: 'project-cost' });
-                }, function() {
-                    $state.go('project-cost');
-                });
-            }]
+                    controllerAs: 'vm'
+                }
+            },
+            resolve: {
+                translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
+                    $translatePartialLoader.addPart('projectCost');
+                    return $translate.refresh();
+                }],
+                entity: function () {
+                    return {
+                        projectId: null,
+                        name: null,
+                        type: null,
+                        costDay:null,
+                        total: null,
+                        costDesc: null,
+                        status: null,
+                        creator: null,
+                        createTime: null,
+                        updator: null,
+                        updateTime: null,
+                        id: null
+                    };
+                },
+                previousState: ["$state", function ($state) {
+                    var currentStateData = {
+                        name: $state.current.name || 'project-cost',
+                        params: $state.params,
+                        url: $state.href($state.current.name, $state.params)
+                    };
+                    return currentStateData;
+                }]
+            }
         })
         .state('project-cost.edit', {
             parent: 'project-cost',
-            url: '/{id}/edit',
+            url: '/edit/{id}',
             data: {
-                authorities: ['ROLE_USER']
+                authorities: ['ROLE_PROJECT_COST'],
+                pageTitle: 'cpmApp.projectCost.detail.title'
             },
-            onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
-                $uibModal.open({
+            views: {
+                'content@': {
                     templateUrl: 'app/project/project-cost/project-cost-dialog.html',
                     controller: 'ProjectCostDialogController',
-                    controllerAs: 'vm',
-                    backdrop: 'static',
-                    size: 'lg',
-                    resolve: {
-                        entity: ['ProjectCost', function(ProjectCost) {
-                            return ProjectCost.get({id : $stateParams.id}).$promise;
-                        }]
-                    }
-                }).result.then(function() {
-                    $state.go('project-cost', null, { reload: 'project-cost' });
-                }, function() {
-                    $state.go('^');
-                });
-            }]
+                    controllerAs: 'vm'
+                }
+            },
+            resolve: {
+                translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
+                    $translatePartialLoader.addPart('projectCost');
+                    return $translate.refresh();
+                }],
+                entity: ['$stateParams', 'ProjectCost', function($stateParams, ProjectCost) {
+                    return ProjectCost.get({id : $stateParams.id}).$promise;
+                }],
+                previousState: ["$state", function ($state) {
+                    var currentStateData = {
+                        name: $state.current.name || 'project-cost',
+                        params: $state.params,
+                        url: $state.href($state.current.name, $state.params)
+                    };
+                    return currentStateData;
+                }]
+            }
         })
         .state('project-cost.delete', {
             parent: 'project-cost',
-            url: '/{id}/delete',
+            url: '/delete/{id}',
             data: {
-                authorities: ['ROLE_USER']
+                authorities: ['ROLE_PROJECT_COST']
             },
             onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
                 $uibModal.open({

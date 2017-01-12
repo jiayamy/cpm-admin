@@ -29,7 +29,7 @@
                     squash: true
                 },
                 sort: {
-                    value: 'id,asc',
+                    value: 'wpu.id,asc',
                     squash: true
                 },
                 projectId: null,
