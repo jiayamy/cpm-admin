@@ -4,7 +4,7 @@
     <div class="container-fluid">
         <div class="row form-horizontal">
         	<div class="form-group">
-	            <div class="col-xs-4 no-padding-left">
+	            <div class="col-xs-4">
 	                <button class="btn btn-primary" ui-sref="user-timesheet.new" >
 	                    <span class="glyphicon glyphicon-plus"></span>
 	                    <span class="hidden-xs"  data-translate="cpmApp.userTimesheet.home.createLabel">
@@ -79,8 +79,6 @@
                     <th jh-sort-by="type"><span data-translate="cpmApp.userTimesheet.type">Type</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="objName"><span data-translate="cpmApp.userTimesheet.objName">Obj Name</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="realInput"><span data-translate="cpmApp.userTimesheet.realInput">Real Input</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="createTime"><span data-translate="cpmApp.userTimesheet.createTime">Create Time</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="updateTime"><span data-translate="cpmApp.userTimesheet.updateTime">Update Time</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th></th>
                 </tr>
             </thead>
@@ -90,8 +88,6 @@
                     <td>{{userTimesheet.type}}</td>
                     <td>{{userTimesheet.objName}}</td>
                     <td>{{userTimesheet.realInput}}</td>
-                    <td>{{userTimesheet.createTime | date:'medium'}}</td>
-                    <td>{{userTimesheet.updateTime | date:'medium'}}</td>
                     <td class="text-right">
                         <div class="btn-group flex-btn-group-container">
                             <button type="submit"

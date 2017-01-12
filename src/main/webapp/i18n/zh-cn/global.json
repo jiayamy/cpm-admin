@@ -49,7 +49,7 @@
                 "jhipster-needle-menu-add-entry": "JHipster will add additional entities here (do not translate!)"
             },
             "account": {
-                "main": "账号",
+                "main": "个人账号",
                 "settings": "设置",
                 "password": "密码",
                 "sessions": "会话",
