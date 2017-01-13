@@ -29,7 +29,7 @@
                     squash: true
                 },
                 sort: {
-                    value: 'id,asc',
+                    value: 'updateTime,desc',
                     squash: true
                 },
                 name:null,
@@ -107,10 +107,20 @@
         	resolve:{
         		 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                      $translatePartialLoader.addPart('contractInfo');
+                     $translatePartialLoader.addPart('deptInfo');
                      return $translate.refresh();
                  }],
                  entity: ['$stateParams', 'ContractInfo', function($stateParams, ContractInfo) {
                      return ContractInfo.get({id : $stateParams.id}).$promise;
+                 }],
+                 previousState: ["$state", function ($state) {
+                     var currentStateData = {
+                     	queryDept:'contract-info-detail.edit.queryDept',
+                         name: $state.current.name || 'contract-info-detail',
+                         params: $state.params,
+                         url: $state.href($state.current.name, $state.params)
+                     };
+                     return currentStateData;
                  }]
         	}
         })
@@ -131,6 +141,7 @@
             resolve: {
             	 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                      $translatePartialLoader.addPart('contractInfo');
+                     $translatePartialLoader.addPart('deptInfo');
                      return $translate.refresh();
                  }],
                 entity: function () {
@@ -163,8 +174,45 @@
                         updateTime: null,
                         id: null
                     };
-                }
+                },
+                previousState: ["$state", function ($state) {
+                    var currentStateData = {
+                    	queryDept:'contract-info.new.queryDept',
+                        name: $state.current.name || 'contract-info',
+                        params: $state.params,
+                        url: $state.href($state.current.name, $state.params)
+                    };
+                    return currentStateData;
+                }]
             }
+        })
+        .state('contract-info.new.queryDept', {
+            parent: 'contract-info.new',
+            url: '/queryDept?selectType&showChild',
+            data: {
+                authorities: ['ROLE_USER']
+            },
+            onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
+                $uibModal.open({
+                    templateUrl: 'app/info/dept-info/dept-info-query.html',
+                    controller: 'DeptInfoQueryController',
+                    controllerAs: 'vm',
+                    backdrop: 'static',
+                    size: 'lg',
+                    resolve: {
+                        entity: function() {
+                            return {
+                            	selectType : $stateParams.selectType,
+                            	showChild : $stateParams.showChild
+                            }
+                        }
+                    }
+                }).result.then(function() {
+                    $state.go('^', {}, { reload: false });
+                }, function() {
+                    $state.go('^');
+                });
+            }]
         })
         .state('contract-info.edit',{
         	parent:'contract-info',
@@ -182,6 +230,40 @@
         	resolve:{
         		 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                      $translatePartialLoader.addPart('contractInfo');
+                     $translatePartialLoader.addPart('deptInfo');
+                     return $translate.refresh();
+                 }],
+                 entity: ['$stateParams', 'ContractInfo', function($stateParams, ContractInfo) {
+                     return ContractInfo.get({id : $stateParams.id}).$promise;
+                 }],
+                 previousState: ["$state", function ($state) {
+                     var currentStateData = {
+                     	queryDept:'contract-info.edit.queryDept',
+                         name: $state.current.name || 'contract-info-detail',
+                         params: $state.params,
+                         url: $state.href($state.current.name, $state.params)
+                     };
+                     return currentStateData;
+                 }]
+                 
+        	}
+        })
+        .state('contract-info.finRate',{
+        	parent:'contract-info',
+        	url:'/{id}/finRate',
+        	data:{
+        		authorities: ['ROLE_USER']
+        	},
+        	views:{
+        		'content@':{
+        			templateUrl: 'app/contract/contract-info/contract-info-finRate.html',
+        			controller: 'ContractInfofinRateController',
+        			controllerAs: 'vm',
+        		}
+        	},
+        	resolve:{
+        		 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
+                     $translatePartialLoader.addPart('contractInfo');
                      return $translate.refresh();
                  }],
                  entity: ['$stateParams', 'ContractInfo', function($stateParams, ContractInfo) {
@@ -189,6 +271,35 @@
                  }]
         	}
         })
+        .state('contract-info.edit.queryDept', {
+            parent: 'contract-info.edit',
+            url: '/queryDept?selectType&showChild',
+            data: {
+                authorities: ['ROLE_USER']
+            },
+            onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
+                $uibModal.open({
+                    templateUrl: 'app/info/dept-info/dept-info-query.html',
+                    controller: 'DeptInfoQueryController',
+                    controllerAs: 'vm',
+                    backdrop: 'static',
+                    size: 'lg',
+                    resolve: {
+                        entity: function() {
+                            return {
+                            	selectType : $stateParams.selectType,
+                            	showChild : $stateParams.showChild
+                            }
+                        }
+                    }
+                }).result.then(function() {
+                    $state.go('^', {}, { reload: false });
+                }, function() {
+                    $state.go('^');
+                });
+            }]
+        })
+        
         .state('contract-info.delete', {
             parent: 'contract-info',
             url: '/{id}/delete',
@@ -241,7 +352,6 @@
                 });
             }]
         });
-        
     }
 
 })();

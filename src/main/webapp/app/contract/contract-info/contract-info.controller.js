@@ -36,29 +36,29 @@
         		type = { id: 4, name: '公共成本' };
         	}
         }
-        if(isPrepared){
-        	if(isPrepared == 1){
+        if(isPrepared != null){
+        	if(isPrepared == true){
         		isPrepared = { id: 1, name: '正式合同' };
-        	}else if(isPrepared == 0){
+        	}else if(isPrepared == false){
         		isPrepared = { id: 0, name: '预立合同' };
         	}
         }
-        if(isEpibolic){
-        	if(isEpibolic == 1){
+        if(isEpibolic != null){
+        	if(isEpibolic == true){
         		isEpibolic = { id: 1, name: '外包合同' };
-        	}else if(isEpibolic == 0){
+        	}else if(isEpibolic == false){
         		isEpibolic = { id: 0, name: '非外包合同'};
         	}
         }
-//        if(salesman){
-//        	定义一salesman的json  装saleman 的数组
-//        }
+        	
+        	
+        //控制回显
         vm.searchQuery.name=name;
         vm.searchQuery.type=type;
         vm.searchQuery.isPrepared=isPrepared;
         vm.searchQuery.isEpibolic=isEpibolic;
         vm.searchQuery.salesman=salesman;
-        
+       
         vm.types = [{ id: 1, name: '产品合同' }, { id: 2, name: '外包合同' },{ id: 3, name: '硬件合同' },{ id: 4, name: '公共成本' }];
         vm.isPrepareds = [{ id: 1, name: '正式合同'}, { id: 0, name: '预立合同'}];
         vm.isEpibolics = [{ id: 1, name: '外包合同'}, { id: 0, name: '非外包合同'}];
@@ -190,17 +190,32 @@
             }
             vm.links = null;
             vm.page = 1;
-            vm.predicate = '_score';
+            vm.predicate = 'updateTime';
             vm.reverse = false;
             vm.haveSearch = true;
             vm.transition();
+            if(isPrepared != null){
+            	if(isPrepared == true){
+            		vm.searchQuery.isPrepared = { id: 1, name: '正式合同' };
+            	}else if(isPrepared == false){
+            		vm.searchQuery.isPrepared = { id: 0, name: '预立合同' };
+            	}
+            }
+            if(isEpibolic != null){
+            	if(isEpibolic == true){
+            		vm.searchQuery.isEpibolic = { id: 1, name: '外包合同' };
+            	}else if(isEpibolic == false){
+            		vm.searchQuery.isEpibolic = { id: 0, name: '非外包合同'};
+            	}
+            }
+            console.log(vm.searchQuery.isPrepared);
         }
 
         function clear() {
             vm.links = null;
             vm.page = 1;
-            vm.predicate = 'id';
-            vm.reverse = true;
+            vm.predicate = 'updateTime';
+            vm.reverse = false;
             vm.searchQuery = {};
             vm.haveSearch = null;
             vm.transition();

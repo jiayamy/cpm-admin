@@ -16,6 +16,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.wondertek.cpm.CpmConstants;
 import com.wondertek.cpm.config.StringUtil;
 import com.wondertek.cpm.domain.ContractInfo;
+import com.wondertek.cpm.domain.DeptInfo;
+import com.wondertek.cpm.domain.User;
+import com.wondertek.cpm.domain.vo.ContractInfoVo;
 @Repository("contractInfoDao")
 public class ContractInfoDaoImpl extends GenericDaoImpl<ContractInfo, Long> implements ContractInfoDao {
 
@@ -87,6 +90,28 @@ public class ContractInfoDaoImpl extends GenericDaoImpl<ContractInfo, Long> impl
     			pageable);
     	
 		return page;
+	}
+
+	@Override
+	public boolean checkByContract(String serialNum, Long id) {
+		StringBuffer countHql = new StringBuffer();
+		ArrayList<Object> params = new ArrayList<>();
+		countHql.append("select count(id) form ContractInfo where serialNum = ? ");
+		params.add(serialNum);
+		if (id != null) {
+			countHql.append("and id <> ?");
+			params.add(id);
+		}
+		return this.countHql(countHql.toString(), params.toArray())>0;
+	}
+
+	@Override
+	public ContractInfoVo getUserContractInfo(Long id, User user, DeptInfo deptInfo) {
+		
+		
+		
+		
+		return null;
 	}
 
 }

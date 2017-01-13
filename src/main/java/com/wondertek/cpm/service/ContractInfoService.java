@@ -2,9 +2,15 @@ package com.wondertek.cpm.service;
 
 import com.wondertek.cpm.CpmConstants;
 import com.wondertek.cpm.domain.ContractInfo;
+import com.wondertek.cpm.domain.DeptInfo;
+import com.wondertek.cpm.domain.User;
+import com.wondertek.cpm.domain.vo.ContractInfoVo;
 import com.wondertek.cpm.repository.ContractInfoDao;
 import com.wondertek.cpm.repository.ContractInfoRepository;
+import com.wondertek.cpm.repository.UserRepository;
 import com.wondertek.cpm.repository.search.ContractInfoSearchRepository;
+import com.wondertek.cpm.security.SecurityUtils;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -36,6 +42,9 @@ public class ContractInfoService {
     
     @Inject
     private ContractInfoDao contractInfoDao;
+    
+    @Inject
+    private UserRepository userRepository;
     /**
      * Save a contractInfo.
      *
@@ -45,7 +54,7 @@ public class ContractInfoService {
     public ContractInfo save(ContractInfo contractInfo) {
         log.debug("Request to save ContractInfo : {}", contractInfo);
         ContractInfo result = contractInfoRepository.save(contractInfo);
-        contractInfoSearchRepository.save(result);
+//        contractInfoSearchRepository.save(result);
         return result;
     }
 
@@ -106,6 +115,24 @@ public class ContractInfoService {
 		Page<ContractInfo> page = contractInfoDao.getContractInfoPage(contractInfo, pageable);
 		return page;
 	}
+
+	public boolean checkByContract(String serialNum, Long id) {
+		return contractInfoDao.checkByContract(serialNum, id);
+	}
+
+	public ContractInfoVo getUserContractInfo(Long id) {
+		List<Object[]> objs = userRepository.findUserInfoByLogin(SecurityUtils.getCurrentUserLogin());
+		if (objs != null) {
+			Object[] o = objs.get(0);
+			User user = (User)o[0];
+			DeptInfo deptInfo = (DeptInfo)o[1];
+			
+			return contractInfoDao.getUserContractInfo(id,user,deptInfo);
+		}
+		
+		return null;
+	}
+
 
 	
 

@@ -1,5 +1,5 @@
-
-<form name="editForm" role="form" novalidate ng-submit="vm.save()">
+ <jhi-alert></jhi-alert>
+<form name="myForm" role="form" novalidate ng-submit="vm.save()">
 
     <div class="modal-header">
         <h2 class="modal-title" id="myContractInfoLabel" data-translate="cpmApp.contractInfo.home.createOrEditLabel">Create or edit a Contract Info</h2>
@@ -14,26 +14,43 @@
         <div class="form-group">
             <label class="control-label" data-translate="cpmApp.contractInfo.serialNum" for="field_serialNum">Serial Num</label>
             <input type="text" class="form-control" name="serialNum" id="field_serialNum"
-                    ng-model="vm.contractInfo.serialNum"
+                    ng-model="vm.contractInfo.serialNum" ng-required="true" ng-minlength="1" ng-maxlength="20"
                      />
+             <div ng-show="myForm.serialNum.$dirty&&myForm.serialNum.$error.minlength" class="alert alert-danger help-block"> 
+                    	合同编号必填
+             </div>
+             <div ng-show="myForm.serialNum.$dirty&&myForm.serialNum.$error.maxlength" class="alert alert-danger help-block"> 
+                    	合同编号不能大于20
+             </div>
         </div>
         <div class="form-group">
             <label class="control-label" data-translate="cpmApp.contractInfo.name" for="field_name">Name</label>
             <input type="text" class="form-control" name="name" id="field_name"
-                    ng-model="vm.contractInfo.name"
+                    ng-model="vm.contractInfo.name" ng-required="true" ng-minlength="1" ng-maxlength="100"
                      />
+             <div ng-show="myForm.name.$dirty&&myForm.name.$error.minlength" class="alert alert-danger help-block"> 
+                    	合同名称必填
+           	</div>
+          	<div ng-show="myForm.name.$dirty&&myForm.name.$error.maxlength" class="alert alert-danger help-block"> 
+                	合同名称不能大于100
+           	</div>
         </div>
         <div class="form-group">
             <label class="control-label" data-translate="cpmApp.contractInfo.amount" for="field_amount">Amount</label>
             <input type="number" class="form-control" name="amount" id="field_amount"
-                    ng-model="vm.contractInfo.amount"
+                    ng-model="vm.contractInfo.amount" ng-required="true" ng-minlength="1"
                      />
+             <div ng-show="myForm.amount.$dirty&&myForm.amount.$error.minlength" class="alert alert-danger help-block"> 
+                    	合同金额必填
+           	</div>
         </div>
         <div class="form-group">
-            <label class="control-label" data-translate="cpmApp.contractInfo.type" for="field_type">Type</label>
-            <input type="number" class="form-control" name="type" id="field_type"
-                    ng-model="vm.contractInfo.type"
-                     />
+        	 <label class="control-label" data-translate="cpmApp.contractInfo.type" for="field_type">Type</label>
+           	<select class="form-control" name="type" ng-model="vm.contractInfo.type" ng-required="true"
+			            	ng-options="type.name for type in vm.types track by type.id">
+			            	<option value="">--选择合同类型--</option>
+			</select>
+        	
         </div>
         <div class="form-group">
 	       	<div class="col-sm-6">
@@ -50,26 +67,35 @@
 	        </div>
         </div>
          <div class="form-group">
-         	<label class="control-label" data-translate="cpmApp.contractInfo.salesman" for="field_type">Type</label>
-           	<select class="form-control" name="type" ng-model="vm.searchQuery.type"
-			            	ng-options="type.name for type in vm.types track by type.id">
-			            	<option value="">--选择销售人员--</option>
-			</select>
+         	<label class="control-label" data-translate="cpmApp.contractInfo.salesman" for="field_salesman">salesman</label>
+          		<div class="input-group">
+	          		<input type="text" class="form-control" name="salesman" id="field_salesman"
+	                  	ng-model="vm.contractInfo.salesman" readonly ng-required="true" ng-minlength="1"
+                   	/>
+                   	<span class="input-group-btn">
+                     	<button type="button" class="btn btn-default" ui-sref="{{vm.queryDept}}({selectType:3,showChild:true})"><i class="glyphicon glyphicon-user"></i></button>
+                 	</span>
+            	</div>
          </div>
         <div class="form-group">
             <label class="control-label" data-translate="cpmApp.contractInfo.startDay" for="field_startDay">Start Day</label>
                 <div class="input-group">
                     <input id="field_startDay" type="text" class="form-control" name="startDay" datetime-picker="{{dateformat}}" ng-model="vm.contractInfo.startDay" is-open="vm.datePickerOpenStatus.startDay"
+                    datetime-picker="yyyy-MM-dd" enable-time="false" readonly ng-required="true" ng-minlength="10"
                       />
                     <span class="input-group-btn">
                         <button type="button" class="btn btn-default" ng-click="vm.openCalendar('startDay')"><i class="glyphicon glyphicon-calendar"></i></button>
                     </span>
+                    <div ng-show="myForm.startDay.$dirty&&myForm.startDay.$error.minlength" class="alert alert-danger help-block"> 
+                    	开始日期必填
+                	</div>
                 </div>
         </div>
         <div class="form-group">
             <label class="control-label" data-translate="cpmApp.contractInfo.endDay" for="field_endDay">End Day</label>
                 <div class="input-group">
-                    <input id="field_endDay" type="text" class="form-control" name="endDay" datetime-picker="{{dateformat}}" ng-model="vm.contractInfo.endDay" is-open="vm.datePickerOpenStatus.endDay"
+                    <input id="field_endDay" type="text" class="form-control" name="endDay" datetime-picker="{{dateformat}}" ng-model="vm.contractInfo.endDay" is-open="vm.datePickerOpenStatus.endDay" readonly
+                      datetime-picker="yyyy-MM-dd" enable-time="false"
                       />
                     <span class="input-group-btn">
                         <button type="button" class="btn btn-default" ng-click="vm.openCalendar('endDay')"><i class="glyphicon glyphicon-calendar"></i></button>
@@ -81,24 +107,36 @@
             <input type="number" class="form-control" name="taxRate" id="field_taxRate"
                     ng-model="vm.contractInfo.taxRate"
                      />
+            <div ng-show="myForm.budgetTotal.$dirty&&myForm.budgetTotal.$error.number" class="alert alert-danger help-block"> 
+                    	必须为数字
+            </div>
         </div>
         <div class="form-group">
             <label class="control-label" data-translate="cpmApp.contractInfo.taxes" for="field_taxes">Taxes</label>
             <input type="number" class="form-control" name="taxes" id="field_taxes"
                     ng-model="vm.contractInfo.taxes"
                      />
+            <div ng-show="myForm.taxes.$dirty&&myForm.taxes.$error.number" class="alert alert-danger help-block"> 
+                    	必须为数字
+            </div>      
         </div>
         <div class="form-group">
             <label class="control-label" data-translate="cpmApp.contractInfo.shareRate" for="field_shareRate">Share Rate</label>
             <input type="number" class="form-control" name="shareRate" id="field_shareRate"
                     ng-model="vm.contractInfo.shareRate"
                      />
+             <div ng-show="myForm.shareRate.$dirty&&myForm.shareRate.$error.number" class="alert alert-danger help-block"> 
+                    	必须为数字
+              </div>        
         </div>
         <div class="form-group">
             <label class="control-label" data-translate="cpmApp.contractInfo.shareCost" for="field_shareCost">Share Cost</label>
             <input type="number" class="form-control" name="shareCost" id="field_shareCost"
                     ng-model="vm.contractInfo.shareCost"
                      />
+             <div ng-show="myForm.shareCost.$dirty&&myForm.shareCost.$error.number" class="alert alert-danger help-block"> 
+                    	必须为数字
+             </div>        
         </div>
         <div class="form-group">
             <label class="control-label" data-translate="cpmApp.contractInfo.paymentWay" for="field_paymentWay">Payment Way</label>
@@ -109,26 +147,47 @@
         <div class="form-group">
             <label class="control-label" data-translate="cpmApp.contractInfo.contractor" for="field_contractor">Contractor</label>
             <input type="text" class="form-control" name="contractor" id="field_contractor"
-                    ng-model="vm.contractInfo.contractor"
+                    ng-model="vm.contractInfo.contractor" ng-required="true" ng-minlength="1" ng-maxlength="100"
                      />
+             <div ng-show="myForm.contractor.$dirty&&myForm.contractor.$error.minlength" class="alert alert-danger help-block"> 
+                    	合同方公司必填
+             </div>
+             <div ng-show="myForm.contractor.$dirty&&myForm.contractor.$error.maxlength" class="alert alert-danger help-block"> 
+                    	合同方公司名称不能大于100
+             </div>        
         </div>
         <div class="form-group">
             <label class="control-label" data-translate="cpmApp.contractInfo.address" for="field_address">Address</label>
             <input type="text" class="form-control" name="address" id="field_address"
-                    ng-model="vm.contractInfo.address"
+                    ng-model="vm.contractInfo.address" ng-required="true" ng-minlength="1"
                      />
+             <div ng-show="myForm.address.$dirty&&myForm.address.$error.minlength" class="alert alert-danger help-block"> 
+                    	合同方通信地址必填
+             </div>
         </div>
         <div class="form-group">
             <label class="control-label" data-translate="cpmApp.contractInfo.postcode" for="field_postcode">Postcode</label>
             <input type="text" class="form-control" name="postcode" id="field_postcode"
-                    ng-model="vm.contractInfo.postcode"
+                    ng-model="vm.contractInfo.postcode" ng-required="true" ng-minlength="1" ng-minlength="15"
                      />
+            <div ng-show="myForm.postcode.$dirty&&myForm.postcode.$error.minlength" class="alert alert-danger help-block"> 
+                    	合同方邮编必填
+           	</div>
+           	<div ng-show="myForm.postcode.$dirty&&myForm.postcode.$error.maxlength" class="alert alert-danger help-block"> 
+                    	合同方邮编不能大于15
+          	</div>
         </div>
         <div class="form-group">
             <label class="control-label" data-translate="cpmApp.contractInfo.linkman" for="field_linkman">Linkman</label>
             <input type="text" class="form-control" name="linkman" id="field_linkman"
-                    ng-model="vm.contractInfo.linkman"
+                    ng-model="vm.contractInfo.linkman" ng-required="true" ng-minlength="1" ng-minlength="15"
                      />
+             <div ng-show="myForm.linkman.$dirty&&myForm.linkman.$error.minlength" class="alert alert-danger help-block"> 
+                    	合同方联系人必填
+           	</div>
+           	<div ng-show="myForm.linkman.$dirty&&myForm.linkman.$error.maxlength" class="alert alert-danger help-block"> 
+                    	合同方联系人名称不能大于15
+          	</div>
         </div>
         <div class="form-group">
             <label class="control-label" data-translate="cpmApp.contractInfo.contactDept" for="field_contactDept">Contact Dept</label>
@@ -139,33 +198,37 @@
         <div class="form-group">
             <label class="control-label" data-translate="cpmApp.contractInfo.telephone" for="field_telephone">Telephone</label>
             <input type="text" class="form-control" name="telephone" id="field_telephone"
-                    ng-model="vm.contractInfo.telephone"
+                    ng-model="vm.contractInfo.telephone" ng-required="true" ng-minlength="1" ng-minlength="15"
                      />
+            <div ng-show="myForm.telephone.$dirty&&myForm.telephone.$error.minlength" class="alert alert-danger help-block"> 
+                    	合同方联系电话必填
+           	</div>
+           	<div ng-show="myForm.postcode.$dirty&&myForm.postcode.$error.maxlength" class="alert alert-danger help-block"> 
+                    	合同方联系电话不能大于15
+          	</div>
         </div>
         <div class="form-group">
             <label class="control-label" data-translate="cpmApp.contractInfo.receiveTotal" for="field_receiveTotal">Receive Total</label>
             <input type="number" class="form-control" name="receiveTotal" id="field_receiveTotal"
                     ng-model="vm.contractInfo.receiveTotal"
                      />
-        </div>
-        <div class="form-group">
-            <label class="control-label" data-translate="cpmApp.contractInfo.finishRate" for="field_finishRate">Finish Rate</label>
-            <input type="number" class="form-control" name="finishRate" id="field_finishRate"
-                    ng-model="vm.contractInfo.finishRate"
-                     />
+            <div ng-show="myForm.receiveTotal.$dirty&&myForm.receiveTotal.$error.number" class="alert alert-danger help-block"> 
+                    	必须为数字
+            </div>      
         </div>
          <div class="form-group">
-            <label class="control-label" data-translate="cpmApp.contractInfo.status" for="field_status">Status</label>
-            <input type="number" class="form-control" name="status" id="field_status"
-                    ng-model="vm.contractInfo.status"
-                     />
+         	 <label class="control-label" data-translate="cpmApp.contractInfo.status" for="field_status">Status</label>
+           	<select class="form-control" name="status"  ng-model="vm.contractInfo.status" id="field_status"
+			            	ng-options="status.name for status in vm.statuses track by status.id">
+			            	<option value="">--选择合同类型--</option>
+			</select>
         </div>
     </div>
     <div class="modal-footer">
-        <button type="button" class="btn btn-default" ng-click="vm.clear()">
+        <button type="button" class="btn btn-default" ui-sref="{{ vm.previousState }}">
             <span class="glyphicon glyphicon-ban-circle"></span>&nbsp;<span data-translate="entity.action.cancel">Cancel</span>
         </button>
-        <button type="submit" ng-disabled="editForm.$invalid || vm.isSaving" class="btn btn-primary">
+        <button type="submit" ng-disabled="!myForm.$valid || vm.isSaving" class="btn btn-primary">
             <span class="glyphicon glyphicon-save"></span>&nbsp;<span data-translate="entity.action.save">Save</span>
         </button>
     </div>

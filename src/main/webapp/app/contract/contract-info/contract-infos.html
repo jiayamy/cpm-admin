@@ -55,14 +55,26 @@
 		            </div>
 	            </div>
 	            <div class="col-sm-4">
-	            	<div class="col-sm-4">
+	            	<!-- <label class="col-sm-4 control-label" data-translate="cpmApp.contractInfo.salesman">Salesman</label>
+	          		<div class="input-group col-sm-8">
+		          		 <input type="text" class="form-control" name="pm" id="field_pm"
+		                  	ng-model="vm.searchQuery.salesman" readonly ng-required="true" ng-minlength="1"
+	                   	/>
+	                   	<span class="input-group-btn">
+	                     	<button type="button" class="btn btn-default" ui-sref="{{vm.queryDept}}({selectType:3,showChild:true})"><i class="glyphicon glyphicon-user"></i></button>
+	                 	</span>
+	            	</div>  -->
+	            	
+	            
+	            
+	            	<!-- <div class="col-sm-4">
 	            		<button class=" btn btn-primary" ui-sref="contract-info.query({selectType:2,showChild:true})" >
 	                    <span class="glyphicon glyphicon-plus"></span>
 	                    <span class="hidden-xs"  data-translate="cpmApp.contractInfo.salesman">
 	                       	 负责人
 	                    </span>
 	                </button>
-	            	</div>
+	            	</div> -->
 	            	
 	            </div>
 	            <div class="col-sm-4 pull-right input-group">
@@ -152,7 +164,7 @@
                                 <span class="hidden-xs hidden-sm" data-translate="entity.action.view"></span>
                             </button>
                             <button type="submit"
-                                    ui-sref="contract-info.edit({id:contractInfo.id})"
+                                    ui-sref="contract-info.finRate({id:contractInfo.id})"
                                     class="btn btn-primary btn-sm">
                                 <span class="glyphicon glyphicon-pencil"></span>
                                 <span class="hidden-xs hidden-sm" data-translate="cpmApp.contractInfo.finishRate"></span>
