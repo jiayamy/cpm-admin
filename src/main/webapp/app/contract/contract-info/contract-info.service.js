@@ -25,7 +25,8 @@
                     return data;
                 }
             },
-            'update': { method:'PUT' }
+            'update': { method:'PUT' },
+            'finish': { method:'PUT',url:'api/contract-infos/finish' },
         });
     }
 })();

@@ -18,9 +18,14 @@
         
         vm.previousState = previousState.name;
         vm.queryDept = previousState.queryDept;
-        vm.types = [{ id: 1, name: '产品合同' }, { id: 2, name: '外包合同' },{ id: 3, name: '硬件合同' },{ id: 4, name: '公共成本' }];
-        vm.statuses =[{ id: 1, name: '可用' }, { id: 2, name: '完成' },{ id: 3, name: '删除' }];
+        vm.types = [{ key: 1, val: '产品' }, { key: 2, val: '外包' },{ key: 3, val: '硬件' },{ key: 4, val: '公共成本' }];
 
+        for(var j = 0; j < vm.types.length; j++){
+        	if(vm.contractInfo.type == vm.types[j].key){
+        		vm.contractInfo.type = vm.types[j];
+        	}
+        }
+        
         function save () {
         	vm.isSaving = true;
         	console.log(vm.contractInfo);
@@ -30,7 +35,7 @@
         	contractInfo.name = vm.contractInfo.name;
         	contractInfo.amount = vm.contractInfo.amount;
         	
-        	contractInfo.type = vm.contractInfo.type ? vm.contractInfo.type.id : "";
+        	contractInfo.type = vm.contractInfo.type ? vm.contractInfo.type.key : "";
         	contractInfo.isPrepared = vm.contractInfo.isPrepared;
         	contractInfo.isEpibolic = vm.contractInfo.isEpibolic;
         	
@@ -77,8 +82,19 @@
             vm.datePickerOpenStatus[date] = true;
         }
         //部门的处理
-        var unsubscribe = $rootScope.$on('cpmApp:deptInfoSelected', function(event, result) {
-        	vm.contractInfo.salesman = result.name;
+        var unsubscribe = $rootScope.$on('cpmApp:deptInfoSelected', function(event, result, dataType) {
+        	console.log(dataType);
+        	if(dataType == 1){
+        		vm.contractInfo.salesmanId = result.objId;
+        		vm.contractInfo.salesman = result.name;
+        		vm.contractInfo.deptId = result.parentId;
+        		vm.contractInfo.dept = result.parentName;
+        	}else{
+        		vm.contractInfo.consultantsId = result.objId;
+        		vm.contractInfo.consultants = result.name;
+        		vm.contractInfo.consultantsDeptId = result.parentId;
+        		vm.contractInfo.consultantsDept = result.parentName;
+        	}
         });
         $scope.$on('$destroy', unsubscribe);
     }

@@ -3,27 +3,47 @@
         "contractInfo" : {
             "home": {
                 "title": "合同信息",
-                "createLabel": "新建合同",
-                "createOrEditLabel": "新建合同信息",
-                "search": "查找合同"
+                "createLabel": "新建",
+                "createOrEditLabel": "合同信息"
             },
-            "created": "新合同创建的id {{ param }}",
-            "updated": "修改合同的id{{ param }}",
-            "deleted": "删除合同的id {{ param }}",
+            "created": "新建成功",
+            "updated": "更新成功",
+            "deleted": "删除成功",
             "delete": {
-                "question": "确定删除合同 {{ id }}?"
+                "question": "确定删除编号为{{ id }}的合同信息?"
             },
             "detail": {
                 "title": "合同基本信息"
+            },
+            "finish":{
+            	"title": "合同完成率信息",
+            	"minError":"完成率最小值为0",
+            	"maxError":"完成率最大值为100",
+            	"statusError":"状态为已删除或已完成的合同不可修改",
+            	"success":"设置完成率成功"
+            },
+            "save":{
+            	"manallnone":"销售和咨询必填一项",
+            	"requiedError":"必填字段为空",
+            	"endDayError":"结束日期不应在开始日期之前",
+            	"existSerialNum":"合同编号已存在",
+            	"noPerm":"无权限操作",
+            	"statusError":"已删除或已完成的合同不可更改",
+            	"isPreparedError":"正式合同不可在转为预立合同"
+            },
+            "required":{
+            	"salesmanAndconsultants":"销售和咨询必填一个"
             },
             "serialNum": "合同编号",
             "name": "合同名称",
             "amount": "合同金额",
             "type": "合同类型",
-            "isPrepared": "是否预立",
-            "isEpibolic": "是否外包",
-            "salesman":"负责人员",
-           	"dept":"负责人员所属部门",
+            "isPrepared": "预立合同",
+            "isEpibolic": "外部合同",
+            "salesman":"销售",
+           	"dept":"销售部门",
+           	"consultants":"咨询",
+           	"consultantsDept":"咨询部门",
             "startDay": "开始日期",
             "endDay": "结束日期",
             "taxRate": "税率",
