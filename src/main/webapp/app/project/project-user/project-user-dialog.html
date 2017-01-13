@@ -15,6 +15,10 @@
 	            		ng-required="true" ng-disabled="vm.projectUser.id"
 		            	ng-options="projectInfo.val for projectInfo in vm.projectInfos track by projectInfo.key">
 		            </select>
+		            <div class="help-block"
+	                   ng-show="myForm.projectId.$error.required" data-translate="entity.validation.required" style="color:red">
+	                    This field is required.
+	                </div>
 			    </div>
             	<div class="col-sm-6">
             	</div>
@@ -30,12 +34,20 @@
 	                     	<button type="button"  ng-disabled="vm.projectUser.id" class="btn btn-default" ui-sref="{{vm.queryDept}}({selectType:3,showChild:true})"><i class="glyphicon glyphicon-user"></i></button>
 	                 	</span>
 	            	</div>
+	            	<div class="help-block"
+	                   ng-show="myForm.userName.$error.required" data-translate="entity.validation.required" style="color:red">
+	                    This field is required.
+	                </div>
             	</div>
             	<div class="col-sm-6">
 	         		<label class="control-label" data-translate="cpmApp.projectUser.userRole" for="field_userRole">User Role</label>
 	            	<input type="text" class="form-control" name="userRole" id="field_userRole"
 	                    ng-model="vm.projectUser.userRole" ng-required="true" ng-minlength="1" ng-maxlength="100"
 	                     />
+	              	<div class="help-block"
+	                   ng-show="myForm.userRole.$error.required" data-translate="entity.validation.required" style="color:red">
+	                    This field is required.
+	                </div>
 	         	</div>
 			</div>
 	        <div class="form-group">
@@ -49,6 +61,10 @@
 	                    <span class="input-group-btn">
 	                        <button type="button" class="btn btn-default" ng-click="vm.openCalendar('joinDay')"><i class="glyphicon glyphicon-calendar"></i></button>
 	                    </span>
+	                </div>
+	                <div class="help-block"
+	                   ng-show="myForm.joinDay.$error.required" data-translate="entity.validation.required" style="color:red">
+	                    This field is required.
 	                </div>
 	         	</div>
 	         	<div class="col-sm-6">

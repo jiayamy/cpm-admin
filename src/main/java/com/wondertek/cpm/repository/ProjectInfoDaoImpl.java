@@ -46,7 +46,7 @@ public class ProjectInfoDaoImpl extends GenericDaoImpl<ProjectInfo, Long> implem
 		List<Object> params = new ArrayList<Object>();
 		//只有项目经理，预算指定经理，项目创建人，项目部门以上部门管理人员能看到对应的项目
 		
-		sql.append("select a.id,a.serial_num from w_contract_info a where a.id in(");
+		sql.append("select a.id,a.serial_num,a.name_ from w_contract_info a where a.id in(");
 			sql.append("select distinct b.contract_id from (");
 				sql.append("select c.contract_id as contract_id from w_project_info c left join w_dept_info d on d.id = c.dept_id");
 				sql.append(" where c.pm_id = ? or c.creator_ = ?");
@@ -78,7 +78,7 @@ public class ProjectInfoDaoImpl extends GenericDaoImpl<ProjectInfo, Long> implem
 		List<LongValue> returnList = new ArrayList<LongValue>();
 		if(list != null){
 			for(Object[] o : list){
-				returnList.add(new LongValue(StringUtil.nullToLong(o[0]),StringUtil.null2Str(o[1])));
+				returnList.add(new LongValue(StringUtil.nullToLong(o[0]),StringUtil.null2Str(o[1]) + ":" + StringUtil.null2Str(o[2])));
 			}
 		}
 		return returnList;
@@ -367,7 +367,7 @@ public class ProjectInfoDaoImpl extends GenericDaoImpl<ProjectInfo, Long> implem
 		StringBuffer querySql = new StringBuffer();
 		List<Object> params = new ArrayList<Object>();
 		
-		querySql.append(" select wpi.id,wpi.serial_num from w_project_info wpi");
+		querySql.append(" select wpi.id,wpi.serial_num,wpi.name_ from w_project_info wpi");
 		querySql.append(" left join w_dept_info wdi on wpi.dept_id = wdi.id");
 		
 		querySql.append(" where (wpi.pm_id = ? or wpi.creator_ = ?");
@@ -386,7 +386,7 @@ public class ProjectInfoDaoImpl extends GenericDaoImpl<ProjectInfo, Long> implem
 		List<LongValue> returnList = new ArrayList<LongValue>();
 		if(list != null){
 			for(Object[] o : list){
-				returnList.add(new LongValue(StringUtil.nullToLong(o[0]),StringUtil.null2Str(o[1])));
+				returnList.add(new LongValue(StringUtil.nullToLong(o[0]),StringUtil.null2Str(o[1]) + ":" + StringUtil.null2Str(o[2])));
 			}
 		}
 		return returnList;

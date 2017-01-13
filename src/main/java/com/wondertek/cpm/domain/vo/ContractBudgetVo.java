@@ -104,5 +104,4 @@ public class ContractBudgetVo {
 	public void setContractId(Long contractId) {
 		this.contractId = contractId;
 	}
-	
 }

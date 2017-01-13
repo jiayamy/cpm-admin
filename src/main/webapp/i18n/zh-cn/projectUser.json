@@ -24,6 +24,7 @@
             	"noPerm":"无权操作"
             },
             "projectId": "项目编号",
+            "projectName":"项目名称",
             "userId": "员工ID",
             "userName": "员工",
             "userRole": "角色",

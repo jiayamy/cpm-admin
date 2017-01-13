@@ -1,6 +1,5 @@
 package com.wondertek.cpm.web.rest;
 
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -21,7 +20,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -51,49 +49,6 @@ public class UserTimesheetResource {
         
     @Inject
     private UserTimesheetService userTimesheetService;
-
-    /**
-     * POST  /user-timesheets : Create a new userTimesheet.
-     *
-     * @param userTimesheet the userTimesheet to create
-     * @return the ResponseEntity with status 201 (Created) and with body the new userTimesheet, or with status 400 (Bad Request) if the userTimesheet has already an ID
-     * @throws URISyntaxException if the Location URI syntax is incorrect
-     */
-    @PostMapping("/user-timesheets")
-    @Timed
-    public ResponseEntity<UserTimesheet> createUserTimesheet(@RequestBody UserTimesheet userTimesheet) throws URISyntaxException {
-        log.debug("REST request to save UserTimesheet : {}", userTimesheet);
-        if (userTimesheet.getId() != null) {
-            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("userTimesheet", "idexists", "A new userTimesheet cannot already have an ID")).body(null);
-        }
-        UserTimesheet result = userTimesheetService.save(userTimesheet);
-        return ResponseEntity.created(new URI("/api/user-timesheets/" + result.getId()))
-            .headers(HeaderUtil.createEntityCreationAlert("userTimesheet", result.getId().toString()))
-            .body(result);
-    }
-
-    /**
-     * PUT  /user-timesheets : Updates an existing userTimesheet.
-     *
-     * @param userTimesheet the userTimesheet to update
-     * @return the ResponseEntity with status 200 (OK) and with body the updated userTimesheet,
-     * or with status 400 (Bad Request) if the userTimesheet is not valid,
-     * or with status 500 (Internal Server Error) if the userTimesheet couldnt be updated
-     * @throws URISyntaxException if the Location URI syntax is incorrect
-     */
-    @PutMapping("/user-timesheets")
-    @Timed
-    public ResponseEntity<UserTimesheet> updateUserTimesheet(@RequestBody UserTimesheet userTimesheet) throws URISyntaxException {
-        log.debug("REST request to update UserTimesheet : {}", userTimesheet);
-        if (userTimesheet.getId() == null) {
-            return createUserTimesheet(userTimesheet);
-        }
-        UserTimesheet result = userTimesheetService.save(userTimesheet);
-        return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert("userTimesheet", userTimesheet.getId().toString()))
-            .body(result);
-    }
-
     /**
      * GET  /user-timesheets : get all the userTimesheets.
      *

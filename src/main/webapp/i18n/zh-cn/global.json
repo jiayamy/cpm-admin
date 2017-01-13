@@ -10,7 +10,7 @@
                 "userTimesheet": "员工日报"
             },
             "info":{
-	        	"main":"基础信息",
+	        	"main":"系统设置",
                 "deptType": "部门类型",
                 "deptInfo": "部门信息",
 	            "userManagement":"用户管理",
@@ -33,7 +33,7 @@
             	"main":"项目管理",
                 "projectInfo": "项目信息",
                 "projectUser": "项目人员",
-                "projectCost": "项目成本",
+                "projectCost": "项目报销",
                 "projectTimesheet": "项目工时",
                 "projectFinishInfo": "项目完成情况"
             },
@@ -49,7 +49,7 @@
                 "jhipster-needle-menu-add-entry": "JHipster will add additional entities here (do not translate!)"
             },
             "account": {
-                "main": "账号",
+                "main": "个人账号",
                 "settings": "设置",
                 "password": "密码",
                 "sessions": "会话",
