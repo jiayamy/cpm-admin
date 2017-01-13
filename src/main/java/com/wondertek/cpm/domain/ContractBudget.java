@@ -174,6 +174,20 @@ public class ContractBudget implements Serializable {
     public void setDept(String dept) {
         this.dept = dept;
     }
+    
+    public String getName() {
+        return name;
+    }
+
+    public ContractBudget Name(String name) {
+        this.name = name;
+        return this;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
 
     public Integer getPurchaseType() {
         return purchaseType;

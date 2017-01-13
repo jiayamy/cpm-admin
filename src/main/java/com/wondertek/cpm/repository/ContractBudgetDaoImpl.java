@@ -37,7 +37,7 @@ public class ContractBudgetDaoImpl extends GenericDaoImpl<ContractBudget, Long> 
 	}
 
 	@Override
-	public Page<ContractBudgetVo> getPageByParams(String name, String serialNum,Pageable pageable) {
+	public Page<ContractBudgetVo> getPageByParams(String name, String serialNum,String budgetName,Pageable pageable) {
 		StringBuffer sql = new StringBuffer();
 		sql.append(" from w_contract_info ci inner join w_contract_budget cb on cb.contract_id = ci.id where 1=1");
 		List<Object> params = new ArrayList<Object>();
@@ -48,6 +48,10 @@ public class ContractBudgetDaoImpl extends GenericDaoImpl<ContractBudget, Long> 
 		if (!StringUtil.isNullStr(name)) {
 			sql.append(" and ci.name_ like ?");
 			params.add("%" + name + "%");
+		}
+		if (!StringUtil.isNullStr(budgetName)) {
+			sql.append(" and cb.name_ like ?");
+			params.add("%" + budgetName + "%");
 		}
 		StringBuffer orderSql = new StringBuffer();
     	if(pageable.getSort() != null){
@@ -60,27 +64,6 @@ public class ContractBudgetDaoImpl extends GenericDaoImpl<ContractBudget, Long> 
     			}else{
     				orderSql.append(" order by ");
     			}
-//    			if ("id".equals(order.getProperty())) {
-//					orderSql.append("cb.id");
-//				}else if ("serial_num".equals(order.getProperty())) {
-//					orderSql.append("ci.serial_num");
-//				}else if ("name_".equals(order.getProperty())) {
-//					orderSql.append("ci.name_");
-//				}else if ("user_name".equals(order.getProperty())) {
-//					orderSql.append("cb.user_name");
-//				}else if ("dept_".equals(order.getProperty())) {
-//					orderSql.append("cb.dept_");
-//				}else if ("budget_total".equals(order.getProperty())) {
-//					orderSql.append("cb.budget_total");
-//				}else if ("status_".equals(order.getProperty())) {
-//					orderSql.append("cb.status_");
-//				}else if ("create_time".equals(order.getProperty())) {
-//					orderSql.append("cb.create_time");
-//				}else if ("update_time".equals(order.getProperty())) {
-//					orderSql.append("cb.update_time");
-//				}else{
-//					orderSql.append(order.getProperty());
-//				}
     			orderSql.append(order.getProperty());
     			if(order.isAscending()){
     				orderSql.append(" asc");
@@ -90,7 +73,7 @@ public class ContractBudgetDaoImpl extends GenericDaoImpl<ContractBudget, Long> 
     	}
     		
    }
-    	String querySql = "select cb.id,ci.name_,ci.serial_num,cb.budget_total,cb.user_name,cb.dept_,cb.status_,cb.create_time,cb.update_time,cb.purchase_type" + sql.toString() + orderSql.toString();
+    	String querySql = "select cb.id,ci.name_,ci.serial_num,cb.name_ n,cb.budget_total,cb.user_name,cb.dept_,cb.status_,cb.create_time,cb.update_time,cb.purchase_type" + sql.toString() + orderSql.toString();
 		String countSql = "select count(ci.id)" + sql.toString();
 		Page<Object[]> page = this.querySqlPage(querySql, countSql, params.toArray(), pageable);
 		List<ContractBudgetVo> returnList = new ArrayList<ContractBudgetVo>();
@@ -108,16 +91,33 @@ public class ContractBudgetDaoImpl extends GenericDaoImpl<ContractBudget, Long> 
 		vo.setId(StringUtil.nullToLong(o[0]));
 		vo.setName(StringUtil.null2Str(o[1]));
 		vo.setSerialNum(StringUtil.null2Str(o[2]));
-		vo.setBudgetTotal(StringUtil.nullToDouble(o[3]));
-		vo.setUserName(StringUtil.null2Str(o[4]));
-		vo.setDept(StringUtil.null2Str(o[5]));
-		vo.setStatus(StringUtil.nullToInteger(o[6]));
-		vo.setCreateTime(DateUtil.getZonedDateTime((Timestamp) o[7]));
-		vo.setUpdateTime(DateUtil.getZonedDateTime((Timestamp) o[8]));
-		vo.setPurchaseType(StringUtil.nullToInteger(o[9]));
+		vo.setBudgetName(StringUtil.null2Str(o[3]));
+		vo.setBudgetTotal(StringUtil.nullToDouble(o[4]));
+		vo.setUserName(StringUtil.null2Str(o[5]));
+		vo.setDept(StringUtil.null2Str(o[6]));
+		vo.setStatus(StringUtil.nullToInteger(o[7]));
+		vo.setCreateTime(DateUtil.getZonedDateTime((Timestamp) o[8]));
+		vo.setUpdateTime(DateUtil.getZonedDateTime((Timestamp) o[9]));
+		vo.setPurchaseType(StringUtil.nullToInteger(o[10]));
 
 		return vo;
 		
+	}
+
+	@Override
+	public Boolean checkBudgetExit(ContractBudgetVo contractBudgetVo) {
+		StringBuffer querySql = new StringBuffer();
+		List<Object> params = new ArrayList<Object>();
+		
+		querySql.append("select wcb.contract_id,wpi.id from w_contract_budget wcb left join w_project_info wpi on wpi.budget_id = wcb.id");
+		querySql.append(" and wcb.id = ?");
+		params.add(contractBudgetVo.getName());
+		
+		List<Object[]> list = this.queryAllSql(querySql.toString(), params.toArray());
+		if (list == null || list.isEmpty()) {
+			return true;
+		}
+		return false;
 	}
 }
 	

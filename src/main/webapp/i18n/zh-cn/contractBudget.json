@@ -30,6 +30,7 @@
             "updateTime": "更新时间",
             "serialNum": "合同编号",
             "name": "合同名称",
+            "budgetName": "采购单名称",
             "purchaseType": "采购单类型"
         }
     }

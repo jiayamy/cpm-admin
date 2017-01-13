@@ -1,120 +1,85 @@
-<div>
-    <h2 data-translate="cpmApp.contractBudget.home.createOrEditLabel">Create or edit a Contract Budget</h2>
-    <jhi-alert></jhi-alert>
-	<form name="editForm" role="form" novalidate ng-submit="vm.save()">
-	        <div class="form-group" ng-show="vm.contractBudget.id">
-	            <label for="id" data-translate="global.field.id">ID</label>
-	            <input type="text" class="form-control" id="id" name="id"
-	                    ng-model="vm.contractBudget.id" readonly />
-	        </div>
-	        <div class="form-group">
-	            <label class="control-label" data-translate="cpmApp.contractBudget.contractId" for="field_contractId">Contract Id</label>
-	            <input type="number" class="form-control" name="contractId" id="field_contractId"
-	                    ng-model="vm.contractBudget.contractId"
-	                     />
-	        </div>
-	        <div class="form-group">
-	            <label class="control-label" data-translate="cpmApp.contractBudget.type" for="field_type">Type</label>
-	            <input type="number" class="form-control" name="type" id="field_type"
-	                    ng-model="vm.contractBudget.type"
-	                     />
-	        </div>
-	        <div class="form-group">
-	            <label class="control-label" data-translate="cpmApp.contractBudget.userId" for="field_userId">User Id</label>
-	            <input type="text" class="form-control" name="userId" id="field_userId"
-	                    ng-model="vm.contractBudget.userId"
-	                     />
-	        </div>
-	        <div class="form-group">
-	            <label class="control-label" data-translate="cpmApp.contractBudget.userName" for="field_userName">User Name</label>
-	            <input type="text" class="form-control" name="userName" id="field_userName"
-	                    ng-model="vm.contractBudget.userName"
-	                     />
-	        </div>
-	        <div class="form-group">
-	            <label class="control-label" data-translate="cpmApp.contractBudget.dept" for="field_dept">Dept</label>
-	            <input type="text" class="form-control" name="dept" id="field_dept"
-	                    ng-model="vm.contractBudget.dept"
-	                     />
-	        </div>
-	        <div class="form-group">
-	            <label class="control-label" data-translate="cpmApp.contractBudget.purchaseType" for="field_purchaseType">Purchase Type</label>
-	            <input type="number" class="form-control" name="purchaseType" id="field_purchaseType"
-	                    ng-model="vm.contractBudget.purchaseType"
-	                     />
-	        </div>
-	        <div class="form-group">
-	            <label class="control-label" data-translate="cpmApp.contractBudget.budgetTotal" for="field_budgetTotal">Budget Total</label>
-	            <input type="number" class="form-control" name="budgetTotal" id="field_budgetTotal"
-	                    ng-model="vm.contractBudget.budgetTotal"
-	                     />
-	        </div>
-	        <div class="form-group">
-	            <label class="control-label" data-translate="cpmApp.contractBudget.status" for="field_status">Status</label>
-	            <input type="number" class="form-control" name="status" id="field_status"
-	                    ng-model="vm.contractBudget.status"
-	                     />
-	        </div>
-	        <div class="form-group">
-	            <label class="control-label" data-translate="cpmApp.contractBudget.creator" for="field_creator">Creator</label>
-	            <input type="text" class="form-control" name="creator" id="field_creator"
-	                    ng-model="vm.contractBudget.creator"
-	                     />
-	        </div>
-	        <div class="form-group">
-	            <label class="control-label" data-translate="cpmApp.contractBudget.createTime" for="field_createTime">Create Time</label>
-	                <div class="input-group">
-	                    <input id="field_createTime" type="text" class="form-control" name="createTime" datetime-picker="{{dateformat}}" ng-model="vm.contractBudget.createTime" is-open="vm.datePickerOpenStatus.createTime"
-	                      />
-	                    <span class="input-group-btn">
-	                        <button type="button" class="btn btn-default" ng-click="vm.openCalendar('createTime')"><i class="glyphicon glyphicon-calendar"></i></button>
-	                    </span>
-	                </div>
-	        </div>
-	        <div class="form-group">
-	            <label class="control-label" data-translate="cpmApp.contractBudget.updator" for="field_updator">Updator</label>
-	            <input type="text" class="form-control" name="updator" id="field_updator"
-	                    ng-model="vm.contractBudget.updator"
-	                     />
-	        </div>
-	        <div class="form-group">
-	            <label class="control-label" data-translate="cpmApp.contractBudget.updateTime" for="field_updateTime">Update Time</label>
-	                <div class="input-group">
-	                    <input id="field_updateTime" type="text" class="form-control" name="updateTime" datetime-picker="{{dateformat}}" ng-model="vm.contractBudget.updateTime" is-open="vm.datePickerOpenStatus.updateTime"
-	                      />
-	                    <span class="input-group-btn">
-	                        <button type="button" class="btn btn-default" ng-click="vm.openCalendar('updateTime')"><i class="glyphicon glyphicon-calendar"></i></button>
-	                    </span>
-	                </div>
-	        </div>
-	
-	    </div>
-	    <button id="go_back" type="button" ui-sref="{{vm.previousState}}" class="btn btn-info">
-	        <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span data-translate="entity.action.back"> Back</span>
-	    </button>
-	    <button type="submit" class="btn btn-primary">
-	        <span class="glyphicon glyphicon-pencil"></span>
-	        <span class="hidden-xs hidden-sm" data-translate="entity.action.save"> Save</span>
-	    </button>
-	</form>
-</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+<h2><span data-translate="cpmApp.contractBudget.home.createOrEditLabel">Create or edit a Project Info</span></h2>
+<hr>
+<jhi-alert-error></jhi-alert-error>
+<form name="myForm" role="form" ng-submit="vm.save()">
+	<div class="container-fluid">
+		<div class="row form-horizontal">
+			<div class="form-group">
+				<div class="col-sm-6">
+					<label class="control-label" data-translate="cpmApp.contractBudget.name" for="field_contractId">Contract Id</label>
+	            	<select class="form-control" name="contractId" ng-model="vm.contractBudget.contractId" id="field_contractId"
+	            		ng-required="true" ng-change="vm.contractChanged()" ng-disabled="vm.contractBudget.id"
+		            	ng-options="contractInfo.val for contractInfo in vm.contractInfos track by contractInfo.key">
+		            </select>
+				</div>
+				<div class="col-sm-6">
+	          		<label class="control-label" data-translate="cpmApp.contractBudget.budgetTotal" for="field_budgetTotal">Budget Total</label>
+	          		<input type="number" class="form-control" name="budgetTotal" id="field_budgetTotal"
+	              		ng-model="vm.contractBudget.budgetTotal" step="0.01" min="0"
+	                  	/>
+	                <div ng-show="myForm.budgetTotal.$dirty&&myForm.budgetTotal.$error.number" class="alert alert-danger help-block"> 
+                    	必须为数字
+                	</div>
+                	<div ng-show="myForm.budgetTotal.$dirty&&myForm.budgetTotal.$error.min" class="alert alert-danger help-block"> 
+                		项目预算最小值为0
+           			</div>
+	   			</div>
+	     	</div>
+	     	<div class="form-group">
+	     		<div class="col-sm-6">
+					<label class="control-label" data-translate="cpmApp.contractBudget.budgetName" for="field_budgetName">Budget Name</label>
+	         		<input type="text" class="form-control" name="name" id="field_budgetName"
+	                 	ng-model="vm.contractBudget.budgetName" ng-required="true" ng-minlength="1" ng-maxlength="100"
+	                  	/>
+	             	<div ng-show="myForm.name.$dirty&&myForm.name.$error.minlength" class="alert alert-danger help-block"> 
+                    	合同名称必填
+                	</div>
+                	<div ng-show="myForm.name.$dirty&&myForm.name.$error.maxlength" class="alert alert-danger help-block"> 
+                    	合同名称不能大于100
+                	</div>
+				</div>
+				<div class="col-sm-6">
+					<label class="control-label" data-translate="cpmApp.contractBudget.purchaseType" for="field_purchaseType" >Purchase Type</label>
+	                <select class="form-control" name="purchaseType" ng-model="vm.contractBudget.purchaseType" id="field_purchaseType"
+	            		ng-required="true" ng-disabled="vm.contractBudget.id"
+		            	ng-options="purchaseType.name for purchaseType in vm.purchaseTypes track by purchaseType.id">
+		            </select>
+				</div>
+	     	</div>
+	     	<div class="form-group">
+	     		<div class="col-sm-6">
+	          		<label class="control-label" data-translate="cpmApp.contractBudget.userName" for="field_pm">User name</label>
+	          		<div class="input-group">
+		          		<input type="text" class="form-control" name="pm" id="field_pm"
+		                  	ng-model="vm.contractBudget.userName" readonly ng-required="true" ng-minlength="1"
+	                   	/>
+	                   	<span class="input-group-btn">
+	                     	<button type="button" class="btn btn-default" ui-sref="{{vm.queryDept}}({selectType:3,showChild:true})"><i class="glyphicon glyphicon-user"></i></button>
+	                 	</span>
+	            	</div>
+	      		</div>
+				<div class="col-sm-6">
+	     			<label class="control-label" data-translate="cpmApp.contractBudget.dept" for="field_dept" >Dept</label>
+	  				<input type="text" class="form-control" name="dept" id="field_dept"
+	                  	ng-model="vm.contractBudget.dept" readonly ng-required="true" ng-minlength="1"
+	                   	/>
+				</div>
+	     	</div>
+	     	<div class="form-group">
+				<div class="col-sm-6">
+	     		</div>
+	     	<div class="form-group">
+	     		
+	     	</div>
+		</div>
+	</div>
+	<hr>
+	<button type="submit"
+        ui-sref="{{ vm.previousState }}"
+        class="btn btn-info">
+        <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span data-translate="entity.action.back"> Back</span>
+    </button>
+    <button type="submit" ng-disabled="!myForm.$valid || vm.isSaving" class="btn btn-primary">
+        <span class="glyphicon glyphicon-save"></span>&nbsp;<span data-translate="entity.action.save">Save</span>
+    </button>
+</form>

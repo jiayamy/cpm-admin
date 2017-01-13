@@ -19,30 +19,47 @@
         vm.search = search;
         vm.loadAll = loadAll;
         vm.searchQuery = {}
-        
+        var purchaseType = pagingParams.purchaseType;
+        if (purchaseType) {
+			if (purchaseType == 1) {
+				purchaseType = { id: 1, name: '硬件'};
+			}else if (purchaseType == 2) {
+				purchaseType = { id: 2, name: '软件'};
+			}else if (purchaseType == 3) {
+				purchaseType = { id: 3, name: '服务'};
+			}
+		}
+        vm.searchQuery.purchaseType = pagingParams.purchaseType;
         vm.searchQuery.serialNum = pagingParams.serialNum;
         vm.searchQuery.name = pagingParams.name;
+        vm.searchQuery.budgetName = pagingParams.budgetName;
         vm.currentSearch = {};
+        vm.currentSearch.purchaseType = pagingParams.purchaseType;
         vm.currentSearch.serialNum = pagingParams.serialNum;
         vm.currentSearch.name = pagingParams.name;
-        if (!vm.currentSearch.serialNum && !vm.currentSearch.name){
+        vm.currentSearch.budgetName = pagingParams.budgetName;
+        if (!vm.currentSearch.serialNum && !vm.currentSearch.name && !vm.currentSearch.budgetName){
         	vm.currentSearch.haveSearch = null;
         }else{
         	vm.currentSearch.haveSearch = true;
         }
-        
+        vm.purchaseTypes = [{ id: 1, name: '硬件' }, { id: 2, name: '软件' }, { id: 3, name: '服务'}];
         loadAll();
 
         function loadAll () {
-            	if(!pagingParams.serialNum){
+            	if(pagingParams.serialNum == undefined){
             		pagingParams.serialNum = "";
             	}
-            	if(!pagingParams.name){
+            	if(pagingParams.name == undefined){
             		pagingParams.name = "";
             	}
+            	if (pagingParams.budgetName == undefined) {
+					pagingParams.budgetName = "";
+				}
             	ContractBudget.query({
             		name: pagingParams.name,
             		serialNum: pagingParams.serialNum,
+            		budgetName: pagingParams.budgetName,
                     page: pagingParams.page - 1,
                     size: vm.itemsPerPage,
                     sort: sort()
@@ -59,7 +76,6 @@
                 vm.totalItems = headers('X-Total-Count');
                 vm.queryCount = vm.totalItems;
                 vm.contractBudgets = handleData(data);
-                console.log(vm.contractBudgets.serialNum);
                 vm.page = pagingParams.page;
             }
             function onError(error) {
@@ -95,12 +111,13 @@
                 page: vm.page,
                 sort: vm.predicate + ',' + (vm.reverse ? 'asc' : 'desc'),
                 serialNum:vm.currentSearch.serialNum,
-                name:vm.currentSearch.name
+                name:vm.currentSearch.name,
+                budgetName:vm.currentSearch.budgetName
             });
         }
 
         function search(searchQuery) {
-            if (!searchQuery.serialNum && !searchQuery.name){
+            if (!searchQuery.serialNum && !searchQuery.name && !searchQuery.budgetName){
                 return vm.clear();
             }
             vm.links = null;

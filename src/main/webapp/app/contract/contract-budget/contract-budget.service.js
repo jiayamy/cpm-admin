@@ -34,7 +34,12 @@
                     return data;
                 }
             },
-            'update': { method:'PUT' }
+            'update': { method:'PUT' },
+            'queryUserContract':{
+            	url:'api/contract-budgets/queryUserContract',
+            	method:'GET',
+            	isArray:true
+            }
         });
     }
 })();

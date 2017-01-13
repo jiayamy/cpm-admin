@@ -11,7 +11,7 @@
         $stateProvider
         .state('contract-budget', {
             parent: 'contract',
-            url: '/contract-budget?page&sort&serialNum&name',
+            url: '/contract-budget?page&sort&serialNum&name&budgetName',
             data: {
                 authorities: ['ROLE_USER'],
                 pageTitle: 'cpmApp.contractBudget.home.title'
@@ -33,7 +33,8 @@
                     squash: true
                 },
                 serialNum: null,
-                name: null
+                name: null,
+                budgetName: null
             },
             resolve: {
                 pagingParams: ["$state",'$stateParams', 'PaginationUtil', function ($state,$stateParams, PaginationUtil) {
@@ -43,7 +44,8 @@
                         predicate: PaginationUtil.parsePredicate($stateParams.sort),
                         ascending: PaginationUtil.parseAscending($stateParams.sort),
                         serialNum: $stateParams.serialNum,
-                        name: $stateParams.name
+                        name: $stateParams.name,
+                        budgetName: $stateParams.budgetName
                         
                     };
                 }],
@@ -92,17 +94,53 @@
             data: {
                 authorities: ['ROLE_USER']
             },
+            views: {
+            	'content@': {
+            		 templateUrl: 'app/contract/contract-budget/contract-budget-dialog.html',
+                     controller: 'ContractBudgetDialogController',
+                     controllerAs: 'vm'
+            	}
+            },
+            resolve: {
+            	translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
+                    $translatePartialLoader.addPart('contractBudget');
+                    $translatePartialLoader.addPart('deptInfo');
+                    return $translate.refresh();
+                }],
+            	entity: ['ContractBudget','$stateParams', function(ContractBudget,$stateParams) {
+            		return ContractBudget.get({id : $stateParams.id}).$promise;
+            	}],
+            	 previousState: ["$state", function ($state) {
+                     var currentStateData = {
+                     	queryDept:'contract-budget-detail.edit.queryDept',
+                         name: $state.current.name || 'contract-budget-detail',
+                         params: $state.params,
+                         url: $state.href($state.current.name, $state.params)
+                     };
+                     return currentStateData;
+            	 }]
+            }
+        })
+        .state('contract-budget-detail.edit.queryDept', {
+            parent: 'contract-budget-detail.edit',
+            url: '/queryDept?selectType&showChild',
+            data: {
+                authorities: ['ROLE_PROJECT_INFO']
+            },
             onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
                 $uibModal.open({
-                    templateUrl: 'app/contract/contract-budget/contract-budget-dialog.html',
-                    controller: 'ContractBudgetDialogController',
+                    templateUrl: 'app/info/dept-info/dept-info-query.html',
+                    controller: 'DeptInfoQueryController',
                     controllerAs: 'vm',
                     backdrop: 'static',
                     size: 'lg',
                     resolve: {
-                        entity: ['ContractBudget', function(ContractBudget) {
-                            return ContractBudget.get({id : $stateParams.id}).$promise;
-                        }]
+                        entity: function() {
+                            return {
+                            	selectType : $stateParams.selectType,
+                            	showChild : $stateParams.showChild
+                            }
+                        }
                     }
                 }).result.then(function() {
                     $state.go('^', {}, { reload: false });
@@ -117,36 +155,67 @@
             data: {
                 authorities: ['ROLE_USER']
             },
+            views: {
+            	'content@': {
+            		templateUrl: 'app/contract/contract-budget/contract-budget-dialog.html',
+            		controller: 'ContractBudgetDialogController',
+            		controllerAs: 'vm'
+            	}
+            },
+           	resolve: {
+           		translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
+                    $translatePartialLoader.addPart('contractBudget');
+                    $translatePartialLoader.addPart('deptInfo');
+                    return $translate.refresh();
+                }],
+                entity: function () {
+                    return {
+                    	serialNum: null,
+                    	name: null,
+                    	budgetName: null,
+                        userName: null,
+                        dept: null,
+                        purchaseType: null,
+                        budgetTotal: null,
+                        id: null
+                    };
+                },
+                previousState: ["$state", function ($state) {
+                    var currentStateData = {
+                    	queryDept:'contract-budget.new.queryDept',
+                        name: $state.current.name || 'contract-budget',
+                        params: $state.params,
+                        url: $state.href($state.current.name, $state.params)
+                    };
+                    return currentStateData;
+                }]
+            }
+        })
+        .state('contract-budget.new.queryDept', {
+            parent: 'contract-budget.new',
+            url: '/queryDept?selectType&showChild',
+            data: {
+                authorities: ['ROLE_PROJECT_INFO']
+            },
             onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
                 $uibModal.open({
-                    templateUrl: 'app/contract/contract-budget/contract-budget-dialog.html',
-                    controller: 'ContractBudgetDialogController',
+                    templateUrl: 'app/info/dept-info/dept-info-query.html',
+                    controller: 'DeptInfoQueryController',
                     controllerAs: 'vm',
                     backdrop: 'static',
                     size: 'lg',
                     resolve: {
-                        entity: function () {
+                        entity: function() {
                             return {
-                                contractId: null,
-                                type: null,
-                                userId: null,
-                                userName: null,
-                                dept: null,
-                                purchaseType: null,
-                                budgetTotal: null,
-                                status: null,
-                                creator: null,
-                                createTime: null,
-                                updator: null,
-                                updateTime: null,
-                                id: null
-                            };
+                            	selectType : $stateParams.selectType,
+                            	showChild : $stateParams.showChild
+                            }
                         }
                     }
                 }).result.then(function() {
-                    $state.go('contract-budget', null, { reload: 'contract-budget' });
+                    $state.go('^', {}, { reload: false });
                 }, function() {
-                    $state.go('contract-budget');
+                    $state.go('^');
                 });
             }]
         })
@@ -159,13 +228,14 @@
             views: {
             	'content@': {
                     templateUrl: 'app/contract/contract-budget/contract-budget-dialog.html',
-                    controller: 'ContractBudgetController',
+                    controller: 'ContractBudgetDialogController',
                     controllerAs: 'vm'
                 }
             },
             resolve: {
             	translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
 	                $translatePartialLoader.addPart('contractBudget');
+	                $translatePartialLoader.addPart('deptInfo');
 	                return $translate.refresh();
                 }],
                 entity: ['$stateParams','ContractBudget', function($stateParams,ContractBudget) {
@@ -173,6 +243,7 @@
                  }],
                  previousState: ["$state", function ($state) {
  	                var currentStateData = {
+ 	                	queryDept:'contract-budget.edit.queryDept',
  	                    name: $state.current.name || 'contract-budget',
  	                    params: $state.params,
  	                    url: $state.href($state.current.name, $state.params)
@@ -180,6 +251,34 @@
  	                return currentStateData;
  	            }]
              }
+        })
+        .state('contract-budget.edit.queryDept', {
+            parent: 'contract-budget.edit',
+            url: '/queryDept?selectType&showChild',
+            data: {
+                authorities: ['ROLE_PROJECT_INFO']
+            },
+            onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
+                $uibModal.open({
+                    templateUrl: 'app/info/dept-info/dept-info-query.html',
+                    controller: 'DeptInfoQueryController',
+                    controllerAs: 'vm',
+                    backdrop: 'static',
+                    size: 'lg',
+                    resolve: {
+                        entity: function() {
+                            return {
+                            	selectType : $stateParams.selectType,
+                            	showChild : $stateParams.showChild
+                            }
+                        }
+                    }
+                }).result.then(function() {
+                    $state.go('^', {}, { reload: false });
+                }, function() {
+                    $state.go('^');
+                });
+            }]
         })
         .state('contract-budget.delete', {
             parent: 'contract-budget',
