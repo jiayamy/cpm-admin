@@ -861,11 +861,25 @@ public class DateUtil {
 		}
 		cal.add(Calendar.DATE, -(7 + (n - 1)));// 上周一的日期
 		cal.add(Calendar.DATE, 5);
-		cal.set(Calendar.HOUR, 0);
+		cal.set(Calendar.HOUR_OF_DAY, 0);
 		cal.set(Calendar.MINUTE, 0);
 		cal.set(Calendar.SECOND, 0);
 		Date Saturday = cal.getTime();
 		return Saturday;
+	}
+	
+	public static Date lastMonday(){
+		Calendar cal = Calendar.getInstance();
+		int n = cal.get(Calendar.DAY_OF_WEEK) - 1;
+		if (n == 0) {
+			n = 7;
+		}
+		cal.add(Calendar.DATE, -(7 + (n - 1)));// 上周一的日期
+		cal.set(Calendar.HOUR_OF_DAY, 0);
+		cal.set(Calendar.MINUTE, 0);
+		cal.set(Calendar.SECOND, 0);
+		Date Monday = cal.getTime();
+		return Monday;
 	}
 	
 	/**
@@ -878,17 +892,18 @@ public class DateUtil {
 		if (n == 0) {
 			n = 7;
 		}
+		
 		cal.add(Calendar.DATE, -(7 + (n - 1)));// 上周一的日期
 		cal.add(Calendar.DATE, 6);
-		cal.set(Calendar.HOUR, 23);
+		cal.set(Calendar.HOUR_OF_DAY, 23);
 		cal.set(Calendar.MINUTE, 59);
 		cal.set(Calendar.SECOND, 59);
-		Date Saturday = cal.getTime();
-		return Saturday;
+		Date Sunday = cal.getTime();
+		return Sunday;
 	}
 	
 	/**
-	 * 获取上月最后一天
+	 * 获取上月最后一天23:59:59
 	 * @return
 	 */
 	public static Date lastMonthend() {
@@ -896,9 +911,25 @@ public class DateUtil {
 		int month = cal.get(Calendar.MONTH);
 		cal.set(Calendar.MONTH, month - 1);
 		cal.set(Calendar.DAY_OF_MONTH, cal.getActualMaximum(Calendar.DAY_OF_MONTH));
-		cal.set(Calendar.HOUR, 23);
+		cal.set(Calendar.HOUR_OF_DAY, 23);
 		cal.set(Calendar.MINUTE, 59);
 		cal.set(Calendar.SECOND, 59);
+		Date strDateTo = cal.getTime();
+		return strDateTo;
+	}
+	
+	/**
+	 * 获取上月第一天 0：0：0
+	 * @return
+	 */
+	public static Date lastMonthBegin(){
+		Calendar cal = Calendar.getInstance();
+		int month = cal.get(Calendar.MONTH);
+		cal.set(Calendar.MONTH, month - 1);
+		cal.set(Calendar.DAY_OF_MONTH, cal.getActualMinimum(Calendar.DAY_OF_MONTH));
+		cal.set(Calendar.HOUR_OF_DAY, 0);
+		cal.set(Calendar.MINUTE, 0);
+		cal.set(Calendar.SECOND, 0);
 		Date strDateTo = cal.getTime();
 		return strDateTo;
 	}
@@ -941,5 +972,16 @@ public class DateUtil {
 		int value = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
 		cal.set(Calendar.DAY_OF_MONTH, value);
 		return new SimpleDateFormat(pattern).format(cal.getTime());
+	}
+	/**
+	 * 添加1天时间
+	 * @param date
+	 * @return
+	 */
+	public static Date addOneDay(Date date){
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(date);
+		cal.add(Calendar.DATE, 1);
+		return cal.getTime();
 	}
 }
