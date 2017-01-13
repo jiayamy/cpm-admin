@@ -1,0 +1,32 @@
+ <jhi-alert></jhi-alert>
+<form name="myForm" role="form" novalidate ng-submit="vm.save()">
+
+    <div class="modal-header">
+        <h2 class="modal-title" id="myContractInfoLabel" data-translate="cpmApp.contractInfo.home.createOrEditLabel">Create or edit a Contract Info</h2>
+    </div>
+    <div class="modal-body">
+        <jhi-alert-error></jhi-alert-error>
+        <div class="form-group" ng-show="vm.contractInfo.id">
+            <label for="id" data-translate="cpmApp.contractInfo.serialNum">serialNum</label>
+            <input type="text" class="form-control" id="serialNum" name="serialNum"
+                    ng-model="vm.contractInfo.serialNum" readonly />
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="cpmApp.contractInfo.finishRate" for="field_serialNum">finishRate</label>
+            <input type="text" class="form-control" name="finishRate" id="field_finishRate"
+                    ng-model="vm.contractInfo.finishRate" ng-required="true"
+                     />
+            <div ng-show="myForm.finishRate.$dirty&&myForm.finishRate.$error.number" class="alert alert-danger help-block"> 
+                    	必须为数字
+            </div>        
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-default" ng-click="vm.clear()">
+            <span class="glyphicon glyphicon-ban-circle"></span>&nbsp;<span data-translate="entity.action.cancel">Cancel</span>
+        </button>
+        <button type="submit"  ng-disabled="!myForm.$valid || vm.isSaving" class="btn btn-primary">
+            <span class="glyphicon glyphicon-save"></span>&nbsp;<span data-translate="entity.action.save">Save</span>
+        </button>
+    </div>
+</form>
