@@ -1,32 +1,31 @@
 <h2><span data-translate="cpmApp.projectInfo.home.createOrEditLabel">Create or edit a Project Info</span></h2>
 <hr>
 <jhi-alert-error></jhi-alert-error>
-<form name="myForm" role="form" novalidate ng-submit="vm.save()">
+<form name="myForm" role="form" ng-submit="vm.save()">
 	<div class="container-fluid">
 		<div class="row form-horizontal">
-			<div class="form-group" ng-show="vm.projectInfo.id">
-				<div class="col-sm-6">
-		         	<label for="id" data-translate="global.field.id">ID</label>
-		         	<input type="text" class="form-control" id="id" name="id"
-		                 ng-model="vm.projectInfo.id" readonly />
-		   		</div>
-		   		<div class="col-sm-6">
-		   		</div>
-			</div>
 	     	<div class="form-group">
 				<div class="col-sm-6">
 					<label class="control-label" data-translate="cpmApp.projectInfo.contractId" for="field_contractId">Contract Id</label>
 	            	<select class="form-control" name="contractId" ng-model="vm.projectInfo.contractId" id="field_contractId"
-	            		ng-required="true" ng-change="vm.contractChanged()"
+	            		ng-required="true" ng-change="vm.contractChanged()" ng-disabled="vm.projectInfo.id"
 		            	ng-options="contractInfo.val for contractInfo in vm.contractInfos track by contractInfo.key">
 		            </select>
+		            <div class="help-block"
+	                   ng-hide="vm.projectInfo.contractId" data-translate="entity.validation.required" style="color:red">
+	                    This field is required.
+	                </div>
 				</div>
 				<div class="col-sm-6">
 	          		<label class="control-label" data-translate="cpmApp.projectInfo.budgetId" for="field_budgetId">Budget Id</label>
 	              	<select class="form-control" name="budgetId" ng-model="vm.projectInfo.budgetId" id="field_budgetId"
-	            		ng-required="true"
+	            		ng-required="true" ng-change="vm.budgetChanged()" ng-disabled="vm.projectInfo.id"
 		            	ng-options="contractBudget.val for contractBudget in vm.contractBudgets track by contractBudget.key">
 		            </select>
+		            <div class="help-block"
+	                   ng-hide="vm.projectInfo.budgetId" data-translate="entity.validation.required" style="color:red">
+	                    This field is required.
+	                </div>
 				</div>
 	     	</div>
 	     	<div class="form-group">
@@ -35,12 +34,16 @@
 	       			<input type="text" class="form-control" name="serialNum" id="field_serialNum"
 	              		ng-model="vm.projectInfo.serialNum" ng-required="true" ng-minlength="1" ng-maxlength="20"
 	               		/>
-					<div ng-show="myForm.name.$dirty&&myForm.serialNum.$error.minlength" class="alert alert-danger help-block"> 
+					<div ng-show="myForm.serialNum.$dirty&&myForm.serialNum.$error.minlength" class="alert alert-danger help-block"> 
                     	项目编号必填
                 	</div>
-                	<div ng-show="myForm.name.$dirty&&myForm.serialNum.$error.maxlength" class="alert alert-danger help-block"> 
+                	<div ng-show="myForm.serialNum.$dirty&&myForm.serialNum.$error.maxlength" class="alert alert-danger help-block"> 
                     	项目编号不能大于20
                 	</div>
+                	<div class="help-block"
+	                   ng-show="myForm.serialNum.$error.required" data-translate="entity.validation.required" style="color:red">
+	                    This field is required.
+	                </div>
 				</div>
 				<div class="col-sm-6">
 					<label class="control-label" data-translate="cpmApp.projectInfo.name" for="field_name">Name</label>
@@ -53,6 +56,10 @@
                 	<div ng-show="myForm.name.$dirty&&myForm.name.$error.maxlength" class="alert alert-danger help-block"> 
                     	项目名称不能大于100
                 	</div>
+                	<div class="help-block"
+	                   ng-show="myForm.name.$error.required" data-translate="entity.validation.required" style="color:red">
+	                    This field is required.
+	                </div>
 				</div>
 	     	</div>
 	     	<div class="form-group">
@@ -66,12 +73,20 @@
 	                     	<button type="button" class="btn btn-default" ui-sref="{{vm.queryDept}}({selectType:3,showChild:true})"><i class="glyphicon glyphicon-user"></i></button>
 	                 	</span>
 	            	</div>
+	            	<div class="help-block"
+	                   ng-hide="vm.projectInfo.pm" data-translate="entity.validation.required" style="color:red">
+	                    This field is required.
+	                </div>
 	      		</div>
 				<div class="col-sm-6">
 	     			<label class="control-label" data-translate="cpmApp.projectInfo.dept" for="field_dept" >Dept</label>
 	  				<input type="text" class="form-control" name="dept" id="field_dept"
 	                  	ng-model="vm.projectInfo.dept" readonly ng-required="true" ng-minlength="1"
 	                   	/>
+	              	<div class="help-block"
+	                   ng-hide="vm.projectInfo.dept" data-translate="entity.validation.required" style="color:red">
+	                    This field is required.
+	                </div>
 				</div>
 	     	</div>
      		<div class="form-group">
@@ -88,6 +103,10 @@
 	             	<div ng-show="myForm.startDay.$dirty&&myForm.startDay.$error.minlength" class="alert alert-danger help-block"> 
                     	开始日期必填
                 	</div>
+                	<div class="help-block"
+	                   ng-hide="vm.projectInfo.startDay" data-translate="entity.validation.required" style="color:red">
+	                    This field is required.
+	                </div>
 	         	</div>
 				<div class="col-sm-6">
 					<label class="control-label" data-translate="cpmApp.projectInfo.endDay" for="field_endDay">End Day</label>
@@ -104,10 +123,19 @@
 	     		<div class="col-sm-6">
 	          		<label class="control-label" data-translate="cpmApp.projectInfo.budgetTotal" for="field_budgetTotal">Budget Total</label>
 	          		<input type="number" class="form-control" name="budgetTotal" id="field_budgetTotal"
-	              		ng-model="vm.projectInfo.budgetTotal"
+	              		ng-model="vm.projectInfo.budgetTotal" step="0.01" min="0"  ng-required="true"
 	                  	/>
 	                <div ng-show="myForm.budgetTotal.$dirty&&myForm.budgetTotal.$error.number" class="alert alert-danger help-block"> 
                     	必须为数字
+                	</div>
+                	<div ng-show="myForm.budgetTotal.$dirty&&myForm.budgetTotal.$error.min" class="alert alert-danger help-block"> 
+                		项目预算最小值为0
+           			</div>
+                	<div class="help-block"
+	                   ng-show="myForm.budgetTotal.$error.required" data-translate="entity.validation.required" style="color:red">
+	                    This field is required.
+	                </div>
+					<div class="alert help-block" data-translate="cpmApp.projectInfo.detail.budgetOriginal" translate-values="{budgetOriginal: '{{vm.projectInfo.budgetOriginal}}'}"> 
                 	</div>
 	   			</div>
 	     		<div class="col-sm-6">

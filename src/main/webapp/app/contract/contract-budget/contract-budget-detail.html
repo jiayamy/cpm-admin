@@ -4,17 +4,21 @@
     <hr>
     <jhi-alert-error></jhi-alert-error>
     <dl class="dl-horizontal jh-entity-details">
-        <dt><span data-translate="cpmApp.contractBudget.contractId">Contract Id</span></dt>
+        <dt><span data-translate="cpmApp.contractBudget.serialNum">SerialNum</span></dt>
         <dd>
-            <span>{{vm.contractBudget.contractId}}</span>
+            <span>{{vm.contractBudget.serialNum}}</span>
         </dd>
-        <dt><span data-translate="cpmApp.contractBudget.type">Type</span></dt>
+        <dt><span data-translate="cpmApp.contractBudget.name">Name</span></dt>
         <dd>
-            <span>{{vm.contractBudget.type}}</span>
+            <span>{{vm.contractBudget.name}}</span>
         </dd>
-        <dt><span data-translate="cpmApp.contractBudget.userId">User Id</span></dt>
+        <dt><span data-translate="cpmApp.contractBudget.budgetName">budgetName</span></dt>
         <dd>
-            <span>{{vm.contractBudget.userId}}</span>
+            <span>{{vm.contractBudget.budgetName}}</span>
+        </dd>
+        <dt><span data-translate="cpmApp.contractBudget.purchaseType">PurchaseType</span></dt>
+        <dd>
+            <span>{{vm.contractBudget.purchaseType}}</span>
         </dd>
         <dt><span data-translate="cpmApp.contractBudget.userName">User Name</span></dt>
         <dd>
@@ -24,33 +28,13 @@
         <dd>
             <span>{{vm.contractBudget.dept}}</span>
         </dd>
-        <dt><span data-translate="cpmApp.contractBudget.purchaseType">Purchase Type</span></dt>
-        <dd>
-            <span>{{vm.contractBudget.purchaseType}}</span>
-        </dd>
         <dt><span data-translate="cpmApp.contractBudget.budgetTotal">Budget Total</span></dt>
         <dd>
             <span>{{vm.contractBudget.budgetTotal}}</span>
         </dd>
         <dt><span data-translate="cpmApp.contractBudget.status">Status</span></dt>
         <dd>
-            <span>{{vm.contractBudget.status}}</span>
-        </dd>
-        <dt><span data-translate="cpmApp.contractBudget.creator">Creator</span></dt>
-        <dd>
-            <span>{{vm.contractBudget.creator}}</span>
-        </dd>
-        <dt><span data-translate="cpmApp.contractBudget.createTime">Create Time</span></dt>
-        <dd>
-            <span>{{vm.contractBudget.createTime | date:'medium'}}</span>
-        </dd>
-        <dt><span data-translate="cpmApp.contractBudget.updator">Updator</span></dt>
-        <dd>
-            <span>{{vm.contractBudget.updator}}</span>
-        </dd>
-        <dt><span data-translate="cpmApp.contractBudget.updateTime">Update Time</span></dt>
-        <dd>
-            <span>{{vm.contractBudget.updateTime | date:'medium'}}</span>
+            <span>{{vm.contractBudget.statusName}}</span>
         </dd>
     </dl>
 

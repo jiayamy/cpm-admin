@@ -5,9 +5,9 @@
         .module('cpmApp')
         .controller('ProjectUserController', ProjectUserController);
 
-    ProjectUserController.$inject = ['$scope', '$state', 'ProjectUser', 'ProjectUserSearch', 'ParseLinks', 'AlertService', 'paginationConstants', 'pagingParams'];
+    ProjectUserController.$inject = ['$scope','$rootScope', '$state', 'ProjectUser', 'ProjectUserSearch', 'ParseLinks', 'AlertService', 'paginationConstants', 'pagingParams','ProjectInfo'];
 
-    function ProjectUserController ($scope, $state, ProjectUser, ProjectUserSearch, ParseLinks, AlertService, paginationConstants, pagingParams) {
+    function ProjectUserController ($scope,$rootScope, $state, ProjectUser, ProjectUserSearch, ParseLinks, AlertService, paginationConstants, pagingParams,ProjectInfo) {
         var vm = this;
 
         vm.loadPage = loadPage;
@@ -18,30 +18,61 @@
         vm.clear = clear;
         vm.search = search;
         vm.loadAll = loadAll;
-        vm.searchQuery = pagingParams.search;
-        vm.currentSearch = pagingParams.search;
-
+        vm.searchQuery = {};
+        vm.searchQuery.projectId = pagingParams.projectId;
+        vm.searchQuery.userId = pagingParams.userId;
+        vm.searchQuery.userName = pagingParams.userName;
+        
+        
+        if (!vm.searchQuery.projectId && !vm.searchQuery.userId){
+        	vm.haveSearch = null;
+        }else{
+        	vm.haveSearch = true;
+        }
+        //加载搜索下拉框
+        vm.projectInfos = [];
+        loadProjectInfos();
+        function loadProjectInfos(){
+        	ProjectInfo.queryProjectInfo(
+        		{
+        			
+        		},
+        		function(data, headers){
+        			vm.projectInfos = data;
+            		if(vm.projectInfos && vm.projectInfos.length > 0){
+            			for(var i = 0; i < vm.projectInfos.length; i++){
+            				if(pagingParams.projectId == vm.projectInfos[i].key){
+            					vm.searchQuery.projectId = vm.projectInfos[i];
+            				}
+            			}
+            		}
+        		},
+        		function(error){
+        			AlertService.error(error.data.message);
+        		}
+        	);
+        }
+        //加载列表页
         loadAll();
-
         function loadAll () {
-            if (pagingParams.search) {
-                ProjectUserSearch.query({
-                    query: pagingParams.search,
-                    page: pagingParams.page - 1,
-                    size: vm.itemsPerPage,
-                    sort: sort()
-                }, onSuccess, onError);
-            } else {
-                ProjectUser.query({
-                    page: pagingParams.page - 1,
-                    size: vm.itemsPerPage,
-                    sort: sort()
-                }, onSuccess, onError);
-            }
+        	if(pagingParams.projectId == undefined){
+        		pagingParams.projectId = "";
+        	}
+			if(pagingParams.userId == undefined){
+				pagingParams.userId = "";
+			}
+            ProjectUser.query({
+            	projectId:pagingParams.projectId,
+            	userId:pagingParams.userId,            	
+                page: pagingParams.page - 1,
+                size: vm.itemsPerPage,
+                sort: sort()
+            }, onSuccess, onError);
+            
             function sort() {
                 var result = [vm.predicate + ',' + (vm.reverse ? 'asc' : 'desc')];
-                if (vm.predicate !== 'id') {
-                    result.push('id');
+                if (vm.predicate !== 'wpu.id') {
+                    result.push('wpu.id');
                 }
                 return result;
             }
@@ -66,29 +97,38 @@
             $state.transitionTo($state.$current, {
                 page: vm.page,
                 sort: vm.predicate + ',' + (vm.reverse ? 'asc' : 'desc'),
-                search: vm.currentSearch
+                projectId:vm.searchQuery.projectId ? vm.searchQuery.projectId.key : "",
+                userId:vm.searchQuery.userId,
+                userName:vm.searchQuery.userName,
             });
         }
 
-        function search(searchQuery) {
-            if (!searchQuery){
+        function search() {
+            if (!vm.searchQuery.projectId && !vm.searchQuery.userId){
                 return vm.clear();
             }
             vm.links = null;
             vm.page = 1;
-            vm.predicate = '_score';
+            vm.predicate = 'wpu.id';
             vm.reverse = false;
-            vm.currentSearch = searchQuery;
+            vm.haveSearch = true;
             vm.transition();
         }
 
         function clear() {
             vm.links = null;
             vm.page = 1;
-            vm.predicate = 'id';
+            vm.predicate = 'wpu.id';
             vm.reverse = true;
-            vm.currentSearch = null;
+            vm.searchQuery = {};
+            vm.haveSearch = null;
             vm.transition();
         }
+        
+        var unsubscribe = $rootScope.$on('cpmApp:deptInfoSelected', function(event, result) {
+        	vm.searchQuery.userId = result.objId;
+        	vm.searchQuery.userName = result.name;
+        });
+        $scope.$on('$destroy', unsubscribe);
     }
 })();

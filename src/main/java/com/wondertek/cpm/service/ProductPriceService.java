@@ -1,5 +1,6 @@
 package com.wondertek.cpm.service;
 
+import com.wondertek.cpm.CpmConstants;
 import com.wondertek.cpm.config.StringUtil;
 import com.wondertek.cpm.domain.ProductPrice;
 import com.wondertek.cpm.repository.ProductPriceDao;
@@ -10,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort.Order;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
 
@@ -117,7 +119,26 @@ public class ProductPriceService {
 			hql.append(" and pp.source = ?");
 			params.add(Integer.valueOf(source));
 		}
-		String queryHql = "from ProductPrice pp " + hql.toString();
+		
+		StringBuffer orderHql = new StringBuffer();
+    	if(pageable.getSort() != null){
+    		for (Order order : pageable.getSort()) {
+    			if(CpmConstants.ORDER_IGNORE_SCORE.equalsIgnoreCase(order.getProperty())){
+    				continue;
+    			}
+    			if(orderHql.length() != 0){
+    				orderHql.append(",");
+    			}else{
+    				orderHql.append(" order by ");
+    			}
+    			if(order.isAscending()){
+    				orderHql.append(order.getProperty()).append(" asc");
+    			}else{
+    				orderHql.append(order.getProperty()).append(" desc");
+    			}
+    		}
+    	}
+		String queryHql = "from ProductPrice pp " + hql.toString() + orderHql.toString();
 		String countHql = "select count(pp.id) from ProductPrice pp " + hql.toString();
 		return productPriceDao.queryHqlPage(queryHql,countHql,params.toArray(),pageable);
 	}

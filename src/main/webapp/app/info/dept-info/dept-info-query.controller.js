@@ -9,8 +9,6 @@
 
     function DeptInfoQueryController ($timeout, $scope, $stateParams, $uibModalInstance,AlertService,entity,DeptInfo) {
         var vm = this;
-        console.log(entity);
-
         vm.clear = clear;
         
         vm.isChildShowed = isChildShowed;

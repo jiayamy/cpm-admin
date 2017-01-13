@@ -2,9 +2,9 @@
     "cpmApp": {
         "purchaseItem" : {
             "home": {
-                "title": "Purchase Items",
-                "createLabel": "Create a new Purchase Item",
-                "createOrEditLabel": "Create or edit a Purchase Item",
+                "title": "采购子项",
+                "createLabel": "创建一个新的采购子项",
+                "createOrEditLabel": "创建或者编辑",
                 "search": "Search for Purchase Item"
             },
             "created": "A new Purchase Item is created with identifier {{ param }}",
@@ -16,21 +16,21 @@
             "detail": {
                 "title": "Purchase Item"
             },
-            "contractId": "Contract Id",
-            "budgetId": "Budget Id",
-            "name": "Name",
-            "quantity": "Quantity",
-            "price": "Price",
-            "units": "Units",
-            "type": "Type",
-            "source": "Source",
-            "purchaser": "Purchaser",
-            "totalAmount": "Total Amount",
-            "status": "Status",
-            "creator": "Creator",
-            "createTime": "Create Time",
-            "updator": "Updator",
-            "updateTime": "Update Time"
+            "contractId": "合同ID",
+            "budgetId": "合同预算ID",
+            "name": "采购项目",
+            "quantity": "采购数量",
+            "price": "采购单价",
+            "units": "采购单位",
+            "type": "采购类型",
+            "source": "采购来源",
+            "purchaser": "采购方",
+            "totalAmount": "采购总金额",
+            "status": "状态",
+            "creator": "创建者",
+            "createTime": "创建时间",
+            "updator": "更新者",
+            "updateTime": "更新时间"
         }
     }
 }

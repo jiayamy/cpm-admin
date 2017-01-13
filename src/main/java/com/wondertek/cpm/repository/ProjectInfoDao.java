@@ -44,4 +44,16 @@ public interface ProjectInfoDao extends GenericDao<ProjectInfo,Long> {
 	 * 项目项目信息，一般也就编号
 	 */
 	public boolean checkByProject(String serialNum, Long id);
+	/**
+	 * 项目完成率
+	 */
+	public int finishProjectInfo(Long id, Double finishRate, String updator);
+	/**
+	 * 项目结项
+	 */
+	public int endProjectInfo(Long id, String updator);
+	/**
+	 * 查询用户能看到的项目信息
+	 */
+	public List<LongValue> queryUserProject(User user, DeptInfo deptInfo);
 }

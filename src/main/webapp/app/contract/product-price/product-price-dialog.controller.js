@@ -11,10 +11,24 @@
         var vm = this;
 
         vm.productPrice = entity;
+    	if(vm.productPrice.source == 0){
+    		vm.productPrice.source = { id: 0, name: '内部' }; 
+    	}else if(vm.productPrice.source == 1){
+    		vm.productPrice.source = { id: 1, name: '外部' };
+    	}
+    	if(vm.productPrice.type == 0){
+    		vm.productPrice.type = { id: 0, name: '硬件' }; 
+    	}else if(vm.productPrice.type == 1){
+    		vm.productPrice.type = { id: 1, name: '软件' };
+    	}
+        console.log(vm.productPrice);
+        
         vm.clear = clear;
         vm.datePickerOpenStatus = {};
         vm.openCalendar = openCalendar;
         vm.save = save;
+        vm.types = [{ id: 0, name: '硬件' }, { id: 1, name: '软件' }];
+        vm.sources = [{ id: 0, name: '内部' }, { id: 1, name: '外部' }];
 
         $timeout(function (){
             angular.element('.form-group:eq(1)>input').focus();
@@ -26,6 +40,22 @@
 
         function save () {
             vm.isSaving = true;
+            console.log(vm.productPrice);
+            var post = vm.productPrice;
+            if(vm.productPrice.source){
+            	if(vm.productPrice.source.id == 0){
+            		vm.productPrice.source = 0;
+                }else if(post.source.id == 1){
+                	vm.productPrice.source = 1;
+                }
+            }
+            if(vm.productPrice.type){
+            	if(vm.productPrice.type.id == 0){
+            		vm.productPrice.type = 0;
+                }else if(post.type.id == 1){
+                	vm.productPrice.type = 1;
+                }
+            }
             if (vm.productPrice.id !== null) {
                 ProductPrice.update(vm.productPrice, onSaveSuccess, onSaveError);
             } else {
@@ -41,6 +71,16 @@
 
         function onSaveError () {
             vm.isSaving = false;
+            if(vm.productPrice.source == 0){
+        		vm.productPrice.source = { id: 0, name: '内部' }; 
+        	}else if(vm.productPrice.source == 1){
+        		vm.productPrice.source = { id: 1, name: '外部' };
+        	}
+            if(vm.productPrice.type == 0){
+        		vm.productPrice.type = { id: 0, name: '硬件' }; 
+        	}else if(vm.productPrice.type == 1){
+        		vm.productPrice.type = { id: 1, name: '软件' };
+        	}
         }
 
         vm.datePickerOpenStatus.createTime = false;

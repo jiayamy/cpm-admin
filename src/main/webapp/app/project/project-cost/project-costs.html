@@ -3,64 +3,91 @@
     <jhi-alert></jhi-alert>
     <div class="container-fluid">
         <div class="row">
-            <div class="col-xs-4 no-padding-left">
+            <div class="col-xs-4">
                 <button class="btn btn-primary" ui-sref="project-cost.new" >
                     <span class="glyphicon glyphicon-plus"></span>
-                    <span class="hidden-xs"  data-translate="cpmApp.projectCost.home.createLabel">
+                    <span class=""  data-translate="cpmApp.projectCost.home.createLabel">
                         Create new Project Cost
                     </span>
                 </button>
             </div>
-            <div class="col-xs-8 no-padding-right">
-                <form name="searchForm" class="form-inline">
-                    <div class="input-group pull-right" >
-                        <input type="text" class="form-control" ng-model="vm.searchQuery" id="searchQuery" placeholder="{{ 'cpmApp.projectCost.home.search' | translate }}">
-                        <span  class="input-group-btn width-min" >
-                            <button class="btn btn-info" ng-click="vm.search(vm.searchQuery)">
-                                <span class="glyphicon glyphicon-search"></span>
-                            </button>
-                        </span>
-                        <span class="input-group-btn width-min" ng-if="vm.currentSearch">
-                            <button class="btn btn-info" ng-click="vm.clear()">
-                                <span class="glyphicon glyphicon-trash"></span>
-                            </button>
-                        </span>
-                    </div>
-                </form>
-            </div>
         </div>
+        <form name="searchForm" class="form-horizontal">
+			<div class="form-group">
+	            <div class="col-sm-4">
+	          		<label class="col-sm-4 control-label" data-translate="cpmApp.projectCost.projectId">Project Num</label>
+		            <div class="col-sm-8">
+		            	<select class="form-control" ng-model="vm.searchQuery.projectId"
+			            	ng-options="projectInfo.val for projectInfo in vm.projectInfos track by projectInfo.key">
+			            	<option value="">--项目编号--</option>
+			            </select>
+		            </div>
+	            </div>
+	            <div class="col-sm-4">
+	          		<label class="col-sm-4 control-label" data-translate="cpmApp.projectCost.type">Type</label>
+                    <div class="col-sm-8">
+		            	<select class="form-control" ng-model="vm.searchQuery.type"
+			            	ng-options="type.val for type in vm.types track by type.key">
+			            	<option value="">--类型--</option>
+			            </select>
+		            </div>
+	            </div>
+	            <div class="col-sm-4">
+	            	<label class="col-sm-4 control-label" data-translate="cpmApp.projectCost.name">Name</label>
+                    <div class="col-sm-8" >
+	                   	<input type="text" class="form-control" ng-model="vm.searchQuery.name">
+                    </div>
+	            </div>
+            </div>
+            <div class="form-group">
+	            <div class="col-sm-4">
+	            </div>
+	            <div class="col-sm-4">
+	            </div>
+	            <div class="col-sm-4 pull-right input-group">
+	            	<div class="col-sm-4">
+	            	</div>
+	            	<div class="col-sm-8" >
+		            	<span  class="width-min" >
+	                        <button class="btn btn-info" ng-click="vm.search()">
+	                            <span class="glyphicon glyphicon-search"></span>
+	                        </button>
+	                    </span>
+	                    <span class="width-min" ng-if="vm.haveSearch">
+	                        <button class="btn btn-info" ng-click="vm.clear()">
+	                            <span class="glyphicon glyphicon-trash"></span>
+	                        </button>
+	                    </span>
+	            	</div>
+	            </div>
+            </div>
+		</form>
     </div>
     <br/>
     <div class="table-responsive">
         <table class="jh-table table table-striped">
             <thead>
                 <tr jh-sort="vm.predicate" ascending="vm.reverse" callback="vm.transition()">
-                    <th jh-sort-by="id"><span data-translate="global.field.id">ID</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="projectId"><span data-translate="cpmApp.projectCost.projectId">Project Id</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="name"><span data-translate="cpmApp.projectCost.name">Name</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="type"><span data-translate="cpmApp.projectCost.type">Type</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="total"><span data-translate="cpmApp.projectCost.total">Total</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="costDesc"><span data-translate="cpmApp.projectCost.costDesc">Cost Desc</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="status"><span data-translate="cpmApp.projectCost.status">Status</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="creator"><span data-translate="cpmApp.projectCost.creator">Creator</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="createTime"><span data-translate="cpmApp.projectCost.createTime">Create Time</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="updator"><span data-translate="cpmApp.projectCost.updator">Updator</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="updateTime"><span data-translate="cpmApp.projectCost.updateTime">Update Time</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="wpc.name"><span data-translate="cpmApp.projectCost.name">Name</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="wpi.serialNum"><span data-translate="cpmApp.projectCost.projectId">Project Num</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="wpi.name"><span data-translate="cpmApp.projectCost.projectName">Project Name</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="wpc.type"><span data-translate="cpmApp.projectCost.type">Type</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="wpc.costDay"><span data-translate="cpmApp.projectCost.costDay">Day</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="wpc.total"><span data-translate="cpmApp.projectCost.total">Total</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="wpc.status"><span data-translate="cpmApp.projectCost.status">Status</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="wpc.updateTime"><span data-translate="cpmApp.projectCost.updateTime">Update Time</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th></th>
                 </tr>
             </thead>
             <tbody>
                 <tr ng-repeat="projectCost in vm.projectCosts track by projectCost.id">
-                    <td><a ui-sref="project-cost-detail({id:projectCost.id})">{{projectCost.id}}</a></td>
-                    <td>{{projectCost.projectId}}</td>
-                    <td>{{projectCost.name}}</td>
-                    <td>{{projectCost.type}}</td>
+                    <td><a ui-sref="project-cost-detail({id:projectCost.id})">{{projectCost.name}}</a></td>
+                    <td>{{projectCost.projectNum}}</td>
+                    <td>{{projectCost.projectName}}</td>
+                    <td>{{projectCost.typeName}}</td>
+                    <td>{{projectCost.costDay}}</td>
                     <td>{{projectCost.total}}</td>
-                    <td>{{projectCost.costDesc}}</td>
-                    <td>{{projectCost.status}}</td>
-                    <td>{{projectCost.creator}}</td>
-                    <td>{{projectCost.createTime | date:'medium'}}</td>
-                    <td>{{projectCost.updator}}</td>
+                    <td>{{projectCost.statusName}}</td>
                     <td>{{projectCost.updateTime | date:'medium'}}</td>
                     <td class="text-right">
                         <div class="btn-group flex-btn-group-container">
@@ -70,13 +97,13 @@
                                 <span class="glyphicon glyphicon-eye-open"></span>
                                 <span class="hidden-xs hidden-sm" data-translate="entity.action.view"></span>
                             </button>
-                            <button type="submit"
+                            <button type="submit" ng-hide="{{projectCost.type == 1}}"
                                     ui-sref="project-cost.edit({id:projectCost.id})"
                                     class="btn btn-primary btn-sm">
                                 <span class="glyphicon glyphicon-pencil"></span>
                                 <span class="hidden-xs hidden-sm" data-translate="entity.action.edit"></span>
                             </button>
-                            <button type="submit"
+                            <button type="submit" ng-hide="{{projectCost.type == 1}}"
                                     ui-sref="project-cost.delete({id:projectCost.id})"
                                     class="btn btn-danger btn-sm">
                                 <span class="glyphicon glyphicon-remove-circle"></span>

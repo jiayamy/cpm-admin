@@ -18,6 +18,15 @@
                         data = angular.fromJson(data);
                         data.createTime = DateUtils.convertDateTimeFromServer(data.createTime);
                         data.updateTime = DateUtils.convertDateTimeFromServer(data.updateTime);
+                        if(data.type == 1){
+                        	data.typeName = "正常工作日";
+                        }else if(data.type == 2){
+                        	data.typeName = "正常休息日";
+                        }else if(data.type == 3){
+                        	data.typeName = "年假";
+                        }if(data.type == 4){
+                        	data.typeName = "国家假日";
+                        }
                     }
                     return data;
                 }

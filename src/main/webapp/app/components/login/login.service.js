@@ -5,9 +5,9 @@
         .module('cpmApp')
         .factory('LoginService', LoginService);
 
-    LoginService.$inject = ['$uibModal'];
+    LoginService.$inject = ['$uibModal','$state'];
 
-    function LoginService ($uibModal) {
+    function LoginService ($uibModal,$state) {
         var service = {
             open: open
         };
@@ -20,23 +20,24 @@
         return service;
 
         function open () {
-            if (modalInstance !== null) return;
-            modalInstance = $uibModal.open({
-                animation: true,
-                templateUrl: 'app/components/login/login.html',
-                controller: 'LoginController',
-                controllerAs: 'vm',
-                resolve: {
-                    translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
-                        $translatePartialLoader.addPart('login');
-                        return $translate.refresh();
-                    }]
-                }
-            });
-            modalInstance.result.then(
-                resetModal,
-                resetModal
-            );
+        	$state.go('home');
+//            if (modalInstance !== null) return;
+//            modalInstance = $uibModal.open({
+//                animation: true,
+//                templateUrl: 'app/components/login/login.html',
+//                controller: 'LoginController',
+//                controllerAs: 'vm',
+//                resolve: {
+//                    translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
+//                        $translatePartialLoader.addPart('login');
+//                        return $translate.refresh();
+//                    }]
+//                }
+//            });
+//            modalInstance.result.then(
+//                resetModal,
+//                resetModal
+//            );
         }
     }
 })();

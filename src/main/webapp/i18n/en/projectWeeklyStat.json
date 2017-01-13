@@ -16,7 +16,11 @@
             "detail": {
                 "title": "Project Weekly Stat"
             },
+            "fromDate" : "Create Date From",
+            "toDate" : "Create Date End",
+            "statDate" : "Stat Week",
             "projectId": "Project Id",
+            "finishRate": "Finish Rate",
             "humanCost": "Human Cost",
             "payment": "Payment",
             "statWeek": "Stat Week",

@@ -4,10 +4,10 @@
     <div class="container-fluid">
   		<div class="row form-horizontal">
         	<div class="form-group">
-	            <div class="col-xs-4 no-padding-left">
+	            <div class="col-xs-4">
 	                <button class="btn btn-primary" ui-sref="project-info.new" >
 	                    <span class="glyphicon glyphicon-plus"></span>
-	                    <span class="hidden-xs"  data-translate="cpmApp.projectInfo.home.createLabel">
+	                    <span class=""  data-translate="cpmApp.projectInfo.home.createLabel">
 	                        Create new Project Info
 	                    </span>
 	                </button>
@@ -74,40 +74,28 @@
         <table class="jh-table table table-striped">
             <thead>
                 <tr jh-sort="vm.predicate" ascending="vm.reverse" callback="vm.transition()">
-                    <th jh-sort-by="wpi.id"><span data-translate="global.field.id">ID</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="wpi.serial_num"><span data-translate="cpmApp.projectInfo.serialNum">Serial Num</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="wci.name_"><span data-translate="cpmApp.projectInfo.contractId">Contract Id</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th class="hidden-xs" jh-sort-by="wcb.name_"><span data-translate="cpmApp.projectInfo.budgetId">Budget Id</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="wpi.name_"><span data-translate="cpmApp.projectInfo.name">Name</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="wci.name_"><span data-translate="cpmApp.projectInfo.contractId">Contract Id</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th class="hidden-xs" jh-sort-by="wpi.pm_"><span data-translate="cpmApp.projectInfo.pm">Pm</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th class="hidden-xs" jh-sort-by="wpi.dept_"><span data-translate="cpmApp.projectInfo.dept">Dept</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th class="hidden-xs" jh-sort-by="wpi.budget_total"><span data-translate="cpmApp.projectInfo.budgetTotal">Budget Total</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="wpi.start_day"><span data-translate="cpmApp.projectInfo.startDay">Start Day</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="wpi.end_day"><span data-translate="cpmApp.projectInfo.endDay">End Day</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="wpi.finish_rate"><span data-translate="cpmApp.projectInfo.finishRate">Finish Rate</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="wpi.status_"><span data-translate="cpmApp.projectInfo.status">Status</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th class="hidden-xs" jh-sort-by="wpi.creator_"><span data-translate="cpmApp.projectInfo.creator">Creator</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th class="hidden-xs" jh-sort-by="wpi.create_time"><span data-translate="cpmApp.projectInfo.createTime">Create Time</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th class="hidden-xs" jh-sort-by="wpi.updator_"><span data-translate="cpmApp.projectInfo.updator">Updator</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th class="hidden-xs" jh-sort-by="wpi.update_time"><span data-translate="cpmApp.projectInfo.updateTime">Update Time</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th></th>
                 </tr>
             </thead>
             <tbody>
                 <tr ng-repeat="projectInfo in vm.projectInfos track by projectInfo.id">
-                    <td><a ui-sref="project-info-detail({id:projectInfo.id})">{{projectInfo.id}}</a></td>
-                    <td>{{projectInfo.serialNum}}</td>
-                    <td>{{projectInfo.contractNum}}</td>
-                    <td class="hidden-xs">{{projectInfo.budgetName}}</td>
+                    <td><a ui-sref="project-info-detail({id:projectInfo.id})">{{projectInfo.serialNum}}</a></td>
                     <td>{{projectInfo.name}}</td>
+                    <td>{{projectInfo.contractNum}}</td>
                     <td class="hidden-xs">{{projectInfo.pm}}</td>
-                    <td class="hidden-xs">{{projectInfo.dept}}</td>
-                    <td class="hidden-xs">{{projectInfo.budgetTotal}}</td>
                     <td>{{projectInfo.startDay | date:'shortDate'}}</td>
                     <td>{{projectInfo.endDay | date:'shortDate'}}</td>
+                    <td>{{projectInfo.finishRate}}%</td>
                     <td>{{projectInfo.status}}</td>
-                    <td class="hidden-xs">{{projectInfo.creator}}</td>
-                    <td class="hidden-xs">{{projectInfo.createTime | date:'medium'}}</td>
-                    <td class="hidden-xs">{{projectInfo.updator}}</td>
                     <td class="hidden-xs">{{projectInfo.updateTime | date:'medium'}}</td>
                     <td class="text-right">
                         <div class="btn-group flex-btn-group-container">
@@ -115,19 +103,26 @@
                                     ui-sref="project-info-detail({id:projectInfo.id})"
                                     class="btn btn-info btn-sm">
                                 <span class="glyphicon glyphicon-eye-open"></span>
-                                <span class="hidden-xs hidden-sm" data-translate="entity.action.view"></span>
                             </button>
                             <button type="submit"
                                     ui-sref="project-info.edit({id:projectInfo.id})"
                                     class="btn btn-primary btn-sm">
                                 <span class="glyphicon glyphicon-pencil"></span>
-                                <span class="hidden-xs hidden-sm" data-translate="entity.action.edit"></span>
+                            </button>
+                            <button type="submit"
+                                    ui-sref="project-info.finish({id:projectInfo.id})"
+                                    class="btn btn-warning btn-sm">
+                                <span class="glyphicon glyphicon-indent-left"></span>
+                            </button>
+                            <button type="submit"
+                                    ui-sref="project-info.end({id:projectInfo.id})"
+                                    class="btn btn-success btn-sm">
+                                <span class="glyphicon glyphicon-off"></span>
                             </button>
                             <button type="submit"
                                     ui-sref="project-info.delete({id:projectInfo.id})"
                                     class="btn btn-danger btn-sm">
                                 <span class="glyphicon glyphicon-remove-circle"></span>
-                                <span class="hidden-xs hidden-sm" data-translate="entity.action.delete"></span>
                             </button>
                         </div>
                     </td>

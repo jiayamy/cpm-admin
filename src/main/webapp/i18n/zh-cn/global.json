@@ -10,7 +10,7 @@
                 "userTimesheet": "员工日报"
             },
             "info":{
-	        	"main":"基础信息",
+	        	"main":"系统设置",
                 "deptType": "部门类型",
                 "deptInfo": "部门信息",
 	            "userManagement":"用户管理",
@@ -23,7 +23,7 @@
                 "contractInfo": "合同信息",
                 "contractReceive": "合同回款",
                 "contractUser": "合同人员",
-                "contractBudget": "合同预算",
+                "contractBudget": "内部采购单",
                 "purchaseItem": "采购子项",
                 "productPrice": "产品定价单",
                 "contractCost": "合同成本",
@@ -33,21 +33,23 @@
             	"main":"项目管理",
                 "projectInfo": "项目信息",
                 "projectUser": "项目人员",
-                "projectCost": "项目成本",
+                "projectCost": "项目报销",
                 "projectTimesheet": "项目工时",
                 "projectFinishInfo": "项目完成情况"
             },
             "stat":{
             	"main":"统计报表",
                 "contractWeeklyStat": "合同周统计",
-                "projectWeeklyStat": "项目周统计"
+                "contractMonthlyStat": "合同月统计",
+                "projectWeeklyStat": "项目周统计",
+                "projectMonthlyStat": "项目月统计"
             },
             "entities": {
                 "main": "数据",
                 "jhipster-needle-menu-add-entry": "JHipster will add additional entities here (do not translate!)"
             },
             "account": {
-                "main": "账号",
+                "main": "个人账号",
                 "settings": "设置",
                 "password": "密码",
                 "sessions": "会话",
@@ -110,7 +112,7 @@
             }
         },
         "field": {
-            "id" : "ID"
+            "id" : "序号"
         },
         "ribbon": {
             "dev":"Development"

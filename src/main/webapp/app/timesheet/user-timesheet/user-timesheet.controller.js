@@ -18,10 +18,6 @@
         vm.search = search;
         vm.loadAll = loadAll;
         vm.searchQuery = {}
-        var workDay = pagingParams.workDay;
-        if(workDay && workDay.length == 8){
-        	workDay = new Date(workDay.substring(0,4),parseInt(workDay.substring(4,6))-1,workDay.substring(6,8));
-        }
         var type = pagingParams.type;
         if(type){
         	if(type == 1){
@@ -32,7 +28,7 @@
         		type = { id: 3, name: '项目' };
         	}
         }
-        vm.searchQuery.workDay= workDay;
+        vm.searchQuery.workDay= DateUtils.convertDayToDate(pagingParams.workDay);
         vm.searchQuery.type = type;
         vm.searchQuery.objName = pagingParams.objName;
         if (!vm.searchQuery.workDay && !vm.searchQuery.type && !vm.searchQuery.objName){

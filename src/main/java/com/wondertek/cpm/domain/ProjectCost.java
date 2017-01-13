@@ -19,7 +19,9 @@ import java.util.Objects;
 public class ProjectCost implements Serializable {
 
     private static final long serialVersionUID = 1L;
-
+    
+    public static final Integer TYPE_HUMAN_COST = 1;
+    
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -34,10 +36,15 @@ public class ProjectCost implements Serializable {
     @Column(name = "name_")
     private String name;
     /**
-     * 成本类型（工时、差旅、采购、商务）(工时不可输入，是统计新增的。其他可新增)
+     * 成本类型（1工时、2差旅、3采购、4商务）(工时不可输入，是统计新增的。其他可新增)
      */
     @Column(name = "type_")
     private Integer type;
+    /**
+     * 成本日期
+     */
+    @Column(name="COST_DAY")
+    private Long costDay;
     /**
      * 金额
      */
@@ -113,7 +120,15 @@ public class ProjectCost implements Serializable {
         this.type = type;
     }
 
-    public Double getTotal() {
+    public Long getCostDay() {
+		return costDay;
+	}
+
+	public void setCostDay(Long costDay) {
+		this.costDay = costDay;
+	}
+
+	public Double getTotal() {
         return total;
     }
 

@@ -18,19 +18,9 @@
         vm.clear = clear;
         vm.search = search;
         vm.loadAll = loadAll;
-//        vm.searchQuery = pagingParams.search;
         vm.searchQuery = {};
-//        vm.currentSearch = pagingParams.search;
-        var fromCurrDay = pagingParams.fromCurrDay;
-        if(fromCurrDay && fromCurrDay.length == 8){
-        	fromCurrDay = new Date(fromCurrDay.substring(0,4),parseInt(fromCurrDay.substring(4,6))-1,fromCurrDay.substring(6,8));
-        }
-        var toCurrDay = pagingParams.toCurrDay;
-        if(toCurrDay && toCurrDay.length == 8){
-        	toCurrDay = new Date(toCurrDay.substring(0,4),parseInt(toCurrDay.substring(4,6))-1,toCurrDay.substring(6,8));
-        }
-        vm.searchQuery.fromCurrDay = fromCurrDay;
-        vm.searchQuery.toCurrDay = toCurrDay;
+        vm.searchQuery.fromCurrDay = DateUtils.convertDayToDate(pagingParams.fromCurrDay);;
+        vm.searchQuery.toCurrDay = DateUtils.convertDayToDate(pagingParams.toCurrDay);;
         if (!vm.searchQuery.fromCurrDay && !vm.searchQuery.toCurrDay){
         	vm.haveSearch = null;
         }else{
@@ -40,31 +30,19 @@
         loadAll();
 
         function loadAll () {
-            if (pagingParams.fromCurrDay || pagingParams.toCurrDay) {
             	if(pagingParams.fromCurrDay == undefined){
             		pagingParams.fromCurrDay = "";
             	}
             	if(pagingParams.toCurrDay == undefined){
             		pagingParams.toCurrDay = "";
             	}
-            	if(pagingParams.search == undefined){
-            		pagingParams.search = "";
-            	}
-                HolidayInfoSearch.query({
+                HolidayInfo.query({
                 	fromCurrDay:pagingParams.fromCurrDay,
                 	toCurrDay:pagingParams.toCurrDay,
-//                    query: pagingParams.search,
                     page: pagingParams.page - 1,
                     size: vm.itemsPerPage,
                     sort: sort()
                 }, onSuccess, onError);
-            } else {
-                HolidayInfo.query({
-                    page: pagingParams.page - 1,
-                    size: vm.itemsPerPage,
-                    sort: sort()
-                }, onSuccess, onError);
-            }
             function sort() {
                 var result = [vm.predicate + ',' + (vm.reverse ? 'asc' : 'desc')];
                 if (vm.predicate !== 'id') {
@@ -93,33 +71,29 @@
             $state.transitionTo($state.$current, {
                 page: vm.page,
                 sort: vm.predicate + ',' + (vm.reverse ? 'asc' : 'desc'),
-//                search: vm.currentSearch,
-                fromCurrDay:DateUtils.convertLocalDateToFormat(vm.searchQuery.fromCurrDay,"yyyyMMdd"),	//
-                toCurrDay:DateUtils.convertLocalDateToFormat(vm.searchQuery.toCurrDay,"yyyyMMdd")		//
+                fromCurrDay:DateUtils.convertLocalDateToFormat(vm.searchQuery.fromCurrDay,"yyyyMMdd"),
+                toCurrDay:DateUtils.convertLocalDateToFormat(vm.searchQuery.toCurrDay,"yyyyMMdd")
             });
         }
 
-//        function search(searchQuery) {
         function search() {
             if (!vm.searchQuery.fromCurrDay && !vm.searchQuery.toCurrDay){
                 return vm.clear();
             }
             vm.links = null;
             vm.page = 1;
-            vm.predicate = '_score';
+            vm.predicate = 'currDay';
             vm.reverse = false;
             vm.haveSearch = true;
-//            vm.currentSearch = searchQuery;
             vm.transition();
         }
 
         function clear() {
             vm.links = null;
             vm.page = 1;
-            vm.predicate = 'id';
-            vm.reverse = true;
+            vm.predicate = 'currDay';
+            vm.reverse = false;
             vm.haveSearch = false;
-//            vm.currentSearch = null;
             vm.searchQuery.fromCurrDay = null;
             vm.searchQuery.toCurrDay = null;
             vm.transition();

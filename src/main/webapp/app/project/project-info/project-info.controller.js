@@ -9,7 +9,6 @@
 
     function ProjectInfoController ($scope, $state, ProjectInfo, ProjectInfoSearch, ParseLinks, AlertService, paginationConstants, pagingParams) {
         var vm = this;
-        console.log(pagingParams);
         vm.loadPage = loadPage;
         vm.predicate = pagingParams.predicate;
         vm.reverse = pagingParams.ascending;
@@ -28,7 +27,15 @@
 		}
         vm.searchQuery.serialNum = pagingParams.serialNum;
         vm.searchQuery.name = pagingParams.name;
+        vm.searchQuery.contractId = pagingParams.contractId;
         vm.contractInfos = [];
+        
+        if (!vm.searchQuery.contractId && !vm.searchQuery.serialNum
+        		&& !vm.searchQuery.name && !vm.searchQuery.status){
+        	vm.haveSearch = null;
+        }else{
+        	vm.haveSearch = true;
+        }
         
         loadContract();
         function loadContract(){
@@ -131,6 +138,7 @@
             vm.page = 1;
             vm.predicate = 'wpi.id';
             vm.reverse = false;
+            vm.haveSearch = true;
             vm.transition();
         }
 
@@ -140,6 +148,7 @@
             vm.predicate = 'wpi.id';
             vm.reverse = false;
             vm.searchQuery = {};
+            vm.haveSearch = null;
             vm.transition();
         }
     }

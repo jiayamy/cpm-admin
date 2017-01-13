@@ -1,0 +1,30 @@
+{
+    "cpmApp": {
+        "projectMonthlyStat" : {
+            "home": {
+                "title": "Project Monthly Stats",
+                "createLabel": "Create a new Project Monthly Stat",
+                "createOrEditLabel": "Create or edit a Project Monthly Stat",
+                "search": "Search for Project Monthly Stat"
+            },
+            "created": "A new Project Monthly Stat is created with identifier {{ param }}",
+            "updated": "A Project Monthly Stat is updated with identifier {{ param }}",
+            "deleted": "A Project Monthly Stat is deleted with identifier {{ param }}",
+            "delete": {
+                "question": "Are you sure you want to delete Project Monthly Stat {{ id }}?"
+            },
+            "detail": {
+                "title": "Project Monthly Stat"
+            },
+            "fromDate" : "Create Date From",
+            "toDate" : "Create Date End",
+            "statDate" : "Stat Week",
+            "projectId": "Project Id",
+            "finishRate": "Finish Rate",
+            "humanCost": "Human Cost",
+            "payment": "Payment",
+            "statWeek": "Stat Week",
+            "createTime": "Create Time"
+        }
+    }
+}

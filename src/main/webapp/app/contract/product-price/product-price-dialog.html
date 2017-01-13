@@ -17,65 +17,67 @@
             <label class="control-label" data-translate="cpmApp.productPrice.name" for="field_name">Name</label>
             <input type="text" class="form-control" name="name" id="field_name"
                     ng-model="vm.productPrice.name"
-                     />
+                    required />
         </div>
+        <div ng-show="editForm.name.$invalid">
+                <p class="help-block"
+                   ng-show="editForm.name.$error.required" data-translate="entity.validation.required" style="color:red">
+                    This field is required.
+                </p>
+         </div>
         <div class="form-group">
             <label class="control-label" data-translate="cpmApp.productPrice.type" for="field_type">Type</label>
-            <input type="number" class="form-control" name="type" id="field_type"
-                    ng-model="vm.productPrice.type"
-                     />
+            <select class="form-control" name="type" ng-model="vm.productPrice.type"
+					ng-options="type.name for type in vm.types track by type.id" required>
+					<option value="" data-translate="cpmApp.productPrice.home.search1">Please chose type</option>
+			</select>
         </div>
+        <div ng-show="editForm.type.$invalid">
+                <p class="help-block"
+                   ng-show="editForm.type.$error.required" data-translate="entity.validation.required" style="color:red">
+                    This field is required.
+                </p>
+        </div>
+        
         <div class="form-group">
             <label class="control-label" data-translate="cpmApp.productPrice.units" for="field_units">Units</label>
             <input type="text" class="form-control" name="units" id="field_units"
                     ng-model="vm.productPrice.units"
-                     />
+                     required />
         </div>
+        <div ng-show="editForm.source.$invalid">
+                <p class="help-block"
+                   ng-show="editForm.source.$error.required" data-translate="entity.validation.required" style="color:red">
+                    This field is required.
+                </p>
+        </div>
+        
         <div class="form-group">
             <label class="control-label" data-translate="cpmApp.productPrice.price" for="field_price">Price</label>
             <input type="number" class="form-control" name="price" id="field_price"
                     ng-model="vm.productPrice.price"
-                     />
+                     required />
         </div>
+        <div ng-show="editForm.price.$invalid">
+                <p class="help-block"
+                   ng-show="editForm.price.$error.required" data-translate="entity.validation.required" style="color:red">
+                    This field is required.
+                </p>
+        </div>
+        
         <div class="form-group">
             <label class="control-label" data-translate="cpmApp.productPrice.source" for="field_source">Source</label>
-            <input type="number" class="form-control" name="source" id="field_source"
-                    ng-model="vm.productPrice.source"
-                     />
+            <select class="form-control" name="source" ng-model="vm.productPrice.source"
+					ng-options="source.name for source in vm.sources track by source.id" required>
+					<option value="" data-translate="cpmApp.productPrice.home.search2">Please chose source</option>
+			</select>
         </div>
-        <div class="form-group">
-            <label class="control-label" data-translate="cpmApp.productPrice.creator" for="field_creator">Creator</label>
-            <input type="text" class="form-control" name="creator" id="field_creator"
-                    ng-model="vm.productPrice.creator"
-                     />
+        <div ng-show="editForm.source.$invalid">
+                <p class="help-block"
+                   ng-show="editForm.source.$error.required" data-translate="entity.validation.required" style="color:red">
+                    This field is required.
+                </p>
         </div>
-        <div class="form-group">
-            <label class="control-label" data-translate="cpmApp.productPrice.createTime" for="field_createTime">Create Time</label>
-                <div class="input-group">
-                    <input id="field_createTime" type="text" class="form-control" name="createTime" datetime-picker="{{dateformat}}" ng-model="vm.productPrice.createTime" is-open="vm.datePickerOpenStatus.createTime"
-                      />
-                    <span class="input-group-btn">
-                        <button type="button" class="btn btn-default" ng-click="vm.openCalendar('createTime')"><i class="glyphicon glyphicon-calendar"></i></button>
-                    </span>
-                </div>
-        </div>
-        <div class="form-group">
-            <label class="control-label" data-translate="cpmApp.productPrice.updator" for="field_updator">Updator</label>
-            <input type="text" class="form-control" name="updator" id="field_updator"
-                    ng-model="vm.productPrice.updator"
-                     />
-        </div>
-        <div class="form-group">
-            <label class="control-label" data-translate="cpmApp.productPrice.updateTime" for="field_updateTime">Update Time</label>
-                <div class="input-group">
-                    <input id="field_updateTime" type="text" class="form-control" name="updateTime" datetime-picker="{{dateformat}}" ng-model="vm.productPrice.updateTime" is-open="vm.datePickerOpenStatus.updateTime"
-                      />
-                    <span class="input-group-btn">
-                        <button type="button" class="btn btn-default" ng-click="vm.openCalendar('updateTime')"><i class="glyphicon glyphicon-calendar"></i></button>
-                    </span>
-                </div>
-        </div>
-
     </div>
     <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="vm.clear()">

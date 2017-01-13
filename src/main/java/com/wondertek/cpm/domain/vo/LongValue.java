@@ -5,6 +5,7 @@ public class LongValue {
 	private Integer type;
 	private String val;
 	private Long p1;
+	private Double p2;
 	
 	public LongValue(Long key, Integer type, String val) {
 		this.key = key;
@@ -16,11 +17,12 @@ public class LongValue {
 		this.val = val;
 	}
 	
-	public LongValue(Long key, String val, Long p1) {
+	public LongValue(Long key, String val, Long p1, Double p2) {
 		super();
 		this.key = key;
 		this.val = val;
 		this.p1 = p1;
+		this.p2 = p2;
 	}
 	public Long getKey() {
 		return key;
@@ -45,5 +47,11 @@ public class LongValue {
 	}
 	public void setP1(Long p1) {
 		this.p1 = p1;
+	}
+	public Double getP2() {
+		return p2;
+	}
+	public void setP2(Double p2) {
+		this.p2 = p2;
 	}
 }

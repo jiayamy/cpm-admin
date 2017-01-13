@@ -43,6 +43,21 @@
             	url:'api/project-infos/queryUserContractBudget',
             	method:'GET',
             	isArray:true
+            },
+            'end':{
+            	url:'api/project-infos/end',
+            	method:'GET',
+            	isArray:true
+            },
+            'finish':{
+            	url:'api/project-infos/finish',
+            	method:'GET',
+            	isArray:true
+            },
+            'queryProjectInfo':{
+            	url:'api/project-infos/queryUserProject',
+            	method:'GET',
+            	isArray:true
             }
         });
     }

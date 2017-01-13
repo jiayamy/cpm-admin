@@ -11,13 +11,10 @@
         var vm = this;
 
         vm.projectInfo = entity;
-        if(vm.projectInfo.type){
-        	
-        }
-        console.log(vm.projectInfo);
         vm.previousState = previousState.name;
         vm.queryDept = previousState.queryDept;
         vm.contractChanged = contractChanged;
+        vm.budgetChanged = budgetChanged;
         
         vm.datePickerOpenStatus = {};
         vm.openCalendar = openCalendar;
@@ -78,6 +75,7 @@
 	        			if(!select){
 	        				vm.projectInfo.budgetId = vm.contractBudgets[0];
 	        			}
+	        			budgetChanged();
 	        		}
 	        	},
 	        	function(error){
@@ -86,9 +84,15 @@
 	        	}
 	        );
         }
+        function budgetChanged(){
+        	if(vm.projectInfo.budgetId && vm.projectInfo.budgetId.key){
+        		vm.projectInfo.budgetOriginal = vm.projectInfo.budgetId.p2;
+        	}else{
+        		vm.projectInfo.budgetOriginal = vm.projectInfo.budgetOriginal;
+        	}
+        }
         function save () {
             vm.isSaving = true;
-            console.log(vm.projectInfo);
             var projectInfo = {};
             projectInfo.id = vm.projectInfo.id;
             projectInfo.serialNum = vm.projectInfo.serialNum;

@@ -1,17 +1,27 @@
 package com.wondertek.cpm.service;
 
+import com.wondertek.cpm.domain.ContractWeeklyStat;
 import com.wondertek.cpm.domain.ProjectWeeklyStat;
+import com.wondertek.cpm.domain.User;
+import com.wondertek.cpm.repository.ProjectWeeklyStatDao;
 import com.wondertek.cpm.repository.ProjectWeeklyStatRepository;
+import com.wondertek.cpm.repository.UserRepository;
 import com.wondertek.cpm.repository.search.ProjectWeeklyStatSearchRepository;
+import com.wondertek.cpm.security.SecurityUtils;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
+
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -31,6 +41,12 @@ public class ProjectWeeklyStatService {
 
     @Inject
     private ProjectWeeklyStatSearchRepository projectWeeklyStatSearchRepository;
+    
+    @Inject
+    private UserRepository userRepository;
+    
+    @Inject
+    private ProjectWeeklyStatDao projectWeeklyStatDao;
 
     /**
      * Save a projectWeeklyStat.
@@ -93,5 +109,24 @@ public class ProjectWeeklyStatService {
         log.debug("Request to search for a page of ProjectWeeklyStats for query {}", query);
         Page<ProjectWeeklyStat> result = projectWeeklyStatSearchRepository.search(queryStringQuery(query), pageable);
         return result;
+    }
+    
+    /**
+     * 根据参数获取列表
+     * @param fromDate
+     * @param endDate
+     * @param statDate
+     * @param pageable
+     * @return
+     */
+    @Transactional(readOnly = true)
+    public Page<ProjectWeeklyStat> getStatPage(String fromDate, String endDate, String statDate, Pageable pageable){
+    	Optional<User> user = userRepository.findOneByLogin(SecurityUtils.getCurrentUserLogin());
+    	if(user.isPresent()){
+    		Page<ProjectWeeklyStat> page = projectWeeklyStatDao.getUserPage(fromDate, endDate, statDate, pageable, user.get());
+        	return page;
+    	}else{
+    		return new PageImpl(new ArrayList<ProjectWeeklyStat>(), pageable, 0);
+    	}
     }
 }

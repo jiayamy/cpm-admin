@@ -2,6 +2,7 @@ package com.wondertek.cpm.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import com.wondertek.cpm.domain.HolidayInfo;
+import com.wondertek.cpm.security.SecurityUtils;
 import com.wondertek.cpm.service.HolidayInfoService;
 import com.wondertek.cpm.web.rest.util.HeaderUtil;
 import com.wondertek.cpm.web.rest.util.PaginationUtil;
@@ -21,6 +22,7 @@ import javax.inject.Inject;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.text.SimpleDateFormat;
+import java.time.ZonedDateTime;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
@@ -76,13 +78,37 @@ public class HolidayInfoResource {
     @Timed
     public ResponseEntity<HolidayInfo> updateHolidayInfo(@RequestBody HolidayInfo holidayInfo) throws URISyntaxException {
         log.debug("REST request to update HolidayInfo : {}", holidayInfo);
-        if (holidayInfo.getId() == null) {
-            return createHolidayInfo(holidayInfo);
+        if(holidayInfo.getCurrDay() == null || holidayInfo.getType() == null){
+        	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.holidayInfo.save.requriedError", "")).body(null);
         }
-        HolidayInfo result = holidayInfoService.save(holidayInfo);
-        return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert("holidayInfo", holidayInfo.getId().toString()))
-            .body(result);
+        //获取当前用户
+        String updator = SecurityUtils.getCurrentUserLogin();
+        ZonedDateTime updateTime = ZonedDateTime.now();
+        HolidayInfo findHoliday = holidayInfoService.findByCurrDay(holidayInfo.getCurrDay());
+        Boolean isNew = null;
+        if(findHoliday != null){
+        	isNew = false;
+        	
+        }else{
+        	isNew = true;
+        	findHoliday = new HolidayInfo();
+        	findHoliday.setCreateTime(updateTime);
+        	findHoliday.setCreator(updator);
+        	findHoliday.setCurrDay(holidayInfo.getCurrDay());
+        }
+        findHoliday.setType(holidayInfo.getType());
+    	findHoliday.setUpdateTime(updateTime);
+    	findHoliday.setUpdator(updator);
+        HolidayInfo result = holidayInfoService.save(findHoliday);
+        if(isNew){
+        	return ResponseEntity.created(new URI("/api/holiday-infos/" + result.getId()))
+                    .headers(HeaderUtil.createEntityCreationAlert("holidayInfo", result.getId().toString()))
+                    .body(result);
+        }else{
+        	return ResponseEntity.ok()
+        			.headers(HeaderUtil.createEntityUpdateAlert("holidayInfo", findHoliday.getId().toString()))
+        			.body(result);
+        }
     }
 
     /**
@@ -94,7 +120,10 @@ public class HolidayInfoResource {
      */
     @GetMapping("/holiday-infos")
     @Timed
-    public ResponseEntity<List<HolidayInfo>> getAllHolidayInfos(@ApiParam Pageable pageable)
+    public ResponseEntity<List<HolidayInfo>> getAllHolidayInfos(
+    		@RequestParam(value = "fromCurrDay",required=false) Long fromCurrDay,
+    		@RequestParam(value = "toCurrDay",required=false) Long toCurrDay,
+    		@ApiParam Pageable pageable)
         throws URISyntaxException {
         log.debug("REST request to get a page of HolidayInfos");
         //初始化，以防定时任务不起作用
@@ -104,10 +133,10 @@ public class HolidayInfoResource {
         cal.set(Calendar.DAY_OF_MONTH, 1);
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
         Long dateTime = Long.valueOf(sdf.format(cal.getTime()));
-        int count = holidayInfoService.findByCurrDay(dateTime);
+        HolidayInfo holiResult = holidayInfoService.findByCurrDay(dateTime);
         List<HolidayInfo> lists = null;
         try {
-			if(count<=0){
+			if(holiResult==null){
 				lists = TimerHolidayUtil.holidayUpdate();
 				holidayInfoService.save(lists);
 			}else{
@@ -118,7 +147,11 @@ public class HolidayInfoResource {
 			log.error("HolidayInfo update error:",e);
 		}
         
-        Page<HolidayInfo> page = holidayInfoService.findAll(pageable);
+//        Page<HolidayInfo> page = holidayInfoService.findAll(pageable);
+        Map<String,Long> searchCondition = new HashMap<String,Long>();
+        searchCondition.put("fromCurrDay", fromCurrDay);
+        searchCondition.put("toCurrDay", toCurrDay);
+        Page<HolidayInfo> page = holidayInfoService.getHolidayInfoPage(searchCondition,pageable);
         
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/holiday-infos");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
