@@ -106,10 +106,13 @@ public class DeptInfoService {
      * 获取用户和部门的树形结构数据
      * @return
      */
-	public List<DeptTree> getDeptAndUserTree(Integer selectType, Boolean showChild) {
+	public List<DeptTree> getDeptAndUserTree(Integer selectType, Boolean showChild, Boolean showUser) {
 		List<DeptTree> returnList = new ArrayList<DeptTree>();
 		//查询出所有的用户
-		List<User> allUser = userRepository.findAllByActivated(Boolean.TRUE);
+		List<User> allUser = null;
+		if(showUser){
+			allUser = userRepository.findAllByActivated(Boolean.TRUE);
+		}
 		//查询出所有的部门
 		List<DeptInfo> allDeptInfo = deptInfoRepository.findAllByStatus(CpmConstants.STATUS_VALID);
 		

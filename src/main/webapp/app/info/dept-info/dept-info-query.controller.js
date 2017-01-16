@@ -17,6 +17,11 @@
         
         loadAll();
         
+        //entity 中4个参数 selectType showChild dataType showUser
+        //selectType 0:不选择，1：选择所有，2：只选择部门，3：只选择用户，默认不选择
+        //showChild true/false。是否展示所有的子部门，默认展示
+        //dataType 选择后返回参数，自己定义
+        //showUser 是否显示用户，默认显示
         function loadAll () {
         	if(entity.selectType == undefined){
         		entity.selectType = "0";
@@ -24,9 +29,13 @@
         	if(entity.showChild == undefined){
         		entity.showChild = "true";
         	}
+        	if(entity.showUser == undefined){
+        		entity.showUser = "true";
+        	}
             DeptInfo.getDeptAndUserTree({
             	selectType:entity.selectType,
-            	showChild:entity.showChild
+            	showChild:entity.showChild,
+            	showUser:entity.showUser
             }, onSuccess, onError);
             
             function onSuccess(data, headers) {
