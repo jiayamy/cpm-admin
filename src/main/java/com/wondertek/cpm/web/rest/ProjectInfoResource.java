@@ -144,10 +144,10 @@ public class ProjectInfoResource {
     @Timed
     @Secured(AuthoritiesConstants.ROLE_PROJECT_INFO)
     public ResponseEntity<List<ProjectInfoVo>> getAllProjectInfos(
-    		@RequestParam(value = "contractId") String contractId, 
-    		@RequestParam(value = "serialNum") String serialNum, 
-    		@RequestParam(value = "name") String name, 
-    		@RequestParam(value = "status") String status, 
+    		@RequestParam(value = "contractId",required=false) String contractId, 
+    		@RequestParam(value = "serialNum",required=false) String serialNum, 
+    		@RequestParam(value = "name",required=false) String name, 
+    		@RequestParam(value = "status",required=false) String status, 
     		@ApiParam Pageable pageable)
         throws URISyntaxException {
         log.debug("REST request to get a page of ProjectInfos");
@@ -269,7 +269,7 @@ public class ProjectInfoResource {
         if(projectInfo == null){
         	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.projectInfo.save.noPerm", "")).body(null);
         }
-        if(finishRate < 0){
+        if(finishRate == null || finishRate < 0){
         	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.projectInfo.finish.minError", "")).body(null);
         }
         if(finishRate > 100){

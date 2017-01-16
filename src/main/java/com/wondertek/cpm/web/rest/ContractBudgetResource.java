@@ -256,9 +256,9 @@ public class ContractBudgetResource {
     @GetMapping("/contract-budgets")
     @Timed
     public ResponseEntity<List<ContractBudgetVo>> getAllContractBudgetsByParams(
-    		@RequestParam(value = "name") String name,
-    		@RequestParam(value = "serialNum") String serialNum,
-    		@RequestParam(value = "budgetName") String budgetName,
+    		@RequestParam(value = "name",required=false) String name,
+    		@RequestParam(value = "serialNum",required=false) String serialNum,
+    		@RequestParam(value = "budgetName",required=false) String budgetName,
     		@ApiParam Pageable pageable)
     	throws URISyntaxException{
     	log.debug("REST request to get a page of ContractBudget");

@@ -116,8 +116,8 @@ public class ProjectUserResource {
     @GetMapping("/project-users")
     @Timed
     public ResponseEntity<List<ProjectUserVo>> getAllProjectUsers(
-    		@RequestParam(value = "projectId") Long projectId, 
-    		@RequestParam(value = "userId") Long userId, 
+    		@RequestParam(value = "projectId",required=false) Long projectId, 
+    		@RequestParam(value = "userId",required=false) Long userId, 
     		@ApiParam Pageable pageable)
         throws URISyntaxException {
     	

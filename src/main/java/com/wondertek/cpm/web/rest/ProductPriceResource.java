@@ -143,9 +143,9 @@ public class ProductPriceResource {
     @GetMapping("/_search/product-prices")
     @Timed
     public ResponseEntity<List<ProductPrice>> searchProductPrices(
-    		@RequestParam(value = "name") String name,
-    		@RequestParam(value = "type") String type,
-    		@RequestParam(value = "source") String source,
+    		@RequestParam(value = "name",required=false) String name,
+    		@RequestParam(value = "type",required=false) String type,
+    		@RequestParam(value = "source",required=false) String source,
     		@ApiParam Pageable pageable)
         throws URISyntaxException {
         log.debug("REST request to search for a page of ProductPrices for query {}", name);
@@ -165,9 +165,9 @@ public class ProductPriceResource {
     @GetMapping("/product-prices")
     @Timed
     public ResponseEntity<List<ProductPrice>> getAllProductPrices(
-    		@RequestParam(value = "source") String source,
-    		@RequestParam(value = "type") String type,
-    		@RequestParam(value = "name") String name,
+    		@RequestParam(value = "source",required=false) String source,
+    		@RequestParam(value = "type",required=false) String type,
+    		@RequestParam(value = "name",required=false) String name,
     		@ApiParam Pageable pageable)
     	throws URISyntaxException{
     	log.debug("REST request to get a page of ProductPrice");

@@ -135,10 +135,10 @@ public class ContractInfoResource {
 
 	@GetMapping("/contract-infos")
 	@Timed
-	public ResponseEntity<List<ContractInfoVo>> getAllContractInfos(@RequestParam(value = "name") String name,
-			@RequestParam(value = "type") Integer type, @RequestParam(value = "isPrepared") Boolean isPrepared,
-			@RequestParam(value = "isEpibolic") Boolean isEpibolic, @RequestParam(value = "serialNum") String serialNum,
-			@RequestParam(value = "salesmanId") Long salesmanId,@RequestParam(value = "consultantsId") Long consultantsId,
+	public ResponseEntity<List<ContractInfoVo>> getAllContractInfos(@RequestParam(value = "name",required=false) String name,
+			@RequestParam(value = "type",required=false) Integer type, @RequestParam(value = "isPrepared",required=false) Boolean isPrepared,
+			@RequestParam(value = "isEpibolic",required=false) Boolean isEpibolic, @RequestParam(value = "serialNum",required=false) String serialNum,
+			@RequestParam(value = "salesmanId",required=false) Long salesmanId,@RequestParam(value = "consultantsId",required=false) Long consultantsId,
 			@ApiParam Pageable pageable) throws URISyntaxException {
 		log.debug("REST request to get a page of ContractInfos");
 		ContractInfo contractInfo = new ContractInfo();

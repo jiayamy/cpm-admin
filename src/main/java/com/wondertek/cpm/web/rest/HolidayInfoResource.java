@@ -1,14 +1,17 @@
 package com.wondertek.cpm.web.rest;
 
-import com.codahale.metrics.annotation.Timed;
-import com.wondertek.cpm.domain.HolidayInfo;
-import com.wondertek.cpm.security.SecurityUtils;
-import com.wondertek.cpm.service.HolidayInfoService;
-import com.wondertek.cpm.web.rest.util.HeaderUtil;
-import com.wondertek.cpm.web.rest.util.PaginationUtil;
-import com.wondertek.cpm.web.rest.util.TimerHolidayUtil;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.text.SimpleDateFormat;
+import java.time.ZonedDateTime;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
-import io.swagger.annotations.ApiParam;
+import javax.inject.Inject;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -16,23 +19,24 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
-import javax.inject.Inject;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.text.SimpleDateFormat;
-import java.time.ZonedDateTime;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
+import com.codahale.metrics.annotation.Timed;
+import com.wondertek.cpm.TimerHolidayUtil;
+import com.wondertek.cpm.domain.HolidayInfo;
+import com.wondertek.cpm.security.SecurityUtils;
+import com.wondertek.cpm.service.HolidayInfoService;
+import com.wondertek.cpm.web.rest.util.HeaderUtil;
+import com.wondertek.cpm.web.rest.util.PaginationUtil;
 
-import static org.elasticsearch.index.query.QueryBuilders.*;
+import io.swagger.annotations.ApiParam;
 
 /**
  * REST controller for managing HolidayInfo.
@@ -45,26 +49,6 @@ public class HolidayInfoResource {
         
     @Inject
     private HolidayInfoService holidayInfoService;
-
-    /**
-     * POST  /holiday-infos : Create a new holidayInfo.
-     *
-     * @param holidayInfo the holidayInfo to create
-     * @return the ResponseEntity with status 201 (Created) and with body the new holidayInfo, or with status 400 (Bad Request) if the holidayInfo has already an ID
-     * @throws URISyntaxException if the Location URI syntax is incorrect
-     */
-    @PostMapping("/holiday-infos")
-    @Timed
-    public ResponseEntity<HolidayInfo> createHolidayInfo(@RequestBody HolidayInfo holidayInfo) throws URISyntaxException {
-        log.debug("REST request to save HolidayInfo : {}", holidayInfo);
-        if (holidayInfo.getId() != null) {
-            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("holidayInfo", "idexists", "A new holidayInfo cannot already have an ID")).body(null);
-        }
-        HolidayInfo result = holidayInfoService.save(holidayInfo);
-        return ResponseEntity.created(new URI("/api/holiday-infos/" + result.getId()))
-            .headers(HeaderUtil.createEntityCreationAlert("holidayInfo", result.getId().toString()))
-            .body(result);
-    }
 
     /**
      * PUT  /holiday-infos : Updates an existing holidayInfo.
@@ -93,11 +77,6 @@ public class HolidayInfoResource {
         ZonedDateTime updateTime = ZonedDateTime.now();
         HolidayInfo findHoliday  = null;
         if(isNew){
-        	SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
-        	Boolean isLgCurrDay = Long.valueOf(sdf.format(new Date())) <= holidayInfo.getCurrDay();
-        	if(!isLgCurrDay){
-        		return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.holidayInfo.save.lessDayError", "")).body(null);
-        	}
         	findHoliday = holidayInfoService.findByCurrDay(holidayInfo.getCurrDay());
         	if(findHoliday != null){
         		return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.holidayInfo.save.existError", "")).body(null);
@@ -115,6 +94,7 @@ public class HolidayInfoResource {
         findHoliday.setType(holidayInfo.getType());
     	findHoliday.setUpdateTime(updateTime);
     	findHoliday.setUpdator(updator);
+    	
         HolidayInfo result = holidayInfoService.save(findHoliday);
         if(isNew){
         	return ResponseEntity.created(new URI("/api/holiday-infos/" + result.getId()))
@@ -163,8 +143,7 @@ public class HolidayInfoResource {
 			log.error("HolidayInfo update error:",e);
 		}
         
-//        Page<HolidayInfo> page = holidayInfoService.findAll(pageable);
-        if(toCurrDay != null && toCurrDay < fromCurrDay){
+        if(fromCurrDay != null && toCurrDay != null && toCurrDay < fromCurrDay){
         	return new ResponseEntity<>(HeaderUtil.createError("cpmApp.holidayInfo.search.deadLineError", ""),HttpStatus.BAD_REQUEST);
         }
         Map<String,Long> searchCondition = new HashMap<String,Long>();
@@ -204,7 +183,7 @@ public class HolidayInfoResource {
     @Timed
     public ResponseEntity<Void> deleteHolidayInfo(@PathVariable Long id) {
         log.debug("REST request to delete HolidayInfo : {}", id);
-        holidayInfoService.delete(id);
+//        holidayInfoService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert("holidayInfo", id.toString())).build();
     }
 

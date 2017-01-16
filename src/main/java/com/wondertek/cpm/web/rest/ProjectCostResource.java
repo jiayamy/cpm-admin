@@ -118,9 +118,9 @@ public class ProjectCostResource {
     @GetMapping("/project-costs")
     @Timed
     public ResponseEntity<List<ProjectCostVo>> getAllProjectCosts(
-    		@RequestParam(value = "projectId") Long projectId, 
-    		@RequestParam(value = "type") Integer type, 
-    		@RequestParam(value = "name") String name, 
+    		@RequestParam(value = "projectId",required=false) Long projectId, 
+    		@RequestParam(value = "type",required=false) Integer type, 
+    		@RequestParam(value = "name",required=false) String name, 
     		@ApiParam Pageable pageable)
         throws URISyntaxException {
         log.debug("REST request to get a page of ProjectCosts");

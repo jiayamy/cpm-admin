@@ -15,13 +15,16 @@
         vm.reverse = pagingParams.ascending;
         vm.transition = transition;
         vm.itemsPerPage = paginationConstants.itemsPerPage;
+        
         vm.clear = clear;
         vm.search = search;
         vm.loadAll = loadAll;
+        
         vm.searchQuery = {};
-        vm.searchQuery.fromCurrDay = DateUtils.convertDayToDate(pagingParams.fromCurrDay);;
-        vm.searchQuery.toCurrDay = DateUtils.convertDayToDate(pagingParams.toCurrDay);;
-        if (!vm.searchQuery.fromCurrDay && !vm.searchQuery.toCurrDay){
+        vm.searchQuery.fromCurrDay = DateUtils.convertDayToDate(pagingParams.fromCurrDay);
+        vm.searchQuery.toCurrDay = DateUtils.convertDayToDate(pagingParams.toCurrDay);
+        
+        if (pagingParams.fromCurrDay == undefined && pagingParams.toCurrDay == undefined){
         	vm.haveSearch = null;
         }else{
         	vm.haveSearch = true;
@@ -94,7 +97,7 @@
         }
 
         function search() {
-            if (!vm.searchQuery.fromCurrDay && !vm.searchQuery.toCurrDay){
+        	if (pagingParams.fromCurrDay == undefined && pagingParams.toCurrDay == undefined){
                 return vm.clear();
             }
             vm.links = null;
@@ -111,8 +114,7 @@
             vm.predicate = 'currDay';
             vm.reverse = false;
             vm.haveSearch = false;
-            vm.searchQuery.fromCurrDay = null;
-            vm.searchQuery.toCurrDay = null;
+            vm.searchQuery = {}
             vm.transition();
         }
         
