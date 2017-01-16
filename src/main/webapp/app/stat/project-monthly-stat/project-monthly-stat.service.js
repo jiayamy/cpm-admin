@@ -21,7 +21,12 @@
                     return data;
                 }
             },
-            'update': { method:'PUT' }
+            'update': { method:'PUT' },
+            'queryUserProject':{
+            	url:'api/project-monthly-stats/queryUserProject',
+            	method:'GET',
+            	isArray:true
+            }
         });
     }
 })();

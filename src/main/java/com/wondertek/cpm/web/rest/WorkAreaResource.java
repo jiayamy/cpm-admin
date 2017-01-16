@@ -14,6 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,6 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.codahale.metrics.annotation.Timed;
 import com.wondertek.cpm.domain.WorkArea;
+import com.wondertek.cpm.security.AuthoritiesConstants;
 import com.wondertek.cpm.service.WorkAreaService;
 import com.wondertek.cpm.web.rest.util.HeaderUtil;
 import com.wondertek.cpm.web.rest.util.PaginationUtil;
@@ -53,6 +55,7 @@ public class WorkAreaResource {
      */
     @PostMapping("/work-areas")
     @Timed
+    @Secured(AuthoritiesConstants.ROLE_INFO_BASIC)
     public ResponseEntity<WorkArea> createWorkArea(@RequestBody WorkArea workArea) throws URISyntaxException {
         log.debug("REST request to save WorkArea : {}", workArea);
         if (workArea.getId() != null) {
@@ -75,6 +78,7 @@ public class WorkAreaResource {
      */
     @PutMapping("/work-areas")
     @Timed
+    @Secured(AuthoritiesConstants.ROLE_INFO_BASIC)
     public ResponseEntity<WorkArea> updateWorkArea(@RequestBody WorkArea workArea) throws URISyntaxException {
         log.debug("REST request to update WorkArea : {}", workArea);
         if (workArea.getId() == null) {
@@ -95,6 +99,7 @@ public class WorkAreaResource {
      */
     @GetMapping("/work-areas")
     @Timed
+    @Secured(AuthoritiesConstants.ROLE_INFO_BASIC)
     public ResponseEntity<List<WorkArea>> getAllWorkAreas(@ApiParam Pageable pageable)
         throws URISyntaxException {
         log.debug("REST request to get a page of WorkAreas");
@@ -111,6 +116,7 @@ public class WorkAreaResource {
      */
     @GetMapping("/work-areas/{id}")
     @Timed
+    @Secured(AuthoritiesConstants.ROLE_INFO_BASIC)
     public ResponseEntity<WorkArea> getWorkArea(@PathVariable Long id) {
         log.debug("REST request to get WorkArea : {}", id);
         WorkArea workArea = workAreaService.findOne(id);
@@ -129,9 +135,10 @@ public class WorkAreaResource {
      */
     @DeleteMapping("/work-areas/{id}")
     @Timed
+    @Secured(AuthoritiesConstants.ROLE_INFO_BASIC)
     public ResponseEntity<Void> deleteWorkArea(@PathVariable Long id) {
         log.debug("REST request to delete WorkArea : {}", id);
-        workAreaService.delete(id);
+//        workAreaService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert("workArea", id.toString())).build();
     }
 
@@ -146,6 +153,7 @@ public class WorkAreaResource {
      */
     @GetMapping("/_search/work-areas")
     @Timed
+    @Secured(AuthoritiesConstants.ROLE_INFO_BASIC)
     public ResponseEntity<List<WorkArea>> searchWorkAreas(@RequestParam String query, @ApiParam Pageable pageable)
         throws URISyntaxException {
         log.debug("REST request to search for a page of WorkAreas for query {}", query);
@@ -156,6 +164,7 @@ public class WorkAreaResource {
     
     @GetMapping("/work-areas/queryAll")
     @Timed
+    @Secured(AuthoritiesConstants.ROLE_INFO_BASIC)
     public ResponseEntity<List<String>> queryAllWorkAreas() throws URISyntaxException {
     	log.debug("REST request to queryAllWorkAreas");
         List<String> page = workAreaService.queryAll();

@@ -3,6 +3,8 @@ package com.wondertek.cpm.domain.vo;
 import java.io.Serializable;
 import java.time.ZonedDateTime;
 
+import com.wondertek.cpm.domain.ContractInfo;
+
 public class ContractInfoVo implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
@@ -53,6 +55,87 @@ public class ContractInfoVo implements Serializable {
     private String updator;
 
     private ZonedDateTime updateTime;
+
+    public ContractInfoVo() {
+	}
+    //查看使用
+    public ContractInfoVo(ContractInfo contractInfo) {
+		this.id = contractInfo.getId();
+		this.serialNum = contractInfo.getSerialNum();
+		this.name = contractInfo.getName();
+		this.amount = contractInfo.getAmount();
+		this.type = contractInfo.getType();
+		this.isPrepared = contractInfo.getIsPrepared();
+		this.isEpibolic = contractInfo.getIsEpibolic();
+		this.salesmanId = contractInfo.getSalesmanId();
+		this.salesman = contractInfo.getSalesman();
+		this.dept = contractInfo.getDept();
+		this.deptId = contractInfo.getDeptId();
+		this.consultants = contractInfo.getConsultants();
+		this.consultantsId = contractInfo.getConsultantsId();
+		this.consultantsDept = contractInfo.getConsultantsDept();
+		this.consultantsDeptId = contractInfo.getConsultantsDeptId();
+		this.startDay = contractInfo.getStartDay();
+		this.endDay = contractInfo.getEndDay();
+		this.taxRate = contractInfo.getTaxRate();
+		this.taxes = contractInfo.getTaxes();
+		this.shareRate = contractInfo.getShareRate();
+		this.shareCost = contractInfo.getShareCost();
+		this.paymentWay = contractInfo.getPaymentWay();
+		this.contractor = contractInfo.getContractor();
+		this.address = contractInfo.getAddress();
+		this.postcode = contractInfo.getPostcode();
+		this.linkman = contractInfo.getLinkman();
+		this.contactDept = contractInfo.getContactDept();
+		this.telephone = contractInfo.getTelephone();
+		this.receiveTotal = contractInfo.getReceiveTotal();
+		this.finishTotal = contractInfo.getFinishTotal();
+		this.finishRate = contractInfo.getFinishRate();
+		this.status = contractInfo.getStatus();
+		this.creator = contractInfo.getCreator();
+		this.createTime = contractInfo.getCreateTime();
+		this.updator = contractInfo.getUpdator();
+		this.updateTime = contractInfo.getUpdateTime();
+	}
+    //列表页使用
+	public ContractInfoVo(ContractInfo contractInfo, Integer key) {
+		this.id = contractInfo.getId();
+		this.serialNum = contractInfo.getSerialNum();
+		this.name = contractInfo.getName();
+		this.amount = contractInfo.getAmount();
+		this.type = contractInfo.getType();
+		this.isPrepared = contractInfo.getIsPrepared();
+		this.isEpibolic = contractInfo.getIsEpibolic();
+//		this.salesmanId = contractInfo.getSalesmanId();
+		this.salesman = contractInfo.getSalesman();
+//		this.dept = contractInfo.getDept();
+//		this.deptId = contractInfo.getDeptId();
+		this.consultants = contractInfo.getConsultants();
+//		this.consultantsId = contractInfo.getConsultantsId();
+//		this.consultantsDept = contractInfo.getConsultantsDept();
+//		this.consultantsDeptId = contractInfo.getConsultantsDeptId();
+		this.startDay = contractInfo.getStartDay();
+		this.endDay = contractInfo.getEndDay();
+//		this.taxRate = contractInfo.getTaxRate();
+//		this.taxes = contractInfo.getTaxes();
+//		this.shareRate = contractInfo.getShareRate();
+//		this.shareCost = contractInfo.getShareCost();
+//		this.paymentWay = contractInfo.getPaymentWay();
+		this.contractor = contractInfo.getContractor();
+//		this.address = contractInfo.getAddress();
+//		this.postcode = contractInfo.getPostcode();
+//		this.linkman = contractInfo.getLinkman();
+//		this.contactDept = contractInfo.getContactDept();
+//		this.telephone = contractInfo.getTelephone();
+//		this.receiveTotal = contractInfo.getReceiveTotal();
+//		this.finishTotal = contractInfo.getFinishTotal();
+		this.finishRate = contractInfo.getFinishRate();
+		this.status = contractInfo.getStatus();
+		this.creator = contractInfo.getCreator();
+		this.createTime = contractInfo.getCreateTime();
+		this.updator = contractInfo.getUpdator();
+		this.updateTime = contractInfo.getUpdateTime();
+	}
 
 	public Long getId() {
 		return id;

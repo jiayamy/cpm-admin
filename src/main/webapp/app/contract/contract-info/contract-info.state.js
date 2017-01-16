@@ -11,7 +11,7 @@
         $stateProvider
         .state('contract-info', {
             parent: 'contract',
-            url: '/contract-info?page&sort&search&name&type&isPrepared&isEpibolic&salesman',
+            url: '/contract-info?page&sort&serialNum&name&type&isPrepared&isEpibolic',
             data: {
                 authorities: ['ROLE_USER'],
                 pageTitle: 'cpmApp.contractInfo.home.title'
@@ -29,14 +29,14 @@
                     squash: true
                 },
                 sort: {
-                    value: 'updateTime,desc',
+                    value: 'wci.id,desc',
                     squash: true
                 },
+                serialNum:null,
                 name:null,
                 type:null,
                 isPrepared:null,
-                isEpibolic:null,
-                salesman:null
+                isEpibolic:null
             },
             resolve: {
                 pagingParams: ['$state','$stateParams', 'PaginationUtil', function ($state,$stateParams, PaginationUtil) {
@@ -45,11 +45,11 @@
                         sort: $stateParams.sort,
                         predicate: PaginationUtil.parsePredicate($stateParams.sort),
                         ascending: PaginationUtil.parseAscending($stateParams.sort),
+                        serialNum: $stateParams.serialNum,
                         name: $stateParams.name,
                         type: $stateParams.type,
                         isPrepared: $stateParams.isPrepared,
-                        isEpibolic: $stateParams.isEpibolic,
-                        salesman: $stateParams.salesman
+                        isEpibolic: $stateParams.isEpibolic
                     };
                 }],
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
@@ -60,8 +60,8 @@
             }
         })
         .state('contract-info-detail', {
-            parent: 'contract',
-            url: '/contract-info/{id}',
+            parent: 'contract-info',
+            url: '/detail/{id}',
             data: {
                 authorities: ['ROLE_USER'],
                 pageTitle: 'cpmApp.contractInfo.detail.title'
@@ -92,8 +92,8 @@
             }
         })
        .state('contract-info-detail.edit',{
-        	parent:'contract-info',
-        	url:'/{id}/edit',
+        	parent:'contract-info-detail',
+        	url:'/edit',
         	data:{
         		authorities: ['ROLE_USER']
         	},
@@ -115,7 +115,7 @@
                  }],
                  previousState: ["$state", function ($state) {
                      var currentStateData = {
-                     	queryDept:'contract-info-detail.edit.queryDept',
+                         queryDept:'contract-info-detail.edit.queryDept',
                          name: $state.current.name || 'contract-info-detail',
                          params: $state.params,
                          url: $state.href($state.current.name, $state.params)
@@ -124,7 +124,35 @@
                  }]
         	}
         })
-        
+        .state('contract-info-detail.edit.queryDept', {
+            parent: 'contract-info-detail.edit',
+            url: '/queryDept?selectType&showChild&dataType',
+            data: {
+                authorities: ['ROLE_USER']
+            },
+            onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
+                $uibModal.open({
+                    templateUrl: 'app/info/dept-info/dept-info-query.html',
+                    controller: 'DeptInfoQueryController',
+                    controllerAs: 'vm',
+                    backdrop: 'static',
+                    size: 'lg',
+                    resolve: {
+                        entity: function() {
+                            return {
+                            	selectType : $stateParams.selectType,
+                            	showChild : $stateParams.showChild,
+                            	dataType:$stateParams.dataType
+                            }
+                        }
+                    }
+                }).result.then(function() {
+                    $state.go('^', {}, { reload: false });
+                }, function() {
+                    $state.go('^');
+                });
+            }]
+        })
         .state('contract-info.new',{
         	parent: 'contract-info',
             url: '/new',
@@ -188,7 +216,7 @@
         })
         .state('contract-info.new.queryDept', {
             parent: 'contract-info.new',
-            url: '/queryDept?selectType&showChild',
+            url: '/queryDept?selectType&showChild&dataType',
             data: {
                 authorities: ['ROLE_USER']
             },
@@ -203,7 +231,8 @@
                         entity: function() {
                             return {
                             	selectType : $stateParams.selectType,
-                            	showChild : $stateParams.showChild
+                            	showChild : $stateParams.showChild,
+                            	dataType:$stateParams.dataType
                             }
                         }
                     }
@@ -239,7 +268,7 @@
                  previousState: ["$state", function ($state) {
                      var currentStateData = {
                      	queryDept:'contract-info.edit.queryDept',
-                         name: $state.current.name || 'contract-info-detail',
+                         name: $state.current.name || 'contract-info',
                          params: $state.params,
                          url: $state.href($state.current.name, $state.params)
                      };
@@ -273,7 +302,7 @@
         })
         .state('contract-info.edit.queryDept', {
             parent: 'contract-info.edit',
-            url: '/queryDept?selectType&showChild',
+            url: '/queryDept?selectType&showChild&dataType',
             data: {
                 authorities: ['ROLE_USER']
             },
@@ -288,7 +317,8 @@
                         entity: function() {
                             return {
                             	selectType : $stateParams.selectType,
-                            	showChild : $stateParams.showChild
+                            	showChild : $stateParams.showChild,
+                            	dataType:$stateParams.dataType
                             }
                         }
                     }

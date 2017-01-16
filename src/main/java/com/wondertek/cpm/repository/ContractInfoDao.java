@@ -14,15 +14,10 @@ import com.wondertek.cpm.domain.vo.LongValue;
 public interface ContractInfoDao extends GenericDao<ContractInfo, Long>{
 	/**
 	 * 获取用户筛选的列表
-	 * @param contractInfo
-	 * @param pageable
-	 * @return Page<ContractInfo>
 	 */
-	public Page<ContractInfo> getContractInfoPage(ContractInfo contractInfo, Pageable pageable);
+	public Page<ContractInfoVo> getContractInfoPage(ContractInfo contractInfo, Pageable pageable, User user, DeptInfo deptInfo);
 	/**
 	 * 查看新建时是否合同名重复
-	 * @param serialNum
-	 * @param id
 	 * @return
 	 */
 	public boolean checkByContract(String serialNum, Long id);
@@ -35,6 +30,8 @@ public interface ContractInfoDao extends GenericDao<ContractInfo, Long>{
 	 * 查询用户能看到的合同信息
 	 */
 	public List<LongValue> queryUserContract(User user, DeptInfo deptInfo);
+	
+	public int finishContractInfo(Long id, Double finishRate, String updator);
 	
 	
 }

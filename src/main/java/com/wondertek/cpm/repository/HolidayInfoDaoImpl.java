@@ -36,17 +36,14 @@ public class HolidayInfoDaoImpl extends GenericDaoImpl<HolidayInfo, Long> implem
 		StringBuffer sb = new StringBuffer();
 		List<Long> params = new ArrayList<Long>();
 		sb.append("where 1=1");
-		if(condition.get("fromCurrDay") != null && condition.get("toCurrDay") != null){
-    		sb.append("and currDay >= ? and currDay <= ?");
-    		params.add(condition.get("fromCurrDay"));
-    		params.add(condition.get("toCurrDay"));
-    	}else if(condition.get("fromCurrDay") != null && condition.get("toCurrDay") == null){
-    		sb.append(" and currDay = ?");
-    		params.add(condition.get("fromCurrDay"));
-    	}else if(condition.get("fromCurrDay") == null && condition.get("toCurrDay") != null){
-    		sb.append(" and currDay = ?");
-    		params.add(condition.get("toCurrDay"));
-    	}
+		if(condition.get("fromCurrDay") != null){
+			sb.append(" and currDay >= ?");
+			params.add(condition.get("fromCurrDay"));
+		}
+		if(condition.get("toCurrDay") != null){
+			sb.append(" and currDay <= ?");
+			params.add(condition.get("toCurrDay"));
+		}
 		
 		StringBuffer orderHql = new StringBuffer();
 		if(pageable.getSort() != null){

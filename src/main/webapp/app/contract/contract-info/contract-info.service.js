@@ -26,11 +26,15 @@
                 }
             },
             'update': { method:'PUT' },
+<<<<<<< HEAD
             'queryContractInfo':{
             	url:'api/contract-infos/queryUserContract',
             	method:'GET',
             	isArray:true
             }
+=======
+            'finish': { method:'PUT',url:'api/contract-infos/finish' },
+>>>>>>> c97d2fc8c09afbae2401d6cbfd61ac156131f0fe
         });
     }
 })();

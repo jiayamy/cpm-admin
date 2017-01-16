@@ -11,7 +11,7 @@
         $stateProvider
         .state('project-monthly-stat', {
             parent: 'stat',
-            url: '/project-monthly-stat?page&sort&fromDate&toDate&statDate',
+            url: '/project-monthly-stat?page&projectId',
             data: {
                 authorities: ['ROLE_USER'],
                 pageTitle: 'cpmApp.projectMonthlyStat.home.title'
@@ -29,12 +29,10 @@
                     squash: true
                 },
                 sort: {
-                    value: 'id,asc',
+                    value: 'm.id,asc',
                     squash: true
                 },
-                fromDate : null,
-                toDate: null,
-                statDate: null
+                projectId: null
             },
             resolve: {
                 pagingParams: ['$stateParams', 'PaginationUtil', function ($stateParams, PaginationUtil) {
@@ -43,9 +41,7 @@
                         sort: $stateParams.sort,
                         predicate: PaginationUtil.parsePredicate($stateParams.sort),
                         ascending: PaginationUtil.parseAscending($stateParams.sort),
-                        fromDate: $stateParams.fromDate,
-                        toDate: $stateParams.toDate,
-                        statDate: $stateParams.statDate
+                        projectId: $stateParams.projectId
                     };
                 }],
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
@@ -84,6 +80,39 @@
                         url: $state.href($state.current.name, $state.params)
                     };
                     return currentStateData;
+                }]
+            }
+        })
+        .state('project-monthly-stat-detail.chart', {
+            parent: 'project-monthly-stat',
+            url: '/{id}/queryChart?fromDate&toDate',
+            data: {
+                authorities: ['ROLE_USER'],
+                pageTitle: 'cpmApp.projectInfo.detail.title'
+            },
+            views: {
+                'content@': {
+                    templateUrl: 'app/stat/project-monthly-stat/project-monthly-stat-chart.html',
+                    controller: 'ProjectMonthlyStatChartController',
+                    controllerAs: 'vm'
+                }
+            },
+            params: {
+                fromDate: null,
+                toDate : null
+            },
+            resolve: {
+                translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
+                    $translatePartialLoader.addPart('projectInfo');
+                    $translatePartialLoader.addPart('deptInfo');
+                    return $translate.refresh();
+                }],
+                pagingParams: ['$stateParams', 'PaginationUtil', function ($stateParams, PaginationUtil) {
+                    return {
+                        fromDate: $stateParams.fromDate,
+                        toDate : $stateParams.toDate,
+                        projectId : $stateParams.id
+                    };
                 }]
             }
         });

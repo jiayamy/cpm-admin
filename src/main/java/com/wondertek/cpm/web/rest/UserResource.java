@@ -148,6 +148,7 @@ public class UserResource {
      */
     @GetMapping("/users")
     @Timed
+    @Secured(AuthoritiesConstants.ROLE_INFO_BASIC)
     public ResponseEntity<List<ManagedUserVM>> getAllUsers(@ApiParam Pageable pageable)
         throws URISyntaxException {
         Page<User> page = userRepository.findAllWithAuthorities(pageable);

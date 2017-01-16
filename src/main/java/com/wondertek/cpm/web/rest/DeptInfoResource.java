@@ -159,11 +159,21 @@ public class DeptInfoResource {
     @GetMapping("/dept-infos/getDeptAndUserTree")
     @Timed
     public ResponseEntity<List<DeptTree>> getDeptAndUserTree(
-    			@RequestParam(value = "selectType") Integer selectType,
-    			@RequestParam(value = "showChild") Boolean showChild
+    			@RequestParam(value = "selectType",required=false) Integer selectType,
+    			@RequestParam(value = "showChild",required=false) Boolean showChild,
+    			@RequestParam(value = "showUser",required=false) Boolean showUser
     		) throws URISyntaxException {
         log.debug("REST request to get a page of getDeptAndUserTree");
-        List<DeptTree> list = deptInfoService.getDeptAndUserTree(selectType,showChild);
+        if(selectType == null){
+        	selectType = DeptTree.SELECTTYPE_NONE;
+        }
+        if(showChild == null){
+        	showChild = Boolean.TRUE;
+        }
+        if(showUser == null){
+        	showUser = Boolean.TRUE;
+        }
+        List<DeptTree> list = deptInfoService.getDeptAndUserTree(selectType,showChild,showUser);
         return new ResponseEntity<>(list, null, HttpStatus.OK);
     }
     

@@ -1,12 +1,15 @@
 package com.wondertek.cpm.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
+import com.wondertek.cpm.config.StringUtil;
 import com.wondertek.cpm.domain.PurchaseItem;
+import com.wondertek.cpm.domain.vo.PurchaseItemVo;
 import com.wondertek.cpm.service.PurchaseItemService;
 import com.wondertek.cpm.web.rest.util.HeaderUtil;
 import com.wondertek.cpm.web.rest.util.PaginationUtil;
 
 import io.swagger.annotations.ApiParam;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -17,6 +20,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.inject.Inject;
+
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
@@ -87,15 +91,15 @@ public class PurchaseItemResource {
      * @return the ResponseEntity with status 200 (OK) and the list of purchaseItems in body
      * @throws URISyntaxException if there is an error to generate the pagination HTTP headers
      */
-    @GetMapping("/purchase-items")
-    @Timed
-    public ResponseEntity<List<PurchaseItem>> getAllPurchaseItems(@ApiParam Pageable pageable)
-        throws URISyntaxException {
-        log.debug("REST request to get a page of PurchaseItems");
-        Page<PurchaseItem> page = purchaseItemService.findAll(pageable);
-        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/purchase-items");
-        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
-    }
+//    @GetMapping("/purchase-items")
+//    @Timed
+//    public ResponseEntity<List<PurchaseItem>> getAllPurchaseItems(@ApiParam Pageable pageable)
+//        throws URISyntaxException {
+//        log.debug("REST request to get a page of PurchaseItems");
+//        Page<PurchaseItem> page = purchaseItemService.findAll(pageable);
+//        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/purchase-items");
+//        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+//    }
 
     /**
      * GET  /purchase-items/:id : get the "id" purchaseItem.
@@ -138,13 +142,30 @@ public class PurchaseItemResource {
      * @return the result of the search
      * @throws URISyntaxException if there is an error to generate the pagination HTTP headers
      */
-    @GetMapping("/_search/purchase-items")
+    @GetMapping("/purchase-items")
     @Timed
-    public ResponseEntity<List<PurchaseItem>> searchPurchaseItems(@RequestParam String query, @ApiParam Pageable pageable)
+    public ResponseEntity<List<PurchaseItemVo>> searchPurchaseItems(@RequestParam String name, 
+    		@RequestParam String contractId,
+    		@RequestParam String source,
+    		@RequestParam String type,
+    		@ApiParam Pageable pageable)
         throws URISyntaxException {
-        log.debug("REST request to search for a page of PurchaseItems for query {}", query);
-        Page<PurchaseItem> page = purchaseItemService.search(query, pageable);
-        HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/purchase-items");
+        log.debug("REST request to search for a page of PurchaseItems");
+        PurchaseItem purchaseItem = new PurchaseItem();
+        if (!StringUtil.isNullStr(name)) {
+			purchaseItem.setName(name);
+		}
+        if (!StringUtil.isNullStr(contractId)) {
+			purchaseItem.setContractId(StringUtil.nullToLong(contractId));
+		}
+        if (!StringUtil.isNullStr(source)) {
+			purchaseItem.setSource(StringUtil.nullToInteger(source));
+		}
+        if (StringUtil.isNullStr(type)) {
+			purchaseItem.setType(StringUtil.nullToInteger(type));
+		}
+        Page<PurchaseItemVo> page = purchaseItemService.getPurchasePage(purchaseItem, pageable);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/purchase-items");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
 

@@ -104,20 +104,57 @@
             data: {
                 authorities: ['ROLE_INFO_BASIC']
             },
+            views: {
+                'content@': {
+                    templateUrl: 'app/info/user-management/user-management-dialog.html',
+                    controller: 'UserManagementDetailController',
+                    controllerAs: 'vm'
+                }
+            },
+            resolve: {
+                translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
+                    $translatePartialLoader.addPart('user-management');
+                    $translatePartialLoader.addPart('deptInfo');
+                    return $translate.refresh();
+                }],
+                entity: ['$stateParams','User', function($stateParams,User) {
+                    return User.get({login : $stateParams.login}).$promise;
+                 }],
+                 previousState: ["$state", function ($state) {
+  	                var currentStateData = {
+  	                	queryDept:'user-management.edit.queryDept',
+  	                    name: $state.current.name || 'user-management',
+  	                    params: $state.params,
+  	                    url: $state.href($state.current.name, $state.params)
+  	                };
+  	                return currentStateData;
+  	            }]
+            }
+        })
+         .state('user-management.edit.queryDept', {
+            parent: 'user-management.edit',
+            url: '/queryDept?selectType&showChild&showUser',
+            data: {
+                authorities: ['ROLE_PROJECT_INFO']
+            },
             onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
                 $uibModal.open({
-                    templateUrl: 'app/info/user-management/user-management-dialog.html',
-                    controller: 'UserManagementDialogController',
+                    templateUrl: 'app/info/dept-info/dept-info-query.html',
+                    controller: 'DeptInfoQueryController',
                     controllerAs: 'vm',
                     backdrop: 'static',
                     size: 'lg',
                     resolve: {
-                        entity: ['User', function(User) {
-                            return User.get({login : $stateParams.login});
-                        }]
+                        entity: function() {
+                            return {
+                            	selectType : $stateParams.selectType,
+                            	showChild : $stateParams.showChild,
+                            	showUser : $stateParams.showUser
+                            }
+                        }
                     }
                 }).result.then(function() {
-                    $state.go('user-management', null, { reload: true });
+                    $state.go('^', {}, { reload: false });
                 }, function() {
                     $state.go('^');
                 });

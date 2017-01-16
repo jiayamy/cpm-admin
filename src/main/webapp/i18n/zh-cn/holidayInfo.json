@@ -3,8 +3,9 @@
         "holidayInfo" : {
             "home": {
                 "title": "节假日信息",
-                "createLabel": "新增",
-                "createOrEditLabel": "新增编辑节假日信息",
+                "createLabel": "添加节假日",
+                "createOrEditLabel": "添加节假日信息",
+                "editLabel": "编辑节假日信息",
                 "search": "搜索节假日信息",
                 "fromCurrDay":"开始日期",
             	"toCurrDay":"结束日期"
@@ -16,7 +17,16 @@
                 "question": "确定删除主键为： {{ id }}的节假日信息?"
             },
             "detail": {
-                "title": "节假日信息"
+                "title": "节假日详情"
+            },
+            "save": {
+            	"existError":"所选日期已存在",
+            	"requriedError":"必填参数为空",
+            	"lessDayError":"所选日期小于当前日期",
+            	"lostError":"该日期不存在"
+            },
+            "search":{
+            	"deadLineError":"结束日期应大于开始日期"
             },
             "currDay": "日期",
             "type": "类型",

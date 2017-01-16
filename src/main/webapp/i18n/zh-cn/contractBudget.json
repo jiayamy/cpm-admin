@@ -3,7 +3,7 @@
         "contractBudget" : {
             "home": {
                 "title": "内部采购单",
-                "createLabel": "新增内部采购单",
+                "createLabel": "新增",
                 "createOrEditLabel": "内部采购单信息"
             },
             "created": "A new Contract Budget is created with identifier {{ param }}",

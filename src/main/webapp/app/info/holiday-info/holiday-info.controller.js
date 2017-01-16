@@ -15,13 +15,16 @@
         vm.reverse = pagingParams.ascending;
         vm.transition = transition;
         vm.itemsPerPage = paginationConstants.itemsPerPage;
+        
         vm.clear = clear;
         vm.search = search;
         vm.loadAll = loadAll;
+        
         vm.searchQuery = {};
-        vm.searchQuery.fromCurrDay = DateUtils.convertDayToDate(pagingParams.fromCurrDay);;
-        vm.searchQuery.toCurrDay = DateUtils.convertDayToDate(pagingParams.toCurrDay);;
-        if (!vm.searchQuery.fromCurrDay && !vm.searchQuery.toCurrDay){
+        vm.searchQuery.fromCurrDay = DateUtils.convertDayToDate(pagingParams.fromCurrDay);
+        vm.searchQuery.toCurrDay = DateUtils.convertDayToDate(pagingParams.toCurrDay);
+        
+        if (pagingParams.fromCurrDay == undefined && pagingParams.toCurrDay == undefined){
         	vm.haveSearch = null;
         }else{
         	vm.haveSearch = true;
@@ -54,12 +57,29 @@
                 vm.links = ParseLinks.parse(headers('link'));
                 vm.totalItems = headers('X-Total-Count');
                 vm.queryCount = vm.totalItems;
-                vm.holidayInfos = data;
+                vm.holidayInfos = handleData(data);
                 vm.page = pagingParams.page;
             }
             function onError(error) {
                 AlertService.error(error.data.message);
             }
+        }
+        
+        function handleData(data){
+        	if (data.length>0) {
+				for (var i = 0; i < data.length; i++) {
+					if (data[i].type == 1) {
+						data[i].type = "正常工作日";
+					} else if (data[i].type == 2) {
+						data[i].type = "正常休息日";
+					} else if (data[i].type == 3) {
+						data[i].type = "年假";
+					} else if (data[i].type == 4) {
+						data[i].type = "国家假日";
+					}
+				}
+			}
+        	return data;
         }
 
         function loadPage(page) {
@@ -77,7 +97,7 @@
         }
 
         function search() {
-            if (!vm.searchQuery.fromCurrDay && !vm.searchQuery.toCurrDay){
+        	if (pagingParams.fromCurrDay == undefined && pagingParams.toCurrDay == undefined){
                 return vm.clear();
             }
             vm.links = null;
@@ -94,8 +114,7 @@
             vm.predicate = 'currDay';
             vm.reverse = false;
             vm.haveSearch = false;
-            vm.searchQuery.fromCurrDay = null;
-            vm.searchQuery.toCurrDay = null;
+            vm.searchQuery = {}
             vm.transition();
         }
         
