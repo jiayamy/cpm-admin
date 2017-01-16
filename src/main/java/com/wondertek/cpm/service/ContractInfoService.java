@@ -28,7 +28,6 @@ import com.wondertek.cpm.repository.UserRepository;
 import com.wondertek.cpm.repository.search.ContractInfoSearchRepository;
 import com.wondertek.cpm.security.SecurityUtils;
 
-<<<<<<< HEAD
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -45,8 +44,6 @@ import java.util.stream.StreamSupport;
 
 import static org.elasticsearch.index.query.QueryBuilders.*;
 
-=======
->>>>>>> c97d2fc8c09afbae2401d6cbfd61ac156131f0fe
 /**
  * Service Implementation for managing ContractInfo.
  */
@@ -163,7 +160,7 @@ public class ContractInfoService {
 		return null;
 	}
 
-<<<<<<< HEAD
+
 	public List<LongValue> queryUserContract() {
 		List<LongValue> returnList = new ArrayList<LongValue>();
 		List<Object[]> objs = userRepository.findUserInfoByLogin(SecurityUtils.getCurrentUserLogin());
@@ -179,10 +176,8 @@ public class ContractInfoService {
 
 
 	
-=======
+
 	public int finishContractInfo(Long id, Double finishRate) {
 		return contractInfoDao.finishContractInfo(id,finishRate,SecurityUtils.getCurrentUserLogin());
 	}
->>>>>>> c97d2fc8c09afbae2401d6cbfd61ac156131f0fe
-
 }

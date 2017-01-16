@@ -178,7 +178,7 @@ public class ContractInfoDaoImpl extends GenericDaoImpl<ContractInfo, Long> impl
 	}
 
 	@Override
-<<<<<<< HEAD
+
 	public List<LongValue> queryUserContract(User user, DeptInfo deptInfo) {
 		StringBuffer querySql = new StringBuffer();
 		ArrayList<Object> params = new ArrayList<Object>();
@@ -209,9 +209,8 @@ public class ContractInfoDaoImpl extends GenericDaoImpl<ContractInfo, Long> impl
 		return returnList;
 	}
 
-=======
+
 	public int finishContractInfo(Long id, Double finishRate, String updator) {
 		return this.excuteHql("update ContractInfo set finishRate = ? , updator = ?, updateTime = ? where id = ?", new Object[]{finishRate,updator,ZonedDateTime.now(),id});
 	}
->>>>>>> c97d2fc8c09afbae2401d6cbfd61ac156131f0fe
 }

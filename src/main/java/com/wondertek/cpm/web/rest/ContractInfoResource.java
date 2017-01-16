@@ -30,12 +30,8 @@ import com.wondertek.cpm.config.StringUtil;
 import com.wondertek.cpm.domain.ContractInfo;
 import com.wondertek.cpm.domain.ProjectInfo;
 import com.wondertek.cpm.domain.vo.ContractInfoVo;
-<<<<<<< HEAD
 import com.wondertek.cpm.domain.vo.LongValue;
-=======
-import com.wondertek.cpm.domain.vo.ProjectInfoVo;
 import com.wondertek.cpm.security.AuthoritiesConstants;
->>>>>>> c97d2fc8c09afbae2401d6cbfd61ac156131f0fe
 import com.wondertek.cpm.security.SecurityUtils;
 import com.wondertek.cpm.service.ContractInfoService;
 import com.wondertek.cpm.web.rest.util.HeaderUtil;
