@@ -11,7 +11,7 @@
         $stateProvider
         .state('user-cost', {
             parent: 'info',
-            url: '/user-cost?page&sort&search',
+            url: '/user-cost?page&sort&userId&userName&costMonth&statuss',
             data: {
                 authorities: ['ROLE_USER'],
                 pageTitle: 'cpmApp.userCost.home.title'
@@ -32,7 +32,11 @@
                     value: 'id,asc',
                     squash: true
                 },
-                search: null
+//                search: null
+                userId:null,
+                userName:null,
+                costMonth:null,
+                status:null
             },
             resolve: {
                 pagingParams: ['$stateParams', 'PaginationUtil', function ($stateParams, PaginationUtil) {
@@ -41,7 +45,11 @@
                         sort: $stateParams.sort,
                         predicate: PaginationUtil.parsePredicate($stateParams.sort),
                         ascending: PaginationUtil.parseAscending($stateParams.sort),
-                        search: $stateParams.search
+//                        search: $stateParams.search
+                        userId:$stateParams.userId,
+                        userName:$stateParams.userName,
+                        costMonth:$stateParams.costMonth,
+                        status:$stateParams.status
                     };
                 }],
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
