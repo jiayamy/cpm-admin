@@ -1,7 +1,13 @@
 package com.wondertek.cpm.repository;
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import com.wondertek.cpm.domain.ContractUser;
+import com.wondertek.cpm.domain.DeptInfo;
+import com.wondertek.cpm.domain.User;
+import com.wondertek.cpm.domain.vo.ContractUserVo;
 import com.wondertek.cpm.domain.vo.LongValue;
 
 public interface ContractUserDao extends GenericDao<ContractUser, Long> {
@@ -10,5 +16,14 @@ public interface ContractUserDao extends GenericDao<ContractUser, Long> {
 	 * @return
 	 */
 	List<LongValue> getByUserAndDay(Long userId,Long[] weekDays);
+	/**
+	 * 查看的项目用户列表
+	 * @return
+	 */
+	Page<ContractUserVo> getUserPage(ContractUser contractUser, User user, DeptInfo deptInfo, Pageable pageable);
+	/**
+	 * 获取用户权限下的合同用户
+	 */
+	ContractUserVo getContractUser(User user, DeptInfo deptInfo, Long id);
 
 }

@@ -5,13 +5,11 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 
-import org.apache.commons.lang3.BooleanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Order;
 import org.springframework.stereotype.Repository;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import com.wondertek.cpm.CpmConstants;
 import com.wondertek.cpm.config.StringUtil;
@@ -19,6 +17,7 @@ import com.wondertek.cpm.domain.ContractInfo;
 import com.wondertek.cpm.domain.DeptInfo;
 import com.wondertek.cpm.domain.User;
 import com.wondertek.cpm.domain.vo.ContractInfoVo;
+import com.wondertek.cpm.domain.vo.LongValue;
 @Repository("contractInfoDao")
 public class ContractInfoDaoImpl extends GenericDaoImpl<ContractInfo, Long> implements ContractInfoDao {
 
@@ -112,6 +111,37 @@ public class ContractInfoDaoImpl extends GenericDaoImpl<ContractInfo, Long> impl
 		
 		
 		return null;
+	}
+
+	@Override
+	public List<LongValue> queryUserContract(User user, DeptInfo deptInfo) {
+		StringBuffer querySql = new StringBuffer();
+		ArrayList<Object> params = new ArrayList<Object>();
+		
+		querySql.append(" select wci.id,wci.serial_num,wci.name_ from w_contract_info wci");
+		querySql.append(" left join w_dept_info wdi on wci.dept_id = wdi.id");
+		querySql.append(" where (wci.sales_man_id = ? or wci.consultants_id = ? or wci.creator_ = ?");
+		
+		params.add(user.getId());
+		params.add(user.getId());
+		params.add(user.getLogin());
+		
+		if (user.getIsManager()) {
+			querySql.append(" or wdi.id_path like ? or wdi.id = ?");
+			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
+			params.add(deptInfo.getId());
+		}
+		
+		querySql.append(")");
+		List<Object[]> list = this.queryAllSql(querySql.toString(), params.toArray());
+		List<LongValue> returnList = new ArrayList<LongValue>();
+		if(list != null){
+			for(Object[] o : list){
+				returnList.add(new LongValue(StringUtil.nullToLong(o[0]),StringUtil.null2Str(o[1]) + ":" + StringUtil.null2Str(o[2])));
+			}
+		}
+		
+		return returnList;
 	}
 
 }

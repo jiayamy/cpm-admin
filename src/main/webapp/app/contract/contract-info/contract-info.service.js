@@ -25,7 +25,12 @@
                     return data;
                 }
             },
-            'update': { method:'PUT' }
+            'update': { method:'PUT' },
+            'queryContractInfo':{
+            	url:'api/contract-infos/queryUserContract',
+            	method:'GET',
+            	isArray:true
+            }
         });
     }
 })();
