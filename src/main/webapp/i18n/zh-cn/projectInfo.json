@@ -16,7 +16,7 @@
             },
             "detail": {
                 "title": "项目信息",
-                "budgetOriginal":"采购单预算为:{{ budgetOriginal }}"
+                "budgetOriginal":"采购单预算为:{{ budgetOriginal }} 元"
             },
             "save":{
             	"budgetError":"采购单与合同所属不一致，请重新选择合同",
@@ -55,8 +55,8 @@
             "dept": "所属部门",
             "startDay": "开始日期",
             "endDay": "结束日期",
-            "budgetTotal": "项目预算",
-            "finishRate":"完成率",
+            "budgetTotal": "项目预算(元)",
+            "finishRate":"完成率(%)",
             "status": "状态",
             "creator": "创建者",
             "createTime": "创建时间",

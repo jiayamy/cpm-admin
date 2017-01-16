@@ -160,10 +160,11 @@ public class DeptInfoResource {
     @Timed
     public ResponseEntity<List<DeptTree>> getDeptAndUserTree(
     			@RequestParam(value = "selectType") Integer selectType,
-    			@RequestParam(value = "showChild") Boolean showChild
+    			@RequestParam(value = "showChild") Boolean showChild,
+    			@RequestParam(value = "showUser") Boolean showUser
     		) throws URISyntaxException {
         log.debug("REST request to get a page of getDeptAndUserTree");
-        List<DeptTree> list = deptInfoService.getDeptAndUserTree(selectType,showChild);
+        List<DeptTree> list = deptInfoService.getDeptAndUserTree(selectType,showChild,showUser);
         return new ResponseEntity<>(list, null, HttpStatus.OK);
     }
     

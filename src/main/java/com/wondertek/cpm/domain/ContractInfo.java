@@ -19,7 +19,9 @@ import java.util.Objects;
 public class ContractInfo implements Serializable {
 
     private static final long serialVersionUID = 1L;
-
+    public static final int STATUS_VALIDABLE = 1;
+    public static final int STATU_FINISH = 2;
+	public static final int STATUS_DELETED = 3;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -586,7 +588,7 @@ public class ContractInfo implements Serializable {
 	public void setFinishTotal(Double finishTotal) {
 		this.finishTotal = finishTotal;
 	}
-
+	
 	@Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -639,5 +641,37 @@ public class ContractInfo implements Serializable {
             ", updateTime='" + updateTime + "'" +
             '}';
     }
+
+	public Long getConsultantsId() {
+		return consultantsId;
+	}
+
+	public void setConsultantsId(Long consultantsId) {
+		this.consultantsId = consultantsId;
+	}
+
+	public String getConsultants() {
+		return consultants;
+	}
+
+	public void setConsultants(String consultants) {
+		this.consultants = consultants;
+	}
+
+	public Long getConsultantsDeptId() {
+		return consultantsDeptId;
+	}
+
+	public void setConsultantsDeptId(Long consultantsDeptId) {
+		this.consultantsDeptId = consultantsDeptId;
+	}
+
+	public String getConsultantsDept() {
+		return consultantsDept;
+	}
+
+	public void setConsultantsDept(String consultantsDept) {
+		this.consultantsDept = consultantsDept;
+	}
 }
 

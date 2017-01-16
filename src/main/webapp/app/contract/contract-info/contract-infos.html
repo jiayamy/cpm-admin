@@ -4,10 +4,10 @@
     <div class="container-fluid">
     	<div class="row form-horizontal">
 	        <div class="form-group">
-	            <div class="col-xs-2 no-padding-left">
+	            <div class="col-xs-2">
 	                <button class="btn btn-primary" ui-sref="contract-info.new" >
 	                    <span class="glyphicon glyphicon-plus"></span>
-	                    <span class="hidden-xs"  data-translate="cpmApp.contractInfo.home.createLabel">
+	                    <span class=""  data-translate="cpmApp.contractInfo.home.createLabel">
 	                        Create new Contract Info
 	                    </span>
 	                </button>
@@ -17,8 +17,14 @@
 	        </div>
 	     </div>
        	<form name="searchForm" class="form-horizontal">
-       	<div class="form-group">
-    	   <div class="col-sm-4">
+     	<div class="form-group">
+        	<div class="col-sm-4">
+            	<label class="col-sm-4 control-label" data-translate="cpmApp.contractInfo.serialNum">Serial Num</label>
+                   <div class="col-sm-8" >
+                   	<input type="text" class="form-control" name="serialNum" ng-model="vm.searchQuery.serialNum">
+                   </div>
+            </div>
+    	   	<div class="col-sm-4">
             	<label class="col-sm-4 control-label" data-translate="cpmApp.contractInfo.name">Name</label>
                    <div class="col-sm-8" >
                    	<input type="text" class="form-control" name="name" ng-model="vm.searchQuery.name">
@@ -28,17 +34,8 @@
           		<label class="col-sm-4 control-label" data-translate="cpmApp.contractInfo.type">Type</label>
 	            <div class="col-sm-8">
 	                <select class="form-control" name="type" ng-model="vm.searchQuery.type"
-		            	ng-options="type.name for type in vm.types track by type.id">
+		            	ng-options="type.val for type in vm.types track by type.key">
 		            	<option value="">--选择类型--</option>
-		            </select>
-	            </div>
-            </div>
-           <div class="col-sm-4">
-          		<label class="col-sm-4 control-label" data-translate="cpmApp.contractInfo.isPrepared">Is Prepared</label>
-	            <div class="col-sm-8">
-	                <select class="form-control" name="isPrepared" ng-model="vm.searchQuery.isPrepared"
-		            	ng-options="isPrepared.name for isPrepared in vm.isPrepareds track by isPrepared.id">
-		            	<option value="">--选择--</option>
 		            </select>
 	            </div>
             </div>
@@ -46,24 +43,22 @@
 	     
 	      <div class="form-group">
 	            <div class="col-sm-4">
-	            	<label class="col-sm-4 control-label" data-translate="cpmApp.contractInfo.isEpibolic">Is Epibolic</label>
+		            <label class="col-sm-4 control-label" data-translate="cpmApp.contractInfo.isPrepared">Is Prepared</label>
 		            <div class="col-sm-8">
-		                <select class="form-control" name="isEpibolic" ng-model="vm.searchQuery.isEpibolic"
-			            	ng-options="isEpibolic.name for isEpibolic in vm.isEpibolics track by isEpibolic.id">
+		                <select class="form-control" name="isPrepared" ng-model="vm.searchQuery.isPrepared"
+			            	ng-options="isPrepared.val for isPrepared in vm.isPrepareds track by isPrepared.key">
 			            	<option value="">--选择--</option>
 			            </select>
 		            </div>
 	            </div>
 	            <div class="col-sm-4">
-	            	<div class="col-sm-4">
-	            		<button class=" btn btn-primary" ui-sref="contract-info.query({selectType:2,showChild:true})" >
-	                    <span class="glyphicon glyphicon-plus"></span>
-	                    <span class="hidden-xs"  data-translate="cpmApp.contractInfo.salesman">
-	                       	 负责人
-	                    </span>
-	                </button>
-	            	</div>
-	            	
+	            	<label class="col-sm-4 control-label" data-translate="cpmApp.contractInfo.isEpibolic">Is Epibolic</label>
+		            <div class="col-sm-8">
+		                <select class="form-control" name="isEpibolic" ng-model="vm.searchQuery.isEpibolic"
+			            	ng-options="isEpibolic.val for isEpibolic in vm.isEpibolics track by isEpibolic.key">
+			            	<option value="">--选择--</option>
+			            </select>
+		            </div>
 	            </div>
 	            <div class="col-sm-4 pull-right input-group">
 	            	<div class="col-sm-4">
@@ -89,86 +84,54 @@
         <table class="jh-table table table-striped">
             <thead>
                 <tr jh-sort="vm.predicate" ascending="vm.reverse" callback="vm.transition()">
-                    <th ng-hide="vm" jh-sort-by="id"><span data-translate="global.field.id">ID</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="serialNum"><span data-translate="cpmApp.contractInfo.serialNum">Serial Num</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="name"><span data-translate="cpmApp.contractInfo.name">Name</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="amount"><span data-translate="cpmApp.contractInfo.amount">Amount</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="type"><span data-translate="cpmApp.contractInfo.type">Type</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="salesman"><span data-translate="cpmApp.contractInfo.salesman">salesman</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    
-                    <th jh-sort-by="isPrepared"><span data-translate="cpmApp.contractInfo.isPrepared">Is Prepared</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="isEpibolic"><span data-translate="cpmApp.contractInfo.isEpibolic">Is Epibolic</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th ng-hide="vm" jh-sort-by="startDay"><span data-translate="cpmApp.contractInfo.startDay">Start Day</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th ng-hide="vm" jh-sort-by="endDay"><span data-translate="cpmApp.contractInfo.endDay">End Day</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th ng-hide="vm" jh-sort-by="taxRate"><span data-translate="cpmApp.contractInfo.taxRate">Tax Rate</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th ng-hide="vm" jh-sort-by="taxes"><span data-translate="cpmApp.contractInfo.taxes">Taxes</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th ng-hide="vm" jh-sort-by="shareRate"><span data-translate="cpmApp.contractInfo.shareRate">Share Rate</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th ng-hide="vm" jh-sort-by="shareCost"><span data-translate="cpmApp.contractInfo.shareCost">Share Cost</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="paymentWay"><span data-translate="cpmApp.contractInfo.paymentWay">Payment Way</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="contractor"><span data-translate="cpmApp.contractInfo.contractor">Contractor</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th ng-hide="vm" jh-sort-by="address"><span data-translate="cpmApp.contractInfo.address">Address</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th ng-hide="vm" jh-sort-by="postcode"><span data-translate="cpmApp.contractInfo.postcode">Postcode</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th ng-hide="vm" jh-sort-by="linkman"><span data-translate="cpmApp.contractInfo.linkman">Linkman</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th ng-hide="vm" jh-sort-by="contactDept"><span data-translate="cpmApp.contractInfo.contactDept">Contact Dept</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th ng-hide="vm" jh-sort-by="telephone"><span data-translate="cpmApp.contractInfo.telephone">Telephone</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="receiveTotal"><span data-translate="cpmApp.contractInfo.receiveTotal">Receive Total</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="finishRate"><span data-translate="cpmApp.contractInfo.finishRate">Finish Rate</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="status"><span data-translate="cpmApp.contractInfo.status">Status</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="wci.serialNum"><span data-translate="cpmApp.contractInfo.serialNum">Serial Num</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="wci.name"><span data-translate="cpmApp.contractInfo.name">Name</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="wci.type"><span data-translate="cpmApp.contractInfo.type">Type</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="wci.isPrepared"><span data-translate="cpmApp.contractInfo.isPrepared">Is Prepared</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="wci.isEpibolic"><span data-translate="cpmApp.contractInfo.isEpibolic">Is Epibolic</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th ng-hide="vm" jh-sort-by="wci.salesman"><span data-translate="cpmApp.contractInfo.salesman">salesman</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="wci.startDay"><span data-translate="cpmApp.contractInfo.startDay">Start Day</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="wci.endDay"><span data-translate="cpmApp.contractInfo.endDay">End Day</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th ng-hide="vm" jh-sort-by="wci.contractor"><span data-translate="cpmApp.contractInfo.contractor">Contractor</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="wci.finishRate"><span data-translate="cpmApp.contractInfo.finishRate">Finish Rate</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="wci.status"><span data-translate="cpmApp.contractInfo.status">Status</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th></th>
                 </tr>
             </thead>
             <tbody>
                 <tr ng-repeat="contractInfo in vm.contractInfos track by contractInfo.id">
-                    <td ng-hide="vm"><a ui-sref="contract-info-detail({id:contractInfo.id})">{{contractInfo.id}}</a></td>
-                    <td>{{contractInfo.serialNum}}</td>
+                    <td><a ui-sref="contract-info-detail({id:contractInfo.id})">{{contractInfo.serialNum}}</a></td>
                     <td>{{contractInfo.name}}</td>
-                    <td>{{contractInfo.amount}}</td>
-                    <td>{{contractInfo.type}}</td>
-                    <td>{{contractInfo.salesman}}</td>
-                    <td>{{contractInfo.isPrepared}}</td>
-                    <td>{{contractInfo.isEpibolic}}</td>
-                    <td ng-hide="vm">{{contractInfo.startDay | date:'medium'}}</td>
-                    <td ng-hide="vm">{{contractInfo.endDay | date:'medium'}}</td>
-                    <td ng-hide="vm">{{contractInfo.taxRate}}</td>
-                    <td ng-hide="vm">{{contractInfo.taxes}}</td>
-                    <td ng-hide="vm">{{contractInfo.shareRate}}</td>
-                    <td ng-hide="vm">{{contractInfo.shareCost}}</td>
-                    <td>{{contractInfo.paymentWay}}</td>
-                    <td>{{contractInfo.contractor}}</td>
-                    <td ng-hide="vm">{{contractInfo.address}}</td>
-                    <td ng-hide="vm">{{contractInfo.postcode}}</td>
-                    <td ng-hide="vm">{{contractInfo.linkman}}</td>
-                    <td ng-hide="vm">{{contractInfo.contactDept}}</td>
-                    <td ng-hide="vm">{{contractInfo.telephone}}</td>
-                    <td >{{contractInfo.receiveTotal}}</td>
+                    <td>{{contractInfo.typeName}}</td>
+                    <td>{{contractInfo.isPreparedName}}</td>
+                    <td>{{contractInfo.isEpibolicName}}</td>
+                    <td ng-hide="vm">{{contractInfo.salesman}}</td>
+                    <td>{{contractInfo.startDay | date:'shortDate'}}</td>
+                    <td>{{contractInfo.endDay | date:'shortDate'}}</td>
+                    <td ng-hide="vm">{{contractInfo.contractor}}</td>
                     <td>{{contractInfo.finishRate}}</td>
-                    <td >{{contractInfo.status}}</td>
+                    <td>{{contractInfo.statusName}}</td>
                     <td class="text-right">
                         <div class="btn-group flex-btn-group-container">
                             <button type="submit"
                                     ui-sref="contract-info-detail({id:contractInfo.id})"
                                     class="btn btn-info btn-sm">
                                 <span class="glyphicon glyphicon-eye-open"></span>
-                                <span class="hidden-xs hidden-sm" data-translate="entity.action.view"></span>
                             </button>
                             <button type="submit"
                                     ui-sref="contract-info.edit({id:contractInfo.id})"
                                     class="btn btn-primary btn-sm">
                                 <span class="glyphicon glyphicon-pencil"></span>
-                                <span class="hidden-xs hidden-sm" data-translate="cpmApp.contractInfo.finishRate"></span>
                             </button>
-                            
                             <button type="submit"
-                                    ui-sref="contract-info.edit({id:contractInfo.id})"
-                                    class="btn btn-primary btn-sm">
-                                <span class="glyphicon glyphicon-pencil"></span>
-                                <span class="hidden-xs hidden-sm" data-translate="entity.action.edit"></span>
+                                    ui-sref="contract-info.finRate({id:contractInfo.id})"
+                                    class="btn btn-warning btn-sm">
+                                <span class="glyphicon glyphicon-indent-left"></span>
                             </button>
                             <button type="submit"
                                     ui-sref="contract-info.delete({id:contractInfo.id})"
                                     class="btn btn-danger btn-sm">
                                 <span class="glyphicon glyphicon-remove-circle"></span>
-                                <span class="hidden-xs hidden-sm" data-translate="entity.action.delete"></span>
                             </button>
                         </div>
                     </td>

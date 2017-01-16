@@ -1,23 +1,31 @@
 package com.wondertek.cpm.service;
 
-import com.wondertek.cpm.CpmConstants;
-import com.wondertek.cpm.domain.ContractInfo;
-import com.wondertek.cpm.repository.ContractInfoDao;
-import com.wondertek.cpm.repository.ContractInfoRepository;
-import com.wondertek.cpm.repository.search.ContractInfoSearchRepository;
+import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
+
+import java.time.ZonedDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.inject.Inject;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.inject.Inject;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
-
-import static org.elasticsearch.index.query.QueryBuilders.*;
+import com.wondertek.cpm.CpmConstants;
+import com.wondertek.cpm.domain.ContractInfo;
+import com.wondertek.cpm.domain.DeptInfo;
+import com.wondertek.cpm.domain.User;
+import com.wondertek.cpm.domain.vo.ContractInfoVo;
+import com.wondertek.cpm.repository.ContractInfoDao;
+import com.wondertek.cpm.repository.ContractInfoRepository;
+import com.wondertek.cpm.repository.UserRepository;
+import com.wondertek.cpm.repository.search.ContractInfoSearchRepository;
+import com.wondertek.cpm.security.SecurityUtils;
 
 /**
  * Service Implementation for managing ContractInfo.
@@ -36,6 +44,9 @@ public class ContractInfoService {
     
     @Inject
     private ContractInfoDao contractInfoDao;
+    
+    @Inject
+    private UserRepository userRepository;
     /**
      * Save a contractInfo.
      *
@@ -45,7 +56,7 @@ public class ContractInfoService {
     public ContractInfo save(ContractInfo contractInfo) {
         log.debug("Request to save ContractInfo : {}", contractInfo);
         ContractInfo result = contractInfoRepository.save(contractInfo);
-        contractInfoSearchRepository.save(result);
+//        contractInfoSearchRepository.save(result);
         return result;
     }
 
@@ -85,6 +96,8 @@ public class ContractInfoService {
         ContractInfo contractInfo = contractInfoRepository.findOne(id);
         if (contractInfo != null) {
         	contractInfo.setStatus(CpmConstants.STATUS_DELETED);
+        	contractInfo.setUpdateTime(ZonedDateTime.now());
+        	contractInfo.setUpdator(SecurityUtils.getCurrentUserLogin());
             contractInfoSearchRepository.save(contractInfo);
 		}
     }
@@ -102,11 +115,36 @@ public class ContractInfoService {
         return result;
     }
     
-	public Page<ContractInfo> getContractInfoPage(ContractInfo contractInfo, Pageable pageable) {
-		Page<ContractInfo> page = contractInfoDao.getContractInfoPage(contractInfo, pageable);
-		return page;
+	public Page<ContractInfoVo> getContractInfoPage(ContractInfo contractInfo, Pageable pageable) {
+		List<Object[]> objs = userRepository.findUserInfoByLogin(SecurityUtils.getCurrentUserLogin());
+		if (objs != null) {
+			Object[] o = objs.get(0);
+			User user = (User)o[0];
+			DeptInfo deptInfo = (DeptInfo)o[1];
+			
+			return contractInfoDao.getContractInfoPage(contractInfo, pageable,user,deptInfo);
+		}
+		return new PageImpl(new ArrayList<ContractInfoVo>(), pageable, 0);
 	}
 
-	
+	public boolean checkByContract(String serialNum, Long id) {
+		return contractInfoDao.checkByContract(serialNum, id);
+	}
+
+	public ContractInfoVo getUserContractInfo(Long id) {
+		List<Object[]> objs = userRepository.findUserInfoByLogin(SecurityUtils.getCurrentUserLogin());
+		if (objs != null) {
+			Object[] o = objs.get(0);
+			User user = (User)o[0];
+			DeptInfo deptInfo = (DeptInfo)o[1];
+			
+			return contractInfoDao.getUserContractInfo(id,user,deptInfo);
+		}
+		return null;
+	}
+
+	public int finishContractInfo(Long id, Double finishRate) {
+		return contractInfoDao.finishContractInfo(id,finishRate,SecurityUtils.getCurrentUserLogin());
+	}
 
 }

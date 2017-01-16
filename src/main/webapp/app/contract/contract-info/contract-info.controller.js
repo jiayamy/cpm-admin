@@ -17,52 +17,34 @@
         vm.itemsPerPage = paginationConstants.itemsPerPage;
         vm.clear = clear;
         vm.search = search;
-        vm.loadAll = loadAll;
+        
         vm.searchQuery = {};
+        vm.searchQuery.serialNum=pagingParams.serialNum;
+        vm.searchQuery.name=pagingParams.name;
         
-        var name = pagingParams.name;
-        var type = pagingParams.type;
-        var isPrepared = pagingParams.isPrepared;
-        var isEpibolic = pagingParams.isEpibolic;
-        var salesman = pagingParams.salesman;
-        if(type){
-        	if(type == 1){
-        		type = { id: 1, name: '产品合同' };
-        	}else if(type == 2){
-        		type = { id: 2, name: '外包合同' };
-        	}else if(type == 3){
-        		type = { id: 3, name: '硬件合同' };
-        	}else if(type == 4){
-        		type = { id: 4, name: '公共成本' };
-        	}
-        }
-        if(isPrepared){
-        	if(isPrepared == 1){
-        		isPrepared = { id: 1, name: '正式合同' };
-        	}else if(isPrepared == 0){
-        		isPrepared = { id: 0, name: '预立合同' };
-        	}
-        }
-        if(isEpibolic){
-        	if(isEpibolic == 1){
-        		isEpibolic = { id: 1, name: '外包合同' };
-        	}else if(isEpibolic == 0){
-        		isEpibolic = { id: 0, name: '非外包合同'};
-        	}
-        }
-//        if(salesman){
-//        	定义一salesman的json  装saleman 的数组
-//        }
-        vm.searchQuery.name=name;
-        vm.searchQuery.type=type;
-        vm.searchQuery.isPrepared=isPrepared;
-        vm.searchQuery.isEpibolic=isEpibolic;
-        vm.searchQuery.salesman=salesman;
+        vm.types = [{ key: 1, val: '产品' }, { key: 2, val: '外包' },{ key: 3, val: '硬件' },{ key: 4, val: '公共成本' }];
+        vm.isPrepareds = [{ key: 'false', val: '正式合同'}, { key: 'true', val: '预立合同'}];
+        vm.isEpibolics = [{ key: 'true', val: '外部合同'}, { key: 'false', val: '内部合同'}];
+        vm.statuss = [{ key: 1, val: '进行中'}, { key: 2, val: '已完成'}, { key: 3, val: '已删除'}];
         
-        vm.types = [{ id: 1, name: '产品合同' }, { id: 2, name: '外包合同' },{ id: 3, name: '硬件合同' },{ id: 4, name: '公共成本' }];
-        vm.isPrepareds = [{ id: 1, name: '正式合同'}, { id: 0, name: '预立合同'}];
-        vm.isEpibolics = [{ id: 1, name: '外包合同'}, { id: 0, name: '非外包合同'}];
-        if(!vm.searchQuery.name && !vm.searchQuery.type &&  !vm.searchQuery.isPrepared){
+        for(var j = 0; j < vm.types.length; j++){
+        	if(pagingParams.type == vm.types[j].key){
+        		vm.searchQuery.type = vm.types[j];
+        	}
+        }
+        for(var j = 0; j < vm.isPrepareds.length; j++){
+        	if(pagingParams.isPrepared == vm.isPrepareds[j].key){
+        		vm.searchQuery.isPrepared = vm.isPrepareds[j];
+        	}
+        }
+        for(var j = 0; j < vm.isEpibolics.length; j++){
+        	if(pagingParams.isEpibolic == vm.isEpibolics[j].key){
+        		vm.searchQuery.isEpibolic = vm.isEpibolics[j];
+        	}
+        }
+        
+        if(vm.searchQuery.serialNum == undefined && vm.searchQuery.name == undefined && vm.searchQuery.type == undefined
+    			&& vm.searchQuery.isPrepared == undefined && vm.searchQuery.isEpibolic == undefined){
         	vm.haveSearch = null;
         }else {
 			vm.haveSearch = true;
@@ -70,6 +52,9 @@
         
         loadAll();
         function loadAll () {
+        	if(pagingParams.serialNum == undefined){
+        		pagingParams.serialNum="";
+        	}
         	if(pagingParams.name == undefined){
         		pagingParams.name="";
         	}
@@ -82,24 +67,30 @@
         	if(pagingParams.isEpibolic == undefined){
         		pagingParams.isEpibolic="";
         	}
-        	if(pagingParams.salesman == undefined){
-        		pagingParams.salesman="";
+        	if(pagingParams.salesmanId == undefined){
+        		pagingParams.salesmanId="";
         	}
+        	if(pagingParams.consultantsId == undefined){
+        		pagingParams.consultantsId="";
+        	}
+        	
 	    	ContractInfo.query({
-	    		 name : pagingParams.name,
-	    		 type : pagingParams.type,
-	    		 isPrepared : pagingParams.isPrepared,
-	    		 isEpibolic : pagingParams.isEpibolic,
-	    		 salesman : pagingParams.salesman,
-	             page: pagingParams.page - 1,
-	             size: vm.itemsPerPage,
-	             sort: sort()
+	    		serialNum : pagingParams.serialNum,
+	    		name : pagingParams.name,
+	    		type : pagingParams.type,
+	    		isPrepared : pagingParams.isPrepared,
+	    		isEpibolic : pagingParams.isEpibolic,
+	    		salesmanId:pagingParams.salesmanId,
+	    		consultantsId:pagingParams.consultantsId,
+	    		page: pagingParams.page - 1,
+	    		size: vm.itemsPerPage,
+	    		sort: sort()
 	         }, onSuccess, onError);
 
 	    	function sort() {
                 var result = [vm.predicate + ',' + (vm.reverse ? 'asc' : 'desc')];
-                if (vm.predicate !== 'id') {
-                    result.push('id');
+                if (vm.predicate !== 'wci.id') {
+                    result.push('wci.id');
                 }
                 return result;
             }
@@ -117,36 +108,26 @@
         function handleData(data){
         	if(data.length>0){
         		for (var i = 0; i< data.length; i++) {
-        			//type的枚举
-					if(data[i].type==1){
-						data[i].type="产品合同";
-					}else if (data[i].type==2) {
-						data[i].type="外包合同";
-					}else if (data[i].type==3) {
-						data[i].type="硬件合同";
-					}else if (data[i].type==4) {
-						data[i].type="公共成本";
-					}
-					//status的枚举
-					if(data[i].status == 1){
-        				data[i].status = "可用";
-        			}else if(data[i].status == 2){
-        				data[i].status = "完成";
-        			}else if(data[i].status == 3){
-        				data[i].status = "删除";
-        			}
-					//是否预立
-					if(data[i].isPrepared == true){
-						data[i].isPrepared = "正式合同"
-					}else if (data[i].isPrepared == false) {
-						data[i].isPrepared = "预立合同"
-					}
-					//是否外包
-					if(data[i].isEpibolic == true){
-						data[i].isEpibolic = "外包"
-					}else if (data[i].isEpibolic == false) {
-						data[i].isEpibolic = "非外包"
-					}
+        			for(var j = 0; j < vm.types.length; j++){
+        	        	if(data[i].type == vm.types[j].key){
+        	        		data[i].typeName = vm.types[j].val;
+        	        	}
+        	        }
+        	        for(var j = 0; j < vm.statuss.length; j++){
+        	        	if(data[i].status == vm.statuss[j].key){
+        	        		data[i].statusName = vm.statuss[j].val;
+        	        	}
+        	        }
+        	        if(data[i].isPrepared){
+        	        	data[i].isPreparedName = "预立合同";
+        	        }else{
+        	        	data[i].isPreparedName = "正式合同";
+        	        }
+        	        if(data[i].isEpibolic){
+        	        	data[i].isEpibolicName = "外部合同";
+        	        }else{
+        	        	data[i].isEpibolicName = "内部合同";
+        	        }
 				}
         	}
         	return data;
@@ -161,36 +142,22 @@
             $state.transitionTo($state.$current, {
                 page: vm.page,
                 sort: vm.predicate + ',' + (vm.reverse ? 'asc' : 'desc'),
+                serialNum:vm.searchQuery.serialNum,
                 name:vm.searchQuery.name,
-                type: vm.searchQuery.type != null ? vm.searchQuery.type.id : "",
-                isPrepared:vm.searchQuery.isPrepared,
-                isEpibolic:vm.searchQuery.isEpibolic,
-                salesman:vm.searchQuery.salesman
+                type: vm.searchQuery.type != undefined ? vm.searchQuery.type.key : "",
+                isPrepared:vm.searchQuery.isPrepared != undefined ? vm.searchQuery.isPrepared.key : "",
+                isEpibolic:vm.searchQuery.isEpibolic != undefined ? vm.searchQuery.isEpibolic.key : ""
             });
         }
 
         function search() {
-            if (!vm.searchQuery.name && !vm.searchQuery.type && !vm.searchQuery.isPrepared && !vm.searchQuery.isEpibolic && !vm.searchQuery.salesman){
+        	if(vm.searchQuery.serialNum == undefined && vm.searchQuery.name == undefined && vm.searchQuery.type == undefined
+        			&& vm.searchQuery.isPrepared == undefined && vm.searchQuery.isEpibolic == undefined){
                 return vm.clear();
-            }
-            //转换成boolean值
-            if(vm.searchQuery.isEpibolic){
-            	if(vm.searchQuery.isEpibolic.id == 1){
-                	vm.searchQuery.isEpibolic=true;
-                }else if (vm.searchQuery.isEpibolic.id == 0) {
-                	vm.searchQuery.isEpibolic = false;
-    			}
-            }
-            if(vm.searchQuery.isPrepared){
-            	if(vm.searchQuery.isPrepared.id == 1){
-                	vm.searchQuery.isPrepared = true;
-                }else if (vm.searchQuery.isPrepared.id == 0) {
-                	vm.searchQuery.isPrepared =false;
-    			}
             }
             vm.links = null;
             vm.page = 1;
-            vm.predicate = '_score';
+            vm.predicate = 'wci.id';
             vm.reverse = false;
             vm.haveSearch = true;
             vm.transition();
@@ -199,8 +166,8 @@
         function clear() {
             vm.links = null;
             vm.page = 1;
-            vm.predicate = 'id';
-            vm.reverse = true;
+            vm.predicate = 'wci.id';
+            vm.reverse = false;
             vm.searchQuery = {};
             vm.haveSearch = null;
             vm.transition();

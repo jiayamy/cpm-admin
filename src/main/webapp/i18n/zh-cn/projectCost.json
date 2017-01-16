@@ -30,7 +30,7 @@
             "name": "名称",
             "type": "类型",
             "costDay": "日期",
-            "total": "金额",
+            "total": "金额(元)",
             "costDesc": "描述",
             "status": "状态",
             "creator": "创建者",

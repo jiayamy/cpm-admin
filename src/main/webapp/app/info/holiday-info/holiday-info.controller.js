@@ -54,12 +54,29 @@
                 vm.links = ParseLinks.parse(headers('link'));
                 vm.totalItems = headers('X-Total-Count');
                 vm.queryCount = vm.totalItems;
-                vm.holidayInfos = data;
+                vm.holidayInfos = handleData(data);
                 vm.page = pagingParams.page;
             }
             function onError(error) {
                 AlertService.error(error.data.message);
             }
+        }
+        
+        function handleData(data){
+        	if (data.length>0) {
+				for (var i = 0; i < data.length; i++) {
+					if (data[i].type == 1) {
+						data[i].type = "正常工作日";
+					} else if (data[i].type == 2) {
+						data[i].type = "正常休息日";
+					} else if (data[i].type == 3) {
+						data[i].type = "年假";
+					} else if (data[i].type == 4) {
+						data[i].type = "国家假日";
+					}
+				}
+			}
+        	return data;
         }
 
         function loadPage(page) {
