@@ -1,17 +1,16 @@
 package com.wondertek.cpm.web.rest;
 
-import com.wondertek.cpm.config.Constants;
-import com.codahale.metrics.annotation.Timed;
-import com.wondertek.cpm.domain.User;
-import com.wondertek.cpm.repository.UserRepository;
-import com.wondertek.cpm.repository.search.UserSearchRepository;
-import com.wondertek.cpm.security.AuthoritiesConstants;
-import com.wondertek.cpm.service.MailService;
-import com.wondertek.cpm.service.UserService;
-import com.wondertek.cpm.web.rest.vm.ManagedUserVM;
-import com.wondertek.cpm.web.rest.util.HeaderUtil;
-import com.wondertek.cpm.web.rest.util.PaginationUtil;
-import io.swagger.annotations.ApiParam;
+import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
+
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
+
+import javax.inject.Inject;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -20,16 +19,31 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
-import javax.inject.Inject;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
+import com.codahale.metrics.annotation.Timed;
+import com.wondertek.cpm.config.Constants;
+import com.wondertek.cpm.domain.DeptInfo;
+import com.wondertek.cpm.domain.User;
+import com.wondertek.cpm.repository.DeptInfoRepository;
+import com.wondertek.cpm.repository.UserRepository;
+import com.wondertek.cpm.repository.search.UserSearchRepository;
+import com.wondertek.cpm.security.AuthoritiesConstants;
+import com.wondertek.cpm.service.MailService;
+import com.wondertek.cpm.service.UserService;
+import com.wondertek.cpm.web.rest.util.HeaderUtil;
+import com.wondertek.cpm.web.rest.util.PaginationUtil;
+import com.wondertek.cpm.web.rest.vm.ManagedUserVM;
 
-import static org.elasticsearch.index.query.QueryBuilders.*;
+import io.swagger.annotations.ApiParam;
 
 /**
  * REST controller for managing users.
@@ -64,6 +78,9 @@ public class UserResource {
     @Inject
     private UserRepository userRepository;
 
+    @Inject
+    private DeptInfoRepository deptInfoRepository;
+    
     @Inject
     private MailService mailService;
 
@@ -100,7 +117,14 @@ public class UserResource {
             return ResponseEntity.badRequest()
                 .headers(HeaderUtil.createFailureAlert("userManagement", "emailexists", "Email already in use"))
                 .body(null);
+        } else if (userRepository.findOneBySerialNum(managedUserVM.getSerialNum()).isPresent()) {
+            return ResponseEntity.badRequest()
+                    .headers(HeaderUtil.createFailureAlert("userManagement", "serialNumexists", "Serial num already in use"))
+                    .body(null);
         } else {
+        	if(managedUserVM.getIsManager() == null){
+        		managedUserVM.setIsManager(Boolean.FALSE);
+        	}
             User newUser = userService.createUser(managedUserVM);
             mailService.sendCreationEmail(newUser);
             return ResponseEntity.created(new URI("/api/users/" + newUser.getLogin()))
@@ -130,9 +154,16 @@ public class UserResource {
         if (existingUser.isPresent() && (!existingUser.get().getId().equals(managedUserVM.getId()))) {
             return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("userManagement", "userexists", "Login already in use")).body(null);
         }
+        existingUser = userRepository.findOneBySerialNum(managedUserVM.getSerialNum().toLowerCase());
+        if (existingUser.isPresent() && (!existingUser.get().getId().equals(managedUserVM.getId()))) {
+            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("userManagement", "serialNumexists", "Serial num already in use")).body(null);
+        }
+        if(managedUserVM.getIsManager() == null){
+    		managedUserVM.setIsManager(Boolean.FALSE);
+    	}
         userService.updateUser(managedUserVM.getId(), managedUserVM.getLogin(), managedUserVM.getFirstName(),
             managedUserVM.getLastName(), managedUserVM.getEmail(), managedUserVM.isActivated(),
-            managedUserVM.getLangKey(), managedUserVM.getAuthorities());
+            managedUserVM.getLangKey(), managedUserVM.getAuthorities(), managedUserVM);
 
         return ResponseEntity.ok()
             .headers(HeaderUtil.createAlert("userManagement.updated", managedUserVM.getLogin()))
@@ -149,9 +180,31 @@ public class UserResource {
     @GetMapping("/users")
     @Timed
     @Secured(AuthoritiesConstants.ROLE_INFO_BASIC)
-    public ResponseEntity<List<ManagedUserVM>> getAllUsers(@ApiParam Pageable pageable)
+    public ResponseEntity<List<ManagedUserVM>> getAllUsers(
+    		@RequestParam(value = "loginName",required=false) String login, 
+    		@RequestParam(value = "serialNum",required=false) String serialNum, 
+    		@RequestParam(value = "lastName",required=false) String lastName, 
+    		@ApiParam Pageable pageable)
         throws URISyntaxException {
-        Page<User> page = userRepository.findAllWithAuthorities(pageable);
+    	User user = new User();
+    	user.setLogin(login);
+    	user.setSerialNum(serialNum);
+    	user.setLastName(lastName);
+    	
+//        Page<User> page = userRepository.findAllWithAuthorities(pageable);
+        Page<User> page = userService.getUserPage(user,pageable);
+        List<User> objs = page.getContent();
+        if(objs != null){
+        	DeptInfo tmp = null;
+        	for(User o : objs){
+        		if(o.getDeptId() != null){
+        			tmp = deptInfoRepository.findOne(o.getDeptId());
+        			if(tmp != null){
+        				o.setDept(tmp.getName());
+        			}
+        		}
+        	}
+        }
         List<ManagedUserVM> managedUserVMs = page.getContent().stream()
             .map(ManagedUserVM::new)
             .collect(Collectors.toList());

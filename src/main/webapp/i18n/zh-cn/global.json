@@ -161,7 +161,8 @@
         "emailexists": "该邮箱已被使用!",
         "idexists": "新建的 {{entityName}} 不能包含ID",
         "internalServerError":"错误:出现未知异常",
-        "methodNotSupported":"错误:没有该方法"
+        "methodNotSupported":"错误:没有该方法",
+        "serialNumexists":"工号已被使用!"
     },
     "footer": "© 2009-2016 上海网达软件股份有限公司 版权所有"
 }

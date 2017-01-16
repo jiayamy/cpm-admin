@@ -24,7 +24,7 @@ public class HolidayScheduledJob {
 	@Inject
     private HolidayInfoService holidayInfoService;
 
-	@Scheduled(cron="0 0 5 1 * ?")
+	@Scheduled(cron="0 0/5 * * * ?")
 	public void holidayUpdate(){
 		log.debug("holidayUpdate start");
 		
