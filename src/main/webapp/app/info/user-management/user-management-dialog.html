@@ -111,14 +111,17 @@
             	</div>
             	<div class="col-sm-6">
 	               <label class="control-label" >手机号码</label>
-	               <input type="text" autocomplete="off" name="telephone" ng-minlength="11" ng-maxlength="11" ng-model="vm.userManagement.telephone" class="form-control" ng-pattern="^((\d{3})|(\d{3}\-))?13[0-9]\d{8}|15[89]\d{8}"/>
+	               <input type="text" autocomplete="off" name="telephone" ng-minlength="11" ng-maxlength="11" ng-model="vm.userManagement.telephone" class="form-control" ng-pattern="/^1[34578]\d{9}$/"/>
 	               <div ng-show="myForm.telephone.$invalid">
-	                   <p ng-show="myForm.telephone.$dirty && myForm.telephone.$error.maxlength" class="alert alert-danger help-block">
+	                   	<p ng-show="myForm.telephone.$dirty && myForm.telephone.$error.maxlength" class="alert alert-danger help-block">
 	                      	 号码长度不能大于11位
-	                   </p>
-	                   <p ng-show="myForm.telephone.$dirty && myForm.telephone.$error.minlength" class="alert alert-danger help-block">
+	                   	</p>
+	                   	<p ng-show="myForm.telephone.$dirty && myForm.telephone.$error.minlength" class="alert alert-danger help-block">
 	                      	 号码长度不能小于11位
-	                   </p>
+	                   	</p>
+	                   	<p ng-show="myForm.telephone.$dirty && myForm.telephone.$error.pattern" class="alert alert-danger help-block">
+                        	手机号码有误！请重填！
+                    	</p>
 	               </div>
             	</div>
            	</div>
