@@ -113,16 +113,6 @@
         	        		data[i].typeName = vm.types[j].val;
         	        	}
         	        }
-        	        for(var j = 0; j < vm.isPrepareds.length; j++){
-        	        	if(data[i].isPrepared == vm.isPrepareds[j].key){
-        	        		data[i].isPreparedName = vm.isPrepareds[j].val;
-        	        	}
-        	        }
-        	        for(var j = 0; j < vm.isEpibolics.length; j++){
-        	        	if(data[i].isEpibolic == vm.isEpibolics[j].key){
-        	        		data[i].isEpibolicName = vm.isEpibolics[j].val;
-        	        	}
-        	        }
         	        for(var j = 0; j < vm.statuss.length; j++){
         	        	if(data[i].status == vm.statuss[j].key){
         	        		data[i].statusName = vm.statuss[j].val;

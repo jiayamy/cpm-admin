@@ -146,7 +146,7 @@
 				<div class="col-sm-6">
 					<label class="control-label" data-translate="cpmApp.contractInfo.amount" for="field_amount">Amount</label>
 		            <input type="number" class="form-control" name="amount" id="field_amount"
-		                    ng-model="vm.contractInfo.amount" ng-required="true" ng-minlength="1" step="0.01" min="0"
+		                    ng-model="vm.contractInfo.amount" ng-required="true" ng-minlength="1" step="0.01" min="0" ng-change="vm.amountChanged()"
 		                     />
 		             <div ng-show="myForm.amount.$dirty&&myForm.amount.$error.minlength" class="alert alert-danger help-block"> 
 		                    	合同金额必填
@@ -169,8 +169,8 @@
         	<div class="form-group">
 				<div class="col-sm-6">
 					<label class="control-label" data-translate="cpmApp.contractInfo.taxRate" for="field_taxRate">Tax Rate</label>
-		            <input type="number" class="form-control" name="taxRate" id="field_taxRate"
-		                    ng-model="vm.contractInfo.taxRate" step="0.01" min="0"
+		            <input type="number" class="form-control" name="taxRate" id="field_taxRate" ng-required="true" 
+		                    ng-model="vm.contractInfo.taxRate" step="0.01" min="0" ng-change="vm.taxRateChanged()"
 		                     />
 		            <div ng-show="myForm.taxRate.$dirty&&myForm.taxRate.$error.number" class="alert alert-danger help-block"> 
 		            	必须为数字
@@ -182,8 +182,8 @@
 				</div>
         		<div class="col-sm-6">
         			<label class="control-label" data-translate="cpmApp.contractInfo.taxes" for="field_taxes">Taxes</label>
-		            <input type="number" class="form-control" name="taxes" id="field_taxes"
-		                    ng-model="vm.contractInfo.taxes" step="0.01" min="0"
+		            <input type="number" class="form-control" name="taxes" id="field_taxes" ng-required="true" 
+		                    ng-model="vm.contractInfo.taxes" step="0.01" min="0" ng-change="vm.taxesChanged()"
 		                     />
 		            <div ng-show="myForm.taxes.$dirty&&myForm.taxes.$error.number" class="alert alert-danger help-block"> 
 		                    	必须为数字
@@ -197,8 +197,8 @@
         	<div class="form-group">
 				<div class="col-sm-6">
 					<label class="control-label" data-translate="cpmApp.contractInfo.shareRate" for="field_shareRate">Share Rate</label>
-	            	<input type="number" class="form-control" name="shareRate" id="field_shareRate"
-	                    ng-model="vm.contractInfo.shareRate" step="0.01" min="0"
+	            	<input type="number" class="form-control" name="shareRate" id="field_shareRate" ng-required="true" 
+	                    ng-model="vm.contractInfo.shareRate" step="0.01" min="0" ng-change="vm.shareRateChanged()"
 	                     />
 	             	<div ng-show="myForm.shareRate.$dirty&&myForm.shareRate.$error.number" class="alert alert-danger help-block"> 
 	               		必须为数字
@@ -211,7 +211,7 @@
         		<div class="col-sm-6">
         			<label class="control-label" data-translate="cpmApp.contractInfo.shareCost" for="field_shareCost">Share Cost</label>
 		            <input type="number" class="form-control" name="shareCost" id="field_shareCost" ng-model="vm.contractInfo.shareCost"
-		             step="0.01" min="0"
+		             step="0.01" min="0" ng-required="true"  ng-change="vm.shareCostChanged()"
 		                     />
 		         	<div ng-show="myForm.shareCost.$dirty&&myForm.shareCost.$error.number" class="alert alert-danger help-block"> 
 		            	必须为数字
@@ -226,7 +226,7 @@
 				<div class="col-sm-6">
 					<label class="control-label" data-translate="cpmApp.contractInfo.contractor" for="field_contractor">Contractor</label>
 		            <input type="text" class="form-control" name="contractor" id="field_contractor"
-		                    ng-model="vm.contractInfo.contractor" ng-required="true" ng-maxlength="100"
+		                    ng-model="vm.contractInfo.contractor" ng-maxlength="100"
 		                     />
 		             <div ng-show="myForm.contractor.$dirty&&myForm.contractor.$error.maxlength" class="alert alert-danger help-block"> 
 		             	合同方公司名称不能大于100
@@ -235,7 +235,7 @@
         		<div class="col-sm-6">
         			<label class="control-label" data-translate="cpmApp.contractInfo.linkman" for="field_linkman">Linkman</label>
 		            <input type="text" class="form-control" name="linkman" id="field_linkman"
-		                    ng-model="vm.contractInfo.linkman" ng-required="true" ng-maxlength="15"
+		                    ng-model="vm.contractInfo.linkman" ng-maxlength="15"
 		                     />
 		           	<div ng-show="myForm.linkman.$dirty&&myForm.linkman.$error.maxlength" class="alert alert-danger help-block"> 
 		            	合同方联系人名称不能大于15
@@ -255,7 +255,7 @@
         		<div class="col-sm-6">
         			<label class="control-label" data-translate="cpmApp.contractInfo.telephone" for="field_telephone">Telephone</label>
 		            <input type="text" class="form-control" name="telephone" id="field_telephone"
-		                    ng-model="vm.contractInfo.telephone" ng-required="true" ng-maxlength="15"
+		                    ng-model="vm.contractInfo.telephone" ng-maxlength="15"
 		                     />
 		           	<div ng-show="myForm.telephone.$dirty&&myForm.telephone.$error.maxlength" class="alert alert-danger help-block"> 
 		            	合同方联系电话不能大于15长度
@@ -266,7 +266,7 @@
 				<div class="col-sm-6">
 					<label class="control-label" data-translate="cpmApp.contractInfo.address" for="field_address">Address</label>
 		            <input type="text" class="form-control" name="address" id="field_address"
-		                    ng-model="vm.contractInfo.address" ng-required="true" ng-maxlength="200"
+		                    ng-model="vm.contractInfo.address" ng-maxlength="200"
 		                     />
 		         	<div ng-show="myForm.address.$dirty&&myForm.address.$error.maxlength" class="alert alert-danger help-block"> 
 		            	合同方通信地址不能大于200长度
@@ -275,7 +275,7 @@
         		<div class="col-sm-6">
         			<label class="control-label" data-translate="cpmApp.contractInfo.postcode" for="field_postcode">Postcode</label>
 		            <input type="text" class="form-control" name="postcode" id="field_postcode"
-		                    ng-model="vm.contractInfo.postcode" ng-required="true" ng-maxlength="15"
+		                    ng-model="vm.contractInfo.postcode" ng-maxlength="15"
 		                     />
 		           	<div ng-show="myForm.postcode.$dirty&&myForm.postcode.$error.maxlength" class="alert alert-danger help-block"> 
 		             	合同方邮编不能大于15

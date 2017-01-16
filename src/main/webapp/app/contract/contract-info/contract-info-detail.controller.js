@@ -9,48 +9,38 @@
 
     function ContractInfoDetailController($scope, $rootScope, $stateParams, previousState, entity, ContractInfo) {
         var vm = this;
+        
+        vm.types = [{ key: 1, val: '产品' }, { key: 2, val: '外包' },{ key: 3, val: '硬件' },{ key: 4, val: '公共成本' }];
+        vm.statuss = [{ key: 1, val: '进行中'}, { key: 2, val: '已完成'}, { key: 3, val: '已删除'}];
 
-        vm.contractInfo =handleData(entity);
+        vm.contractInfo = handleData(entity);
+        
         vm.previousState = previousState.name;
-        console.log(vm.contractInfoName);
+        
         
         function handleData(data){
-			//type的枚举
-			if(data.type==1){
-				data.typeName="产品合同";
-			}else if (data.type==2) {
-				data.typeName="外包合同";
-			}else if (data.type==3) {
-				data.typeName="硬件合同";
-			}else if (data.type==4) {
-				data.typeName="公共成本";
-			}
-			//status的枚举
-			if(data.status == 1){
-				data.statusName = "可用";
-			}else if(data.status == 2){
-				data.statusName = "完成";
-			}else if(data.status == 3){
-				data.statusName = "删除";
-			}
-			//是否预立
-			if(data.isPrepared == true){
-				data.isPreparedName = "正式合同"
-			}else if (data.isPrepared == false) {
-				data.isPreparedName = "预立合同"
-			}
-			//是否外包
-			if(data.isEpibolic == true){
-				data.isEpibolicName = "外包"
-			}else if (data.isEpibolic == false) {
-				data.isEpibolicName = "非外包"
-			}
+			for(var j = 0; j < vm.types.length; j++){
+	        	if(data.type == vm.types[j].key){
+	        		data.typeName = vm.types[j].val;
+	        	}
+	        }
+	        for(var j = 0; j < vm.statuss.length; j++){
+	        	if(data.status == vm.statuss[j].key){
+	        		data.statusName = vm.statuss[j].val;
+	        	}
+	        }
+	        if(data.isPrepared){
+	        	data.isPreparedName = "预立合同";
+	        }else{
+	        	data.isPreparedName = "正式合同";
+	        }
+	        if(data.isEpibolic){
+	        	data.isEpibolicName = "外部合同";
+	        }else{
+	        	data.isEpibolicName = "内部合同";
+	        }
+	        
         	return data;
         }
-        //合同类型的枚举
-        var unsubscribe = $rootScope.$on('cpmApp:contractInfoUpdate', function(event, result) {
-        	console.log(result);
-        });
-        $scope.$on('$destroy', unsubscribe);
     }
 })();

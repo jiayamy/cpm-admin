@@ -75,6 +75,84 @@
         	);       
         }
 
+        vm.amountChanged = amountChanged;
+        vm.taxRateChanged = taxRateChanged;
+        vm.taxesChanged = taxesChanged;
+        vm.shareRateChanged = shareRateChanged;
+        vm.shareCostChanged = shareCostChanged;
+        
+        function amountChanged(){
+        	if(vm.contractInfo.amount == undefined){
+        		vm.contractInfo.amount = 0;
+        	}
+        	if(vm.contractInfo.taxRate == undefined){
+        		vm.contractInfo.taxRate = 0;
+        	}
+        	if(vm.contractInfo.shareRate == undefined){
+        		vm.contractInfo.shareRate = 0;
+        	}
+        	vm.contractInfo.taxes = vm.contractInfo.amount * vm.contractInfo.taxRate / 100;
+        	vm.contractInfo.taxes = Math.round(vm.contractInfo.taxes * 100) / 100;
+        	vm.contractInfo.shareCost = vm.contractInfo.amount * vm.contractInfo.shareRate / 100;
+        	vm.contractInfo.shareCost = Math.round(vm.contractInfo.shareCost * 100) / 100;
+        	console.log(vm.contractInfo.amount + "|" + vm.contractInfo.taxRate + "|" + vm.contractInfo.taxes +"|" + vm.contractInfo.shareRate +"|" + vm.contractInfo.shareCost);
+        }
+        function taxRateChanged(){
+        	if(vm.contractInfo.amount == undefined){
+        		vm.contractInfo.amount = 0;
+        	}
+        	if(vm.contractInfo.taxRate == undefined){
+        		vm.contractInfo.taxRate = 0;
+        	}
+        	
+        	vm.contractInfo.taxes = vm.contractInfo.amount * vm.contractInfo.taxRate / 100;
+        	vm.contractInfo.taxes = Math.round(vm.contractInfo.taxes * 100)/100;
+        	console.log(vm.contractInfo.amount + "|" + vm.contractInfo.taxRate + "|" + vm.contractInfo.taxes +"|" + vm.contractInfo.shareRate +"|" + vm.contractInfo.shareCost);
+        }
+        
+        function taxesChanged(){
+        	if(vm.contractInfo.amount == undefined){
+        		vm.contractInfo.amount = 0;
+        	}
+        	if(vm.contractInfo.taxes == undefined){
+        		vm.contractInfo.taxes = 0;
+        	}
+        	if(vm.contractInfo.amount == 0){
+        		vm.contractInfo.taxRate = 0;
+        	}else{
+        		vm.contractInfo.taxRate = vm.contractInfo.taxes / vm.contractInfo.amount * 100;
+        		vm.contractInfo.taxRate = Math.round(vm.contractInfo.taxRate * 100)/100;
+        	}
+        	console.log(vm.contractInfo.amount + "|" + vm.contractInfo.taxRate + "|" + vm.contractInfo.taxes +"|" + vm.contractInfo.shareRate +"|" + vm.contractInfo.shareCost);
+        }
+        function shareRateChanged(){
+        	if(vm.contractInfo.amount == undefined){
+        		vm.contractInfo.amount = 0;
+        	}
+        	if(vm.contractInfo.shareRate == undefined){
+        		vm.contractInfo.shareRate = 0;
+        	}
+        	
+        	vm.contractInfo.shareCost = vm.contractInfo.amount * vm.contractInfo.shareRate / 100;
+        	vm.contractInfo.shareCost = Math.round(vm.contractInfo.shareCost * 100)/100;
+        	console.log(vm.contractInfo.amount + "|" + vm.contractInfo.taxRate + "|" + vm.contractInfo.taxes +"|" + vm.contractInfo.shareRate +"|" + vm.contractInfo.shareCost);
+        }
+        
+        function shareCostChanged(){
+        	if(vm.contractInfo.amount == undefined){
+        		vm.contractInfo.amount = 0;
+        	}
+        	if(vm.contractInfo.shareCost == undefined){
+        		vm.contractInfo.shareCost = 0;
+        	}
+        	if(vm.contractInfo.amount == 0){
+        		vm.contractInfo.shareRate = 0;
+        	}else{
+        		vm.contractInfo.shareRate = vm.contractInfo.shareCost / vm.contractInfo.amount * 100;
+        		vm.contractInfo.shareRate = Math.round(vm.contractInfo.shareRate * 100)/100;
+        	}
+        	console.log(vm.contractInfo.amount + "|" + vm.contractInfo.taxRate + "|" + vm.contractInfo.taxes +"|" + vm.contractInfo.shareRate +"|" + vm.contractInfo.shareCost);
+        }
         vm.datePickerOpenStatus.startDay = false;
         vm.datePickerOpenStatus.endDay = false;
 
