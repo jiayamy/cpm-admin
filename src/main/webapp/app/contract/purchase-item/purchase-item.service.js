@@ -39,11 +39,6 @@
                 }
             },
             'update': { method:'PUT' },
-            'queryUserContract':{
-            	url:'api/project-infos/queryUserContract',
-            	method:'GET',
-            	isArray:true
-            }
         });
     }
 })();

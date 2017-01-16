@@ -18,6 +18,7 @@
             },
             "contractId": "合同ID",
             "serialNum": "合同编号",
+            "contractName": "合同名称",
             "budgetName": "内部采购名称",
             "budgetId": "合同预算ID",
             "name": "采购项目",

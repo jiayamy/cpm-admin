@@ -31,11 +31,7 @@
                 sort: {
                     value: 'wpi.id,asc',
                     squash: true
-                },
-                name: null,
-                contractId: null,
-                source: null,
-                type: null
+                }
             },
             resolve: {
                 pagingParams: ['$stateParams', 'PaginationUtil', function ($stateParams, PaginationUtil) {

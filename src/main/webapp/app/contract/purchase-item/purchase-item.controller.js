@@ -17,9 +17,8 @@
         vm.itemsPerPage = paginationConstants.itemsPerPage;
         vm.clear = clear;
         vm.search = search;
-        vm.loadAll = loadAll;
         vm.searchQuery = {};
-        //
+        //搜索中的参数
         vm.sources = [{id: 1,name: "内部采购"},{id: 2, name: "外部采购"}];
         for (var i = 0; i < vm.sources.length; i++) {
 			if (pagingParams.source == vm.sources[i].id) {
@@ -42,8 +41,8 @@
 			vm.havaSearch = true;
 		}
         vm.contractInfos = [];
-        loadContractInfos();
-        function loadContractInfos(){
+        loadContract();
+        function loadContract(){
         	ProjectInfo.queryUserContract({
         		
         	},
@@ -53,7 +52,6 @@
         			for(var i = 0; i < vm.contractInfos.length; i++){
         				if(pagingParams.contractId == vm.contractInfos[i].key){
         					vm.searchQuery.contractId = vm.contractInfos[i];
-        					console.log(vm.searchQuery.contractId)
         				}
         			}
         		}
@@ -62,8 +60,8 @@
         		AlertService.error(error.data.message);
         	});
         }
+        //加载列表信息
         loadAll();
-
         function loadAll () {
         	if (pagingParams.name == undefined) {
         		pagingParams.name = "";
@@ -137,7 +135,7 @@
                 page: vm.page,
                 sort: vm.predicate + ',' + (vm.reverse ? 'asc' : 'desc'),
                 name: vm.searchQuery.name,
-                contractId: vm.searchQuery.contractId,
+                contractId: vm.searchQuery.contractId ? vm.searchQuery.contractId.key: "",
                 source: vm.searchQuery.source ? vm.searchQuery.source.id : "",
                 type: vm.searchQuery.type ? vm.searchQuery.type.id : ""
             });
