@@ -1,26 +1,35 @@
 package com.wondertek.cpm.service;
 
+import java.time.LocalDate;
+import java.time.ZonedDateTime;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+
+import javax.inject.Inject;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.wondertek.cpm.config.StringUtil;
 import com.wondertek.cpm.domain.Authority;
 import com.wondertek.cpm.domain.User;
 import com.wondertek.cpm.repository.AuthorityRepository;
 import com.wondertek.cpm.repository.PersistentTokenRepository;
+import com.wondertek.cpm.repository.UserDao;
 import com.wondertek.cpm.repository.UserRepository;
 import com.wondertek.cpm.repository.search.UserSearchRepository;
 import com.wondertek.cpm.security.AuthoritiesConstants;
 import com.wondertek.cpm.security.SecurityUtils;
 import com.wondertek.cpm.service.util.RandomUtil;
 import com.wondertek.cpm.web.rest.vm.ManagedUserVM;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDate;
-import java.time.ZonedDateTime;
-import javax.inject.Inject;
-import java.util.*;
 
 /**
  * Service class for managing users.
@@ -36,7 +45,9 @@ public class UserService {
 
     @Inject
     private UserRepository userRepository;
-
+    @Inject
+    private UserDao userDao;
+    
     @Inject
     private UserSearchRepository userSearchRepository;
 
@@ -129,11 +140,26 @@ public class UserService {
             );
             user.setAuthorities(authorities);
         }
-        String encryptedPassword = passwordEncoder.encode(RandomUtil.generatePassword());
+        String password = managedUserVM.getPassword();
+        if(StringUtil.isNullStr(managedUserVM.getPassword())){
+        	password = RandomUtil.generatePassword();
+        }
+        String encryptedPassword = passwordEncoder.encode(password);
         user.setPassword(encryptedPassword);
         user.setResetKey(RandomUtil.generateResetKey());
         user.setResetDate(ZonedDateTime.now());
         user.setActivated(true);
+        
+        user.setSerialNum(managedUserVM.getSerialNum());
+        user.setDeptId(managedUserVM.getDeptId());
+        user.setIsManager(managedUserVM.getIsManager());
+        user.setDuty(managedUserVM.getDuty());
+        user.setGrade(managedUserVM.getGrade());
+        user.setGender(managedUserVM.getGender());
+        user.setBirthYear(managedUserVM.getBirthYear());
+        user.setBirthDay(managedUserVM.getBirthDay());
+        user.setTelephone(managedUserVM.getTelephone());
+        
         userRepository.save(user);
         userSearchRepository.save(user);
         log.debug("Created Information for User: {}", user);
@@ -152,7 +178,7 @@ public class UserService {
     }
 
     public void updateUser(Long id, String login, String firstName, String lastName, String email,
-        boolean activated, String langKey, Set<String> authorities) {
+        boolean activated, String langKey, Set<String> authorities, ManagedUserVM managedUserVM) {
 
         Optional.of(userRepository
             .findOne(id))
@@ -163,6 +189,23 @@ public class UserService {
                 user.setEmail(email);
                 user.setActivated(activated);
                 user.setLangKey(langKey);
+                
+                if(!StringUtil.isNullStr(managedUserVM.getPassword())){
+                	String password = managedUserVM.getPassword();
+                	String encryptedPassword = passwordEncoder.encode(password);
+                	user.setPassword(encryptedPassword);
+                }
+                
+                user.setSerialNum(managedUserVM.getSerialNum());
+                user.setDeptId(managedUserVM.getDeptId());
+                user.setIsManager(managedUserVM.getIsManager());
+                user.setDuty(managedUserVM.getDuty());
+                user.setGrade(managedUserVM.getGrade());
+                user.setGender(managedUserVM.getGender());
+                user.setBirthYear(managedUserVM.getBirthYear());
+                user.setBirthDay(managedUserVM.getBirthDay());
+                user.setTelephone(managedUserVM.getTelephone());
+                
                 Set<Authority> managedAuthorities = user.getAuthorities();
                 managedAuthorities.clear();
                 authorities.forEach(
@@ -190,7 +233,14 @@ public class UserService {
 
     @Transactional(readOnly = true)
     public Optional<User> getUserWithAuthoritiesByLogin(String login) {
-        return userRepository.findOneByLogin(login).map(user -> {
+    	List<Object[]> objs = userRepository.findDetailByLogin(login);
+    	User returnUser = null;
+    	if(objs != null && !objs.isEmpty()){
+    		returnUser = (User) objs.get(0)[0];
+    		returnUser.setDept(StringUtil.null2Str(objs.get(0)[1]));
+    	}
+    	Optional<User> us = Optional.of(returnUser);
+        return us.map(user -> {
             user.getAuthorities().size();
             return user;
         });
@@ -244,8 +294,12 @@ public class UserService {
         List<User> users = userRepository.findAllByActivatedIsFalseAndCreatedDateBefore(now.minusDays(3));
         for (User user : users) {
             log.debug("Deleting not activated user {}", user.getLogin());
-            userRepository.delete(user);
-            userSearchRepository.delete(user);
+//            userRepository.delete(user);
+//            userSearchRepository.delete(user);
         }
     }
+
+	public Page<User> getUserPage(User user, Pageable pageable) {
+		return userDao.getUserPage(user, pageable);
+	}
 }

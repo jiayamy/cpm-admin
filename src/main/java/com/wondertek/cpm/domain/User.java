@@ -102,6 +102,9 @@ public class User extends AbstractAuditingEntity implements Serializable {
      */
     @Column(name = "dept_id")
     private Long deptId;
+    
+    @Transient
+    private String dept;
     /**
      * 管理人员（true是/false否，默认否）
      */
@@ -163,10 +166,18 @@ public class User extends AbstractAuditingEntity implements Serializable {
     public String getLogin() {
         return login;
     }
+    public String getDept() {
+		return dept;
+	}
 
-    //Lowercase the login before saving it in database
+	public void setDept(String dept) {
+		this.dept = dept;
+	}
+
+	//Lowercase the login before saving it in database
     public void setLogin(String login) {
-        this.login = login.toLowerCase(Locale.ENGLISH);
+    	if(login != null)
+    		this.login = login.toLowerCase(Locale.ENGLISH);
     }
 
     public String getPassword() {
