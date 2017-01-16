@@ -104,24 +104,19 @@
             data: {
                 authorities: ['ROLE_INFO_BASIC']
             },
-            onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
-                $uibModal.open({
+            views: {
+                'content@': {
                     templateUrl: 'app/info/user-management/user-management-dialog.html',
-                    controller: 'UserManagementDialogController',
-                    controllerAs: 'vm',
-                    backdrop: 'static',
-                    size: 'lg',
-                    resolve: {
-                        entity: ['User', function(User) {
-                            return User.get({login : $stateParams.login});
-                        }]
-                    }
-                }).result.then(function() {
-                    $state.go('user-management', null, { reload: true });
-                }, function() {
-                    $state.go('^');
-                });
-            }]
+                    controller: 'UserManagementDetailController',
+                    controllerAs: 'vm'
+                }
+            },
+            resolve: {
+                translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
+                    $translatePartialLoader.addPart('user-management');
+                    return $translate.refresh();
+                }]
+            }
         })
         .state('user-management.delete', {
             parent: 'user-management',

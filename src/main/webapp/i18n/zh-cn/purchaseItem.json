@@ -3,7 +3,7 @@
         "purchaseItem" : {
             "home": {
                 "title": "采购子项",
-                "createLabel": "创建一个新的采购子项",
+                "createLabel": "新建",
                 "createOrEditLabel": "创建或者编辑",
                 "search": "Search for Purchase Item"
             },
@@ -17,6 +17,8 @@
                 "title": "Purchase Item"
             },
             "contractId": "合同ID",
+            "serialNum": "合同编号",
+            "budgetName": "内部采购名称",
             "budgetId": "合同预算ID",
             "name": "采购项目",
             "quantity": "采购数量",

@@ -1,113 +1,218 @@
-<form name="editForm" role="form" novalidate ng-submit="vm.save()" show-validation>
-
-    <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
-                ng-click="vm.clear()">&times;</button>
-        <h4 class="modal-title" id="myUserLabel" data-translate="userManagement.home.createOrEditLabel">
-            Create or edit a User</h4>
-    </div>
-    <div class="modal-body">
-        <jhi-alert-error></jhi-alert-error>
-        <div class="form-group">
-            <label data-translate="global.field.id">ID</label>
-            <input type="text" class="form-control" name="id"
-                   ng-model="vm.user.id" readonly>
-        </div>
-
-        <div class="form-group">
-            <label class="control-label" data-translate="userManagement.login">Login</label>
-            <input type="text" class="form-control" name="login"
-                   ng-model="vm.user.login" ng-required="vm.user.id == null" ng-minlength=1 ng-maxlength=50 ng-pattern="/^[_'.@A-Za-z0-9-]*$/">
-
-            <div ng-show="editForm.login.$invalid">
-                <p class="help-block"
-                   ng-show="editForm.login.$error.required" data-translate="entity.validation.required">
-                    This field is required.
-                </p>
-
-                <p class="help-block"
-                   ng-show="editForm.login.$error.maxlength" data-translate="entity.validation.maxlength"
-                   translate-value-max="50">
-                    This field cannot be longer than 50 characters.
-                </p>
-            </div>
-        </div>
-        <div class="form-group">
-            <label class="control-label" data-translate="userManagement.firstName">First Name</label>
-            <input type="text" class="form-control" name="firstName"
-                   ng-model="vm.user.firstName" ng-maxlength="50">
-
-            <div ng-show="editForm.firstName.$invalid">
-                <p class="help-block"
-                   ng-show="editForm.firstName.$error.maxlength" data-translate="entity.validation.maxlength"
-                   translate-value-max="50">
-                    This field cannot be longer than 50 characters.
-                </p>
-            </div>
-        </div>
-        <div class="form-group">
-            <label data-translate="userManagement.lastName">Last Name</label>
-            <input type="text" class="form-control" name="lastName"
-                   ng-model="vm.user.lastName" ng-maxlength="50">
-
-            <div ng-show="editForm.lastName.$invalid">
-                <p class="help-block"
-                   ng-show="editForm.lastName.$error.maxlength" data-translate="entity.validation.maxlength"
-                   translate-value-max="50">
-                    This field cannot be longer than 50 characters.
-                </p>
-            </div>
-        </div>
-        <div class="form-group">
-            <label class="control-label" data-translate="userManagement.email">Email</label>
-            <input type="email" class="form-control" name="email"
-                   ng-model="vm.user.email" required ng-maxlength="100">
-
-            <div ng-show="editForm.email.$invalid">
-                <p class="help-block"
-                   ng-show="editForm.email.$error.required" data-translate="entity.validation.required">
-                    This field is required.
-                </p>
-
-                <p class="help-block"
-                   ng-show="editForm.email.$error.maxlength" data-translate="entity.validation.maxlength"
-                   translate-value-max="100">
-                    This field cannot be longer than 100 characters.
-                </p>
-				<p class="help-block"
-                   ng-show="editForm.email.$error.email" data-translate="global.messages.validate.email.invalid">
-                    Your e-mail is invalid.
-                 </p>
-            </div>
-        </div>
-        <div class="form-group">
-            <label for="activated">
-                <input ng-disabled="vm.user.id === null" type="checkbox" id="activated" name="activated" ng-model="vm.user.activated">
-                <span data-translate="userManagement.activated">Activated</span>
-            </label>
-        </div>
-
-        <div class="form-group">
-            <label data-translate="userManagement.langKey">Lang Key</label>
-            <select class="form-control" name="langKey" ng-model="vm.user.langKey"
-                    ng-options="language as language for language in vm.languages track by language">
-            </select>
-        </div>
-
-        <div class="form-group">
-            <label data-translate="userManagement.profiles">Profiles</label>
-            <select class="form-control" multiple name="authority" ng-model="vm.user.authorities"
-                    ng-options="authority for authority in vm.authorities">
-            </select>
-        </div>
-    </div>
-    <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="vm.clear()">
-            <span class="glyphicon glyphicon-ban-circle"></span>&nbsp;<span
-            data-translate="entity.action.cancel">Cancel</span>
-        </button>
-        <button type="submit" ng-disabled="editForm.$invalid || vm.isSaving" class="btn btn-primary">
-            <span class="glyphicon glyphicon-save"></span>&nbsp;<span data-translate="entity.action.save">Save</span>
-        </button>
-    </div>
+<h2><span data-translate="userManagement.home.createOrEditLabel">Create or edit a Project Info</span></h2>
+<hr>
+<jhi-alert-error></jhi-alert-error>
+<form name="myForm" role="form" novalidate ng-submit="vm.save()" show-validation>
+    <div class="container-fluid">
+    	<div class="row form-horizontal">
+    		<div class="form-group">
+		   		<div class="col-sm-6">
+		        		<label class="control-label" data-translate="userManagement.login" for="field_login">Login</label>
+		        		<input type="text" class="form-control" name="login" id="login" ng-required="true"
+		            		ng-model="vm.userManagement.login" ng-minlength="1" ng-maxlength="60"
+		                	/>
+		           		<div ng-show="myForm.login.$invalid">
+			               	<p class="help-block"
+			                  	ng-show="myForm.login.$dirty&&myForm.login.$error.maxlength" class="alert alert-danger help-block">
+			                   		用户名太长
+			               	</p>
+			               	<p class="help-block"
+	                  				ng-show="myForm.login.$error.required" data-translate="entity.validation.required">
+		                   		This field is required.
+				        	</p>
+		           		</div>
+		   		</div>
+		   		<div class="col-sm-6">
+	                <label class="control-label"  for="field_password">密码</label>
+	                <input type="password" autocomplete="off" name="password" ng-required="true" ng-minlength="5" ng-maxlength="10" ng-model="vm.userManagement.password" class="form-control" />
+	             	<div ng-show="myForm.password.$invalid">    
+	                    <p class="help-block" 
+	                    	ng-show="myForm.password.$dirty&&myForm.password.$error.maxlength" class="alert alert-danger help-block">
+	                        	 密码不能超过60位
+	                    </p>
+	                    <p ng-show="myForm.password.$dirty&&myForm.password.$error.minlength" class="alert alert-danger help-block">
+	                           	密码不能小于5位
+	                    </p>
+	                    <p class="help-block"
+	                  		ng-show="myForm.password.$error.required" data-translate="entity.validation.required">
+		                   	This field is required.
+				        </p>
+	            	</div>
+		   		</div>
+		   	</div>
+		   	<div class="form-group" >
+		   		<div class="col-sm-6">
+	               <label class="control-label" >邮箱</label>
+	               <input type="email" autocomplete="off" name="email" ng-required="true"  ng-minlength="5" ng-maxlength="30" ng-model="vm.userManagement.email" class="form-control" />
+	               <div ng-show="myForm.password.$invalid">
+	                   <p ng-show="myForm.email.$dirty && myForm.email.$error.maxlength" class="alert alert-danger help-block">
+	                      	 邮箱长度不能大于30位
+	                   </p>
+	                   <p ng-show="myForm.email.$dirty && myForm.email.$error.minlength" class="alert alert-danger help-block">
+	                      	 邮箱长度不能小于5位
+	                   </p>
+	                   <p ng-show="myForm.email.$dirty && myForm.email.$error.email" class="alert alert-danger help-block">
+	                      	 邮箱格式不正确
+	                   </p>
+	                   <p class="help-block"
+	                 		ng-show="myForm.email.$error.required" data-translate="entity.validation.required">
+	                   	This field is required.
+	               	</p>
+	               </div>
+            	</div>
+            	<div class="col-sm-6">
+	               <label class="control-label" >手机号码</label>
+	               <input type="text" autocomplete="off" name="telephone" ng-required="true"  ng-minlength="11" ng-maxlength="11" ng-model="vm.userManagement.telephone" class="form-control" ng-pattern="^((\d{3})|(\d{3}\-))?13[0-9]\d{8}|15[89]\d{8}"/>
+	               <div ng-show="myForm.telephone.$invalid">
+	                   <p ng-show="myForm.telephone.$dirty && myForm.telephone.$error.maxlength" class="alert alert-danger help-block">
+	                      	 号码长度不能大于11位
+	                   </p>
+	                   <p ng-show="myForm.telephone.$dirty && myForm.telephone.$error.minlength" class="alert alert-danger help-block">
+	                      	 邮箱长度不能小于11位
+	                   </p>
+	                   <p class="help-block"
+	                 		ng-show="myForm.telephone.$error.required" data-translate="entity.validation.required">
+	                   	This field is required.
+	               		</p>
+	               </div>
+            	</div>
+           	</div>
+		   	<div class="form-group">
+	     		<div class="col-sm-6">
+	          		<label class="control-label" for="field_userName">员工姓名</label>
+	          		<input type="text" class="form-control" name="userName" id="field_userName"
+	                  	ng-model="vm.userManagement.userName"  ng-required="true" ng-minlength="1" ng-maxlength="50"
+                   	/>
+                   	 <div ng-show="myForm.userName.$invalid">
+	                   <p ng-show="myForm.userName.$dirty && myForm.userName.$error.minlength" class="alert alert-danger help-block">
+	                      	 人名太长
+	                   </p>
+	                   <p class="help-block"
+	                 		ng-show="myForm.userName.$error.required" data-translate="entity.validation.required">
+	                   	This field is required.
+	               		</p>
+	               </div>
+	      		</div>
+				<div class="col-sm-6">
+	     			<label class="control-label" for="field_dept" >部门</label>
+	  				<input type="text" class="form-control" name="dept" id="field_dept"
+	                  	ng-model="vm.userManagement.dept"  ng-required="true" ng-minlength="1"
+	                   	/>
+	                   	<span class="input-group-btn">
+	                     	<button type="button" class="btn btn-default" ui-sref="{{vm.queryDept}}({selectType:3,showChild:true,showUser:false})"><i class="glyphicon glyphicon-user"></i></button>
+	                 	</span>
+				</div>
+	     	</div>
+		   	<div class="form-group">
+		   		<div class="col-sm-6">
+		        		<label class="control-label" for="field_serialNum">工号</label>
+		        		<input type="text" class="form-control" name="serialNum" id="serialNum"
+		            		ng-model="vm.userManagement.serialNum" step="0.01" min="10"
+		                	/>
+		           	<div ng-show="myForm.serialNum.$invalid">
+		               	<p class="help-block"
+		                  		ng-show="myForm.serialNum.$error.required" data-translate="entity.validation.required">
+		                   	This field is required.
+		               	</p>
+		
+		               	<p class="help-block"
+		                  		ng-show="myForm.serialNum.$error.maxlength" data-translate="entity.validation.maxlength"
+		                  		translate-value-max="10">
+		                   	This field cannot be longer than 10 characters.
+		               	</p>
+		           	</div>
+		   		</div>
+		   		<div class="col-sm-6">
+		        		<label class="control-label" for="field_duty">岗位</label>
+		        		<input type="text" class="form-control" name="duty" id="duty"
+		            		ng-model="vm.userManagement.duty" step="0.01" min="0"
+		                	/>
+		           	<div ng-show="myForm.duty.$invalid">
+		               	<p class="help-block"
+		                  		ng-show="myForm.duty.$error.required" data-translate="entity.validation.required">
+		                   	This field is required.
+		               	</p>
+		
+		               	<p class="help-block"
+		                  		ng-show="myForm.duty.$error.maxlength" data-translate="entity.validation.maxlength"
+		                  		translate-value-max="20">
+		                   	This field cannot be longer than 20 characters.
+		               	</p>
+		           	</div>
+		   		</div>
+		   	</div>
+		   	<div class="form-group">
+		   		<div class="col-sm-6">
+		        		<label class="control-label" for="field_grade">级别</label>
+		        		<input type="text" class="form-control" name="grade" id="grade"
+		            		ng-model="vm.userManagement.budgetTotal" step="0.01" min="0"
+		                	/>
+		           	<div ng-show="myForm.grade.$invalid">
+		               	<p class="help-block"
+		                  		ng-show="myForm.grade.$error.required" data-translate="entity.validation.required">
+		                   	This field is required.
+		               	</p>
+		
+		               	<p class="help-block"
+		                  		ng-show="myForm.grade.$error.maxlength" data-translate="entity.validation.maxlength"
+		                  		translate-value-max="20">
+		                   	This field cannot be longer than 20 characters.
+		               	</p>
+		           	</div>
+		   		</div>
+		   		<div class="col-sm-6">
+	         	<label class="control-label" for="field_isEpibolic">
+	 				是否管理人员 </label>
+	 			<input type="checkbox" name="isManager" id="field_isManager"
+	 							ng-model="vm.userManagement.isManager"/>
+	        </div>
+		   	</div>
+		   	<div class="form-group">
+		   		<div class="col-sm-6">
+		        		<label class="control-label" for="field_birthYear">出生年份</label>
+		        		<input type="text" class="form-control" name="birthYear" id="birthYear"
+		            		ng-model="vm.userManagement.birthYear" step="0.01" min="0"
+		                	/>
+		           	<div ng-show="myForm.birthYear.$invalid">
+		               	<p class="help-block"
+		                  		ng-show="myForm.birthYear.$error.required" data-translate="entity.validation.required">
+		                   	This field is required.
+		               	</p>
+		
+		               	<p class="help-block"
+		                  		ng-show="myForm.birthYear.$error.maxlength" data-translate="entity.validation.maxlength"
+		                  		translate-value-max="4">
+		                   	This field cannot be longer than 4 characters.
+		               	</p>
+		           	</div>
+		   		</div>
+		   		<div class="col-sm-6">
+		        		<label class="control-label" for="field_birthDay">生日</label>
+		        		<input type="text" class="form-control" name="birthDay" id="birthDay"
+		            		ng-model="vm.userManagement.birthDay" step="0.01" min="0"
+		                	/>
+		           	<div ng-show="myForm.birthDay.$invalid">
+		               	<p class="help-block"
+		                  		ng-show="myForm.birthDay.$error.required" data-translate="entity.validation.required">
+		                   	This field is required.
+		               	</p>
+		
+		               	<p class="help-block"
+		                  		ng-show="myForm.birthDay.$error.maxlength" data-translate="entity.validation.maxlength"
+		                  		translate-value-max="4">
+		                   	This field cannot be longer than 4 characters.
+		               	</p>
+		           	</div>
+		   		</div>
+		   	</div>
+	    </div>
+	 </div>
+	 <hr>
+    <button type="submit"
+       ui-sref="{{ vm.previousState }}"
+       class="btn btn-info">
+        <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span data-translate="entity.action.back"> Back</span>
+    </button>
+    <button type="submit" ng-disabled="!myForm.$valid || vm.isSaving" class="btn btn-primary">
+        <span class="glyphicon glyphicon-save"></span>&nbsp;<span data-translate="entity.action.save">Save</span>
+    </button>
 </form>

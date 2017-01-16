@@ -11,7 +11,7 @@
         $stateProvider
         .state('purchase-item', {
             parent: 'contract',
-            url: '/purchase-item?page&sort&search',
+            url: '/purchase-item?name&contractId&source&type',
             data: {
                 authorities: ['ROLE_USER'],
                 pageTitle: 'cpmApp.purchaseItem.home.title'
@@ -29,10 +29,13 @@
                     squash: true
                 },
                 sort: {
-                    value: 'id,asc',
+                    value: 'wpi.id,asc',
                     squash: true
                 },
-                search: null
+                name: null,
+                contractId: null,
+                source: null,
+                type: null
             },
             resolve: {
                 pagingParams: ['$stateParams', 'PaginationUtil', function ($stateParams, PaginationUtil) {
@@ -41,7 +44,10 @@
                         sort: $stateParams.sort,
                         predicate: PaginationUtil.parsePredicate($stateParams.sort),
                         ascending: PaginationUtil.parseAscending($stateParams.sort),
-                        search: $stateParams.search
+                        name: $stateParams.name,
+                        contractId: $stateParams.contractId,
+                        source: $stateParams.source,
+                        type: $stateParams.type
                     };
                 }],
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
