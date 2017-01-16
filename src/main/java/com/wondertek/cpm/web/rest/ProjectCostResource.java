@@ -14,6 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -28,6 +29,7 @@ import com.wondertek.cpm.CpmConstants;
 import com.wondertek.cpm.config.StringUtil;
 import com.wondertek.cpm.domain.ProjectCost;
 import com.wondertek.cpm.domain.vo.ProjectCostVo;
+import com.wondertek.cpm.security.AuthoritiesConstants;
 import com.wondertek.cpm.security.SecurityUtils;
 import com.wondertek.cpm.service.ProjectCostService;
 import com.wondertek.cpm.web.rest.util.HeaderUtil;
@@ -58,6 +60,7 @@ public class ProjectCostResource {
      */
     @PutMapping("/project-costs")
     @Timed
+    @Secured(AuthoritiesConstants.ROLE_PROJECT_COST)
     public ResponseEntity<Boolean> updateProjectCost(@RequestBody ProjectCost projectCost) throws URISyntaxException {
         log.debug("REST request to update ProjectCost : {}", projectCost);
         Boolean isNew = projectCost.getId() == null;
@@ -117,6 +120,7 @@ public class ProjectCostResource {
      */
     @GetMapping("/project-costs")
     @Timed
+    @Secured(AuthoritiesConstants.ROLE_PROJECT_COST)
     public ResponseEntity<List<ProjectCostVo>> getAllProjectCosts(
     		@RequestParam(value = "projectId",required=false) Long projectId, 
     		@RequestParam(value = "type",required=false) Integer type, 
@@ -143,6 +147,7 @@ public class ProjectCostResource {
      */
     @GetMapping("/project-costs/{id}")
     @Timed
+    @Secured(AuthoritiesConstants.ROLE_PROJECT_COST)
     public ResponseEntity<ProjectCostVo> getProjectCost(@PathVariable Long id) {
         log.debug("REST request to get ProjectCost : {}", id);
 //        ProjectCost projectCost = projectCostService.findOne(id);
@@ -162,6 +167,7 @@ public class ProjectCostResource {
      */
     @DeleteMapping("/project-costs/{id}")
     @Timed
+    @Secured(AuthoritiesConstants.ROLE_PROJECT_COST)
     public ResponseEntity<Void> deleteProjectCost(@PathVariable Long id) {
         log.debug("REST request to delete ProjectCost : {}", id);
         ProjectCostVo projectCost = projectCostService.getProjectCost(id);
@@ -189,6 +195,7 @@ public class ProjectCostResource {
      */
     @GetMapping("/_search/project-costs")
     @Timed
+    @Secured(AuthoritiesConstants.ROLE_PROJECT_COST)
     public ResponseEntity<List<ProjectCost>> searchProjectCosts(@RequestParam String query, @ApiParam Pageable pageable)
         throws URISyntaxException {
         log.debug("REST request to search for a page of ProjectCosts for query {}", query);

@@ -53,6 +53,7 @@ public class ContractInfoResource {
 
 	@PutMapping("/contract-infos")
     @Timed
+    @Secured(AuthoritiesConstants.ROLE_CONTRACT_INFO)
     public ResponseEntity<Boolean> updateContractInfo(@RequestBody ContractInfo contractInfo) throws URISyntaxException {
         log.debug("REST request to update ContractInfo : {}", contractInfo);
         Boolean isNew = contractInfo.getId() == null;
@@ -135,6 +136,7 @@ public class ContractInfoResource {
 
 	@GetMapping("/contract-infos")
 	@Timed
+	@Secured(AuthoritiesConstants.ROLE_CONTRACT_INFO)
 	public ResponseEntity<List<ContractInfoVo>> getAllContractInfos(@RequestParam(value = "name",required=false) String name,
 			@RequestParam(value = "type",required=false) Integer type, @RequestParam(value = "isPrepared",required=false) Boolean isPrepared,
 			@RequestParam(value = "isEpibolic",required=false) Boolean isEpibolic, @RequestParam(value = "serialNum",required=false) String serialNum,
@@ -158,6 +160,7 @@ public class ContractInfoResource {
 
 	@GetMapping("/contract-infos/{id}")
 	@Timed
+	@Secured(AuthoritiesConstants.ROLE_CONTRACT_INFO)
 	public ResponseEntity<ContractInfoVo> getContractInfo(@PathVariable Long id) {
 		log.debug("REST request to get ContractInfo : {}", id);
 		ContractInfoVo contractInfo = contractInfoService.getUserContractInfo(id);
@@ -174,6 +177,7 @@ public class ContractInfoResource {
 	 */
 	@DeleteMapping("/contract-infos/{id}")
 	@Timed
+	@Secured(AuthoritiesConstants.ROLE_CONTRACT_INFO)
 	public ResponseEntity<Void> deleteContractInfo(@PathVariable Long id) {
 		log.debug("REST request to delete ContractInfo : {}", id);
 		contractInfoService.delete(id);
@@ -183,6 +187,7 @@ public class ContractInfoResource {
 	// 留作参考
 	@GetMapping("/_search/contract-infos")
 	@Timed
+	@Secured(AuthoritiesConstants.ROLE_CONTRACT_INFO)
 	public ResponseEntity<List<ContractInfo>> searchContractInfos(@RequestParam String query,
 			@ApiParam Pageable pageable) throws URISyntaxException {
 		log.debug("REST request to search for a page of ContractInfos for query {}", query);
@@ -194,9 +199,9 @@ public class ContractInfoResource {
 
 	@PutMapping("/contract-infos/finish")
     @Timed
-    @Secured(AuthoritiesConstants.ROLE_PROJECT_INFO)
-    public ResponseEntity<ProjectInfo> finishProjectInfo(@RequestBody ContractInfo contractInfo) throws URISyntaxException {
-    	log.debug("REST request to endProjectInfo");
+    @Secured(AuthoritiesConstants.ROLE_CONTRACT_INFO)
+    public ResponseEntity<ProjectInfo> finishContractInfo(@RequestBody ContractInfo contractInfo) throws URISyntaxException {
+    	log.debug("REST request to finishContractInfo");
     	if(contractInfo.getId() == null || contractInfo.getFinishRate() == null){
     		return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.contractInfo.save.requiedError", "")).body(null);
     	}

@@ -214,7 +214,6 @@ public class ProjectInfoResource {
 
     @GetMapping("/project-infos/queryUserContract")
     @Timed
-    @Secured(AuthoritiesConstants.ROLE_PROJECT_INFO)
     public ResponseEntity<List<LongValue>> queryUserContract() throws URISyntaxException {
         log.debug("REST request to queryUserContract");
         List<LongValue> list = projectInfoService.queryUserContract();
@@ -287,7 +286,6 @@ public class ProjectInfoResource {
     
     @GetMapping("/project-infos/queryUserProject")
     @Timed
-    @Secured(AuthoritiesConstants.ROLE_PROJECT_INFO)
     public ResponseEntity<List<LongValue>> queryUserProject() throws URISyntaxException {
         log.debug("REST request to queryUserContract");
         List<LongValue> list = projectInfoService.queryUserProject();
