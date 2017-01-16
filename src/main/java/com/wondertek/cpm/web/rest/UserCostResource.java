@@ -89,7 +89,12 @@ public class UserCostResource {
      */
     @GetMapping("/user-costs")
     @Timed
-    public ResponseEntity<List<UserCost>> getAllUserCosts(@ApiParam Pageable pageable)
+    public ResponseEntity<List<UserCost>> getAllUserCosts(
+    		@RequestParam(value = "userId",required=false) Long userId,
+    		@RequestParam(value = "userName",required=false) Long userName,
+    		@RequestParam(value = "costMonth",required=false) Long costMonth,
+    		@RequestParam(value = "status",required=false) Long status,
+    		@ApiParam Pageable pageable)
         throws URISyntaxException {
         log.debug("REST request to get a page of UserCosts");
         Page<UserCost> page = userCostService.findAll(pageable);

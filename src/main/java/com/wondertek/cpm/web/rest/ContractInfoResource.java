@@ -30,8 +30,12 @@ import com.wondertek.cpm.config.StringUtil;
 import com.wondertek.cpm.domain.ContractInfo;
 import com.wondertek.cpm.domain.ProjectInfo;
 import com.wondertek.cpm.domain.vo.ContractInfoVo;
+<<<<<<< HEAD
+import com.wondertek.cpm.domain.vo.LongValue;
+=======
 import com.wondertek.cpm.domain.vo.ProjectInfoVo;
 import com.wondertek.cpm.security.AuthoritiesConstants;
+>>>>>>> c97d2fc8c09afbae2401d6cbfd61ac156131f0fe
 import com.wondertek.cpm.security.SecurityUtils;
 import com.wondertek.cpm.service.ContractInfoService;
 import com.wondertek.cpm.web.rest.util.HeaderUtil;
@@ -196,6 +200,13 @@ public class ContractInfoResource {
 				"/api/_search/contract-infos");
 		return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
 	}
+	@GetMapping("/contract-infos/queryUserContract")
+	public ResponseEntity<List<LongValue>> queryUserContract() {
+		log.debug("REST request to queryUserContract");
+		 List<LongValue> list = contractInfoService.queryUserContract();
+		 return new ResponseEntity<>(list, null, HttpStatus.OK);
+	}
+	
 
 	@PutMapping("/contract-infos/finish")
     @Timed

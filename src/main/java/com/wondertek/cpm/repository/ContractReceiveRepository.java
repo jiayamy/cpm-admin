@@ -13,6 +13,6 @@ import com.wondertek.cpm.domain.ContractReceive;
  */
 public interface ContractReceiveRepository extends JpaRepository<ContractReceive,Long> {
 	
-	@Query("from ContractReceive where contractId = ?1 and createTime < ?2 and status = 1 order by createTime ")
+	@Query("from ContractReceive where contractId = ?1 and createTime < ?2 and status = 1 order by createTime asc ")
 	List<ContractReceive> findAllByContractIdAndCreateTimeBefore(Long contractId, ZonedDateTime createTime);
 }

@@ -29,4 +29,22 @@ public interface UserTimesheetRepository extends JpaRepository<UserTimesheet,Lon
 	
 	@Query("select t from UserTimesheet t , User u , DeptInfo d where t.userId = u.id and u.deptId = d.id and d.type = ?2 and t.workDay <= ?1 and t.objId = ?3 and t.type = ?4 and t.status = 1")
 	public List<UserTimesheet> findByDateAndDeptTypeAndObjIdType(Long endDay, Long deptType, Long objId, Integer type);
+	
+	@Query("select t from UserTimesheet t , User u , DeptInfo d where t.userId = u.id and u.deptId = d.id and d.type = ?2 and t.workDay = ?1 and t.objId = ?3 and t.type = ?4 and t.status = 1")
+	public List<UserTimesheet> findByWorkDayAndDeptTypeAndObjIdAndType(Long workDay, Long deptType, Long objId, Integer type);
+	
+	@Query("select t from UserTimesheet t , User u , DeptInfo d where t.userId = u.id and u.deptId = d.id and d.type = ?2 and t.workDay = ?1 and t.type = ?3 and t.status = 1")
+	public List<UserTimesheet> findByWorkDayAndDeptTypeAndType(Long workDay, Long deptType, Integer type);
+	
+	@Query("select t from UserTimesheet t , User u , DeptInfo d where t.userId = u.id and u.deptId = d.id and d.type != ?2 and t.workDay = ?1 and t.objId = ?3 and t.type = ?4 and t.status = 1")
+	public List<UserTimesheet> findByWorkDayAndNotDeptTypeAndObjIdAndType(Long workDay, Long deptType, Long objId, Integer type);
+	
+	@Query("select t from UserTimesheet t , User u , DeptInfo d where t.userId = u.id and u.deptId = d.id and d.type != ?2 and t.workDay = ?1 and t.type = ?3 and t.status = 1")
+	public List<UserTimesheet> findByWorkDayAndNotDeptTypeAndType(Long workDay, Long deptType, Integer type);
+	
+	@Query(" from UserTimesheet where workDay = ?1 and objId = ?2 and type = ?3 and status = 1")
+	public List<UserTimesheet> findByWorkDayAndObjIdAndType(Long workDay, Long objId, Integer type);
+	
+	@Query(" from UserTimesheet where workDay = ?1 and type = ?2 and status = 1")
+	public List<UserTimesheet> findByWorkDayAndType(Long workDay, Integer type);
 }

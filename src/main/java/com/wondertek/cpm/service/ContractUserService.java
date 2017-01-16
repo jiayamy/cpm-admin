@@ -1,21 +1,34 @@
 package com.wondertek.cpm.service;
 
-import com.wondertek.cpm.domain.ContractUser;
-import com.wondertek.cpm.repository.ContractUserRepository;
-import com.wondertek.cpm.repository.search.ContractUserSearchRepository;
+import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
+
+import java.time.ZonedDateTime;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import javax.inject.Inject;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.inject.Inject;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
-
-import static org.elasticsearch.index.query.QueryBuilders.*;
+import com.wondertek.cpm.config.DateUtil;
+import com.wondertek.cpm.config.StringUtil;
+import com.wondertek.cpm.domain.ContractUser;
+import com.wondertek.cpm.domain.DeptInfo;
+import com.wondertek.cpm.domain.User;
+import com.wondertek.cpm.domain.vo.ContractUserVo;
+import com.wondertek.cpm.domain.vo.ProjectUserVo;
+import com.wondertek.cpm.repository.ContractUserDao;
+import com.wondertek.cpm.repository.ContractUserRepository;
+import com.wondertek.cpm.repository.UserRepository;
+import com.wondertek.cpm.repository.search.ContractUserSearchRepository;
+import com.wondertek.cpm.security.SecurityUtils;
 
 /**
  * Service Implementation for managing ContractUser.
@@ -31,6 +44,12 @@ public class ContractUserService {
 
     @Inject
     private ContractUserSearchRepository contractUserSearchRepository;
+    
+    @Inject
+    private UserRepository userRepository;
+    
+    @Inject
+    private ContractUserDao contractUserDao;
 
     /**
      * Save a contractUser.
@@ -78,8 +97,19 @@ public class ContractUserService {
      */
     public void delete(Long id) {
         log.debug("Request to delete ContractUser : {}", id);
-        contractUserRepository.delete(id);
-        contractUserSearchRepository.delete(id);
+        ContractUser contractUser = contractUserRepository.findOne(id);
+        if (contractUser != null) {
+        	long leaveDay = StringUtil.nullToLong(DateUtil.formatDate(DateUtil.DATE_YYYYMMDD_PATTERN, new Date()));
+        	if(contractUser.getLeaveDay() == null || contractUser.getLeaveDay() > leaveDay ){
+        		contractUser.setLeaveDay(leaveDay);
+        		if(contractUser.getJoinDay() > leaveDay){
+        			contractUser.setJoinDay(leaveDay);
+        		}
+        		contractUser.setUpdateTime(ZonedDateTime.now());
+        		contractUser.setUpdator(SecurityUtils.getCurrentUserLogin());
+        		contractUserRepository.save(contractUser);
+        	}
+		}
     }
 
     /**
@@ -94,4 +124,54 @@ public class ContractUserService {
         Page<ContractUser> result = contractUserSearchRepository.search(queryStringQuery(query), pageable);
         return result;
     }
+    @Transactional(readOnly = true) 
+	public Page<ContractUserVo> getUserPage(ContractUser contractUser, Pageable pageable) {
+    	log.debug("Request to get all ContractUsers");
+    	List<Object[]> objs = userRepository.findUserInfoByLogin(SecurityUtils.getCurrentUserLogin());
+    	if(objs != null && !objs.isEmpty()){
+    		Object[] o = objs.get(0);
+    		User user = (User) o[0];
+    		DeptInfo deptInfo = (DeptInfo) o[1];
+    		
+    		return contractUserDao.getUserPage(contractUser,user,deptInfo,pageable);
+    	}
+    	
+    	return new PageImpl(new ArrayList<ProjectUserVo>(), pageable, 0);
+			
+	}
+
+	public ContractUserVo getContractUser(Long id) {
+		List<Object[]> objs = userRepository.findUserInfoByLogin(SecurityUtils.getCurrentUserLogin());
+    	if(objs != null && !objs.isEmpty()){
+    		Object[] o = objs.get(0);
+    		User user = (User) o[0];
+    		DeptInfo deptInfo = (DeptInfo) o[1];
+    		
+    		return contractUserDao.getContractUser(user,deptInfo,id);
+    	}
+    	return null;
+	}
+
+	public boolean checkUserExist(ContractUser contractUser) {
+		List<ContractUser> list = contractUserRepository.findByUserId(contractUser.getUserId(),contractUser.getContractId());
+		if (list != null) {
+			long joinDay = 0;
+			long id = contractUser.getId() == null ? 0:contractUser.getId().longValue();
+			
+			for (ContractUser tmp : list) {
+				joinDay = tmp.getJoinDay().longValue();
+				if (contractUser.getId() != null && id == tmp.getId()) {
+					continue;
+				}else if (joinDay == contractUser.getJoinDay()) {
+					return true;
+				}else if(joinDay < contractUser.getJoinDay() && (tmp.getLeaveDay() == null || tmp.getLeaveDay().longValue() >= contractUser.getJoinDay())){
+					return true;
+				}else if(joinDay > contractUser.getJoinDay() && (contractUser.getLeaveDay() == null || contractUser.getLeaveDay() >= joinDay)){
+					return true;
+				}
+			}
+		}
+		
+		return false;
+	}
 }

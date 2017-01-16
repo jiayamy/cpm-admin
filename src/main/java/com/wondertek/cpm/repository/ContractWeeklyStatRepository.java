@@ -9,7 +9,8 @@ import java.util.List;
 /**
  * Spring Data JPA repository for the ContractWeeklyStat entity.
  */
-@SuppressWarnings("unused")
 public interface ContractWeeklyStatRepository extends JpaRepository<ContractWeeklyStat,Long> {
-
+	
+	@Query(" from ContractWeeklyStat where statWeek = ?1 and contractId = ?2")
+	List<ContractWeeklyStat> findByStatWeekAndContractId(Long statWeek, Long contractId);
 }

@@ -14,13 +14,19 @@
                 "question": "Are you sure you want to delete Project Monthly Stat {{ id }}?"
             },
             "detail": {
-                "title": "Project Monthly Stat"
+                "title": "Project Monthly Stat",
+                "transChart": "Translate Chart"
+            },
+            "echarts":{
+            	"title": "Project Monthly Stat Chart"
             },
             "fromDate" : "Create Date From",
             "toDate" : "Create Date End",
             "statDate" : "Stat Week",
+            "projectSerialNum" : "Project SerialNum",
             "projectId": "Project Id",
             "finishRate": "Finish Rate",
+            "serialNum" : "Serial Num",
             "humanCost": "Human Cost",
             "payment": "Payment",
             "statWeek": "Stat Week",

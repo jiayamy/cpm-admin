@@ -4,9 +4,9 @@
     <hr>
     <jhi-alert-error></jhi-alert-error>
     <dl class="dl-horizontal jh-entity-details">
-        <dt><span data-translate="cpmApp.projectMonthlyStat.projectId">Project Id</span></dt>
+        <dt><span data-translate="cpmApp.projectMonthlyStat.serialNum">Serial Num</span></dt>
         <dd>
-            <span>{{vm.projectMonthlyStat.projectId}}</span>
+            <span id="test">{{vm.projectMonthlyStat.serialNum}}</span>
         </dd>
         <dt><span data-translate="cpmApp.projectMonthlyStat.finishRate">Finish Rage</span></dt>
         <dd>
@@ -35,5 +35,8 @@
             class="btn btn-info">
         <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span data-translate="entity.action.back"> Back</span>
     </button>
-
+	<button type="button" ui-sref="project-monthly-stat-detail.chart({id:vm.projectMonthlyStat.id})" class="btn btn-primary">
+        <span class="glyphicon glyphicon-pencil"></span>
+        <span class="hidden-xs hidden-sm" data-translate="cpmApp.projectMonthlyStat.detail.transChart"> Edit</span>
+    </button>
 </div>

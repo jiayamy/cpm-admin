@@ -5,9 +5,9 @@
         .module('cpmApp')
         .controller('UserCostController', UserCostController);
 
-    UserCostController.$inject = ['$scope', '$state', 'UserCost', 'UserCostSearch', 'ParseLinks', 'AlertService', 'paginationConstants', 'pagingParams'];
+    UserCostController.$inject = ['$scope', '$state', 'UserCost', 'UserCostSearch', 'ParseLinks', 'AlertService', 'paginationConstants', 'pagingParams','DateUtils'];
 
-    function UserCostController ($scope, $state, UserCost, UserCostSearch, ParseLinks, AlertService, paginationConstants, pagingParams) {
+    function UserCostController ($scope, $state, UserCost, UserCostSearch, ParseLinks, AlertService, paginationConstants, pagingParams,DateUtils) {
         var vm = this;
 
         vm.loadPage = loadPage;
@@ -18,26 +18,41 @@
         vm.clear = clear;
         vm.search = search;
         vm.loadAll = loadAll;
-        vm.searchQuery = pagingParams.search;
-        vm.currentSearch = pagingParams.search;
+//        vm.searchQuery = pagingParams.search;
+//        vm.currentSearch = pagingParams.search;
+        vm.searchQuery = {};
+        vm.searchQuery.userId = pagingParams.userId;
+        vm.searchQuery.userName = pagingParams.userName;
+        vm.searchQuery.costMonth = DateUtils.convertLocalDateToFormat(pagingParams.costMonth,"yyyyMM");
+        vm.searchQuery.status = pagingParams.status;
+        
+        vm.statuss = [{key:1,val:'可用'},{key:2,val:'删除'}];
+        
+        for(var i = 0; i < vm.statuss.length; i++){
+        	if(pagingParams.status == vm.statuss[i].key){
+        		vm.searchQuery.status = vm.statuss[i];
+        	}
+        }
+        
+        if (!vm.searchQuery.userId && !vm.searchQuery.userName && !vm.searchQuery.costMonth &&!vm.searchQuery.status){
+        	vm.haveSearch = null;
+        }else{
+        	vm.haveSearch = true;
+        }
 
         loadAll();
 
         function loadAll () {
-            if (pagingParams.search) {
-                UserCostSearch.query({
-                    query: pagingParams.search,
-                    page: pagingParams.page - 1,
-                    size: vm.itemsPerPage,
-                    sort: sort()
-                }, onSuccess, onError);
-            } else {
-                UserCost.query({
-                    page: pagingParams.page - 1,
-                    size: vm.itemsPerPage,
-                    sort: sort()
-                }, onSuccess, onError);
-            }
+        	console.log(vm.searchQuery.status);
+            UserCost.query({
+                page: pagingParams.page - 1,
+                size: vm.itemsPerPage,
+                sort: sort(),
+                userId:vm.searchQuery.userId,
+                userName:vm.searchQuery.userName,
+                costMonth:DateUtils.convertLocalDateToFormat(vm.searchQuery.fromCurrDay,"yyyyMM"),
+                status:vm.searchQuery.status
+            }, onSuccess, onError);
             function sort() {
                 var result = [vm.predicate + ',' + (vm.reverse ? 'asc' : 'desc')];
                 if (vm.predicate !== 'id') {
@@ -49,12 +64,25 @@
                 vm.links = ParseLinks.parse(headers('link'));
                 vm.totalItems = headers('X-Total-Count');
                 vm.queryCount = vm.totalItems;
-                vm.userCosts = data;
+                vm.userCosts = handleData(data);
                 vm.page = pagingParams.page;
             }
             function onError(error) {
                 AlertService.error(error.data.message);
             }
+        }
+        
+        function handleData(data){
+        	if(data.length>0){
+        		for(var i=0;i<data.length;i++){
+        			if(data[i].status == 1){
+        				data[i].status = "可用";
+        			}else if(data[i].status == 2){
+        				data[i].status = "删除";
+        			}
+        		}
+        	}
+        	return data;
         }
 
         function loadPage(page) {
@@ -66,7 +94,11 @@
             $state.transitionTo($state.$current, {
                 page: vm.page,
                 sort: vm.predicate + ',' + (vm.reverse ? 'asc' : 'desc'),
-                search: vm.currentSearch
+//                search: vm.currentSearch
+                userId:vm.searchQuery.userId,
+                userName:vm.searchQuery.userName,
+                costMonth:DateUtils.convertLocalDateToFormat(vm.searchQuery.fromCurrDay,"yyyyMM"),
+                status:vm.searchQuery.status
             });
         }
 
@@ -76,9 +108,9 @@
             }
             vm.links = null;
             vm.page = 1;
-            vm.predicate = '_score';
+            vm.predicate = 'id';
             vm.reverse = false;
-            vm.currentSearch = searchQuery;
+            vm.haveSearch = true;
             vm.transition();
         }
 
@@ -87,8 +119,16 @@
             vm.page = 1;
             vm.predicate = 'id';
             vm.reverse = true;
-            vm.currentSearch = null;
+            vm.haveSearch = false;
+            vm.searchQuery = {};
             vm.transition();
+        }
+        
+        vm.datePickerOpenStatus = {};
+        vm.openCalendar = openCalendar;
+        vm.datePickerOpenStatus.costMonth = false;
+        function openCalendar(data){
+        	vm.datePickerOpenStatus[data] = true;
         }
     }
 })();

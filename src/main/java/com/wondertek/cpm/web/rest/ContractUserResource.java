@@ -1,12 +1,12 @@
 package com.wondertek.cpm.web.rest;
 
-import com.codahale.metrics.annotation.Timed;
-import com.wondertek.cpm.domain.ContractUser;
-import com.wondertek.cpm.service.ContractUserService;
-import com.wondertek.cpm.web.rest.util.HeaderUtil;
-import com.wondertek.cpm.web.rest.util.PaginationUtil;
+import java.net.URISyntaxException;
+import java.time.ZonedDateTime;
+import java.util.List;
+import java.util.Optional;
 
-import io.swagger.annotations.ApiParam;
+import javax.inject.Inject;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -14,17 +14,25 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
-import javax.inject.Inject;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
+import com.codahale.metrics.annotation.Timed;
+import com.wondertek.cpm.config.StringUtil;
+import com.wondertek.cpm.domain.ContractUser;
+import com.wondertek.cpm.domain.vo.ContractUserVo;
+import com.wondertek.cpm.security.SecurityUtils;
+import com.wondertek.cpm.service.ContractUserService;
+import com.wondertek.cpm.web.rest.util.HeaderUtil;
+import com.wondertek.cpm.web.rest.util.PaginationUtil;
 
-import static org.elasticsearch.index.query.QueryBuilders.*;
+import io.swagger.annotations.ApiParam;
 
 /**
  * REST controller for managing ContractUser.
@@ -38,106 +46,105 @@ public class ContractUserResource {
     @Inject
     private ContractUserService contractUserService;
 
-    /**
-     * POST  /contract-users : Create a new contractUser.
-     *
-     * @param contractUser the contractUser to create
-     * @return the ResponseEntity with status 201 (Created) and with body the new contractUser, or with status 400 (Bad Request) if the contractUser has already an ID
-     * @throws URISyntaxException if the Location URI syntax is incorrect
-     */
-    @PostMapping("/contract-users")
-    @Timed
-    public ResponseEntity<ContractUser> createContractUser(@RequestBody ContractUser contractUser) throws URISyntaxException {
-        log.debug("REST request to save ContractUser : {}", contractUser);
-        if (contractUser.getId() != null) {
-            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("contractUser", "idexists", "A new contractUser cannot already have an ID")).body(null);
-        }
-        ContractUser result = contractUserService.save(contractUser);
-        return ResponseEntity.created(new URI("/api/contract-users/" + result.getId()))
-            .headers(HeaderUtil.createEntityCreationAlert("contractUser", result.getId().toString()))
-            .body(result);
-    }
 
-    /**
-     * PUT  /contract-users : Updates an existing contractUser.
-     *
-     * @param contractUser the contractUser to update
-     * @return the ResponseEntity with status 200 (OK) and with body the updated contractUser,
-     * or with status 400 (Bad Request) if the contractUser is not valid,
-     * or with status 500 (Internal Server Error) if the contractUser couldnt be updated
-     * @throws URISyntaxException if the Location URI syntax is incorrect
-     */
     @PutMapping("/contract-users")
     @Timed
-    public ResponseEntity<ContractUser> updateContractUser(@RequestBody ContractUser contractUser) throws URISyntaxException {
+    public ResponseEntity<Boolean> updateContractUser(@RequestBody ContractUser contractUser) throws URISyntaxException {
         log.debug("REST request to update ContractUser : {}", contractUser);
-        if (contractUser.getId() == null) {
-            return createContractUser(contractUser);
+        Boolean isNew = contractUser.getId() == null;
+        if (contractUser.getContractId() == null || contractUser.getUserId() == null 
+        		 || StringUtil.isNullStr(contractUser.getUserName()) || contractUser.getJoinDay() == null
+        		 || contractUser.getUserId() == null || StringUtil.isNullStr(contractUser.getUserName())
+        		) {
+        	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.contractUser.save.paramNone", "")).body(null);
+		}
+        if(contractUser.getLeaveDay() != null && contractUser.getLeaveDay().longValue() < contractUser.getJoinDay()){
+        	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.contractUser.save.dayError", "")).body(null);
         }
+        //查看用户是否被添加
+        boolean isExist = contractUserService.checkUserExist(contractUser);
+        if (isNew) {
+			 if(isExist){
+		     	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.contractUser.save.userIdError", "")).body(null);
+		     }
+		}
+        String updator = SecurityUtils.getCurrentUserLogin();
+        ZonedDateTime updateTime = ZonedDateTime.now();
+        if (isNew) {
+			contractUser.setCreateTime(updateTime);
+			contractUser.setCreator(updator);
+		}else {
+			ContractUserVo contractUserVo = contractUserService.getContractUser(contractUser.getId());
+			if (contractUserVo == null) {
+				return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.contractUser.save.noPerm", "")).body(null);
+			}
+			ContractUser old = contractUserService.findOne(contractUser.getId());
+			if (old == null) {
+				return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.contractUser.save.idNone", "")).body(null);
+			}else if (old.getContractId() != contractUser.getContractId().longValue()) {
+				return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.contractUser.save.contractIdError", "")).body(null);
+			}
+			contractUser.setCreateTime(old.getCreateTime());
+			contractUser.setCreator(old.getCreator());
+		}
+        contractUser.setUpdateTime(updateTime);
+        contractUser.setUpdator(updator);
+        
         ContractUser result = contractUserService.save(contractUser);
-        return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert("contractUser", contractUser.getId().toString()))
-            .body(result);
+        
+        if (isNew) {
+        	return ResponseEntity.ok()
+                    .headers(HeaderUtil.createEntityCreationAlert("contractUser", result.getId().toString()))
+                    .body(isNew);
+		}else {
+			return ResponseEntity.ok()
+        			.headers(HeaderUtil.createEntityUpdateAlert("contractUser", result.getId().toString()))
+        			.body(isNew);
+		}
+        
     }
-
-    /**
-     * GET  /contract-users : get all the contractUsers.
-     *
-     * @param pageable the pagination information
-     * @return the ResponseEntity with status 200 (OK) and the list of contractUsers in body
-     * @throws URISyntaxException if there is an error to generate the pagination HTTP headers
-     */
     @GetMapping("/contract-users")
     @Timed
-    public ResponseEntity<List<ContractUser>> getAllContractUsers(@ApiParam Pageable pageable)
+    public ResponseEntity<List<ContractUserVo>> getAllContractUsers(
+    		@RequestParam(value = "contractId",required=false) Long contractId, 
+    		@RequestParam(value = "userId" ,required=false) Long userId, 
+    		@ApiParam Pageable pageable)
         throws URISyntaxException {
         log.debug("REST request to get a page of ContractUsers");
-        Page<ContractUser> page = contractUserService.findAll(pageable);
+        ContractUser contractUser = new ContractUser();
+        contractUser.setContractId(contractId);
+        contractUser.setUserId(userId);
+        
+        Page<ContractUserVo> page = contractUserService.getUserPage(contractUser,pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/contract-users");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
 
-    /**
-     * GET  /contract-users/:id : get the "id" contractUser.
-     *
-     * @param id the id of the contractUser to retrieve
-     * @return the ResponseEntity with status 200 (OK) and with body the contractUser, or with status 404 (Not Found)
-     */
     @GetMapping("/contract-users/{id}")
     @Timed
-    public ResponseEntity<ContractUser> getContractUser(@PathVariable Long id) {
+    public ResponseEntity<ContractUserVo> getContractUser(@PathVariable Long id) {
         log.debug("REST request to get ContractUser : {}", id);
-        ContractUser contractUser = contractUserService.findOne(id);
-        return Optional.ofNullable(contractUser)
+        ContractUserVo contractUserVo = contractUserService.getContractUser(id);
+        return Optional.ofNullable(contractUserVo)
             .map(result -> new ResponseEntity<>(
                 result,
                 HttpStatus.OK))
             .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    /**
-     * DELETE  /contract-users/:id : delete the "id" contractUser.
-     *
-     * @param id the id of the contractUser to delete
-     * @return the ResponseEntity with status 200 (OK)
-     */
     @DeleteMapping("/contract-users/{id}")
     @Timed
     public ResponseEntity<Void> deleteContractUser(@PathVariable Long id) {
         log.debug("REST request to delete ContractUser : {}", id);
+        ContractUserVo contractVo = contractUserService.getContractUser(id);
+        if (contractVo == null) {
+        	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.contractUser.save.noPerm", "")).body(null);
+		}
+        
         contractUserService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert("contractUser", id.toString())).build();
     }
 
-    /**
-     * SEARCH  /_search/contract-users?query=:query : search for the contractUser corresponding
-     * to the query.
-     *
-     * @param query the query of the contractUser search 
-     * @param pageable the pagination information
-     * @return the result of the search
-     * @throws URISyntaxException if there is an error to generate the pagination HTTP headers
-     */
     @GetMapping("/_search/contract-users")
     @Timed
     public ResponseEntity<List<ContractUser>> searchContractUsers(@RequestParam String query, @ApiParam Pageable pageable)

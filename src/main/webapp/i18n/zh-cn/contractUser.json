@@ -2,30 +2,38 @@
     "cpmApp": {
         "contractUser" : {
             "home": {
-                "title": "Contract Users",
-                "createLabel": "Create a new Contract User",
-                "createOrEditLabel": "Create or edit a Contract User",
-                "search": "Search for Contract User"
+                "title": "合同人员信息",
+                "createLabel": "新建",
+                "createOrEditLabel": "合同人员信息"
             },
-            "created": "A new Contract User is created with identifier {{ param }}",
-            "updated": "A Contract User is updated with identifier {{ param }}",
-            "deleted": "A Contract User is deleted with identifier {{ param }}",
+            "created": "新增成功",
+            "updated": "更新成功",
+            "deleted": "删除成功",
             "delete": {
-                "question": "Are you sure you want to delete Contract User {{ id }}?"
+                "question": "你确定删除该用户 {{ param }}?"
             },
             "detail": {
-                "title": "Contract User"
+                "title": "合同人员信息"
             },
-            "contractId": "Contract Id",
-            "userId": "User Id",
-            "userName": "User Name",
-            "deptId": "Dept Id",
-            "joinDay": "Join Day",
-            "leaveDay": "Leave Day",
-            "creator": "Creator",
-            "createTime": "Create Time",
-            "updator": "Updator",
-            "updateTime": "Update Time"
+            "save":{
+            	"paramNone":"必填字段为空",
+            	"dayError":"离开日应不早于加盟日",
+            	"userIdError":"在加盟日至离开日时间内，该用户已经被安排到该项目中，勿重复添加",
+            	"idNone":"数据错误，请刷新后操作",
+            	"projectIdError":"项目不允许重新选择",
+            	"noPerm":"无权操作"
+            },
+            "contractId": "合同编号",
+            "contractName": "合同名称",
+            "userId": "员工Id",
+            "userName": "员工",
+            "dept": "部门",
+            "joinDay": "加盟日",
+            "leaveDay": "离开日",
+            "creator": "创建者",
+            "createTime": "创建时间",
+            "updator": "更新者",
+            "updateTime": "更新时间"
         }
     }
 }
