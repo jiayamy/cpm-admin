@@ -24,6 +24,7 @@ import java.net.URISyntaxException;
 import java.text.SimpleDateFormat;
 import java.time.ZonedDateTime;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -78,23 +79,38 @@ public class HolidayInfoResource {
     @Timed
     public ResponseEntity<HolidayInfo> updateHolidayInfo(@RequestBody HolidayInfo holidayInfo) throws URISyntaxException {
         log.debug("REST request to update HolidayInfo : {}", holidayInfo);
+        Boolean isNew = null;
+        if(holidayInfo == null){
+        	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.holidayInfo.save.requriedError", "")).body(null);
+        }
+        isNew = holidayInfo.getId() == null;
+        //判断新增或编辑参数
         if(holidayInfo.getCurrDay() == null || holidayInfo.getType() == null){
         	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.holidayInfo.save.requriedError", "")).body(null);
         }
         //获取当前用户
         String updator = SecurityUtils.getCurrentUserLogin();
         ZonedDateTime updateTime = ZonedDateTime.now();
-        HolidayInfo findHoliday = holidayInfoService.findByCurrDay(holidayInfo.getCurrDay());
-        Boolean isNew = null;
-        if(findHoliday != null){
-        	isNew = false;
-        	
-        }else{
-        	isNew = true;
+        HolidayInfo findHoliday  = null;
+        if(isNew){
+        	SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+        	Boolean isLgCurrDay = Long.valueOf(sdf.format(new Date())) <= holidayInfo.getCurrDay();
+        	if(!isLgCurrDay){
+        		return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.holidayInfo.save.lessDayError", "")).body(null);
+        	}
+        	findHoliday = holidayInfoService.findByCurrDay(holidayInfo.getCurrDay());
+        	if(findHoliday != null){
+        		return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.holidayInfo.save.existError", "")).body(null);
+        	}
         	findHoliday = new HolidayInfo();
         	findHoliday.setCreateTime(updateTime);
         	findHoliday.setCreator(updator);
         	findHoliday.setCurrDay(holidayInfo.getCurrDay());
+        }else{
+        	findHoliday = holidayInfoService.findByCurrDay(holidayInfo.getCurrDay());
+        	if(findHoliday == null){
+        		return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.holidayInfo.save.lostError", "")).body(null);
+        	}
         }
         findHoliday.setType(holidayInfo.getType());
     	findHoliday.setUpdateTime(updateTime);
@@ -148,6 +164,9 @@ public class HolidayInfoResource {
 		}
         
 //        Page<HolidayInfo> page = holidayInfoService.findAll(pageable);
+        if(toCurrDay != null && toCurrDay < fromCurrDay){
+        	return new ResponseEntity<>(HeaderUtil.createError("cpmApp.holidayInfo.search.deadLineError", ""),HttpStatus.BAD_REQUEST);
+        }
         Map<String,Long> searchCondition = new HashMap<String,Long>();
         searchCondition.put("fromCurrDay", fromCurrDay);
         searchCondition.put("toCurrDay", toCurrDay);
