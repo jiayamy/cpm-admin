@@ -3,6 +3,7 @@ package com.wondertek.cpm.service;
 import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -17,11 +18,13 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.mysql.fabric.xmlrpc.base.Data;
 import com.wondertek.cpm.config.DateUtil;
 import com.wondertek.cpm.config.StringUtil;
 import com.wondertek.cpm.domain.DeptInfo;
 import com.wondertek.cpm.domain.ProjectMonthlyStat;
 import com.wondertek.cpm.domain.User;
+import com.wondertek.cpm.domain.vo.ChartReportDataVo;
 import com.wondertek.cpm.domain.vo.LongValue;
 import com.wondertek.cpm.domain.vo.ProjectMonthlyStatVo;
 import com.wondertek.cpm.repository.ProjectMonthlyStatDao;
@@ -136,39 +139,89 @@ public class ProjectMonthlyStatService {
 	}
     
     @Transactional(readOnly = true)
-    public List<Double> getHumanCost(Date fromDate, Date toDate, Long projectId){
+    public List<Double> getHumanCost(Date fromMonth, Date toMonth, Long projectId){
     	List<Double> data = new ArrayList<>();
-    	Long temp = fromDate.getTime();
-    	Long oneDay = 24*60*60*1000L;
-    	while(temp <= toDate.getTime()){
-    		Long statWeek = StringUtil.nullToLong(DateUtil.formatDate("yyyyMMdd", new Date(temp)));
+    	Calendar cal1 = Calendar.getInstance();
+    	Calendar cal2 = Calendar.getInstance();
+    	cal1.setTime(fromMonth);
+    	cal2.setTime(toMonth);
+    	int count = cal2.get(Calendar.MONTH) - cal1.get(Calendar.MONTH);
+    	for(int i = 0 ; i <= count; i++){
+    		Long statWeek = StringUtil.nullToLong(DateUtil.formatDate("yyyyMM", cal1.getTime()));
     		List<ProjectMonthlyStat> projectMonthlyStats = projectMonthlyStatRepository.findByStatWeekAndProjectId(statWeek, projectId);
     		Double humanCost = 0D;
     		if(projectMonthlyStats != null && projectMonthlyStats.size() > 0){
     			humanCost = projectMonthlyStats.get(0).getHumanCost();
     		}
     		data.add(humanCost);
-    		temp += oneDay;
+    		cal1.add(Calendar.MONTH, i+1);
     	}
     	return data;
     }
     
     @Transactional(readOnly = true)
-    public List<Double> getPayment(Date fromDate, Date toDate, Long projectId){
+    public List<Double> getPayment(Date fromMonth, Date toMonth, Long projectId){
     	List<Double> data = new ArrayList<>();
-    	Long temp = fromDate.getTime();
-    	Long oneDay = 24*60*60*1000L;
-    	while(temp <= toDate.getTime()){
-    		Long statWeek = StringUtil.nullToLong(DateUtil.formatDate("yyyyMMdd", new Date(temp)));
+    	Calendar cal1 = Calendar.getInstance();
+    	Calendar cal2 = Calendar.getInstance();
+    	cal1.setTime(fromMonth);
+    	cal2.setTime(toMonth);
+    	int count = cal2.get(Calendar.MONTH) - cal1.get(Calendar.MONTH);
+    	for(int i = 0 ; i <= count; i++){
+    		Long statWeek = StringUtil.nullToLong(DateUtil.formatDate("yyyyMM", cal1.getTime()));
     		List<ProjectMonthlyStat> projectMonthlyStats = projectMonthlyStatRepository.findByStatWeekAndProjectId(statWeek, projectId);
-    		Double payment = 0D;
+    		Double humanCost = 0D;
     		if(projectMonthlyStats != null && projectMonthlyStats.size() > 0){
-    			data.add(projectMonthlyStats.get(0).getPayment());
-    		}else{
-    			data.add(payment);
+    			humanCost = projectMonthlyStats.get(0).getPayment();
     		}
-    		temp += oneDay;
+    		data.add(humanCost);
+    		cal1.add(Calendar.MONTH, i+1);
     	}
     	return data;
+    }
+    
+    @Transactional(readOnly = true)
+    public List<ChartReportDataVo> getChartData(Date fromMonth, Date toMonth, Long projectId){
+    	List<ChartReportDataVo> datas = new ArrayList<>();
+    	ChartReportDataVo data1 = new ChartReportDataVo();
+    	ChartReportDataVo data2 = new ChartReportDataVo();
+    	data1.setName("人工成本");
+    	data1.setType("line");
+    	data2.setName("报销成本");
+    	data2.setType("line");
+    	List<Double> dataD1 = new ArrayList<>();
+    	List<Double> dataD2 = new ArrayList<>();
+    	Calendar cal1 = Calendar.getInstance();
+    	Calendar cal2 = Calendar.getInstance();
+    	cal1.setTime(fromMonth);
+    	cal2.setTime(toMonth);
+    	int yearCount = cal2.get(Calendar.YEAR) - cal1.get(Calendar.YEAR); 
+    	int count = 0;
+    	count += 12*yearCount;
+    	count += cal2.get(Calendar.MONTH) - cal1.get(Calendar.MONTH);
+    	for(int i = 0 ; i <= count; i++){
+    		Long statWeek = StringUtil.nullToLong(DateUtil.formatDate("yyyyMM", cal1.getTime()));
+    		List<ProjectMonthlyStat> projectMonthlyStats = projectMonthlyStatRepository.findByStatWeekAndProjectId(statWeek, projectId);
+    		Double humanCost = 0D;
+    		Double payment = 0D;
+    		if(projectMonthlyStats != null && projectMonthlyStats.size() > 0){
+    			int max = projectMonthlyStats.size() - 1;
+    			humanCost = projectMonthlyStats.get(max).getHumanCost();
+    			payment = projectMonthlyStats.get(max).getPayment();
+    		}
+    		dataD1.add(humanCost);
+    		dataD2.add(payment);
+    		cal1.add(Calendar.MONTH, 1);
+    	}
+    	data1.setData(dataD1);
+    	data2.setData(dataD2);
+    	datas.add(data1);
+    	datas.add(data2);
+    	return datas;
+    }
+    
+    @Transactional(readOnly = true)
+    public ProjectMonthlyStat getRecentlyOne(Long projectId){
+    	return projectMonthlyStatRepository.findMaxByProjectId(projectId);
     }
 }

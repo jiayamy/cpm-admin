@@ -1,12 +1,12 @@
 
 <div>
-    <h2><span data-translate="cpmApp.contractMonthlyStat.detail.title">Contract Monthly Stat</span> {{vm.contractMonthlyStat.id}}</h2>
+    <h2><span data-translate="cpmApp.contractMonthlyStat.detail.title">Contract Monthly Stat</span> {{vm.contractMonthlyStat.serialNum}}</h2>
     <hr>
     <jhi-alert-error></jhi-alert-error>
     <dl class="dl-horizontal jh-entity-details">
-        <dt><span data-translate="cpmApp.contractMonthlyStat.contractId">Contract Id</span></dt>
+        <dt><span data-translate="cpmApp.contractMonthlyStat.serialNum">Serial Num</span></dt>
         <dd>
-            <span>{{vm.contractMonthlyStat.contractId}}</span>
+            <span>{{vm.contractMonthlyStat.serialNum}}</span>
         </dd>
         <dt><span data-translate="cpmApp.contractMonthlyStat.finishRate">Finish Rate</span></dt>
         <dd>
@@ -52,11 +52,11 @@
         <dd>
             <span>{{vm.contractMonthlyStat.internalSoftware}}</span>
         </dd>
-        <dt><span data-translate="cpmApp.contractMonthlyStat.projectHumanCost">Project Human Cost</span></dt>
+        <dt><span data-translate="cpmApp.contractMonthlyStat.projectHumanCost">Contract Human Cost</span></dt>
         <dd>
             <span>{{vm.contractMonthlyStat.projectHumanCost}}</span>
         </dd>
-        <dt><span data-translate="cpmApp.contractMonthlyStat.projectPayment">Project Payment</span></dt>
+        <dt><span data-translate="cpmApp.contractMonthlyStat.projectPayment">Contract Payment</span></dt>
         <dd>
             <span>{{vm.contractMonthlyStat.projectPayment}}</span>
         </dd>
@@ -76,8 +76,8 @@
         <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span data-translate="entity.action.back"> Back</span>
     </button>
 
-<!--     <button type="button" ui-sref="contract-weekly-stat-detail.edit({id:vm.contractWeeklyStat.id})" class="btn btn-primary"> -->
-<!--         <span class="glyphicon glyphicon-pencil"></span> -->
-<!--         <span class="hidden-xs hidden-sm" data-translate="entity.action.edit"> Edit</span> -->
-<!--     </button> -->
+	<button type="button" ui-sref="contract-monthly-stat-detail.chart({id:vm.contractMonthlyStat.id})" class="btn btn-primary">
+        <span class="glyphicon glyphicon-pencil"></span>
+        <span class="hidden-xs hidden-sm" data-translate="cpmApp.contractMonthlyStat.detail.transChart"> Edit</span>
+    </button>
 </div>
