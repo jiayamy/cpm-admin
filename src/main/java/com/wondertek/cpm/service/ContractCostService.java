@@ -1,5 +1,20 @@
 package com.wondertek.cpm.service;
 
+import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.inject.Inject;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.wondertek.cpm.CpmConstants;
 import com.wondertek.cpm.domain.ContractCost;
 import com.wondertek.cpm.domain.DeptInfo;
@@ -10,23 +25,6 @@ import com.wondertek.cpm.repository.ContractCostRepository;
 import com.wondertek.cpm.repository.UserRepository;
 import com.wondertek.cpm.repository.search.ContractCostSearchRepository;
 import com.wondertek.cpm.security.SecurityUtils;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.stereotype.Service;
-
-import javax.inject.Inject;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
-
-import static org.elasticsearch.index.query.QueryBuilders.*;
 
 /**
  * Service Implementation for managing ContractCost.
@@ -130,5 +128,17 @@ public class ContractCostService {
 		
 		
 		return new PageImpl<>(new ArrayList<ContractCostVo>(), pageable, 0);
+	}
+
+	public ContractCostVo getContractCost(Long id) {
+		List<Object[]> objs = userRepository.findUserInfoByLogin(SecurityUtils.getCurrentUserLogin());
+    	if(objs != null && !objs.isEmpty()){
+    		Object[] o = objs.get(0);
+    		User user = (User) o[0];
+    		DeptInfo deptInfo = (DeptInfo) o[1];
+    		
+    		return contractCostDao.getProjectCost(user,deptInfo,id);
+    	}
+    	return null;
 	}
 }

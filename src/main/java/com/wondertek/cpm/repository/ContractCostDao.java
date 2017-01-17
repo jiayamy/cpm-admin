@@ -10,9 +10,13 @@ import com.wondertek.cpm.domain.vo.ContractCostVo;
 
 public interface ContractCostDao extends GenericDao<ContractCost, Long>{
 	/**
-	 * 查看的项目成本
+	 * 查看合同成本
 	 * @return
 	 */
 	Page<ContractCostVo> getUserPage(ContractCost contractCost, User user, DeptInfo deptInfo, Pageable pageable);
+	/**
+	 * 获取用户权限下的合同成本
+	 */
+	ContractCostVo getProjectCost(User user, DeptInfo deptInfo, Long id);
 
 }

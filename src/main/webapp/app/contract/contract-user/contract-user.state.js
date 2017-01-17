@@ -29,7 +29,7 @@
                     squash: true
                 },
                 sort: {
-                    value: 'id,asc',
+                    value: 'wcu.id,asc',
                     squash: true
                 },
                 contractId: null,

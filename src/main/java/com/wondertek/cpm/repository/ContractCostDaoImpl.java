@@ -1,6 +1,7 @@
 package com.wondertek.cpm.repository;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.persistence.EntityManager;
 
@@ -15,8 +16,10 @@ import com.wondertek.cpm.CpmConstants;
 import com.wondertek.cpm.config.StringUtil;
 import com.wondertek.cpm.domain.ContractCost;
 import com.wondertek.cpm.domain.DeptInfo;
+import com.wondertek.cpm.domain.ProjectCost;
 import com.wondertek.cpm.domain.User;
 import com.wondertek.cpm.domain.vo.ContractCostVo;
+import com.wondertek.cpm.domain.vo.ProjectCostVo;
 @Repository("contractCostDao")
 public class ContractCostDaoImpl extends GenericDaoImpl<ContractCost, Long> implements ContractCostDao {
 	@Autowired
@@ -121,6 +124,40 @@ public class ContractCostDaoImpl extends GenericDaoImpl<ContractCost, Long> impl
 		}
 		return new PageImpl<>(returnList, pageable, page.getTotalElements());
 	
+	}
+
+	@Override
+	public ContractCostVo getProjectCost(User user, DeptInfo deptInfo, Long id) {
+		StringBuffer queryHql = new StringBuffer();
+		List<Object> params = new ArrayList<Object>();
+		
+		queryHql.append("select wcc,wci.serialNum,wci.name,wcb.budgetTotal");
+		queryHql.append(" from ContractCost wcc");
+		queryHql.append(" left join ContractInfo wci on wci.id = wcc.contractId");
+		queryHql.append(" left join DeptInfo wdi on wdi.id = wci.deptId");
+		queryHql.append(" left join DeptInfo wdi2 on wci.consultantsDeptId = wdi2.id");
+		queryHql.append(" where (wci.salesmanId = ? or wci.consultantsId = ? or wci.creator = ?");
+		
+		params.add(user.getId());
+		params.add(user.getId());
+		params.add(user.getLogin());
+		
+		if (user.getIsManager()) {
+			queryHql.append(" or wdi.idPath like ? or wdi.id = ?");
+			params.add(deptInfo.getIdPath()+deptInfo.getId()+"/%");
+			params.add(deptInfo.getId());
+			
+			queryHql.append(" or wdi2.idPath like ? or wdi2.id = ?");
+			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
+			params.add(deptInfo.getId());
+		}
+		queryHql.append(") and wcc.id = ?");
+		params.add(id);
+		List<Object[]> list = this.queryAllHql(queryHql.toString(), params.toArray());
+		if (list != null && list.isEmpty()) {
+			return new ContractCostVo((ContractCost)list.get(0)[0],StringUtil.null2Str(list.get(0)[1]),StringUtil.null2Str(list.get(0)[2]),StringUtil.nullToDouble(list.get(0)[3]));
+		}
+		return null;
 	}
 	
 }
