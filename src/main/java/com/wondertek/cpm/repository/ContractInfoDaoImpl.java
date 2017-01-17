@@ -185,6 +185,7 @@ public class ContractInfoDaoImpl extends GenericDaoImpl<ContractInfo, Long> impl
 		
 		querySql.append(" select wci.id,wci.serial_num,wci.name_ from w_contract_info wci");
 		querySql.append(" left join w_dept_info wdi on wci.dept_id = wdi.id");
+		querySql.append(" left join w_dept_info wdi2 on wci.consultants_id = wdi2.id");
 		querySql.append(" where (wci.sales_man_id = ? or wci.consultants_id = ? or wci.creator_ = ?");
 		
 		params.add(user.getId());
@@ -193,6 +194,10 @@ public class ContractInfoDaoImpl extends GenericDaoImpl<ContractInfo, Long> impl
 		
 		if (user.getIsManager()) {
 			querySql.append(" or wdi.id_path like ? or wdi.id = ?");
+			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
+			params.add(deptInfo.getId());
+			
+			querySql.append(" or wdi2.id_path like ? or wdi2.id = ?");
 			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
 			params.add(deptInfo.getId());
 		}

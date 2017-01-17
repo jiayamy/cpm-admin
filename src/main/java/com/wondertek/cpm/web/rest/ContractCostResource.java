@@ -2,6 +2,7 @@ package com.wondertek.cpm.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import com.wondertek.cpm.domain.ContractCost;
+import com.wondertek.cpm.domain.vo.ContractCostVo;
 import com.wondertek.cpm.service.ContractCostService;
 import com.wondertek.cpm.web.rest.util.HeaderUtil;
 import com.wondertek.cpm.web.rest.util.PaginationUtil;
@@ -79,30 +80,26 @@ public class ContractCostResource {
             .headers(HeaderUtil.createEntityUpdateAlert("contractCost", contractCost.getId().toString()))
             .body(result);
     }
-
-    /**
-     * GET  /contract-costs : get all the contractCosts.
-     *
-     * @param pageable the pagination information
-     * @return the ResponseEntity with status 200 (OK) and the list of contractCosts in body
-     * @throws URISyntaxException if there is an error to generate the pagination HTTP headers
-     */
     @GetMapping("/contract-costs")
     @Timed
-    public ResponseEntity<List<ContractCost>> getAllContractCosts(@ApiParam Pageable pageable)
+    public ResponseEntity<List<ContractCostVo>> getAllContractCosts(
+    		@RequestParam(value = "contractId",required=false) Long contractId, 
+    		@RequestParam(value = "type",required=false) Integer type, 
+    		@RequestParam(value = "name",required=false) String name, 
+    		@ApiParam Pageable pageable)
         throws URISyntaxException {
         log.debug("REST request to get a page of ContractCosts");
-        Page<ContractCost> page = contractCostService.findAll(pageable);
-        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/contract-costs");
-        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+        ContractCost contractCost = new ContractCost();
+        contractCost.setContractId(contractId);
+        contractCost.setType(type);
+        contractCost.setName(name);
+        Page<ContractCostVo> page = contractCostService.getUserPage(contractCost,pageable);
+        
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/project-costs");
+        
+        return new ResponseEntity<List<ContractCostVo>>(page.getContent(), headers,HttpStatus.OK);
     }
 
-    /**
-     * GET  /contract-costs/:id : get the "id" contractCost.
-     *
-     * @param id the id of the contractCost to retrieve
-     * @return the ResponseEntity with status 200 (OK) and with body the contractCost, or with status 404 (Not Found)
-     */
     @GetMapping("/contract-costs/{id}")
     @Timed
     public ResponseEntity<ContractCost> getContractCost(@PathVariable Long id) {
@@ -115,12 +112,6 @@ public class ContractCostResource {
             .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    /**
-     * DELETE  /contract-costs/:id : delete the "id" contractCost.
-     *
-     * @param id the id of the contractCost to delete
-     * @return the ResponseEntity with status 200 (OK)
-     */
     @DeleteMapping("/contract-costs/{id}")
     @Timed
     public ResponseEntity<Void> deleteContractCost(@PathVariable Long id) {
@@ -129,15 +120,6 @@ public class ContractCostResource {
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert("contractCost", id.toString())).build();
     }
 
-    /**
-     * SEARCH  /_search/contract-costs?query=:query : search for the contractCost corresponding
-     * to the query.
-     *
-     * @param query the query of the contractCost search 
-     * @param pageable the pagination information
-     * @return the result of the search
-     * @throws URISyntaxException if there is an error to generate the pagination HTTP headers
-     */
     @GetMapping("/_search/contract-costs")
     @Timed
     public ResponseEntity<List<ContractCost>> searchContractCosts(@RequestParam String query, @ApiParam Pageable pageable)
