@@ -22,6 +22,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.codahale.metrics.annotation.Timed;
 import com.wondertek.cpm.domain.ContractMonthlyStat;
+import com.wondertek.cpm.domain.vo.ContractMonthlyStatVo;
+import com.wondertek.cpm.domain.vo.LongValue;
 import com.wondertek.cpm.service.ContractMonthlyStatService;
 import com.wondertek.cpm.web.rest.util.HeaderUtil;
 import com.wondertek.cpm.web.rest.util.PaginationUtil;
@@ -49,14 +51,12 @@ public class ContractMonthlyStatResource {
      */
     @GetMapping("/contract-monthly-stats")
     @Timed
-    public ResponseEntity<List<ContractMonthlyStat>> getAllContractMonthlyStats(
-    		@ApiParam(value="fromDate") @RequestParam(value="fromDate") String fromDate,
-    		@ApiParam(value="toDate") @RequestParam(value="toDate") String toDate,
-    		@ApiParam(value="statDate") @RequestParam(value="statDate") String statDate,
+    public ResponseEntity<List<ContractMonthlyStatVo>> getAllContractMonthlyStats(
+    		@ApiParam(value="contractId") @RequestParam(value="contractId") String contractId,
     		@ApiParam Pageable pageable)
         throws URISyntaxException {
         log.debug("REST request to get a page of ContractMonthlyStats");
-        Page<ContractMonthlyStat> page = contractMonthlyStatService.getStatPage(fromDate, toDate, statDate, pageable);
+        Page<ContractMonthlyStatVo> page = contractMonthlyStatService.getStatPage(contractId, pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/contract-monthly-stats");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
@@ -69,9 +69,9 @@ public class ContractMonthlyStatResource {
      */
     @GetMapping("/contract-monthly-stats/{id}")
     @Timed
-    public ResponseEntity<ContractMonthlyStat> getContractMonthlyStat(@PathVariable Long id) {
+    public ResponseEntity<ContractMonthlyStatVo> getContractMonthlyStat(@PathVariable Long id) {
         log.debug("REST request to get ContractMonthlyStats : {}", id);
-        ContractMonthlyStat contractMonthlyStat = contractMonthlyStatService.findOne(id);
+        ContractMonthlyStatVo contractMonthlyStat = contractMonthlyStatService.findOne(id);
         return Optional.ofNullable(contractMonthlyStat)
             .map(result -> new ResponseEntity<>(
                 result,
@@ -111,4 +111,12 @@ public class ContractMonthlyStatResource {
         HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/contract-monthly-stats");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
+    
+    @GetMapping("/contract-monthly-stats/queryUserContract")
+    @Timed
+	public ResponseEntity<List<LongValue>> queryUserContract() throws URISyntaxException {
+	    log.debug("REST request to queryUserProject");
+	    List<LongValue> list = contractMonthlyStatService.queryUserContract();
+	    return new ResponseEntity<>(list, null, HttpStatus.OK);
+	}
 }

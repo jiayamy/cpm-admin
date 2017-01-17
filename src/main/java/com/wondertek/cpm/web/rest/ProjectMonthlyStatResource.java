@@ -3,6 +3,7 @@ package com.wondertek.cpm.web.rest;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -133,40 +134,38 @@ public class ProjectMonthlyStatResource {
     @Timed
     public ChartReportVo getChartReport(@ApiParam(value="fromDate") @RequestParam(value="fromDate") String fromDate,
     		@ApiParam(value="toDate") @RequestParam(value="toDate") String toDate,
-    		@ApiParam(value="projectId") @RequestParam(value="projectId", required = true) Long projectId){
+    		@ApiParam(value="id") @RequestParam(value="id") Long statId){
     	ChartReportVo chartReportVo = new ChartReportVo();
-    	chartReportVo.setTitle("title");
-    	String[] dates = DateUtil.getWholeWeekByDate(new Date());
-    	if(StringUtil.isNullStr(fromDate)){
-    		fromDate = dates[0];
-    	}
+    	ProjectMonthlyStatVo projectMonthlyStatvo = projectMonthlyStatService.findOne(statId);
+    	Long projectId = projectMonthlyStatvo.getProjectId();
+    	ProjectMonthlyStat recentOne = projectMonthlyStatService.getRecentlyOne(projectId);
+    	chartReportVo.setTitle(projectMonthlyStatvo.getSerialNum());
     	if(StringUtil.isNullStr(toDate)){
-    		toDate = dates[6];
+    		toDate = recentOne.getStatWeek().toString();
     	}
-    	List<String> legend = new ArrayList<String>(Arrays.asList(new String[]{"人工成本","报销成本"}));
-    	chartReportVo.setLegend(legend);
-    	Date fDay = DateUtil.parseDate("yyyyMMdd", fromDate);
-    	Date lDay = DateUtil.parseDate("yyyyMMdd", toDate);
-    	Long oneDay = 24*60*60*1000L;
-    	Long temp = fDay.getTime();
+    	Date lMonth = DateUtil.parseyyyyMM("yyyy-MM", toDate);
+    	if(StringUtil.isNullStr(fromDate)){
+    		fromDate = DateUtil.formatDate("yyyyMM", DateUtil.addMonthNum(-6, lMonth));
+    	}
+    	Date fMonth = DateUtil.parseyyyyMM("yyyy-MM", fromDate);
+    	Calendar cal1 = Calendar.getInstance();
+    	Calendar cal2 = Calendar.getInstance();
+    	cal1.setTime(fMonth);
+    	cal2.setTime(lMonth);
+    	int yearCount = cal2.get(Calendar.YEAR) - cal1.get(Calendar.YEAR); 
+    	int count = 0;
+    	count += 12*yearCount;
+    	count += cal2.get(Calendar.MONTH) - cal1.get(Calendar.MONTH);
     	List<String> category = new ArrayList<String>();
-    	while(temp <= lDay.getTime()){
-    		category.add(DateUtil.formatDate("yyyy-MM-dd", new Date(temp)));
-    		temp += oneDay;
+    	for(int i = 0; i <= count; i++){
+    		category.add(DateUtil.formatDate("yyyy-MM", cal1.getTime()));
+    		cal1.add(Calendar.MONTH, 1);
     	}
     	chartReportVo.setCategory(category);
-    	List<ChartReportDataVo> datas = new ArrayList<>();
-    	ChartReportDataVo data1 = new ChartReportDataVo();
-    	ChartReportDataVo data2 = new ChartReportDataVo();
-    	data1.setName("人工成本");
-    	data1.setType("line");
-    	data1.setData(projectMonthlyStatService.getHumanCost(fDay, lDay, projectId));
-    	data2.setName("报销成本");
-    	data2.setType("line");
-    	data2.setData(projectMonthlyStatService.getPayment(fDay, lDay, projectId));
-    	datas.add(data1);
-    	datas.add(data2);
+    	List<ChartReportDataVo> datas = projectMonthlyStatService.getChartData(fMonth, lMonth, projectId);
     	chartReportVo.setSeries(datas);
+    	List<String> legend = new ArrayList<String>(Arrays.asList(new String[]{"人工成本","报销成本"}));
+    	chartReportVo.setLegend(legend);
     	return chartReportVo;
     }
 }
