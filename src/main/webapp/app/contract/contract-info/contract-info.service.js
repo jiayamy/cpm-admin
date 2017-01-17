@@ -30,8 +30,8 @@
             	url:'api/contract-infos/queryUserContract',
             	method:'GET',
             	isArray:true
-            }
-            'finish': { method:'PUT',url:'api/contract-infos/finish' },
+            },
+            'finish': { method:'PUT',url:'api/contract-infos/finish' }
         });
     }
 })();
