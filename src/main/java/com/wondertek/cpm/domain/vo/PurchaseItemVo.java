@@ -319,5 +319,11 @@ public class PurchaseItemVo  {
 	public void setBudgetName(String budgetName) {
 		this.budgetName = budgetName;
 	}
-
+	public String getContractNum() {
+		return contractNum;
+	}
+	public void setContractNum(String contractNum) {
+		this.contractNum = contractNum;
+	}
+	
 }

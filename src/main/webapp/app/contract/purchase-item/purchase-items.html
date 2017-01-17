@@ -79,6 +79,7 @@
                 <tr jh-sort="vm.predicate" ascending="vm.reverse" callback="vm.transition()">
                     <th jh-sort-by="wpi.name_"><span data-translate="cpmApp.purchaseItem.name">Name</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="wci.serial_num"><span data-translate="cpmApp.purchaseItem.serialNum">Serial Num</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="wci.name_"><span data-translate="cpmApp.purchaseItem.contractName">Contract Name</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="wcb.name_"><span data-translate="cpmApp.purchaseItem.budgetName">Budget Name</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="wpi.quantity_"><span data-translate="cpmApp.purchaseItem.quantity">Quantity</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="wpi.price_"><span data-translate="cpmApp.purchaseItem.price">Price</span> <span class="glyphicon glyphicon-sort"></span></th>
@@ -96,7 +97,8 @@
             <tbody>
                 <tr ng-repeat="purchaseItem in vm.purchaseItems track by purchaseItem.id">
                     <td><a ui-sref="purchase-item-detail({id:purchaseItem.id})">{{purchaseItem.name}}</a></td>
-                    <td>{{purchaseItem.serialNum}}</td>
+                    <td>{{purchaseItem.contractNum}}</td>
+                    <td>{{purchaseItem.contractName}}</td>
                     <td>{{purchaseItem.budgetName}}</td>
                     <td>{{purchaseItem.quantity}}</td>
                     <td>{{purchaseItem.price}}</td>

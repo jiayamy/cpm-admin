@@ -161,7 +161,7 @@ public class PurchaseItemResource {
         if (!StringUtil.isNullStr(source)) {
 			purchaseItem.setSource(StringUtil.nullToInteger(source));
 		}
-        if (StringUtil.isNullStr(type)) {
+        if (!StringUtil.isNullStr(type)) {
 			purchaseItem.setType(StringUtil.nullToInteger(type));
 		}
         Page<PurchaseItemVo> page = purchaseItemService.getPurchasePage(purchaseItem, pageable);
