@@ -1,7 +1,7 @@
 package com.wondertek.cpm.web.rest;
 
-import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -10,15 +10,11 @@ import javax.validation.Valid;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,13 +22,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.codahale.metrics.annotation.Timed;
+import com.wondertek.cpm.CpmConstants;
+import com.wondertek.cpm.config.StringUtil;
 import com.wondertek.cpm.domain.DeptInfo;
+import com.wondertek.cpm.domain.vo.DeptInfoVo;
 import com.wondertek.cpm.domain.vo.DeptTree;
+import com.wondertek.cpm.security.SecurityUtils;
 import com.wondertek.cpm.service.DeptInfoService;
 import com.wondertek.cpm.web.rest.util.HeaderUtil;
-import com.wondertek.cpm.web.rest.util.PaginationUtil;
-
-import io.swagger.annotations.ApiParam;
 
 /**
  * REST controller for managing DeptInfo.
@@ -47,26 +44,6 @@ public class DeptInfoResource {
     private DeptInfoService deptInfoService;
 
     /**
-     * POST  /dept-infos : Create a new deptInfo.
-     *
-     * @param deptInfo the deptInfo to create
-     * @return the ResponseEntity with status 201 (Created) and with body the new deptInfo, or with status 400 (Bad Request) if the deptInfo has already an ID
-     * @throws URISyntaxException if the Location URI syntax is incorrect
-     */
-    @PostMapping("/dept-infos")
-    @Timed
-    public ResponseEntity<DeptInfo> createDeptInfo(@Valid @RequestBody DeptInfo deptInfo) throws URISyntaxException {
-        log.debug("REST request to save DeptInfo : {}", deptInfo);
-        if (deptInfo.getId() != null) {
-            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("deptInfo", "idexists", "A new deptInfo cannot already have an ID")).body(null);
-        }
-        DeptInfo result = deptInfoService.save(deptInfo);
-        return ResponseEntity.created(new URI("/api/dept-infos/" + result.getId()))
-            .headers(HeaderUtil.createEntityCreationAlert("deptInfo", result.getId().toString()))
-            .body(result);
-    }
-
-    /**
      * PUT  /dept-infos : Updates an existing deptInfo.
      *
      * @param deptInfo the deptInfo to update
@@ -79,32 +56,66 @@ public class DeptInfoResource {
     @Timed
     public ResponseEntity<DeptInfo> updateDeptInfo(@Valid @RequestBody DeptInfo deptInfo) throws URISyntaxException {
         log.debug("REST request to update DeptInfo : {}", deptInfo);
-        if (deptInfo.getId() == null) {
-            return createDeptInfo(deptInfo);
+        Boolean isNew = deptInfo.getId() == null;
+        
+        //必要校验
+        if(StringUtil.isNullStr(deptInfo.getName()) || deptInfo.getType() == null){
+        	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.deptInfo.save.paramNone", "")).body(null);
         }
+        String updator = SecurityUtils.getCurrentUserLogin();
+        ZonedDateTime updateTime = ZonedDateTime.now();
+        if(isNew){//新增
+        	Long parentId = deptInfo.getParentId();
+        	String idPath = null;
+        	if(parentId == null){
+        		idPath = "/";
+        	}else{
+        		DeptInfo parent = deptInfoService.findOne(parentId);
+        		if(parent == null){
+        			return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.deptInfo.save.parentNone", "")).body(null);
+        		}
+        		idPath = parent.getIdPath() + parent.getId() + "/";
+        	}
+        	deptInfo.setIdPath(idPath);
+        	deptInfo.setParentId(parentId);
+        	//校验是否存在同名
+        	Optional<DeptInfo> tmp = deptInfoService.findOneByParentName(parentId,deptInfo.getName());
+        	if(tmp.isPresent()){
+        		return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.deptInfo.save.nameExist", "")).body(null);
+        	}
+        	
+        	deptInfo.setStatus(CpmConstants.STATUS_VALID);
+        	deptInfo.setCreator(updator);
+        	deptInfo.setCreateTime(updateTime);
+        }else{//修改
+        	DeptInfo old = deptInfoService.findOne(deptInfo.getId());
+        	if(old == null){
+        		return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.deptInfo.save.paramError", "")).body(null);
+        	}
+        	deptInfo.setParentId(old.getParentId());
+        	deptInfo.setIdPath(old.getIdPath());
+        	deptInfo.setStatus(old.getStatus());
+        	deptInfo.setCreator(old.getCreator());
+        	deptInfo.setCreateTime(old.getCreateTime());
+        	Optional<DeptInfo> tmp = deptInfoService.findOneByParentName(old.getParentId(),deptInfo.getName());
+        	if(tmp.isPresent() && tmp.get().getId().longValue() != old.getId()){
+        		return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.deptInfo.save.nameExist", "")).body(null);
+        	}
+        }
+        deptInfo.setUpdateTime(updateTime);
+        deptInfo.setUpdator(updator);
+        
         DeptInfo result = deptInfoService.save(deptInfo);
-        return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert("deptInfo", deptInfo.getId().toString()))
-            .body(result);
+        if(isNew){
+        	return ResponseEntity.ok()
+                    .headers(HeaderUtil.createEntityCreationAlert("deptInfo", deptInfo.getId().toString()))
+                    .body(result);
+        }else{
+	        return ResponseEntity.ok()
+	            .headers(HeaderUtil.createEntityUpdateAlert("deptInfo", deptInfo.getId().toString()))
+	            .body(result);
+        }
     }
-
-    /**
-     * GET  /dept-infos : get all the deptInfos.
-     *
-     * @param pageable the pagination information
-     * @return the ResponseEntity with status 200 (OK) and the list of deptInfos in body
-     * @throws URISyntaxException if there is an error to generate the pagination HTTP headers
-     */
-    @GetMapping("/dept-infos")
-    @Timed
-    public ResponseEntity<List<DeptInfo>> getAllDeptInfos(@ApiParam Pageable pageable)
-        throws URISyntaxException {
-        log.debug("REST request to get a page of DeptInfos");
-        Page<DeptInfo> page = deptInfoService.findAll(pageable);
-        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/dept-infos");
-        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
-    }
-
     /**
      * GET  /dept-infos/:id : get the "id" deptInfo.
      *
@@ -113,16 +124,15 @@ public class DeptInfoResource {
      */
     @GetMapping("/dept-infos/{id}")
     @Timed
-    public ResponseEntity<DeptInfo> getDeptInfo(@PathVariable Long id) {
+    public ResponseEntity<DeptInfoVo> getDeptInfo(@PathVariable Long id) {
         log.debug("REST request to get DeptInfo : {}", id);
-        DeptInfo deptInfo = deptInfoService.findOne(id);
+        DeptInfoVo deptInfo = deptInfoService.getDeptInfo(id);
         return Optional.ofNullable(deptInfo)
             .map(result -> new ResponseEntity<>(
                 result,
                 HttpStatus.OK))
             .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
-
     /**
      * DELETE  /dept-infos/:id : delete the "id" deptInfo.
      *
@@ -133,27 +143,16 @@ public class DeptInfoResource {
     @Timed
     public ResponseEntity<Void> deleteDeptInfo(@PathVariable Long id) {
         log.debug("REST request to delete DeptInfo : {}", id);
-        deptInfoService.delete(id);
+        //检查部门及下面的部门对应用户是否全部删除
+        DeptInfo deptInfo = deptInfoService.findOne(id);
+        if(deptInfo != null){
+        	List<String> deptNames = deptInfoService.getExistUserDeptNameByDeptParent(deptInfo.getId(),deptInfo.getIdPath());
+        	if(deptNames != null && !deptNames.isEmpty()){
+        		return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.deptInfo.delete.userExist", deptNames.toString())).body(null);
+        	}
+        	deptInfoService.delete(id);
+        }
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert("deptInfo", id.toString())).build();
-    }
-
-    /**
-     * SEARCH  /_search/dept-infos?query=:query : search for the deptInfo corresponding
-     * to the query.
-     *
-     * @param query the query of the deptInfo search 
-     * @param pageable the pagination information
-     * @return the result of the search
-     * @throws URISyntaxException if there is an error to generate the pagination HTTP headers
-     */
-    @GetMapping("/_search/dept-infos")
-    @Timed
-    public ResponseEntity<List<DeptInfo>> searchDeptInfos(@RequestParam String query, @ApiParam Pageable pageable)
-        throws URISyntaxException {
-        log.debug("REST request to search for a page of DeptInfos for query {}", query);
-        Page<DeptInfo> page = deptInfoService.search(query, pageable);
-        HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/dept-infos");
-        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
 
     @GetMapping("/dept-infos/getDeptAndUserTree")
@@ -177,4 +176,11 @@ public class DeptInfoResource {
         return new ResponseEntity<>(list, null, HttpStatus.OK);
     }
     
+    @GetMapping("/dept-infos/getDeptTree")
+    @Timed
+    public ResponseEntity<List<DeptTree>> getDeptTree() throws URISyntaxException {
+        log.debug("REST request to get a page of getDeptAndUserTree");
+        List<DeptTree> list = deptInfoService.getDeptAndUserTree(DeptTree.SELECTTYPE_NONE,Boolean.TRUE,Boolean.FALSE);
+        return new ResponseEntity<>(list, null, HttpStatus.OK);
+    }
 }

@@ -1,11 +1,11 @@
 package com.wondertek.cpm.service;
 
-import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
-
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.inject.Inject;
 
@@ -19,10 +19,12 @@ import org.springframework.transaction.annotation.Transactional;
 import com.wondertek.cpm.CpmConstants;
 import com.wondertek.cpm.domain.DeptInfo;
 import com.wondertek.cpm.domain.User;
+import com.wondertek.cpm.domain.vo.DeptInfoVo;
 import com.wondertek.cpm.domain.vo.DeptTree;
+import com.wondertek.cpm.repository.DeptInfoDao;
 import com.wondertek.cpm.repository.DeptInfoRepository;
 import com.wondertek.cpm.repository.UserRepository;
-import com.wondertek.cpm.repository.search.DeptInfoSearchRepository;
+import com.wondertek.cpm.security.SecurityUtils;
 
 /**
  * Service Implementation for managing DeptInfo.
@@ -35,10 +37,14 @@ public class DeptInfoService {
     
     @Inject
     private DeptInfoRepository deptInfoRepository;
+    
+    @Inject
+    private DeptInfoDao deptInfoDao;
+    
     @Inject
     private UserRepository userRepository;
-    @Inject
-    private DeptInfoSearchRepository deptInfoSearchRepository;
+//    @Inject
+//    private DeptInfoSearchRepository deptInfoSearchRepository;
 
     /**
      * Save a deptInfo.
@@ -49,7 +55,7 @@ public class DeptInfoService {
     public DeptInfo save(DeptInfo deptInfo) {
         log.debug("Request to save DeptInfo : {}", deptInfo);
         DeptInfo result = deptInfoRepository.save(deptInfo);
-        deptInfoSearchRepository.save(result);
+//        deptInfoSearchRepository.save(result);
         return result;
     }
 
@@ -86,8 +92,14 @@ public class DeptInfoService {
      */
     public void delete(Long id) {
         log.debug("Request to delete DeptInfo : {}", id);
-        deptInfoRepository.delete(id);
-        deptInfoSearchRepository.delete(id);
+        DeptInfo deptInfo = deptInfoRepository.findOne(id);
+        if(deptInfo != null){
+        	deptInfo.setStatus(CpmConstants.STATUS_DELETED);
+        	deptInfo.setUpdateTime(ZonedDateTime.now());
+        	deptInfo.setUpdator(SecurityUtils.getCurrentUserLogin());
+        	deptInfoRepository.save(deptInfo);
+        }
+//		deptInfoSearchRepository.delete(id);
     }
 
     /**
@@ -99,7 +111,8 @@ public class DeptInfoService {
     @Transactional(readOnly = true)
     public Page<DeptInfo> search(String query, Pageable pageable) {
         log.debug("Request to search for a page of DeptInfos for query {}", query);
-        Page<DeptInfo> result = deptInfoSearchRepository.search(queryStringQuery(query), pageable);
+        Page<DeptInfo> result = null;
+//        Page<DeptInfo> result = deptInfoSearchRepository.search(queryStringQuery(query), pageable);
         return result;
     }
     /**
@@ -194,5 +207,17 @@ public class DeptInfoService {
 			}
 		}
 		return deptUsers;
+	}
+
+	public Optional<DeptInfo> findOneByParentName(Long parentId, String name) {
+		return deptInfoRepository.findOneByParentName(parentId,name);
+	}
+
+	public List<String> getExistUserDeptNameByDeptParent(Long deptId, String idPath) {
+		return deptInfoDao.getExistUserDeptNameByDeptParent(deptId, idPath);
+	}
+
+	public DeptInfoVo getDeptInfo(Long id) {
+		return deptInfoDao.getDeptInfo(id);
 	}
 }

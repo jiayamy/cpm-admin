@@ -5,17 +5,17 @@
         .module('cpmApp')
         .controller('DeptInfoDetailController', DeptInfoDetailController);
 
-    DeptInfoDetailController.$inject = ['$scope', '$rootScope', '$stateParams', 'previousState', 'entity', 'DeptInfo'];
+    DeptInfoDetailController.$inject = ['$timeout', '$scope', '$stateParams', '$uibModalInstance', 'entity', 'DeptInfo'];
 
-    function DeptInfoDetailController($scope, $rootScope, $stateParams, previousState, entity, DeptInfo) {
+    function DeptInfoDetailController($timeout, $scope, $stateParams, $uibModalInstance, entity, DeptInfo) {
         var vm = this;
 
         vm.deptInfo = entity;
-        vm.previousState = previousState.name;
-
-        var unsubscribe = $rootScope.$on('cpmApp:deptInfoUpdate', function(event, result) {
-            vm.deptInfo = result;
-        });
-        $scope.$on('$destroy', unsubscribe);
+        
+        vm.clear = clear;
+        
+        function clear () {
+            $uibModalInstance.dismiss('cancel');
+        }
     }
 })();

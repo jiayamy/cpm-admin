@@ -29,7 +29,7 @@
                     squash: true
                 },
                 sort: {
-                    value: 'id,desc',
+                    value: 'user.id,desc',
                     squash: true
                 },
                 login:null,

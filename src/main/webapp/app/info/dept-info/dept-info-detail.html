@@ -1,51 +1,46 @@
 
 <div>
-    <h2><span data-translate="cpmApp.deptInfo.detail.title">Dept Info</span> {{vm.deptInfo.id}}</h2>
-    <hr>
-    <jhi-alert-error></jhi-alert-error>
-    <dl class="dl-horizontal jh-entity-details">
-        <dt><span data-translate="cpmApp.deptInfo.name">Name</span></dt>
-        <dd>
-            <span>{{vm.deptInfo.name}}</span>
-        </dd>
-        <dt><span data-translate="cpmApp.deptInfo.parentId">Parent Id</span></dt>
-        <dd>
-            <span>{{vm.deptInfo.parentId}}</span>
-        </dd>
-        <dt><span data-translate="cpmApp.deptInfo.type">Type</span></dt>
-        <dd>
-            <span>{{vm.deptInfo.type}}</span>
-        </dd>
-        <dt><span data-translate="cpmApp.deptInfo.status">Status</span></dt>
-        <dd>
-            <span>{{vm.deptInfo.status}}</span>
-        </dd>
-        <dt><span data-translate="cpmApp.deptInfo.creator">Creator</span></dt>
-        <dd>
-            <span>{{vm.deptInfo.creator}}</span>
-        </dd>
-        <dt><span data-translate="cpmApp.deptInfo.createTime">Create Time</span></dt>
-        <dd>
-            <span>{{vm.deptInfo.createTime | date:'medium'}}</span>
-        </dd>
-        <dt><span data-translate="cpmApp.deptInfo.updator">Updator</span></dt>
-        <dd>
-            <span>{{vm.deptInfo.updator}}</span>
-        </dd>
-        <dt><span data-translate="cpmApp.deptInfo.updateTime">Update Time</span></dt>
-        <dd>
-            <span>{{vm.deptInfo.updateTime | date:'medium'}}</span>
-        </dd>
-    </dl>
-
-    <button type="submit"
-            ui-sref="{{ vm.previousState }}"
-            class="btn btn-info">
-        <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span data-translate="entity.action.back"> Back</span>
-    </button>
-
-    <button type="button" ui-sref="dept-info-detail.edit({id:vm.deptInfo.id})" class="btn btn-primary">
-        <span class="glyphicon glyphicon-pencil"></span>
-        <span class="hidden-xs hidden-sm" data-translate="entity.action.edit"> Edit</span>
-    </button>
+	<div class="modal-header">
+	    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+	            ng-click="vm.clear()">&times;</button>
+	    <h4 class="modal-title" id="myDeptInfoLabel" data-translate="cpmApp.deptInfo.detail.title">Dept Info</h4>
+	</div>
+	<div class="modal-body">
+        <jhi-alert-error></jhi-alert-error>
+	    <dl class="dl-horizontal jh-entity-details">
+	        <dt><span data-translate="cpmApp.deptInfo.parentId">Parent</span></dt>
+	        <dd>
+	            <span>{{vm.deptInfo.parentName}}</span>
+	        </dd>
+	        <dt><span data-translate="cpmApp.deptInfo.name">Name</span></dt>
+	        <dd>
+	            <span>{{vm.deptInfo.name}}</span>
+	        </dd>
+	        <dt><span data-translate="cpmApp.deptInfo.type">Type</span></dt>
+	        <dd>
+	            <span>{{vm.deptInfo.typeName}}</span>
+	        </dd>
+	        <dt><span data-translate="cpmApp.deptInfo.creator">Creator</span></dt>
+	        <dd>
+	            <span>{{vm.deptInfo.creator}}</span>
+	        </dd>
+	        <dt><span data-translate="cpmApp.deptInfo.createTime">Create Time</span></dt>
+	        <dd>
+	            <span>{{vm.deptInfo.createTime | date:'medium'}}</span>
+	        </dd>
+	        <dt><span data-translate="cpmApp.deptInfo.updator">Updator</span></dt>
+	        <dd>
+	            <span>{{vm.deptInfo.updator}}</span>
+	        </dd>
+	        <dt><span data-translate="cpmApp.deptInfo.updateTime">Update Time</span></dt>
+	        <dd>
+	            <span>{{vm.deptInfo.updateTime | date:'medium'}}</span>
+	        </dd>
+	    </dl>
+	</div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="vm.clear()">
+            <span class="glyphicon glyphicon-ban-circle"></span>&nbsp;<span data-translate="entity.action.cancel">Cancel</span>
+        </button>
+    </div>
 </div>
