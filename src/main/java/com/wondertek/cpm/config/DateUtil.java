@@ -984,4 +984,29 @@ public class DateUtil {
 		cal.add(Calendar.DATE, 1);
 		return cal.getTime();
 	}
+	
+	public static Date addMonthNum(int num, Date date){
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(date);
+		cal.add(Calendar.MONTH, num);
+		return cal.getTime();
+	}
+	/**
+	 * 转换日期，
+	 * @param pattern 输出格式
+	 * @param yearMonth 输入yyyyMM格式
+	 * @return
+	 * @throws ParseException 
+	 */
+	public static Date parseyyyyMM(String pattern, String yearMonth){
+		StringBuffer sb = new StringBuffer(yearMonth);
+		sb.insert(4, "-");
+		SimpleDateFormat sdf = new SimpleDateFormat(pattern);
+		try {
+			return sdf.parse(sb.toString());
+		} catch (ParseException e) {
+			log.error("errorMsg:"+e.getMessage());
+		}
+		return null;
+	}
 }

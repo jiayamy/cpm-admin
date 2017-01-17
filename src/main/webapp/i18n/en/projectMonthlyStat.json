@@ -18,7 +18,10 @@
                 "transChart": "Translate Chart"
             },
             "echarts":{
-            	"title": "Project Monthly Stat Chart"
+            	"title": "Project Monthly Stat Chart",
+            	"fromDate" : "Create Date From",
+            	"toDate" : "Create Date End",
+            	"transDetail" : "Translate Detail"
             },
             "fromDate" : "Create Date From",
             "toDate" : "Create Date End",

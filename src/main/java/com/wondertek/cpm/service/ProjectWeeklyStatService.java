@@ -1,6 +1,9 @@
 package com.wondertek.cpm.service;
 
+import com.wondertek.cpm.config.DateUtil;
+import com.wondertek.cpm.config.StringUtil;
 import com.wondertek.cpm.domain.ContractWeeklyStat;
+import com.wondertek.cpm.domain.ProjectMonthlyStat;
 import com.wondertek.cpm.domain.ProjectWeeklyStat;
 import com.wondertek.cpm.domain.User;
 import com.wondertek.cpm.repository.ProjectWeeklyStatDao;
@@ -20,6 +23,7 @@ import org.springframework.stereotype.Service;
 import javax.inject.Inject;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -128,5 +132,42 @@ public class ProjectWeeklyStatService {
     	}else{
     		return new PageImpl(new ArrayList<ProjectWeeklyStat>(), pageable, 0);
     	}
+    }
+    
+    @Transactional(readOnly = true)
+    public List<Double> getHumanCost(Date fromDate, Date toDate, Long projectId){
+    	List<Double> data = new ArrayList<>();
+    	Long temp = fromDate.getTime();
+    	Long oneDay = 24*60*60*1000L;
+    	while(temp <= toDate.getTime()){
+    		Long statWeek = StringUtil.nullToLong(DateUtil.formatDate("yyyyMMdd", new Date(temp)));
+    		List<ProjectWeeklyStat> projectMonthlyStats = projectWeeklyStatRepository.findByStatWeekAndProjectId(statWeek, projectId);
+    		Double humanCost = 0D;
+    		if(projectMonthlyStats != null && projectMonthlyStats.size() > 0){
+    			humanCost = projectMonthlyStats.get(0).getHumanCost();
+    		}
+    		data.add(humanCost);
+    		temp += oneDay;
+    	}
+    	return data;
+    }
+    
+    @Transactional(readOnly = true)
+    public List<Double> getPayment(Date fromDate, Date toDate, Long projectId){
+    	List<Double> data = new ArrayList<>();
+    	Long temp = fromDate.getTime();
+    	Long oneDay = 24*60*60*1000L;
+    	while(temp <= toDate.getTime()){
+    		Long statWeek = StringUtil.nullToLong(DateUtil.formatDate("yyyyMMdd", new Date(temp)));
+    		List<ProjectWeeklyStat> projectMonthlyStats = projectWeeklyStatRepository.findByStatWeekAndProjectId(statWeek, projectId);
+    		Double payment = 0D;
+    		if(projectMonthlyStats != null && projectMonthlyStats.size() > 0){
+    			data.add(projectMonthlyStats.get(0).getPayment());
+    		}else{
+    			data.add(payment);
+    		}
+    		temp += oneDay;
+    	}
+    	return data;
     }
 }

@@ -2,28 +2,34 @@
     "cpmApp": {
         "deptInfo" : {
             "home": {
-                "title": "Dept Infos",
-                "createLabel": "Create a new Dept Info",
-                "createOrEditLabel": "组织信息",
-                "search": "Search for Dept Info"
+                "title": "部门信息",
+                "createLabel": "新增部门",
+                "createOrEditLabel": "部门信息",
+                "search": "搜索"
             },
-            "created": "A new Dept Info is created with identifier {{ param }}",
-            "updated": "A Dept Info is updated with identifier {{ param }}",
-            "deleted": "A Dept Info is deleted with identifier {{ param }}",
+            "created": "新增部门成功",
+            "updated": "修改部门成功",
+            "deleted": "删除部门成功",
             "delete": {
-                "question": "Are you sure you want to delete Dept Info {{ id }}?"
+                "question": "确定删除该部门？",
+                "userExist":"部门{{ param }}下存在用户，无法删除"
+            },
+            "save":{
+            	"paramNone":"必填参数为空",
+            	"parentNone":"参数错误",
+            	"paramError":"参数错误",
+            	"nameExist":"部门已存在，请选择其他"
             },
             "detail": {
-                "title": "Dept Info"
+                "title": "部门信息"
             },
-            "name": "Name",
-            "parentId": "Parent Id",
-            "type": "Type",
-            "status": "Status",
-            "creator": "Creator",
-            "createTime": "Create Time",
-            "updator": "Updator",
-            "updateTime": "Update Time"
+            "name": "名称",
+            "parentId": "上级部门",
+            "type": "部门类型",
+            "creator": "创建者",
+            "createTime": "创建时间",
+            "updator": "更新者",
+            "updateTime": "更新时间"
         }
     }
 }

@@ -67,25 +67,46 @@
             },
             resolve: {
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
-                    $translatePartialLoader.addPart('projectMonthlyStat');
+                	$translatePartialLoader.addPart('projectMonthlyStat');
+                    $translatePartialLoader.addPart('global');
                     return $translate.refresh();
                 }],
                 entity: ['$stateParams', 'ProjectMonthlyStat', function($stateParams, ProjectMonthlyStat) {
                     return ProjectMonthlyStat.get({id : $stateParams.id}).$promise;
                 }],
                 previousState: ["$state", function ($state) {
-                    var currentStateData = {
-                        name: $state.current.name || 'project-monthly-stat',
-                        params: $state.params,
-                        url: $state.href($state.current.name, $state.params)
-                    };
+                	var currentStateData = {
+                            name: 'project-monthly-stat',
+                            params: {
+                                page: {
+                                    value: '1',
+                                    squash: true
+                                },
+                                sort: {
+                                    value: 'm.id,asc',
+                                    squash: true
+                                },
+                                projectId: null
+                            },
+                            url: $state.href($state.current.name, {
+                                page: {
+                                    value: '1',
+                                    squash: true
+                                },
+                                sort: {
+                                    value: 'm.id,asc',
+                                    squash: true
+                                },
+                                projectId: null
+                            })
+                        };
                     return currentStateData;
                 }]
             }
         })
         .state('project-monthly-stat-detail.chart', {
-            parent: 'project-monthly-stat',
-            url: '/{id}/queryChart?fromDate&toDate',
+            parent: 'stat',
+            url: '/project-monthly-stat/{id}/queryChart?fromDate&toDate&projectId',
             data: {
                 authorities: ['ROLE_USER'],
                 pageTitle: 'cpmApp.projectInfo.detail.title'
@@ -99,21 +120,51 @@
             },
             params: {
                 fromDate: null,
-                toDate : null
+                toDate : null,
+                id : null
             },
             resolve: {
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
-                    $translatePartialLoader.addPart('projectInfo');
-                    $translatePartialLoader.addPart('deptInfo');
+                	$translatePartialLoader.addPart('projectMonthlyStat');
+                    $translatePartialLoader.addPart('global');
                     return $translate.refresh();
                 }],
                 pagingParams: ['$stateParams', 'PaginationUtil', function ($stateParams, PaginationUtil) {
                     return {
                         fromDate: $stateParams.fromDate,
                         toDate : $stateParams.toDate,
-                        projectId : $stateParams.id
+                        id : $stateParams.id
                     };
+                }],
+                previousState: ["$state", function ($state) {
+                    var currentStateData = {
+                        name: 'project-monthly-stat',
+                        params: {
+                            page: {
+                                value: '1',
+                                squash: true
+                            },
+                            sort: {
+                                value: 'm.id,asc',
+                                squash: true
+                            },
+                            projectId: null
+                        },
+                        url: $state.href('project-monthly-stat', {
+                            page: {
+                                value: '1',
+                                squash: true
+                            },
+                            sort: {
+                                value: 'm.id,asc',
+                                squash: true
+                            },
+                            projectId: null
+                        })
+                    };
+                    return currentStateData;
                 }]
+                
             }
         });
     }

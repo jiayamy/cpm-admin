@@ -52,47 +52,16 @@
             }
         })
         .state('dept-info-detail', {
-            parent: 'info',
-            url: '/dept-info/{id}',
+            parent: 'dept-info',
+            url: '/detail/{id}',
             data: {
                 authorities: ['ROLE_USER'],
                 pageTitle: 'cpmApp.deptInfo.detail.title'
             },
-            views: {
-                'content@': {
-                    templateUrl: 'app/info/dept-info/dept-info-detail.html',
-                    controller: 'DeptInfoDetailController',
-                    controllerAs: 'vm'
-                }
-            },
-            resolve: {
-                translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
-                    $translatePartialLoader.addPart('deptInfo');
-                    return $translate.refresh();
-                }],
-                entity: ['$stateParams', 'DeptInfo', function($stateParams, DeptInfo) {
-                    return DeptInfo.get({id : $stateParams.id}).$promise;
-                }],
-                previousState: ["$state", function ($state) {
-                    var currentStateData = {
-                        name: $state.current.name || 'dept-info',
-                        params: $state.params,
-                        url: $state.href($state.current.name, $state.params)
-                    };
-                    return currentStateData;
-                }]
-            }
-        })
-        .state('dept-info-detail.edit', {
-            parent: 'dept-info-detail',
-            url: '/detail/edit',
-            data: {
-                authorities: ['ROLE_USER']
-            },
             onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
                 $uibModal.open({
-                    templateUrl: 'app/info/dept-info/dept-info-dialog.html',
-                    controller: 'DeptInfoDialogController',
+                    templateUrl: 'app/info/dept-info/dept-info-detail.html',
+                    controller: 'DeptInfoDetailController',
                     controllerAs: 'vm',
                     backdrop: 'static',
                     size: 'lg',
@@ -102,7 +71,7 @@
                         }]
                     }
                 }).result.then(function() {
-                    $state.go('^', {}, { reload: false });
+                    $state.go('dept-info', null, { reload: 'dept-info' });
                 }, function() {
                     $state.go('^');
                 });
@@ -110,7 +79,7 @@
         })
         .state('dept-info.new', {
             parent: 'dept-info',
-            url: '/new',
+            url: '/new/{id}',
             data: {
                 authorities: ['ROLE_USER']
             },
@@ -122,30 +91,25 @@
                     backdrop: 'static',
                     size: 'lg',
                     resolve: {
-                        entity: function () {
-                            return {
-                                name: null,
-                                parentId: null,
-                                type: null,
-                                status: null,
-                                creator: null,
-                                createTime: null,
-                                updator: null,
-                                updateTime: null,
-                                id: null
-                            };
-                        }
+                    	entity:function(){
+                        	return {
+                        		parentId:$stateParams.id
+                        	};
+                        },
+                        parentEntity: ['DeptInfo', function(DeptInfo) {
+                            return DeptInfo.get({id : $stateParams.id}).$promise;
+                        }]
                     }
                 }).result.then(function() {
                     $state.go('dept-info', null, { reload: 'dept-info' });
                 }, function() {
-                    $state.go('dept-info');
+                    $state.go('^');
                 });
             }]
         })
         .state('dept-info.edit', {
             parent: 'dept-info',
-            url: '/{id}/edit',
+            url: '/edit/{id}',
             data: {
                 authorities: ['ROLE_USER']
             },
@@ -159,7 +123,10 @@
                     resolve: {
                         entity: ['DeptInfo', function(DeptInfo) {
                             return DeptInfo.get({id : $stateParams.id}).$promise;
-                        }]
+                        }],
+                        parentEntity:function(){
+                        	return {};
+                        }
                     }
                 }).result.then(function() {
                     $state.go('dept-info', null, { reload: 'dept-info' });
@@ -170,7 +137,7 @@
         })
         .state('dept-info.delete', {
             parent: 'dept-info',
-            url: '/{id}/delete',
+            url: '/delete/{id}',
             data: {
                 authorities: ['ROLE_USER']
             },

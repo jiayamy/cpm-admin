@@ -18,7 +18,10 @@
                 "transChart": "转变表格"
             },
             "echarts":{
-            	"title": "项目月报统计表格"
+            	"fromDate" : "起始月份",
+            	"toDate" : "结束月份",
+            	"title": "项目月报统计表格",
+            	"transDetail" : "转变详情"
             },
             "fromDate" : "创建日期开始",
             "toDate" : "创建日期结束",

@@ -97,8 +97,8 @@
 
         function sort () {
             var result = [vm.predicate + ',' + (vm.reverse ? 'asc' : 'desc')];
-            if (vm.predicate !== 'id') {
-                result.push('id');
+            if (vm.predicate !== 'user.id') {
+                result.push('user.id');
             }
             return result;
         }
@@ -124,7 +124,7 @@
             }
             vm.links = null;
             vm.page = 1;
-            vm.predicate = 'id';
+            vm.predicate = 'user.id';
             vm.reverse = false;
             vm.haveSearch = true;
             vm.transition();
@@ -133,7 +133,7 @@
         function clear() {
             vm.links = null;
             vm.page = 1;
-            vm.predicate = 'id';
+            vm.predicate = 'user.id';
             vm.reverse = false;
             vm.searchQuery = {};
             vm.haveSearch = null;
