@@ -5,6 +5,7 @@
                 "title": "员工成本",
                 "createLabel": "新建",
                 "createOrEditLabel": "添加员工成本",
+                "editLabel": "编辑员工成本",
                 "search": "Search for User Cost"
             },
             "created": "A new User Cost is created with identifier {{ param }}",
@@ -14,7 +15,10 @@
                 "question": "Are you sure you want to delete User Cost {{ id }}?"
             },
             "detail": {
-                "title": "User Cost"
+                "title": "员工成本详情"
+            },
+            "save": {
+            	"paramNone": "参数不能为空"
             },
             "userId": "员工Id",
             "userName": "员工姓名",

@@ -11,7 +11,7 @@
         $stateProvider
         .state('user-cost', {
             parent: 'info',
-            url: '/user-cost?page&sort&userId&userName&costMonth&statuss',
+            url: '/user-cost?page&sort&userId&userName&costMonth&status',
             data: {
                 authorities: ['ROLE_USER'],
                 pageTitle: 'cpmApp.userCost.home.title'
@@ -97,60 +97,83 @@
             data: {
                 authorities: ['ROLE_USER']
             },
-            onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
-                $uibModal.open({
+            views: {
+                'content@': {
                     templateUrl: 'app/info/user-cost/user-cost-dialog.html',
                     controller: 'UserCostDialogController',
-                    controllerAs: 'vm',
-                    backdrop: 'static',
-                    size: 'lg',
-                    resolve: {
-                        entity: ['UserCost', function(UserCost) {
-                            return UserCost.get({id : $stateParams.id}).$promise;
-                        }]
-                    }
-                }).result.then(function() {
-                    $state.go('^', {}, { reload: false });
-                }, function() {
-                    $state.go('^');
-                });
-            }]
+                    controllerAs: 'vm'
+                }
+            },
+            resolve: {
+	            translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
+	                $translatePartialLoader.addPart('userCost');
+	                return $translate.refresh();
+	            }],
+	            entity: ['$stateParams', 'UserCost', function($stateParams, UserCost) {
+	                return UserCost.get({id : $stateParams.id}).$promise;
+	            }],
+	            previousState: ["$state", function ($state) {
+	                var currentStateData = {
+	                    name: $state.current.name || 'user-cost-detail',
+	                    params: $state.params,
+	                    url: $state.href($state.current.name, $state.params)
+	                };
+	                return currentStateData;
+	            }]
+            }
+//            onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
+//                $uibModal.open({
+//                    templateUrl: 'app/info/user-cost/user-cost-dialog.html',
+//                    controller: 'UserCostDialogController',
+//                    controllerAs: 'vm',
+//                    backdrop: 'static',
+//                    size: 'lg',
+//                    resolve: {
+//                        entity: ['UserCost', function(UserCost) {
+//                            return UserCost.get({id : $stateParams.id}).$promise;
+//                        }]
+//                    }
+//                }).result.then(function() {
+//                    $state.go('^', {}, { reload: false });
+//                }, function() {
+//                    $state.go('^');
+//                });
+//            }]
         })
         .state('user-cost.new', {
             parent: 'user-cost',
             url: '/new',
+            pageTitle: 'cpmApp.userCost.home.createOrEditLabel',
             data: {
                 authorities: ['ROLE_USER']
             },
-            onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
-                $uibModal.open({
+            views: {
+                'content@': {
                     templateUrl: 'app/info/user-cost/user-cost-dialog.html',
                     controller: 'UserCostDialogController',
-                    controllerAs: 'vm',
-                    backdrop: 'static',
-                    size: 'lg',
-                    resolve: {
-                        entity: function () {
-                            return {
-                                userId: null,
-                                costMonth: null,
-                                internalCost: null,
-                                externalCost: null,
-                                status: null,
-                                creator: null,
-                                createTime: null,
-                                updator: null,
-                                updateTime: null,
-                                id: null
-                            };
-                        }
-                    }
-                }).result.then(function() {
-                    $state.go('user-cost', null, { reload: 'user-cost' });
-                }, function() {
-                    $state.go('user-cost');
-                });
-            }]
+                    controllerAs: 'vm'
+                }
+            },
+            resolve: {
+            	translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
+                    $translatePartialLoader.addPart('userCost');
+                    return $translate.refresh();
+                }],
+                entity: function () {
+                    return {
+	                    userId: null,
+	                    costMonth: null,
+	                    internalCost: null,
+	                    externalCost: null,
+	                    status: null,
+	                    creator: null,
+	                    createTime: null,
+	                    updator: null,
+	                    updateTime: null,
+	                    id: null
+                    };
+                }
+            }
         })
         .state('user-cost.edit', {
             parent: 'user-cost',
@@ -158,24 +181,48 @@
             data: {
                 authorities: ['ROLE_USER']
             },
-            onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
-                $uibModal.open({
+            views: {
+                'content@': {
                     templateUrl: 'app/info/user-cost/user-cost-dialog.html',
                     controller: 'UserCostDialogController',
-                    controllerAs: 'vm',
-                    backdrop: 'static',
-                    size: 'lg',
-                    resolve: {
-                        entity: ['UserCost', function(UserCost) {
-                            return UserCost.get({id : $stateParams.id}).$promise;
-                        }]
-                    }
-                }).result.then(function() {
-                    $state.go('user-cost', null, { reload: 'user-cost' });
-                }, function() {
-                    $state.go('^');
-                });
-            }]
+                    controllerAs: 'vm'
+                }
+            },
+            resolve: {
+            	translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
+                    $translatePartialLoader.addPart('userCost');
+                    return $translate.refresh();
+                }],
+                entity: ['$stateParams','UserCost', function($stateParams,UserCost) {
+                  return UserCost.get({id : $stateParams.id}).$promise;
+                  }],
+//                previousState: ["$state", function ($state) {
+//                	var currentStateData = {
+//            			name: $state.current.name || 'user-cost-detail',
+//            			params: $state.params,
+//            			url: $state.href($state.current.name, $state.params)
+//                	};
+//                	return currentStateData;
+//	            }]
+            }
+//            onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
+//                $uibModal.open({
+//                    templateUrl: 'app/info/user-cost/user-cost-dialog.html',
+//                    controller: 'UserCostDialogController',
+//                    controllerAs: 'vm',
+//                    backdrop: 'static',
+//                    size: 'lg',
+//                    resolve: {
+//                        entity: ['UserCost', function(UserCost) {
+//                            return UserCost.get({id : $stateParams.id}).$promise;
+//                        }]
+//                    }
+//                }).result.then(function() {
+//                    $state.go('user-cost', null, { reload: 'user-cost' });
+//                }, function() {
+//                    $state.go('^');
+//                });
+//            }]
         })
         .state('user-cost.delete', {
             parent: 'user-cost',

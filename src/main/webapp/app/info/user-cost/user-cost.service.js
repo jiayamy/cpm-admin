@@ -18,6 +18,11 @@
                         data = angular.fromJson(data);
                         data.createTime = DateUtils.convertDateTimeFromServer(data.createTime);
                         data.updateTime = DateUtils.convertDateTimeFromServer(data.updateTime);
+                        if(data.status == 1){
+                        	data.statusName = "可用";
+                        }else if(data.status == 2){
+                        	data.statusName = "删除";
+                        }
                     }
                     return data;
                 }

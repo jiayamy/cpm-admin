@@ -13,4 +13,7 @@ public interface UserCostRepository extends JpaRepository<UserCost,Long> {
 	
 	@Query(" from UserCost where id in (select max(id) from UserCost where status = 1 and costMonth <= ?1 and userId = ?2 group by userId )")
 	public UserCost findMaxByCostMonthAndUserId(Long costMonth, Long userId);
+	
+	@Query(" from UserCost where userId = ?1 and costMonth = ?2")
+	public UserCost findByUserIdAndCostMonth(Long userId,Long costMonth);
 }
