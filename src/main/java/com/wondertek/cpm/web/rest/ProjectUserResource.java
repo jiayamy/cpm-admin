@@ -14,6 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,6 +28,7 @@ import com.codahale.metrics.annotation.Timed;
 import com.wondertek.cpm.config.StringUtil;
 import com.wondertek.cpm.domain.ProjectUser;
 import com.wondertek.cpm.domain.vo.ProjectUserVo;
+import com.wondertek.cpm.security.AuthoritiesConstants;
 import com.wondertek.cpm.security.SecurityUtils;
 import com.wondertek.cpm.service.ProjectUserService;
 import com.wondertek.cpm.web.rest.util.HeaderUtil;
@@ -57,6 +59,7 @@ public class ProjectUserResource {
      */
     @PutMapping("/project-users")
     @Timed
+    @Secured(AuthoritiesConstants.ROLE_PROJECT_USER)
     public ResponseEntity<Boolean> updateProjectUser(@RequestBody ProjectUser projectUser) throws URISyntaxException {
         log.debug("REST request to update ProjectUser : {}", projectUser);
         Boolean isNew = projectUser.getId() == null;
@@ -115,9 +118,10 @@ public class ProjectUserResource {
      */
     @GetMapping("/project-users")
     @Timed
+    @Secured(AuthoritiesConstants.ROLE_PROJECT_USER)
     public ResponseEntity<List<ProjectUserVo>> getAllProjectUsers(
-    		@RequestParam(value = "projectId") Long projectId, 
-    		@RequestParam(value = "userId") Long userId, 
+    		@RequestParam(value = "projectId",required=false) Long projectId, 
+    		@RequestParam(value = "userId",required=false) Long userId, 
     		@ApiParam Pageable pageable)
         throws URISyntaxException {
     	
@@ -140,6 +144,7 @@ public class ProjectUserResource {
      */
     @GetMapping("/project-users/{id}")
     @Timed
+    @Secured(AuthoritiesConstants.ROLE_PROJECT_USER)
     public ResponseEntity<ProjectUserVo> getProjectUser(@PathVariable Long id) {
         log.debug("REST request to get ProjectUser : {}", id);
         ProjectUserVo projectUserVo = projectUserService.getProjectUser(id);
@@ -158,6 +163,7 @@ public class ProjectUserResource {
      */
     @DeleteMapping("/project-users/{id}")
     @Timed
+    @Secured(AuthoritiesConstants.ROLE_PROJECT_USER)
     public ResponseEntity<Void> deleteProjectUser(@PathVariable Long id) {
         log.debug("REST request to delete ProjectUser : {}", id);
         ProjectUserVo projectUserVo = projectUserService.getProjectUser(id);

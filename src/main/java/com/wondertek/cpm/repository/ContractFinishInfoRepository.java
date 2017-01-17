@@ -13,6 +13,6 @@ import com.wondertek.cpm.domain.ContractFinshInfo;
  */
 public interface ContractFinishInfoRepository extends JpaRepository<ContractFinshInfo,Long> {
 
-	@Query("from ContractFinshInfo where contractId = ?1 and createTime < ?2 order by createTime")
+	@Query("from ContractFinshInfo where contractId = ?1 and createTime < ?2 order by createTime asc")
 	List<ContractFinshInfo> findAllByContractIdAndCreateTimeBefore(Long contractId, ZonedDateTime createTime);
 }

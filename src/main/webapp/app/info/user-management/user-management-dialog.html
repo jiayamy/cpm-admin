@@ -1,83 +1,84 @@
 <h2><span data-translate="userManagement.home.createOrEditLabel">Create or edit a Project Info</span></h2>
 <hr>
 <jhi-alert-error></jhi-alert-error>
+<jhi-alert></jhi-alert>
 <form name="myForm" role="form" novalidate ng-submit="vm.save()" show-validation>
     <div class="container-fluid">
     	<div class="row form-horizontal">
     		<div class="form-group">
-	     		<div class="col-sm-6">
-	          		<label class="control-label" for="field_userName">员工姓名</label>
-	          		<input type="text" class="form-control" name="userName" id="field_userName"
-	                  	ng-model="vm.userManagement.userName"  ng-required="true" ng-minlength="1" ng-maxlength="50"
-                   	/>
-                   	 <div ng-show="myForm.userName.$invalid">
-	                   <p ng-show="myForm.userName.$dirty && myForm.userName.$error.minlength" class="alert alert-danger help-block">
-	                      	 人名太长
-	                   </p>
-	                   <p class="help-block"
-	                 		ng-show="myForm.userName.$error.required" data-translate="entity.validation.required">
-	                   	This field is required.
-	               		</p>
-	               </div>
-	      		</div>
-				<div class="col-sm-6">
-	     			<label class="control-label" for="field_dept" >部门</label>
-	     			<div class="input-group">
-		     			<input type="text" class="form-control" name="dept" id="field_dept"
-		                  	ng-model="vm.userManagement.dept"  ng-required="true" ng-minlength="1"
-		                   	/>
-	                   	<span class="input-group-btn">
-	                     	<button type="button" class="btn btn-default" ui-sref="{{vm.queryDept}}({selectType:3,showChild:true,showUser:false})"><i class="glyphicon glyphicon-user"></i></button>
-	                 	</span>
-	     			</div>
-	     			<div ng-show="myForm.dept.$invalid">
-	                   <p class="help-block"
-	                 		ng-show="myForm.dept.$error.required" data-translate="entity.validation.required">
-	                   		This field is required.
-	               		</p>
-	               </div>
-				</div>
-	     	</div>
-		   	<div class="form-group">
-		   		<div class="col-sm-6">
+    			<div class="col-sm-6">
 		        		<label class="control-label" for="field_serialNum">工号</label>
-		        		<input type="text" class="form-control" name="serialNum" id="serialNum"
-		            		ng-model="vm.userManagement.serialNum" ng-required="true"
+		        		<input type="text" class="form-control" name="serialNum" id="field_serialNum"
+		            		ng-model="vm.user.serialNum" ng-required="true" ng-minlength="1" ng-maxlength="50"
 		                	/>
 		           	<div ng-show="myForm.serialNum.$invalid">
 		               	<p class="help-block"
-		                  		ng-show="myForm.serialNum.$error.required" data-translate="entity.validation.required">
+		                  		ng-show="myForm.serialNum.$error.required" data-translate="entity.validation.required" style="color:red">
 		                   	This field is required.
 		               	</p>
 		           	</div>
 		   		</div>
+	     		<div class="col-sm-6">
+	          		<label class="control-label" for="field_lastName" data-translate="userManagement.lastName">Name</label>
+	          		<input type="text" class="form-control" name="lastName" id="field_lastName"
+	                  	ng-model="vm.user.lastName"  ng-required="true" ng-maxlength="50"
+                   	/>
+                   	 <div ng-show="myForm.lastName.$invalid">
+	                   <p ng-show="myForm.lastName.$dirty && myForm.lastName.$error.maxlength" class="alert alert-danger help-block">
+	                      	 姓名不能大于50
+	                   </p>
+	                   <p class="help-block"
+	                 		ng-show="myForm.lastName.$error.required" data-translate="entity.validation.required" style="color:red">
+	                   	This field is required.
+	               		</p>
+	               </div>
+	      		</div>
+	     	</div>
+		   	<div class="form-group">
 		   		<div class="col-sm-6">
-		        		<label class="control-label" for="field_duty">岗位</label>
-		        		<input type="text" class="form-control" name="duty" id="duty"
-		            		ng-model="vm.userManagement.duty" 
-		                	/>
+	     			<label class="control-label" for="field_dept" data-translate="userManagement.dept">Dept</label>
+	     			<div class="input-group">
+		     			<input type="text" class="form-control" name="dept" id="field_dept"
+		                  	ng-model="vm.user.dept" ng-required="true" readOnly="true"
+		                   	/>
+	                   	<span class="input-group-btn">
+	                     	<button type="button" class="btn btn-default" ui-sref="{{vm.queryDept}}({selectType:2,showChild:true,showUser:false})"><i class="glyphicon glyphicon-user"></i></button>
+	                 	</span>
+	     			</div>
+	     			<div ng-show="myForm.dept.$invalid">
+	                   <p class="help-block"
+	                 		ng-show="myForm.dept.$error.required" data-translate="entity.validation.required" style="color:red">
+	                   		This field is required.
+	               		</p>
+	               </div>
+				</div>
+		   		<div class="col-sm-6">
+	        		<label class="control-label" for="field_duty" data-translate="userManagement.duty">Duty</label>
+	        		<input type="text" class="form-control" name="duty" id="field_duty"
+	            		ng-model="vm.user.duty" 
+	                	/>
 		   		</div>
 		   	</div>
     		<div class="form-group">
 		   		<div class="col-sm-6">
 		        		<label class="control-label" data-translate="userManagement.login" for="field_login">Login</label>
-		        		<input type="text" class="form-control" name="login" id="login" ng-required="true"
-		            		ng-model="vm.userManagement.login" ng-minlength="1" ng-maxlength="60"
+		        		<input type="text" class="form-control" name="login" id="field_login" ng-required="true"
+		            		ng-model="vm.user.login" ng-minlength="1" ng-maxlength="60"
 		                	/>
 		           		<div ng-show="myForm.login.$invalid">
 			               	<p class="help-block"
 			                  	ng-show="myForm.login.$dirty&&myForm.login.$error.maxlength" class="alert alert-danger help-block">
-			                   		用户名太长
+			                   		登录名太长
 			               	</p>
 			               	<p class="help-block"
-	                  				ng-show="myForm.login.$error.required" data-translate="entity.validation.required">
+	                  				ng-show="myForm.login.$error.required" data-translate="entity.validation.required" style="color:red">
 		                   		This field is required.
 				        	</p>
 		           		</div>
 		   		</div>
 		   		<div class="col-sm-6">
-	                <label class="control-label"  for="field_password">密码</label>
-	                <input type="password" autocomplete="off" name="password" ng-required="true" ng-minlength="5" ng-maxlength="10" ng-model="vm.userManagement.password" class="form-control" />
+	                <label class="control-label" for="field_password" data-translate="userManagement.password">Password</label>
+	                <input type="password" autocomplete="off" name="password" ng-minlength="5" ng-maxlength="60" ng-model="vm.user.password" class="form-control" id="field_password" />
 	             	<div ng-show="myForm.password.$invalid">    
 	                    <p class="help-block" 
 	                    	ng-show="myForm.password.$dirty&&myForm.password.$error.maxlength" class="alert alert-danger help-block">
@@ -86,17 +87,13 @@
 	                    <p ng-show="myForm.password.$dirty&&myForm.password.$error.minlength" class="alert alert-danger help-block">
 	                           	密码不能小于5位
 	                    </p>
-	                    <p class="help-block"
-	                  		ng-show="myForm.password.$error.required" data-translate="entity.validation.required">
-		                   	This field is required.
-				        </p>
 	            	</div>
 		   		</div>
 		   	</div>
 		   	<div class="form-group" >
 		   		<div class="col-sm-6">
-	               <label class="control-label" >邮箱</label>
-	               <input type="email" autocomplete="off" name="email" ng-minlength="5" ng-maxlength="30" ng-model="vm.userManagement.email" class="form-control" />
+	               <label class="control-label" for="field_email" data-translate="userManagement.email">Email</label>
+	               <input type="email" autocomplete="off" name="email" ng-minlength="5" ng-maxlength="30" ng-model="vm.user.email" class="form-control" id="field_email"/>
 	               <div ng-show="myForm.email.$invalid">
 	                   <p ng-show="myForm.email.$dirty && myForm.email.$error.maxlength" class="alert alert-danger help-block">
 	                      	 邮箱长度不能大于30位
@@ -110,8 +107,8 @@
 	               </div>
             	</div>
             	<div class="col-sm-6">
-	               <label class="control-label" >手机号码</label>
-	               <input type="text" autocomplete="off" name="telephone" ng-minlength="11" ng-maxlength="11" ng-model="vm.userManagement.telephone" class="form-control" ng-pattern="/^1[34578]\d{9}$/"/>
+	               <label class="control-label" for="field_telephone" data-translate="userManagement.telephone">Telephone</label>
+	               <input type="text" autocomplete="off" name="telephone" id="field_telephone" ng-minlength="11" ng-maxlength="11" ng-model="vm.user.telephone" class="form-control" ng-pattern="/^1[34578]\d{9}$/"/>
 	               <div ng-show="myForm.telephone.$invalid">
 	                   	<p ng-show="myForm.telephone.$dirty && myForm.telephone.$error.maxlength" class="alert alert-danger help-block">
 	                      	 号码长度不能大于11位
@@ -128,10 +125,23 @@
 		   	
 		   	<div class="form-group">
 		   		<div class="col-sm-6">
-		        		<label class="control-label" for="field_grade">级别</label>
-		        		<input type="text" class="form-control" name="grade" id="grade"
-		            		ng-model="vm.userManagement.grade"
-		                	/>
+	        		<label class="control-label" for="field_gender" data-translate="userManagement.gender">Gender</label>
+	        		<select class="form-control" name="projectId" ng-model="vm.user.gender" id="field_gender"
+	            		ng-required="true"
+		            	ng-options="gender.val for gender in vm.genders track by gender.key">
+		         	</select>
+		           	<div ng-show="myForm.gender.$invalid">
+		               	<p class="help-block"
+                  			ng-show="myForm.gender.$error.required" data-translate="entity.validation.required">
+	                   		This field is required.
+			        	</p>
+		           	</div>
+		   		</div>
+		   		<div class="col-sm-6">
+	        		<label class="control-label" for="field_grade" data-translate="userManagement.grade">Grade</label>
+	        		<input type="text" class="form-control" name="grade" id="field_grade"
+	            		ng-model="vm.user.grade"
+	                	/>
 		           	<div ng-show="myForm.grade.$invalid">
 		               	<p class="help-block"
 		                  		ng-show="myForm.grade.$dirty&&myForm.grade.$error.maxlength" data-translate="entity.validation.maxlength"
@@ -140,20 +150,19 @@
 		               	</p>
 		           	</div>
 		   		</div>
-		   		<div class="col-sm-6">
-		         	<label class="control-label" for="field_isManager">
-		 				是否管理人员 </label>
-		 			<input type="checkbox" name="isManager" id="isManager"
-		 							ng-model="vm.userManagement.isManager"/>
-	        	</div>
 		   	</div>
 		   	<div class="form-group">
 		   		<div class="col-sm-6">
-		        		<label class="control-label" for="field_birthYear">出生年份</label>
-		        		<input type="text" class="form-control" name="birthYear" id="birthYear" ng-maxlength="4"
-		            		ng-model="vm.userManagement.birthYear" placeholder="例如:2017"
+		        		<label class="control-label" for="field_birthYear" data-translate="userManagement.birthYear">Birth Year</label>
+		        		<input type="text" class="form-control" name="birthYear" id="field_birthYear" ng-minlength="4" ng-maxlength="4"
+		            		ng-model="vm.user.birthYear" placeholder="例如:2017" step="1"
 		                	/>
 		           	<div ng-show="myForm.birthYear.$invalid">
+		           		<p class="help-block"
+		                  		ng-show="myForm.birthYear.$dirty&&myForm.birthYear.$error.minlength" data-translate="entity.validation.maxlength"
+		                  		translate-value-min="4">
+		                   	This field cannot be longer than 4 characters.
+		               	</p>
 		               	<p class="help-block"
 		                  		ng-show="myForm.birthYear.$dirty&&myForm.birthYear.$error.maxlength" data-translate="entity.validation.maxlength"
 		                  		translate-value-max="4">
@@ -162,11 +171,16 @@
 		           	</div>
 		   		</div>
 		   		<div class="col-sm-6">
-		        		<label class="control-label" for="field_birthDay">生日</label>
-		        		<input type="text" class="form-control" name="birthDay" id="birthDay"
-		            		ng-model="vm.userManagement.birthDay" ng-maxlength="4" placeholder="例如:0101"
+		        		<label class="control-label" for="field_birthDay" data-translate="userManagement.birthDay">Birth Day</label>
+		        		<input type="text" class="form-control" name="birthDay" id="field_birthDay"
+		            		ng-model="vm.user.birthDay" ng-minlength="4" ng-maxlength="4" placeholder="例如:0101" step="1"
 		                	/>
 		           	<div ng-show="myForm.birthDay.$invalid">
+		               	<p class="help-block"
+		                  		ng-show="myForm.birthDay.$dirty&&myForm.birthDay.$error.minlength" data-translate="entity.validation.minlength"
+		                  		translate-value-min="4">
+		                   	This field cannot be longer than 4 characters.
+		               	</p>
 		               	<p class="help-block"
 		                  		ng-show="myForm.birthDay.$dirty&&myForm.birthDay.$error.maxlength" data-translate="entity.validation.maxlength"
 		                  		translate-value-max="4">
@@ -176,10 +190,23 @@
 		   		</div>
 		   	</div>
 		   	<div class="form-group">
-	            <label data-translate="userManagement.profiles">Profiles</label>
-	            <select class="form-control" multiple name="authority" ng-model="vm.user.authorities"
-	                    ng-options="authority for authority in vm.authorities">
-	            </select>
+		   		<div class="col-sm-6">
+		            <label data-translate="userManagement.profiles">Profiles</label>
+		            <select class="form-control" multiple name="authority" ng-model="vm.user.authorities"
+		                    ng-options="authority for authority in vm.authorities">
+		            </select>
+		    	</div>
+		    	<div class="col-sm-6">
+		    		<div class="col-sm-12">
+        			&nbsp;
+        			</div>
+        			<div class="col-sm-6">
+			         	<label class="control-label" for="field_isManager">
+			 				是否管理人员 </label>
+			 			<input type="checkbox" name="isManager" id="field_isManager"
+		 							ng-model="vm.user.isManager"/>
+		 			</div>
+	        	</div>
         	</div>
 	    </div>
 	 </div>

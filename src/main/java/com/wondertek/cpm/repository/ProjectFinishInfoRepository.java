@@ -13,6 +13,6 @@ import com.wondertek.cpm.domain.ProjectFinishInfo;
  */
 public interface ProjectFinishInfoRepository extends JpaRepository<ProjectFinishInfo,Long> {
 	
-	@Query("from ProjectFinishInfo where projectId = ?1 and createTime < ?2 order by createTime")
+	@Query("from ProjectFinishInfo where projectId = ?1 and createTime < ?2 order by createTime asc")
 	List<ProjectFinishInfo> findAllByProjectIdAndCreateTimeBefore(Long projectId, ZonedDateTime createTime);
 }

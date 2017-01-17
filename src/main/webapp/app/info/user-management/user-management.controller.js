@@ -25,7 +25,20 @@
         vm.reverse = pagingParams.ascending;
         vm.itemsPerPage = paginationConstants.itemsPerPage;
         vm.transition = transition;
-
+        vm.search = search;
+        vm.clear = clear;
+        
+        vm.searchQuery = {};
+        vm.searchQuery.serialNum = pagingParams.serialNum;
+        vm.searchQuery.lastName = pagingParams.lastName;
+        vm.searchQuery.login = pagingParams.login;
+        if (vm.searchQuery.serialNum == undefined&& vm.searchQuery.lastName == undefined
+        		&& vm.searchQuery.login == undefined){
+        	vm.haveSearch = null;
+        }else{
+        	vm.haveSearch = true;
+        }
+        
         vm.loadAll();
         JhiLanguageService.getAll().then(function (languages) {
             vm.languages = languages;
@@ -38,12 +51,15 @@
             user.activated = isActivated;
             User.update(user, function () {
                 vm.loadAll();
-                vm.clear();
+                vm.clearUser();
             });
         }
 
         function loadAll () {
             User.query({
+            	loginName:pagingParams.login,
+            	lastName:pagingParams.lastName,
+            	serialNum:pagingParams.serialNum,
                 page: pagingParams.page - 1,
                 size: vm.itemsPerPage,
                 sort: sort()
@@ -70,7 +86,7 @@
             AlertService.error(error.data.message);
         }
 
-        function clear () {
+        function clearUser () {
             vm.user = {
                 id: null, login: null, firstName: null, lastName: null, email: null,
                 activated: null, langKey: null, createdBy: null, createdDate: null,
@@ -96,8 +112,32 @@
             $state.transitionTo($state.$current, {
                 page: vm.page,
                 sort: vm.predicate + ',' + (vm.reverse ? 'asc' : 'desc'),
-                search: vm.currentSearch
+                serialNum:vm.searchQuery.serialNum,
+                lastName:vm.searchQuery.lastName,
+                login:vm.searchQuery.login
             });
+        }
+        function search() {
+        	if (vm.searchQuery.serialNum == undefined&& vm.searchQuery.lastName == undefined
+            		&& vm.searchQuery.login == undefined){
+                return vm.clear();
+            }
+            vm.links = null;
+            vm.page = 1;
+            vm.predicate = 'id';
+            vm.reverse = false;
+            vm.haveSearch = true;
+            vm.transition();
+        }
+
+        function clear() {
+            vm.links = null;
+            vm.page = 1;
+            vm.predicate = 'id';
+            vm.reverse = false;
+            vm.searchQuery = {};
+            vm.haveSearch = null;
+            vm.transition();
         }
     }
 })();

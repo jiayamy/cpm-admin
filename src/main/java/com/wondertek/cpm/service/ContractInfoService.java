@@ -21,11 +21,28 @@ import com.wondertek.cpm.domain.ContractInfo;
 import com.wondertek.cpm.domain.DeptInfo;
 import com.wondertek.cpm.domain.User;
 import com.wondertek.cpm.domain.vo.ContractInfoVo;
+import com.wondertek.cpm.domain.vo.LongValue;
 import com.wondertek.cpm.repository.ContractInfoDao;
 import com.wondertek.cpm.repository.ContractInfoRepository;
 import com.wondertek.cpm.repository.UserRepository;
 import com.wondertek.cpm.repository.search.ContractInfoSearchRepository;
 import com.wondertek.cpm.security.SecurityUtils;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.stereotype.Service;
+
+import javax.inject.Inject;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
+
+import static org.elasticsearch.index.query.QueryBuilders.*;
 
 /**
  * Service Implementation for managing ContractInfo.
@@ -143,8 +160,24 @@ public class ContractInfoService {
 		return null;
 	}
 
+
+	public List<LongValue> queryUserContract() {
+		List<LongValue> returnList = new ArrayList<LongValue>();
+		List<Object[]> objs = userRepository.findUserInfoByLogin(SecurityUtils.getCurrentUserLogin());
+		if(objs != null && !objs.isEmpty()){
+    		Object[] o = objs.get(0);
+    		User user = (User) o[0];
+    		DeptInfo deptInfo = (DeptInfo) o[1];
+    		
+    		returnList = contractInfoDao.queryUserContract(user,deptInfo);
+    	}
+		return returnList;
+	}
+
+
+	
+
 	public int finishContractInfo(Long id, Double finishRate) {
 		return contractInfoDao.finishContractInfo(id,finishRate,SecurityUtils.getCurrentUserLogin());
 	}
-
 }

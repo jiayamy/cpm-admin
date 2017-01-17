@@ -1,14 +1,20 @@
 package com.wondertek.cpm.repository;
 
-import com.wondertek.cpm.domain.ProjectMonthlyStat;
-import org.springframework.data.jpa.repository.*;
-
 import java.util.List;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+
+import com.wondertek.cpm.domain.ProjectMonthlyStat;
 
 /**
  * Spring Data JPA repository for the ProjectMonthlyStat entity.
  */
-@SuppressWarnings("unused")
 public interface ProjectMonthlyStatRepository extends JpaRepository<ProjectMonthlyStat,Long> {
-
+	
+	@Query(" from ProjectMonthlyStat where statWeek = ?1 and projectId = ?2")
+	List<ProjectMonthlyStat> findByStatWeekAndProjectId(Long statWeek, Long projectId);
+	
+	@Query(" from ProjectMonthlyStat where statWeek >= ?1 and statWeek <= ?2 and projectId = ?3")
+	List<ProjectMonthlyStat> findByStatWeekAndProjectId(Long beginWeek, Long endWeek, Long projectId);
 }

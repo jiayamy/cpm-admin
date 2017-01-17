@@ -16,8 +16,6 @@
                 transformResponse: function (data) {
                     if (data) {
                         data = angular.fromJson(data);
-                        data.joinDay = DateUtils.convertDateTimeFromServer(data.joinDay);
-                        data.leaveDay = DateUtils.convertDateTimeFromServer(data.leaveDay);
                         data.createTime = DateUtils.convertDateTimeFromServer(data.createTime);
                         data.updateTime = DateUtils.convertDateTimeFromServer(data.updateTime);
                     }

@@ -5,9 +5,9 @@
         .module('cpmApp')
         .controller('ContractUserController', ContractUserController);
 
-    ContractUserController.$inject = ['$scope', '$state', 'ContractUser', 'ContractUserSearch', 'ParseLinks', 'AlertService', 'paginationConstants', 'pagingParams'];
+    ContractUserController.$inject = ['ContractInfo','$rootScope','$scope', '$state', 'ContractUser', 'ContractUserSearch', 'ParseLinks', 'AlertService', 'paginationConstants', 'pagingParams'];
 
-    function ContractUserController ($scope, $state, ContractUser, ContractUserSearch, ParseLinks, AlertService, paginationConstants, pagingParams) {
+    function ContractUserController (ContractInfo,$rootScope,$scope, $state, ContractUser, ContractUserSearch, ParseLinks, AlertService, paginationConstants, pagingParams) {
         var vm = this;
 
         vm.loadPage = loadPage;
@@ -18,26 +18,59 @@
         vm.clear = clear;
         vm.search = search;
         vm.loadAll = loadAll;
-        vm.searchQuery = pagingParams.search;
-        vm.currentSearch = pagingParams.search;
-
+        vm.searchQuery = {};
+        vm.searchQuery.contractId = pagingParams.contractId;
+        vm.searchQuery.userId = pagingParams.userId;
+        vm.searchQuery.userName = pagingParams.userName;
+        
+        console.log(vm.searchQuery);
+        if (!vm.searchQuery.contractId && !vm.searchQuery.userId){
+        	vm.haveSearch = null;
+        }else{
+        	vm.haveSearch = true;
+        }
+        //加载搜索下拉框
+        vm.contractInfos = [];
+        loadContractInfos();
+       
+        //加载列表页
         loadAll();
-
+        function loadContractInfos(){
+        	ContractInfo.queryContractInfo(
+    			{
+        			
+        		},
+        		function(data,headers){
+        			vm.contractInfos = data;
+        			
+            		if(vm.contractInfos && vm.contractInfos.length > 0){
+            			for(var i = 0; i < vm.contractInfos.length; i++){
+            				if(pagingParams.contractId == vm.contractInfos[i].key){
+            					vm.searchQuery.contractId = vm.contractInfos[i];
+            				}
+            			}
+            		}
+        		},
+        		function(error){
+        			AlertService.error(error.data.message);
+        		}
+        	
+        	);
+        }
         function loadAll () {
-            if (pagingParams.search) {
-                ContractUserSearch.query({
-                    query: pagingParams.search,
-                    page: pagingParams.page - 1,
-                    size: vm.itemsPerPage,
-                    sort: sort()
-                }, onSuccess, onError);
-            } else {
-                ContractUser.query({
-                    page: pagingParams.page - 1,
-                    size: vm.itemsPerPage,
-                    sort: sort()
-                }, onSuccess, onError);
-            }
+        	if(pagingParams.contractId == undefined){
+        		pagingParams.contractId = "";
+        	}
+			if(pagingParams.userId == undefined){
+				pagingParams.userId = "";
+			}
+        	ContractUser.query({
+        		contractId:pagingParams.contractId,
+            	userId:pagingParams.userId,
+	            page: pagingParams.page - 1,
+	            size: vm.itemsPerPage,
+	            sort: sort()
+        	}, onSuccess, onError);
             function sort() {
                 var result = [vm.predicate + ',' + (vm.reverse ? 'asc' : 'desc')];
                 if (vm.predicate !== 'id') {
@@ -66,19 +99,21 @@
             $state.transitionTo($state.$current, {
                 page: vm.page,
                 sort: vm.predicate + ',' + (vm.reverse ? 'asc' : 'desc'),
-                search: vm.currentSearch
+                contractId: vm.searchQuery.contractId ? vm.searchQuery.contractId.key : "",
+                userId: vm.searchQuery.userId,
+                userName: vm.searchQuery.userName,
             });
         }
 
-        function search(searchQuery) {
-            if (!searchQuery){
-                return vm.clear();
-            }
+        function search() {
+        	 if (!vm.searchQuery.contractId && !vm.searchQuery.userId){
+                 return vm.clear();
+             }
             vm.links = null;
             vm.page = 1;
-            vm.predicate = '_score';
+            vm.predicate = 'id';
             vm.reverse = false;
-            vm.currentSearch = searchQuery;
+            vm.haveSearch = true;
             vm.transition();
         }
 
@@ -87,8 +122,14 @@
             vm.page = 1;
             vm.predicate = 'id';
             vm.reverse = true;
-            vm.currentSearch = null;
+            vm.searchQuery = {};
+            vm.haveSearch = null;
             vm.transition();
         }
+        var unsubscribe = $rootScope.$on('cpmApp:deptInfoSelected', function(event, result) {
+        	vm.searchQuery.userId = result.objId;
+        	vm.searchQuery.userName = result.name;
+        });
+        $scope.$on('$destroy', unsubscribe);
     }
 })();

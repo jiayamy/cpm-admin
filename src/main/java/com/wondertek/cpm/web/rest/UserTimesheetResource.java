@@ -59,9 +59,9 @@ public class UserTimesheetResource {
     @GetMapping("/user-timesheets")
     @Timed
     public ResponseEntity<List<UserTimesheetVo>> getAllUserTimesheets(
-    		@RequestParam(value = "workDay") Long workDay,
-    		@RequestParam(value = "type") Integer type,
-    		@RequestParam(value = "objName") String objName,
+    		@RequestParam(value = "workDay",required=false) Long workDay,
+    		@RequestParam(value = "type",required=false) Integer type,
+    		@RequestParam(value = "objName",required=false) String objName,
     		@ApiParam Pageable pageable)
         throws URISyntaxException {
         log.debug("REST request to get a page of UserTimesheets");

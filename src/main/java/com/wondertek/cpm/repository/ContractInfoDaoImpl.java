@@ -18,6 +18,7 @@ import com.wondertek.cpm.domain.ContractInfo;
 import com.wondertek.cpm.domain.DeptInfo;
 import com.wondertek.cpm.domain.User;
 import com.wondertek.cpm.domain.vo.ContractInfoVo;
+import com.wondertek.cpm.domain.vo.LongValue;
 @Repository("contractInfoDao")
 public class ContractInfoDaoImpl extends GenericDaoImpl<ContractInfo, Long> implements ContractInfoDao {
 
@@ -177,6 +178,38 @@ public class ContractInfoDaoImpl extends GenericDaoImpl<ContractInfo, Long> impl
 	}
 
 	@Override
+
+	public List<LongValue> queryUserContract(User user, DeptInfo deptInfo) {
+		StringBuffer querySql = new StringBuffer();
+		ArrayList<Object> params = new ArrayList<Object>();
+		
+		querySql.append(" select wci.id,wci.serial_num,wci.name_ from w_contract_info wci");
+		querySql.append(" left join w_dept_info wdi on wci.dept_id = wdi.id");
+		querySql.append(" where (wci.sales_man_id = ? or wci.consultants_id = ? or wci.creator_ = ?");
+		
+		params.add(user.getId());
+		params.add(user.getId());
+		params.add(user.getLogin());
+		
+		if (user.getIsManager()) {
+			querySql.append(" or wdi.id_path like ? or wdi.id = ?");
+			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
+			params.add(deptInfo.getId());
+		}
+		
+		querySql.append(")");
+		List<Object[]> list = this.queryAllSql(querySql.toString(), params.toArray());
+		List<LongValue> returnList = new ArrayList<LongValue>();
+		if(list != null){
+			for(Object[] o : list){
+				returnList.add(new LongValue(StringUtil.nullToLong(o[0]),StringUtil.null2Str(o[1]) + ":" + StringUtil.null2Str(o[2])));
+			}
+		}
+		
+		return returnList;
+	}
+
+
 	public int finishContractInfo(Long id, Double finishRate, String updator) {
 		return this.excuteHql("update ContractInfo set finishRate = ? , updator = ?, updateTime = ? where id = ?", new Object[]{finishRate,updator,ZonedDateTime.now(),id});
 	}

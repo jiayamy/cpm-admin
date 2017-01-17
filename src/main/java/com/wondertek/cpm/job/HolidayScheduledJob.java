@@ -1,6 +1,5 @@
-package com.wondertek.cpm.web.rest.job;
+package com.wondertek.cpm.job;
 
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
 
@@ -11,9 +10,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import com.wondertek.cpm.TimerHolidayUtil;
+import com.wondertek.cpm.config.DateUtil;
+import com.wondertek.cpm.config.StringUtil;
 import com.wondertek.cpm.domain.HolidayInfo;
 import com.wondertek.cpm.service.HolidayInfoService;
-import com.wondertek.cpm.web.rest.util.TimerHolidayUtil;
 
 @Component
 public class HolidayScheduledJob {
@@ -23,16 +24,17 @@ public class HolidayScheduledJob {
 	@Inject
     private HolidayInfoService holidayInfoService;
 
-	@Scheduled(cron="0 0 5 1 * ?")
-//	@Scheduled(fixedDelay = 20000)
+	@Scheduled(cron="0 0/5 * * * ?")
 	public void holidayUpdate(){
-		//judge whether update holidayInfos.
+		log.debug("holidayUpdate start");
+		
 		Calendar cal = Calendar.getInstance();
 		cal.set(Calendar.YEAR, cal.get(Calendar.YEAR)+1);
 		cal.add(Calendar.MONTH, -1);
 		cal.set(Calendar.DAY_OF_MONTH, 1);
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
-		Long dateTime = Long.valueOf(sdf.format(cal.getTime()));
+		Long dateTime = StringUtil.nullToLong(DateUtil.formatDate(DateUtil.DATE_YYYYMMDD_PATTERN, cal.getTime()));
+		log.debug("holidayUpdate handling ,dateTime:" + dateTime);
+		
 		HolidayInfo holiResult = holidayInfoService.findByCurrDay(dateTime);
 		List<HolidayInfo> lists = null;
 		try {
@@ -44,8 +46,8 @@ public class HolidayScheduledJob {
 				holidayInfoService.save(lists);
 			}
 		} catch (Exception e) {
-			log.error("HolidayInfo update error:", e);
+			log.error("holidayUpdate error:", e);
 		}
-		log.debug("REST to update HolidayInfo : {}", holiResult);
+		log.debug("holidayUpdate end");
 	}
 }

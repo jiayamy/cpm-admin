@@ -30,7 +30,7 @@ import com.wondertek.cpm.config.StringUtil;
 import com.wondertek.cpm.domain.ContractInfo;
 import com.wondertek.cpm.domain.ProjectInfo;
 import com.wondertek.cpm.domain.vo.ContractInfoVo;
-import com.wondertek.cpm.domain.vo.ProjectInfoVo;
+import com.wondertek.cpm.domain.vo.LongValue;
 import com.wondertek.cpm.security.AuthoritiesConstants;
 import com.wondertek.cpm.security.SecurityUtils;
 import com.wondertek.cpm.service.ContractInfoService;
@@ -53,6 +53,7 @@ public class ContractInfoResource {
 
 	@PutMapping("/contract-infos")
     @Timed
+    @Secured(AuthoritiesConstants.ROLE_CONTRACT_INFO)
     public ResponseEntity<Boolean> updateContractInfo(@RequestBody ContractInfo contractInfo) throws URISyntaxException {
         log.debug("REST request to update ContractInfo : {}", contractInfo);
         Boolean isNew = contractInfo.getId() == null;
@@ -135,10 +136,11 @@ public class ContractInfoResource {
 
 	@GetMapping("/contract-infos")
 	@Timed
-	public ResponseEntity<List<ContractInfoVo>> getAllContractInfos(@RequestParam(value = "name") String name,
-			@RequestParam(value = "type") Integer type, @RequestParam(value = "isPrepared") Boolean isPrepared,
-			@RequestParam(value = "isEpibolic") Boolean isEpibolic, @RequestParam(value = "serialNum") String serialNum,
-			@RequestParam(value = "salesmanId") Long salesmanId,@RequestParam(value = "consultantsId") Long consultantsId,
+	@Secured(AuthoritiesConstants.ROLE_CONTRACT_INFO)
+	public ResponseEntity<List<ContractInfoVo>> getAllContractInfos(@RequestParam(value = "name",required=false) String name,
+			@RequestParam(value = "type",required=false) Integer type, @RequestParam(value = "isPrepared",required=false) Boolean isPrepared,
+			@RequestParam(value = "isEpibolic",required=false) Boolean isEpibolic, @RequestParam(value = "serialNum",required=false) String serialNum,
+			@RequestParam(value = "salesmanId",required=false) Long salesmanId,@RequestParam(value = "consultantsId",required=false) Long consultantsId,
 			@ApiParam Pageable pageable) throws URISyntaxException {
 		log.debug("REST request to get a page of ContractInfos");
 		ContractInfo contractInfo = new ContractInfo();
@@ -158,6 +160,7 @@ public class ContractInfoResource {
 
 	@GetMapping("/contract-infos/{id}")
 	@Timed
+	@Secured(AuthoritiesConstants.ROLE_CONTRACT_INFO)
 	public ResponseEntity<ContractInfoVo> getContractInfo(@PathVariable Long id) {
 		log.debug("REST request to get ContractInfo : {}", id);
 		ContractInfoVo contractInfo = contractInfoService.getUserContractInfo(id);
@@ -174,6 +177,7 @@ public class ContractInfoResource {
 	 */
 	@DeleteMapping("/contract-infos/{id}")
 	@Timed
+	@Secured(AuthoritiesConstants.ROLE_CONTRACT_INFO)
 	public ResponseEntity<Void> deleteContractInfo(@PathVariable Long id) {
 		log.debug("REST request to delete ContractInfo : {}", id);
 		contractInfoService.delete(id);
@@ -183,6 +187,7 @@ public class ContractInfoResource {
 	// 留作参考
 	@GetMapping("/_search/contract-infos")
 	@Timed
+	@Secured(AuthoritiesConstants.ROLE_CONTRACT_INFO)
 	public ResponseEntity<List<ContractInfo>> searchContractInfos(@RequestParam String query,
 			@ApiParam Pageable pageable) throws URISyntaxException {
 		log.debug("REST request to search for a page of ContractInfos for query {}", query);
@@ -191,12 +196,19 @@ public class ContractInfoResource {
 				"/api/_search/contract-infos");
 		return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
 	}
+	@GetMapping("/contract-infos/queryUserContract")
+	public ResponseEntity<List<LongValue>> queryUserContract() {
+		log.debug("REST request to queryUserContract");
+		 List<LongValue> list = contractInfoService.queryUserContract();
+		 return new ResponseEntity<>(list, null, HttpStatus.OK);
+	}
+	
 
 	@PutMapping("/contract-infos/finish")
     @Timed
-    @Secured(AuthoritiesConstants.ROLE_PROJECT_INFO)
-    public ResponseEntity<ProjectInfo> finishProjectInfo(@RequestBody ContractInfo contractInfo) throws URISyntaxException {
-    	log.debug("REST request to endProjectInfo");
+    @Secured(AuthoritiesConstants.ROLE_CONTRACT_INFO)
+    public ResponseEntity<ProjectInfo> finishContractInfo(@RequestBody ContractInfo contractInfo) throws URISyntaxException {
+    	log.debug("REST request to finishContractInfo");
     	if(contractInfo.getId() == null || contractInfo.getFinishRate() == null){
     		return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.contractInfo.save.requiedError", "")).body(null);
     	}

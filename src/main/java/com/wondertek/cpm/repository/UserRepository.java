@@ -25,11 +25,16 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findOneByEmail(String email);
 
     Optional<User> findOneByLogin(String login);
+    
+    Optional<User> findOneBySerialNum(String serialNum);
 
     @Query(value = "select distinct user from User user left join fetch user.authorities",
         countQuery = "select count(user) from User user")
     Page<User> findAllWithAuthorities(Pageable pageable);
-
+    
+    @Query(value="select user,deptInfo.name from User user,DeptInfo deptInfo where deptInfo.id = user.deptId and user.login = ?1")
+    List<Object[]> findDetailByLogin(String login);
+    
     @Query("from User u where u.activated = ?1 order by id asc")
 	List<User> findAllByActivated(Boolean activated);
     

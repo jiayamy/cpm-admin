@@ -11,7 +11,7 @@
         $stateProvider
         .state('contract-user', {
             parent: 'contract',
-            url: '/contract-user?page&sort&search',
+            url: '/contract-user?page&sort&search&contractId&userId&userName',
             data: {
                 authorities: ['ROLE_USER'],
                 pageTitle: 'cpmApp.contractUser.home.title'
@@ -32,7 +32,9 @@
                     value: 'id,asc',
                     squash: true
                 },
-                search: null
+                contractId: null,
+                userId: null,
+                userName:null
             },
             resolve: {
                 pagingParams: ['$stateParams', 'PaginationUtil', function ($stateParams, PaginationUtil) {
@@ -41,15 +43,46 @@
                         sort: $stateParams.sort,
                         predicate: PaginationUtil.parsePredicate($stateParams.sort),
                         ascending: PaginationUtil.parseAscending($stateParams.sort),
-                        search: $stateParams.search
+                        contractId: $stateParams.contractId,
+                        userId: $stateParams.userId,
+                        userName:$stateParams.userName
                     };
                 }],
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                     $translatePartialLoader.addPart('contractUser');
                     $translatePartialLoader.addPart('global');
+                    $translatePartialLoader.addPart('deptInfo');
                     return $translate.refresh();
                 }]
             }
+        })
+        .state('contract-user.queryDept', {
+            parent: 'contract-user',
+            url: '/queryDept?selectType&showChild',
+            data: {
+                authorities: ['ROLE_USER']
+            },
+            onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
+                $uibModal.open({
+                    templateUrl: 'app/info/dept-info/dept-info-query.html',
+                    controller: 'DeptInfoQueryController',
+                    controllerAs: 'vm',
+                    backdrop: 'static',
+                    size: 'lg',
+                    resolve: {
+                        entity: function() {
+                            return {
+                            	selectType : $stateParams.selectType,
+                            	showChild : $stateParams.showChild
+                            }
+                        }
+                    }
+                }).result.then(function() {
+                    $state.go('^', {}, { reload: false });
+                }, function() {
+                    $state.go('^');
+                });
+            }]
         })
         .state('contract-user-detail', {
             parent: 'contract',
@@ -85,21 +118,58 @@
         })
         .state('contract-user-detail.edit', {
             parent: 'contract-user-detail',
-            url: '/detail/edit',
+            url: '/edit',
+            data: {
+                authorities: ['ROLE_USER'],
+                pageTitle: 'cpmApp.contractUser.home.createOrEditLabel'
+            },
+            views: {
+                'content@': {
+                	templateUrl: 'app/contract/contract-user/contract-user-dialog.html',
+                    controller: 'ContractUserDialogController',
+                    controllerAs: 'vm'
+                }
+            },
+            resolve: {
+                translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
+                	$translatePartialLoader.addPart('contractUser');
+                    $translatePartialLoader.addPart('deptInfo');
+                    return $translate.refresh();
+                }],
+                entity: ['ContractUser','$stateParams', function(ContractUser,$stateParams) {
+                    return ContractUser.get({id : $stateParams.id}).$promise;
+                }],
+                previousState: ["$state", function ($state) {
+                    var currentStateData = {
+                        name: $state.current.name || 'contract-user',
+                        queryDept:'contract-user-detail.edit.queryDept',
+                        params: $state.params,
+                        url: $state.href($state.current.name, $state.params)
+                    };
+                    return currentStateData;
+                }]
+            }
+        })
+        .state('contract-user-detail.edit.queryDept', {
+            parent: 'contract-user-detail.edit',
+            url: '/queryDept?selectType&showChild',
             data: {
                 authorities: ['ROLE_USER']
             },
             onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
                 $uibModal.open({
-                    templateUrl: 'app/contract/contract-user/contract-user-dialog.html',
-                    controller: 'ContractUserDialogController',
+                    templateUrl: 'app/info/dept-info/dept-info-query.html',
+                    controller: 'DeptInfoQueryController',
                     controllerAs: 'vm',
                     backdrop: 'static',
                     size: 'lg',
                     resolve: {
-                        entity: ['ContractUser', function(ContractUser) {
-                            return ContractUser.get({id : $stateParams.id}).$promise;
-                        }]
+                        entity: function() {
+                            return {
+                            	selectType : $stateParams.selectType,
+                            	showChild : $stateParams.showChild
+                            }
+                        }
                     }
                 }).result.then(function() {
                     $state.go('^', {}, { reload: false });
@@ -112,59 +182,133 @@
             parent: 'contract-user',
             url: '/new',
             data: {
-                authorities: ['ROLE_USER']
+                authorities: ['ROLE_USER'],
+        		pageTitle: 'cpmApp.contractUser.detail.title'
             },
-            onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
-                $uibModal.open({
-                    templateUrl: 'app/contract/contract-user/contract-user-dialog.html',
+            views: {
+                'content@': {
+                	templateUrl: 'app/contract/contract-user/contract-user-dialog.html',
                     controller: 'ContractUserDialogController',
                     controllerAs: 'vm',
-                    backdrop: 'static',
-                    size: 'lg',
-                    resolve: {
-                        entity: function () {
-                            return {
-                                contractId: null,
-                                userId: null,
-                                userName: null,
-                                deptId: null,
-                                joinDay: null,
-                                leaveDay: null,
-                                creator: null,
-                                createTime: null,
-                                updator: null,
-                                updateTime: null,
-                                id: null
-                            };
-                        }
-                    }
-                }).result.then(function() {
-                    $state.go('contract-user', null, { reload: 'contract-user' });
-                }, function() {
-                    $state.go('contract-user');
-                });
-            }]
+                }
+            },
+            resolve: {
+                translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
+                	$translatePartialLoader.addPart('contractUser');
+                    $translatePartialLoader.addPart('deptInfo');
+                    return $translate.refresh();
+                }],
+                entity: function () {
+                	return {
+                		contractId: null,
+                        userId: null,
+                        userName: null,
+                        deptId: null,
+                        joinDay: null,
+                        leaveDay: null,
+                        creator: null,
+                        createTime: null,
+                        updator: null,
+                        updateTime: null,
+                        id: null
+                    };
+                },
+                previousState: ["$state", function ($state) {
+                    var currentStateData = {
+                        name: $state.current.name || 'contract-user',
+                        queryDept:'contract-user.new.queryDept',
+                        params: $state.params,
+                        url: $state.href($state.current.name, $state.params)
+                    };
+                    return currentStateData;
+                }]
+            }
         })
-        .state('contract-user.edit', {
-            parent: 'contract-user',
-            url: '/{id}/edit',
+        .state('contract-user.new.queryDept', {
+            parent: 'contract-user.new',
+            url: '/queryDept?selectType&showChild',
             data: {
                 authorities: ['ROLE_USER']
             },
             onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
                 $uibModal.open({
-                    templateUrl: 'app/contract/contract-user/contract-user-dialog.html',
-                    controller: 'ContractUserDialogController',
+                    templateUrl: 'app/info/dept-info/dept-info-query.html',
+                    controller: 'DeptInfoQueryController',
                     controllerAs: 'vm',
                     backdrop: 'static',
                     size: 'lg',
                     resolve: {
-                        entity: ['ContractUser', function(ContractUser) {
-                            return ContractUser.get({id : $stateParams.id}).$promise;
-                        }]
+                        entity: function() {
+                            return {
+                            	selectType : $stateParams.selectType,
+                            	showChild : $stateParams.showChild
+                            }
+                        }
                     }
                 }).result.then(function() {
-                    $state.go('contract-user', null, { reload: 'contract-user' });
+                    $state.go('^', {}, { reload: false });
+                }, function() {
+                    $state.go('^');
+                });
+            }]
+        })
+        .state('contract-user.edit', {
+            parent: 'contract-user',
+            url: '/edit/{id}',
+            data: {
+                authorities: ['ROLE_USER'],
+        		pageTitle: 'cpmApp.contractUser.home.createOrEditLabel'
+            },
+            views: {
+                'content@': {
+	            	templateUrl: 'app/contract/contract-user/contract-user-dialog.html',
+	            	controller: 'ContractUserDialogController',
+	                controllerAs: 'vm'
+                }
+            },
+            resolve: {
+                translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
+                	$translatePartialLoader.addPart('contractUser');
+                    $translatePartialLoader.addPart('deptInfo');
+                    return $translate.refresh();
+                }],
+                entity: ['ContractUser','$stateParams', function(ContractUser,$stateParams) {
+                    return ContractUser.get({id : $stateParams.id}).$promise;
+                }],
+                previousState: ["$state", function ($state) {
+                    var currentStateData = {
+                        name: $state.current.name || 'contract-user',
+                        queryDept:'contract-user.edit.queryDept',
+                        params: $state.params,
+                        url: $state.href($state.current.name, $state.params)
+                    };
+                    return currentStateData;
+                }]
+            }
+        })
+        .state('contract-user.edit.queryDept', {
+            parent: 'contract-user.edit',
+            url: '/queryDept?selectType&showChild',
+            data: {
+                authorities: ['ROLE_USER']
+            },
+            onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
+                $uibModal.open({
+                    templateUrl: 'app/info/dept-info/dept-info-query.html',
+                    controller: 'DeptInfoQueryController',
+                    controllerAs: 'vm',
+                    backdrop: 'static',
+                    size: 'lg',
+                    resolve: {
+                        entity: function() {
+                            return {
+                            	selectType : $stateParams.selectType,
+                            	showChild : $stateParams.showChild
+                            }
+                        }
+                    }
+                }).result.then(function() {
+                    $state.go('^', {}, { reload: false });
                 }, function() {
                     $state.go('^');
                 });
@@ -172,7 +316,7 @@
         })
         .state('contract-user.delete', {
             parent: 'contract-user',
-            url: '/{id}/delete',
+            url: '/delete/{id}',
             data: {
                 authorities: ['ROLE_USER']
             },

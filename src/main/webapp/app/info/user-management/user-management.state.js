@@ -11,7 +11,7 @@
         $stateProvider
         .state('user-management', {
             parent: 'info',
-            url: '/user-management?page&sort',
+            url: '/user-management?page&sort&login&serialNum&lastName',
             data: {
                 authorities: ['ROLE_INFO_BASIC'],
                 pageTitle: 'userManagement.home.title'
@@ -22,15 +22,19 @@
                     controller: 'UserManagementController',
                     controllerAs: 'vm'
                 }
-            },            params: {
+            },
+            params: {
                 page: {
                     value: '1',
                     squash: true
                 },
                 sort: {
-                    value: 'id,asc',
+                    value: 'id,desc',
                     squash: true
-                }
+                },
+                login:null,
+                serialNum:null,
+                lastName:null
             },
             resolve: {
                 pagingParams: ['$stateParams', 'PaginationUtil', function ($stateParams, PaginationUtil) {
@@ -38,7 +42,10 @@
                         page: PaginationUtil.parsePage($stateParams.page),
                         sort: $stateParams.sort,
                         predicate: PaginationUtil.parsePredicate($stateParams.sort),
-                        ascending: PaginationUtil.parseAscending($stateParams.sort)
+                        ascending: PaginationUtil.parseAscending($stateParams.sort),
+                        login: $stateParams.login,
+                        serialNum: $stateParams.serialNum,
+                        lastName: $stateParams.lastName
                     };
                 }],
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
@@ -48,8 +55,8 @@
 
             }        })
         .state('user-management-detail', {
-            parent: 'info',
-            url: '/user/:login',
+            parent: 'user-management',
+            url: '/detail/:login',
             data: {
                 authorities: ['ROLE_INFO_BASIC'],
                 pageTitle: 'user-management.detail.title'
@@ -74,40 +81,77 @@
             data: {
                 authorities: ['ROLE_INFO_BASIC']
             },
-            onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
-                $uibModal.open({
+            views: {
+                'content@': {
                     templateUrl: 'app/info/user-management/user-management-dialog.html',
                     controller: 'UserManagementDialogController',
+                    controllerAs: 'vm'
+                }
+            },
+            resolve: {
+                translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
+                    $translatePartialLoader.addPart('user-management');
+                    $translatePartialLoader.addPart('deptInfo');
+                    return $translate.refresh();
+                }],
+                entity: function () {
+                    return {
+                        id: null, login: null, firstName: null, lastName: null, email: null,
+                        activated: true, langKey: null, createdBy: null, createdDate: null,
+                        lastModifiedBy: null, lastModifiedDate: null, resetDate: null,
+                        resetKey: null, authorities: null,gender:1
+                    };
+                },
+             	previousState: ["$state", function ($state) {
+  	                var currentStateData = {
+  	                	queryDept:'user-management.new.queryDept',
+  	                    name: $state.current.name || 'user-management',
+  	                    params: $state.params,
+  	                    url: $state.href($state.current.name, $state.params)
+  	                };
+  	                return currentStateData;
+  	            }]
+            }
+        })
+        .state('user-management.new.queryDept', {
+            parent: 'user-management.new',
+            url: '/queryDept?selectType&showChild&showUser',
+            data: {
+                authorities: ['ROLE_PROJECT_INFO']
+            },
+            onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
+                $uibModal.open({
+                    templateUrl: 'app/info/dept-info/dept-info-query.html',
+                    controller: 'DeptInfoQueryController',
                     controllerAs: 'vm',
                     backdrop: 'static',
                     size: 'lg',
                     resolve: {
-                        entity: function () {
+                        entity: function() {
                             return {
-                                id: null, login: null, firstName: null, lastName: null, email: null,
-                                activated: true, langKey: null, createdBy: null, createdDate: null,
-                                lastModifiedBy: null, lastModifiedDate: null, resetDate: null,
-                                resetKey: null, authorities: null
-                            };
+                            	selectType : $stateParams.selectType,
+                            	showChild : $stateParams.showChild,
+                            	showUser : $stateParams.showUser
+                            }
                         }
                     }
                 }).result.then(function() {
-                    $state.go('user-management', null, { reload: true });
+                    $state.go('^', {}, { reload: false });
                 }, function() {
-                    $state.go('user-management');
+                    $state.go('^');
                 });
             }]
         })
         .state('user-management.edit', {
             parent: 'user-management',
-            url: '/{login}/edit',
+            url: '/edit/{login}',
             data: {
                 authorities: ['ROLE_INFO_BASIC']
             },
             views: {
                 'content@': {
                     templateUrl: 'app/info/user-management/user-management-dialog.html',
-                    controller: 'UserManagementDetailController',
+                    controller: 'UserManagementDialogController',
                     controllerAs: 'vm'
                 }
             },
@@ -162,7 +206,7 @@
         })
         .state('user-management.delete', {
             parent: 'user-management',
-            url: '/{login}/delete',
+            url: '/delete/{login}',
             data: {
                 authorities: ['ROLE_INFO_BASIC']
             },

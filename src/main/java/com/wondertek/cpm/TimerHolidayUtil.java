@@ -1,4 +1,4 @@
-package com.wondertek.cpm.web.rest.util;
+package com.wondertek.cpm;
 
 import java.text.SimpleDateFormat;
 import java.time.Instant;
@@ -10,7 +10,6 @@ import java.util.Date;
 import java.util.List;
 
 import com.wondertek.cpm.domain.HolidayInfo;
-import com.wondertek.cpm.web.rest.job.HolidayConstants;
 /**
  * Update Holiday Info.
  *
@@ -52,15 +51,15 @@ public final class TimerHolidayUtil {
 			HolidayInfo holidayInfo = new HolidayInfo();
 			cal.setTime(date);
 			holidayInfo.setCreateTime(zdt);
-			holidayInfo.setCreator(HolidayConstants.DEFAULT_HOLIDAY_CREATOR);
+			holidayInfo.setCreator(CpmConstants.DEFAULT_HOLIDAY_CREATOR);
 			holidayInfo.setCurrDay(Long.valueOf(sdf.format(date)));
 			holidayInfo.setUpdateTime(zdt);
-			holidayInfo.setUpdator(HolidayConstants.DEFAULT_HOLIDAY_UPDATOR);
+			holidayInfo.setUpdator(CpmConstants.DEFAULT_HOLIDAY_UPDATOR);
 			if(cal.get(Calendar.DAY_OF_WEEK)==Calendar.SATURDAY || cal.get(Calendar.DAY_OF_WEEK)==Calendar.SUNDAY ){
-				holidayInfo.setType(HolidayConstants.HOLIDAY_WEEKEND_TYPE);
+				holidayInfo.setType(CpmConstants.HOLIDAY_WEEKEND_TYPE);
 				holidayInfos.add(holidayInfo);
 			}else{
-				holidayInfo.setType(HolidayConstants.HOLIDAY_WORKDAY_TYPE);
+				holidayInfo.setType(CpmConstants.HOLIDAY_WORKDAY_TYPE);
 				holidayInfos.add(holidayInfo);
 			}
 		}
@@ -84,24 +83,21 @@ public final class TimerHolidayUtil {
 		}
 		
 		List<HolidayInfo> holidayInfos = new ArrayList<HolidayInfo>();
-		ZoneId zone = ZoneId.of("GMT+08:00");
-		Date date1 = new Date();
-		Instant ins = date1.toInstant();
-		ZonedDateTime zdt = ins.atZone(zone);
+		ZonedDateTime zdt = ZonedDateTime.now();
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
 		for(Date date:dateLists){
 			HolidayInfo holidayInfo = new HolidayInfo();
 			cal.setTime(date);
 			holidayInfo.setCreateTime(zdt);
-			holidayInfo.setCreator(HolidayConstants.DEFAULT_HOLIDAY_CREATOR);
+			holidayInfo.setCreator(CpmConstants.DEFAULT_HOLIDAY_CREATOR);
 			holidayInfo.setCurrDay(Long.valueOf(sdf.format(date)));
 			holidayInfo.setUpdateTime(zdt);
-			holidayInfo.setUpdator(HolidayConstants.DEFAULT_HOLIDAY_UPDATOR);
+			holidayInfo.setUpdator(CpmConstants.DEFAULT_HOLIDAY_UPDATOR);
 			if(cal.get(Calendar.DAY_OF_WEEK)==Calendar.SATURDAY || cal.get(Calendar.DAY_OF_WEEK)==Calendar.SUNDAY ){
-				holidayInfo.setType(HolidayConstants.HOLIDAY_WEEKEND_TYPE);
+				holidayInfo.setType(CpmConstants.HOLIDAY_WEEKEND_TYPE);
 				holidayInfos.add(holidayInfo);
 			}else{
-				holidayInfo.setType(HolidayConstants.HOLIDAY_WORKDAY_TYPE);
+				holidayInfo.setType(CpmConstants.HOLIDAY_WORKDAY_TYPE);
 				holidayInfos.add(holidayInfo);
 			}
 		}

@@ -20,7 +20,7 @@
         vm.holiStatuss = [{key:1,val:'正常工作日'},{key:2,val:'正常休息日'},{key:3,val:'年假'},{key:4,val:'国家假日'}];
         for(var i=0;i<vm.holiStatuss.length;i++){
         	if(entity.type == vm.holiStatuss[i].key){
-        		vm.holidayInfo.typeName = vm.holiStatuss[i];
+        		vm.holidayInfo.type = vm.holiStatuss[i];
         		break;
         	}
         }
@@ -38,15 +38,16 @@
         }
 
         function save () {
-        	var addHoliTypeName = vm.holidayInfo.typeName;
-    		vm.holidayInfo.type=addHoliTypeName.key;
-    		vm.holidayInfo.currDay = DateUtils.convertLocalDateToFormat(vm.holidayInfo.currDay,"yyyyMMdd");
             vm.isSaving = true;
-            HolidayInfo.update(vm.holidayInfo, onSaveSuccess, onSaveError);
+            var holidayInfo = {};
+            holidayInfo.id = vm.holidayInfo.id;
+            holidayInfo.type = vm.holidayInfo.type && vm.holidayInfo.type.key ?  vm.holidayInfo.type.key : "";
+            holidayInfo.currDay = DateUtils.convertLocalDateToFormat(vm.holidayInfo.currDay,"yyyyMMdd");
+            
+            HolidayInfo.update(holidayInfo, onSaveSuccess, onSaveError);
         }
 
         function onSaveSuccess (result) {
-            $scope.$emit('cpmApp:holidayInfoUpdate', result);
             $state.go('holiday-info');
             vm.isSaving = false;
         }
@@ -55,10 +56,7 @@
             vm.isSaving = false;
         }
 
-        vm.datePickerOpenStatus.createTime = false;
-        vm.datePickerOpenStatus.updateTime = false;
         vm.datePickerOpenStatus.currDay = false;
-
         function openCalendar (date) {
             vm.datePickerOpenStatus[date] = true;
         }
