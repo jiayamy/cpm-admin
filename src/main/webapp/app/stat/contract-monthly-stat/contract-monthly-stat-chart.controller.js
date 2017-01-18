@@ -3,11 +3,11 @@
 
     angular
         .module('cpmApp')
-        .controller('ProjectMonthlyStatChartController', ProjectMonthlyStatChartController);
+        .controller('ContractMonthlyStatChartController', ContractMonthlyStatChartController);
 
-    ProjectMonthlyStatChartController.$inject = ['$scope','$state','DateUtils', '$rootScope', '$stateParams', 'pagingParams', 'ProjectMonthlyStatChart', 'AlertService','previousState'];
+    ContractMonthlyStatChartController.$inject = ['$scope','$state','DateUtils', '$rootScope', '$stateParams', 'pagingParams', 'ContractMonthlyStatChart', 'AlertService','previousState'];
 
-    function ProjectMonthlyStatChartController ($scope,$state,DateUtils,$rootScope, $stateParams, pagingParams, ProjectMonthlyStatChart, AlertService,previousState) {
+    function ContractMonthlyStatChartController ($scope,$state,DateUtils,$rootScope, $stateParams, pagingParams, ContractMonthlyStatChart, AlertService,previousState) {
     	var vm = this;
 //    	console.log($state);
         vm.transition = transition;
@@ -17,15 +17,15 @@
         vm.searchQuery = {};
         var fromDate = pagingParams.fromDate;
         var toDate = pagingParams.toDate;
-        if(fromDate && fromDate.length == 6){
-        	fromDate = new Date(fromDate.substring(0,4),parseInt(fromDate.substring(4,6)),fromDate.substring(6,8));
+        if(fromDate && fromDate.length == 8){
+        	fromDate = new Date(fromDate.substring(0,4),parseInt(fromDate.substring(4,6))-1,fromDate.substring(6,8));
         }
-        if(toDate && toDate.length == 6){
-        	toDate = new Date(toDate.substring(0,4),parseInt(toDate.substring(4,6)),toDate.substring(6,8));
+        if(toDate && toDate.length == 8){
+        	toDate = new Date(toDate.substring(0,4),parseInt(toDate.substring(4,6))-1,toDate.substring(6,8));
         }
         vm.searchQuery.fromDate= fromDate;
         vm.searchQuery.toDate = toDate;
-        vm.searchQuery.id = pagingParams.id;
+        vm.searchQuery.contractId = pagingParams.contractId;
         if (!vm.searchQuery.fromDate && !vm.searchQuery.toDate){
         	vm.haveSearch = null;
         }else{
@@ -40,13 +40,13 @@
         	if(pagingParams.toDate == undefined){
         		pagingParams.toDate = "";
         	};
-        	if(pagingParams.id == undefined){
-        		pagingParams.id = "";
+        	if(pagingParams.contractId == undefined){
+        		pagingParams.contractId = "";
         	};
-        	ProjectMonthlyStatChart.queryChart({
+        	ContractMonthlyStatChart.queryChart({
                 fromDate : pagingParams.fromDate,
                 toDate : pagingParams.toDate,
-                id : pagingParams.id
+                contractId : pagingParams.contractId
             }, onSuccess, onError);
            function onSuccess(data, headers) {
                 //第三方参数设置
@@ -164,7 +164,6 @@
                 chartBottom.hideLoading();
 
                 chartBottom.setOption(option);
-                
             }
             function onError(error) {
                 AlertService.error(error.data.message);
@@ -175,20 +174,18 @@
             $state.transitionTo($state.$current, {
                 fromDate: DateUtils.convertLocalDateToFormat(vm.searchQuery.fromDate,"yyyyMM"),
                 toDate: DateUtils.convertLocalDateToFormat(vm.searchQuery.toDate,"yyyyMM"),
-                id:vm.searchQuery.id ? vm.searchQuery.id : ""
+                contractId:vm.searchQuery.contractId ? vm.searchQuery.contractId.key : ""
             });
         }
         vm.backDetail = backDetail;
-        console.log(pagingParams);
         function backDetail(){
-        	$state.go('project-monthly-stat-detail', {
-        		id: pagingParams.id
+        	$state.go('contract-monthly-stat-detail', {
+        		id: pagingParams.contractId
             });
         }
         
         function clear() {
-            vm.searchQuery.fromDate = null;
-            vm.searchQuery.toDate = null;
+            vm.searchQuery = {};
             vm.haveSearch = null;
             vm.transition();
         }

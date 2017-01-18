@@ -5,90 +5,50 @@
         .module('cpmApp')
         .controller('DeptInfoController', DeptInfoController);
 
-    DeptInfoController.$inject = ['$scope', '$state', 'DeptInfo', 'DeptInfoSearch', 'ParseLinks', 'AlertService', 'paginationConstants', 'pagingParams'];
+    DeptInfoController.$inject = ['$scope','$rootScope', '$state', 'DeptInfo', 'DeptInfoSearch', 'ParseLinks', 'AlertService', 'paginationConstants', 'pagingParams'];
 
-    function DeptInfoController ($scope, $state, DeptInfo, DeptInfoSearch, ParseLinks, AlertService, paginationConstants, pagingParams) {
+    function DeptInfoController ($scope,$rootScope, $state, DeptInfo, DeptInfoSearch, ParseLinks, AlertService, paginationConstants, pagingParams) {
         var vm = this;
 
-        vm.loadPage = loadPage;
-        vm.predicate = pagingParams.predicate;
-        vm.reverse = pagingParams.ascending;
-        vm.transition = transition;
-        vm.itemsPerPage = paginationConstants.itemsPerPage;
-        vm.clear = clear;
-        vm.search = search;
-        vm.loadAll = loadAll;
-        vm.searchQuery = pagingParams.search;
-        vm.currentSearch = pagingParams.search;
+        vm.isChildShowed = isChildShowed;
+        vm.showOrHiddenChild = showOrHiddenChild;
 
         loadAll();
-
         function loadAll () {
-            if (pagingParams.search) {
-                DeptInfoSearch.query({
-                    query: pagingParams.search,
-                    page: pagingParams.page - 1,
-                    size: vm.itemsPerPage,
-                    sort: sort()
-                }, onSuccess, onError);
-            } else {
-                DeptInfo.query({
-                    page: pagingParams.page - 1,
-                    size: vm.itemsPerPage,
-                    sort: sort()
-                }, onSuccess, onError);
-            }
-            function sort() {
-                var result = [vm.predicate + ',' + (vm.reverse ? 'asc' : 'desc')];
-                if (vm.predicate !== 'id') {
-                    result.push('id');
-                }
-                return result;
-            }
+            DeptInfo.getDeptTree({
+            	
+            }, onSuccess, onError);
+            
             function onSuccess(data, headers) {
-                vm.links = ParseLinks.parse(headers('link'));
-                vm.totalItems = headers('X-Total-Count');
-                vm.queryCount = vm.totalItems;
-                vm.deptInfos = data;
-                vm.page = pagingParams.page;
+            	vm.deptInfos = data;
+            	for(var i = 0; i < vm.deptInfos.length; i++){
+                    if(vm.deptInfos[i].children && vm.deptInfos[i].children.length !=0){
+                    	vm.deptInfos[i].showChild = true;
+                    }
+                }
             }
             function onError(error) {
                 AlertService.error(error.data.message);
             }
         }
-
-        function loadPage(page) {
-            vm.page = page;
-            vm.transition();
-        }
-
-        function transition() {
-            $state.transitionTo($state.$current, {
-                page: vm.page,
-                sort: vm.predicate + ',' + (vm.reverse ? 'asc' : 'desc'),
-                search: vm.currentSearch
-            });
-        }
-
-        function search(searchQuery) {
-            if (!searchQuery){
-                return vm.clear();
+        
+        function isChildShowed(node){
+        	if(node.children && node.children.length != 0 && node.showChild){
+                return true;
             }
-            vm.links = null;
-            vm.page = 1;
-            vm.predicate = '_score';
-            vm.reverse = false;
-            vm.currentSearch = searchQuery;
-            vm.transition();
+            return false;
         }
-
-        function clear() {
-            vm.links = null;
-            vm.page = 1;
-            vm.predicate = 'id';
-            vm.reverse = true;
-            vm.currentSearch = null;
-            vm.transition();
+        
+        function showOrHiddenChild(node){
+        	if(node.children && node.children.length != 0){
+                node.showChild = !node.showChild;
+            }
+        	return;
         }
+        
+        var unsubscribe = $rootScope.$on('cpmApp:deptInfoUpdate', function(event, result) {
+//        	loadAll();
+        });
+        $scope.$on('$destroy', unsubscribe);
     }
 })();

@@ -1,7 +1,11 @@
 package com.wondertek.cpm.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
+import com.wondertek.cpm.config.DateUtil;
+import com.wondertek.cpm.config.StringUtil;
 import com.wondertek.cpm.domain.ProjectWeeklyStat;
+import com.wondertek.cpm.domain.vo.ChartReportDataVo;
+import com.wondertek.cpm.domain.vo.ChartReportVo;
 import com.wondertek.cpm.service.ProjectWeeklyStatService;
 import com.wondertek.cpm.web.rest.util.HeaderUtil;
 import com.wondertek.cpm.web.rest.util.PaginationUtil;
@@ -19,6 +23,9 @@ import org.springframework.web.bind.annotation.*;
 import javax.inject.Inject;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -152,5 +159,44 @@ public class ProjectWeeklyStatResource {
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
 
-
+    @GetMapping("/project-weekly-stats/queryChart")
+    @Timed
+    public ChartReportVo getChartReport(@ApiParam(value="fromDate") @RequestParam(value="fromDate") String fromDate,
+    		@ApiParam(value="toDate") @RequestParam(value="toDate") String toDate,
+    		@ApiParam(value="projectId") @RequestParam(value="projectId", required = true) Long projectId){
+    	ChartReportVo chartReportVo = new ChartReportVo();
+    	chartReportVo.setTitle("title");
+    	String[] dates = DateUtil.getWholeWeekByDate(new Date());
+    	if(StringUtil.isNullStr(fromDate)){
+    		fromDate = dates[0];
+    	}
+    	if(StringUtil.isNullStr(toDate)){
+    		toDate = dates[6];
+    	}
+    	List<String> legend = new ArrayList<String>(Arrays.asList(new String[]{"人工成本","报销成本"}));
+    	chartReportVo.setLegend(legend);
+    	Date fDay = DateUtil.parseDate("yyyyMMdd", fromDate);
+    	Date lDay = DateUtil.parseDate("yyyyMMdd", toDate);
+    	Long oneDay = 24*60*60*1000L;
+    	Long temp = fDay.getTime();
+    	List<String> category = new ArrayList<String>();
+    	while(temp <= lDay.getTime()){
+    		category.add(DateUtil.formatDate("yyyy-MM-dd", new Date(temp)));
+    		temp += oneDay;
+    	}
+    	chartReportVo.setCategory(category);
+    	List<ChartReportDataVo> datas = new ArrayList<>();
+    	ChartReportDataVo data1 = new ChartReportDataVo();
+    	ChartReportDataVo data2 = new ChartReportDataVo();
+    	data1.setName("人工成本");
+    	data1.setType("line");
+    	data1.setData(projectWeeklyStatService.getHumanCost(fDay, lDay, projectId));
+    	data2.setName("报销成本");
+    	data2.setType("line");
+    	data2.setData(projectWeeklyStatService.getPayment(fDay, lDay, projectId));
+    	datas.add(data1);
+    	datas.add(data2);
+    	chartReportVo.setSeries(datas);
+    	return chartReportVo;
+    }
 }

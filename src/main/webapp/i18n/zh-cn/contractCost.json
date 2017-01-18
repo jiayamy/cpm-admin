@@ -3,21 +3,34 @@
         "contractCost" : {
             "home": {
                 "title": "合同成本信息",
-                "createLabel": "新建合同成本信息",
-                "createOrEditLabel": "更改合同成本信息",
+                "createLabel": "新建",
+                "createOrEditLabel": "合同成本信息",
                 "search": "查询"
             },
-            "created": "创建合同成本信息 {{ param }}",
-            "updated": "更改合同成本信息{{ param }}",
-            "deleted": "删除合同成本信息 {{ param }}",
+            "created": "创建成功",
+            "updated": "修改成功",
+            "deleted": "删除成功",
             "delete": {
-                "question": "确定删除合同成本记录 {{ id }}?"
+                "question": "确定删除合同成本记录 ?",
+                "status2Error":"状态为删除的数据不可在执行删除操作",
+                "type1Error":"类型为工时的数据不可删除"
             },
             "detail": {
                 "title": "合同成本信息"
             },
-            "contractId": "合同基本信息Id",
-            "budgetId": "合同预算Id",
+            "save":{
+            	"paramNone":"必填参数为空",
+            	"noPerm":"无权限操作",
+            	"idNone":"数据异常，请刷新后操作",
+            	"projectIdError":"项目不可更改",
+            	"type1Error":"类型为工时的数据不可编辑",
+            	"statue2Error":"状态为删除的数据不可编辑"
+            },
+            "contractId":"合同编号",
+            "serialNum": "合同编号",
+            "contractName":"合同名称",
+            "contractName": "合同名称",
+            "budgetId": "合同预算",
             "deptId": "部门Id",
             "dept": "部门",
             "name": "名称",

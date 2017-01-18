@@ -14,12 +14,21 @@
                 "question": "Are you sure you want to delete Contract Monthly Stat {{ id }}?"
             },
             "detail": {
-                "title": "Contract Monthly Stat"
+                "title": "Contract Monthly Stat",
+                "transChart": "Translate Chart"
+            },
+            "echarts":{
+            	"title": "Contract Monthly Stat Chart",
+            	"fromDate" : "Create Date From",
+            	"toDate" : "Create Date End",
+            	"transDetail" : "Translate Detail"
             },
             "fromDate" : "Create Date From",
             "toDate" : "Create Date End",
             "statDate" : "Stat Week",
+            "contractSerialNum" : "Contract SerialNum",
             "contractId": "Contract Id",
+            "serialNum" : "serial Num",
             "finishRate" : "Finish Rate",
             "receiveTotal": "Receive Total",
             "costTotal": "Cost Total",

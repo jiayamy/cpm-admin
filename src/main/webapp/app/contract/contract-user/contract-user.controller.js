@@ -73,8 +73,8 @@
         	}, onSuccess, onError);
             function sort() {
                 var result = [vm.predicate + ',' + (vm.reverse ? 'asc' : 'desc')];
-                if (vm.predicate !== 'id') {
-                    result.push('id');
+                if (vm.predicate !== 'wcu.id') {
+                    result.push('wcu.id');
                 }
                 return result;
             }
@@ -111,7 +111,7 @@
              }
             vm.links = null;
             vm.page = 1;
-            vm.predicate = 'id';
+            vm.predicate = 'wcu.id';
             vm.reverse = false;
             vm.haveSearch = true;
             vm.transition();
@@ -120,7 +120,7 @@
         function clear() {
             vm.links = null;
             vm.page = 1;
-            vm.predicate = 'id';
+            vm.predicate = 'wcu.id';
             vm.reverse = true;
             vm.searchQuery = {};
             vm.haveSearch = null;

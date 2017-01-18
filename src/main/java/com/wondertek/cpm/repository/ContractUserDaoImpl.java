@@ -18,12 +18,10 @@ import com.wondertek.cpm.config.DateUtil;
 import com.wondertek.cpm.config.StringUtil;
 import com.wondertek.cpm.domain.ContractUser;
 import com.wondertek.cpm.domain.DeptInfo;
-import com.wondertek.cpm.domain.ProjectUser;
 import com.wondertek.cpm.domain.User;
 import com.wondertek.cpm.domain.UserTimesheet;
 import com.wondertek.cpm.domain.vo.ContractUserVo;
 import com.wondertek.cpm.domain.vo.LongValue;
-import com.wondertek.cpm.domain.vo.ProjectUserVo;
 @Repository("contractUserDao")
 public class ContractUserDaoImpl extends GenericDaoImpl<ContractUser, Long> implements ContractUserDao  {
 	
@@ -87,7 +85,7 @@ public class ContractUserDaoImpl extends GenericDaoImpl<ContractUser, Long> impl
 		whereSql.append(" from w_contract_user wcu");
 		whereSql.append(" left join w_contract_info wci on wci.id = wcu.contract_id");
 		whereSql.append(" left join w_dept_info wdi on wci.dept_id = wdi.id");
-		whereSql.append(" left join w_dept_info wdi2 on wci.consultants_dept_id = wdi2.id ");
+		whereSql.append(" left join w_dept_info wdi2 on wci.consultants_dept_id = wdi2.id");
 		whereSql.append(" where (wci.sales_man_id = ? or wci.consultants_id = ? or wci.creator_ = ?");
 		params.add(user.getId());
 		params.add(user.getId());
@@ -97,6 +95,11 @@ public class ContractUserDaoImpl extends GenericDaoImpl<ContractUser, Long> impl
 			whereSql.append(" or wdi.id_path like ? or wdi.id = ?");
 			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
 			params.add(deptInfo.getId());
+			
+			whereSql.append(" or wdi2.id_path like ? or wdi2.id = ?");
+			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
+			params.add(deptInfo.getId());
+			
 		}
 		whereSql.append(")");
 		
@@ -185,6 +188,10 @@ public class ContractUserDaoImpl extends GenericDaoImpl<ContractUser, Long> impl
 		
 		if(user.getIsManager()){
 			queryHql.append(" or wdi.idPath like ? or wdi.id = ?");
+			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
+			params.add(deptInfo.getId());
+			
+			queryHql.append(" or wdi2.idPath like ? or wdi2.id = ?");
 			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
 			params.add(deptInfo.getId());
 		}

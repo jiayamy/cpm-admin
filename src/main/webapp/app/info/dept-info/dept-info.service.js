@@ -27,8 +27,12 @@
             	method: 'GET',
             	url:'api/dept-infos/getDeptAndUserTree',
             	isArray: true
+            },
+            'getDeptTree':{
+            	method: 'GET',
+            	url:'api/dept-infos/getDeptTree',
+            	isArray: true
             }
-            	
         });
     }
 })();

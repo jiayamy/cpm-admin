@@ -5,9 +5,9 @@
         .module('cpmApp')
         .controller('ContractCostController', ContractCostController);
 
-    ContractCostController.$inject = ['$scope', '$state', 'ContractCost', 'ContractCostSearch', 'ParseLinks', 'AlertService', 'paginationConstants', 'pagingParams'];
+    ContractCostController.$inject = ['ContractInfo','$scope', '$state', 'ContractCost', 'ContractCostSearch', 'ParseLinks', 'AlertService', 'paginationConstants', 'pagingParams'];
 
-    function ContractCostController ($scope, $state, ContractCost, ContractCostSearch, ParseLinks, AlertService, paginationConstants, pagingParams) {
+    function ContractCostController (ContractInfo,$scope, $state, ContractCost, ContractCostSearch, ParseLinks, AlertService, paginationConstants, pagingParams) {
         var vm = this;
 
         vm.loadPage = loadPage;
@@ -18,30 +18,77 @@
         vm.clear = clear;
         vm.search = search;
         vm.loadAll = loadAll;
-        vm.searchQuery = pagingParams.search;
-        vm.currentSearch = pagingParams.search;
-
+        
+        //枚举值
+        vm.types = [{key:1,val:'工时'},{key:2,val:'差旅'},{key:3,val:'采购'},{key:4,val:'商务'}];
+        vm.statuss = [{key:1,val:'可用'},{key:2,val:'删除'}];
+        vm.searchQuery = {};
+        
+        vm.searchQuery.contractId = pagingParams.contractId;
+        vm.searchQuery.type = pagingParams.type;
+        vm.searchQuery.name = pagingParams.name;
+        
+        if (!vm.searchQuery.contractId && !vm.searchQuery.type && !vm.searchQuery.name){
+        	vm.haveSearch = null;
+        }else{
+        	vm.haveSearch = true;
+        }
+        //回显type
+        for(var i = 0; i < vm.types.length; i++){
+        	if(pagingParams.type == vm.types[i].key){
+        		vm.searchQuery.type = vm.types[i];
+        	}
+        }
+        vm.contractInfos = [];
+        loadContractInfos();
         loadAll();
-
+        
+        function loadContractInfos(){
+        	ContractInfo.queryContractInfo(
+        		{
+        			
+        		},
+        		function(data, headers){
+        			vm.contractInfos = data;
+            		if(vm.contractInfos && vm.contractInfos.length > 0){
+            			for(var i = 0; i < vm.contractInfos.length; i++){
+            				if(pagingParams.contractId == vm.contractInfos[i].key){
+            					vm.searchQuery.contractId = vm.contractInfos[i];
+            				}
+            			}
+            		}
+        		},
+        		function(error){
+        			AlertService.error(error.data.message);
+        		}
+        	);
+        }
+        
+        
         function loadAll () {
-            if (pagingParams.search) {
-                ContractCostSearch.query({
-                    query: pagingParams.search,
-                    page: pagingParams.page - 1,
-                    size: vm.itemsPerPage,
-                    sort: sort()
-                }, onSuccess, onError);
-            } else {
-                ContractCost.query({
-                    page: pagingParams.page - 1,
-                    size: vm.itemsPerPage,
-                    sort: sort()
-                }, onSuccess, onError);
-            }
+        	if(pagingParams.contractId == undefined){
+        		pagingParams.contractId = "";
+        	}
+        	if(pagingParams.type == undefined){
+        		pagingParams.type = "";
+        	}
+        	if(pagingParams.name == undefined){
+        		pagingParams.name = "";
+        	}
+        	
+        	
+            ContractCost.query({
+            	contractId: pagingParams.contractId,
+               	type: pagingParams.type,
+                name: pagingParams.name,
+                page: pagingParams.page - 1,
+                size: vm.itemsPerPage,
+                sort: sort()
+            }, onSuccess, onError);
             function sort() {
                 var result = [vm.predicate + ',' + (vm.reverse ? 'asc' : 'desc')];
-                if (vm.predicate !== 'id') {
-                    result.push('id');
+                if (vm.predicate !== 'wcc.id') {
+                    result.push('wcc.id');
                 }
                 return result;
             }
@@ -49,11 +96,29 @@
                 vm.links = ParseLinks.parse(headers('link'));
                 vm.totalItems = headers('X-Total-Count');
                 vm.queryCount = vm.totalItems;
-                vm.contractCosts = data;
+                vm.contractCosts = handleData(data);
                 vm.page = pagingParams.page;
             }
             function onError(error) {
                 AlertService.error(error.data.message);
+            }
+            //处理type status 的显示问题
+            function handleData(data){
+            	if(data.length > 0){
+            		for(var i = 0; i< data.length ; i++){
+            			for(var j = 0; j < vm.types.length; j++){
+            	        	if(data[i].type == vm.types[j].key){
+            	        		data[i].typeName = vm.types[j].val;
+            	        	}
+            	        }
+            			for(var j = 0; j < vm.statuss.length; j++){
+            	        	if(data[i].status == vm.statuss[j].key){
+            	        		data[i].statusName = vm.statuss[j].val;
+            	        	}
+            	        }
+            		}
+            	}
+            	return data;
             }
         }
 
@@ -66,28 +131,33 @@
             $state.transitionTo($state.$current, {
                 page: vm.page,
                 sort: vm.predicate + ',' + (vm.reverse ? 'asc' : 'desc'),
-                search: vm.currentSearch
+                contractId:vm.searchQuery.contractId ? vm.searchQuery.contractId.key : "",
+                type:vm.searchQuery.type ? vm.searchQuery.type.key : "",
+                name:vm.searchQuery.name,
             });
         }
 
         function search(searchQuery) {
-            if (!searchQuery){
+        	if (!vm.searchQuery.contractId 
+        			&& !vm.searchQuery.type 
+        			&& !vm.searchQuery.name){
                 return vm.clear();
             }
             vm.links = null;
             vm.page = 1;
-            vm.predicate = '_score';
+            vm.predicate = 'wcc.id';
             vm.reverse = false;
-            vm.currentSearch = searchQuery;
+            vm.haveSearch = true;
             vm.transition();
         }
 
         function clear() {
             vm.links = null;
             vm.page = 1;
-            vm.predicate = 'id';
+            vm.predicate = 'wcc.id';
             vm.reverse = true;
-            vm.currentSearch = null;
+            vm.searchQuery = {};
+            vm.haveSearch = null;
             vm.transition();
         }
     }

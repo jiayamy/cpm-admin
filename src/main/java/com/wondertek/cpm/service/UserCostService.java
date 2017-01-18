@@ -1,10 +1,12 @@
 package com.wondertek.cpm.service;
 
 import com.wondertek.cpm.domain.UserCost;
+import com.wondertek.cpm.repository.UserCostDao;
 import com.wondertek.cpm.repository.UserCostRepository;
 import com.wondertek.cpm.repository.search.UserCostSearchRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,6 +33,9 @@ public class UserCostService {
 
     @Inject
     private UserCostSearchRepository userCostSearchRepository;
+    
+    @Autowired
+    private UserCostDao userCostDao;
 
     /**
      * Save a userCost.
@@ -93,5 +98,24 @@ public class UserCostService {
         log.debug("Request to search for a page of UserCosts for query {}", query);
         Page<UserCost> result = userCostSearchRepository.search(queryStringQuery(query), pageable);
         return result;
+    }
+    
+    /**
+     * 加载员工成本列表页面
+     * @param userCost
+     * @param pageable
+     * @return
+     */
+    @Transactional(readOnly = true)
+    public Page<UserCost> getUserCostPage(UserCost userCost,Pageable pageable){
+    	log.debug("Request to a page of UserCosts");
+    	Page<UserCost> page = userCostDao.getUserCostPage(userCost, pageable);
+    	return page;
+    }
+    
+    public UserCost findByUserIdAndCostMonth(Long userId,Long costMonth){
+    	log.debug("Request to get UserCost by userId and costMonth");
+    	UserCost userCost = userCostRepository.findByUserIdAndCostMonth(userId,costMonth);
+    	return userCost;
     }
 }

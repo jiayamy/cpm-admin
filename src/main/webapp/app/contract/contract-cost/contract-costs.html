@@ -2,110 +2,96 @@
     <h2 data-translate="cpmApp.contractCost.home.title">Contract Costs</h2>
     <jhi-alert></jhi-alert>
     <div class="container-fluid">
-    	<div class="row form-horizontal">
-	        <div class="form-group">
-	            <div class="col-xs-3 no-padding-left">
-	                <button class="btn btn-primary" ui-sref="contract-cost.new" >
-	                    <span class="glyphicon glyphicon-plus"></span>
-	                    <span class="hidden-xs"  data-translate="cpmApp.contractCost.home.createLabel">
-	                        Create new Contract Cost
-	                    </span>
+        <div class="row">
+            <div class="col-xs-4">
+                <button class="btn btn-primary" ui-sref="contract-cost.new" >
+                    <span class="glyphicon glyphicon-plus"></span>
+                    <span class=""  data-translate="cpmApp.contractCost.home.createLabel">
+                        Create new Contract Cost
+                    </span>
                 </button>
-	            </div>
-	            <div class="col-xs-8 no-padding-right">
-	            </div>
-	        </div>
-	     </div>
-       	<form name="searchForm" class="form-horizontal">
-	      <div class="form-group">
+            </div>
+        </div>
+        <form name="searchForm" class="form-horizontal">
+			<div class="form-group">
 	            <div class="col-sm-4">
-	            	<label class="col-sm-4 control-label" data-translate="cpmApp.contractInfo.name">ContractInfo Name</label>
+	          		<label class="col-sm-4 control-label" data-translate="cpmApp.contractCost.contractId">Project Num</label>
 		            <div class="col-sm-8">
-		                <select class="form-control" name="isEpibolic" ng-model="vm.searchQuery.name"
-			            	ng-options="isEpibolic.name for isEpibolic in vm.isEpibolics track by isEpibolic.id">
-			            	<option value="">--选择合同名称--</option>
+		            	<select class="form-control" ng-model="vm.searchQuery.contractId"
+			            	ng-options="contractInfo.val for contractInfo in vm.contractInfos track by contractInfo.key">
+			            	<option value="">--项目编号--</option>
 			            </select>
 		            </div>
+	            </div>
+	            <div class="col-sm-4">
+	          		<label class="col-sm-4 control-label" data-translate="cpmApp.contractCost.type">Type</label>
+                    <div class="col-sm-8">
+		            	<select class="form-control" ng-model="vm.searchQuery.type"
+			            	ng-options="type.val for type in vm.types track by type.key">
+			            	<option value="">--类型--</option>
+			            </select>
+		            </div>
+	            </div>
+	            <div class="col-sm-4">
+	            	<label class="col-sm-4 control-label" data-translate="cpmApp.contractCost.name">Name</label>
+                    <div class="col-sm-8" >
+	                   	<input type="text" class="form-control" ng-model="vm.searchQuery.name">
+                    </div>
+	            </div>
+            </div>
+            <div class="form-group">
+	            <div class="col-sm-4">
+	            </div>
+	            <div class="col-sm-4">
 	            </div>
 	            <div class="col-sm-4 pull-right input-group">
 	            	<div class="col-sm-4">
 	            	</div>
 	            	<div class="col-sm-8" >
 		            	<span  class="width-min" >
-                            <button class="btn btn-info" ng-click="vm.search(vm.searchQuery)">
-                                <span class="glyphicon glyphicon-search"></span>
-                            </button>
-                        </span>
-	                     <span class="width-min" ng-if="vm.currentSearch">
-                            <button class="btn btn-info" ng-click="vm.clear()">
-                                <span class="glyphicon glyphicon-trash"></span>
-                            </button>
-                        </span>
+	                        <button class="btn btn-info" ng-click="vm.search()">
+	                            <span class="glyphicon glyphicon-search"></span>
+	                        </button>
+	                    </span>
+	                    <span class="width-min" ng-if="vm.haveSearch">
+	                        <button class="btn btn-info" ng-click="vm.clear()">
+	                            <span class="glyphicon glyphicon-trash"></span>
+	                        </button>
+	                    </span>
 	            	</div>
 	            </div>
             </div>
-        </form>
+		</form>
     </div>
-    
-    <!-- <div class="container-fluid">
-        <div class="row">
-            <div class="col-xs-4 no-padding-left">
-                <button class="btn btn-primary" ui-sref="contract-cost.new" >
-                    <span class="glyphicon glyphicon-plus"></span>
-                    <span class="hidden-xs"  data-translate="cpmApp.contractCost.home.createLabel">
-                        Create new Contract Cost
-                    </span>
-                </button>
-            </div>
-            <div class="col-xs-8 no-padding-right">
-                <form name="searchForm" class="form-inline">
-                    <div class="input-group pull-right" >
-                        <input type="text" class="form-control" ng-model="vm.searchQuery" id="searchQuery" placeholder="{{ 'cpmApp.contractCost.home.search' | translate }}">
-                        <span  class="input-group-btn width-min" >
-                            <button class="btn btn-info" ng-click="vm.search(vm.searchQuery)">
-                                <span class="glyphicon glyphicon-search"></span>
-                            </button>
-                        </span>
-                        <span class="input-group-btn width-min" ng-if="vm.currentSearch">
-                            <button class="btn btn-info" ng-click="vm.clear()">
-                                <span class="glyphicon glyphicon-trash"></span>
-                            </button>
-                        </span>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div> -->
     <br/>
     <div class="table-responsive">
         <table class="jh-table table table-striped">
             <thead>
                 <tr jh-sort="vm.predicate" ascending="vm.reverse" callback="vm.transition()">
-                    <th jh-sort-by="id"><span data-translate="global.field.id">ID</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="contractId"><span data-translate="cpmApp.contractCost.contractId">Contract Id</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="budgetId"><span data-translate="cpmApp.contractCost.budgetId">Budget Id</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="deptId"><span data-translate="cpmApp.contractCost.deptId">Dept Id</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="dept"><span data-translate="cpmApp.contractCost.dept">Dept</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="name"><span data-translate="cpmApp.contractCost.name">Name</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="type"><span data-translate="cpmApp.contractCost.type">Type</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="total"><span data-translate="cpmApp.contractCost.total">Total</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="costDesc"><span data-translate="cpmApp.contractCost.costDesc">Cost Desc</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="status"><span data-translate="cpmApp.contractCost.status">Status</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="wcc.name" class="text-center"><span data-translate="cpmApp.contractCost.name">Name</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="wci.serialNum"><span data-translate="cpmApp.contractCost.contractId">Contract Id</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="wci.name"><span data-translate="cpmApp.contractCost.contractName">Contract Id</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="wcb.budgetTotal"><span data-translate="cpmApp.contractCost.budgetId">Budget Id</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="wcc.dept"><span data-translate="cpmApp.contractCost.dept">Dept</span> <span class="glyphicon glyphicon-sort"></span></th>
+                   
+                    <th jh-sort-by="wcc.type"><span data-translate="cpmApp.contractCost.type">Type</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="wcc.total"><span data-translate="cpmApp.contractCost.total">Total</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="wcc.costDesc"><span data-translate="cpmApp.contractCost.costDesc">Cost Desc</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="wcc.status"><span data-translate="cpmApp.contractCost.status">Status</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th></th>
                 </tr>
             </thead>
             <tbody>
                 <tr ng-repeat="contractCost in vm.contractCosts track by contractCost.id">
-                    <td><a ui-sref="contract-cost-detail({id:contractCost.id})">{{contractCost.id}}</a></td>
-                    <td>{{contractCost.contractId}}</td>
-                    <td>{{contractCost.budgetId}}</td>
-                    <td>{{contractCost.deptId}}</td>
-                    <td>{{contractCost.dept}}</td>
-                    <td>{{contractCost.name}}</td>
-                    <td>{{contractCost.type}}</td>
-                    <td>{{contractCost.total}}</td>
-                    <td>{{contractCost.costDesc}}</td>
-                    <td>{{contractCost.status}}</td>
+                    <td class="text-center"><a ui-sref="contract-cost-detail({id:contractCost.id})">{{contractCost.name}}</a></td>
+                    <td class="text-center">{{contractCost.contractNum}}</td>
+                    <td class="text-center">{{contractCost.contractName}}</td>
+                    <td class="text-center">{{contractCost.budgetTotal}}</td>
+                    <td class="text-center">{{contractCost.dept}}</td>
+                    <td class="text-center">{{contractCost.typeName}}</td>
+                    <td class="text-center">{{contractCost.total}}</td>
+                    <td class="text-center">{{contractCost.costDesc}}</td>
+                    <td class="text-center">{{contractCost.statusName}}</td>
                     <td class="text-right">
                         <div class="btn-group flex-btn-group-container">
                             <button type="submit"

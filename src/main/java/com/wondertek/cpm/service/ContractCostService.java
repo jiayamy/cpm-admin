@@ -1,23 +1,30 @@
 package com.wondertek.cpm.service;
 
-import com.wondertek.cpm.CpmConstants;
-import com.wondertek.cpm.domain.ContractCost;
-import com.wondertek.cpm.repository.ContractCostDao;
-import com.wondertek.cpm.repository.ContractCostRepository;
-import com.wondertek.cpm.repository.search.ContractCostSearchRepository;
+import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.inject.Inject;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.inject.Inject;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
-
-import static org.elasticsearch.index.query.QueryBuilders.*;
+import com.wondertek.cpm.CpmConstants;
+import com.wondertek.cpm.domain.ContractCost;
+import com.wondertek.cpm.domain.DeptInfo;
+import com.wondertek.cpm.domain.User;
+import com.wondertek.cpm.domain.vo.ContractCostVo;
+import com.wondertek.cpm.repository.ContractCostDao;
+import com.wondertek.cpm.repository.ContractCostRepository;
+import com.wondertek.cpm.repository.UserRepository;
+import com.wondertek.cpm.repository.search.ContractCostSearchRepository;
+import com.wondertek.cpm.security.SecurityUtils;
 
 /**
  * Service Implementation for managing ContractCost.
@@ -30,10 +37,10 @@ public class ContractCostService {
     
     @Inject
     private ContractCostRepository contractCostRepository;
-
     @Inject
     private ContractCostSearchRepository contractCostSearchRepository;
-    
+    @Inject
+    private UserRepository userRepository;
     @Inject
     private ContractCostDao contractCostDao;
 
@@ -104,4 +111,34 @@ public class ContractCostService {
         Page<ContractCost> result = contractCostSearchRepository.search(queryStringQuery(query), pageable);
         return result;
     }
+    /**
+     * 查询列表
+     * @return
+     */
+	public Page<ContractCostVo> getUserPage(ContractCost contractCost, Pageable pageable) {
+		log.debug("Request to get all contractCosts");
+		List<Object[]> objs = userRepository.findUserInfoByLogin(SecurityUtils.getCurrentUserLogin());
+		
+		if (objs != null && !objs.isEmpty()) {
+			Object[] o = objs.get(0);
+			User user = (User) o[0];
+			DeptInfo deptInfo = (DeptInfo) o[1];
+			return contractCostDao.getUserPage(contractCost,user,deptInfo,pageable);
+		}
+		
+		
+		return new PageImpl<>(new ArrayList<ContractCostVo>(), pageable, 0);
+	}
+
+	public ContractCostVo getContractCost(Long id) {
+		List<Object[]> objs = userRepository.findUserInfoByLogin(SecurityUtils.getCurrentUserLogin());
+    	if(objs != null && !objs.isEmpty()){
+    		Object[] o = objs.get(0);
+    		User user = (User) o[0];
+    		DeptInfo deptInfo = (DeptInfo) o[1];
+    		
+    		return contractCostDao.getProjectCost(user,deptInfo,id);
+    	}
+    	return null;
+	}
 }

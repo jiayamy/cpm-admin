@@ -11,7 +11,7 @@
         $stateProvider
         .state('contract-cost', {
             parent: 'contract',
-            url: '/contract-cost?page&sort&search',
+            url: '/contract-cost?page&sort&contractId&type&name',
             data: {
                 authorities: ['ROLE_USER'],
                 pageTitle: 'cpmApp.contractCost.home.title'
@@ -29,10 +29,12 @@
                     squash: true
                 },
                 sort: {
-                    value: 'id,asc',
+                    value: 'wcc.id,asc',
                     squash: true
                 },
-                search: null
+                contractId: null,
+                type: null,
+                name: null
             },
             resolve: {
                 pagingParams: ['$stateParams', 'PaginationUtil', function ($stateParams, PaginationUtil) {
@@ -41,7 +43,9 @@
                         sort: $stateParams.sort,
                         predicate: PaginationUtil.parsePredicate($stateParams.sort),
                         ascending: PaginationUtil.parseAscending($stateParams.sort),
-                        search: $stateParams.search
+                        contractId: $stateParams.contractId,
+                        type: $stateParams.type,
+                        name: $stateParams.name
                     };
                 }],
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {

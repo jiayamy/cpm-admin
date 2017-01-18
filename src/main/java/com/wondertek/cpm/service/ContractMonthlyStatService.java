@@ -3,6 +3,7 @@ package com.wondertek.cpm.service;
 import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import javax.inject.Inject;
@@ -16,8 +17,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.wondertek.cpm.domain.ContractMonthlyStat;
+import com.wondertek.cpm.domain.DeptInfo;
 import com.wondertek.cpm.domain.User;
 import com.wondertek.cpm.domain.UserTimesheet;
+import com.wondertek.cpm.domain.vo.ContractMonthlyStatVo;
+import com.wondertek.cpm.domain.vo.LongValue;
 import com.wondertek.cpm.repository.ContractMonthlyStatDao;
 import com.wondertek.cpm.repository.ContractMonthlyStatRepository;
 import com.wondertek.cpm.repository.UserRepository;
@@ -65,9 +69,9 @@ public class ContractMonthlyStatService {
      *  @return the entity
      */
     @Transactional(readOnly = true) 
-    public ContractMonthlyStat findOne(Long id) {
+    public ContractMonthlyStatVo findOne(Long id) {
         log.debug("Request to get ContractMonthlyStat : {}", id);
-        ContractMonthlyStat contractMonthlyStat = contractMonthlyStatRepository.findOne(id);
+        ContractMonthlyStatVo contractMonthlyStat = contractMonthlyStatDao.getById(id);
         return contractMonthlyStat;
     }
     
@@ -104,13 +108,30 @@ public class ContractMonthlyStatService {
      * @return
      */
     @Transactional(readOnly = true)
-    public Page<ContractMonthlyStat> getStatPage(String fromDate, String endDate, String statDate, Pageable pageable){
+    public Page<ContractMonthlyStatVo> getStatPage(String contractId, Pageable pageable){
     	Optional<User> user = userRepository.findOneByLogin(SecurityUtils.getCurrentUserLogin());
     	if(user.isPresent()){
-    		Page<ContractMonthlyStat> page = contractMonthlyStatDao.getUserPage(fromDate, endDate, statDate, pageable, user.get());
+    		Page<ContractMonthlyStatVo> page = contractMonthlyStatDao.getUserPage(contractId, pageable, user.get());
         	return page;
     	}else{
-    		return new PageImpl(new ArrayList<ContractMonthlyStat>(), pageable, 0);
+    		return new PageImpl(new ArrayList<ContractMonthlyStatVo>(), pageable, 0);
     	}
     }
+    
+    /**
+     * 查询用户的所有项目，管理人员能看到部门下面所有人员的项目信息
+     */
+    @Transactional(readOnly = true)
+	public List<LongValue> queryUserContract() {
+    	List<LongValue> returnList = new ArrayList<LongValue>();
+    	List<Object[]> objs = userRepository.findUserInfoByLogin(SecurityUtils.getCurrentUserLogin());
+    	if(objs != null && !objs.isEmpty()){
+    		Object[] o = objs.get(0);
+    		User user = (User) o[0];
+    		DeptInfo deptInfo = (DeptInfo) o[1];
+    		
+    		returnList = contractMonthlyStatDao.queryUserContract(user,deptInfo);
+    	}
+		return returnList;
+	}
 }

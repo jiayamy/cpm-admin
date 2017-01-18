@@ -2,21 +2,21 @@
     "cpmApp": {
         "deptType" : {
             "home": {
-                "title": "Dept Types",
-                "createLabel": "Create a new Dept Type",
-                "createOrEditLabel": "Create or edit a Dept Type",
-                "search": "Search for Dept Type"
+                "title": "部门类型",
+                "createLabel": "新增",
+                "createOrEditLabel": "部门类型信息",
+                "search": "搜索"
             },
-            "created": "A new Dept Type is created with identifier {{ param }}",
-            "updated": "A Dept Type is updated with identifier {{ param }}",
-            "deleted": "A Dept Type is deleted with identifier {{ param }}",
+            "created": "新增成功",
+            "updated": "修改成功",
+            "deleted": "删除成功",
             "delete": {
-                "question": "Are you sure you want to delete Dept Type {{ id }}?"
+                "question": "你确定需要删除该部门类型?"
             },
             "detail": {
-                "title": "Dept Type"
+                "title": "部门类型"
             },
-            "name": "Name"
+            "name": "名称"
         }
     }
 }
