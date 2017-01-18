@@ -9,7 +9,6 @@
 
     function ContractMonthlyStatChartController ($scope,$state,DateUtils,$rootScope, $stateParams, pagingParams, ContractMonthlyStatChart, AlertService,previousState) {
     	var vm = this;
-//    	console.log($state);
         vm.transition = transition;
         vm.clear = clear;
         vm.loadAll = loadAll;

@@ -48,7 +48,6 @@
             userCost.internalCost = vm.userCost.internalCost;
             userCost.externalCost = vm.userCost.externalCost;
             userCost.status = vm.userCost.status && vm.userCost.status.key ? vm.userCost.status.key:"";
-            console.log(userCost);
             if(!userCost.userId ||!userCost.userName || !userCost.costMonth || !userCost.status){
             	AlertService.error("cpmApp.userCost.save.paramNone");
             	return;

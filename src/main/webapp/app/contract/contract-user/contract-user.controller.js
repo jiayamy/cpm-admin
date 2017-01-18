@@ -23,7 +23,6 @@
         vm.searchQuery.userId = pagingParams.userId;
         vm.searchQuery.userName = pagingParams.userName;
         
-        console.log(vm.searchQuery);
         if (!vm.searchQuery.contractId && !vm.searchQuery.userId){
         	vm.haveSearch = null;
         }else{

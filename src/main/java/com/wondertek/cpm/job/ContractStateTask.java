@@ -110,7 +110,7 @@ public class ContractStateTask {
 	private StatIdentifyRepository statIdentifyRepository;
 	
 	
-	@Scheduled(cron = "0 0 22 ? * MON")
+	@Scheduled(cron = "0 0 23 ? * MON")
 	protected void generateContractWeeklyStat(){
 		log.info("=====begin generate Contract Weekly Stat=====");
 		String [] dates = DateUtil.getWholeWeekByDate(DateUtil.lastSaturday());

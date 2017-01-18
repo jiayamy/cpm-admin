@@ -172,11 +172,5 @@
             vm.haveSearch = null;
             vm.transition();
         }
-        //员工模态框
-        var unsubscribe = $rootScope.$on('cpmApp:deptInfoSelected', function(event, result) {
-        	vm.searchQuery.salesman = result.objId;
-        	console.log(result);
-        });
-        
     }
 })();

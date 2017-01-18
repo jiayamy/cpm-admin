@@ -28,7 +28,6 @@
         
         function save () {
         	vm.isSaving = true;
-        	console.log(vm.contractInfo);
         	var contractInfo = {};
         	contractInfo.id = vm.contractInfo.id;
         	contractInfo.serialNum = vm.contractInfo.serialNum;
@@ -95,7 +94,6 @@
         	vm.contractInfo.taxes = Math.round(vm.contractInfo.taxes * 100) / 100;
         	vm.contractInfo.shareCost = vm.contractInfo.amount * vm.contractInfo.shareRate / 100;
         	vm.contractInfo.shareCost = Math.round(vm.contractInfo.shareCost * 100) / 100;
-        	console.log(vm.contractInfo.amount + "|" + vm.contractInfo.taxRate + "|" + vm.contractInfo.taxes +"|" + vm.contractInfo.shareRate +"|" + vm.contractInfo.shareCost);
         }
         function taxRateChanged(){
         	if(vm.contractInfo.amount == undefined){
@@ -107,7 +105,6 @@
         	
         	vm.contractInfo.taxes = vm.contractInfo.amount * vm.contractInfo.taxRate / 100;
         	vm.contractInfo.taxes = Math.round(vm.contractInfo.taxes * 100)/100;
-        	console.log(vm.contractInfo.amount + "|" + vm.contractInfo.taxRate + "|" + vm.contractInfo.taxes +"|" + vm.contractInfo.shareRate +"|" + vm.contractInfo.shareCost);
         }
         
         function taxesChanged(){
@@ -123,7 +120,6 @@
         		vm.contractInfo.taxRate = vm.contractInfo.taxes / vm.contractInfo.amount * 100;
         		vm.contractInfo.taxRate = Math.round(vm.contractInfo.taxRate * 100)/100;
         	}
-        	console.log(vm.contractInfo.amount + "|" + vm.contractInfo.taxRate + "|" + vm.contractInfo.taxes +"|" + vm.contractInfo.shareRate +"|" + vm.contractInfo.shareCost);
         }
         function shareRateChanged(){
         	if(vm.contractInfo.amount == undefined){
@@ -135,7 +131,6 @@
         	
         	vm.contractInfo.shareCost = vm.contractInfo.amount * vm.contractInfo.shareRate / 100;
         	vm.contractInfo.shareCost = Math.round(vm.contractInfo.shareCost * 100)/100;
-        	console.log(vm.contractInfo.amount + "|" + vm.contractInfo.taxRate + "|" + vm.contractInfo.taxes +"|" + vm.contractInfo.shareRate +"|" + vm.contractInfo.shareCost);
         }
         
         function shareCostChanged(){
@@ -151,7 +146,6 @@
         		vm.contractInfo.shareRate = vm.contractInfo.shareCost / vm.contractInfo.amount * 100;
         		vm.contractInfo.shareRate = Math.round(vm.contractInfo.shareRate * 100)/100;
         	}
-        	console.log(vm.contractInfo.amount + "|" + vm.contractInfo.taxRate + "|" + vm.contractInfo.taxes +"|" + vm.contractInfo.shareRate +"|" + vm.contractInfo.shareCost);
         }
         vm.datePickerOpenStatus.startDay = false;
         vm.datePickerOpenStatus.endDay = false;
@@ -161,7 +155,6 @@
         }
         //部门的处理
         var unsubscribe = $rootScope.$on('cpmApp:deptInfoSelected', function(event, result, dataType) {
-        	console.log(dataType);
         	if(dataType == 1){
         		vm.contractInfo.salesmanId = result.objId;
         		vm.contractInfo.salesman = result.name;

@@ -14,7 +14,6 @@
         vm.queryDept = previousState.queryDept;
         
         vm.contractBudget = entity;
-        console.log(vm.contractBudget.purchaseType)
         if(vm.contractBudget.purchaseType == '硬件'){
     		vm.contractBudget.purchaseType = { id: 1, name: '硬件' }; 
     	}else if(vm.contractBudget.purchaseType == '软件'){
@@ -22,7 +21,6 @@
     	}else if (vm.contractBudget.purchaseType == '服务') {
     		vm.contractBudget.purchaseType = { id: 3, name: '服务' };
 		}
-        console.log(vm.contractBudget.purchaseType);
         vm.datePickerOpenStatus = {};
         vm.openCalendar = openCalendar;
         vm.save = save;
@@ -83,7 +81,6 @@
            if (contractBudget.purchaseType) {
         	   contractBudget.purchaseType = contractBudget.purchaseType.id;
            }
-           console.log(contractBudget);
            ContractBudget.update(contractBudget, onSaveSuccess, onSaveError);
         }
 

@@ -62,7 +62,6 @@
            	projectCost.costDay = DateUtils.convertLocalDateToFormat(vm.projectCost.costDay,"yyyyMMdd");
            	projectCost.total = vm.projectCost.total;
            	projectCost.costDesc = vm.projectCost.costDesc;
-           	console.log(projectCost);
            	if(!projectCost.projectId || !projectCost.name || !projectCost.type || !projectCost.costDay || projectCost.total == undefined ){
             	AlertService.error("cpmApp.projectCost.save.paramNone");
             	return;
