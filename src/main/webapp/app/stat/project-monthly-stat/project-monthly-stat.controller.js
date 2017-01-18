@@ -5,9 +5,9 @@
         .module('cpmApp')
         .controller('ProjectMonthlyStatController', ProjectMonthlyStatController);
 
-    ProjectMonthlyStatController.$inject = ['$scope', '$state', 'DateUtils','ProjectMonthlyStat', 'ProjectMonthlyStatSearch', 'ParseLinks', 'AlertService', 'paginationConstants', 'pagingParams'];
+    ProjectMonthlyStatController.$inject = ['$scope', '$state', 'DateUtils','ProjectMonthlyStat', 'ParseLinks', 'AlertService', 'paginationConstants', 'pagingParams'];
 
-    function ProjectMonthlyStatController ($scope, $state,DateUtils,  ProjectMonthlyStat, ProjectMonthlyStatSearch, ParseLinks, AlertService, paginationConstants, pagingParams) {
+    function ProjectMonthlyStatController ($scope, $state,DateUtils,  ProjectMonthlyStat,ParseLinks, AlertService, paginationConstants, pagingParams) {
     	var vm = this;
 
         vm.loadPage = loadPage;

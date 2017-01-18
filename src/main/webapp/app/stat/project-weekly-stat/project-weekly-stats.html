@@ -5,47 +5,19 @@
         <div class="row">
             <form name="searchForm" class="form-horizontal">
 	           <div class="form-group">
-	               <div class="col-sm-4">
-	               		<div class="row">
-							<label class="col-sm-4 control-label" data-translate="cpmApp.projectWeeklyStat.fromDate">From Date</label>
-				            <div class="col-sm-8">
-				                <p class="input-group">
-				                    <input id="search_fromDate" type="text" class="form-control" name="fromDate" datetime-picker="yyyyMMdd"
-					           		 		enable-time="false" ng-model="vm.searchQuery.fromDate" is-open="vm.datePickerOpenStatus.fromDate"/>
-					          		<span class="input-group-btn">
-					           			<button type="button" class="btn btn-default" ng-click="vm.openCalendar('fromDate')"><i class="glyphicon glyphicon-calendar"></i></button>
-					            	</span>
-				                </p>
-				            </div>
-	               		</div>
-					</div>
-		            <div class="col-sm-4">
-			            <div class="row">
-			          		<label class="col-sm-4 control-label" data-translate="cpmApp.projectWeeklyStat.toDate">To Date</label>
-				            <div class="col-sm-8">
-				                <p class="input-group">
-				                    <input id="search_toDate" type="text" class="form-control" name="toDate" datetime-picker="yyyyMMdd"
-					           		 		enable-time="false" ng-model="vm.searchQuery.toDate" is-open="vm.datePickerOpenStatus.toDate"/>
-					          		<span class="input-group-btn">
-					           			<button type="button" class="btn btn-default" ng-click="vm.openCalendar('toDate')"><i class="glyphicon glyphicon-calendar"></i></button>
-					            	</span>
-				                </p>
-				            </div>
-				         </div>
+	              	<div class="col-sm-4">
+		          		<label class="col-sm-4 control-label" data-translate="cpmApp.projectWeeklyStat.projectSerialNum">Project Id</label>
+			            <div class="col-sm-8">
+			            	<select class="form-control" ng-model="vm.searchQuery.projectId" name="projectId"
+				            	ng-options="projectInfo.val for projectInfo in vm.projectInfos track by projectInfo.key">
+				            	<option value="">--项目编号--</option>
+				            </select>
+			            </div>
 		            </div>
-		            <div class="col-sm-4">
-		            	<div class="row">
+		            <div class="col-sm-8">
+		            	
 			            	<div class="input-group pull-right" >
-			                   <label class="col-sm-3 control-label" data-translate="cpmApp.projectWeeklyStat.statDate">Stat Date</label>
-					            <div class="col-sm-5">
-					                <p class="input-group row">
-					                    <input id="search_statDate" type="text" class="form-control" name="statDate" datetime-picker="yyyyMMdd"
-						           		 		enable-time="false" ng-model="vm.searchQuery.statDate" is-open="vm.datePickerOpenStatus.statDate"/>
-						          		<span class="input-group-btn">
-						           			<button type="button" class="btn btn-default" ng-click="vm.openCalendar('statDate')"><i class="glyphicon glyphicon-calendar"></i></button>
-						            	</span>
-					                </p>
-					            </div>
+			                   
 			                   <span  class="width-min input-group-btn col-sm-2" >
 			                   		<div class="row">
 				                        <button class="btn btn-info" ng-click="vm.search()">
@@ -59,7 +31,7 @@
 			                        </button>
 			                    </span>
 			               </div>
-			             </div>
+			             
 		            </div>
 
 				</div>
@@ -71,20 +43,20 @@
         <table class="jh-table table table-striped">
             <thead>
                 <tr jh-sort="vm.predicate" ascending="vm.reverse" callback="vm.transition()">
-                    <th jh-sort-by="id"><span data-translate="global.field.id">ID</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="projectId"><span data-translate="cpmApp.projectWeeklyStat.projectId">Project Id</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="finishRate"><span data-translate="cpmApp.projectWeeklyStat.finishRate">Finish Rate</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="humanCost"><span data-translate="cpmApp.projectWeeklyStat.humanCost">Human Cost</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="payment"><span data-translate="cpmApp.projectWeeklyStat.payment">Payment</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="statWeek"><span data-translate="cpmApp.projectWeeklyStat.statWeek">Stat Week</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="createTime"><span data-translate="cpmApp.projectWeeklyStat.createTime">Create Time</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="m.id"><span data-translate="global.field.id">ID</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="m.serialNum"><span data-translate="cpmApp.projectWeeklyStat.serialNum">Serial Num</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="m.finishRate"><span data-translate="cpmApp.projectWeeklyStat.finishRate">Finish Rate</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="m.humanCost"><span data-translate="cpmApp.projectWeeklyStat.humanCost">Human Cost</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="m.payment"><span data-translate="cpmApp.projectWeeklyStat.payment">Payment</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="m.statWeek"><span data-translate="cpmApp.projectWeeklyStat.statWeek">Stat Week</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="m.createTime"><span data-translate="cpmApp.projectWeeklyStat.createTime">Create Time</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th></th>
                 </tr>
             </thead>
             <tbody>
                 <tr ng-repeat="projectWeeklyStat in vm.projectWeeklyStats track by projectWeeklyStat.id">
                     <td><a ui-sref="project-weekly-stat-detail({id:projectWeeklyStat.id})">{{projectWeeklyStat.id}}</a></td>
-                    <td>{{projectWeeklyStat.projectId}}</td>
+                    <td>{{projectWeeklyStat.serialNum}}</td>
                     <td>{{projectWeeklyStat.finishRate}}%</td>
                     <td>{{projectWeeklyStat.humanCost}}</td>
                     <td>{{projectWeeklyStat.payment}}</td>

@@ -1,12 +1,12 @@
 
 <div>
-    <h2><span data-translate="cpmApp.contractWeeklyStat.detail.title">Contract Weekly Stat</span> {{vm.contractWeeklyStat.id}}</h2>
+    <h2><span data-translate="cpmApp.contractWeeklyStat.detail.title">Contract Weekly Stat</span> {{vm.contractWeeklyStat.serialNum}}</h2>
     <hr>
     <jhi-alert-error></jhi-alert-error>
     <dl class="dl-horizontal jh-entity-details">
-        <dt><span data-translate="cpmApp.contractWeeklyStat.contractId">Contract Id</span></dt>
+        <dt><span data-translate="cpmApp.contractWeeklyStat.serialNum">Serial Num</span></dt>
         <dd>
-            <span>{{vm.contractWeeklyStat.contractId}}</span>
+            <span>{{vm.contractWeeklyStat.serialNum}}</span>
         </dd>
         <dt><span data-translate="cpmApp.contractWeeklyStat.finishRate">Finish Rate</span></dt>
         <dd>
@@ -52,11 +52,11 @@
         <dd>
             <span>{{vm.contractWeeklyStat.internalSoftware}}</span>
         </dd>
-        <dt><span data-translate="cpmApp.contractWeeklyStat.projectHumanCost">Project Human Cost</span></dt>
+        <dt><span data-translate="cpmApp.contractWeeklyStat.projectHumanCost">Contract Human Cost</span></dt>
         <dd>
             <span>{{vm.contractWeeklyStat.projectHumanCost}}</span>
         </dd>
-        <dt><span data-translate="cpmApp.contractWeeklyStat.projectPayment">Project Payment</span></dt>
+        <dt><span data-translate="cpmApp.contractWeeklyStat.projectPayment">Contract Payment</span></dt>
         <dd>
             <span>{{vm.contractWeeklyStat.projectPayment}}</span>
         </dd>
@@ -76,5 +76,8 @@
         <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span data-translate="entity.action.back"> Back</span>
     </button>
 
-
+	<button type="button" ui-sref="contract-weekly-stat-detail.chart({id:vm.contractWeeklyStat.id})" class="btn btn-primary">
+        <span class="glyphicon glyphicon-pencil"></span>
+        <span class="hidden-xs hidden-sm" data-translate="cpmApp.contractWeeklyStat.detail.transChart"> Edit</span>
+    </button>
 </div>

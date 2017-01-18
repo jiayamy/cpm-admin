@@ -144,10 +144,9 @@ public class ProjectMonthlyStatResource {
     	ChartReportVo chartReportVo = new ChartReportVo();
     	ProjectMonthlyStatVo projectMonthlyStatvo = projectMonthlyStatService.findOne(statId);
     	Long projectId = projectMonthlyStatvo.getProjectId();
-    	ProjectMonthlyStat recentOne = projectMonthlyStatService.getRecentlyOne(projectId);
     	chartReportVo.setTitle(projectMonthlyStatvo.getSerialNum());
     	if(StringUtil.isNullStr(toDate)){
-    		toDate = recentOne.getStatWeek().toString();
+    		toDate = projectMonthlyStatvo.getStatWeek().toString();
     	}
     	Date lMonth = DateUtil.parseyyyyMM("yyyy-MM", toDate);
     	if(StringUtil.isNullStr(fromDate)){

@@ -1,6 +1,10 @@
 package com.wondertek.cpm.web.rest;
 
 import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,7 +26,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.codahale.metrics.annotation.Timed;
+import com.wondertek.cpm.config.DateUtil;
+import com.wondertek.cpm.config.StringUtil;
 import com.wondertek.cpm.domain.ContractMonthlyStat;
+import com.wondertek.cpm.domain.vo.ChartReportDataVo;
+import com.wondertek.cpm.domain.vo.ChartReportVo;
 import com.wondertek.cpm.domain.vo.ContractMonthlyStatVo;
 import com.wondertek.cpm.domain.vo.LongValue;
 import com.wondertek.cpm.security.AuthoritiesConstants;
@@ -83,20 +91,6 @@ public class ContractMonthlyStatResource {
             .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
     
-    /**
-     * DELETE  /contract-monthly-stats/:id : delete the "id" contractMonthlyStats.
-     *
-     * @param id the id of the contractMonthlyStats to delete
-     * @return the ResponseEntity with status 200 (OK)
-     */
-    @DeleteMapping("/contract-monthly-stats/{id}")
-    @Timed
-    @Secured(AuthoritiesConstants.ROLE_STAT_CONTRACT)
-    public ResponseEntity<Void> deleteContractMonthlyStat(@PathVariable Long id) {
-        log.debug("REST request to delete ContractMonthlyStats : {}", id);
-        contractMonthlyStatService.delete(id);
-        return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert("contractMonthlyStats", id.toString())).build();
-    }
     
     /**
      * SEARCH  /_search/contract-monthly-stats?query=:query : search for the contractMonthlyStats corresponding
@@ -126,4 +120,43 @@ public class ContractMonthlyStatResource {
 	    List<LongValue> list = contractMonthlyStatService.queryUserContract();
 	    return new ResponseEntity<>(list, null, HttpStatus.OK);
 	}
+    
+    @GetMapping("/contract-monthly-stats/queryChart")
+    @Timed
+    @Secured(AuthoritiesConstants.ROLE_STAT_CONTRACT)
+    public ChartReportVo getChartReport(@ApiParam(value="fromDate") @RequestParam(value="fromDate") String fromDate,
+    		@ApiParam(value="toDate") @RequestParam(value="toDate") String toDate,
+    		@ApiParam(value="id") @RequestParam(value="id") Long statId){
+    	ChartReportVo chartReportVo = new ChartReportVo();
+    	ContractMonthlyStatVo contractMonthlyStatvo = contractMonthlyStatService.findOne(statId);
+    	Long contractId = contractMonthlyStatvo.getContractId();
+    	chartReportVo.setTitle(contractMonthlyStatvo.getSerialNum());
+    	if(StringUtil.isNullStr(toDate)){
+    		toDate = contractMonthlyStatvo.getStatWeek().toString();
+    	}
+    	Date lMonth = DateUtil.parseyyyyMM("yyyy-MM", toDate);
+    	if(StringUtil.isNullStr(fromDate)){
+    		fromDate = DateUtil.formatDate("yyyyMM", DateUtil.addMonthNum(-6, lMonth));
+    	}
+    	Date fMonth = DateUtil.parseyyyyMM("yyyy-MM", fromDate);
+    	Calendar cal1 = Calendar.getInstance();
+    	Calendar cal2 = Calendar.getInstance();
+    	cal1.setTime(fMonth);
+    	cal2.setTime(lMonth);
+    	int yearCount = cal2.get(Calendar.YEAR) - cal1.get(Calendar.YEAR); 
+    	int count = 0;
+    	count += 12*yearCount;
+    	count += cal2.get(Calendar.MONTH) - cal1.get(Calendar.MONTH);
+    	List<String> category = new ArrayList<String>();
+    	for(int i = 0; i <= count; i++){
+    		category.add(DateUtil.formatDate("yyyy-MM", cal1.getTime()));
+    		cal1.add(Calendar.MONTH, 1);
+    	}
+    	chartReportVo.setCategory(category);
+    	List<ChartReportDataVo> datas = contractMonthlyStatService.getChartData(fMonth, lMonth, contractId);
+    	chartReportVo.setSeries(datas);
+    	List<String> legend = new ArrayList<String>(Arrays.asList(new String[]{"合同回款总额","所有成本","合同毛利","销售人工成本","销售报销成本","咨询人工成本","咨询报销成本","硬件采购成本","外部软件采购成本","内容软件采购成本","项目人工成本","项目报销成本"}));
+    	chartReportVo.setLegend(legend);
+    	return chartReportVo;
+    }
 }
