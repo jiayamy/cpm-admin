@@ -19,6 +19,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -31,6 +32,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.codahale.metrics.annotation.Timed;
 import com.wondertek.cpm.TimerHolidayUtil;
 import com.wondertek.cpm.domain.HolidayInfo;
+import com.wondertek.cpm.security.AuthoritiesConstants;
 import com.wondertek.cpm.security.SecurityUtils;
 import com.wondertek.cpm.service.HolidayInfoService;
 import com.wondertek.cpm.web.rest.util.HeaderUtil;
@@ -61,6 +63,7 @@ public class HolidayInfoResource {
      */
     @PutMapping("/holiday-infos")
     @Timed
+    @Secured(AuthoritiesConstants.ROLE_INFO_BASIC)
     public ResponseEntity<HolidayInfo> updateHolidayInfo(@RequestBody HolidayInfo holidayInfo) throws URISyntaxException {
         log.debug("REST request to update HolidayInfo : {}", holidayInfo);
         Boolean isNew = null;
@@ -116,6 +119,7 @@ public class HolidayInfoResource {
      */
     @GetMapping("/holiday-infos")
     @Timed
+    @Secured(AuthoritiesConstants.ROLE_INFO_BASIC)
     public ResponseEntity<List<HolidayInfo>> getAllHolidayInfos(
     		@RequestParam(value = "fromCurrDay",required=false) Long fromCurrDay,
     		@RequestParam(value = "toCurrDay",required=false) Long toCurrDay,
@@ -163,6 +167,7 @@ public class HolidayInfoResource {
      */
     @GetMapping("/holiday-infos/{id}")
     @Timed
+    @Secured(AuthoritiesConstants.ROLE_INFO_BASIC)
     public ResponseEntity<HolidayInfo> getHolidayInfo(@PathVariable Long id) {
         log.debug("REST request to get HolidayInfo : {}", id);
         HolidayInfo holidayInfo = holidayInfoService.findOne(id);
@@ -181,6 +186,7 @@ public class HolidayInfoResource {
      */
     @DeleteMapping("/holiday-infos/{id}")
     @Timed
+    @Secured(AuthoritiesConstants.ROLE_INFO_BASIC)
     public ResponseEntity<Void> deleteHolidayInfo(@PathVariable Long id) {
         log.debug("REST request to delete HolidayInfo : {}", id);
 //        holidayInfoService.delete(id);
@@ -198,6 +204,7 @@ public class HolidayInfoResource {
      */
     @GetMapping("/_search/holiday-infos")
     @Timed
+    @Secured(AuthoritiesConstants.ROLE_INFO_BASIC)
     public ResponseEntity<List<HolidayInfo>> searchHolidayInfos(
         		@RequestParam(value = "fromCurrDay",required=false) Long fromCurrDay,
         		@RequestParam(value = "toCurrDay",required=false) Long toCurrDay,

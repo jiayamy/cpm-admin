@@ -13,7 +13,7 @@
             parent: 'contract',
             url: '/contract-user?page&sort&search&contractId&userId&userName',
             data: {
-                authorities: ['ROLE_USER'],
+                authorities: ['ROLE_CONTRACT_USER'],
                 pageTitle: 'cpmApp.contractUser.home.title'
             },
             views: {
@@ -60,7 +60,7 @@
             parent: 'contract-user',
             url: '/queryDept?selectType&showChild',
             data: {
-                authorities: ['ROLE_USER']
+                authorities: ['ROLE_CONTRACT_USER']
             },
             onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
                 $uibModal.open({
@@ -88,7 +88,7 @@
             parent: 'contract',
             url: '/contract-user/{id}',
             data: {
-                authorities: ['ROLE_USER'],
+                authorities: ['ROLE_CONTRACT_USER'],
                 pageTitle: 'cpmApp.contractUser.detail.title'
             },
             views: {
@@ -120,7 +120,7 @@
             parent: 'contract-user-detail',
             url: '/edit',
             data: {
-                authorities: ['ROLE_USER'],
+                authorities: ['ROLE_CONTRACT_USER'],
                 pageTitle: 'cpmApp.contractUser.home.createOrEditLabel'
             },
             views: {
@@ -154,7 +154,7 @@
             parent: 'contract-user-detail.edit',
             url: '/queryDept?selectType&showChild',
             data: {
-                authorities: ['ROLE_USER']
+                authorities: ['ROLE_CONTRACT_USER']
             },
             onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
                 $uibModal.open({
@@ -182,7 +182,7 @@
             parent: 'contract-user',
             url: '/new',
             data: {
-                authorities: ['ROLE_USER'],
+                authorities: ['ROLE_CONTRACT_USER'],
         		pageTitle: 'cpmApp.contractUser.detail.title'
             },
             views: {
@@ -228,7 +228,7 @@
             parent: 'contract-user.new',
             url: '/queryDept?selectType&showChild',
             data: {
-                authorities: ['ROLE_USER']
+                authorities: ['ROLE_CONTRACT_USER']
             },
             onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
                 $uibModal.open({
@@ -256,7 +256,7 @@
             parent: 'contract-user',
             url: '/edit/{id}',
             data: {
-                authorities: ['ROLE_USER'],
+                authorities: ['ROLE_CONTRACT_USER'],
         		pageTitle: 'cpmApp.contractUser.home.createOrEditLabel'
             },
             views: {
@@ -290,7 +290,7 @@
             parent: 'contract-user.edit',
             url: '/queryDept?selectType&showChild',
             data: {
-                authorities: ['ROLE_USER']
+                authorities: ['ROLE_CONTRACT_USER']
             },
             onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
                 $uibModal.open({
@@ -318,7 +318,7 @@
             parent: 'contract-user',
             url: '/delete/{id}',
             data: {
-                authorities: ['ROLE_USER']
+                authorities: ['ROLE_CONTRACT_USER']
             },
             onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
                 $uibModal.open({

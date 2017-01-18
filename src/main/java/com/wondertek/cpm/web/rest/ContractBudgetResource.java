@@ -1,20 +1,11 @@
 package com.wondertek.cpm.web.rest;
 
-import com.codahale.metrics.annotation.Timed;
-import com.wondertek.cpm.domain.ContractBudget;
-import com.wondertek.cpm.domain.ContractInfo;
-import com.wondertek.cpm.domain.vo.ContractBudgetVo;
-import com.wondertek.cpm.domain.vo.LongValue;
-import com.wondertek.cpm.security.SecurityUtils;
-import com.wondertek.cpm.service.ContractBudgetService;
-import com.wondertek.cpm.service.ContractInfoService;
-import com.wondertek.cpm.service.ProjectInfoService;
-import com.wondertek.cpm.web.rest.util.HeaderUtil;
-import com.wondertek.cpm.web.rest.util.PaginationUtil;
+import java.net.URISyntaxException;
+import java.time.ZonedDateTime;
+import java.util.List;
 
-import io.swagger.annotations.ApiParam;
+import javax.inject.Inject;
 
-import org.hibernate.validator.internal.util.Contracts;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -22,20 +13,29 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
-import javax.inject.Inject;
+import com.codahale.metrics.annotation.Timed;
+import com.wondertek.cpm.domain.ContractBudget;
+import com.wondertek.cpm.domain.ContractInfo;
+import com.wondertek.cpm.domain.vo.ContractBudgetVo;
+import com.wondertek.cpm.domain.vo.LongValue;
+import com.wondertek.cpm.security.AuthoritiesConstants;
+import com.wondertek.cpm.security.SecurityUtils;
+import com.wondertek.cpm.service.ContractBudgetService;
+import com.wondertek.cpm.service.ContractInfoService;
+import com.wondertek.cpm.web.rest.util.HeaderUtil;
+import com.wondertek.cpm.web.rest.util.PaginationUtil;
 
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.time.ZonedDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
-
-import static org.elasticsearch.index.query.QueryBuilders.*;
+import io.swagger.annotations.ApiParam;
 
 /**
  * REST controller for managing ContractBudget.
@@ -55,29 +55,6 @@ public class ContractBudgetResource {
     private ContractBudgetService contractBudgetService;
     @Inject
     private ContractInfoService contractInfoService;
-    @Inject
-    private ProjectInfoService projectInfoService;
-
-    /**
-     * POST  /contract-budgets : Create a new contractBudget.
-     *
-     * @param contractBudget the contractBudget to create
-     * @return the ResponseEntity with status 201 (Created) and with body the new contractBudget, or with status 400 (Bad Request) if the contractBudget has already an ID
-     * @throws URISyntaxException if the Location URI syntax is incorrect
-     */
-//    @PostMapping("/contract-budgets")
-//    @Timed
-//    public ResponseEntity<ContractBudget> createContractBudget(@RequestBody ContractBudget contractBudget) throws URISyntaxException {
-//        log.debug("REST request to save ContractBudget : {}", contractBudget);
-//        if (contractBudget.getId() != null) {
-//            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("contractBudget", "idexists", "A new contractBudget cannot already have an ID")).body(null);
-//        }
-//        ContractBudget result = contractBudgetService.save(contractBudget);
-//        return ResponseEntity.created(new URI("/api/contract-budgets/" + result.getId()))
-//            .headers(HeaderUtil.createEntityCreationAlert("contractBudget", result.getId().toString()))
-//            .body(result);
-//    }
-
     /**
      * PUT  /contract-budgets : Updates an existing contractBudget.
      *
@@ -89,12 +66,17 @@ public class ContractBudgetResource {
      */
     @PutMapping("/contract-budgets")
     @Timed
+    @Secured(AuthoritiesConstants.ROLE_CONTRACT_BUDGET)
     public ResponseEntity<ContractBudgetVo> updateContractBudget(@RequestBody ContractBudgetVo contractBudgetVo) throws URISyntaxException {
         log.debug("REST request to update ContractBudget : {}", contractBudgetVo);
         ContractBudget contractBudget = new ContractBudget();
         //是否构建项目
-        Boolean flag = contractBudgetService.checkByBudget(contractBudgetVo);
-        ContractBudget oldContractBudget = contractBudgetService.findOneById(contractBudgetVo.getId());
+        Boolean flag = Boolean.FALSE;
+        ContractBudget oldContractBudget = null;
+        if(contractBudgetVo.getId() != null){
+	        flag = contractBudgetService.checkByBudget(contractBudgetVo);
+	        oldContractBudget = contractBudgetService.findOneById(contractBudgetVo.getId());
+        }
         if (flag) {//构建项目
         	contractBudget.setId(contractBudgetVo.getId());
 			contractBudget.setBudgetTotal(contractBudgetVo.getBudgetTotal());
@@ -138,23 +120,6 @@ public class ContractBudgetResource {
     }
 
     /**
-     * GET  /contract-budgets : get all the contractBudgets.
-     *
-     * @param pageable the pagination information
-     * @return the ResponseEntity with status 200 (OK) and the list of contractBudgets in body
-     * @throws URISyntaxException if there is an error to generate the pagination HTTP headers
-     */
-//    @GetMapping("/contract-budgets")
-//    @Timed
-//    public ResponseEntity<List<ContractBudget>> getAllContractBudgets(@ApiParam Pageable pageable)
-//        throws URISyntaxException {
-//        log.debug("REST request to get a page of ContractBudgets");
-//        Page<ContractBudget> page = contractBudgetService.findAll(pageable);
-//        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/contract-budgets");
-//        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
-//    }
-
-    /**
      * GET  /contract-budgets/:id : get the "id" contractBudget.
      *
      * @param id the id of the contractBudget to retrieve
@@ -162,6 +127,7 @@ public class ContractBudgetResource {
      */
     @GetMapping("/contract-budgets/{id}")
     @Timed
+    @Secured(AuthoritiesConstants.ROLE_CONTRACT_BUDGET)
     public ResponseEntity<ContractBudgetVo> getContractBudgetVo(@PathVariable Long id) {
         log.debug("REST request to get ContractBudget : {}", id);
         ContractBudget contractBudget = contractBudgetService.findOneById(id);
@@ -193,6 +159,7 @@ public class ContractBudgetResource {
      */
     @DeleteMapping("/contract-budgets/{id}")
     @Timed
+    @Secured(AuthoritiesConstants.ROLE_CONTRACT_BUDGET)
     public ResponseEntity<Void> deleteContractBudget(@PathVariable Long id) {
         log.debug("REST request to delete ContractBudget : {}", id);
         ContractBudget contractBudget = contractBudgetService.findOne(id);
@@ -214,6 +181,7 @@ public class ContractBudgetResource {
      */
     @GetMapping("/_search/contract-budgets")
     @Timed
+    @Secured(AuthoritiesConstants.ROLE_CONTRACT_BUDGET)
     public ResponseEntity<List<ContractBudget>> searchContractBudgets(@RequestParam String query, @ApiParam Pageable pageable)
         throws URISyntaxException {
         log.debug("REST request to search for a page of ContractBudgets for query {}", query);
@@ -230,31 +198,9 @@ public class ContractBudgetResource {
      * @return the result of the search
      * @throws URISyntaxException if there is an error to generate the pagination HTTP headers
      */
-//    @GetMapping("/contract-budgets")
-//    @Timed
-//    public ResponseEntity<List<ContractBudget>> getAllContractBudgetsByParams(
-//    		@RequestParam(value = "type") Integer type,
-//    		@RequestParam(value = "purchaseType") Integer purchaseType,
-//    		@RequestParam(value = "dept") String dept,
-//    		@ApiParam Pageable pageable)
-//    	throws URISyntaxException{
-//    	log.debug("REST request to get a page of ContractBudget");	
-//    	Page<ContractBudget> page = contractBudgetService.search(type,purchaseType,dept,pageable);
-//    	HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(dept,page, "/api/contract-budgets");
-//    	return new ResponseEntity<>(page.getContent(),headers,HttpStatus.OK);
-//    	
-//    }
-    /**
-     * GET  /product-prices : get all the contractBudget corresponding
-     * to the query.
-     *
-     * @param query the query of the contractBudget search 
-     * @param pageable the pagination information
-     * @return the result of the search
-     * @throws URISyntaxException if there is an error to generate the pagination HTTP headers
-     */
     @GetMapping("/contract-budgets")
     @Timed
+    @Secured(AuthoritiesConstants.ROLE_CONTRACT_BUDGET)
     public ResponseEntity<List<ContractBudgetVo>> getAllContractBudgetsByParams(
     		@RequestParam(value = "name",required=false) String name,
     		@RequestParam(value = "serialNum",required=false) String serialNum,
@@ -269,6 +215,7 @@ public class ContractBudgetResource {
     
     @GetMapping("/contract-budgets/queryUserContract")
     @Timed
+    @Secured(AuthoritiesConstants.USER)
     public ResponseEntity<List<LongValue>> queryUserContract() throws URISyntaxException{
 		log.debug("REST request to queryUserContrac");
 		List<LongValue> list = contractBudgetService.queryUserContract();

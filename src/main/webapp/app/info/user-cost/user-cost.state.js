@@ -13,7 +13,7 @@
             parent: 'info',
             url: '/user-cost?page&sort&userId&userName&costMonth&status',
             data: {
-                authorities: ['ROLE_USER'],
+                authorities: ['ROLE_INFO_USERCOST'],
                 pageTitle: 'cpmApp.userCost.home.title'
             },
             views: {
@@ -63,7 +63,7 @@
             parent: 'info',
             url: '/user-cost/{id}',
             data: {
-                authorities: ['ROLE_USER'],
+                authorities: ['ROLE_INFO_USERCOST'],
                 pageTitle: 'cpmApp.userCost.detail.title'
             },
             views: {
@@ -95,7 +95,7 @@
             parent: 'user-cost-detail',
             url: '/detail/edit',
             data: {
-                authorities: ['ROLE_USER']
+                authorities: ['ROLE_INFO_USERCOST']
             },
             views: {
                 'content@': {
@@ -145,7 +145,7 @@
             url: '/new',
             pageTitle: 'cpmApp.userCost.home.createOrEditLabel',
             data: {
-                authorities: ['ROLE_USER']
+                authorities: ['ROLE_INFO_USERCOST']
             },
             views: {
                 'content@': {
@@ -179,7 +179,7 @@
             parent: 'user-cost',
             url: '/{id}/edit',
             data: {
-                authorities: ['ROLE_USER']
+                authorities: ['ROLE_INFO_USERCOST']
             },
             views: {
                 'content@': {
@@ -228,7 +228,7 @@
             parent: 'user-cost',
             url: '/{id}/delete',
             data: {
-                authorities: ['ROLE_USER']
+                authorities: ['ROLE_INFO_USERCOST']
             },
             onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
                 $uibModal.open({

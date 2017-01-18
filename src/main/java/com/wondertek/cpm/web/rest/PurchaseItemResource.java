@@ -1,15 +1,12 @@
 package com.wondertek.cpm.web.rest;
 
-import com.codahale.metrics.annotation.Timed;
-import com.wondertek.cpm.config.StringUtil;
-import com.wondertek.cpm.domain.PurchaseItem;
-import com.wondertek.cpm.domain.vo.PurchaseItemVo;
-import com.wondertek.cpm.security.SecurityUtils;
-import com.wondertek.cpm.service.PurchaseItemService;
-import com.wondertek.cpm.web.rest.util.HeaderUtil;
-import com.wondertek.cpm.web.rest.util.PaginationUtil;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.time.ZonedDateTime;
+import java.util.List;
+import java.util.Optional;
 
-import io.swagger.annotations.ApiParam;
+import javax.inject.Inject;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,19 +15,28 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
-import javax.inject.Inject;
+import com.codahale.metrics.annotation.Timed;
+import com.wondertek.cpm.config.StringUtil;
+import com.wondertek.cpm.domain.PurchaseItem;
+import com.wondertek.cpm.domain.vo.PurchaseItemVo;
+import com.wondertek.cpm.security.AuthoritiesConstants;
+import com.wondertek.cpm.security.SecurityUtils;
+import com.wondertek.cpm.service.PurchaseItemService;
+import com.wondertek.cpm.web.rest.util.HeaderUtil;
+import com.wondertek.cpm.web.rest.util.PaginationUtil;
 
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.time.ZonedDateTime;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
-
-import static org.elasticsearch.index.query.QueryBuilders.*;
+import io.swagger.annotations.ApiParam;
 
 /**
  * REST controller for managing PurchaseItem.
@@ -53,6 +59,7 @@ public class PurchaseItemResource {
      */
     @PostMapping("/purchase-items")
     @Timed
+    @Secured(AuthoritiesConstants.ROLE_CONTRACT_PURCHASE)
     public ResponseEntity<PurchaseItem> createPurchaseItem(@RequestBody PurchaseItem purchaseItem) throws URISyntaxException {
         log.debug("REST request to save PurchaseItem : {}", purchaseItem);
         if (purchaseItem.getId() != null) {
@@ -75,6 +82,7 @@ public class PurchaseItemResource {
      */
     @PutMapping("/purchase-items")
     @Timed
+    @Secured(AuthoritiesConstants.ROLE_CONTRACT_PURCHASE)
     public ResponseEntity<PurchaseItem> updatePurchaseItem(@RequestBody PurchaseItem purchaseItem) throws URISyntaxException {
         log.debug("REST request to update PurchaseItem : {}", purchaseItem);
         
@@ -134,6 +142,7 @@ public class PurchaseItemResource {
      */
     @GetMapping("/purchase-items/{id}")
     @Timed
+    @Secured(AuthoritiesConstants.ROLE_CONTRACT_PURCHASE)
     public ResponseEntity<PurchaseItemVo> getPurchaseItem(@PathVariable Long id) {
         log.debug("REST request to get PurchaseItem : {}", id);
         PurchaseItemVo purchaseItem = purchaseItemService.findOne(id);
@@ -152,6 +161,7 @@ public class PurchaseItemResource {
      */
     @DeleteMapping("/purchase-items/{id}")
     @Timed
+    @Secured(AuthoritiesConstants.ROLE_CONTRACT_PURCHASE)
     public ResponseEntity<Void> deletePurchaseItem(@PathVariable Long id) {
         log.debug("REST request to delete PurchaseItem : {}", id);
         purchaseItemService.delete(id);
@@ -169,6 +179,7 @@ public class PurchaseItemResource {
      */
     @GetMapping("/purchase-items")
     @Timed
+    @Secured(AuthoritiesConstants.ROLE_CONTRACT_PURCHASE)
     public ResponseEntity<List<PurchaseItemVo>> searchPurchaseItems(@RequestParam String name, 
     		@RequestParam String contractId,
     		@RequestParam String source,

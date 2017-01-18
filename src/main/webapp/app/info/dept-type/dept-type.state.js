@@ -13,7 +13,7 @@
             parent: 'info',
             url: '/dept-type?page&sort&search',
             data: {
-                authorities: ['ROLE_USER'],
+                authorities: ['ROLE_INFO_BASIC'],
                 pageTitle: 'cpmApp.deptType.home.title'
             },
             views: {
@@ -55,7 +55,7 @@
             parent: 'info',
             url: '/dept-type/{id}',
             data: {
-                authorities: ['ROLE_USER'],
+                authorities: ['ROLE_INFO_BASIC'],
                 pageTitle: 'cpmApp.deptType.detail.title'
             },
             views: {
@@ -87,7 +87,7 @@
             parent: 'dept-type-detail',
             url: '/detail/edit',
             data: {
-                authorities: ['ROLE_USER']
+                authorities: ['ROLE_INFO_BASIC']
             },
             onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
                 $uibModal.open({
@@ -112,7 +112,7 @@
             parent: 'dept-type',
             url: '/new',
             data: {
-                authorities: ['ROLE_USER']
+                authorities: ['ROLE_INFO_BASIC']
             },
             onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
                 $uibModal.open({
@@ -140,7 +140,7 @@
             parent: 'dept-type',
             url: '/{id}/edit',
             data: {
-                authorities: ['ROLE_USER']
+                authorities: ['ROLE_INFO_BASIC']
             },
             onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
                 $uibModal.open({
@@ -165,7 +165,7 @@
             parent: 'dept-type',
             url: '/{id}/delete',
             data: {
-                authorities: ['ROLE_USER']
+                authorities: ['ROLE_INFO_BASIC']
             },
             onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
                 $uibModal.open({

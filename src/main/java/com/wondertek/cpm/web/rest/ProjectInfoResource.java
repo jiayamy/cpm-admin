@@ -1,6 +1,5 @@
 package com.wondertek.cpm.web.rest;
 
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
@@ -214,6 +213,7 @@ public class ProjectInfoResource {
 
     @GetMapping("/project-infos/queryUserContract")
     @Timed
+    @Secured(AuthoritiesConstants.USER)
     public ResponseEntity<List<LongValue>> queryUserContract() throws URISyntaxException {
         log.debug("REST request to queryUserContract");
         List<LongValue> list = projectInfoService.queryUserContract();
@@ -286,6 +286,7 @@ public class ProjectInfoResource {
     
     @GetMapping("/project-infos/queryUserProject")
     @Timed
+    @Secured(AuthoritiesConstants.USER)
     public ResponseEntity<List<LongValue>> queryUserProject() throws URISyntaxException {
         log.debug("REST request to queryUserContract");
         List<LongValue> list = projectInfoService.queryUserProject();

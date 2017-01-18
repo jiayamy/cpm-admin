@@ -13,7 +13,7 @@
             parent: 'stat',
             url: '/contract-monthly-stat?page&contractId',
             data: {
-                authorities: ['ROLE_USER'],
+                authorities: ['ROLE_STAT_CONTRACT'],
                 pageTitle: 'cpmApp.contractMonthlyStat.home.title'
             },
             views: {
@@ -55,7 +55,7 @@
             parent: 'stat',
             url: '/contract-monthly-stat/{id}',
             data: {
-                authorities: ['ROLE_USER'],
+                authorities: ['ROLE_STAT_CONTRACT'],
                 pageTitle: 'cpmApp.contractMonthlyStat.detail.title'
             },
             views: {
@@ -107,7 +107,7 @@
             parent: 'stat',
             url: '/contract-monthly-stat/{id}/queryChart?fromDate&toDate&contractId',
             data: {
-                authorities: ['ROLE_USER'],
+                authorities: ['ROLE_STAT_CONTRACT'],
                 pageTitle: 'cpmApp.contractInfo.detail.title'
             },
             views: {

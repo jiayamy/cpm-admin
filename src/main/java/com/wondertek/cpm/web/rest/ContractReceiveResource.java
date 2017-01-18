@@ -1,12 +1,12 @@
 package com.wondertek.cpm.web.rest;
 
-import com.codahale.metrics.annotation.Timed;
-import com.wondertek.cpm.domain.ContractReceive;
-import com.wondertek.cpm.service.ContractReceiveService;
-import com.wondertek.cpm.web.rest.util.HeaderUtil;
-import com.wondertek.cpm.web.rest.util.PaginationUtil;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.List;
+import java.util.Optional;
 
-import io.swagger.annotations.ApiParam;
+import javax.inject.Inject;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -14,17 +14,25 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
-import javax.inject.Inject;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
+import com.codahale.metrics.annotation.Timed;
+import com.wondertek.cpm.domain.ContractReceive;
+import com.wondertek.cpm.security.AuthoritiesConstants;
+import com.wondertek.cpm.service.ContractReceiveService;
+import com.wondertek.cpm.web.rest.util.HeaderUtil;
+import com.wondertek.cpm.web.rest.util.PaginationUtil;
 
-import static org.elasticsearch.index.query.QueryBuilders.*;
+import io.swagger.annotations.ApiParam;
 
 /**
  * REST controller for managing ContractReceive.
@@ -47,6 +55,7 @@ public class ContractReceiveResource {
      */
     @PostMapping("/contract-receives")
     @Timed
+    @Secured(AuthoritiesConstants.ROLE_CONTRACT_RECEIVE)
     public ResponseEntity<ContractReceive> createContractReceive(@RequestBody ContractReceive contractReceive) throws URISyntaxException {
         log.debug("REST request to save ContractReceive : {}", contractReceive);
         if (contractReceive.getId() != null) {
@@ -69,6 +78,7 @@ public class ContractReceiveResource {
      */
     @PutMapping("/contract-receives")
     @Timed
+    @Secured(AuthoritiesConstants.ROLE_CONTRACT_RECEIVE)
     public ResponseEntity<ContractReceive> updateContractReceive(@RequestBody ContractReceive contractReceive) throws URISyntaxException {
         log.debug("REST request to update ContractReceive : {}", contractReceive);
         if (contractReceive.getId() == null) {
@@ -89,6 +99,7 @@ public class ContractReceiveResource {
      */
     @GetMapping("/contract-receives")
     @Timed
+    @Secured(AuthoritiesConstants.ROLE_CONTRACT_RECEIVE)
     public ResponseEntity<List<ContractReceive>> getAllContractReceives(@ApiParam Pageable pageable)
         throws URISyntaxException {
         log.debug("REST request to get a page of ContractReceives");
@@ -105,6 +116,7 @@ public class ContractReceiveResource {
      */
     @GetMapping("/contract-receives/{id}")
     @Timed
+    @Secured(AuthoritiesConstants.ROLE_CONTRACT_RECEIVE)
     public ResponseEntity<ContractReceive> getContractReceive(@PathVariable Long id) {
         log.debug("REST request to get ContractReceive : {}", id);
         ContractReceive contractReceive = contractReceiveService.findOne(id);
@@ -123,6 +135,7 @@ public class ContractReceiveResource {
      */
     @DeleteMapping("/contract-receives/{id}")
     @Timed
+    @Secured(AuthoritiesConstants.ROLE_CONTRACT_RECEIVE)
     public ResponseEntity<Void> deleteContractReceive(@PathVariable Long id) {
         log.debug("REST request to delete ContractReceive : {}", id);
         contractReceiveService.delete(id);
@@ -140,6 +153,7 @@ public class ContractReceiveResource {
      */
     @GetMapping("/_search/contract-receives")
     @Timed
+    @Secured(AuthoritiesConstants.ROLE_CONTRACT_RECEIVE)
     public ResponseEntity<List<ContractReceive>> searchContractReceives(@RequestParam String query, @ApiParam Pageable pageable)
         throws URISyntaxException {
         log.debug("REST request to search for a page of ContractReceives for query {}", query);

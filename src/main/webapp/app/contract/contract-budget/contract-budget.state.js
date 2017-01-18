@@ -13,7 +13,7 @@
             parent: 'contract',
             url: '/contract-budget?page&sort&serialNum&name&budgetName',
             data: {
-                authorities: ['ROLE_USER'],
+                authorities: ['ROLE_CONTRACT_BUDGET'],
                 pageTitle: 'cpmApp.contractBudget.home.title'
             },
             views: {
@@ -60,7 +60,7 @@
             parent: 'contract',
             url: '/contract-budget/{id}',
             data: {
-                authorities: ['ROLE_USER'],
+                authorities: ['ROLE_CONTRACT_BUDGET'],
                 pageTitle: 'cpmApp.contractBudget.detail.title'
             },
             views: {
@@ -92,7 +92,7 @@
             parent: 'contract-budget-detail',
             url: '/detail/edit',
             data: {
-                authorities: ['ROLE_USER']
+                authorities: ['ROLE_CONTRACT_BUDGET']
             },
             views: {
             	'content@': {
@@ -125,7 +125,7 @@
             parent: 'contract-budget-detail.edit',
             url: '/queryDept?selectType&showChild',
             data: {
-                authorities: ['ROLE_PROJECT_INFO']
+                authorities: ['ROLE_CONTRACT_BUDGET']
             },
             onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
                 $uibModal.open({
@@ -153,7 +153,7 @@
             parent: 'contract-budget',
             url: '/new',
             data: {
-                authorities: ['ROLE_USER']
+                authorities: ['ROLE_CONTRACT_BUDGET']
             },
             views: {
             	'content@': {
@@ -195,7 +195,7 @@
             parent: 'contract-budget.new',
             url: '/queryDept?selectType&showChild',
             data: {
-                authorities: ['ROLE_PROJECT_INFO']
+                authorities: ['ROLE_CONTRACT_BUDGET']
             },
             onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
                 $uibModal.open({
@@ -223,7 +223,7 @@
             parent: 'contract-budget',
             url: '/{id}/edit',
             data: {
-                authorities: ['ROLE_USER']
+                authorities: ['ROLE_CONTRACT_BUDGET']
             },
             views: {
             	'content@': {
@@ -256,7 +256,7 @@
             parent: 'contract-budget.edit',
             url: '/queryDept?selectType&showChild',
             data: {
-                authorities: ['ROLE_PROJECT_INFO']
+                authorities: ['ROLE_CONTRACT_BUDGET']
             },
             onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
                 $uibModal.open({
@@ -284,7 +284,7 @@
             parent: 'contract-budget',
             url: '/{id}/delete',
             data: {
-                authorities: ['ROLE_USER']
+                authorities: ['ROLE_CONTRACT_BUDGET']
             },
             onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
                 $uibModal.open({

@@ -117,7 +117,7 @@
             parent: 'user-management.new',
             url: '/queryDept?selectType&showChild&showUser',
             data: {
-                authorities: ['ROLE_PROJECT_INFO']
+                authorities: ['ROLE_INFO_BASIC']
             },
             onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
                 $uibModal.open({
@@ -179,7 +179,7 @@
             parent: 'user-management.edit',
             url: '/queryDept?selectType&showChild&showUser',
             data: {
-                authorities: ['ROLE_PROJECT_INFO']
+                authorities: ['ROLE_INFO_BASIC']
             },
             onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
                 $uibModal.open({

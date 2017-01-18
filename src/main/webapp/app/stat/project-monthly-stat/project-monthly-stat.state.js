@@ -13,7 +13,7 @@
             parent: 'stat',
             url: '/project-monthly-stat?page&projectId',
             data: {
-                authorities: ['ROLE_USER'],
+                authorities: ['ROLE_STAT_PROJECT'],
                 pageTitle: 'cpmApp.projectMonthlyStat.home.title'
             },
             views: {
@@ -55,7 +55,7 @@
             parent: 'stat',
             url: '/project-monthly-stat/{id}',
             data: {
-                authorities: ['ROLE_USER'],
+                authorities: ['ROLE_STAT_PROJECT'],
                 pageTitle: 'cpmApp.projectMonthlyStat.detail.title'
             },
             views: {
@@ -108,7 +108,7 @@
             parent: 'stat',
             url: '/project-monthly-stat/{id}/queryChart?fromDate&toDate&projectId',
             data: {
-                authorities: ['ROLE_USER'],
+                authorities: ['ROLE_STAT_PROJECT'],
                 pageTitle: 'cpmApp.projectInfo.detail.title'
             },
             views: {

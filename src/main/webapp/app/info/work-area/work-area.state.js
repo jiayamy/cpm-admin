@@ -13,7 +13,7 @@
             parent: 'info',
             url: '/work-area?page&sort&search',
             data: {
-                authorities: ['ROLE_USER'],
+                authorities: ['ROLE_INFO_BASIC'],
                 pageTitle: 'cpmApp.workArea.home.title'
             },
             views: {
@@ -55,7 +55,7 @@
             parent: 'info',
             url: '/work-area/{id}',
             data: {
-                authorities: ['ROLE_USER'],
+                authorities: ['ROLE_INFO_BASIC'],
                 pageTitle: 'cpmApp.workArea.detail.title'
             },
             views: {
@@ -87,7 +87,7 @@
             parent: 'work-area-detail',
             url: '/detail/edit',
             data: {
-                authorities: ['ROLE_USER']
+                authorities: ['ROLE_INFO_BASIC']
             },
             onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
                 $uibModal.open({
@@ -112,7 +112,7 @@
             parent: 'work-area',
             url: '/new',
             data: {
-                authorities: ['ROLE_USER']
+                authorities: ['ROLE_INFO_BASIC']
             },
             onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
                 $uibModal.open({
@@ -140,7 +140,7 @@
             parent: 'work-area',
             url: '/{id}/edit',
             data: {
-                authorities: ['ROLE_USER']
+                authorities: ['ROLE_INFO_BASIC']
             },
             onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
                 $uibModal.open({
@@ -165,7 +165,7 @@
             parent: 'work-area',
             url: '/{id}/delete',
             data: {
-                authorities: ['ROLE_USER']
+                authorities: ['ROLE_INFO_BASIC']
             },
             onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
                 $uibModal.open({

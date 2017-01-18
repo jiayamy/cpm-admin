@@ -111,13 +111,13 @@ public class ContractBudgetDaoImpl extends GenericDaoImpl<ContractBudget, Long> 
 		
 		querySql.append("select wcb.contract_id,wpi.id from w_contract_budget wcb left join w_project_info wpi on wpi.budget_id = wcb.id");
 		querySql.append(" and wcb.id = ?");
-		params.add(contractBudgetVo.getName());
+		params.add(contractBudgetVo.getId());
 		
 		List<Object[]> list = this.queryAllSql(querySql.toString(), params.toArray());
 		if (list == null || list.isEmpty()) {
-			return true;
+			return false;
 		}
-		return false;
+		return true;
 	}
 }
 	

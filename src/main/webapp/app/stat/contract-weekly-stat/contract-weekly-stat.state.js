@@ -13,7 +13,7 @@
             parent: 'stat',
             url: '/contract-weekly-stat?page&sort&fromDate&toDate&statDate',
             data: {
-                authorities: ['ROLE_USER'],
+                authorities: ['ROLE_STAT_CONTRACT'],
                 pageTitle: 'cpmApp.contractWeeklyStat.home.title'
             },
             views: {
@@ -59,7 +59,7 @@
             parent: 'stat',
             url: '/contract-weekly-stat/{id}',
             data: {
-                authorities: ['ROLE_USER'],
+                authorities: ['ROLE_STAT_CONTRACT'],
                 pageTitle: 'cpmApp.contractWeeklyStat.detail.title'
             },
             views: {

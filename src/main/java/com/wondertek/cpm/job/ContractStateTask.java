@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 import com.wondertek.cpm.config.DateUtil;
 import com.wondertek.cpm.config.StringUtil;
 import com.wondertek.cpm.domain.ContractCost;
-import com.wondertek.cpm.domain.ContractFinshInfo;
+import com.wondertek.cpm.domain.ContractFinishInfo;
 import com.wondertek.cpm.domain.ContractInfo;
 import com.wondertek.cpm.domain.ContractMonthlyStat;
 import com.wondertek.cpm.domain.ContractReceive;
@@ -172,10 +172,10 @@ public class ContractStateTask {
 				//合同id
 				contractWeeklyStat.setContractId(id);
 				//合同完成率
-				List<ContractFinshInfo> contractFinshInfos = contractFinishInfoRepository.findAllByContractIdAndCreateTimeBefore(id, endTime);
-				if(contractFinshInfos != null && contractFinshInfos.size() > 0){
-					ContractFinshInfo contractFinshInfo = contractFinshInfos.get(contractFinshInfos.size() - 1);
-					contractWeeklyStat.setFinishRate(contractFinshInfo.getFinishRate());
+				List<ContractFinishInfo> contractFinishInfos = contractFinishInfoRepository.findAllByContractIdAndCreateTimeBefore(id, endTime);
+				if(contractFinishInfos != null && contractFinishInfos.size() > 0){
+					ContractFinishInfo contractFinishInfo = contractFinishInfos.get(contractFinishInfos.size() - 1);
+					contractWeeklyStat.setFinishRate(contractFinishInfo.getFinishRate());
 				}else{
 					log.error("no finish rate found belong to " + contractInfo.getName());
 					contractWeeklyStat.setFinishRate(0D);
@@ -434,10 +434,10 @@ public class ContractStateTask {
 				//合同id
 				contractMonthlyStat.setContractId(id);
 				//合同完成率
-				List<ContractFinshInfo> contractFinshInfos = contractFinishInfoRepository.findAllByContractIdAndCreateTimeBefore(id, endTime);
-				if(contractFinshInfos != null && contractFinshInfos.size() > 0){
-					ContractFinshInfo contractFinshInfo = contractFinshInfos.get(contractFinshInfos.size() - 1);
-					contractMonthlyStat.setFinishRate(contractFinshInfo.getFinishRate());
+				List<ContractFinishInfo> contractFinishInfos = contractFinishInfoRepository.findAllByContractIdAndCreateTimeBefore(id, endTime);
+				if(contractFinishInfos != null && contractFinishInfos.size() > 0){
+					ContractFinishInfo contractFinishInfo = contractFinishInfos.get(contractFinishInfos.size() - 1);
+					contractMonthlyStat.setFinishRate(contractFinishInfo.getFinishRate());
 				}else{
 					log.error("no finish rate found belong to " + contractInfo.getName());
 					contractMonthlyStat.setFinishRate(0D);

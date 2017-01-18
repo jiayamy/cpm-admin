@@ -13,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,6 +25,7 @@ import com.codahale.metrics.annotation.Timed;
 import com.wondertek.cpm.domain.ContractMonthlyStat;
 import com.wondertek.cpm.domain.vo.ContractMonthlyStatVo;
 import com.wondertek.cpm.domain.vo.LongValue;
+import com.wondertek.cpm.security.AuthoritiesConstants;
 import com.wondertek.cpm.service.ContractMonthlyStatService;
 import com.wondertek.cpm.web.rest.util.HeaderUtil;
 import com.wondertek.cpm.web.rest.util.PaginationUtil;
@@ -51,6 +53,7 @@ public class ContractMonthlyStatResource {
      */
     @GetMapping("/contract-monthly-stats")
     @Timed
+    @Secured(AuthoritiesConstants.ROLE_STAT_CONTRACT)
     public ResponseEntity<List<ContractMonthlyStatVo>> getAllContractMonthlyStats(
     		@ApiParam(value="contractId") @RequestParam(value="contractId") String contractId,
     		@ApiParam Pageable pageable)
@@ -69,6 +72,7 @@ public class ContractMonthlyStatResource {
      */
     @GetMapping("/contract-monthly-stats/{id}")
     @Timed
+    @Secured(AuthoritiesConstants.ROLE_STAT_CONTRACT)
     public ResponseEntity<ContractMonthlyStatVo> getContractMonthlyStat(@PathVariable Long id) {
         log.debug("REST request to get ContractMonthlyStats : {}", id);
         ContractMonthlyStatVo contractMonthlyStat = contractMonthlyStatService.findOne(id);
@@ -87,6 +91,7 @@ public class ContractMonthlyStatResource {
      */
     @DeleteMapping("/contract-monthly-stats/{id}")
     @Timed
+    @Secured(AuthoritiesConstants.ROLE_STAT_CONTRACT)
     public ResponseEntity<Void> deleteContractMonthlyStat(@PathVariable Long id) {
         log.debug("REST request to delete ContractMonthlyStats : {}", id);
         contractMonthlyStatService.delete(id);
@@ -104,6 +109,7 @@ public class ContractMonthlyStatResource {
      */
     @GetMapping("/_search/contract-monthly-stats")
     @Timed
+    @Secured(AuthoritiesConstants.ROLE_STAT_CONTRACT)
     public ResponseEntity<List<ContractMonthlyStat>> searchContractMonthlyStats(@RequestParam String query, @ApiParam Pageable pageable)
         throws URISyntaxException {
         log.debug("REST request to search for a page of ContractMonthlyStat for query {}", query);
@@ -114,6 +120,7 @@ public class ContractMonthlyStatResource {
     
     @GetMapping("/contract-monthly-stats/queryUserContract")
     @Timed
+    @Secured(AuthoritiesConstants.ROLE_STAT_CONTRACT)
 	public ResponseEntity<List<LongValue>> queryUserContract() throws URISyntaxException {
 	    log.debug("REST request to queryUserProject");
 	    List<LongValue> list = contractMonthlyStatService.queryUserContract();

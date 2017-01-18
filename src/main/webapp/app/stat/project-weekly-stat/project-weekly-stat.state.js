@@ -13,7 +13,7 @@
             parent: 'stat',
             url: '/project-weekly-stat?page&sort&fromDate&toDate&statDate',
             data: {
-                authorities: ['ROLE_USER'],
+                authorities: ['ROLE_STAT_PROJECT'],
                 pageTitle: 'cpmApp.projectWeeklyStat.home.title'
             },
             views: {
@@ -59,7 +59,7 @@
             parent: 'stat',
             url: '/project-weekly-stat/{id}',
             data: {
-                authorities: ['ROLE_USER'],
+                authorities: ['ROLE_STAT_PROJECT'],
                 pageTitle: 'cpmApp.projectWeeklyStat.detail.title'
             },
             views: {

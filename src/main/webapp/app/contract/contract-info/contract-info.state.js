@@ -13,7 +13,7 @@
             parent: 'contract',
             url: '/contract-info?page&sort&serialNum&name&type&isPrepared&isEpibolic',
             data: {
-                authorities: ['ROLE_USER'],
+                authorities: ['ROLE_CONTRACT_INFO'],
                 pageTitle: 'cpmApp.contractInfo.home.title'
             },
             views: {
@@ -63,7 +63,7 @@
             parent: 'contract-info',
             url: '/detail/{id}',
             data: {
-                authorities: ['ROLE_USER'],
+                authorities: ['ROLE_CONTRACT_INFO'],
                 pageTitle: 'cpmApp.contractInfo.detail.title'
             },
             views: {
@@ -95,7 +95,7 @@
         	parent:'contract-info-detail',
         	url:'/edit',
         	data:{
-        		authorities: ['ROLE_USER']
+        		authorities: ['ROLE_CONTRACT_INFO']
         	},
         	views:{
         		'content@':{
@@ -128,7 +128,7 @@
             parent: 'contract-info-detail.edit',
             url: '/queryDept?selectType&showChild&dataType',
             data: {
-                authorities: ['ROLE_USER']
+                authorities: ['ROLE_CONTRACT_INFO']
             },
             onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
                 $uibModal.open({
@@ -157,7 +157,7 @@
         	parent: 'contract-info',
             url: '/new',
             data: {
-                authorities: ['ROLE_USER']
+                authorities: ['ROLE_CONTRACT_INFO']
             },
             views:{
             	'content@':{
@@ -218,7 +218,7 @@
             parent: 'contract-info.new',
             url: '/queryDept?selectType&showChild&dataType',
             data: {
-                authorities: ['ROLE_USER']
+                authorities: ['ROLE_CONTRACT_INFO']
             },
             onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
                 $uibModal.open({
@@ -247,7 +247,7 @@
         	parent:'contract-info',
         	url:'/{id}/edit',
         	data:{
-        		authorities: ['ROLE_USER']
+        		authorities: ['ROLE_CONTRACT_INFO']
         	},
         	views:{
         		'content@':{
@@ -281,7 +281,7 @@
         	parent:'contract-info',
         	url:'/{id}/finRate',
         	data:{
-        		authorities: ['ROLE_USER']
+        		authorities: ['ROLE_CONTRACT_INFO']
         	},
         	views:{
         		'content@':{
@@ -304,7 +304,7 @@
             parent: 'contract-info.edit',
             url: '/queryDept?selectType&showChild&dataType',
             data: {
-                authorities: ['ROLE_USER']
+                authorities: ['ROLE_CONTRACT_INFO']
             },
             onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
                 $uibModal.open({
@@ -334,7 +334,7 @@
             parent: 'contract-info',
             url: '/{id}/delete',
             data: {
-                authorities: ['ROLE_USER']
+                authorities: ['ROLE_CONTRACT_INFO']
             },
             onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
                 $uibModal.open({
@@ -358,7 +358,7 @@
             parent: 'contract-info',
             url: '/queryDept?selectType&showChild',
             data: {
-                authorities: ['ROLE_USER']
+                authorities: ['ROLE_CONTRACT_INFO']
             },
             onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
                 $uibModal.open({

@@ -61,6 +61,7 @@ public class ProjectMonthlyStatResource {
      */
     @GetMapping("/project-monthly-stats")
     @Timed
+    @Secured(AuthoritiesConstants.ROLE_STAT_PROJECT)
     public ResponseEntity<List<ProjectMonthlyStatVo>> getAllProjectMonthlyStats(
     		@ApiParam(value="projectId") @RequestParam(value="projectId") String projectId,
     		@ApiParam Pageable pageable)
@@ -79,6 +80,7 @@ public class ProjectMonthlyStatResource {
      */
     @GetMapping("/project-monthly-stats/{id}")
     @Timed
+    @Secured(AuthoritiesConstants.ROLE_STAT_PROJECT)
     public ResponseEntity<ProjectMonthlyStatVo> getProjectMonthlyStat(@PathVariable Long id) {
         log.debug("REST request to get ProjectMonthlyStats : {}", id);
         ProjectMonthlyStatVo projectMonthlyStat = projectMonthlyStatService.findOne(id);
@@ -97,6 +99,7 @@ public class ProjectMonthlyStatResource {
      */
     @DeleteMapping("/project-monthly-stats/{id}")
     @Timed
+    @Secured(AuthoritiesConstants.ROLE_STAT_PROJECT)
     public ResponseEntity<Void> deleteProjectMonthlyStat(@PathVariable Long id) {
         log.debug("REST request to delete ProjectMonthlyStats : {}", id);
         projectMonthlyStatService.delete(id);
@@ -114,6 +117,7 @@ public class ProjectMonthlyStatResource {
      */
     @GetMapping("/_search/project-monthly-stats")
     @Timed
+    @Secured(AuthoritiesConstants.ROLE_STAT_PROJECT)
     public ResponseEntity<List<ProjectMonthlyStat>> searchProjectMonthlyStats(@RequestParam String query, @ApiParam Pageable pageable)
         throws URISyntaxException {
         log.debug("REST request to search for a page of ProjectMonthlyStat for query {}", query);
@@ -124,6 +128,7 @@ public class ProjectMonthlyStatResource {
     
     @GetMapping("/project-monthly-stats/queryUserProject")
     @Timed
+    @Secured(AuthoritiesConstants.ROLE_STAT_PROJECT)
 	public ResponseEntity<List<LongValue>> queryUserProject() throws URISyntaxException {
 	    log.debug("REST request to queryUserProject");
 	    List<LongValue> list = projectMonthlyStatService.queryUserProject();
@@ -132,6 +137,7 @@ public class ProjectMonthlyStatResource {
     
     @GetMapping("/project-monthly-stats/queryChart")
     @Timed
+    @Secured(AuthoritiesConstants.ROLE_STAT_PROJECT)
     public ChartReportVo getChartReport(@ApiParam(value="fromDate") @RequestParam(value="fromDate") String fromDate,
     		@ApiParam(value="toDate") @RequestParam(value="toDate") String toDate,
     		@ApiParam(value="id") @RequestParam(value="id") Long statId){
