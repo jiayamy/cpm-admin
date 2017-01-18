@@ -60,8 +60,8 @@
             }
         })
         .state('user-cost-detail', {
-            parent: 'info',
-            url: '/user-cost/{id}',
+            parent: 'user-cost',
+            url: '/detail/{id}',
             data: {
                 authorities: ['ROLE_INFO_USERCOST'],
                 pageTitle: 'cpmApp.userCost.detail.title'
@@ -93,7 +93,7 @@
         })
         .state('user-cost-detail.edit', {
             parent: 'user-cost-detail',
-            url: '/detail/edit',
+            url: '/edit',
             data: {
                 authorities: ['ROLE_INFO_USERCOST']
             },
@@ -177,7 +177,7 @@
         })
         .state('user-cost.edit', {
             parent: 'user-cost',
-            url: '/{id}/edit',
+            url: '/edit/{id}',
             data: {
                 authorities: ['ROLE_INFO_USERCOST']
             },
@@ -226,7 +226,7 @@
         })
         .state('user-cost.delete', {
             parent: 'user-cost',
-            url: '/{id}/delete',
+            url: '/delete/{id}',
             data: {
                 authorities: ['ROLE_INFO_USERCOST']
             },

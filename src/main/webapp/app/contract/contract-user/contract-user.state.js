@@ -85,8 +85,8 @@
             }]
         })
         .state('contract-user-detail', {
-            parent: 'contract',
-            url: '/contract-user/{id}',
+            parent: 'contract-user',
+            url: '/detail/{id}',
             data: {
                 authorities: ['ROLE_CONTRACT_USER'],
                 pageTitle: 'cpmApp.contractUser.detail.title'

@@ -54,8 +54,8 @@
             }
         })
         .state('holiday-info-detail', {
-            parent: 'info',
-            url: '/holiday-info/{id}',
+            parent: 'holiday-info',
+            url: '/detail/{id}',
             data: {
                 authorities: ['ROLE_INFO_BASIC'],
                 pageTitle: 'cpmApp.holidayInfo.detail.title'
@@ -87,7 +87,7 @@
         })
         .state('holiday-info-detail.edit', {
             parent: 'holiday-info-detail',
-            url: '/detail/edit',
+            url: '/edit',
             data: {
                 authorities: ['ROLE_INFO_BASIC']
             },
@@ -150,7 +150,7 @@
         })
         .state('holiday-info.edit', {
             parent: 'holiday-info',
-            url: '/{id}/edit',
+            url: '/edit/{id}',
             data: {
                 authorities: ['ROLE_INFO_BASIC']
             },
@@ -181,7 +181,7 @@
         })
         .state('holiday-info.delete', {
             parent: 'holiday-info',
-            url: '/{id}/delete',
+            url: '/delete/{id}',
             data: {
                 authorities: ['ROLE_INFO_BASIC']
             },

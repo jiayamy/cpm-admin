@@ -56,8 +56,8 @@
             }
         })
         .state('product-price-detail', {
-            parent: 'contract',
-            url: '/product-price/{id}',
+            parent: 'product-price',
+            url: '/detail/{id}',
             data: {
                 authorities: ['ROLE_CONTRACT_PRODUCTPRICE'],
                 pageTitle: 'cpmApp.productPrice.detail.title'
@@ -89,7 +89,7 @@
         })
         .state('product-price-detail.edit', {
             parent: 'product-price-detail',
-            url: '/detail/edit',
+            url: '/edit',
             data: {
                 authorities: ['ROLE_CONTRACT_PRODUCTPRICE']
             },
@@ -150,7 +150,7 @@
         })
         .state('product-price.edit', {
             parent: 'product-price',
-            url: '/{id}/edit',
+            url: '/edit/{id}',
             data: {
                 authorities: ['ROLE_CONTRACT_PRODUCTPRICE']
             },
@@ -175,7 +175,7 @@
         })
         .state('product-price.delete', {
             parent: 'product-price',
-            url: '/{id}/delete',
+            url: '/delete/{id}',
             data: {
                 authorities: ['ROLE_CONTRACT_PRODUCTPRICE']
             },

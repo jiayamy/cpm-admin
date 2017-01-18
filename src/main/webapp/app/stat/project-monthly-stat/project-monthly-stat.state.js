@@ -52,8 +52,8 @@
             }
         })
         .state('project-monthly-stat-detail', {
-            parent: 'stat',
-            url: '/project-monthly-stat/{id}',
+            parent: 'project-monthly-stat',
+            url: '/detail/{id}',
             data: {
                 authorities: ['ROLE_STAT_PROJECT'],
                 pageTitle: 'cpmApp.projectMonthlyStat.detail.title'
@@ -105,8 +105,8 @@
             }
         })
         .state('project-monthly-stat-detail.chart', {
-            parent: 'stat',
-            url: '/project-monthly-stat/{id}/queryChart?fromDate&toDate&projectId',
+            parent: 'project-monthly-stat',
+            url: '/chart/{id}/queryChart?fromDate&toDate&projectId',
             data: {
                 authorities: ['ROLE_STAT_PROJECT'],
                 pageTitle: 'cpmApp.projectInfo.detail.title'

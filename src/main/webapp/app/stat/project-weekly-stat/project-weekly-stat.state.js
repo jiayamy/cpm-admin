@@ -56,8 +56,8 @@
             }
         })
         .state('project-weekly-stat-detail', {
-            parent: 'stat',
-            url: '/project-weekly-stat/{id}',
+            parent: 'project-weekly-stat',
+            url: '/detail/{id}',
             data: {
                 authorities: ['ROLE_STAT_PROJECT'],
                 pageTitle: 'cpmApp.projectWeeklyStat.detail.title'

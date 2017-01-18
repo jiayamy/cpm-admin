@@ -52,8 +52,8 @@
             }
         })
         .state('dept-type-detail', {
-            parent: 'info',
-            url: '/dept-type/{id}',
+            parent: 'dept-type',
+            url: '/detail/{id}',
             data: {
                 authorities: ['ROLE_INFO_BASIC'],
                 pageTitle: 'cpmApp.deptType.detail.title'
@@ -85,7 +85,7 @@
         })
         .state('dept-type-detail.edit', {
             parent: 'dept-type-detail',
-            url: '/detail/edit',
+            url: '/edit',
             data: {
                 authorities: ['ROLE_INFO_BASIC']
             },
@@ -138,7 +138,7 @@
         })
         .state('dept-type.edit', {
             parent: 'dept-type',
-            url: '/{id}/edit',
+            url: '/edit/{id}',
             data: {
                 authorities: ['ROLE_INFO_BASIC']
             },
@@ -163,7 +163,7 @@
         })
         .state('dept-type.delete', {
             parent: 'dept-type',
-            url: '/{id}/delete',
+            url: '/delete/{id}',
             data: {
                 authorities: ['ROLE_INFO_BASIC']
             },

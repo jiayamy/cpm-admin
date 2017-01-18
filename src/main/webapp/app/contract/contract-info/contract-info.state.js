@@ -245,7 +245,7 @@
         })
         .state('contract-info.edit',{
         	parent:'contract-info',
-        	url:'/{id}/edit',
+        	url:'/edit/{id}',
         	data:{
         		authorities: ['ROLE_CONTRACT_INFO']
         	},
@@ -279,7 +279,7 @@
         })
         .state('contract-info.finRate',{
         	parent:'contract-info',
-        	url:'/{id}/finRate',
+        	url:'/finRate/{id}',
         	data:{
         		authorities: ['ROLE_CONTRACT_INFO']
         	},
@@ -332,7 +332,7 @@
         
         .state('contract-info.delete', {
             parent: 'contract-info',
-            url: '/{id}/delete',
+            url: '/delete/{id}',
             data: {
                 authorities: ['ROLE_CONTRACT_INFO']
             },

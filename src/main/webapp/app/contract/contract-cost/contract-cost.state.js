@@ -57,8 +57,8 @@
             }
         })
         .state('contract-cost-detail', {
-            parent: 'contract',
-            url: '/contract-cost/{id}',
+            parent: 'contract-cost',
+            url: '/detail/{id}',
             data: {
                 authorities: ['ROLE_CONTRACT_COST'],
                 pageTitle: 'cpmApp.contractCost.detail.title'
@@ -91,7 +91,7 @@
         
         .state('contract-cost-detail.edit',{
         	parent: 'contract-cost',
-            url: '/{id}/edit',
+            url: '/edit/{id}',
             data: {
                 authorities: ['ROLE_CONTRACT_COST']
             },
@@ -153,7 +153,7 @@
         })        
         .state('contract-cost.edit',{
         	parent: 'contract-cost',
-            url: '/{id}/edit',
+            url: '/edit/{id}',
             data: {
                 authorities: ['ROLE_CONTRACT_COST']
             },
@@ -176,7 +176,7 @@
         })
         .state('contract-cost.delete', {
             parent: 'contract-cost',
-            url: '/{id}/delete',
+            url: '/delete/{id}',
             data: {
                 authorities: ['ROLE_CONTRACT_COST']
             },

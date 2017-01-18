@@ -57,7 +57,7 @@
         })
         .state('user-timesheet-detail', {
             parent: 'user-timesheet',
-            url: '/{id}',
+            url: '/detail/{id}',
             data: {
                 authorities: ['ROLE_TIMESHEET'],
                 pageTitle: 'cpmApp.userTimesheet.detail.title'
@@ -89,7 +89,7 @@
         })
         .state('user-timesheet-detail.edit', {
             parent: 'user-timesheet-detail',
-            url: '/detail/edit/{id}',
+            url: '/edit/{id}',
             data: {
                 authorities: ['ROLE_TIMESHEET']
             },
@@ -165,7 +165,7 @@
         })
         .state('user-timesheet.edit', {
             parent: 'user-timesheet',
-            url: '/{id}/edit',
+            url: '/edit/{id}',
             data: {
                 authorities: ['ROLE_TIMESHEET']
             },
@@ -196,7 +196,7 @@
         })
         .state('user-timesheet.delete', {
             parent: 'user-timesheet',
-            url: '/{id}/delete',
+            url: '/delete/{id}',
             data: {
                 authorities: ['ROLE_TIMESHEET']
             },

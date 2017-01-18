@@ -57,10 +57,14 @@ spring:
                   logs: elasticsearch/log
                   data: elasticsearch/data
     mail:
-        host: localhost
+        host: 192.168.1.212
         port: 25
-        username:
-        password:
+        username: it@wdit.com.cn
+        password: it@123
+        protocol: smtp
+        properties:
+             mail.smtp.auth: true
+             mail.smtp.timeout: 25000
     messages:
         cache-seconds: 1
     thymeleaf:

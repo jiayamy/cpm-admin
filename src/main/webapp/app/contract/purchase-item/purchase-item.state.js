@@ -54,8 +54,8 @@
             }
         })
         .state('purchase-item-detail', {
-            parent: 'contract',
-            url: '/purchase-item/{id}',
+            parent: 'purchase-item',
+            url: '/detail/{id}',
             data: {
                 authorities: ['ROLE_CONTRACT_PURCHASE'],
                 pageTitle: 'cpmApp.purchaseItem.detail.title'
@@ -87,7 +87,7 @@
         })
         .state('purchase-item-detail.edit', {
             parent: 'purchase-item-detail',
-            url: '/detail/edit',
+            url: '/edit',
             data: {
                 authorities: ['ROLE_CONTRACT_PURCHASE']
             },
@@ -154,7 +154,7 @@
         })
         .state('purchase-item.edit', {
             parent: 'purchase-item',
-            url: '/{id}/edit',
+            url: '/edit/{id}',
             data: {
                 authorities: ['ROLE_CONTRACT_PURCHASE'],
                 pageTitle: 'cpmApp.purchaseItem.detail.title'
@@ -186,7 +186,7 @@
         })
         .state('purchase-item.delete', {
             parent: 'purchase-item',
-            url: '/{id}/delete',
+            url: '/delete/{id}',
             data: {
                 authorities: ['ROLE_CONTRACT_PURCHASE']
             },

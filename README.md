@@ -108,3 +108,9 @@ To set up a CI environment, consult the [Setting up Continuous Integration][] pa
 [Karma]: http://karma-runner.github.io/
 [Jasmine]: http://jasmine.github.io/2.0/introduction.html
 [Protractor]: https://angular.github.io/protractor/
+
+
+## host
+外网 http://60.174.236.99:8090/cpm/ 对应内网 172.16.1.93:80
+60.174.236.99  22016 root/Wondertek@2016
+

@@ -52,8 +52,8 @@
             }
         })
         .state('work-area-detail', {
-            parent: 'info',
-            url: '/work-area/{id}',
+            parent: 'work-area',
+            url: '/detail/{id}',
             data: {
                 authorities: ['ROLE_INFO_BASIC'],
                 pageTitle: 'cpmApp.workArea.detail.title'
@@ -85,7 +85,7 @@
         })
         .state('work-area-detail.edit', {
             parent: 'work-area-detail',
-            url: '/detail/edit',
+            url: '/edit',
             data: {
                 authorities: ['ROLE_INFO_BASIC']
             },
@@ -138,7 +138,7 @@
         })
         .state('work-area.edit', {
             parent: 'work-area',
-            url: '/{id}/edit',
+            url: '/edit/{id}',
             data: {
                 authorities: ['ROLE_INFO_BASIC']
             },
@@ -163,7 +163,7 @@
         })
         .state('work-area.delete', {
             parent: 'work-area',
-            url: '/{id}/delete',
+            url: '/delete/{id}',
             data: {
                 authorities: ['ROLE_INFO_BASIC']
             },

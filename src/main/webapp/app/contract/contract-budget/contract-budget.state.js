@@ -57,8 +57,8 @@
             }
         })
         .state('contract-budget-detail', {
-            parent: 'contract',
-            url: '/contract-budget/{id}',
+            parent: 'contract-budget',
+            url: '/detail/{id}',
             data: {
                 authorities: ['ROLE_CONTRACT_BUDGET'],
                 pageTitle: 'cpmApp.contractBudget.detail.title'
@@ -90,7 +90,7 @@
         })
         .state('contract-budget-detail.edit', {
             parent: 'contract-budget-detail',
-            url: '/detail/edit',
+            url: '/edit',
             data: {
                 authorities: ['ROLE_CONTRACT_BUDGET']
             },
@@ -221,7 +221,7 @@
         })
         .state('contract-budget.edit', {
             parent: 'contract-budget',
-            url: '/{id}/edit',
+            url: '/edit/{id}',
             data: {
                 authorities: ['ROLE_CONTRACT_BUDGET']
             },
@@ -282,7 +282,7 @@
         })
         .state('contract-budget.delete', {
             parent: 'contract-budget',
-            url: '/{id}/delete',
+            url: '/delete/{id}',
             data: {
                 authorities: ['ROLE_CONTRACT_BUDGET']
             },
