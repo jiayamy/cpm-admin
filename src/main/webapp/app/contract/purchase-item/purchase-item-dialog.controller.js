@@ -74,10 +74,10 @@
             purchaseItem.quantity = vm.purchaseItem.quantity;
             purchaseItem.price = vm.purchaseItem.price;
             purchaseItem.units = vm.purchaseItem.units;
-            purchaseItem.type = vm.purchaseItem.source;
-            purchaseItem.type = vm.purchaseItem.purchaser;
-            purchaseItem.type = vm.purchaseItem.totalAmount;
-            purchaseItem.type = vm.purchaseItem.status;
+            purchaseItem.source = vm.purchaseItem.source;
+            purchaseItem.purchaser = vm.purchaseItem.purchaser;
+            purchaseItem.totalAmount = vm.purchaseItem.totalAmount;
+            purchaseItem.type = vm.purchaseItem.type;
             
             if(purchaseItem.contractId && purchaseItem.contractId.key){
             	purchaseItem.contractId = purchaseItem.contractId.key;
