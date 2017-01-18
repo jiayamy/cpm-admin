@@ -677,7 +677,7 @@ public class ContractStateTask {
 				if(contractInfo.getType() == ContractInfo.TYPE_PUBLIC){
 					if(contractInfo.getDeptId() != null && contractInfo.getDeptId() != 0){
 						DeptInfo deptInfo = deptInfoRepository.findOne(contractInfo.getDeptId());
-						userTimesheets = userTimesheetRepository.findByWorkDayAndNotDeptTypeAndType(workDay, StringUtil.nullToLong(deptInfo.getType()), UserTimesheet.TYPE_PUBLIC);
+						userTimesheets = userTimesheetRepository.findByWorkDayAndDeptTypeAndType(workDay, StringUtil.nullToLong(deptInfo.getType()), UserTimesheet.TYPE_PUBLIC);
 					}else{
 						DeptInfo deptInfo = deptInfoRepository.findOne(contractInfo.getConsultantsDeptId());
 						userTimesheets = userTimesheetRepository.findByWorkDayAndDeptTypeAndType(workDay, StringUtil.nullToLong(deptInfo.getType()), UserTimesheet.TYPE_PUBLIC);
