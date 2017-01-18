@@ -14,8 +14,9 @@
                 "question": "Are you sure you want to delete Purchase Item {{ id }}?"
             },
             "detail": {
-                "title": "Purchase Item"
+                "title": "采购子项信息"
             },
+            "contract": "合同",
             "contractId": "合同ID",
             "serialNum": "合同编号",
             "contractName": "合同名称",

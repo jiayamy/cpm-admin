@@ -156,26 +156,33 @@
             parent: 'purchase-item',
             url: '/{id}/edit',
             data: {
-                authorities: ['ROLE_USER']
+                authorities: ['ROLE_USER'],
+                pageTitle: 'cpmApp.purchaseItem.detail.title'
             },
-            onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
-                $uibModal.open({
-                    templateUrl: 'app/contract/purchase-item/purchase-item-dialog.html',
-                    controller: 'PurchaseItemDialogController',
-                    controllerAs: 'vm',
-                    backdrop: 'static',
-                    size: 'lg',
-                    resolve: {
-                        entity: ['PurchaseItem', function(PurchaseItem) {
-                            return PurchaseItem.get({id : $stateParams.id}).$promise;
-                        }]
-                    }
-                }).result.then(function() {
-                    $state.go('purchase-item', null, { reload: 'purchase-item' });
-                }, function() {
-                    $state.go('^');
-                });
-            }]
+            views: {
+            	'content@' : {
+            		templateUrl: 'app/contract/purchase-item/purchase-item-dialog.html',
+            		controller: 'PurchaseItemDialogController',
+            		controllerAs: 'vm'
+            	}
+            },
+            resolve: {
+            	translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
+                    $translatePartialLoader.addPart('purchaseItem');
+                    return $translate.refresh();
+                }],
+                entity: ['PurchaseItem','$stateParams', function(PurchaseItem,$stateParams) {
+                	return PurchaseItem.get({id : $stateParams.id}).$promise;
+                }],
+                previousState: ["$state", function ($state) {
+                    var currentStateData = {
+                        name: $state.current.name || 'purchase-item',
+                        params: $state.params,
+                        url: $state.href($state.current.name, $state.params)
+                    };
+                    return currentStateData;
+                }]
+            }
         })
         .state('purchase-item.delete', {
             parent: 'purchase-item',

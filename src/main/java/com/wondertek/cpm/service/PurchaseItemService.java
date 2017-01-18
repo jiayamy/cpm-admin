@@ -72,9 +72,9 @@ public class PurchaseItemService {
      *  @return the entity
      */
     @Transactional(readOnly = true) 
-    public PurchaseItem findOne(Long id) {
+    public PurchaseItemVo findOne(Long id) {
         log.debug("Request to get PurchaseItem : {}", id);
-        PurchaseItem purchaseItem = purchaseItemRepository.findOne(id);
+        PurchaseItemVo purchaseItem = purchaseItemDao.findPurchaseItemById(id);
         return purchaseItem;
     }
 
@@ -106,5 +106,10 @@ public class PurchaseItemService {
 			Pageable pageable) {
 		Page<PurchaseItemVo> page = purchaseItemDao.getPurchaserPage(purchaseItem,pageable);
 		return page;
+	}
+
+	public PurchaseItem findOneById(Long id) {
+		PurchaseItem purchaseItem = purchaseItemRepository.findOne(id);
+		return purchaseItem;
 	}
 }

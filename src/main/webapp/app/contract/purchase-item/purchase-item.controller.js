@@ -5,9 +5,9 @@
         .module('cpmApp')
         .controller('PurchaseItemController', PurchaseItemController);
 
-    PurchaseItemController.$inject = ['$scope', '$state', 'PurchaseItem', 'ProjectInfo','PurchaseItemSearch', 'ParseLinks', 'AlertService', 'paginationConstants', 'pagingParams'];
+    PurchaseItemController.$inject = ['$scope', '$state', 'PurchaseItem', 'ProjectInfo', 'ParseLinks', 'AlertService', 'paginationConstants', 'pagingParams'];
 
-    function PurchaseItemController ($scope, $state, PurchaseItem,ProjectInfo, PurchaseItemSearch, ParseLinks, AlertService, paginationConstants, pagingParams) {
+    function PurchaseItemController ($scope, $state, PurchaseItem,ProjectInfo, ParseLinks, AlertService, paginationConstants, pagingParams) {
         var vm = this;
 
         vm.loadPage = loadPage;
@@ -38,7 +38,7 @@
         		&& !vm.searchQuery.source && !vm.searchQuery.type) {
 			vm.haveSearch = null;
 		}else {
-			vm.havaSearch = true;
+			vm.haveSearch = true;
 		}
         vm.contractInfos = [];
         loadContract();
@@ -141,7 +141,7 @@
             });
         }
 
-        function search(searchQuery) {
+        function search() {
             if (!vm.searchQuery.name && !vm.searchQuery.contractId &&
             		!vm.searchQuery.source && !vm.searchQuery.type){
                 return vm.clear();

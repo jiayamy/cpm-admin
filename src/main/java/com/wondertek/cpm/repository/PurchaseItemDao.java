@@ -10,4 +10,6 @@ public interface PurchaseItemDao extends GenericDao<PurchaseItem, Long> {
 
 	Page<PurchaseItemVo> getPurchaserPage(PurchaseItem purchaseItem,Pageable pageable);
 
+	PurchaseItemVo findPurchaseItemById(Long id);
+
 }

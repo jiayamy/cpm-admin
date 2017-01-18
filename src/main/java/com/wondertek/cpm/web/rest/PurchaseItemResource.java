@@ -4,6 +4,7 @@ import com.codahale.metrics.annotation.Timed;
 import com.wondertek.cpm.config.StringUtil;
 import com.wondertek.cpm.domain.PurchaseItem;
 import com.wondertek.cpm.domain.vo.PurchaseItemVo;
+import com.wondertek.cpm.security.SecurityUtils;
 import com.wondertek.cpm.service.PurchaseItemService;
 import com.wondertek.cpm.web.rest.util.HeaderUtil;
 import com.wondertek.cpm.web.rest.util.PaginationUtil;
@@ -23,6 +24,7 @@ import javax.inject.Inject;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -75,10 +77,33 @@ public class PurchaseItemResource {
     @Timed
     public ResponseEntity<PurchaseItem> updatePurchaseItem(@RequestBody PurchaseItem purchaseItem) throws URISyntaxException {
         log.debug("REST request to update PurchaseItem : {}", purchaseItem);
-        if (purchaseItem.getId() == null) {
-            return createPurchaseItem(purchaseItem);
-        }
-        PurchaseItem result = purchaseItemService.save(purchaseItem);
+        
+        PurchaseItem oldPurchaseItem = this.purchaseItemService.findOneById(purchaseItem.getId());
+        
+        
+        if (oldPurchaseItem == null) {
+        	oldPurchaseItem.setBudgetId(purchaseItem.getBudgetId());
+            oldPurchaseItem.setContractId(purchaseItem.getContractId());
+        	oldPurchaseItem.setCreateTime(ZonedDateTime.now());
+            oldPurchaseItem.setCreator(SecurityUtils.getCurrentUserLogin());
+            oldPurchaseItem.setUpdator(SecurityUtils.getCurrentUserLogin());
+            oldPurchaseItem.setUpdateTime(ZonedDateTime.now());
+		}else {
+			oldPurchaseItem.setId(purchaseItem.getId());
+			oldPurchaseItem.setUpdator(SecurityUtils.getCurrentUserLogin());
+            oldPurchaseItem.setUpdateTime(ZonedDateTime.now());
+		}
+        
+        oldPurchaseItem.setName(purchaseItem.getName());
+        oldPurchaseItem.setPrice(purchaseItem.getPrice());
+        oldPurchaseItem.setPurchaser(purchaseItem.getPurchaser());
+        oldPurchaseItem.setQuantity(purchaseItem.getQuantity());
+        oldPurchaseItem.setSource(purchaseItem.getSource());
+        oldPurchaseItem.setStatus(1);
+        oldPurchaseItem.setType(purchaseItem.getType());
+        oldPurchaseItem.setTotalAmount(purchaseItem.getTotalAmount());
+        oldPurchaseItem.setUnits(purchaseItem.getUnits());
+        PurchaseItem result = purchaseItemService.save(oldPurchaseItem);
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert("purchaseItem", purchaseItem.getId().toString()))
             .body(result);
@@ -109,9 +134,9 @@ public class PurchaseItemResource {
      */
     @GetMapping("/purchase-items/{id}")
     @Timed
-    public ResponseEntity<PurchaseItem> getPurchaseItem(@PathVariable Long id) {
+    public ResponseEntity<PurchaseItemVo> getPurchaseItem(@PathVariable Long id) {
         log.debug("REST request to get PurchaseItem : {}", id);
-        PurchaseItem purchaseItem = purchaseItemService.findOne(id);
+        PurchaseItemVo purchaseItem = purchaseItemService.findOne(id);
         return Optional.ofNullable(purchaseItem)
             .map(result -> new ResponseEntity<>(
                 result,
