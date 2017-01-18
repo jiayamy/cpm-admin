@@ -9,7 +9,7 @@ public class ContractBudgetVo {
 	private Long contractId;
 	private String serialNum;
 	private String name;
-	private String budgetName;
+	private String contractName;
 	private Integer purchaseType;
 	private String userName;
 	private Long userId;
@@ -80,11 +80,11 @@ public class ContractBudgetVo {
 	public void setPurchaseType(Integer purchaseType) {
 		this.purchaseType = purchaseType;
 	}
-	public String getBudgetName() {
-		return budgetName;
+	public String getContractName() {
+		return contractName;
 	}
-	public void setBudgetName(String budgetName) {
-		this.budgetName = budgetName;
+	public void setCtractName(String contractName) {
+		this.contractName = contractName;
 	}
 	public Long getDeptId() {
 		return deptId;

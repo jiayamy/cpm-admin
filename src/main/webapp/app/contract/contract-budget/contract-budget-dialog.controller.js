@@ -14,6 +14,7 @@
         vm.queryDept = previousState.queryDept;
         
         vm.contractBudget = entity;
+        console.log(vm.contractBudget)
         if(vm.contractBudget.purchaseType == '硬件'){
     		vm.contractBudget.purchaseType = { id: 1, name: '硬件' }; 
     	}else if(vm.contractBudget.purchaseType == '软件'){
@@ -64,22 +65,15 @@
            contractBudget.id = vm.contractBudget.id
            contractBudget.contractId = vm.contractBudget.contractId;
            contractBudget.userId = vm.contractBudget.userId;
+           contractBudget.userName = vm.contractBudget.userName;
            contractBudget.serialNum = vm.contractBudget.serialNum;
            contractBudget.budgetTotal = vm.contractBudget.budgetTotal;
            contractBudget.name = vm.contractBudget.name;
-           contractBudget.budgetName = vm.contractBudget.budgetName;
-           contractBudget.purchaseType = vm.contractBudget.purchaseType;
-           contractBudget.userName = vm.contractBudget.userName;
+           contractBudget.purchaseType = vm.contractBudget.purchaseType ? vm.contractBudget.purchaseType.id : "";
            contractBudget.dept = vm.contractBudget.dept;
            contractBudget.deptId = vm.contractBudget.deptId;
-           contractBudget.status = vm.contractBudget.status;
-           contractBudget.type = vm.contractBudget.type;
            if(contractBudget.contractId && contractBudget.contractId.key){
         	   contractBudget.contractId = contractBudget.contractId.key;
-           }
-           
-           if (contractBudget.purchaseType) {
-        	   contractBudget.purchaseType = contractBudget.purchaseType.id;
            }
            ContractBudget.update(contractBudget, onSaveSuccess, onSaveError);
         }

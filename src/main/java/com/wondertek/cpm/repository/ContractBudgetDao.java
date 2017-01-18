@@ -8,8 +8,8 @@ import com.wondertek.cpm.domain.vo.ContractBudgetVo;
 
 public interface ContractBudgetDao extends GenericDao<ContractBudget, Long> {
 
-	Page<ContractBudgetVo> getPageByParams(String name, String serialNum,String budgetName,Pageable pageable);
+	Page<ContractBudgetVo> getPageByParams(String name, String serialNum,String contractName,Pageable pageable);
 
-	Boolean checkBudgetExit(ContractBudgetVo contractBudgetVo);
+	Boolean checkBudgetExit(ContractBudget contractBudget);
 
 }

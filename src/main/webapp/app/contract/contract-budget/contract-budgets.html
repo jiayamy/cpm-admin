@@ -31,9 +31,9 @@
      				</div>
      			</div>
      			<div class="col-sm-4">
-     				<label class="col-sm-4 control-label" data-translate="cpmApp.contractBudget.budgetName">Budget Name</label>
+     				<label class="col-sm-4 control-label" data-translate="cpmApp.contractBudget.contractName">Budget Name</label>
      				<div class="col-sm-8">
-     		   			<input type="text" class="form-control" ng-model="vm.searchQuery.budgetName">
+     		   			<input type="text" class="form-control" ng-model="vm.searchQuery.contractName">
      				</div>
      			</div>
      		</div>
@@ -69,7 +69,7 @@
                     <th jh-sort-by="cb.id"><span data-translate="global.field.id">ID</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="ci.serial_num"><span data-translate="cpmApp.contractBudget.serialNum">SerialNum</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="ci.name_"><span data-translate="cpmApp.contractBudget.name">Name</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="cb.name_"><span data-translate="cpmApp.contractBudget.budgetName">BudgetName</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="cb.name_"><span data-translate="cpmApp.contractBudget.contractName">contractName</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="cb.purchase_type"><span data-translate="cpmApp.contractBudget.purchaseType">PurchaseType</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="cb.user_name"><span data-translate="cpmApp.contractBudget.userName">User Name</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="cb.dept_"><span data-translate="cpmApp.contractBudget.dept">Dept</span> <span class="glyphicon glyphicon-sort"></span></th>
@@ -85,7 +85,7 @@
                     <td><a ui-sref="contract-budget-detail({id:contractBudget.id})">{{contractBudget.id}}</a></td>
                     <td>{{contractBudget.serialNum}}</td>
                     <td>{{contractBudget.name}}</td>
-                    <td>{{contractBudget.budgetName}}</td>
+                    <td>{{contractBudget.contractName}}</td>
                     <td>{{contractBudget.purchaseType}}</td>
                     <td>{{contractBudget.userName}}</td>
                     <td>{{contractBudget.dept}}</td>

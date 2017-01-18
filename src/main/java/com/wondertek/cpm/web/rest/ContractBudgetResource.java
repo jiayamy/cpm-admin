@@ -1,6 +1,8 @@
 package com.wondertek.cpm.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
+import com.wondertek.cpm.CpmConstants;
+import com.wondertek.cpm.config.StringUtil;
 import com.wondertek.cpm.domain.ContractBudget;
 import com.wondertek.cpm.domain.ContractInfo;
 import com.wondertek.cpm.domain.vo.ContractBudgetVo;
@@ -55,28 +57,7 @@ public class ContractBudgetResource {
     private ContractBudgetService contractBudgetService;
     @Inject
     private ContractInfoService contractInfoService;
-    @Inject
-    private ProjectInfoService projectInfoService;
 
-    /**
-     * POST  /contract-budgets : Create a new contractBudget.
-     *
-     * @param contractBudget the contractBudget to create
-     * @return the ResponseEntity with status 201 (Created) and with body the new contractBudget, or with status 400 (Bad Request) if the contractBudget has already an ID
-     * @throws URISyntaxException if the Location URI syntax is incorrect
-     */
-//    @PostMapping("/contract-budgets")
-//    @Timed
-//    public ResponseEntity<ContractBudget> createContractBudget(@RequestBody ContractBudget contractBudget) throws URISyntaxException {
-//        log.debug("REST request to save ContractBudget : {}", contractBudget);
-//        if (contractBudget.getId() != null) {
-//            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("contractBudget", "idexists", "A new contractBudget cannot already have an ID")).body(null);
-//        }
-//        ContractBudget result = contractBudgetService.save(contractBudget);
-//        return ResponseEntity.created(new URI("/api/contract-budgets/" + result.getId()))
-//            .headers(HeaderUtil.createEntityCreationAlert("contractBudget", result.getId().toString()))
-//            .body(result);
-//    }
 
     /**
      * PUT  /contract-budgets : Updates an existing contractBudget.
@@ -89,52 +70,60 @@ public class ContractBudgetResource {
      */
     @PutMapping("/contract-budgets")
     @Timed
-    public ResponseEntity<ContractBudgetVo> updateContractBudget(@RequestBody ContractBudgetVo contractBudgetVo) throws URISyntaxException {
-        log.debug("REST request to update ContractBudget : {}", contractBudgetVo);
-        ContractBudget contractBudget = new ContractBudget();
-        //是否构建项目
-        Boolean flag = contractBudgetService.checkByBudget(contractBudgetVo);
-        ContractBudget oldContractBudget = contractBudgetService.findOneById(contractBudgetVo.getId());
-        if (flag) {//构建项目
-        	contractBudget.setId(contractBudgetVo.getId());
-			contractBudget.setBudgetTotal(contractBudgetVo.getBudgetTotal());
-			contractBudget.setName(contractBudgetVo.getBudgetName());
-			contractBudget.setUpdateTime(ZonedDateTime.now());
-			contractBudget.setUpdator(SecurityUtils.getCurrentUserLogin());
-//			contractBudget.setContractId(oldContractBudget.getContractId());
-//			contractBudget.setDeptId(oldContractBudget.getDeptId());
-//			contractBudget.setUserName(contractBudget.getUserName());
-//			contractBudget.setUserId(oldContractBudget.getUserId());
-//			contractBudget.setStatus(1);
-//			contractBudget.setType(3);
-		}else {//未构建
-			contractBudget.setBudgetTotal(contractBudgetVo.getBudgetTotal());
-			contractBudget.setPurchaseType(contractBudgetVo.getPurchaseType());
-			contractBudget.setName(contractBudgetVo.getBudgetName());
-			contractBudget.setDept(contractBudgetVo.getDept());
-			contractBudget.setDeptId(contractBudgetVo.getDeptId());
-			contractBudget.setUserId(contractBudgetVo.getUserId());
-			contractBudget.setUserName(contractBudgetVo.getUserName());
-			contractBudget.setStatus(1);
-			contractBudget.setType(3);
-			//新建采购单
-			if (oldContractBudget == null) {
-				contractBudget.setContractId(contractBudgetVo.getContractId());
-				contractBudget.setUpdateTime(ZonedDateTime.now());
-				contractBudget.setCreateTime(ZonedDateTime.now());
-				contractBudget.setUpdator(SecurityUtils.getCurrentUserLogin());
-				contractBudget.setCreator(SecurityUtils.getCurrentUserLogin());
-			}else {//完成更新
-				contractBudget.setId(oldContractBudget.getId());
-				contractBudget.setContractId(oldContractBudget.getContractId());
-				contractBudget.setUpdateTime(ZonedDateTime.now());
-				contractBudget.setUpdator(SecurityUtils.getCurrentUserLogin());
-				contractBudget.setCreateTime(oldContractBudget.getCreateTime());
-				contractBudget.setCreator(oldContractBudget.getCreator());
-			}
+    public ResponseEntity<Boolean> updateContractBudget(@RequestBody ContractBudget contractBudget) throws URISyntaxException {
+        log.debug("REST request to update ContractBudget : {}", contractBudget);
+        Boolean isNew = contractBudget.getId() == null;
+        //检验参数
+        if (contractBudget.getContractId() == null || contractBudget.getType() == null || contractBudget.getUserId() == null
+        		|| StringUtil.isNullStr(contractBudget.getUserName()) || contractBudget.getDeptId() == null || StringUtil.isNullStr(contractBudget.getDept())
+        		|| contractBudget.getPurchaseType() == null || contractBudget.getBudgetTotal() == null || contractBudget.getBudgetTotal() < 0 || StringUtil.isNullStr(contractBudget.getName())) {
+        	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.purchaseItem.save.requiedError", "")).body(null);
 		}
-        contractBudgetService.save(contractBudget);
-        return new ResponseEntity<>(contractBudgetVo,HttpStatus.OK);
+        Boolean flag = Boolean.FALSE;
+        String updator = SecurityUtils.getCurrentUserLogin();
+        ZonedDateTime updateTime = ZonedDateTime.now();
+        //是否构建项目
+         flag = contractBudgetService.checkByBudget(contractBudget);
+        if (!isNew) {
+        	ContractBudget oldContractBudget = contractBudgetService.findOneById(contractBudget.getId());
+        	if(oldContractBudget == null){
+        		return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.contractBudget.save.idNone", "")).body(null);
+        	}else if(oldContractBudget.getContractId() != contractBudget.getContractId().longValue()){
+        		return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.contractBudget.save.projectIdError", "")).body(null);
+        	}else if(oldContractBudget.getStatus() == ContractBudget.STATUS_DELETED){
+        		return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.contractBudget.save.statue2Error", "")).body(null);
+        	}
+        	//构建项目
+        	if (flag) {
+        		contractBudget.setUpdateTime(updateTime);
+        		contractBudget.setUpdator(updator);
+        		contractBudget.setStatus(oldContractBudget.getStatus());
+        		contractBudget.setType(oldContractBudget.getType());
+        		contractBudgetService.save(contractBudget);
+        		return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert("cpmApp.contractBudget.save.projectHasDone", contractBudget.getName())).body(isNew);
+			}
+        	contractBudget.setCreateTime(oldContractBudget.getCreateTime());
+        	contractBudget.setCreator(oldContractBudget.getCreator());
+        	contractBudget.setStatus(oldContractBudget.getStatus());
+    		contractBudget.setType(oldContractBudget.getType());
+		}else {
+			contractBudget.setCreateTime(updateTime);
+    		contractBudget.setCreator(updator);
+		}
+        contractBudget.setUpdateTime(updateTime);
+		contractBudget.setUpdator(updator);
+		ContractBudget result = contractBudgetService.save(contractBudget);
+		
+		if(isNew){
+        	return ResponseEntity.ok()
+                    .headers(HeaderUtil.createEntityCreationAlert("contractBudget", result.getId().toString()))
+                    .body(isNew);
+        }else{
+        	return ResponseEntity.ok()
+        			.headers(HeaderUtil.createEntityUpdateAlert("contractBudget", result.getId().toString()))
+        			.body(isNew);
+        }
+        
     }
 
     /**
@@ -169,7 +158,7 @@ public class ContractBudgetResource {
         ContractBudgetVo contractBudgetVo = new ContractBudgetVo();
         if (contractBudget != null) {
         	contractBudgetVo.setBudgetTotal(contractBudget.getBudgetTotal());
-        	contractBudgetVo.setBudgetName(contractBudget.getName());
+        	contractBudgetVo.setName(contractBudget.getName());
         	contractBudgetVo.setId(contractBudget.getId());
         	contractBudgetVo.setDept(contractBudget.getDept());
         	contractBudgetVo.setDeptId(contractBudget.getDeptId());
@@ -180,7 +169,7 @@ public class ContractBudgetResource {
 		}
         if (contractInfo != null) {
 			contractBudgetVo.setSerialNum(contractInfo.getSerialNum());
-			contractBudgetVo.setName(contractInfo.getName());
+			contractBudgetVo.setCtractName(contractInfo.getName());
 		}
         return new ResponseEntity<>(contractBudgetVo,HttpStatus.OK);
     }
@@ -258,11 +247,11 @@ public class ContractBudgetResource {
     public ResponseEntity<List<ContractBudgetVo>> getAllContractBudgetsByParams(
     		@RequestParam(value = "name",required=false) String name,
     		@RequestParam(value = "serialNum",required=false) String serialNum,
-    		@RequestParam(value = "budgetName",required=false) String budgetName,
+    		@RequestParam(value = "contractName",required=false) String contractName,
     		@ApiParam Pageable pageable)
     	throws URISyntaxException{
     	log.debug("REST request to get a page of ContractBudget");
-    	Page<ContractBudgetVo> page = contractBudgetService.searchPage(name,serialNum,budgetName,pageable);
+    	Page<ContractBudgetVo> page = contractBudgetService.searchPage(name,serialNum,contractName,pageable);
     	HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(name, page,"/api/contract-budgets");
     	return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }

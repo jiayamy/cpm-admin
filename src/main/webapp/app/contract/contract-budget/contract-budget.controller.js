@@ -32,13 +32,13 @@
         vm.searchQuery.purchaseType = pagingParams.purchaseType;
         vm.searchQuery.serialNum = pagingParams.serialNum;
         vm.searchQuery.name = pagingParams.name;
-        vm.searchQuery.budgetName = pagingParams.budgetName;
+        vm.searchQuery.contractName = pagingParams.contractName;
         vm.currentSearch = {};
         vm.currentSearch.purchaseType = pagingParams.purchaseType;
         vm.currentSearch.serialNum = pagingParams.serialNum;
         vm.currentSearch.name = pagingParams.name;
-        vm.currentSearch.budgetName = pagingParams.budgetName;
-        if (!vm.currentSearch.serialNum && !vm.currentSearch.name && !vm.currentSearch.budgetName){
+        vm.currentSearch.contractName = pagingParams.contractName;
+        if (!vm.currentSearch.serialNum && !vm.currentSearch.name && !vm.currentSearch.contractName){
         	vm.currentSearch.haveSearch = null;
         }else{
         	vm.currentSearch.haveSearch = true;
@@ -53,13 +53,13 @@
             	if(pagingParams.name == undefined){
             		pagingParams.name = "";
             	}
-            	if (pagingParams.budgetName == undefined) {
-					pagingParams.budgetName = "";
+            	if (pagingParams.contractName == undefined) {
+					pagingParams.contractName = "";
 				}
             	ContractBudget.query({
             		name: pagingParams.name,
             		serialNum: pagingParams.serialNum,
-            		budgetName: pagingParams.budgetName,
+            		contractName: pagingParams.contractName,
                     page: pagingParams.page - 1,
                     size: vm.itemsPerPage,
                     sort: sort()
@@ -112,12 +112,12 @@
                 sort: vm.predicate + ',' + (vm.reverse ? 'asc' : 'desc'),
                 serialNum:vm.currentSearch.serialNum,
                 name:vm.currentSearch.name,
-                budgetName:vm.currentSearch.budgetName
+                contractName:vm.currentSearch.contractName
             });
         }
 
         function search(searchQuery) {
-            if (!searchQuery.serialNum && !searchQuery.name && !searchQuery.budgetName){
+            if (!searchQuery.serialNum && !searchQuery.name && !searchQuery.contractName){
                 return vm.clear();
             }
             vm.links = null;
