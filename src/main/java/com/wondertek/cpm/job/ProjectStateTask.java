@@ -44,12 +44,6 @@ public class ProjectStateTask {
 	
 	private Map<Long, Integer> contractTypeMap = new HashMap<>();
 	
-	public static Integer TYPE_CONTRACT_INTERNAL = 1;
-	
-	public static Integer TYPE_CONTRACT_EXTERNAL = 2;
-	
-	public static Integer TYPE_PROJECT_COST_HUMAN_COST = 1;
-	
 	@Inject
 	private ProjectInfoRepository projectInfoRepository;
 	
@@ -159,7 +153,7 @@ public class ProjectStateTask {
 				}
 				//人工成本
 				Double humanCost = 0D;
-				List<ProjectCost> projectCosts2 = projectCostRepository.findByProjectIdAndType(id, TYPE_PROJECT_COST_HUMAN_COST);
+				List<ProjectCost> projectCosts2 = projectCostRepository.findByProjectIdAndType(id, ProjectCost.TYPE_HUMAN_COST);
 				if(projectCosts2 != null && projectCosts2.size() > 0){
 					for(ProjectCost projectCost : projectCosts2){
 						humanCost += projectCost.getTotal();
@@ -169,7 +163,7 @@ public class ProjectStateTask {
 				}
 				projectWeeklyStat.setHumanCost(humanCost);
 				//报销成本
-				List<ProjectCost> projectCosts = projectCostRepository.findAllByProjectIdAndNoType(id, TYPE_PROJECT_COST_HUMAN_COST);
+				List<ProjectCost> projectCosts = projectCostRepository.findAllByProjectIdAndNoType(id, ProjectCost.TYPE_HUMAN_COST);
 				Double payment = 0D;
 				if(projectCosts != null && projectCosts.size() > 0){
 					for (ProjectCost projectCost2 : projectCosts) {
@@ -267,7 +261,7 @@ public class ProjectStateTask {
 				}
 				//人工成本
 				Double humanCost = 0D;
-				List<ProjectCost> projectCosts2 = projectCostRepository.findByProjectIdAndType(id, TYPE_PROJECT_COST_HUMAN_COST);
+				List<ProjectCost> projectCosts2 = projectCostRepository.findByProjectIdAndType(id, ProjectCost.TYPE_HUMAN_COST);
 				if(projectCosts2 != null && projectCosts2.size() > 0){
 					for(ProjectCost projectCost : projectCosts2){
 						humanCost += projectCost.getTotal();
@@ -277,7 +271,7 @@ public class ProjectStateTask {
 				}
 				projectMonthlyStat.setHumanCost(humanCost);
 				//报销成本
-				List<ProjectCost> projectCosts = projectCostRepository.findAllByProjectIdAndNoType(id, TYPE_PROJECT_COST_HUMAN_COST);
+				List<ProjectCost> projectCosts = projectCostRepository.findAllByProjectIdAndNoType(id, ProjectCost.TYPE_HUMAN_COST);
 				Double payment = 0D;
 				if(projectCosts != null && projectCosts.size() > 0){
 					for (ProjectCost projectCost2 : projectCosts) {
@@ -311,15 +305,15 @@ public class ProjectStateTask {
 			ProjectCost projectCost = new ProjectCost();
 			projectCost.setProjectId(projectInfo.getId());
 			projectCost.setName(projectInfo.getSerialNum() + "-humanCost-" + DateUtil.formatDate("yyyyMMdd", currentDay).toString());
-			projectCost.setType(TYPE_PROJECT_COST_HUMAN_COST);
+			projectCost.setType(ProjectCost.TYPE_HUMAN_COST);
 			Double total = 0D; 
 			List<UserTimesheet> userTimesheets = userTimesheetRepository.findByWorkDayAndObjIdAndType(workDay, projectInfo.getId(), UserTimesheet.TYPE_PROJECT);
 			for(UserTimesheet userTimesheet : userTimesheets){
 				UserCost userCost = userCostRepository.findMaxByCostMonthAndUserId(costMonth, userTimesheet.getUserId());
 				if(userCost != null){
-					if(contractType == TYPE_CONTRACT_INTERNAL){
+					if(contractType == ContractInfo.TYPE_INTERNAL){
 						total += userTimesheet.getRealInput() * (userCost.getInternalCost()/22.5/8);
-					}else if(contractType == TYPE_CONTRACT_EXTERNAL){
+					}else if(contractType == ContractInfo.TYPE_EXTERNAL){
 						total += userTimesheet.getRealInput() * (userCost.getExternalCost()/22.5/8);
 					}else{
 						log.info(" no contractType found belong to UserTimesheet : " + userTimesheet.getId());

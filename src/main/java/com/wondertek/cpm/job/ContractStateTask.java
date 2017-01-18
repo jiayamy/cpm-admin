@@ -48,28 +48,6 @@ public class ContractStateTask {
 
 	private Logger log = LoggerFactory.getLogger(ContractStateTask.class);
 	
-	public static Long TYPE_DEPT_SALES = 2L;
-	
-	public static Long TYPE_DEPT_CONSULT = 3L;
-	
-	public static Integer TYPE_PROJECT_COST_HUMAN_COST = 1;
-	
-	public static Integer TYPE_CONTRACT_INTERNAL = 1;
-	
-	public static Integer TYPE_CONTRACT_EXTERNAL = 2;
-	
-	public static Integer TYPE_CONTRACT_PUBLIC = 4;
-	
-	public static Integer TYPE_CONTRACT_COST_HUMAN_COST = 1;
-	
-	public static Integer TYPE_PURCHASE_ITEM_HARDWARE = 1;
-	
-	public static Integer TYPE_PURCHASE_ITEM_SOFTWARE = 2;
-	
-	public static Integer SOURCE_PURCHASE_ITEM_INTERNAL = 1;
-	
-	public static Integer SOURCE_PURCHASE_ITEM_EXTERNAL = 2;
-	
 	@Inject
 	private ContractInfoRepository contractInfoRepository;
 	
@@ -118,8 +96,6 @@ public class ContractStateTask {
 		ZonedDateTime endTime = DateUtil.getZonedDateTime(DateUtil.lastSundayEnd().getTime());
 		List<ContractInfo> contractInfos = contractInfoRepository.findByStatusOrUpdateTime(ContractInfo.STATUS_VALIDABLE, beginTime, endTime);
 		if(contractInfos != null && contractInfos.size() > 0){
-//			//公共成本日报列表
-//			List<UserTimesheet> userTimesheets4 = userTimesheetRepository.findByDateAndType( StringUtil.nullToLong(dates[6]), UserTimesheet.TYPE_PUBLIC);
 			for(ContractInfo contractInfo : contractInfos){
 				log.info("=========begin generate Contract : "+contractInfo.getName()+"=========");
 				//初始化contractcost
@@ -192,27 +168,31 @@ public class ContractStateTask {
 				}
 				contractWeeklyStat.setReceiveTotal(receiveTotal);
 				
-				if(contractInfo.getType() != TYPE_CONTRACT_PUBLIC){//正常合同
+				if(contractInfo.getType() != ContractInfo.TYPE_PUBLIC){//正常合同
 					//销售人工成本
 					Double salesHumanCost = 0D;
 					//销售报销成本
 					Double salesPayment = 0D;
-					List<Long> deptIds = deptInfoRepository.findIdsByType(TYPE_DEPT_SALES);
-					if(deptIds != null && deptIds.size() > 0){
-						List<ContractCost> contractCosts = contractCostRepository.findByDeptIdsAndTypeAndContractId(deptIds, TYPE_CONTRACT_COST_HUMAN_COST, id);
-						if(contractCosts != null && contractCosts.size() > 0){
-							for(ContractCost contractCost : contractCosts){
-								salesHumanCost += contractCost.getTotal();
+					Long salesDeptId = contractInfo.getDeptId();
+					if(salesDeptId != null && salesDeptId != 0){
+						DeptInfo deptInfo = deptInfoRepository.findOne(salesDeptId);
+						List<Long> deptIds = deptInfoRepository.findIdsByType(StringUtil.nullToLong(deptInfo.getType()));
+						if(deptIds != null && deptIds.size() > 0){
+							List<ContractCost> contractCosts = contractCostRepository.findByDeptIdsAndTypeAndContractId(deptIds, ContractCost.TYPE_HUMAN_COST, id);
+							if(contractCosts != null && contractCosts.size() > 0){
+								for(ContractCost contractCost : contractCosts){
+									salesHumanCost += contractCost.getTotal();
+								}
 							}
-						}
-						List<ContractCost> contractCosts2 = contractCostRepository.findByDeptIdsAndNoTypeAndContractId(deptIds, TYPE_CONTRACT_COST_HUMAN_COST, id);
-						if(contractCosts2 != null && contractCosts2.size() >0){
-							for(ContractCost contractCost : contractCosts2){
-								salesPayment += contractCost.getTotal();
+							List<ContractCost> contractCosts2 = contractCostRepository.findByDeptIdsAndNoTypeAndContractId(deptIds, ContractCost.TYPE_HUMAN_COST, id);
+							if(contractCosts2 != null && contractCosts2.size() >0){
+								for(ContractCost contractCost : contractCosts2){
+									salesPayment += contractCost.getTotal();
+								}
 							}
+						}else{
+							log.error("no sales deptInfo found belong to " + contractInfo.getName());
 						}
-					}else{
-						log.error("no sales deptInfo found belong to " + contractInfo.getName());
 					}
 					contractWeeklyStat.setSalesHumanCost(salesHumanCost);
 					contractWeeklyStat.setSalesPayment(salesPayment);
@@ -220,27 +200,31 @@ public class ContractStateTask {
 					Double consultHumanCost = 0D;
 					//咨询报销成本
 					Double consultPayment = 0D;
-					List<Long> deptIds2 = deptInfoRepository.findIdsByType(TYPE_DEPT_CONSULT);
-					if(deptIds2 != null && deptIds2.size() > 0){
-						List<ContractCost> contractCosts = contractCostRepository.findByDeptIdsAndTypeAndContractId(deptIds2, TYPE_CONTRACT_COST_HUMAN_COST, id);
-						if(contractCosts != null && contractCosts.size() > 0){
-							for(ContractCost contractCost : contractCosts){
-								consultHumanCost += contractCost.getTotal();
+					Long consultDeptId = contractInfo.getConsultantsDeptId();
+					if(consultDeptId != null && consultDeptId != 0){
+						DeptInfo deptInfo = deptInfoRepository.findOne(consultDeptId);
+						List<Long> deptIds2 = deptInfoRepository.findIdsByType(StringUtil.nullToLong(deptInfo.getType()));
+						if(deptIds2 != null && deptIds2.size() > 0){
+							List<ContractCost> contractCosts = contractCostRepository.findByDeptIdsAndTypeAndContractId(deptIds2, ContractCost.TYPE_HUMAN_COST, id);
+							if(contractCosts != null && contractCosts.size() > 0){
+								for(ContractCost contractCost : contractCosts){
+									consultHumanCost += contractCost.getTotal();
+								}
 							}
-						}
-						List<ContractCost> contractCosts2 = contractCostRepository.findByDeptIdsAndNoTypeAndContractId(deptIds2, TYPE_CONTRACT_COST_HUMAN_COST, id);
-						if(contractCosts2 != null && contractCosts2.size() >0){
-							for(ContractCost contractCost : contractCosts2){
-								consultPayment += contractCost.getTotal();
+							List<ContractCost> contractCosts2 = contractCostRepository.findByDeptIdsAndNoTypeAndContractId(deptIds2, ContractCost.TYPE_HUMAN_COST, id);
+							if(contractCosts2 != null && contractCosts2.size() >0){
+								for(ContractCost contractCost : contractCosts2){
+									consultPayment += contractCost.getTotal();
+								}
 							}
+						}else{
+							log.error("no consult deptInfo found belong to " + contractInfo.getName());
 						}
-					}else{
-						log.error("no consult deptInfo found belong to " + contractInfo.getName());
 					}
 					contractWeeklyStat.setConsultHumanCost(consultHumanCost);
 					contractWeeklyStat.setConsultPayment(consultPayment);
 					//硬件采购成本
-					List<PurchaseItem> purchaseItems = purchaseItemRepository.findByContractIdAndType(id, TYPE_PURCHASE_ITEM_HARDWARE);
+					List<PurchaseItem> purchaseItems = purchaseItemRepository.findByContractIdAndType(id, PurchaseItem.TYPE_HARDWARE);
 					Double hardwarePurchase = 0D;
 					if(purchaseItems != null && purchaseItems.size() > 0){
 						for(PurchaseItem purchaseItem : purchaseItems){
@@ -251,7 +235,7 @@ public class ContractStateTask {
 					}
 					contractWeeklyStat.setHardwarePurchase(hardwarePurchase);
 					//外部软件采购成本
-					List<PurchaseItem> purchaseItems2 = purchaseItemRepository.findByContractIdAndSourceAndType(id, SOURCE_PURCHASE_ITEM_EXTERNAL, TYPE_PURCHASE_ITEM_SOFTWARE);
+					List<PurchaseItem> purchaseItems2 = purchaseItemRepository.findByContractIdAndSourceAndType(id, PurchaseItem.SOURCE_EXTERNAL, PurchaseItem.TYPE_SOFTWARE);
 					Double externalSoftware = 0D;
 					if(purchaseItems2 != null && purchaseItems2.size() > 0){
 						for(PurchaseItem purchaseItem : purchaseItems2){
@@ -262,7 +246,7 @@ public class ContractStateTask {
 					}
 					contractWeeklyStat.setExternalSoftware(externalSoftware);
 					//内部软件采购成本
-					List<PurchaseItem> purchaseItems3 = purchaseItemRepository.findByContractIdAndSourceAndType(id, SOURCE_PURCHASE_ITEM_INTERNAL, TYPE_PURCHASE_ITEM_SOFTWARE);
+					List<PurchaseItem> purchaseItems3 = purchaseItemRepository.findByContractIdAndSourceAndType(id, PurchaseItem.SOURCE_INTERNAL, PurchaseItem.TYPE_SOFTWARE);
 					Double internalSoftware = 0D;
 					if(purchaseItems3 != null && purchaseItems3.size() > 0){
 						for(PurchaseItem purchaseItem : purchaseItems3){
@@ -274,26 +258,6 @@ public class ContractStateTask {
 					contractWeeklyStat.setInternalSoftware(internalSoftware);
 					//项目人工成本
 					Double projectHumanCost = 0D;
-//					//公共成本
-//					if(userTimesheets4 != null && userTimesheets4.size() > 0){
-//						Integer ctype = deptInfoRepository.findTypeByContractId(contractInfo.getId());
-//						for(UserTimesheet userTimesheet : userTimesheets4){
-//							Long uid = userTimesheet.getUserId();
-//							Integer utype = deptInfoRepository.findTypeByUid(uid);
-//							if(utype==ctype){
-//								UserCost userCost = userCostRepository.findMaxByCostMonthAndUserId(StringUtil.nullToLong(dates[6]), userTimesheet.getUserId());
-//								if(contractInfo.getType() == TYPE_CONTRACT_INTERNAL){
-//									projectHumanCost += userTimesheet.getRealInput() * (userCost.getInternalCost()/22.5/8);
-//								}else if(contractInfo.getType() == TYPE_CONTRACT_EXTERNAL){
-//									projectHumanCost += userTimesheet.getRealInput() * (userCost.getExternalCost()/22.5/8);
-//								}else{
-//									log.error(" no contractType found belong to UserTimesheet : " + userTimesheet.getId());
-//								}
-//							}
-//						}
-//					}else{
-//						log.error(" no user Timesheets founded for Public userTimesheet cost belong to " + contractInfo.getName());
-//					}
 					//项目报销成本
 					Double projectPayment = 0D;
 					List<ProjectInfo> projectInfos = projectInfoRepository.findByContractId(id);
@@ -306,9 +270,9 @@ public class ContractStateTask {
 								for(UserTimesheet userTimesheet : userTimesheets3){
 									UserCost userCost = userCostRepository.findMaxByCostMonthAndUserId(StringUtil.nullToLong(dates[6]), userTimesheet.getUserId());
 									if(userCost != null){
-										if(contractInfo.getType() == TYPE_CONTRACT_INTERNAL){
+										if(contractInfo.getType() == ContractInfo.TYPE_INTERNAL){
 											projectHumanCost += userTimesheet.getRealInput() * (userCost.getInternalCost()/22.5/8);
-										}else if(contractInfo.getType() == TYPE_CONTRACT_EXTERNAL){
+										}else if(contractInfo.getType() == ContractInfo.TYPE_EXTERNAL){
 											projectHumanCost += userTimesheet.getRealInput() * (userCost.getExternalCost()/22.5/8);
 										}else{
 											log.error(" no contractType found belong to UserTimesheet : " + userTimesheet.getId());
@@ -322,7 +286,7 @@ public class ContractStateTask {
 								log.error(" no user Timesheets founded for project human cost belong to " + contractInfo.getName());
 							}
 							//报销成本
-							List<ProjectCost> projectCosts2 = projectCostRepository.findAllByProjectIdAndNoType(projectInfo.getId(), TYPE_PROJECT_COST_HUMAN_COST);
+							List<ProjectCost> projectCosts2 = projectCostRepository.findAllByProjectIdAndNoType(projectInfo.getId(), ProjectCost.TYPE_HUMAN_COST);
 							if(projectCosts2 != null && projectCosts2.size() > 0){
 								for(ProjectCost projectCost : projectCosts2){
 									projectPayment += projectCost.getTotal();
@@ -344,7 +308,7 @@ public class ContractStateTask {
 				}else{ //公共合同
 					//项目人工成本
 					Double projectHumanCost = 0D;
-					List<ContractCost> contractCosts = contractCostRepository.findByContractIdAndType(id, TYPE_CONTRACT_COST_HUMAN_COST);
+					List<ContractCost> contractCosts = contractCostRepository.findByContractIdAndType(id, ContractCost.TYPE_HUMAN_COST);
 					for(ContractCost contractCost : contractCosts){
 						projectHumanCost += contractCost.getTotal();
 					}
@@ -371,7 +335,6 @@ public class ContractStateTask {
 	@Scheduled(cron = "0 0 22 1 * ?")
 	protected void generateContractMonthlyStat(){
 		log.info("=====begin generate Contract Monthly Stat=====");
-//		List<ContractInfo> contractInfos = contractInfoRepository.findAll();
 		ZonedDateTime beginTime = DateUtil.getZonedDateTime(DateUtil.lastMonthBegin().getTime());
 		ZonedDateTime endTime = DateUtil.getZonedDateTime(DateUtil.lastMonthend().getTime());
 		String fDay = DateUtil.getFirstDayOfLastMonth("yyyyMMdd");
@@ -379,8 +342,6 @@ public class ContractStateTask {
 		String lMonth = DateUtil.getLastDayOfLastMonth("yyyyMM");
 		List<ContractInfo> contractInfos = contractInfoRepository.findByStatusOrUpdateTime(ContractInfo.STATUS_VALIDABLE, beginTime, endTime);
 		if(contractInfos != null && contractInfos.size() > 0){
-//			//公共成本日报列表
-//			List<UserTimesheet> userTimesheets4 = userTimesheetRepository.findByDateAndType(StringUtil.nullToLong(lDay), UserTimesheet.TYPE_PUBLIC);
 			for(ContractInfo contractInfo : contractInfos){
 				log.info("=====begin generate Contract : "+contractInfo.getName()+"=======");
 				//初始contractCost
@@ -454,27 +415,31 @@ public class ContractStateTask {
 				}
 				contractMonthlyStat.setReceiveTotal(receiveTotal);
 				
-				if(contractInfo.getType() != TYPE_CONTRACT_PUBLIC){//正常合同
+				if(contractInfo.getType() != ContractInfo.TYPE_PUBLIC){//正常合同
 					//销售人工成本
 					Double salesHumanCost = 0D;
 					//销售报销成本
 					Double salesPayment = 0D;
-					List<Long> deptIds = deptInfoRepository.findIdsByType(TYPE_DEPT_SALES);
-					if(deptIds != null && deptIds.size() > 0){
-						List<ContractCost> contractCosts = contractCostRepository.findByDeptIdsAndTypeAndContractId(deptIds, TYPE_CONTRACT_COST_HUMAN_COST, id);
-						if(contractCosts != null && contractCosts.size() >0){
-							for(ContractCost contractCost : contractCosts){
-								salesHumanCost += contractCost.getTotal();
+					Long salesDeptId = contractInfo.getDeptId();
+					if(salesDeptId != null && salesDeptId != 0){
+						DeptInfo deptInfo = deptInfoRepository.findOne(salesDeptId);
+						List<Long> deptIds = deptInfoRepository.findIdsByType(StringUtil.nullToLong(deptInfo.getType()));
+						if(deptIds != null && deptIds.size() > 0){
+							List<ContractCost> contractCosts = contractCostRepository.findByDeptIdsAndTypeAndContractId(deptIds, ContractCost.TYPE_HUMAN_COST, id);
+							if(contractCosts != null && contractCosts.size() >0){
+								for(ContractCost contractCost : contractCosts){
+									salesHumanCost += contractCost.getTotal();
+								}
 							}
-						}
-						List<ContractCost> contractCosts2 = contractCostRepository.findByDeptIdsAndNoTypeAndContractId(deptIds, TYPE_CONTRACT_COST_HUMAN_COST, id);
-						if(contractCosts2 != null && contractCosts2.size() >0){
-							for(ContractCost contractCost : contractCosts2){
-								salesPayment += contractCost.getTotal();
+							List<ContractCost> contractCosts2 = contractCostRepository.findByDeptIdsAndNoTypeAndContractId(deptIds, ContractCost.TYPE_HUMAN_COST, id);
+							if(contractCosts2 != null && contractCosts2.size() >0){
+								for(ContractCost contractCost : contractCosts2){
+									salesPayment += contractCost.getTotal();
+								}
 							}
+						}else{
+							log.error("no sales deptInfo found belong to " + contractInfo.getName());
 						}
-					}else{
-						log.error("no sales deptInfo found belong to " + contractInfo.getName());
 					}
 					contractMonthlyStat.setSalesHumanCost(salesHumanCost);
 					contractMonthlyStat.setSalesPayment(salesPayment);
@@ -483,28 +448,32 @@ public class ContractStateTask {
 					Double consultHumanCost = 0D;
 					//咨询报销成本
 					Double consultPayment = 0D;
-					List<Long> deptIds2 = deptInfoRepository.findIdsByType(TYPE_DEPT_CONSULT);
-					if(deptIds2 != null && deptIds2.size() > 0){
-						List<ContractCost> contractCosts = contractCostRepository.findByDeptIdsAndTypeAndContractId(deptIds2, TYPE_CONTRACT_COST_HUMAN_COST, id);
-						if(contractCosts != null && contractCosts.size() >0){
-							for(ContractCost contractCost : contractCosts){
-								consultHumanCost += contractCost.getTotal();
+					Long consultDeptId = contractInfo.getConsultantsDeptId();
+					if(consultDeptId != null && consultDeptId != 0){
+						DeptInfo deptInfo = deptInfoRepository.findOne(consultDeptId);
+						List<Long> deptIds2 = deptInfoRepository.findIdsByType(StringUtil.nullToLong(deptInfo.getType()));
+						if(deptIds2 != null && deptIds2.size() > 0){
+							List<ContractCost> contractCosts = contractCostRepository.findByDeptIdsAndTypeAndContractId(deptIds2, ContractCost.TYPE_HUMAN_COST, id);
+							if(contractCosts != null && contractCosts.size() >0){
+								for(ContractCost contractCost : contractCosts){
+									consultHumanCost += contractCost.getTotal();
+								}
 							}
-						}
-						List<ContractCost> contractCosts2 = contractCostRepository.findByDeptIdsAndNoTypeAndContractId(deptIds2, TYPE_CONTRACT_COST_HUMAN_COST, id);
-						if(contractCosts2 != null && contractCosts2.size() >0){
-							for(ContractCost contractCost : contractCosts2){
-								consultPayment += contractCost.getTotal();
+							List<ContractCost> contractCosts2 = contractCostRepository.findByDeptIdsAndNoTypeAndContractId(deptIds2, ContractCost.TYPE_HUMAN_COST, id);
+							if(contractCosts2 != null && contractCosts2.size() >0){
+								for(ContractCost contractCost : contractCosts2){
+									consultPayment += contractCost.getTotal();
+								}
 							}
+						}else{
+							log.error("no consult deptInfo found belong to " + contractInfo.getName());
 						}
-					}else{
-						log.error("no consult deptInfo found belong to " + contractInfo.getName());
 					}
 					contractMonthlyStat.setConsultHumanCost(consultHumanCost);
 					contractMonthlyStat.setConsultPayment(consultPayment);
 					
 					//硬件采购成本
-					List<PurchaseItem> purchaseItems = purchaseItemRepository.findByContractIdAndType(id, TYPE_PURCHASE_ITEM_HARDWARE);
+					List<PurchaseItem> purchaseItems = purchaseItemRepository.findByContractIdAndType(id, PurchaseItem.TYPE_HARDWARE);
 					Double hardwarePurchase = 0D;
 					if(purchaseItems != null && purchaseItems.size() > 0){
 						for(PurchaseItem purchaseItem : purchaseItems){
@@ -515,7 +484,7 @@ public class ContractStateTask {
 					}
 					contractMonthlyStat.setHardwarePurchase(hardwarePurchase);
 					//外部软件采购成本
-					List<PurchaseItem> purchaseItems2 = purchaseItemRepository.findByContractIdAndSourceAndType(id, SOURCE_PURCHASE_ITEM_EXTERNAL, TYPE_PURCHASE_ITEM_SOFTWARE);
+					List<PurchaseItem> purchaseItems2 = purchaseItemRepository.findByContractIdAndSourceAndType(id, PurchaseItem.SOURCE_EXTERNAL, PurchaseItem.TYPE_SOFTWARE);
 					Double externalSoftware = 0D;
 					if(purchaseItems2 != null && purchaseItems2.size() > 0){
 						for(PurchaseItem purchaseItem : purchaseItems2){
@@ -526,7 +495,7 @@ public class ContractStateTask {
 					}
 					contractMonthlyStat.setExternalSoftware(externalSoftware);
 					//内部软件采购成本
-					List<PurchaseItem> purchaseItems3 = purchaseItemRepository.findByContractIdAndSourceAndType(id, SOURCE_PURCHASE_ITEM_INTERNAL, TYPE_PURCHASE_ITEM_HARDWARE);
+					List<PurchaseItem> purchaseItems3 = purchaseItemRepository.findByContractIdAndSourceAndType(id, PurchaseItem.SOURCE_INTERNAL, PurchaseItem.TYPE_HARDWARE);
 					Double internalSoftware = 0D;
 					if(purchaseItems3 != null && purchaseItems3.size() > 0){
 						for(PurchaseItem purchaseItem : purchaseItems3){
@@ -550,9 +519,9 @@ public class ContractStateTask {
 							if(userTimesheets3 != null && userTimesheets3.size() > 0){
 								for(UserTimesheet userTimesheet : userTimesheets3){
 									UserCost userCost = userCostRepository.findMaxByCostMonthAndUserId(StringUtil.nullToLong(lDay), userTimesheet.getUserId());
-									if(contractInfo.getType() == TYPE_CONTRACT_INTERNAL){
+									if(contractInfo.getType() == ContractInfo.TYPE_INTERNAL){
 										projectHumanCost += userTimesheet.getRealInput() * (userCost.getInternalCost()/22.5/8);
-									}else if(contractInfo.getType() == TYPE_CONTRACT_EXTERNAL){
+									}else if(contractInfo.getType() == ContractInfo.TYPE_EXTERNAL){
 										projectHumanCost += userTimesheet.getRealInput() * (userCost.getExternalCost()/22.5/8);
 									}else{
 										log.error(" no contractType found belong to UserTimesheet : " + userTimesheet.getId());
@@ -562,7 +531,7 @@ public class ContractStateTask {
 								log.error(" no user Timesheets founded for project human cost belong to " + contractInfo.getName());
 							}
 							//报销成本
-							List<ProjectCost> projectCosts2 = projectCostRepository.findAllByProjectIdAndNoType(projectInfo.getId(), TYPE_PROJECT_COST_HUMAN_COST);
+							List<ProjectCost> projectCosts2 = projectCostRepository.findAllByProjectIdAndNoType(projectInfo.getId(), ProjectCost.TYPE_HUMAN_COST);
 							if(projectCosts2 != null && projectCosts2.size() > 0){
 								for(ProjectCost projectCost : projectCosts2){
 									projectPayment += projectCost.getTotal();
@@ -584,7 +553,7 @@ public class ContractStateTask {
 				}else{//公共合同
 					//项目人工成本
 					Double projectHumanCost = 0D;
-					List<ContractCost> contractCosts = contractCostRepository.findByContractIdAndType(id, TYPE_CONTRACT_COST_HUMAN_COST);
+					List<ContractCost> contractCosts = contractCostRepository.findByContractIdAndType(id, ContractCost.TYPE_HUMAN_COST);
 					for(ContractCost contractCost : contractCosts){
 						projectHumanCost += contractCost.getTotal();
 					}
@@ -616,6 +585,7 @@ public class ContractStateTask {
 		Long countDay = (endTime.getTime() - beginTime.getTime())/(24*60*60*1000);
 		Integer contractType = contractInfo.getType();
 		Date currentDay = beginTime;
+		
 		for(int i = 0; i <= countDay; i++){
 			Long workDay = StringUtil.nullToLong(DateUtil.formatDate("yyyyMMdd", currentDay).toString());
 			Long costMonth = StringUtil.nullToLong(DateUtil.formatDate("yyyyMM", currentDay).toString());
@@ -625,22 +595,23 @@ public class ContractStateTask {
 				//销售部分
 				contractCost.setDeptId(contractInfo.getDeptId());
 				DeptInfo deptInfo = deptInfoRepository.findOne(contractInfo.getDeptId());
+				DeptInfo deptInfo2 = deptInfoRepository.findOne(contractInfo.getConsultantsDeptId());
 				contractCost.setDept(deptInfo.getName());
 				Double total = 0D;
 				List<UserTimesheet> userTimesheets = new ArrayList<>();
-				if(contractInfo.getType() == TYPE_CONTRACT_PUBLIC){
-					userTimesheets = userTimesheetRepository.findByWorkDayAndNotDeptTypeAndType(workDay, TYPE_DEPT_CONSULT, UserTimesheet.TYPE_PUBLIC);
+				if(contractInfo.getType() == ContractInfo.TYPE_PUBLIC){
+					userTimesheets = userTimesheetRepository.findByWorkDayAndNotDeptTypeAndType(workDay, deptInfo2.getType(), UserTimesheet.TYPE_PUBLIC);
 				}else{
-					userTimesheets = userTimesheetRepository.findByWorkDayAndNotDeptTypeAndObjIdAndType(workDay, TYPE_DEPT_CONSULT, contractInfo.getId(), UserTimesheet.TYPE_CONTRACT);
+					userTimesheets = userTimesheetRepository.findByWorkDayAndNotDeptTypeAndObjIdAndType(workDay, deptInfo2.getType(), contractInfo.getId(), UserTimesheet.TYPE_CONTRACT);
 				}
 				
 				if(userTimesheets != null && userTimesheets.size() > 0){
 					for(UserTimesheet userTimesheet : userTimesheets){
 						UserCost userCost = userCostRepository.findMaxByCostMonthAndUserId(costMonth, userTimesheet.getUserId());
 						if(userCost != null){
-							if(contractType == TYPE_CONTRACT_INTERNAL){
+							if(contractType == ContractInfo.TYPE_INTERNAL){
 								total += userTimesheet.getRealInput() * (userCost.getInternalCost()/22.5/8);
-							}else if(contractType == TYPE_CONTRACT_EXTERNAL){
+							}else if(contractType == ContractInfo.TYPE_EXTERNAL){
 								total += userTimesheet.getRealInput() * (userCost.getExternalCost()/22.5/8);
 							}else{
 								log.info(" no contractType found belong to UserTimesheet : " + userTimesheet.getId());
@@ -656,22 +627,21 @@ public class ContractStateTask {
 				ContractCost contractCost2 = new ContractCost();
 				contractCost2.setContractId(contractInfo.getId());
 				contractCost2.setDeptId(contractInfo.getConsultantsDeptId());
-				DeptInfo deptInfo2 = deptInfoRepository.findOne(contractInfo.getConsultantsDeptId());
 				contractCost2.setDept(deptInfo2.getName());
 				Double total2 = 0D;
 				List<UserTimesheet> userTimesheets2 = new ArrayList<>();
-				if(contractInfo.getType() == TYPE_CONTRACT_PUBLIC){
-					userTimesheets2 = userTimesheetRepository.findByWorkDayAndDeptTypeAndType(workDay, TYPE_DEPT_CONSULT, UserTimesheet.TYPE_PUBLIC);
+				if(contractInfo.getType() == ContractInfo.TYPE_PUBLIC){
+					userTimesheets2 = userTimesheetRepository.findByWorkDayAndDeptTypeAndType(workDay, deptInfo2.getType(), UserTimesheet.TYPE_PUBLIC);
 				}else{
-					userTimesheets2 = userTimesheetRepository.findByWorkDayAndDeptTypeAndObjIdAndType(workDay, TYPE_DEPT_CONSULT, contractInfo.getId(), UserTimesheet.TYPE_CONTRACT);
+					userTimesheets2 = userTimesheetRepository.findByWorkDayAndDeptTypeAndObjIdAndType(workDay, deptInfo2.getType(), contractInfo.getId(), UserTimesheet.TYPE_CONTRACT);
 				}
 				if(userTimesheets2 != null && userTimesheets2.size() > 0){
 					for(UserTimesheet userTimesheet : userTimesheets2){
 						UserCost userCost = userCostRepository.findMaxByCostMonthAndUserId(costMonth, userTimesheet.getUserId());
 						if(userCost != null){
-							if(contractType == TYPE_CONTRACT_INTERNAL){
+							if(contractType == ContractInfo.TYPE_INTERNAL){
 								total += userTimesheet.getRealInput() * (userCost.getInternalCost()/22.5/8);
-							}else if(contractType == TYPE_CONTRACT_EXTERNAL){
+							}else if(contractType == ContractInfo.TYPE_EXTERNAL){
 								total += userTimesheet.getRealInput() * (userCost.getExternalCost()/22.5/8);
 							}else{
 								log.info(" no contractType found belong to UserTimesheet : " + userTimesheet.getId());
@@ -684,7 +654,7 @@ public class ContractStateTask {
 				}
 				contractCost2.setTotal(total2);
 				contractCost2.setName(contractInfo.getSerialNum() + "-humanCost-" +  DateUtil.formatDate("yyyyMMdd", currentDay).toString());
-				contractCost2.setType(TYPE_CONTRACT_COST_HUMAN_COST);
+				contractCost2.setType(ContractCost.TYPE_HUMAN_COST);
 				contractCost2.setCostDesc(DateUtil.formatDate("yyyyMMdd", currentDay).toString());
 				contractCost2.setStatus(1);
 				contractCost2.setCreator("admin");
@@ -704,11 +674,13 @@ public class ContractStateTask {
 					contractCost.setDept(deptInfo.getName());;
 				}
 				List<UserTimesheet> userTimesheets = new ArrayList<>();
-				if(contractInfo.getType() == TYPE_CONTRACT_PUBLIC){
+				if(contractInfo.getType() == ContractInfo.TYPE_PUBLIC){
 					if(contractInfo.getDeptId() != null && contractInfo.getDeptId() != 0){
-						userTimesheets = userTimesheetRepository.findByWorkDayAndNotDeptTypeAndType(workDay, TYPE_DEPT_CONSULT, UserTimesheet.TYPE_PUBLIC);
+						DeptInfo deptInfo = deptInfoRepository.findOne(contractInfo.getDeptId());
+						userTimesheets = userTimesheetRepository.findByWorkDayAndNotDeptTypeAndType(workDay, StringUtil.nullToLong(deptInfo.getType()), UserTimesheet.TYPE_PUBLIC);
 					}else{
-						userTimesheets = userTimesheetRepository.findByWorkDayAndDeptTypeAndType(workDay, TYPE_DEPT_CONSULT, UserTimesheet.TYPE_PUBLIC);
+						DeptInfo deptInfo = deptInfoRepository.findOne(contractInfo.getConsultantsDeptId());
+						userTimesheets = userTimesheetRepository.findByWorkDayAndDeptTypeAndType(workDay, StringUtil.nullToLong(deptInfo.getType()), UserTimesheet.TYPE_PUBLIC);
 					}
 				}else{
 					userTimesheets = userTimesheetRepository.findByWorkDayAndObjIdAndType(workDay, contractInfo.getId(), UserTimesheet.TYPE_CONTRACT);
@@ -718,9 +690,9 @@ public class ContractStateTask {
 					for(UserTimesheet userTimesheet : userTimesheets){
 						UserCost userCost = userCostRepository.findMaxByCostMonthAndUserId(costMonth, userTimesheet.getUserId());
 						if(userCost != null){
-							if(contractType == TYPE_CONTRACT_INTERNAL){
+							if(contractType == ContractInfo.TYPE_INTERNAL){
 								total += userTimesheet.getRealInput() * (userCost.getInternalCost()/22.5/8);
-							}else if(contractType == TYPE_CONTRACT_EXTERNAL){
+							}else if(contractType == ContractInfo.TYPE_EXTERNAL){
 								total += userTimesheet.getRealInput() * (userCost.getExternalCost()/22.5/8);
 							}else{
 								log.info(" no contractType found belong to UserTimesheet : " + userTimesheet.getId());
@@ -733,7 +705,7 @@ public class ContractStateTask {
 				contractCost.setTotal(total);
 			}
 			contractCost.setName(contractInfo.getSerialNum() + "-humanCost-" +  DateUtil.formatDate("yyyyMMdd", currentDay).toString());
-			contractCost.setType(TYPE_CONTRACT_COST_HUMAN_COST);
+			contractCost.setType(ContractCost.TYPE_HUMAN_COST);
 			contractCost.setCostDesc(DateUtil.formatDate("yyyyMMdd", currentDay).toString());
 			contractCost.setStatus(1);
 			contractCost.setCreator("admin");
