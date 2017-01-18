@@ -41,7 +41,6 @@
         loadAll();
 
         function loadAll () {
-        	console.log(vm.searchQuery.status);
             UserCost.query({
                 page: pagingParams.page - 1,
                 size: vm.itemsPerPage,
@@ -89,7 +88,6 @@
         }
 
         function transition() {
-        	console.log("898989:"+vm.searchQuery.userName);
             $state.transitionTo($state.$current, {
                 page: vm.page,
                 sort: vm.predicate + ',' + (vm.reverse ? 'asc' : 'desc'),

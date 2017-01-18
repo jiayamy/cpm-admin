@@ -11,7 +11,6 @@
         var vm = this;
 
         vm.purchaseItem = entity;
-        console.log(vm.purchaseItem.budgetName);
         vm.datePickerOpenStatus = {};
         vm.openCalendar = openCalendar;
         vm.save = save;

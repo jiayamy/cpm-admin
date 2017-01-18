@@ -9,7 +9,6 @@
 
     function ProjectMonthlyStatChartController ($scope,$state,DateUtils,$rootScope, $stateParams, pagingParams, ProjectMonthlyStatChart, AlertService,previousState) {
     	var vm = this;
-//    	console.log($state);
         vm.transition = transition;
         vm.clear = clear;
         vm.loadAll = loadAll;
@@ -179,7 +178,6 @@
             });
         }
         vm.backDetail = backDetail;
-        console.log(pagingParams);
         function backDetail(){
         	$state.go('project-monthly-stat-detail', {
         		id: pagingParams.id
