@@ -164,7 +164,7 @@ public class WorkAreaResource {
     
     @GetMapping("/work-areas/queryAll")
     @Timed
-    @Secured(AuthoritiesConstants.ROLE_INFO_BASIC)
+    @Secured(AuthoritiesConstants.USER)
     public ResponseEntity<List<String>> queryAllWorkAreas() throws URISyntaxException {
     	log.debug("REST request to queryAllWorkAreas");
         List<String> page = workAreaService.queryAll();

@@ -17,6 +17,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -32,6 +33,7 @@ import com.wondertek.cpm.config.StringUtil;
 import com.wondertek.cpm.domain.UserTimesheet;
 import com.wondertek.cpm.domain.vo.UserTimesheetForUser;
 import com.wondertek.cpm.domain.vo.UserTimesheetVo;
+import com.wondertek.cpm.security.AuthoritiesConstants;
 import com.wondertek.cpm.service.UserTimesheetService;
 import com.wondertek.cpm.web.rest.util.HeaderUtil;
 import com.wondertek.cpm.web.rest.util.PaginationUtil;
@@ -58,6 +60,7 @@ public class UserTimesheetResource {
      */
     @GetMapping("/user-timesheets")
     @Timed
+    @Secured(AuthoritiesConstants.ROLE_TIMESHEET)
     public ResponseEntity<List<UserTimesheetVo>> getAllUserTimesheets(
     		@RequestParam(value = "workDay",required=false) Long workDay,
     		@RequestParam(value = "type",required=false) Integer type,
@@ -89,6 +92,7 @@ public class UserTimesheetResource {
      */
     @GetMapping("/user-timesheets/{id}")
     @Timed
+    @Secured(AuthoritiesConstants.ROLE_TIMESHEET)
     public ResponseEntity<UserTimesheet> getUserTimesheet(@PathVariable Long id) {
         log.debug("REST request to get UserTimesheet : {}", id);
         UserTimesheet userTimesheet = userTimesheetService.findOne(id);
@@ -107,33 +111,16 @@ public class UserTimesheetResource {
      */
     @DeleteMapping("/user-timesheets/{id}")
     @Timed
+    @Secured(AuthoritiesConstants.ROLE_TIMESHEET)
     public ResponseEntity<Void> deleteUserTimesheet(@PathVariable Long id) {
         log.debug("REST request to delete UserTimesheet : {}", id);
         userTimesheetService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert("userTimesheet", id.toString())).build();
     }
 
-    /**
-     * SEARCH  /_search/user-timesheets?query=:query : search for the userTimesheet corresponding
-     * to the query.
-     *
-     * @param query the query of the userTimesheet search 
-     * @param pageable the pagination information
-     * @return the result of the search
-     * @throws URISyntaxException if there is an error to generate the pagination HTTP headers
-     */
-    @GetMapping("/_search/user-timesheets")
-    @Timed
-    public ResponseEntity<List<UserTimesheet>> searchUserTimesheets(@RequestParam String query, @ApiParam Pageable pageable)
-        throws URISyntaxException {
-        log.debug("REST request to search for a page of UserTimesheets for query {}", query);
-        Page<UserTimesheet> page = userTimesheetService.search(query, pageable);
-        HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/user-timesheets");
-        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
-    }
-    
     @GetMapping("/_edit/user-timesheets")
     @Timed
+    @Secured(AuthoritiesConstants.ROLE_TIMESHEET)
     public ResponseEntity<List<UserTimesheetForUser>> queryEditByUser(@RequestParam(value = "workDay") String workDay, @ApiParam Pageable pageable)
         throws URISyntaxException {
         log.debug("REST request to queryByUser for a page of UserTimesheets for query {}", workDay);
@@ -151,6 +138,7 @@ public class UserTimesheetResource {
     
     @PutMapping("/_edit/user-timesheets")
     @Timed
+    @Secured(AuthoritiesConstants.ROLE_TIMESHEET)
     public ResponseEntity<Map<String, Object>> updateEditByUser(@RequestBody List<UserTimesheetForUser> userTimesheetForUsers) throws URISyntaxException {
         log.debug("REST request to update UserTimesheet : {}", userTimesheetForUsers);
         Map<String,Object> resultMap = new HashMap<String,Object>(); 

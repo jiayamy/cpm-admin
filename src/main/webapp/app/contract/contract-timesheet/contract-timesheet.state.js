@@ -13,7 +13,7 @@
             parent: 'contract',
             url: '/contract-timesheet?page&sort&search',
             data: {
-                authorities: ['ROLE_USER'],
+                authorities: ['ROLE_CONTRACT_TIMESHEET'],
                 pageTitle: 'cpmApp.contractTimesheet.home.title'
             },
             views: {
@@ -52,10 +52,10 @@
             }
         })
         .state('contract-timesheet-detail', {
-            parent: 'contract',
-            url: '/contract-timesheet/{id}',
+            parent: 'contract-timesheet',
+            url: '/detail/{id}',
             data: {
-                authorities: ['ROLE_USER'],
+                authorities: ['ROLE_CONTRACT_TIMESHEET'],
                 pageTitle: 'cpmApp.contractTimesheet.detail.title'
             },
             views: {
@@ -85,9 +85,9 @@
         })
         .state('contract-timesheet-detail.edit', {
             parent: 'contract-timesheet-detail',
-            url: '/detail/edit',
+            url: '/edit',
             data: {
-                authorities: ['ROLE_USER']
+                authorities: ['ROLE_CONTRACT_TIMESHEET']
             },
             onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
                 $uibModal.open({
@@ -112,7 +112,7 @@
             parent: 'contract-timesheet',
             url: '/new',
             data: {
-                authorities: ['ROLE_USER']
+                authorities: ['ROLE_CONTRACT_TIMESHEET']
             },
             onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
                 $uibModal.open({
@@ -149,9 +149,9 @@
         })
         .state('contract-timesheet.edit', {
             parent: 'contract-timesheet',
-            url: '/{id}/edit',
+            url: '/edit/{id}',
             data: {
-                authorities: ['ROLE_USER']
+                authorities: ['ROLE_CONTRACT_TIMESHEET']
             },
             onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
                 $uibModal.open({
@@ -174,9 +174,9 @@
         })
         .state('contract-timesheet.delete', {
             parent: 'contract-timesheet',
-            url: '/{id}/delete',
+            url: '/delete/{id}',
             data: {
-                authorities: ['ROLE_USER']
+                authorities: ['ROLE_CONTRACT_TIMESHEET']
             },
             onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
                 $uibModal.open({

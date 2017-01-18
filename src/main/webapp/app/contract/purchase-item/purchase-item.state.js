@@ -13,7 +13,7 @@
             parent: 'contract',
             url: '/purchase-item?name&contractId&source&type',
             data: {
-                authorities: ['ROLE_USER'],
+                authorities: ['ROLE_CONTRACT_PURCHASE'],
                 pageTitle: 'cpmApp.purchaseItem.home.title'
             },
             views: {
@@ -54,10 +54,10 @@
             }
         })
         .state('purchase-item-detail', {
-            parent: 'contract',
-            url: '/purchase-item/{id}',
+            parent: 'purchase-item',
+            url: '/detail/{id}',
             data: {
-                authorities: ['ROLE_USER'],
+                authorities: ['ROLE_CONTRACT_PURCHASE'],
                 pageTitle: 'cpmApp.purchaseItem.detail.title'
             },
             views: {
@@ -87,9 +87,9 @@
         })
         .state('purchase-item-detail.edit', {
             parent: 'purchase-item-detail',
-            url: '/detail/edit',
+            url: '/edit',
             data: {
-                authorities: ['ROLE_USER']
+                authorities: ['ROLE_CONTRACT_PURCHASE']
             },
             onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
                 $uibModal.open({
@@ -114,7 +114,7 @@
             parent: 'purchase-item',
             url: '/new',
             data: {
-                authorities: ['ROLE_USER']
+                authorities: ['ROLE_CONTRACT_PURCHASE']
             },
             views:{
             	'content@':{
@@ -163,9 +163,9 @@
         })
         .state('purchase-item.edit', {
             parent: 'purchase-item',
-            url: '/{id}/edit',
+            url: '/edit/{id}',
             data: {
-                authorities: ['ROLE_USER'],
+                authorities: ['ROLE_CONTRACT_PURCHASE'],
                 pageTitle: 'cpmApp.purchaseItem.detail.title'
             },
             views: {
@@ -195,9 +195,9 @@
         })
         .state('purchase-item.delete', {
             parent: 'purchase-item',
-            url: '/{id}/delete',
+            url: '/delete/{id}',
             data: {
-                authorities: ['ROLE_USER']
+                authorities: ['ROLE_CONTRACT_PURCHASE']
             },
             onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
                 $uibModal.open({

@@ -252,6 +252,7 @@ public class UserResource {
      */
     @GetMapping("/_search/users/{query}")
     @Timed
+    @Secured(AuthoritiesConstants.ROLE_INFO_BASIC)
     public List<User> search(@PathVariable String query) {
         return StreamSupport
             .stream(userSearchRepository.search(queryStringQuery(query)).spliterator(), false)

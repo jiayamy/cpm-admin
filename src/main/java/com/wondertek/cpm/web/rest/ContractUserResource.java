@@ -14,6 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,6 +28,7 @@ import com.codahale.metrics.annotation.Timed;
 import com.wondertek.cpm.config.StringUtil;
 import com.wondertek.cpm.domain.ContractUser;
 import com.wondertek.cpm.domain.vo.ContractUserVo;
+import com.wondertek.cpm.security.AuthoritiesConstants;
 import com.wondertek.cpm.security.SecurityUtils;
 import com.wondertek.cpm.service.ContractUserService;
 import com.wondertek.cpm.web.rest.util.HeaderUtil;
@@ -49,6 +51,7 @@ public class ContractUserResource {
 
     @PutMapping("/contract-users")
     @Timed
+    @Secured(AuthoritiesConstants.ROLE_CONTRACT_USER)
     public ResponseEntity<Boolean> updateContractUser(@RequestBody ContractUser contractUser) throws URISyntaxException {
         log.debug("REST request to update ContractUser : {}", contractUser);
         Boolean isNew = contractUser.getId() == null;
@@ -105,6 +108,7 @@ public class ContractUserResource {
     }
     @GetMapping("/contract-users")
     @Timed
+    @Secured(AuthoritiesConstants.ROLE_CONTRACT_USER)
     public ResponseEntity<List<ContractUserVo>> getAllContractUsers(
     		@RequestParam(value = "contractId",required=false) Long contractId, 
     		@RequestParam(value = "userId" ,required=false) Long userId, 
@@ -122,6 +126,7 @@ public class ContractUserResource {
 
     @GetMapping("/contract-users/{id}")
     @Timed
+    @Secured(AuthoritiesConstants.ROLE_CONTRACT_USER)
     public ResponseEntity<ContractUserVo> getContractUser(@PathVariable Long id) {
         log.debug("REST request to get ContractUser : {}", id);
         ContractUserVo contractUserVo = contractUserService.getContractUser(id);
@@ -134,6 +139,7 @@ public class ContractUserResource {
 
     @DeleteMapping("/contract-users/{id}")
     @Timed
+    @Secured(AuthoritiesConstants.ROLE_CONTRACT_USER)
     public ResponseEntity<Void> deleteContractUser(@PathVariable Long id) {
         log.debug("REST request to delete ContractUser : {}", id);
         ContractUserVo contractVo = contractUserService.getContractUser(id);
@@ -147,6 +153,7 @@ public class ContractUserResource {
 
     @GetMapping("/_search/contract-users")
     @Timed
+    @Secured(AuthoritiesConstants.ROLE_CONTRACT_USER)
     public ResponseEntity<List<ContractUser>> searchContractUsers(@RequestParam String query, @ApiParam Pageable pageable)
         throws URISyntaxException {
         log.debug("REST request to search for a page of ContractUsers for query {}", query);

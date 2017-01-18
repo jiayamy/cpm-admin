@@ -13,7 +13,7 @@
             parent: 'info',
             url: '/work-area?page&sort&search',
             data: {
-                authorities: ['ROLE_USER'],
+                authorities: ['ROLE_INFO_BASIC'],
                 pageTitle: 'cpmApp.workArea.home.title'
             },
             views: {
@@ -52,10 +52,10 @@
             }
         })
         .state('work-area-detail', {
-            parent: 'info',
-            url: '/work-area/{id}',
+            parent: 'work-area',
+            url: '/detail/{id}',
             data: {
-                authorities: ['ROLE_USER'],
+                authorities: ['ROLE_INFO_BASIC'],
                 pageTitle: 'cpmApp.workArea.detail.title'
             },
             views: {
@@ -85,9 +85,9 @@
         })
         .state('work-area-detail.edit', {
             parent: 'work-area-detail',
-            url: '/detail/edit',
+            url: '/edit',
             data: {
-                authorities: ['ROLE_USER']
+                authorities: ['ROLE_INFO_BASIC']
             },
             onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
                 $uibModal.open({
@@ -112,7 +112,7 @@
             parent: 'work-area',
             url: '/new',
             data: {
-                authorities: ['ROLE_USER']
+                authorities: ['ROLE_INFO_BASIC']
             },
             onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
                 $uibModal.open({
@@ -138,9 +138,9 @@
         })
         .state('work-area.edit', {
             parent: 'work-area',
-            url: '/{id}/edit',
+            url: '/edit/{id}',
             data: {
-                authorities: ['ROLE_USER']
+                authorities: ['ROLE_INFO_BASIC']
             },
             onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
                 $uibModal.open({
@@ -163,9 +163,9 @@
         })
         .state('work-area.delete', {
             parent: 'work-area',
-            url: '/{id}/delete',
+            url: '/delete/{id}',
             data: {
-                authorities: ['ROLE_USER']
+                authorities: ['ROLE_INFO_BASIC']
             },
             onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
                 $uibModal.open({

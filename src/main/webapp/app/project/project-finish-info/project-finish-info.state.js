@@ -52,8 +52,8 @@
             }
         })
         .state('project-finish-info-detail', {
-            parent: 'project',
-            url: '/project-finish-info/{id}',
+            parent: 'project-finish-info',
+            url: '/detail/{id}',
             data: {
                 authorities: ['ROLE_PROJECT_FINISH'],
                 pageTitle: 'cpmApp.projectFinishInfo.detail.title'
@@ -85,7 +85,7 @@
         })
         .state('project-finish-info-detail.edit', {
             parent: 'project-finish-info-detail',
-            url: '/detail/edit',
+            url: '/edit',
             data: {
                 authorities: ['ROLE_PROJECT_FINISH']
             },
@@ -141,7 +141,7 @@
         })
         .state('project-finish-info.edit', {
             parent: 'project-finish-info',
-            url: '/{id}/edit',
+            url: '/edit/{id}',
             data: {
                 authorities: ['ROLE_PROJECT_FINISH']
             },
@@ -166,7 +166,7 @@
         })
         .state('project-finish-info.delete', {
             parent: 'project-finish-info',
-            url: '/{id}/delete',
+            url: '/delete/{id}',
             data: {
                 authorities: ['ROLE_PROJECT_FINISH']
             },

@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,6 +28,7 @@ import com.wondertek.cpm.config.StringUtil;
 import com.wondertek.cpm.domain.DeptInfo;
 import com.wondertek.cpm.domain.vo.DeptInfoVo;
 import com.wondertek.cpm.domain.vo.DeptTree;
+import com.wondertek.cpm.security.AuthoritiesConstants;
 import com.wondertek.cpm.security.SecurityUtils;
 import com.wondertek.cpm.service.DeptInfoService;
 import com.wondertek.cpm.web.rest.util.HeaderUtil;
@@ -54,6 +56,7 @@ public class DeptInfoResource {
      */
     @PutMapping("/dept-infos")
     @Timed
+    @Secured(AuthoritiesConstants.ROLE_INFO_BASIC)
     public ResponseEntity<DeptInfo> updateDeptInfo(@Valid @RequestBody DeptInfo deptInfo) throws URISyntaxException {
         log.debug("REST request to update DeptInfo : {}", deptInfo);
         Boolean isNew = deptInfo.getId() == null;
@@ -124,6 +127,7 @@ public class DeptInfoResource {
      */
     @GetMapping("/dept-infos/{id}")
     @Timed
+    @Secured(AuthoritiesConstants.ROLE_INFO_BASIC)
     public ResponseEntity<DeptInfoVo> getDeptInfo(@PathVariable Long id) {
         log.debug("REST request to get DeptInfo : {}", id);
         DeptInfoVo deptInfo = deptInfoService.getDeptInfo(id);
@@ -141,6 +145,7 @@ public class DeptInfoResource {
      */
     @DeleteMapping("/dept-infos/{id}")
     @Timed
+    @Secured(AuthoritiesConstants.ROLE_INFO_BASIC)
     public ResponseEntity<Void> deleteDeptInfo(@PathVariable Long id) {
         log.debug("REST request to delete DeptInfo : {}", id);
         //检查部门及下面的部门对应用户是否全部删除
@@ -157,6 +162,7 @@ public class DeptInfoResource {
 
     @GetMapping("/dept-infos/getDeptAndUserTree")
     @Timed
+    @Secured(AuthoritiesConstants.USER)
     public ResponseEntity<List<DeptTree>> getDeptAndUserTree(
     			@RequestParam(value = "selectType",required=false) Integer selectType,
     			@RequestParam(value = "showChild",required=false) Boolean showChild,
@@ -178,6 +184,7 @@ public class DeptInfoResource {
     
     @GetMapping("/dept-infos/getDeptTree")
     @Timed
+    @Secured(AuthoritiesConstants.USER)
     public ResponseEntity<List<DeptTree>> getDeptTree() throws URISyntaxException {
         log.debug("REST request to get a page of getDeptAndUserTree");
         List<DeptTree> list = deptInfoService.getDeptAndUserTree(DeptTree.SELECTTYPE_NONE,Boolean.TRUE,Boolean.FALSE);

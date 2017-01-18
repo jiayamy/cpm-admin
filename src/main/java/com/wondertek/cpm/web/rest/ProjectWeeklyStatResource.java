@@ -1,26 +1,5 @@
 package com.wondertek.cpm.web.rest;
 
-import com.codahale.metrics.annotation.Timed;
-import com.wondertek.cpm.config.DateUtil;
-import com.wondertek.cpm.config.StringUtil;
-import com.wondertek.cpm.domain.ProjectWeeklyStat;
-import com.wondertek.cpm.domain.vo.ChartReportDataVo;
-import com.wondertek.cpm.domain.vo.ChartReportVo;
-import com.wondertek.cpm.service.ProjectWeeklyStatService;
-import com.wondertek.cpm.web.rest.util.HeaderUtil;
-import com.wondertek.cpm.web.rest.util.PaginationUtil;
-
-import io.swagger.annotations.ApiParam;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import javax.inject.Inject;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -28,10 +7,39 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
-import static org.elasticsearch.index.query.QueryBuilders.*;
+import javax.inject.Inject;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.codahale.metrics.annotation.Timed;
+import com.wondertek.cpm.config.DateUtil;
+import com.wondertek.cpm.config.StringUtil;
+import com.wondertek.cpm.domain.ProjectWeeklyStat;
+import com.wondertek.cpm.domain.vo.ChartReportDataVo;
+import com.wondertek.cpm.domain.vo.ChartReportVo;
+import com.wondertek.cpm.security.AuthoritiesConstants;
+import com.wondertek.cpm.service.ProjectWeeklyStatService;
+import com.wondertek.cpm.web.rest.util.HeaderUtil;
+import com.wondertek.cpm.web.rest.util.PaginationUtil;
+
+import io.swagger.annotations.ApiParam;
 
 /**
  * REST controller for managing ProjectWeeklyStat.
@@ -54,6 +62,7 @@ public class ProjectWeeklyStatResource {
      */
     @PostMapping("/project-weekly-stats")
     @Timed
+    @Secured(AuthoritiesConstants.ROLE_STAT_PROJECT)
     public ResponseEntity<ProjectWeeklyStat> createProjectWeeklyStat(@RequestBody ProjectWeeklyStat projectWeeklyStat) throws URISyntaxException {
         log.debug("REST request to save ProjectWeeklyStat : {}", projectWeeklyStat);
         if (projectWeeklyStat.getId() != null) {
@@ -76,6 +85,7 @@ public class ProjectWeeklyStatResource {
      */
     @PutMapping("/project-weekly-stats")
     @Timed
+    @Secured(AuthoritiesConstants.ROLE_STAT_PROJECT)
     public ResponseEntity<ProjectWeeklyStat> updateProjectWeeklyStat(@RequestBody ProjectWeeklyStat projectWeeklyStat) throws URISyntaxException {
         log.debug("REST request to update ProjectWeeklyStat : {}", projectWeeklyStat);
         if (projectWeeklyStat.getId() == null) {
@@ -96,6 +106,7 @@ public class ProjectWeeklyStatResource {
      */
     @GetMapping("/project-weekly-stats")
     @Timed
+    @Secured(AuthoritiesConstants.ROLE_STAT_PROJECT)
     public ResponseEntity<List<ProjectWeeklyStat>> getAllProjectWeeklyStats(
     		@ApiParam(value="fromDate") @RequestParam(value="fromDate") String fromDate,
     		@ApiParam(value="toDate") @RequestParam(value="toDate") String toDate,
@@ -116,6 +127,7 @@ public class ProjectWeeklyStatResource {
      */
     @GetMapping("/project-weekly-stats/{id}")
     @Timed
+    @Secured(AuthoritiesConstants.ROLE_STAT_PROJECT)
     public ResponseEntity<ProjectWeeklyStat> getProjectWeeklyStat(@PathVariable Long id) {
         log.debug("REST request to get ProjectWeeklyStat : {}", id);
         ProjectWeeklyStat projectWeeklyStat = projectWeeklyStatService.findOne(id);
@@ -134,6 +146,7 @@ public class ProjectWeeklyStatResource {
      */
     @DeleteMapping("/project-weekly-stats/{id}")
     @Timed
+    @Secured(AuthoritiesConstants.ROLE_STAT_PROJECT)
     public ResponseEntity<Void> deleteProjectWeeklyStat(@PathVariable Long id) {
         log.debug("REST request to delete ProjectWeeklyStat : {}", id);
         projectWeeklyStatService.delete(id);
@@ -151,6 +164,7 @@ public class ProjectWeeklyStatResource {
      */
     @GetMapping("/_search/project-weekly-stats")
     @Timed
+    @Secured(AuthoritiesConstants.ROLE_STAT_PROJECT)
     public ResponseEntity<List<ProjectWeeklyStat>> searchProjectWeeklyStats(@RequestParam String query, @ApiParam Pageable pageable)
         throws URISyntaxException {
         log.debug("REST request to search for a page of ProjectWeeklyStats for query {}", query);
@@ -161,6 +175,7 @@ public class ProjectWeeklyStatResource {
 
     @GetMapping("/project-weekly-stats/queryChart")
     @Timed
+    @Secured(AuthoritiesConstants.ROLE_STAT_PROJECT)
     public ChartReportVo getChartReport(@ApiParam(value="fromDate") @RequestParam(value="fromDate") String fromDate,
     		@ApiParam(value="toDate") @RequestParam(value="toDate") String toDate,
     		@ApiParam(value="projectId") @RequestParam(value="projectId", required = true) Long projectId){

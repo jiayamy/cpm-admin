@@ -14,6 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,6 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.codahale.metrics.annotation.Timed;
 import com.wondertek.cpm.domain.ContractCost;
 import com.wondertek.cpm.domain.vo.ContractCostVo;
+import com.wondertek.cpm.security.AuthoritiesConstants;
 import com.wondertek.cpm.service.ContractCostService;
 import com.wondertek.cpm.web.rest.util.HeaderUtil;
 import com.wondertek.cpm.web.rest.util.PaginationUtil;
@@ -54,6 +56,7 @@ public class ContractCostResource {
      */
     @PostMapping("/contract-costs")
     @Timed
+    @Secured(AuthoritiesConstants.ROLE_CONTRACT_COST)
     public ResponseEntity<ContractCost> createContractCost(@RequestBody ContractCost contractCost) throws URISyntaxException {
         log.debug("REST request to save ContractCost : {}", contractCost);
         if (contractCost.getId() != null) {
@@ -76,6 +79,7 @@ public class ContractCostResource {
      */
     @PutMapping("/contract-costs")
     @Timed
+    @Secured(AuthoritiesConstants.ROLE_CONTRACT_COST)
     public ResponseEntity<ContractCost> updateContractCost(@RequestBody ContractCost contractCost) throws URISyntaxException {
         log.debug("REST request to update ContractCost : {}", contractCost);
         if (contractCost.getId() == null) {
@@ -88,6 +92,7 @@ public class ContractCostResource {
     }
     @GetMapping("/contract-costs")
     @Timed
+    @Secured(AuthoritiesConstants.ROLE_CONTRACT_COST)
     public ResponseEntity<List<ContractCostVo>> getAllContractCosts(
     		@RequestParam(value = "contractId",required=false) Long contractId, 
     		@RequestParam(value = "type",required=false) Integer type, 
@@ -108,6 +113,7 @@ public class ContractCostResource {
 
     @GetMapping("/contract-costs/{id}")
     @Timed
+    @Secured(AuthoritiesConstants.ROLE_CONTRACT_COST)
     public ResponseEntity<ContractCostVo> getContractCost(@PathVariable Long id) {
         log.debug("REST request to get ContractCost : {}", id);
         ContractCostVo contractCost = contractCostService.getContractCost(id);
@@ -120,6 +126,7 @@ public class ContractCostResource {
 
     @DeleteMapping("/contract-costs/{id}")
     @Timed
+    @Secured(AuthoritiesConstants.ROLE_CONTRACT_COST)
     public ResponseEntity<Void> deleteContractCost(@PathVariable Long id) {
         log.debug("REST request to delete ContractCost : {}", id);
         contractCostService.delete(id);
@@ -128,6 +135,7 @@ public class ContractCostResource {
 
     @GetMapping("/_search/contract-costs")
     @Timed
+    @Secured(AuthoritiesConstants.ROLE_CONTRACT_COST)
     public ResponseEntity<List<ContractCost>> searchContractCosts(@RequestParam String query, @ApiParam Pageable pageable)
         throws URISyntaxException {
         log.debug("REST request to search for a page of ContractCosts for query {}", query);

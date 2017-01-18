@@ -202,13 +202,11 @@ public class ManagedUserVM extends UserDTO {
 	}
 
 	@Override
-    public String toString() {
-        return "ManagedUserVM{" +
-            "id=" + id +
-            ", createdBy=" + createdBy +
-            ", createdDate=" + createdDate +
-            ", lastModifiedBy='" + lastModifiedBy + '\'' +
-            ", lastModifiedDate=" + lastModifiedDate +
-            "} " + super.toString();
-    }
+	public String toString() {
+		return "ManagedUserVM [id=" + id + ", createdBy=" + createdBy + ", createdDate=" + createdDate
+				+ ", lastModifiedBy=" + lastModifiedBy + ", lastModifiedDate=" + lastModifiedDate + ", password="
+				+ password + ", serialNum=" + serialNum + ", deptId=" + deptId + ", dept=" + dept + ", isManager="
+				+ isManager + ", duty=" + duty + ", grade=" + grade + ", gender=" + gender + ", birthYear=" + birthYear
+				+ ", birthDay=" + birthDay + ", telephone=" + telephone + "]" + super.toString();
+	}
 }

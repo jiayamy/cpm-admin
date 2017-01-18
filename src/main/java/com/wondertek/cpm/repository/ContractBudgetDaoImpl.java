@@ -115,9 +115,9 @@ public class ContractBudgetDaoImpl extends GenericDaoImpl<ContractBudget, Long> 
 		
 		List<Object[]> list = this.queryAllSql(querySql.toString(), params.toArray());
 		if (list == null || list.isEmpty()) {
-			return true;
+			return false;
 		}
-		return false;
+		return true;
 	}
 }
 	

@@ -196,7 +196,9 @@ public class ContractInfoResource {
 				"/api/_search/contract-infos");
 		return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
 	}
+	
 	@GetMapping("/contract-infos/queryUserContract")
+	@Secured(AuthoritiesConstants.USER)
 	public ResponseEntity<List<LongValue>> queryUserContract() {
 		log.debug("REST request to queryUserContract");
 		 List<LongValue> list = contractInfoService.queryUserContract();
