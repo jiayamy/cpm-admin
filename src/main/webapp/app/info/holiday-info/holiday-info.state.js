@@ -138,7 +138,7 @@
                 entity: function () {
                     return {
                         currDay: null,
-                        type: null,
+                        type: 4,
                         creator: null,
                         createTime: null,
                         updator: null,
