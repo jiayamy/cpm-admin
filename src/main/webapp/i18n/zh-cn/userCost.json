@@ -8,19 +8,24 @@
                 "editLabel": "编辑员工成本",
                 "search": "Search for User Cost"
             },
-            "created": "A new User Cost is created with identifier {{ param }}",
-            "updated": "A User Cost is updated with identifier {{ param }}",
-            "deleted": "A User Cost is deleted with identifier {{ param }}",
+            "created": "新增成功",
+            "updated": "更新成功",
+            "deleted": "删除成功",
             "delete": {
-                "question": "Are you sure you want to delete User Cost {{ id }}?"
+                "question": "确定删除该员工成本信息 ?",
+                "statusError": "删除状态的数据不可以再执行删除操作"
             },
             "detail": {
                 "title": "员工成本详情"
             },
             "save": {
-            	"paramNone": "参数不能为空"
+            	"requriedError": "必填参数不能为空",
+            	"existError":"员工成本已存在",
+            	"noExistError":"数据错误，请刷新重试",
+            	"statusError": "删除状态不能编辑",
+            	"userNameError": "不能修改员工姓名"
             },
-            "userId": "员工Id",
+            "userId": "员工号",
             "userName": "员工姓名",
             "costMonth": "所属年月",
             "internalCost": "内部成本",
