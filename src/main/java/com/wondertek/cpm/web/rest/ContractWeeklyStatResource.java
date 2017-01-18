@@ -1,7 +1,9 @@
 package com.wondertek.cpm.web.rest;
 
-import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,21 +17,22 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.codahale.metrics.annotation.Timed;
+import com.wondertek.cpm.config.DateUtil;
+import com.wondertek.cpm.config.StringUtil;
 import com.wondertek.cpm.domain.ContractWeeklyStat;
+import com.wondertek.cpm.domain.vo.ChartReportDataVo;
+import com.wondertek.cpm.domain.vo.ChartReportVo;
+import com.wondertek.cpm.domain.vo.ContractWeeklyStatVo;
+import com.wondertek.cpm.domain.vo.LongValue;
 import com.wondertek.cpm.security.AuthoritiesConstants;
 import com.wondertek.cpm.service.ContractWeeklyStatService;
-import com.wondertek.cpm.web.rest.util.HeaderUtil;
 import com.wondertek.cpm.web.rest.util.PaginationUtil;
 
 import io.swagger.annotations.ApiParam;
@@ -47,50 +50,6 @@ public class ContractWeeklyStatResource {
     private ContractWeeklyStatService contractWeeklyStatService;
 
     /**
-     * POST  /contract-weekly-stats : Create a new contractWeeklyStat.
-     *
-     * @param contractWeeklyStat the contractWeeklyStat to create
-     * @return the ResponseEntity with status 201 (Created) and with body the new contractWeeklyStat, or with status 400 (Bad Request) if the contractWeeklyStat has already an ID
-     * @throws URISyntaxException if the Location URI syntax is incorrect
-     */
-    @PostMapping("/contract-weekly-stats")
-    @Timed
-    @Secured(AuthoritiesConstants.ROLE_STAT_CONTRACT)
-    public ResponseEntity<ContractWeeklyStat> createContractWeeklyStat(@RequestBody ContractWeeklyStat contractWeeklyStat) throws URISyntaxException {
-        log.debug("REST request to save ContractWeeklyStat : {}", contractWeeklyStat);
-        if (contractWeeklyStat.getId() != null) {
-            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("contractWeeklyStat", "idexists", "A new contractWeeklyStat cannot already have an ID")).body(null);
-        }
-        ContractWeeklyStat result = contractWeeklyStatService.save(contractWeeklyStat);
-        return ResponseEntity.created(new URI("/api/contract-weekly-stats/" + result.getId()))
-            .headers(HeaderUtil.createEntityCreationAlert("contractWeeklyStat", result.getId().toString()))
-            .body(result);
-    }
-
-    /**
-     * PUT  /contract-weekly-stats : Updates an existing contractWeeklyStat.
-     *
-     * @param contractWeeklyStat the contractWeeklyStat to update
-     * @return the ResponseEntity with status 200 (OK) and with body the updated contractWeeklyStat,
-     * or with status 400 (Bad Request) if the contractWeeklyStat is not valid,
-     * or with status 500 (Internal Server Error) if the contractWeeklyStat couldnt be updated
-     * @throws URISyntaxException if the Location URI syntax is incorrect
-     */
-    @PutMapping("/contract-weekly-stats")
-    @Timed
-    @Secured(AuthoritiesConstants.ROLE_STAT_CONTRACT)
-    public ResponseEntity<ContractWeeklyStat> updateContractWeeklyStat(@RequestBody ContractWeeklyStat contractWeeklyStat) throws URISyntaxException {
-        log.debug("REST request to update ContractWeeklyStat : {}", contractWeeklyStat);
-        if (contractWeeklyStat.getId() == null) {
-            return createContractWeeklyStat(contractWeeklyStat);
-        }
-        ContractWeeklyStat result = contractWeeklyStatService.save(contractWeeklyStat);
-        return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert("contractWeeklyStat", contractWeeklyStat.getId().toString()))
-            .body(result);
-    }
-
-    /**
      * GET  /contract-weekly-stats : get all the contractWeeklyStats.
      *
      * @param pageable the pagination information
@@ -100,14 +59,12 @@ public class ContractWeeklyStatResource {
     @GetMapping("/contract-weekly-stats")
     @Timed
     @Secured(AuthoritiesConstants.ROLE_STAT_CONTRACT)
-    public ResponseEntity<List<ContractWeeklyStat>> getAllContractWeeklyStats(
-    		@ApiParam(value="fromDate") @RequestParam(value="fromDate") String fromDate,
-    		@ApiParam(value="toDate") @RequestParam(value="toDate") String toDate,
-    		@ApiParam(value="statDate") @RequestParam(value="statDate") String statDate,
+    public ResponseEntity<List<ContractWeeklyStatVo>> getAllContractWeeklyStats(
+    		@ApiParam(value="contractId") @RequestParam(value="contractId") String contractId,
     		@ApiParam Pageable pageable)
         throws URISyntaxException {
         log.debug("REST request to get a page of ContractWeeklyStats");
-        Page<ContractWeeklyStat> page = contractWeeklyStatService.getStatPage(fromDate, toDate, statDate, pageable);
+        Page<ContractWeeklyStatVo> page = contractWeeklyStatService.getStatPage(contractId, pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/contract-weekly-stats");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
@@ -121,9 +78,9 @@ public class ContractWeeklyStatResource {
     @GetMapping("/contract-weekly-stats/{id}")
     @Timed
     @Secured(AuthoritiesConstants.ROLE_STAT_CONTRACT)
-    public ResponseEntity<ContractWeeklyStat> getContractWeeklyStat(@PathVariable Long id) {
+    public ResponseEntity<ContractWeeklyStatVo> getContractWeeklyStat(@PathVariable Long id) {
         log.debug("REST request to get ContractWeeklyStat : {}", id);
-        ContractWeeklyStat contractWeeklyStat = contractWeeklyStatService.findOne(id);
+        ContractWeeklyStatVo contractWeeklyStat = contractWeeklyStatService.findOne(id);
         return Optional.ofNullable(contractWeeklyStat)
             .map(result -> new ResponseEntity<>(
                 result,
@@ -131,22 +88,7 @@ public class ContractWeeklyStatResource {
             .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    /**
-     * DELETE  /contract-weekly-stats/:id : delete the "id" contractWeeklyStat.
-     *
-     * @param id the id of the contractWeeklyStat to delete
-     * @return the ResponseEntity with status 200 (OK)
-     */
-    @DeleteMapping("/contract-weekly-stats/{id}")
-    @Timed
-    @Secured(AuthoritiesConstants.ROLE_STAT_CONTRACT)
-    public ResponseEntity<Void> deleteContractWeeklyStat(@PathVariable Long id) {
-        log.debug("REST request to delete ContractWeeklyStat : {}", id);
-        contractWeeklyStatService.delete(id);
-        return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert("contractWeeklyStat", id.toString())).build();
-    }
-
-    /**
+   /**
      * SEARCH  /_search/contract-weekly-stats?query=:query : search for the contractWeeklyStat corresponding
      * to the query.
      *
@@ -165,6 +107,51 @@ public class ContractWeeklyStatResource {
         HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/contract-weekly-stats");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
-
+    
+    @GetMapping("/contract-weekly-stats/queryUserContract")
+    @Timed
+    @Secured(AuthoritiesConstants.ROLE_STAT_CONTRACT)
+	public ResponseEntity<List<LongValue>> queryUserContract() throws URISyntaxException {
+	    log.debug("REST request to queryUserContract");
+	    List<LongValue> list = contractWeeklyStatService.queryUserContract();
+	    return new ResponseEntity<>(list, null, HttpStatus.OK);
+	}
+    
+    @GetMapping("/contract-weekly-stats/queryChart")
+    @Timed
+    @Secured(AuthoritiesConstants.ROLE_STAT_CONTRACT)
+    public ChartReportVo getChartReport(@ApiParam(value="fromDate") @RequestParam(value="fromDate") String fromDate,
+    		@ApiParam(value="toDate") @RequestParam(value="toDate") String toDate,
+    		@ApiParam(value="id") @RequestParam(value="id") Long statId){
+    	ChartReportVo chartReportVo = new ChartReportVo();
+    	ContractWeeklyStatVo contractWeeklyStatvo = contractWeeklyStatService.findOne(statId);
+    	Long contractId = contractWeeklyStatvo.getContractId();
+    	chartReportVo.setTitle(contractWeeklyStatvo.getSerialNum());
+    	if(StringUtil.isNullStr(toDate)){
+    		toDate = contractWeeklyStatvo.getStatWeek().toString();
+    	}else{
+    		toDate = DateUtil.getWholeWeekByDate(DateUtil.parseDate("yyyyMMdd", toDate))[6];
+    	}
+    	Date lDay = DateUtil.parseDate("yyyyMMdd", toDate);
+    	if(StringUtil.isNullStr(fromDate)){
+    		fromDate = DateUtil.formatDate("yyyyMMdd", DateUtil.addDayNum(-6*7, lDay));
+    	}else{
+    		fromDate = DateUtil.getWholeWeekByDate(DateUtil.parseDate("yyyyMMdd", fromDate))[6];
+    	}
+    	Date fDay = DateUtil.parseDate("yyyyMMdd", fromDate);
+    	Long sevenDay = 7*24*60*60*1000L;
+    	Long temp = fDay.getTime();
+    	List<String> category = new ArrayList<String>();
+    	while(temp <= lDay.getTime()){
+    		category.add(DateUtil.formatDate("yyyy-MM-dd", new Date(temp)));
+    		temp += sevenDay;
+    	}
+    	chartReportVo.setCategory(category);
+    	List<ChartReportDataVo> datas = contractWeeklyStatService.getChartData(fDay, lDay, contractId);
+    	chartReportVo.setSeries(datas);
+    	List<String> legend = new ArrayList<String>(Arrays.asList(new String[]{"合同回款总额","所有成本","合同毛利","销售人工成本","销售报销成本","咨询人工成本","咨询报销成本","硬件采购成本","外部软件采购成本","内容软件采购成本","项目人工成本","项目报销成本"}));
+    	chartReportVo.setLegend(legend);
+    	return chartReportVo;
+    }
 
 }

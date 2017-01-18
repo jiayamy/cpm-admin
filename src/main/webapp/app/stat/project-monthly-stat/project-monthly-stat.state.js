@@ -106,7 +106,7 @@
         })
         .state('project-monthly-stat-detail.chart', {
             parent: 'project-monthly-stat',
-            url: '/chart/{id}/queryChart?fromDate&toDate&projectId',
+            url: '/chart/{id}/queryChart?fromDate&toDate',
             data: {
                 authorities: ['ROLE_STAT_PROJECT'],
                 pageTitle: 'cpmApp.projectInfo.detail.title'

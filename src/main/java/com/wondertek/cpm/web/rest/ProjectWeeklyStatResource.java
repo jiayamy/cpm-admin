@@ -34,6 +34,8 @@ import com.wondertek.cpm.config.StringUtil;
 import com.wondertek.cpm.domain.ProjectWeeklyStat;
 import com.wondertek.cpm.domain.vo.ChartReportDataVo;
 import com.wondertek.cpm.domain.vo.ChartReportVo;
+import com.wondertek.cpm.domain.vo.LongValue;
+import com.wondertek.cpm.domain.vo.ProjectWeeklyStatVo;
 import com.wondertek.cpm.security.AuthoritiesConstants;
 import com.wondertek.cpm.service.ProjectWeeklyStatService;
 import com.wondertek.cpm.web.rest.util.HeaderUtil;
@@ -107,14 +109,12 @@ public class ProjectWeeklyStatResource {
     @GetMapping("/project-weekly-stats")
     @Timed
     @Secured(AuthoritiesConstants.ROLE_STAT_PROJECT)
-    public ResponseEntity<List<ProjectWeeklyStat>> getAllProjectWeeklyStats(
-    		@ApiParam(value="fromDate") @RequestParam(value="fromDate") String fromDate,
-    		@ApiParam(value="toDate") @RequestParam(value="toDate") String toDate,
-    		@ApiParam(value="statDate") @RequestParam(value="statDate") String statDate,
+    public ResponseEntity<List<ProjectWeeklyStatVo>> getAllProjectWeeklyStats(
+    		@ApiParam(value="projectId") @RequestParam(value="projectId") String projectId,
     		@ApiParam Pageable pageable)
         throws URISyntaxException {
         log.debug("REST request to get a page of ProjectWeeklyStats");
-        Page<ProjectWeeklyStat> page = projectWeeklyStatService.getStatPage(fromDate, toDate, statDate, pageable);
+        Page<ProjectWeeklyStatVo> page = projectWeeklyStatService.getStatPage(projectId, pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/project-weekly-stats");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
@@ -128,9 +128,9 @@ public class ProjectWeeklyStatResource {
     @GetMapping("/project-weekly-stats/{id}")
     @Timed
     @Secured(AuthoritiesConstants.ROLE_STAT_PROJECT)
-    public ResponseEntity<ProjectWeeklyStat> getProjectWeeklyStat(@PathVariable Long id) {
+    public ResponseEntity<ProjectWeeklyStatVo> getProjectWeeklyStat(@PathVariable Long id) {
         log.debug("REST request to get ProjectWeeklyStat : {}", id);
-        ProjectWeeklyStat projectWeeklyStat = projectWeeklyStatService.findOne(id);
+        ProjectWeeklyStatVo projectWeeklyStat = projectWeeklyStatService.findOne(id);
         return Optional.ofNullable(projectWeeklyStat)
             .map(result -> new ResponseEntity<>(
                 result,
@@ -172,45 +172,49 @@ public class ProjectWeeklyStatResource {
         HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/project-weekly-stats");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
-
+    
+    @GetMapping("/project-weekly-stats/queryUserProject")
+    @Timed
+    @Secured(AuthoritiesConstants.ROLE_STAT_PROJECT)
+	public ResponseEntity<List<LongValue>> queryUserProject() throws URISyntaxException {
+	    log.debug("REST request to queryUserProject");
+	    List<LongValue> list = projectWeeklyStatService.queryUserProject();
+	    return new ResponseEntity<>(list, null, HttpStatus.OK);
+	}
+    
     @GetMapping("/project-weekly-stats/queryChart")
     @Timed
     @Secured(AuthoritiesConstants.ROLE_STAT_PROJECT)
     public ChartReportVo getChartReport(@ApiParam(value="fromDate") @RequestParam(value="fromDate") String fromDate,
     		@ApiParam(value="toDate") @RequestParam(value="toDate") String toDate,
-    		@ApiParam(value="projectId") @RequestParam(value="projectId", required = true) Long projectId){
+    		@ApiParam(value="id") @RequestParam(value="id", required = true) Long statId){
     	ChartReportVo chartReportVo = new ChartReportVo();
-    	chartReportVo.setTitle("title");
-    	String[] dates = DateUtil.getWholeWeekByDate(new Date());
-    	if(StringUtil.isNullStr(fromDate)){
-    		fromDate = dates[0];
-    	}
+    	ProjectWeeklyStatVo projectWeeklyStatVo = projectWeeklyStatService.findOne(statId);
+    	Long projectId = projectWeeklyStatVo.getProjectId();
+    	chartReportVo.setTitle(projectWeeklyStatVo.getSerialNum());
     	if(StringUtil.isNullStr(toDate)){
-    		toDate = dates[6];
+    		toDate = projectWeeklyStatVo.getStatWeek().toString();
+    	}else{
+    		toDate = DateUtil.getWholeWeekByDate(DateUtil.parseDate("yyyyMMdd", toDate))[6];
     	}
+    	Date lDay = DateUtil.parseDate("yyyyMMdd", toDate);
+    	if(StringUtil.isNullStr(fromDate)){
+    		fromDate = DateUtil.formatDate("yyyyMMdd", DateUtil.addDayNum(-6*7, lDay));
+    	}else{
+    		fromDate = DateUtil.getWholeWeekByDate(DateUtil.parseDate("yyyyMMdd", fromDate))[6];
+    	}
+    	Date fDay = DateUtil.parseDate("yyyyMMdd", fromDate);
     	List<String> legend = new ArrayList<String>(Arrays.asList(new String[]{"人工成本","报销成本"}));
     	chartReportVo.setLegend(legend);
-    	Date fDay = DateUtil.parseDate("yyyyMMdd", fromDate);
-    	Date lDay = DateUtil.parseDate("yyyyMMdd", toDate);
-    	Long oneDay = 24*60*60*1000L;
+    	Long sevenDay = 7*24*60*60*1000L;
     	Long temp = fDay.getTime();
     	List<String> category = new ArrayList<String>();
     	while(temp <= lDay.getTime()){
     		category.add(DateUtil.formatDate("yyyy-MM-dd", new Date(temp)));
-    		temp += oneDay;
+    		temp += sevenDay;
     	}
     	chartReportVo.setCategory(category);
-    	List<ChartReportDataVo> datas = new ArrayList<>();
-    	ChartReportDataVo data1 = new ChartReportDataVo();
-    	ChartReportDataVo data2 = new ChartReportDataVo();
-    	data1.setName("人工成本");
-    	data1.setType("line");
-    	data1.setData(projectWeeklyStatService.getHumanCost(fDay, lDay, projectId));
-    	data2.setName("报销成本");
-    	data2.setType("line");
-    	data2.setData(projectWeeklyStatService.getPayment(fDay, lDay, projectId));
-    	datas.add(data1);
-    	datas.add(data2);
+    	List<ChartReportDataVo> datas = projectWeeklyStatService.getChartData(fDay, lDay, projectId);
     	chartReportVo.setSeries(datas);
     	return chartReportVo;
     }

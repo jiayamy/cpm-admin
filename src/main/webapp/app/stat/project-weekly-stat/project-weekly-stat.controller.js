@@ -5,9 +5,9 @@
         .module('cpmApp')
         .controller('ProjectWeeklyStatController', ProjectWeeklyStatController);
 
-    ProjectWeeklyStatController.$inject = ['$scope', '$state', 'DateUtils','ProjectWeeklyStat', 'ProjectWeeklyStatSearch', 'ParseLinks', 'AlertService', 'paginationConstants', 'pagingParams'];
+    ProjectWeeklyStatController.$inject = ['$scope', '$state', 'DateUtils','ProjectWeeklyStat', 'ParseLinks', 'AlertService', 'paginationConstants', 'pagingParams'];
 
-    function ProjectWeeklyStatController ($scope, $state,DateUtils,  ProjectWeeklyStat, ProjectWeeklyStatSearch, ParseLinks, AlertService, paginationConstants, pagingParams) {
+    function ProjectWeeklyStatController ($scope, $state,DateUtils,  ProjectWeeklyStat, ParseLinks, AlertService, paginationConstants, pagingParams) {
     	var vm = this;
 
         vm.loadPage = loadPage;
@@ -16,54 +16,53 @@
         vm.transition = transition;
         vm.itemsPerPage = 10;
         vm.clear = clear;
-        vm.search = search;
         vm.loadAll = loadAll;
+        vm.search = search;
         vm.searchQuery = {};
-        var fromDate = pagingParams.fromDate;
-        var toDate = pagingParams.toDate;
-        var statDate = pagingParams.statDate;
-        if(fromDate && fromDate.length == 8){
-        	fromDate = new Date(fromDate.substring(0,4),parseInt(fromDate.substring(4,6))-1,fromDate.substring(6,8));
-        }
-        if(toDate && toDate.length == 8){
-        	toDate = new Date(toDate.substring(0,4),parseInt(toDate.substring(4,6))-1,toDate.substring(6,8));
-        }
-        if(statDate && statDate.length == 8){
-        	statDate = new Date(statDate.substring(0,4),parseInt(statDate.substring(4,6))-1,statDate.substring(6,8));
-        }
-        vm.searchQuery.fromDate= fromDate;
-        vm.searchQuery.toDate = toDate;
-        vm.searchQuery.statDate = statDate;
-        if (!vm.searchQuery.fromDate && !vm.searchQuery.toDate && !vm.searchQuery.statDate){
+        vm.searchQuery.projectId= pagingParams.projectId;
+        vm.projectInfos = [];
+        if (!vm.searchQuery.projectId){
         	vm.haveSearch = null;
         }else{
         	vm.haveSearch = true;
         }
+        loadProject();
+        function loadProject(){
+        	ProjectWeeklyStat.queryUserProject({
+        		
+        	},
+        	function(data, headers){
+        		vm.projectInfos = data;
+        		if(vm.projectInfos && vm.projectInfos.length > 0){
+        			for(var i = 0; i < vm.projectInfos.length; i++){
+        				if(pagingParams.projectId == vm.projectInfos[i].key){
+        					vm.searchQuery.projectId = vm.projectInfos[i];
+        				}
+        			}
+        		}
+        	},
+        	function(error){
+        		AlertService.error(error.data.message);
+        	});
+        }
+        
         loadAll();
 
         function loadAll () {
-        	if(pagingParams.fromDate == undefined){
-        		pagingParams.fromDate = "";
-        	}
-        	if(pagingParams.toDate == undefined){
-        		pagingParams.toDate = "";
-        	}
-        	if(pagingParams.statDate == undefined){
-        		pagingParams.statDate = "";
+        	if(pagingParams.projectId == undefined){
+        		pagingParams.projectId = "";
         	}
         	ProjectWeeklyStat.query({
                 page: pagingParams.page - 1,
                 size: vm.itemsPerPage,
                 sort: sort(),
-                fromDate : pagingParams.fromDate,
-                toDate : pagingParams.toDate,
-                statDate : pagingParams.statDate
+                projectId : pagingParams.projectId
             }, onSuccess, onError);
            
             function sort() {
                 var result = [vm.predicate + ',' + (vm.reverse ? 'asc' : 'desc')];
-                if (vm.predicate !== 'id') {
-                    result.push('id');
+                if (vm.predicate !== 'm.id') {
+                    result.push('m.id');
                 }
                 return result;
             }
@@ -88,40 +87,30 @@
             $state.transitionTo($state.$current, {
                 page: vm.page,
                 sort: vm.predicate + ',' + (vm.reverse ? 'asc' : 'desc'),
-                fromDate: DateUtils.convertLocalDateToFormat(vm.searchQuery.fromDate,"yyyyMMdd"),
-                toDate: DateUtils.convertLocalDateToFormat(vm.searchQuery.toDate,"yyyyMMdd"),
-                statDate: DateUtils.convertLocalDateToFormat(vm.searchQuery.statDate,"yyyyMMdd"),
+                projectId:vm.searchQuery.projectId ? vm.searchQuery.projectId.key : ""
             });
         }
 
-        function search(searchQuery) {
-        	if (!vm.searchQuery.workDay && !vm.searchQuery.toDate && !vm.searchQuery.statDate){
-                return vm.clear();
-            }
-            vm.links = null;
-            vm.page = 1;
-            vm.predicate = 'id';
-            vm.reverse = false;
-            vm.haveSearch = true;
-            vm.transition();
-        }
-
+        
         function clear() {
             vm.links = null;
             vm.page = 1;
-            vm.predicate = 'id';
+            vm.predicate = 'm.id';
             vm.reverse = true;
             vm.searchQuery = {};
             vm.haveSearch = null;
             vm.transition();
         }
-        vm.datePickerOpenStatus = {};
-        vm.openCalendar = openCalendar;
-        vm.datePickerOpenStatus.fromDate = false;
-        vm.datePickerOpenStatus.toDate = false;
-        vm.datePickerOpenStatus.statDate = false;
-        function openCalendar (date) {
-            vm.datePickerOpenStatus[date] = true;
+        function search(searchQuery) {
+        	if (!vm.searchQuery.projectId){
+                return vm.clear();
+            }
+            vm.links = null;
+            vm.page = 1;
+            vm.predicate = 'm.id';
+            vm.reverse = false;
+            vm.haveSearch = true;
+            vm.transition();
         }
     }
 })();

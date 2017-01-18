@@ -105,7 +105,7 @@
             }
         }).state('contract-monthly-stat-detail.chart', {
             parent: 'contract-monthly-stat',
-            url: '/chart/{id}/queryChart?fromDate&toDate&contractId',
+            url: '/chart/{id}/queryChart?fromDate&toDate',
             data: {
                 authorities: ['ROLE_STAT_CONTRACT'],
                 pageTitle: 'cpmApp.contractInfo.detail.title'
@@ -119,7 +119,8 @@
             },
             params: {
                 fromDate: null,
-                toDate : null
+                toDate : null,
+                id : null
             },
             resolve: {
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
@@ -131,7 +132,7 @@
                     return {
                         fromDate: $stateParams.fromDate,
                         toDate : $stateParams.toDate,
-                        contractId : $stateParams.id
+                        id : $stateParams.id
                     };
                 }],
                 previousState: ["$state", function ($state) {
