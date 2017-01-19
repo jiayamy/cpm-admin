@@ -28,6 +28,9 @@ public class ContractBudget implements Serializable {
     public static final int PURCHASETYPE_SOFTWARE = 2;
     public static final int PURCHASETYPE_SERVICE = 3;
     
+    public static final int STATUS_VALIDABLE = 1;
+    public static final int STATUS_DELETED = 2;
+    
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;

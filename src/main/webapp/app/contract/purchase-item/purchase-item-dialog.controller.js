@@ -62,12 +62,11 @@
             purchaseItem.id = vm.purchaseItem.id;
             
             purchaseItem.contractId = vm.purchaseItem.contractId;
-            purchaseItem.contractName = vm.purchaseItem.contractName;
-            purchaseItem.contractNum = vm.purchaseItem.contractNum;
-            purchaseItem.contractName = vm.purchaseItem.contractName;
+//            purchaseItem.contractName = vm.purchaseItem.contractName;
+//            purchaseItem.contractNum = vm.purchaseItem.contractNum;
             
             purchaseItem.budgetId = vm.purchaseItem.budgetId;
-            purchaseItem.budgetName = vm.purchaseItem.budgetName;
+//            purchaseItem.budgetName = vm.purchaseItem.budgetName;
             
             purchaseItem.name = vm.purchaseItem.name;
             purchaseItem.quantity = vm.purchaseItem.quantity;
@@ -90,7 +89,9 @@
             	purchaseItem.source = purchaseItem.source.key;
 			}
       
-            PurchaseItem.update(purchaseItem, onSaveSuccess);
+            PurchaseItem.update(purchaseItem, onSaveSuccess, function(error){
+	        		vm.isSaving = false;
+	        	});
         }
 
         function onSaveSuccess (result) {

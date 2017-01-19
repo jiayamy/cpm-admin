@@ -27,15 +27,15 @@
 	     	</div>
 	     	<div class="form-group">
 	     		<div class="col-sm-6">
-					<label class="control-label" data-translate="cpmApp.contractBudget.budgetName" for="field_budgetName">Budget Name</label>
-	         		<input type="text" class="form-control" name="name" id="field_budgetName"
-	                 	ng-model="vm.contractBudget.budgetName" ng-required="true" ng-minlength="1" ng-maxlength="100"
+					<label class="control-label" data-translate="cpmApp.contractBudget.name" for="field_name">Name</label>
+	         		<input type="text" class="form-control" name="name" id="field_name"
+	                 	ng-model="vm.contractBudget.name" ng-required="true" ng-minlength="1" ng-maxlength="100"
 	                  	/>
 	             	<div ng-show="myForm.name.$dirty&&myForm.name.$error.minlength" class="alert alert-danger help-block"> 
-                    	合同名称必填
+                    	采购单名称必填
                 	</div>
                 	<div ng-show="myForm.name.$dirty&&myForm.name.$error.maxlength" class="alert alert-danger help-block"> 
-                    	合同名称不能大于100
+                    	采购单名称不能大于100
                 	</div>
 				</div>
 				<div class="col-sm-6">
@@ -48,9 +48,9 @@
 	     	</div>
 	     	<div class="form-group">
 	     		<div class="col-sm-6">
-	          		<label class="control-label" data-translate="cpmApp.contractBudget.userName" for="field_pm">User name</label>
+	          		<label class="control-label" data-translate="cpmApp.contractBudget.userName" for="field_userName">User name</label>
 	          		<div class="input-group">
-		          		<input type="text" class="form-control" name="pm" id="field_pm"
+		          		<input type="text" class="form-control" name="userName" id="field_userName"
 		                  	ng-model="vm.contractBudget.userName" readonly ng-required="true" ng-minlength="1"
 	                   	/>
 	                   	<span class="input-group-btn">
@@ -64,12 +64,6 @@
 	                  	ng-model="vm.contractBudget.dept" readonly ng-required="true" ng-minlength="1"
 	                   	/>
 				</div>
-	     	</div>
-	     	<div class="form-group">
-				<div class="col-sm-6">
-	     		</div>
-	     	<div class="form-group">
-	     		
 	     	</div>
 		</div>
 	</div>

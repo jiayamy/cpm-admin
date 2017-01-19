@@ -13,9 +13,9 @@
         vm.userCost = entity;
         vm.previousState = previousState.name;
 
-        var unsubscribe = $rootScope.$on('cpmApp:userCostUpdate', function(event, result) {
-            vm.userCost = result;
-        });
-        $scope.$on('$destroy', unsubscribe);
+//        var unsubscribe = $rootScope.$on('cpmApp:userCostUpdate', function(event, result) {
+//            vm.userCost = result;
+//        });
+//        $scope.$on('$destroy', unsubscribe);
     }
 })();

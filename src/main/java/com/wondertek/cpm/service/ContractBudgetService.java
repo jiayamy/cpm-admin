@@ -121,8 +121,8 @@ public class ContractBudgetService {
     }
 
 	public Page<ContractBudgetVo> searchPage(String name,
-			String serialNum,String budgetName,Pageable pageable) {
-		Page<ContractBudgetVo> page = contractBudgetDao.getPageByParams(name,serialNum,budgetName,pageable);
+			String serialNum,String contractName,Pageable pageable) {
+		Page<ContractBudgetVo> page = contractBudgetDao.getPageByParams(name,serialNum,contractName,pageable);
 		return page;
 	}
 
@@ -141,8 +141,8 @@ public class ContractBudgetService {
 		return returnList;
 	}
 
-	public Boolean checkByBudget(ContractBudgetVo contractBudgetVo) {
-		return contractBudgetDao.checkBudgetExit(contractBudgetVo);
+	public Boolean checkByBudget(ContractBudget contractBudget) {
+		return contractBudgetDao.checkBudgetExit(contractBudget);
 	}
 
 }

@@ -53,8 +53,7 @@ public class UserCostDaoImpl extends GenericDaoImpl<UserCost, Long> implements U
 			whereHql.append(" and status = ?");
 			params.add(userCost.getStatus());
 		}
-		System.out.println("55555555555555-whereHql:"+whereHql);
-		System.out.println("5555555555555-params:"+params);
+		
 		StringBuffer orderHql = new StringBuffer();
 		if(pageable.getSort() != null){
     		for (Order order : pageable.getSort()) {

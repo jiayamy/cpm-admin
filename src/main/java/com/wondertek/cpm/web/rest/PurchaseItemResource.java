@@ -85,36 +85,38 @@ public class PurchaseItemResource {
     @Secured(AuthoritiesConstants.ROLE_CONTRACT_PURCHASE)
     public ResponseEntity<PurchaseItem> updatePurchaseItem(@RequestBody PurchaseItem purchaseItem) throws URISyntaxException {
         log.debug("REST request to update PurchaseItem : {}", purchaseItem);
-        
+        Boolean isNew = purchaseItem.getId() == null;
+        if (purchaseItem.getBudgetId() == null || purchaseItem.getContractId() == null
+        		|| StringUtil.isNullStr(purchaseItem.getName()) || purchaseItem.getSource() == null
+        		|| purchaseItem.getType() == null || purchaseItem.getPrice() == null) {
+			
+		}
         PurchaseItem oldPurchaseItem = this.purchaseItemService.findOneById(purchaseItem.getId());
         
-        
-        if (oldPurchaseItem == null) {
-        	oldPurchaseItem.setBudgetId(purchaseItem.getBudgetId());
-            oldPurchaseItem.setContractId(purchaseItem.getContractId());
-        	oldPurchaseItem.setCreateTime(ZonedDateTime.now());
-            oldPurchaseItem.setCreator(SecurityUtils.getCurrentUserLogin());
-            oldPurchaseItem.setUpdator(SecurityUtils.getCurrentUserLogin());
-            oldPurchaseItem.setUpdateTime(ZonedDateTime.now());
+        if (purchaseItem.getId() == null) {
+        	purchaseItem.setCreateTime(ZonedDateTime.now());
+        	purchaseItem.setCreator(SecurityUtils.getCurrentUserLogin());
+        	purchaseItem.setUpdator(SecurityUtils.getCurrentUserLogin());
+        	purchaseItem.setUpdateTime(ZonedDateTime.now());
+        	purchaseItem.setStatus(1);
+            PurchaseItem result = purchaseItemService.save(purchaseItem);
 		}else {
-			oldPurchaseItem.setId(purchaseItem.getId());
 			oldPurchaseItem.setUpdator(SecurityUtils.getCurrentUserLogin());
             oldPurchaseItem.setUpdateTime(ZonedDateTime.now());
+            oldPurchaseItem.setName(purchaseItem.getName());
+            oldPurchaseItem.setPrice(purchaseItem.getPrice());
+            oldPurchaseItem.setPurchaser(purchaseItem.getPurchaser());
+            oldPurchaseItem.setQuantity(purchaseItem.getQuantity());
+            oldPurchaseItem.setSource(purchaseItem.getSource());
+            oldPurchaseItem.setStatus(1);
+            oldPurchaseItem.setType(purchaseItem.getType());
+            oldPurchaseItem.setTotalAmount(purchaseItem.getTotalAmount());
+            oldPurchaseItem.setUnits(purchaseItem.getUnits());
+            PurchaseItem result = purchaseItemService.save(oldPurchaseItem);
 		}
         
-        oldPurchaseItem.setName(purchaseItem.getName());
-        oldPurchaseItem.setPrice(purchaseItem.getPrice());
-        oldPurchaseItem.setPurchaser(purchaseItem.getPurchaser());
-        oldPurchaseItem.setQuantity(purchaseItem.getQuantity());
-        oldPurchaseItem.setSource(purchaseItem.getSource());
-        oldPurchaseItem.setStatus(1);
-        oldPurchaseItem.setType(purchaseItem.getType());
-        oldPurchaseItem.setTotalAmount(purchaseItem.getTotalAmount());
-        oldPurchaseItem.setUnits(purchaseItem.getUnits());
-        PurchaseItem result = purchaseItemService.save(oldPurchaseItem);
-        return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert("purchaseItem", purchaseItem.getId().toString()))
-            .body(result);
+        
+        return new ResponseEntity<>(purchaseItem,HttpStatus.OK);
     }
 
     /**
