@@ -83,31 +83,6 @@
                 }]
             }
         })
-        .state('work-area-detail.edit', {
-            parent: 'work-area-detail',
-            url: '/edit',
-            data: {
-                authorities: ['ROLE_INFO_BASIC']
-            },
-            onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
-                $uibModal.open({
-                    templateUrl: 'app/info/work-area/work-area-dialog.html',
-                    controller: 'WorkAreaDialogController',
-                    controllerAs: 'vm',
-                    backdrop: 'static',
-                    size: 'lg',
-                    resolve: {
-                        entity: ['WorkArea', function(WorkArea) {
-                            return WorkArea.get({id : $stateParams.id}).$promise;
-                        }]
-                    }
-                }).result.then(function() {
-                    $state.go('^', {}, { reload: false });
-                }, function() {
-                    $state.go('^');
-                });
-            }]
-        })
         .state('work-area.new', {
             parent: 'work-area',
             url: '/new',
@@ -133,31 +108,6 @@
                     $state.go('work-area', null, { reload: 'work-area' });
                 }, function() {
                     $state.go('work-area');
-                });
-            }]
-        })
-        .state('work-area.edit', {
-            parent: 'work-area',
-            url: '/edit/{id}',
-            data: {
-                authorities: ['ROLE_INFO_BASIC']
-            },
-            onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
-                $uibModal.open({
-                    templateUrl: 'app/info/work-area/work-area-dialog.html',
-                    controller: 'WorkAreaDialogController',
-                    controllerAs: 'vm',
-                    backdrop: 'static',
-                    size: 'lg',
-                    resolve: {
-                        entity: ['WorkArea', function(WorkArea) {
-                            return WorkArea.get({id : $stateParams.id}).$promise;
-                        }]
-                    }
-                }).result.then(function() {
-                    $state.go('work-area', null, { reload: 'work-area' });
-                }, function() {
-                    $state.go('^');
                 });
             }]
         })

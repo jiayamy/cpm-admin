@@ -67,28 +67,28 @@ public class WorkAreaResource {
             .body(result);
     }
 
-    /**
-     * PUT  /work-areas : Updates an existing workArea.
-     *
-     * @param workArea the workArea to update
-     * @return the ResponseEntity with status 200 (OK) and with body the updated workArea,
-     * or with status 400 (Bad Request) if the workArea is not valid,
-     * or with status 500 (Internal Server Error) if the workArea couldnt be updated
-     * @throws URISyntaxException if the Location URI syntax is incorrect
-     */
-    @PutMapping("/work-areas")
-    @Timed
-    @Secured(AuthoritiesConstants.ROLE_INFO_BASIC)
-    public ResponseEntity<WorkArea> updateWorkArea(@RequestBody WorkArea workArea) throws URISyntaxException {
-        log.debug("REST request to update WorkArea : {}", workArea);
-        if (workArea.getId() == null) {
-            return createWorkArea(workArea);
-        }
-        WorkArea result = workAreaService.save(workArea);
-        return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert("workArea", workArea.getId().toString()))
-            .body(result);
-    }
+//    /**
+//     * PUT  /work-areas : Updates an existing workArea.
+//     *
+//     * @param workArea the workArea to update
+//     * @return the ResponseEntity with status 200 (OK) and with body the updated workArea,
+//     * or with status 400 (Bad Request) if the workArea is not valid,
+//     * or with status 500 (Internal Server Error) if the workArea couldnt be updated
+//     * @throws URISyntaxException if the Location URI syntax is incorrect
+//     */
+//    @PutMapping("/work-areas")
+//    @Timed
+//    @Secured(AuthoritiesConstants.ROLE_INFO_BASIC)
+//    public ResponseEntity<WorkArea> updateWorkArea(@RequestBody WorkArea workArea) throws URISyntaxException {
+//        log.debug("REST request to update WorkArea : {}", workArea);
+//        if (workArea.getId() == null) {
+//            return createWorkArea(workArea);
+//        }
+//        WorkArea result = workAreaService.save(workArea);
+//        return ResponseEntity.ok()
+//            .headers(HeaderUtil.createEntityUpdateAlert("workArea", workArea.getId().toString()))
+//            .body(result);
+//    }
 
     /**
      * GET  /work-areas : get all the workAreas.
@@ -138,7 +138,7 @@ public class WorkAreaResource {
     @Secured(AuthoritiesConstants.ROLE_INFO_BASIC)
     public ResponseEntity<Void> deleteWorkArea(@PathVariable Long id) {
         log.debug("REST request to delete WorkArea : {}", id);
-//        workAreaService.delete(id);
+        workAreaService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert("workArea", id.toString())).build();
     }
 
