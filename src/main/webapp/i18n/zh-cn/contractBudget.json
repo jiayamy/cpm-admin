@@ -6,14 +6,23 @@
                 "createLabel": "新增",
                 "createOrEditLabel": "内部采购单信息"
             },
-            "created": "A new Contract Budget is created with identifier {{ param }}",
-            "updated": "A Contract Budget is updated with identifier {{ param }}",
-            "deleted": "A Contract Budget is deleted with identifier {{ param }}",
+            "created": "采购单新建成功",
+            "updated": "更新成功",
+            "deleted": "删除成功",
             "delete": {
                 "question": "确定删除该合同预算记录?"
             },
             "detail": {
                 "title": "合同预算详情"
+            },
+            "save": {
+            	"requiedError": "缺少必须参数",
+            	"idNone": "id不存在",
+            	"contractIdError": "合同id不匹配",
+            	"statue2Error": "采购单已删除",
+            	"projectError1": "项目创建错误",
+            	"projectError2": "项目创建错误",
+            	"projectError3": "构建项目的采购单不能修改实施者"
             },
             "contractId": "合同ID",
             "type": "预算类型",

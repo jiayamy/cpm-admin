@@ -24,7 +24,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.codahale.metrics.annotation.Timed;
-import com.wondertek.cpm.CpmConstants;
 import com.wondertek.cpm.config.StringUtil;
 import com.wondertek.cpm.domain.ContractBudget;
 import com.wondertek.cpm.domain.ContractInfo;
@@ -73,10 +72,10 @@ public class ContractBudgetResource {
         log.debug("REST request to update ContractBudget : {}", contractBudget);
         Boolean isNew = contractBudget.getId() == null;
         //检验参数
-        if (contractBudget.getContractId() == null || contractBudget.getType() == null || contractBudget.getUserId() == null
+        if (contractBudget.getContractId() == null || contractBudget.getUserId() == null
         		|| StringUtil.isNullStr(contractBudget.getUserName()) || contractBudget.getDeptId() == null || StringUtil.isNullStr(contractBudget.getDept())
         		|| contractBudget.getPurchaseType() == null || contractBudget.getBudgetTotal() == null || contractBudget.getBudgetTotal() < 0 || StringUtil.isNullStr(contractBudget.getName())) {
-        	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.purchaseItem.save.requiedError", "")).body(null);
+        	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.contractBudget.save.requiedError", "")).body(null);
 		}
         Boolean flag = Boolean.FALSE;
         String updator = SecurityUtils.getCurrentUserLogin();
@@ -86,28 +85,50 @@ public class ContractBudgetResource {
         	if(oldContractBudget == null){
         		return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.contractBudget.save.idNone", "")).body(null);
         	}else if(oldContractBudget.getContractId() != contractBudget.getContractId().longValue()){
-        		return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.contractBudget.save.projectIdError", "")).body(null);
+        		return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.contractBudget.save.contractIdError", "")).body(null);
         	}else if(oldContractBudget.getStatus() == ContractBudget.STATUS_DELETED){
         		return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.contractBudget.save.statue2Error", "")).body(null);
         	}
-        	//是否构建项目
-        	flag = contractBudgetService.checkByBudget(contractBudget);
-        	//构建项目
-        	if (flag) {
-        		contractBudget.setUpdateTime(updateTime);
-        		contractBudget.setUpdator(updator);
-        		contractBudget.setStatus(oldContractBudget.getStatus());
-        		contractBudget.setType(oldContractBudget.getType());
-        		contractBudgetService.save(contractBudget);
-        		return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert("cpmApp.contractBudget.save.projectHasDone", contractBudget.getName())).body(isNew);
+        	if(oldContractBudget.getPurchaseType() == ContractBudget.PURCHASETYPE_SERVICE && oldContractBudget.getPurchaseType() != contractBudget.getPurchaseType()){
+        		//是否构建项目
+        		flag = contractBudgetService.checkByBudget(contractBudget);
+        		//构建项目
+        		if (flag) {
+        			return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.contractBudget.save.projectError1", "")).body(null);
+        		}
+        	}else if (oldContractBudget.getPurchaseType() != ContractBudget.PURCHASETYPE_SERVICE) {
+        		//是否构建项目
+        		flag = contractBudgetService.checkByBudget(contractBudget);
+        		//构建项目
+        		if (flag) {
+        			return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.contractBudget.save.projectError2", "")).body(null);
+        		}
+			}else if (oldContractBudget.getPurchaseType() == ContractBudget.PURCHASETYPE_SERVICE && oldContractBudget.getPurchaseType() == contractBudget.getPurchaseType()) {
+				//是否构建项目
+        		flag = contractBudgetService.checkByBudget(contractBudget);
+        		//构建项目
+        		if (flag) {
+        			if (!contractBudget.getUserName().equals(oldContractBudget.getUserName()) || !contractBudget.getDept().equals(oldContractBudget.getDept()) 
+        					|| contractBudget.getUserId() != oldContractBudget.getUserId() || contractBudget.getDeptId() != oldContractBudget.getDeptId()
+        					|| contractBudget.getContractId() != oldContractBudget.getContractId()) {
+        				return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.contractBudget.save.projectError3", "")).body(null);
+        			}
+        			contractBudget.setUserId(oldContractBudget.getUserId());
+        			contractBudget.setUserName(oldContractBudget.getUserName());
+        			contractBudget.setDeptId(oldContractBudget.getDeptId());
+        			contractBudget.setDept(oldContractBudget.getDept());
+        			contractBudget.setContractId(oldContractBudget.getContractId());
+        		}
 			}
         	contractBudget.setCreateTime(oldContractBudget.getCreateTime());
         	contractBudget.setCreator(oldContractBudget.getCreator());
         	contractBudget.setStatus(oldContractBudget.getStatus());
-    		contractBudget.setType(oldContractBudget.getType());
+        	contractBudget.setType(oldContractBudget.getType());
 		}else {
 			contractBudget.setCreateTime(updateTime);
     		contractBudget.setCreator(updator);
+    		contractBudget.setType(ContractBudget.TYPE_SALE);
+    		contractBudget.setStatus(ContractBudget.STATUS_VALIDABLE);
 		}
         contractBudget.setUpdateTime(updateTime);
 		contractBudget.setUpdator(updator);
@@ -170,7 +191,7 @@ public class ContractBudgetResource {
         log.debug("REST request to delete ContractBudget : {}", id);
         ContractBudget contractBudget = contractBudgetService.findOne(id);
         if (contractBudget.getStatus() != 1) {
-        	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.projectInfo.save.haveDeleted", "")).body(null);
+        	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.contractBudget.save.haveDeleted", "")).body(null);
 		}
         contractBudgetService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert("contractBudget", id.toString())).build();
