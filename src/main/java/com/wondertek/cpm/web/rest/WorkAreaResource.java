@@ -135,7 +135,7 @@ public class WorkAreaResource {
      */
     @DeleteMapping("/work-areas/{id}")
     @Timed
-    @Secured(AuthoritiesConstants.ROLE_INFO_BASIC)
+    @Secured(AuthoritiesConstants.ADMIN)
     public ResponseEntity<Void> deleteWorkArea(@PathVariable Long id) {
         log.debug("REST request to delete WorkArea : {}", id);
         workAreaService.delete(id);
