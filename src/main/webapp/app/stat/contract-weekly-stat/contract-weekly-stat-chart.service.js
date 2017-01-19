@@ -13,6 +13,10 @@
             'queryChart':{
             	url:'api/contract-weekly-stats/queryChart',
             	method:'GET'
+            },
+            'queryFinishRateChart':{
+            	url:'api/contract-weekly-stats/queryFinishRateChart',
+            	method:'GET'
             }
         });
     }

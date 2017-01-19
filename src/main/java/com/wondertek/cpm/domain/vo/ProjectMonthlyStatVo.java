@@ -10,6 +10,7 @@ public class ProjectMonthlyStatVo implements Serializable {
 	private Long id;
 	private Long projectId;
 	private String serialNum;
+	private String name;
 	private Double finishRate;
 	private Double humanCost;
 	private Double payment;
@@ -32,6 +33,13 @@ public class ProjectMonthlyStatVo implements Serializable {
 	}
 	public void setSerialNum(String serialNum) {
 		this.serialNum = serialNum;
+	}
+	
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
 	}
 	public Double getFinishRate() {
 		return finishRate;

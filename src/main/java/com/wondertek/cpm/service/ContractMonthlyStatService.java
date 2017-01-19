@@ -22,9 +22,7 @@ import com.wondertek.cpm.config.DateUtil;
 import com.wondertek.cpm.config.StringUtil;
 import com.wondertek.cpm.domain.ContractMonthlyStat;
 import com.wondertek.cpm.domain.DeptInfo;
-import com.wondertek.cpm.domain.ProjectMonthlyStat;
 import com.wondertek.cpm.domain.User;
-import com.wondertek.cpm.domain.UserTimesheet;
 import com.wondertek.cpm.domain.vo.ChartReportDataVo;
 import com.wondertek.cpm.domain.vo.ContractMonthlyStatVo;
 import com.wondertek.cpm.domain.vo.LongValue;
@@ -238,6 +236,37 @@ public class ContractMonthlyStatService {
     		datas.get(i).setName(names[i]);
     		datas.get(i).setType("line");
     	}
+    	return datas;
+    }
+    
+    @Transactional(readOnly = true)
+    public List<ChartReportDataVo> getFinishRateData(Date fromMonth, Date toMonth, Long contractId){
+    	List<ChartReportDataVo> datas = new ArrayList<>();
+    	ChartReportDataVo data1 = new ChartReportDataVo();//finish_rate
+    	data1.setName("完成率");
+    	data1.setType("line");
+    	List<Double> dataD1 = new ArrayList<>();
+    	Calendar cal1 = Calendar.getInstance();
+    	Calendar cal2 = Calendar.getInstance();
+    	cal1.setTime(fromMonth);
+    	cal2.setTime(toMonth);
+    	int yearCount = cal2.get(Calendar.YEAR) - cal1.get(Calendar.YEAR); 
+    	int count = 0;
+    	count += 12*yearCount;
+    	count += cal2.get(Calendar.MONTH) - cal1.get(Calendar.MONTH);
+    	for(int i = 0 ; i <= count; i++){
+    		Long statWeek = StringUtil.nullToLong(DateUtil.formatDate("yyyyMM", cal1.getTime()));
+    		List<ContractMonthlyStat> contractMonthlyStats = contractMonthlyStatRepository.findByStatWeekAndContractId(statWeek, contractId);
+    		Double finishRate = 0D;
+    		if(contractMonthlyStats != null && contractMonthlyStats.size() > 0){
+    			int max = contractMonthlyStats.size() - 1;
+    			finishRate = contractMonthlyStats.get(max).getFinishRate();
+    		}
+    		dataD1.add(finishRate);
+    		cal1.add(Calendar.MONTH, 1);
+    	}
+    	data1.setData(dataD1);
+    	datas.add(data1);
     	return datas;
     }
     

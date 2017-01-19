@@ -18,7 +18,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.mysql.fabric.xmlrpc.base.Data;
 import com.wondertek.cpm.config.DateUtil;
 import com.wondertek.cpm.config.StringUtil;
 import com.wondertek.cpm.domain.DeptInfo;
@@ -220,6 +219,36 @@ public class ProjectMonthlyStatService {
     	data2.setData(dataD2);
     	datas.add(data1);
     	datas.add(data2);
+    	return datas;
+    }
+    
+    public List<ChartReportDataVo> getFinishRateData(Date fromMonth, Date toMonth, Long projectId){
+    	List<ChartReportDataVo> datas = new ArrayList<>();
+    	ChartReportDataVo data = new ChartReportDataVo();
+    	data.setName("完成率");
+    	data.setType("line");
+    	List<Double> dataD = new ArrayList<>();
+    	Calendar cal1 = Calendar.getInstance();
+    	Calendar cal2 = Calendar.getInstance();
+    	cal1.setTime(fromMonth);
+    	cal2.setTime(toMonth);
+    	int yearCount = cal2.get(Calendar.YEAR) - cal1.get(Calendar.YEAR); 
+    	int count = 0;
+    	count += 12*yearCount;
+    	count += cal2.get(Calendar.MONTH) - cal1.get(Calendar.MONTH);
+    	for(int i = 0 ; i <= count; i++){
+    		Long statWeek = StringUtil.nullToLong(DateUtil.formatDate("yyyyMM", cal1.getTime()));
+    		List<ProjectMonthlyStat> projectMonthlyStats = projectMonthlyStatRepository.findByStatWeekAndProjectId(statWeek, projectId);
+    		Double finishRate = 0D;
+    		if(projectMonthlyStats != null && projectMonthlyStats.size() > 0){
+    			int max = projectMonthlyStats.size() - 1;
+    			finishRate = projectMonthlyStats.get(max).getFinishRate();
+    		}
+    		dataD.add(finishRate);
+    		cal1.add(Calendar.MONTH, 1);
+    	}
+    	data.setData(dataD);
+    	datas.add(data);
     	return datas;
     }
 }

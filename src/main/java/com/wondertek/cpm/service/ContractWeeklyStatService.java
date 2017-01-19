@@ -233,4 +233,29 @@ public class ContractWeeklyStatService {
     	}
     	return datas;
     }
+    
+    @Transactional(readOnly = true)
+    public List<ChartReportDataVo> getFinishRateData(Date fromDate, Date toDate, Long contractId){
+    	List<ChartReportDataVo> datas = new ArrayList<>();
+    	ChartReportDataVo data1 = new ChartReportDataVo();//finish_rate
+    	data1.setName("完成率");
+    	data1.setType("line");
+    	List<Double> dataD1 = new ArrayList<>();
+    	Long temp = fromDate.getTime();
+    	Long sevenDay = 7*24*60*60*1000L;
+    	while(temp <= toDate.getTime()){
+    		Long statWeek = StringUtil.nullToLong(DateUtil.formatDate("yyyyMMdd", new Date(temp)));
+    		List<ContractWeeklyStat> contractWeeklyStats = contractWeeklyStatRepository.findByStatWeekAndContractId(statWeek, contractId);
+    		Double finishRate = 0D;
+    		if(contractWeeklyStats != null && contractWeeklyStats.size() > 0){
+    			int max = contractWeeklyStats.size() - 1;
+    			finishRate = contractWeeklyStats.get(max).getFinishRate();
+    		}
+    		dataD1.add(finishRate);
+    		temp += sevenDay;
+    	}
+    	data1.setData(dataD1);
+    	datas.add(data1);
+    	return datas;
+    }
 }
