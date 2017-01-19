@@ -14,10 +14,4 @@ public interface ProjectMonthlyStatRepository extends JpaRepository<ProjectMonth
 	
 	@Query(" from ProjectMonthlyStat where statWeek = ?1 and projectId = ?2")
 	List<ProjectMonthlyStat> findByStatWeekAndProjectId(Long statWeek, Long projectId);
-	
-	@Query(" from ProjectMonthlyStat where statWeek >= ?1 and statWeek <= ?2 and projectId = ?3")
-	List<ProjectMonthlyStat> findByStatWeekAndProjectId(Long beginWeek, Long endWeek, Long projectId);
-	
-	@Query(" from ProjectMonthlyStat where id in (select max(id) from ProjectMonthlyStat where projectId = ?1 group by projectId )")
-	ProjectMonthlyStat findMaxByProjectId(Long projectId);
 }

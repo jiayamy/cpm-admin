@@ -76,6 +76,7 @@
             resolve: {
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                     $translatePartialLoader.addPart('userCost');
+                    $translatePartialLoader.addPart('deptInfo');
                     return $translate.refresh();
                 }],
                 entity: ['$stateParams', 'UserCost', function($stateParams, UserCost) {
@@ -107,6 +108,7 @@
             resolve: {
 	            translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
 	                $translatePartialLoader.addPart('userCost');
+	                $translatePartialLoader.addPart('deptInfo');
 	                return $translate.refresh();
 	            }],
 	            entity: ['$stateParams', 'UserCost', function($stateParams, UserCost) {
@@ -114,6 +116,7 @@
 	            }],
 	            previousState: ["$state", function ($state) {
 	                var currentStateData = {
+	                	queryDept:'user-cost-detail.edit.queryDept',
 	                    name: $state.current.name || 'user-cost-detail',
 	                    params: $state.params,
 	                    url: $state.href($state.current.name, $state.params)
@@ -121,24 +124,34 @@
 	                return currentStateData;
 	            }]
             }
-//            onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
-//                $uibModal.open({
-//                    templateUrl: 'app/info/user-cost/user-cost-dialog.html',
-//                    controller: 'UserCostDialogController',
-//                    controllerAs: 'vm',
-//                    backdrop: 'static',
-//                    size: 'lg',
-//                    resolve: {
-//                        entity: ['UserCost', function(UserCost) {
-//                            return UserCost.get({id : $stateParams.id}).$promise;
-//                        }]
-//                    }
-//                }).result.then(function() {
-//                    $state.go('^', {}, { reload: false });
-//                }, function() {
-//                    $state.go('^');
-//                });
-//            }]
+        })
+        .state('user-cost-detail.edit.queryDept', {
+            parent: 'user-cost-detail.edit',
+            url: '/queryDept?selectType&showChild',
+            data: {
+                authorities: ['ROLE_PROJECT_INFO']
+            },
+            onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
+                $uibModal.open({
+                    templateUrl: 'app/info/dept-info/dept-info-query.html',
+                    controller: 'DeptInfoQueryController',
+                    controllerAs: 'vm',
+                    backdrop: 'static',
+                    size: 'lg',
+                    resolve: {
+                        entity: function() {
+                            return {
+                            	selectType : $stateParams.selectType,
+                            	showChild : $stateParams.showChild
+                            }
+                        }
+                    }
+                }).result.then(function() {
+                    $state.go('^', {}, { reload: false });
+                }, function() {
+                    $state.go('^');
+                });
+            }]
         })
         .state('user-cost.new', {
             parent: 'user-cost',
@@ -157,6 +170,7 @@
             resolve: {
             	translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                     $translatePartialLoader.addPart('userCost');
+                    $translatePartialLoader.addPart('deptInfo');
                     return $translate.refresh();
                 }],
                 entity: function () {
@@ -172,8 +186,45 @@
 	                    updateTime: null,
 	                    id: null
                     };
-                }
+                },
+                previousState: ["$state", function ($state) {
+                	var currentStateData = {
+                		queryDept:'user-cost.new.queryDept',
+            			name: $state.current.name || 'user-cost',
+            			params: $state.params,
+            			url: $state.href($state.current.name, $state.params)
+                	};
+                	return currentStateData;
+	            }]
             }
+        })
+        .state('user-cost.new.queryDept', {
+            parent: 'user-cost.new',
+            url: '/queryDept?selectType&showChild',
+            data: {
+                authorities: ['ROLE_PROJECT_INFO']
+            },
+            onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
+                $uibModal.open({
+                    templateUrl: 'app/info/dept-info/dept-info-query.html',
+                    controller: 'DeptInfoQueryController',
+                    controllerAs: 'vm',
+                    backdrop: 'static',
+                    size: 'lg',
+                    resolve: {
+                        entity: function() {
+                            return {
+                            	selectType : $stateParams.selectType,
+                            	showChild : $stateParams.showChild
+                            }
+                        }
+                    }
+                }).result.then(function() {
+                    $state.go('^', {}, { reload: false });
+                }, function() {
+                    $state.go('^');
+                });
+            }]
         })
         .state('user-cost.edit', {
             parent: 'user-cost',
@@ -191,38 +242,50 @@
             resolve: {
             	translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                     $translatePartialLoader.addPart('userCost');
+                    $translatePartialLoader.addPart('deptInfo');
                     return $translate.refresh();
                 }],
                 entity: ['$stateParams','UserCost', function($stateParams,UserCost) {
                   return UserCost.get({id : $stateParams.id}).$promise;
                   }],
-//                previousState: ["$state", function ($state) {
-//                	var currentStateData = {
-//            			name: $state.current.name || 'user-cost-detail',
-//            			params: $state.params,
-//            			url: $state.href($state.current.name, $state.params)
-//                	};
-//                	return currentStateData;
-//	            }]
+                previousState: ["$state", function ($state) {
+                	var currentStateData = {
+                		queryDept:'user-cost.edit.queryDept',
+            			name: $state.current.name || 'user-cost-detail',
+            			params: $state.params,
+            			url: $state.href($state.current.name, $state.params)
+                	};
+                	return currentStateData;
+	            }]
             }
-//            onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
-//                $uibModal.open({
-//                    templateUrl: 'app/info/user-cost/user-cost-dialog.html',
-//                    controller: 'UserCostDialogController',
-//                    controllerAs: 'vm',
-//                    backdrop: 'static',
-//                    size: 'lg',
-//                    resolve: {
-//                        entity: ['UserCost', function(UserCost) {
-//                            return UserCost.get({id : $stateParams.id}).$promise;
-//                        }]
-//                    }
-//                }).result.then(function() {
-//                    $state.go('user-cost', null, { reload: 'user-cost' });
-//                }, function() {
-//                    $state.go('^');
-//                });
-//            }]
+        })
+        .state('user-cost.edit.queryDept', {
+            parent: 'user-cost.edit',
+            url: '/queryDept?selectType&showChild',
+            data: {
+                authorities: ['ROLE_PROJECT_INFO']
+            },
+            onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
+                $uibModal.open({
+                    templateUrl: 'app/info/dept-info/dept-info-query.html',
+                    controller: 'DeptInfoQueryController',
+                    controllerAs: 'vm',
+                    backdrop: 'static',
+                    size: 'lg',
+                    resolve: {
+                        entity: function() {
+                            return {
+                            	selectType : $stateParams.selectType,
+                            	showChild : $stateParams.showChild
+                            }
+                        }
+                    }
+                }).result.then(function() {
+                    $state.go('^', {}, { reload: false });
+                }, function() {
+                    $state.go('^');
+                });
+            }]
         })
         .state('user-cost.delete', {
             parent: 'user-cost',

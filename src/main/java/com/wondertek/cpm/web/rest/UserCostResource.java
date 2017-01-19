@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.codahale.metrics.annotation.Timed;
+import com.wondertek.cpm.CpmConstants;
 import com.wondertek.cpm.config.StringUtil;
 import com.wondertek.cpm.domain.UserCost;
 import com.wondertek.cpm.security.AuthoritiesConstants;
@@ -84,13 +85,11 @@ public class UserCostResource {
     @Secured(AuthoritiesConstants.ROLE_INFO_USERCOST)
     public ResponseEntity<UserCost> updateUserCost(@RequestBody UserCost userCost) throws URISyntaxException {
         log.debug("REST request to update UserCost : {}", userCost);
-//        if (userCost.getId() == null) {
-//            return createUserCost(userCost);
-//        }
         Boolean isNew = null;
-        if(userCost == null){
-        	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.userCost.save.requriedError", "")).body(null);
-        }
+        if(userCost == null || userCost.getUserId() == null || userCost.getCostMonth() == null || 
+        		userCost.getUserName() == null || userCost.getStatus() == null){
+    		return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.userCost.save.requriedError", "")).body(null);
+    	}
         //获取当前用户
         String updator = SecurityUtils.getCurrentUserLogin();
         ZonedDateTime updateTime = ZonedDateTime.now();
@@ -98,6 +97,7 @@ public class UserCostResource {
         UserCost findUserCost = null;
         if(isNew){//新增
         	userCost.setId(null);
+        	
         	findUserCost = userCostService.findByUserIdAndCostMonth(userCost.getUserId(),userCost.getCostMonth());
         	if(findUserCost != null){
         		return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.userCost.save.existError", "")).body(null);
@@ -105,18 +105,19 @@ public class UserCostResource {
         	findUserCost = new UserCost();
         	findUserCost.setUserId(userCost.getUserId());
         	findUserCost.setUserName(userCost.getUserName());
-//        	findUserCost.setStatus(userCost.getStatus());
         	findUserCost.setCostMonth(userCost.getCostMonth());
         	findUserCost.setCreateTime(updateTime);
         	findUserCost.setCreator(updator);
-//        	findUserCost.setExternalCost(userCost.getExternalCost());
-//        	findUserCost.setInternalCost(userCost.getInternalCost());
-//        	findUserCost.setUpdateTime(updateTime);
-//        	findUserCost.setUpdator(updator);
         }else{//编辑
         	findUserCost = userCostService.findByUserIdAndCostMonth(userCost.getUserId(),userCost.getCostMonth());
         	if(findUserCost == null){
         		return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.userCost.save.noExistError", "")).body(null);
+        	}else if(userCost.getUserName() == null || userCost.getStatus() == null){
+        		return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.userCost.save.requriedError", "")).body(null);
+        	}else if(findUserCost.getStatus() == CpmConstants.STATUS_DELETED){
+        		return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.userCost.save.statusError", "")).body(null);
+        	}else if(!userCost.getUserName().equals(findUserCost.getUserName())){
+        		return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.userCost.save.userNameError", "")).body(null);
         	}
         }
         findUserCost.setStatus(userCost.getStatus());
@@ -168,8 +169,6 @@ public class UserCostResource {
         if(!StringUtil.isNullStr(status)){
         	userCost.setStatus(StringUtil.nullToInteger(status));
         }
-        log.debug("1111111111111:"+userCost.getUserId());
-        log.debug("1111111111111:"+userCost.getUserName());
         Page<UserCost> page = userCostService.getUserCostPage(userCost,pageable);
 //        Page<UserCost> page = userCostService.findAll(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/user-costs");
@@ -206,6 +205,10 @@ public class UserCostResource {
     @Secured(AuthoritiesConstants.ROLE_INFO_USERCOST)
     public ResponseEntity<Void> deleteUserCost(@PathVariable Long id) {
         log.debug("REST request to delete UserCost : {}", id);
+        UserCost userCost = userCostService.findOne(id);
+        if(userCost.getStatus() == CpmConstants.STATUS_DELETED){
+        	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.userCost.delete.statusError", "")).body(null);
+        }
         userCostService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert("userCost", id.toString())).build();
     }

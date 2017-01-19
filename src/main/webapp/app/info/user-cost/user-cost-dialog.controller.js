@@ -5,13 +5,15 @@
         .module('cpmApp')
         .controller('UserCostDialogController', UserCostDialogController);
 
-    UserCostDialogController.$inject = ['$timeout','$state', '$scope', '$stateParams','entity', 'UserCost','AlertService','DateUtils'];
+    UserCostDialogController.$inject = ['$timeout','$state','$rootScope', '$scope','previousState', '$stateParams','entity', 'UserCost','AlertService','DateUtils'];
 
-    function UserCostDialogController ($timeout,$state, $scope, $stateParams, entity, UserCost,AlertService,DateUtils) {
+    function UserCostDialogController ($timeout,$state,$rootScope, $scope, previousState, $stateParams, entity, UserCost,AlertService,DateUtils) {
         var vm = this;
 
+        vm.previousState = previousState.name;
         vm.userCost = entity;
-        vm.clear = clear;
+        vm.queryDept = previousState.queryDept;
+//        vm.clear = clear;
         vm.datePickerOpenStatus = {};
         vm.openCalendar = openCalendar;
         vm.save = save;
@@ -29,14 +31,14 @@
         	vm.userCost.costMonth = new Date(vm.sdf.substring(0,4),vm.sdf.substring(4,6)-1);
         }
         
-        $timeout(function (){
-            angular.element('.form-group:eq(1)>input').focus();
-        });
+//        $timeout(function (){
+//            angular.element('.form-group:eq(1)>input').focus();
+//        });
 
-        function clear () {
+//        function clear () {
 //            $uibModalInstance.dismiss('cancel');
-        	$state.go('user-cost', null, { reload: 'user-cost' });
-        }
+//        	$state.go('user-cost', null, { reload: 'user-cost' });
+//        }
 
         function save () {
             vm.isSaving = true;
@@ -49,7 +51,7 @@
             userCost.externalCost = vm.userCost.externalCost;
             userCost.status = vm.userCost.status && vm.userCost.status.key ? vm.userCost.status.key:"";
             if(!userCost.userId ||!userCost.userName || !userCost.costMonth || !userCost.status){
-            	AlertService.error("cpmApp.userCost.save.paramNone");
+            	AlertService.error("cpmApp.userCost.save.requriedError");
             	return;
             }
             UserCost.update(userCost, onSaveSuccess, onSaveError);
@@ -60,22 +62,32 @@
 //            }
         }
 
-        function onSaveSuccess (result) {
+//        function onSaveSuccess (result) {
+        function onSaveSuccess (data,headers) {
 //            $scope.$emit('cpmApp:userCostUpdate', result);
 //            $uibModalInstance.close(result);
-        	$state.go('user-cost');
+//        	$state.go('user-cost');
             vm.isSaving = false;
+            if(headers("X-cpmApp-alert") == 'cpmApp.userCost.updated'){
+    			$state.go(vm.previousState);
+    		}
         }
 
         function onSaveError () {
             vm.isSaving = false;
         }
 
-//        vm.datePickerOpenStatus.createTime = false;
-//        vm.datePickerOpenStatus.updateTime = false;
         vm.datePickerOpenStatus.costMonth = false;
         function openCalendar (date) {
             vm.datePickerOpenStatus[date] = true;
         }
+        
+        var unsubscribe = $rootScope.$on('cpmApp:deptInfoSelected', function(event, result) {
+//        	vm.userCost.userNameId = result.objId;
+        	vm.userCost.userName = result.name;
+//        	vm.userCost.deptId = result.parentId;
+//        	vm.userCost.dept = result.parentName;
+        });
+        $scope.$on('$destroy', unsubscribe);
     }
 })();

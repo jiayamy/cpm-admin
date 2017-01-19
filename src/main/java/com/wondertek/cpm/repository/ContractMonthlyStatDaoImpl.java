@@ -18,6 +18,7 @@ import org.springframework.stereotype.Repository;
 import com.wondertek.cpm.CpmConstants;
 import com.wondertek.cpm.config.DateUtil;
 import com.wondertek.cpm.config.StringUtil;
+import com.wondertek.cpm.domain.ContractBudget;
 import com.wondertek.cpm.domain.ContractMonthlyStat;
 import com.wondertek.cpm.domain.DeptInfo;
 import com.wondertek.cpm.domain.User;
@@ -195,14 +196,39 @@ public class ContractMonthlyStatDaoImpl extends GenericDaoImpl<ContractMonthlySt
 
 	@Override
 	public List<LongValue> queryUserContract(User user, DeptInfo deptInfo) {
-		StringBuffer querysql = new StringBuffer();
-		StringBuffer countsql = new StringBuffer();
-		StringBuffer wheresql = new StringBuffer();
+		StringBuffer sql = new StringBuffer();
 		List<Object> params = new ArrayList<Object>();
-		querysql.append("select p.id, p.serial_num, p.name_ ");
-		countsql.append("select count(p.id) ");
-		wheresql.append("from w_contract_info p ");
-		List<Object[]> list = this.queryAllSql(querysql.toString()+wheresql.toString(), params.toArray());
+		//只有项目经理，预算指定经理，项目创建人，项目部门以上部门管理人员能看到对应的项目
+		
+		sql.append("select a.id,a.serial_num,a.name_ from w_contract_info a where a.id in(");
+			sql.append("select distinct b.contract_id from (");
+				sql.append("select c.contract_id as contract_id from w_project_info c left join w_dept_info d on d.id = c.dept_id");
+				sql.append(" where c.pm_id = ? or c.creator_ = ?");
+				params.add(user.getId());
+				params.add(user.getLogin());
+				
+				if(user.getIsManager()){
+					sql.append(" or d.id_path like ? or d.id = ?");
+					params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
+					params.add(deptInfo.getId());
+				}
+				sql.append(" union all ");
+				sql.append("select e.contract_id as contract_id from w_contract_budget e left join w_dept_info f on f.id = e.dept_id");
+				sql.append(" where (e.user_id = ?");
+				params.add(user.getId());
+				if(user.getIsManager()){
+					sql.append(" or f.id_path like ? or f.id = ?");
+					params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
+					params.add(deptInfo.getId());
+				}
+				sql.append(") and e.type_ = ? and e.purchase_type = ?");
+				params.add(ContractBudget.TYPE_PURCHASE);
+				params.add(ContractBudget.PURCHASETYPE_SERVICE);
+			sql.append(") b");
+		sql.append(") order by a.id desc");
+		
+		List<Object[]> list = this.queryAllSql(sql.toString(), params.toArray());
+		
 		List<LongValue> returnList = new ArrayList<LongValue>();
 		if(list != null){
 			for(Object[] o : list){

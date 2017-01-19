@@ -21,7 +21,12 @@
                     return data;
                 }
             },
-            'update': { method:'PUT' }
+            'update': { method:'PUT' },
+            'queryUserContract':{
+            	url:'api/contract-weekly-stats/queryUserContract',
+            	method:'GET',
+            	isArray:true
+            }
         });
     }
 })();

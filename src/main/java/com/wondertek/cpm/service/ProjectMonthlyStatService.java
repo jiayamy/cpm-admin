@@ -145,7 +145,10 @@ public class ProjectMonthlyStatService {
     	Calendar cal2 = Calendar.getInstance();
     	cal1.setTime(fromMonth);
     	cal2.setTime(toMonth);
-    	int count = cal2.get(Calendar.MONTH) - cal1.get(Calendar.MONTH);
+    	int yearCount = cal2.get(Calendar.YEAR) - cal1.get(Calendar.YEAR); 
+    	int count = 0;
+    	count += 12*yearCount;
+    	count += cal2.get(Calendar.MONTH) - cal1.get(Calendar.MONTH);
     	for(int i = 0 ; i <= count; i++){
     		Long statWeek = StringUtil.nullToLong(DateUtil.formatDate("yyyyMM", cal1.getTime()));
     		List<ProjectMonthlyStat> projectMonthlyStats = projectMonthlyStatRepository.findByStatWeekAndProjectId(statWeek, projectId);
@@ -218,10 +221,5 @@ public class ProjectMonthlyStatService {
     	datas.add(data1);
     	datas.add(data2);
     	return datas;
-    }
-    
-    @Transactional(readOnly = true)
-    public ProjectMonthlyStat getRecentlyOne(Long projectId){
-    	return projectMonthlyStatRepository.findMaxByProjectId(projectId);
     }
 }

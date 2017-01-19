@@ -14,13 +14,22 @@
                 "question": "Are you sure you want to delete Contract Weekly Stat {{ id }}?"
             },
             "detail": {
-                "title": "Contract Weekly Stat"
+                "title": "Contract Weekly Stat",
+                "transChart": "Translate Chart"
+            },
+            "echarts":{
+            	"title": "Contract Weekly Stat Chart",
+            	"fromDate" : "Create Date From",
+            	"toDate" : "Create Date End",
+            	"transDetail" : "Translate Detail"
             },
             "fromDate" : "Create Date From",
             "toDate" : "Create Date End",
             "statDate" : "Stat Week",
+            "contractSerialNum" : "Contract SerialNum",
             "contractId": "Contract Id",
             "finishRate" : "Finish Rate",
+            "serialNum" : "serial Num",
             "receiveTotal": "Receive Total",
             "costTotal": "Cost Total",
             "grossProfit": "Gross Profit",

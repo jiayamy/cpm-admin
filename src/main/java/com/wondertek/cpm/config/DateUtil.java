@@ -991,6 +991,13 @@ public class DateUtil {
 		cal.add(Calendar.MONTH, num);
 		return cal.getTime();
 	}
+	
+	public static Date addDayNum(int num, Date date){
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(date);
+		cal.add(Calendar.DAY_OF_MONTH, num);
+		return cal.getTime();
+	}
 	/**
 	 * 转换日期，
 	 * @param pattern 输出格式

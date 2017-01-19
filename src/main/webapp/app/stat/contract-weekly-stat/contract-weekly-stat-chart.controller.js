@@ -3,11 +3,11 @@
 
     angular
         .module('cpmApp')
-        .controller('ContractMonthlyStatChartController', ContractMonthlyStatChartController);
+        .controller('ContractWeeklyStatChartController', ContractWeeklyStatChartController);
 
-    ContractMonthlyStatChartController.$inject = ['$scope','$state','DateUtils', '$rootScope', '$stateParams', 'pagingParams', 'ContractMonthlyStatChart', 'AlertService','previousState'];
+    ContractWeeklyStatChartController.$inject = ['$scope','$state','DateUtils', '$rootScope', '$stateParams', 'pagingParams', 'ContractWeeklyStatChart', 'AlertService','previousState'];
 
-    function ContractMonthlyStatChartController ($scope,$state,DateUtils,$rootScope, $stateParams, pagingParams, ContractMonthlyStatChart, AlertService,previousState) {
+    function ContractWeeklyStatChartController ($scope,$state,DateUtils,$rootScope, $stateParams, pagingParams, ContractWeeklyStatChart, AlertService,previousState) {
     	var vm = this;
         vm.transition = transition;
         vm.clear = clear;
@@ -16,11 +16,11 @@
         vm.searchQuery = {};
         var fromDate = pagingParams.fromDate;
         var toDate = pagingParams.toDate;
-        if(fromDate && fromDate.length == 6){
-        	fromDate = new Date(fromDate.substring(0,4),parseInt(fromDate.substring(4,6)),fromDate.substring(6,8));
+        if(fromDate && fromDate.length == 8){
+        	fromDate = new Date(fromDate.substring(0,4),parseInt(fromDate.substring(4,6))-1,fromDate.substring(6,8));
         }
-        if(toDate && toDate.length == 6){
-        	toDate = new Date(toDate.substring(0,4),parseInt(toDate.substring(4,6)),toDate.substring(6,8));
+        if(toDate && toDate.length == 8){
+        	toDate = new Date(toDate.substring(0,4),parseInt(toDate.substring(4,6))-1,toDate.substring(6,8));
         }
         vm.searchQuery.fromDate= fromDate;
         vm.searchQuery.toDate = toDate;
@@ -42,7 +42,7 @@
         	if(pagingParams.id == undefined){
         		pagingParams.id = "";
         	};
-        	ContractMonthlyStatChart.queryChart({
+        	ContractWeeklyStatChart.queryChart({
                 fromDate : pagingParams.fromDate,
                 toDate : pagingParams.toDate,
                 id : pagingParams.id
@@ -387,14 +387,14 @@
 
         function transition() {
             $state.transitionTo($state.$current, {
-                fromDate: DateUtils.convertLocalDateToFormat(vm.searchQuery.fromDate,"yyyyMM"),
-                toDate: DateUtils.convertLocalDateToFormat(vm.searchQuery.toDate,"yyyyMM"),
+                fromDate: DateUtils.convertLocalDateToFormat(vm.searchQuery.fromDate,"yyyyMMdd"),
+                toDate: DateUtils.convertLocalDateToFormat(vm.searchQuery.toDate,"yyyyMMdd"),
                 id:vm.searchQuery.id ? vm.searchQuery.id : ""
             });
         }
         vm.backDetail = backDetail;
         function backDetail(){
-        	$state.go('contract-monthly-stat-detail', {
+        	$state.go('contract-weekly-stat-detail', {
         		id: pagingParams.id
             });
         }

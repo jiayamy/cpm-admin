@@ -5,47 +5,19 @@
         <div class="row">
             <form name="searchForm" class="form-horizontal">
 	           <div class="form-group">
-	               <div class="col-sm-4">
-	               		<div class="row">
-							<label class="col-sm-4 control-label" data-translate="cpmApp.contractWeeklyStat.fromDate">From Date</label>
-				            <div class="col-sm-8">
-				                <p class="input-group">
-				                    <input id="search_fromDate" type="text" class="form-control" name="fromDate" datetime-picker="yyyyMMdd"
-					           		 		enable-time="false" ng-model="vm.searchQuery.fromDate" is-open="vm.datePickerOpenStatus.fromDate"/>
-					          		<span class="input-group-btn">
-					           			<button type="button" class="btn btn-default" ng-click="vm.openCalendar('fromDate')"><i class="glyphicon glyphicon-calendar"></i></button>
-					            	</span>
-				                </p>
-				            </div>
-	               		</div>
-					</div>
-		            <div class="col-sm-4">
-			            <div class="row">
-			          		<label class="col-sm-4 control-label" data-translate="cpmApp.contractWeeklyStat.toDate">To Date</label>
-				            <div class="col-sm-8">
-				                <p class="input-group">
-				                    <input id="search_toDate" type="text" class="form-control" name="toDate" datetime-picker="yyyyMMdd"
-					           		 		enable-time="false" ng-model="vm.searchQuery.toDate" is-open="vm.datePickerOpenStatus.toDate"/>
-					          		<span class="input-group-btn">
-					           			<button type="button" class="btn btn-default" ng-click="vm.openCalendar('toDate')"><i class="glyphicon glyphicon-calendar"></i></button>
-					            	</span>
-				                </p>
-				            </div>
-				         </div>
+	              	<div class="col-sm-4">
+		          		<label class="col-sm-4 control-label" data-translate="cpmApp.contractWeeklyStat.contractSerialNum">Contract serialnum</label>
+			            <div class="col-sm-8">
+			            	<select class="form-control" ng-model="vm.searchQuery.contractId" name="contractId"
+				            	ng-options="contractInfo.val for contractInfo in vm.contractInfos track by contractInfo.key">
+				            	<option value="">--合同编号--</option>
+				            </select>
+			            </div>
 		            </div>
-		            <div class="col-sm-4">
-		            	<div class="row">
+		            <div class="col-sm-8">
+		            	
 			            	<div class="input-group pull-right" >
-			                   <label class="col-sm-3 control-label" data-translate="cpmApp.contractWeeklyStat.statDate">Stat Date</label>
-					            <div class="col-sm-5">
-					                <p class="input-group row">
-					                    <input id="search_statDate" type="text" class="form-control" name="statDate" datetime-picker="yyyyMMdd"
-						           		 		enable-time="false" ng-model="vm.searchQuery.statDate" is-open="vm.datePickerOpenStatus.statDate"/>
-						          		<span class="input-group-btn">
-						           			<button type="button" class="btn btn-default" ng-click="vm.openCalendar('statDate')"><i class="glyphicon glyphicon-calendar"></i></button>
-						            	</span>
-					                </p>
-					            </div>
+			                   
 			                   <span  class="width-min input-group-btn col-sm-2" >
 			                   		<div class="row">
 				                        <button class="btn btn-info" ng-click="vm.search()">
@@ -59,7 +31,7 @@
 			                        </button>
 			                    </span>
 			               </div>
-			             </div>
+			             
 		            </div>
 
 				</div>
@@ -71,41 +43,25 @@
         <table class="jh-table table table-striped">
             <thead>
                 <tr jh-sort="vm.predicate" ascending="vm.reverse" callback="vm.transition()">
-                    <th jh-sort-by="id"><span data-translate="global.field.id">ID</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="contractId"><span data-translate="cpmApp.contractWeeklyStat.contractId">Contract Id</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="receiveTotal"><span data-translate="cpmApp.contractWeeklyStat.receiveTotal">Receive Total</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="costTotal"><span data-translate="cpmApp.contractWeeklyStat.costTotal">Cost Total</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="grossProfit"><span data-translate="cpmApp.contractWeeklyStat.grossProfit">Gross Profit</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="salesHumanCost"><span data-translate="cpmApp.contractWeeklyStat.salesHumanCost">Sales Human Cost</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="salesPayment"><span data-translate="cpmApp.contractWeeklyStat.salesPayment">Sales Payment</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="consultHumanCost"><span data-translate="cpmApp.contractWeeklyStat.consultHumanCost">Consult Human Cost</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="consultPayment"><span data-translate="cpmApp.contractWeeklyStat.consultPayment">Consult Payment</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="hardwarePurchase"><span data-translate="cpmApp.contractWeeklyStat.hardwarePurchase">Hardware Purchase</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="externalSoftware"><span data-translate="cpmApp.contractWeeklyStat.externalSoftware">External Software</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="internalSoftware"><span data-translate="cpmApp.contractWeeklyStat.internalSoftware">Internal Software</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="projectHumanCost"><span data-translate="cpmApp.contractWeeklyStat.projectHumanCost">Project Human Cost</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="projectPayment"><span data-translate="cpmApp.contractWeeklyStat.projectPayment">Project Payment</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="statWeek"><span data-translate="cpmApp.contractWeeklyStat.statWeek">Stat Week</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="createTime"><span data-translate="cpmApp.contractWeeklyStat.createTime">Create Time</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="m.id"><span data-translate="global.field.id">ID</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="m.serialNum"><span data-translate="cpmApp.contractWeeklyStat.serialNum">Contract serialNum</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="m.finishRate"><span data-translate="cpmApp.contractWeeklyStat.finishRate">Finish Rate</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="m.receiveTotal"><span data-translate="cpmApp.contractWeeklyStat.receiveTotal">Receive Total</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="m.costTotal"><span data-translate="cpmApp.contractWeeklyStat.costTotal">Cost Total</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="m.grossProfit"><span data-translate="cpmApp.contractWeeklyStat.grossProfit">Gross Profit</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="m.statWeek"><span data-translate="cpmApp.contractWeeklyStat.statWeek">Stat Week</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="m.createTime"><span data-translate="cpmApp.contractWeeklyStat.createTime">Create Time</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th></th>
                 </tr>
             </thead>
             <tbody>
                 <tr ng-repeat="contractWeeklyStat in vm.contractWeeklyStats track by contractWeeklyStat.id">
                     <td><a ui-sref="contract-weekly-stat-detail({id:contractWeeklyStat.id})">{{contractWeeklyStat.id}}</a></td>
-                    <td>{{contractWeeklyStat.contractId}}</td>
+                    <td>{{contractWeeklyStat.serialNum}}</td>
+                    <td>{{contractWeeklyStat.finishRate}}</td>
                     <td>{{contractWeeklyStat.receiveTotal}}</td>
                     <td>{{contractWeeklyStat.costTotal}}</td>
                     <td>{{contractWeeklyStat.grossProfit}}</td>
-                    <td>{{contractWeeklyStat.salesHumanCost}}</td>
-                    <td>{{contractWeeklyStat.salesPayment}}</td>
-                    <td>{{contractWeeklyStat.consultHumanCost}}</td>
-                    <td>{{contractWeeklyStat.consultPayment}}</td>
-                    <td>{{contractWeeklyStat.hardwarePurchase}}</td>
-                    <td>{{contractWeeklyStat.externalSoftware}}</td>
-                    <td>{{contractWeeklyStat.internalSoftware}}</td>
-                    <td>{{contractWeeklyStat.projectHumanCost}}</td>
-                    <td>{{contractWeeklyStat.projectPayment}}</td>
                     <td>{{contractWeeklyStat.statWeek}}</td>
                     <td>{{contractWeeklyStat.createTime | date:'medium'}}</td>
                     <td class="text-right">

@@ -117,14 +117,25 @@ public class ProjectMonthlyStatDaoImpl extends GenericDaoImpl<ProjectMonthlyStat
 	}
 	@Override
 	public List<LongValue> queryUserProject(User user, DeptInfo deptInfo) {
-		StringBuffer querysql = new StringBuffer();
-		StringBuffer countsql = new StringBuffer();
-		StringBuffer wheresql = new StringBuffer();
+		StringBuffer querySql = new StringBuffer();
 		List<Object> params = new ArrayList<Object>();
-		querysql.append("select p.id, p.serial_num, p.name_ ");
-		countsql.append("select count(p.id) ");
-		wheresql.append("from w_project_info p ");
-		List<Object[]> list = this.queryAllSql(querysql.toString()+wheresql.toString(), params.toArray());
+		
+		querySql.append(" select wpi.id,wpi.serial_num,wpi.name_ from w_project_info wpi");
+		querySql.append(" left join w_dept_info wdi on wpi.dept_id = wdi.id");
+		
+		querySql.append(" where (wpi.pm_id = ? or wpi.creator_ = ?");
+		params.add(user.getId());
+		params.add(user.getLogin());
+		
+		if(user.getIsManager()){
+			querySql.append(" or wdi.id_path like ? or wdi.id = ?");
+			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
+			params.add(deptInfo.getId());
+		}
+		querySql.append(")");
+		
+		List<Object[]> list = this.queryAllSql(querySql.toString(), params.toArray());
+		
 		List<LongValue> returnList = new ArrayList<LongValue>();
 		if(list != null){
 			for(Object[] o : list){
