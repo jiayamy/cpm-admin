@@ -1,4 +1,44 @@
 CREATE
+    TABLE w_work_area
+    (
+        id bigint NOT NULL AUTO_INCREMENT,
+        name_ VARCHAR(100),
+        PRIMARY KEY (id),
+        CONSTRAINT idx_workarea_name_u UNIQUE (name_)
+    )
+    ENGINE=InnoDB DEFAULT CHARSET=utf8;
+    
+CREATE
+    TABLE w_dept_type
+    (
+        id bigint NOT NULL AUTO_INCREMENT,
+        name_ VARCHAR(100) NOT NULL COMMENT '类型名称 (管理/销售/产品咨询/产品研发中心/项目实施/采购/行政/财务/质量管理/人力资源）',
+        PRIMARY KEY (id),
+        CONSTRAINT idx_depttype_name UNIQUE (name_)
+    )
+    ENGINE=InnoDB DEFAULT CHARSET=utf8;
+    
+CREATE
+    TABLE w_dept_info
+    (
+        id bigint NOT NULL AUTO_INCREMENT,
+        name_ VARCHAR(200) NOT NULL COMMENT '部门名称',
+        parent_id bigint COMMENT '上级部门主键',
+        id_path VARCHAR(100) COMMENT '父级ID路径，到“父IDPATH/父ID/”。。顶层默认是“/”',
+        type_ bigint COMMENT '部门类型',
+        status_ INT COMMENT '状态（可用，删除）',
+        creator_ VARCHAR(100) COLLATE utf8_bin,
+    	CREATE_time TIMESTAMP NULL,
+        updator_ VARCHAR(100) COLLATE utf8_bin,
+        update_time TIMESTAMP NULL,
+        PRIMARY KEY (id),
+        CONSTRAINT fk_deptinfo_ FOREIGN KEY (type_) REFERENCES w_dept_type (id),
+        CONSTRAINT idx_deptinfo_unique1 UNIQUE (name_, parent_id),
+        INDEX fk_deptinfo_ (type_)
+    )
+    ENGINE=InnoDB DEFAULT CHARSET=utf8;
+    
+CREATE
     TABLE databasechangelog
     (
         ID VARCHAR(255) COLLATE utf8_bin NOT NULL,
@@ -90,7 +130,9 @@ CREATE
         birth_day VARCHAR(10) COLLATE utf8_bin,
         telephone_ VARCHAR(20) COLLATE utf8_bin,
         serial_num VARCHAR(10) COLLATE utf8_bin NOT NULL,
+        work_area VARCHAR(100) COLLATE utf8_bin,
         PRIMARY KEY (id),
+        CONSTRAINT fk_user_dept FOREIGN KEY (dept_id) REFERENCES w_dept_info (id),
         CONSTRAINT idx_user_login UNIQUE (login),
         CONSTRAINT idx_user_serialNum UNIQUE (serial_num)
     )
@@ -124,47 +166,6 @@ CREATE
     )
     ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE
-    TABLE w_work_area
-    (
-        id bigint NOT NULL AUTO_INCREMENT,
-        name_ VARCHAR(100),
-        PRIMARY KEY (id),
-        CONSTRAINT idx_workarea_name_u UNIQUE (name_)
-    )
-    ENGINE=InnoDB DEFAULT CHARSET=utf8;
-    
-CREATE
-    TABLE w_dept_type
-    (
-        id bigint NOT NULL AUTO_INCREMENT,
-        name_ VARCHAR(100) NOT NULL COMMENT '类型名称 (管理/销售/产品咨询/产品研发中心/项目实施/采购/行政/财务/质量管理/人力资源）',
-        PRIMARY KEY (id),
-        CONSTRAINT idx_depttype_name UNIQUE (name_)
-    )
-    ENGINE=InnoDB DEFAULT CHARSET=utf8;
-    
-CREATE
-    TABLE w_dept_info
-    (
-        id bigint NOT NULL AUTO_INCREMENT,
-        name_ VARCHAR(200) NOT NULL COMMENT '部门名称',
-        parent_id bigint COMMENT '上级部门主键',
-        id_path VARCHAR(100) COMMENT '父级ID路径，到“父IDPATH/父ID/”。。顶层默认是“/”',
-        type_ bigint COMMENT '部门类型',
-        status_ INT COMMENT '状态（可用，删除）',
-        creator_ VARCHAR(100) COLLATE utf8_bin,
-    	CREATE_time TIMESTAMP NULL,
-        updator_ VARCHAR(100) COLLATE utf8_bin,
-        update_time TIMESTAMP NULL,
-        PRIMARY KEY (id),
-        CONSTRAINT fk_deptinfo_ FOREIGN KEY (type_) REFERENCES w_dept_type (id),
-        CONSTRAINT idx_deptinfo_unique1 UNIQUE (name_, parent_id),
-        INDEX fk_deptinfo_ (type_)
-    )
-    ENGINE=InnoDB DEFAULT CHARSET=utf8;
-    
-    
 CREATE
     TABLE w_contract_info
     (
@@ -607,6 +608,17 @@ CREATE
 	insert into jhi_authority (name, detail_) values ('ROLE_USER', '用户');
 	insert into jhi_authority (name, detail_) values ('ROLE_USERCOST', '日报管理-员工日报');
 	
+	insert into w_dept_type (id, name_) values (1, '管理');
+	insert into w_dept_type (id, name_) values (2, '销售');
+	insert into w_dept_type (id, name_) values (3, '产品咨询');
+	insert into w_dept_type (id, name_) values (4, '产品研发中心');
+	insert into w_dept_type (id, name_) values (5, '项目实施');
+	insert into w_dept_type (id, name_) values (6, '采购');
+	insert into w_dept_type (id, name_) values (7, '行政');
+	insert into w_dept_type (id, name_) values (8, '财务');
+	insert into w_dept_type (id, name_) values (9, '质量管理');
+	insert into w_dept_type (id, name_) values (10, '人力资源');
+
 	insert into w_dept_info (id, name_, parent_id, id_path, type_, status_, creator_, create_time, updator_, update_time) values (1, '上海网达软件股份有限公司', null, '/', 1, 1, 'admin', '2017-01-01 00:00:00', 'admin', '2017-01-01 00:00:00');
 
 	insert into jhi_user (id, login, password_hash, first_name, last_name, email, activated, lang_key, activation_key, reset_key, created_by, created_date, reset_date, last_modified_by, last_modified_date, dept_id, is_manager, duty_, grade_, gender_, birth_year, birth_day, telephone_, serial_num, work_area) values 
