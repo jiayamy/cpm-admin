@@ -30,6 +30,7 @@
             "contractId": "Contract Id",
             "finishRate" : "Finish Rate",
             "serialNum" : "serial Num",
+            "name" : "Contract Name",
             "receiveTotal": "Receive Total",
             "costTotal": "Cost Total",
             "grossProfit": "Gross Profit",

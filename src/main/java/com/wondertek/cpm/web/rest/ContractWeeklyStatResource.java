@@ -153,5 +153,42 @@ public class ContractWeeklyStatResource {
     	chartReportVo.setLegend(legend);
     	return chartReportVo;
     }
+    
+    @GetMapping("/contract-weekly-stats/queryFinishRateChart")
+    @Timed
+    @Secured(AuthoritiesConstants.ROLE_STAT_CONTRACT)
+    public ChartReportVo getFinishRateChartReport(@ApiParam(value="fromDate") @RequestParam(value="fromDate") String fromDate,
+    		@ApiParam(value="toDate") @RequestParam(value="toDate") String toDate,
+    		@ApiParam(value="id") @RequestParam(value="id") Long statId){
+    	ChartReportVo chartReportVo = new ChartReportVo();
+    	ContractWeeklyStatVo contractWeeklyStatvo = contractWeeklyStatService.findOne(statId);
+    	Long contractId = contractWeeklyStatvo.getContractId();
+    	chartReportVo.setTitle(contractWeeklyStatvo.getSerialNum()+"-完成率");
+    	if(StringUtil.isNullStr(toDate)){
+    		toDate = contractWeeklyStatvo.getStatWeek().toString();
+    	}else{
+    		toDate = DateUtil.getWholeWeekByDate(DateUtil.parseDate("yyyyMMdd", toDate))[6];
+    	}
+    	Date lDay = DateUtil.parseDate("yyyyMMdd", toDate);
+    	if(StringUtil.isNullStr(fromDate)){
+    		fromDate = DateUtil.formatDate("yyyyMMdd", DateUtil.addDayNum(-6*7, lDay));
+    	}else{
+    		fromDate = DateUtil.getWholeWeekByDate(DateUtil.parseDate("yyyyMMdd", fromDate))[6];
+    	}
+    	Date fDay = DateUtil.parseDate("yyyyMMdd", fromDate);
+    	Long sevenDay = 7*24*60*60*1000L;
+    	Long temp = fDay.getTime();
+    	List<String> category = new ArrayList<String>();
+    	while(temp <= lDay.getTime()){
+    		category.add(DateUtil.formatDate("yyyy-MM-dd", new Date(temp)));
+    		temp += sevenDay;
+    	}
+    	chartReportVo.setCategory(category);
+    	List<ChartReportDataVo> datas = contractWeeklyStatService.getFinishRateData(fDay, lDay, contractId);
+    	chartReportVo.setSeries(datas);
+    	List<String> legend = new ArrayList<String>(Arrays.asList(new String[]{"完成率"}));
+    	chartReportVo.setLegend(legend);
+    	return chartReportVo;
+    }
 
 }

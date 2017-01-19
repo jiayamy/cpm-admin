@@ -110,16 +110,10 @@
                                 <span data-translate="global.menu.project.projectCost">Project Cost</span>
                             </a>
                         </li>
-                        <li ui-sref-active="active" has-authority="ROLE_PROJECT_TIMESHEET" ng-show="false">
+                        <li ui-sref-active="active" has-authority="ROLE_PROJECT_TIMESHEET">
                             <a ui-sref="project-timesheet" ng-click="vm.collapseNavbar()">
                                 <span class="glyphicon glyphicon-calendar"></span>&nbsp;
                                 <span data-translate="global.menu.project.projectTimesheet">Project Timesheet</span>
-                            </a>
-                        </li>
-                        <li ui-sref-active="active" has-authority="ROLE_PROJECT_FINISH" ng-show="false">
-                            <a ui-sref="project-finish-info" ng-click="vm.collapseNavbar()">
-                                <span class="glyphicon glyphicon-eye-open"></span>&nbsp;
-                                <span data-translate="global.menu.project.projectFinishInfo">Project Finish Info</span>
                             </a>
                         </li>
                     </ul>

@@ -165,7 +165,7 @@
             parent: 'dept-type',
             url: '/delete/{id}',
             data: {
-                authorities: ['ROLE_INFO_BASIC']
+                authorities: ['ROLE_ADMIN']
             },
             onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
                 $uibModal.open({

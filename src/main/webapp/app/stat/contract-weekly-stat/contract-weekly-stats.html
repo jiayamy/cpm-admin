@@ -14,26 +14,25 @@
 				            </select>
 			            </div>
 		            </div>
-		            <div class="col-sm-8">
-		            	
-			            	<div class="input-group pull-right" >
-			                   
-			                   <span  class="width-min input-group-btn col-sm-2" >
-			                   		<div class="row">
-				                        <button class="btn btn-info" ng-click="vm.search()">
-				                            <span class="glyphicon glyphicon-search"></span>
-				                        </button>
-				                    </div>
-			                    </span>
-			                    <span class="width-min input-group-btn col-sm-2" ng-if="vm.haveSearch">
-			                        <button class="btn btn-info" ng-click="vm.clear()">
-			                            <span class="glyphicon glyphicon-trash"></span>
-			                        </button>
-			                    </span>
-			               </div>
-			             
+		            <div class="col-sm-4 input-group pull-right">
+		            	<div class="col-sm-4">
+		            		&nbsp;
+		            	</div>
+		            	<div class="col-sm-8">
+		            		 <span  class="width-min input-group-btn" >
+		                        <button class="btn btn-info" ng-click="vm.search()">
+		                            <span class="glyphicon glyphicon-search"></span>
+		                            <span class="hidden-xs hidden-sm" data-translate="entity.action.search"></span>
+		                        </button>
+		                    </span>
+		                    <span class="width-min input-group-btn" ng-if="vm.haveSearch">
+		                        <button class="btn btn-info" ng-click="vm.clear()">
+		                            <span class="glyphicon glyphicon-trash"></span>
+		                            <span class="hidden-xs hidden-sm" data-translate="entity.action.clear"></span>
+		                        </button>
+		                    </span>
+		            	</div>
 		            </div>
-
 				</div>
            </form>
         </div>
@@ -44,7 +43,8 @@
             <thead>
                 <tr jh-sort="vm.predicate" ascending="vm.reverse" callback="vm.transition()">
                     <th jh-sort-by="m.id"><span data-translate="global.field.id">ID</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="m.serialNum"><span data-translate="cpmApp.contractWeeklyStat.serialNum">Contract serialNum</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="i.serialNum"><span data-translate="cpmApp.contractWeeklyStat.serialNum">Contract serialNum</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="i.name"><span data-translate="cpmApp.contractWeeklyStat.name">Contract name</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="m.finishRate"><span data-translate="cpmApp.contractWeeklyStat.finishRate">Finish Rate</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="m.receiveTotal"><span data-translate="cpmApp.contractWeeklyStat.receiveTotal">Receive Total</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="m.costTotal"><span data-translate="cpmApp.contractWeeklyStat.costTotal">Cost Total</span> <span class="glyphicon glyphicon-sort"></span></th>
@@ -58,6 +58,7 @@
                 <tr ng-repeat="contractWeeklyStat in vm.contractWeeklyStats track by contractWeeklyStat.id">
                     <td><a ui-sref="contract-weekly-stat-detail({id:contractWeeklyStat.id})">{{contractWeeklyStat.id}}</a></td>
                     <td>{{contractWeeklyStat.serialNum}}</td>
+                    <td>{{contractWeeklyStat.name}}</td>
                     <td>{{contractWeeklyStat.finishRate}}</td>
                     <td>{{contractWeeklyStat.receiveTotal}}</td>
                     <td>{{contractWeeklyStat.costTotal}}</td>

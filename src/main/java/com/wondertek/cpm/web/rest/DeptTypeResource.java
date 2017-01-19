@@ -136,7 +136,7 @@ public class DeptTypeResource {
      */
     @DeleteMapping("/dept-types/{id}")
     @Timed
-    @Secured(AuthoritiesConstants.ROLE_INFO_BASIC)
+    @Secured(AuthoritiesConstants.ADMIN)
     public ResponseEntity<Void> deleteDeptType(@PathVariable Long id) {
         log.debug("REST request to delete DeptType : {}", id);
         deptTypeService.delete(id);

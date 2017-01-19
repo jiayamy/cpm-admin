@@ -29,6 +29,7 @@
             "contractSerialNum" : "合同编号",
             "contractId": "合同主键",
             "serialNum" : "合同编号",
+            "name" : "合同名称",
             "finishRate" : "完成率",
             "receiveTotal": "回款总额",
             "costTotal": "所有成本",

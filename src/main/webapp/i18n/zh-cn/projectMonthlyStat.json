@@ -29,6 +29,7 @@
             "projectSerialNum" : "项目编号",
             "projectId": "项目主键",
             "serialNum" : "项目编号",
+            "name" : "项目名称",
             "finishRate" : "完成率",
             "humanCost": "项目人工成本",
             "payment": "项目报销成本",
