@@ -627,6 +627,3 @@ CREATE
 	insert into jhi_user_authority (user_id, authority_name) values (1, 'ROLE_USER');
 	insert into jhi_user_authority (user_id, authority_name) values (1, 'ROLE_INFO');
 	insert into jhi_user_authority (user_id, authority_name) values (1, 'ROLE_INFO_BASIC');
---20170119
-	ALTER TABLE jhi_user ADD (work_area VARCHAR(100));
-	
