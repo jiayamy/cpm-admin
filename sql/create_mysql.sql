@@ -63,21 +63,6 @@ CREATE
     ENGINE=InnoDB DEFAULT CHARSET=utf8;
     
 CREATE
-    TABLE jhi_persistent_token
-    (
-        series VARCHAR(76) COLLATE utf8_bin NOT NULL,
-        user_id bigint,
-        token_value VARCHAR(76) COLLATE utf8_bin NOT NULL,
-        token_date DATE,
-        ip_address VARCHAR(39) COLLATE utf8_bin,
-        user_agent VARCHAR(255) COLLATE utf8_bin,
-        PRIMARY KEY (series),
-        CONSTRAINT fk_user_persistent_token FOREIGN KEY (user_id) REFERENCES jhi_user (id),
-        INDEX fk_user_persistent_token (user_id)
-    )
-    ENGINE=InnoDB DEFAULT CHARSET=utf8;
-    
-CREATE
     TABLE jhi_user
     (
         id bigint NOT NULL AUTO_INCREMENT,
@@ -111,6 +96,22 @@ CREATE
     ENGINE=InnoDB DEFAULT CHARSET=utf8;
     
 CREATE
+    TABLE jhi_persistent_token
+    (
+        series VARCHAR(76) COLLATE utf8_bin NOT NULL,
+        user_id bigint,
+        token_value VARCHAR(76) COLLATE utf8_bin NOT NULL,
+        token_date DATE,
+        ip_address VARCHAR(39) COLLATE utf8_bin,
+        user_agent VARCHAR(255) COLLATE utf8_bin,
+        PRIMARY KEY (series),
+        CONSTRAINT fk_user_persistent_token FOREIGN KEY (user_id) REFERENCES jhi_user (id),
+        INDEX fk_user_persistent_token (user_id)
+    )
+    ENGINE=InnoDB DEFAULT CHARSET=utf8;
+    
+    
+CREATE
     TABLE jhi_user_authority
     (
         user_id bigint NOT NULL,
@@ -119,6 +120,91 @@ CREATE
         CONSTRAINT fk_user_id FOREIGN KEY (user_id) REFERENCES jhi_user (id) ,
         CONSTRAINT fk_authority_name FOREIGN KEY (authority_name) REFERENCES jhi_authority (name),
         INDEX fk_authority_name (authority_name)
+    )
+    ENGINE=InnoDB DEFAULT CHARSET=utf8;
+---20170119
+CREATE
+    TABLE w_work_area
+    (
+        id bigint NOT NULL AUTO_INCREMENT,
+        name_ VARCHAR(100),
+        PRIMARY KEY (id),
+        CONSTRAINT idx_workarea_name_u UNIQUE (name_)
+    )
+    ENGINE=InnoDB DEFAULT CHARSET=utf8;
+    
+CREATE
+    TABLE w_dept_type
+    (
+        id bigint NOT NULL AUTO_INCREMENT,
+        name_ VARCHAR(100) NOT NULL COMMENT '类型名称 (管理/销售/产品咨询/产品研发中心/项目实施/采购/行政/财务/质量管理/人力资源）',
+        PRIMARY KEY (id),
+        CONSTRAINT idx_depttype_name UNIQUE (name_)
+    )
+    ENGINE=InnoDB DEFAULT CHARSET=utf8;
+    
+CREATE
+    TABLE w_dept_info
+    (
+        id bigint NOT NULL AUTO_INCREMENT,
+        name_ VARCHAR(200) NOT NULL COMMENT '部门名称',
+        parent_id bigint COMMENT '上级部门主键',
+        id_path VARCHAR(100) COMMENT '父级ID路径，到“父IDPATH/父ID/”。。顶层默认是“/”',
+        type_ bigint COMMENT '部门类型',
+        status_ INT COMMENT '状态（可用，删除）',
+        creator_ VARCHAR(100) COLLATE utf8_bin,
+    CREATE_time TIMESTAMP NULL,
+        updator_ VARCHAR(100) COLLATE utf8_bin,
+        update_time TIMESTAMP NULL,
+        PRIMARY KEY (id),
+        CONSTRAINT fk_deptinfo_ FOREIGN KEY (type_) REFERENCES w_dept_type (id),
+        CONSTRAINT idx_deptinfo_unique1 UNIQUE (name_, parent_id),
+        INDEX fk_deptinfo_ (type_)
+    )
+    ENGINE=InnoDB DEFAULT CHARSET=utf8;
+    
+    
+CREATE
+    TABLE w_contract_info
+    (
+        id bigint NOT NULL AUTO_INCREMENT,
+        serial_num VARCHAR(100) COLLATE utf8_bin NOT NULL COMMENT '合同编号',
+        name_ VARCHAR(200) COLLATE utf8_bin NOT NULL COMMENT '合同名称',
+        amount_ DOUBLE(15,2) NOT NULL COMMENT '合同金额',
+        type_ INT NOT NULL COMMENT '合同类型（1=产品/2=外包/3=硬件）',
+        is_prepared bit NOT NULL COMMENT '是否预立（正式合同/预立合同），预立合同可以转正式合同',
+        is_epibolic bit NOT NULL COMMENT '是否外包（内部合同/外包合同）--- ',
+        sales_man_id bigint COMMENT '销售人员ID（界面选择员工信息）',
+        sales_man VARCHAR(100) COMMENT '销售人员名称',
+        dept_id bigint COMMENT '销售所属部门ID',
+        dept_ VARCHAR(200) COMMENT '销售所属部门',
+        consultants_id bigint,
+        consultants_ VARCHAR(100) COLLATE utf8_bin,
+        consultants_dept_id bigint COMMENT '咨询所属部门ID',
+        consultants_dept VARCHAR(200) COMMENT '咨询所属部门',
+        start_day TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '开始日期,页面格式20161227',
+        end_day TIMESTAMP NULL COMMENT '结束日期',
+        tax_rate DOUBLE(15,2) COMMENT '率,精确小数点后2位',
+        taxes_ DOUBLE(15,2) COMMENT '税费（元）,精确小数点后2位',
+        share_rate DOUBLE(15,2) COMMENT '公摊比例',
+        share_cost DOUBLE(15,2) COMMENT '公摊成本（合同金额*公摊比例）',
+        payment_way VARCHAR(20) COMMENT '付款方式（比如“3,6,1”）',
+        contractor_ VARCHAR(200) COMMENT '合同方（公司名称）',
+        address_ VARCHAR(1000) COMMENT '合同方通信地址',
+        postcode_ VARCHAR(20) COMMENT '合同方邮编',
+        linkman_ VARCHAR(100) COMMENT '合同方联系人',
+        contact_dept VARCHAR(200) COMMENT '合同方联系部门',
+        telephone_ VARCHAR(50) COMMENT '合同方电话',
+        receive_total DOUBLE(15,2) COMMENT '收款总金额（不展示）',
+        finish_total DOUBLE(15,2) COMMENT '合同累计完成金额（不展示）',
+        finish_rate DOUBLE(15,2) COMMENT '完成率（只展示）',
+        status_ INT COMMENT '状态（1=开发中，2=结项，3=删除）',
+        creator_ VARCHAR(100) COLLATE utf8_bin,
+    CREATE_time TIMESTAMP NULL,
+        updator_ VARCHAR(100) COLLATE utf8_bin,
+        update_time TIMESTAMP NULL,
+        PRIMARY KEY (id),
+        CONSTRAINT idx_contractinfo_serialnum UNIQUE (serial_num)
     )
     ENGINE=InnoDB DEFAULT CHARSET=utf8;
     
@@ -185,51 +271,7 @@ CREATE
         INDEX fk_c_fi_contractid (contract_id)
     )
     ENGINE=InnoDB DEFAULT CHARSET=utf8;
-    
-CREATE
-    TABLE w_contract_info
-    (
-        id bigint NOT NULL AUTO_INCREMENT,
-        serial_num VARCHAR(100) COLLATE utf8_bin NOT NULL COMMENT '合同编号',
-        name_ VARCHAR(200) COLLATE utf8_bin NOT NULL COMMENT '合同名称',
-        amount_ DOUBLE(15,2) NOT NULL COMMENT '合同金额',
-        type_ INT NOT NULL COMMENT '合同类型（1=产品/2=外包/3=硬件）',
-        is_prepared bit NOT NULL COMMENT '是否预立（正式合同/预立合同），预立合同可以转正式合同',
-        is_epibolic bit NOT NULL COMMENT '是否外包（内部合同/外包合同）--- ',
-        sales_man_id bigint COMMENT '销售人员ID（界面选择员工信息）',
-        sales_man VARCHAR(100) COMMENT '销售人员名称',
-        dept_id bigint COMMENT '销售所属部门ID',
-        dept_ VARCHAR(200) COMMENT '销售所属部门',
-        consultants_id bigint,
-        consultants_ VARCHAR(100) COLLATE utf8_bin,
-        consultants_dept_id bigint COMMENT '咨询所属部门ID',
-        consultants_dept VARCHAR(200) COMMENT '咨询所属部门',
-        start_day TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '开始日期,页面格式20161227',
-        end_day TIMESTAMP NULL COMMENT '结束日期',
-        tax_rate DOUBLE(15,2) COMMENT '率,精确小数点后2位',
-        taxes_ DOUBLE(15,2) COMMENT '税费（元）,精确小数点后2位',
-        share_rate DOUBLE(15,2) COMMENT '公摊比例',
-        share_cost DOUBLE(15,2) COMMENT '公摊成本（合同金额*公摊比例）',
-        payment_way VARCHAR(20) COMMENT '付款方式（比如“3,6,1”）',
-        contractor_ VARCHAR(200) COMMENT '合同方（公司名称）',
-        address_ VARCHAR(1000) COMMENT '合同方通信地址',
-        postcode_ VARCHAR(20) COMMENT '合同方邮编',
-        linkman_ VARCHAR(100) COMMENT '合同方联系人',
-        contact_dept VARCHAR(200) COMMENT '合同方联系部门',
-        telephone_ VARCHAR(50) COMMENT '合同方电话',
-        receive_total DOUBLE(15,2) COMMENT '收款总金额（不展示）',
-        finish_total DOUBLE(15,2) COMMENT '合同累计完成金额（不展示）',
-        finish_rate DOUBLE(15,2) COMMENT '完成率（只展示）',
-        status_ INT COMMENT '状态（1=开发中，2=结项，3=删除）',
-        creator_ VARCHAR(100) COLLATE utf8_bin,
-    CREATE_time TIMESTAMP NULL,
-        updator_ VARCHAR(100) COLLATE utf8_bin,
-        update_time TIMESTAMP NULL,
-        PRIMARY KEY (id),
-        CONSTRAINT idx_contractinfo_serialnum UNIQUE (serial_num)
-    )
-    ENGINE=InnoDB DEFAULT CHARSET=utf8;
-    
+
 CREATE
     TABLE w_contract_monthly_stat
     (
@@ -249,7 +291,7 @@ CREATE
         project_human_cost DOUBLE(15,2) COMMENT '项目人工成本',
         project_payment DOUBLE(15,2) COMMENT '项目报销成本',
         stat_week bigint COMMENT '统计月(或周),格式:201612',
-    CREATE_time TIMESTAMP NULL COMMENT '统计日期',
+    	CREATE_time TIMESTAMP NULL COMMENT '统计日期',
         PRIMARY KEY (id)
     )
     ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -264,7 +306,7 @@ CREATE
         receiver_ VARCHAR(100) COMMENT '收款人',
         status_ INT COMMENT '状态（可用，删除）',
         creator_ VARCHAR(100) COLLATE utf8_bin,
-    CREATE_time TIMESTAMP NULL,
+    	CREATE_time TIMESTAMP NULL,
         updator_ VARCHAR(100) COLLATE utf8_bin,
         update_time TIMESTAMP NULL,
         PRIMARY KEY (id),
@@ -319,36 +361,6 @@ CREATE
     ENGINE=InnoDB DEFAULT CHARSET=utf8;
     
 CREATE
-    TABLE w_dept_info
-    (
-        id bigint NOT NULL AUTO_INCREMENT,
-        name_ VARCHAR(200) NOT NULL COMMENT '部门名称',
-        parent_id bigint COMMENT '上级部门主键',
-        id_path VARCHAR(100) COMMENT '父级ID路径，到“父IDPATH/父ID/”。。顶层默认是“/”',
-        type_ bigint COMMENT '部门类型',
-        status_ INT COMMENT '状态（可用，删除）',
-        creator_ VARCHAR(100) COLLATE utf8_bin,
-    CREATE_time TIMESTAMP NULL,
-        updator_ VARCHAR(100) COLLATE utf8_bin,
-        update_time TIMESTAMP NULL,
-        PRIMARY KEY (id),
-        CONSTRAINT fk_deptinfo_ FOREIGN KEY (type_) REFERENCES w_dept_type (id),
-        CONSTRAINT idx_deptinfo_unique1 UNIQUE (name_, parent_id),
-        INDEX fk_deptinfo_ (type_)
-    )
-    ENGINE=InnoDB DEFAULT CHARSET=utf8;
-    
-CREATE
-    TABLE w_dept_type
-    (
-        id bigint NOT NULL AUTO_INCREMENT,
-        name_ VARCHAR(100) NOT NULL COMMENT '类型名称 (管理/销售/产品咨询/产品研发中心/项目实施/采购/行政/财务/质量管理/人力资源）',
-        PRIMARY KEY (id),
-        CONSTRAINT idx_depttype_name UNIQUE (name_)
-    )
-    ENGINE=InnoDB DEFAULT CHARSET=utf8;
-    
-CREATE
     TABLE w_holiday_info
     (
         id bigint NOT NULL AUTO_INCREMENT,
@@ -377,6 +389,38 @@ CREATE
         updator_ VARCHAR(100) COLLATE utf8_bin,
         update_time TIMESTAMP NULL,
         PRIMARY KEY (id)
+    )
+    ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE
+    TABLE w_project_info
+    (
+        id bigint NOT NULL AUTO_INCREMENT,
+        serial_num VARCHAR(20) NOT NULL COMMENT '项目编号',
+        contract_id bigint NOT NULL COMMENT '合同主键',
+        budget_id bigint NOT NULL COMMENT '合同预算主键',
+        name_ VARCHAR(200) NOT NULL COMMENT '项目名称',
+        pm_id bigint NOT NULL COMMENT '项目经理ID（对应一个具体的员工，弹窗选择员工）',
+        pm_ VARCHAR(100) NOT NULL COMMENT '项目经理（对应一个具体的员工，弹窗选择员工）',
+        dept_id bigint NOT NULL COMMENT '所属部门（跟着项目经理走，用户所属部门，只展示，不可更改）',
+        dept_ VARCHAR(100) NOT NULL COMMENT '所属部门（跟着项目经理走，用户所属部门，只展示，不可更改）',
+        start_day TIMESTAMP NULL COMMENT '开始日期',
+        end_day TIMESTAMP NULL COMMENT '结束日期',
+        budget_total DOUBLE(15,2) NOT NULL COMMENT '预算总额',
+        status_ INT COMMENT '状态（1=开发中，2=结项，3=删除）',
+        finish_rate DOUBLE(15,2) COMMENT '完成率（只展示）',
+    CREATE_time TIMESTAMP NULL,
+        creator_ VARCHAR(100),
+        update_time TIMESTAMP NULL,
+        updator_ VARCHAR(100),
+        PRIMARY KEY (id),
+        CONSTRAINT fk_projectinfo_budgetid FOREIGN KEY (budget_id) REFERENCES w_contract_budget (id
+        ) ,
+        CONSTRAINT fk_projectinfo_contractid FOREIGN KEY (contract_id) REFERENCES w_contract_info (
+        id),
+        CONSTRAINT idx_projectinfo_serialnum UNIQUE (serial_num),
+        CONSTRAINT idx_projectinfo_u_budget_id UNIQUE (budget_id),
+        INDEX fk_projectinfo_contractid (contract_id)
     )
     ENGINE=InnoDB DEFAULT CHARSET=utf8;
     
@@ -412,38 +456,6 @@ CREATE
         PRIMARY KEY (id),
         CONSTRAINT fk_p_pfi_projectid FOREIGN KEY (project_id) REFERENCES w_project_info (id),
         INDEX fk_p_pfi_projectid (project_id)
-    )
-    ENGINE=InnoDB DEFAULT CHARSET=utf8;
-    
-CREATE
-    TABLE w_project_info
-    (
-        id bigint NOT NULL AUTO_INCREMENT,
-        serial_num VARCHAR(20) NOT NULL COMMENT '项目编号',
-        contract_id bigint NOT NULL COMMENT '合同主键',
-        budget_id bigint NOT NULL COMMENT '合同预算主键',
-        name_ VARCHAR(200) NOT NULL COMMENT '项目名称',
-        pm_id bigint NOT NULL COMMENT '项目经理ID（对应一个具体的员工，弹窗选择员工）',
-        pm_ VARCHAR(100) NOT NULL COMMENT '项目经理（对应一个具体的员工，弹窗选择员工）',
-        dept_id bigint NOT NULL COMMENT '所属部门（跟着项目经理走，用户所属部门，只展示，不可更改）',
-        dept_ VARCHAR(100) NOT NULL COMMENT '所属部门（跟着项目经理走，用户所属部门，只展示，不可更改）',
-        start_day TIMESTAMP NULL COMMENT '开始日期',
-        end_day TIMESTAMP NULL COMMENT '结束日期',
-        budget_total DOUBLE(15,2) NOT NULL COMMENT '预算总额',
-        status_ INT COMMENT '状态（1=开发中，2=结项，3=删除）',
-        finish_rate DOUBLE(15,2) COMMENT '完成率（只展示）',
-    CREATE_time TIMESTAMP NULL,
-        creator_ VARCHAR(100),
-        update_time TIMESTAMP NULL,
-        updator_ VARCHAR(100),
-        PRIMARY KEY (id),
-        CONSTRAINT fk_projectinfo_budgetid FOREIGN KEY (budget_id) REFERENCES w_contract_budget (id
-        ) ,
-        CONSTRAINT fk_projectinfo_contractid FOREIGN KEY (contract_id) REFERENCES w_contract_info (
-        id),
-        CONSTRAINT idx_projectinfo_serialnum UNIQUE (serial_num),
-        CONSTRAINT idx_projectinfo_u_budget_id UNIQUE (budget_id),
-        INDEX fk_projectinfo_contractid (contract_id)
     )
     ENGINE=InnoDB DEFAULT CHARSET=utf8;
     
@@ -569,17 +581,6 @@ CREATE
     )
     ENGINE=InnoDB DEFAULT CHARSET=utf8;
     
-CREATE
-    TABLE w_work_area
-    (
-        id bigint NOT NULL AUTO_INCREMENT,
-        name_ VARCHAR(100),
-        PRIMARY KEY (id),
-        CONSTRAINT idx_workarea_name_u UNIQUE (name_)
-    )
-    ENGINE=InnoDB DEFAULT CHARSET=utf8;
-    
-	
     insert into jhi_authority (name) values ('ROLE_ADMIN');
 	insert into jhi_authority (name) values ('ROLE_CONTRACT');
 	insert into jhi_authority (name) values ('ROLE_CONTRACT_BUDGET');
@@ -623,3 +624,6 @@ CREATE
 	insert into w_dept_type (id, name_) values (9, '质量管理');
 	insert into w_dept_type (id, name_) values (10, '人力资源');
 	insert into w_dept_type (id, name_) values (11, '测试一下');
+	
+--20170119
+	ALTER TABLE jhi_user ADD (work_area VARCHAR(100))

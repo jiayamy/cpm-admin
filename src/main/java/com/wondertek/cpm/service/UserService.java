@@ -159,6 +159,7 @@ public class UserService {
         user.setBirthYear(managedUserVM.getBirthYear());
         user.setBirthDay(managedUserVM.getBirthDay());
         user.setTelephone(managedUserVM.getTelephone());
+        user.setWorkArea(managedUserVM.getWorkArea());
         
         userRepository.save(user);
         userSearchRepository.save(user);
@@ -205,6 +206,7 @@ public class UserService {
                 user.setBirthYear(managedUserVM.getBirthYear());
                 user.setBirthDay(managedUserVM.getBirthDay());
                 user.setTelephone(managedUserVM.getTelephone());
+                user.setWorkArea(managedUserVM.getWorkArea());
                 
                 Set<Authority> managedAuthorities = user.getAuthorities();
                 managedAuthorities.clear();
