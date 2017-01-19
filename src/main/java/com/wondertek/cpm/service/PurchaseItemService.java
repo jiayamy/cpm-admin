@@ -72,7 +72,7 @@ public class PurchaseItemService {
      *  @return the entity
      */
     @Transactional(readOnly = true) 
-    public PurchaseItemVo findOne(Long id) {
+    public PurchaseItemVo getPurchaseItem(Long id) {
         log.debug("Request to get PurchaseItem : {}", id);
         PurchaseItemVo purchaseItem = purchaseItemDao.findPurchaseItemById(id);
         return purchaseItem;

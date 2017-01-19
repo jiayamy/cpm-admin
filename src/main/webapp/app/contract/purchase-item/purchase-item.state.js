@@ -148,7 +148,7 @@
                         id: null,
                         contractNum: null,
                         contractName: null,
-                        budgetName: null
+                        budgetOriginal:0
                     };
                 },
                 previousState: ["$state", function ($state) {

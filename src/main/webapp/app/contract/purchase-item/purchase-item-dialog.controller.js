@@ -11,6 +11,9 @@
         var vm = this;
 
         vm.purchaseItem = entity;
+        vm.contractChanged = contractChanged;
+        vm.budgetChanged = budgetChanged;
+        
         vm.datePickerOpenStatus = {};
         vm.openCalendar = openCalendar;
         vm.save = save;
@@ -40,33 +43,75 @@
         	function(data, headers){
         		vm.contractInfos = data;
         		if(vm.contractInfos && vm.contractInfos.length > 0){
+        			var select = false;
         			for(var i = 0; i < vm.contractInfos.length; i++){
         				if(entity.contractId == vm.contractInfos[i].key){
         					vm.purchaseItem.contractId = vm.contractInfos[i];
+        					select = true;
         				}
         			}
+        			if (!select) {
+						vm.purchaseItem.contractId = vm.contractInfos[0];
+					}
+        			contractChanged();
         		}
         	},
         	function(error){
         		AlertService.error(error.data.message);
         	});
         }
-        
-        $timeout(function (){
-            angular.element('.form-group:eq(1)>input').focus();
-        });
-
+        //加载采购单
+        function contractChanged(){
+        	var contractId = '';
+        	
+        	if(vm.purchaseItem && vm.purchaseItem.contractId && vm.purchaseItem.contractId.key){
+        		contractId = vm.purchaseItem.contractId.key;
+        	}else if(vm.purchaseItem && vm.purchaseItem.contractId){
+        		contractId = vm.purchaseItem.contractId;
+        	}else{
+        		vm.contractBudgets = [];
+        		return;
+        	}
+        	ProjectInfo.queryUserContractBudget({
+        		contractId:contractId
+	        	},
+	    		function(data, headers){
+	        		vm.contractBudgets = data;
+	        		if(vm.contractBudgets && vm.contractBudgets.length > 0){
+	        			var select = false;
+	        			for(var i = 0; i < vm.contractBudgets.length; i++){
+	        				if(entity.budgetId == vm.contractBudgets[i].key){
+	        					vm.purchaseItem.budgetId = vm.contractBudgets[i];
+	        					select = true;
+	        				}
+	        			}
+	        			if(!select){
+	        				vm.purchaseItem.budgetId = vm.contractBudgets[0];
+	        			}
+	        			budgetChanged();
+	        		}
+	        	},
+	        	function(error){
+	        		AlertService.error(error.data.message);
+	        		vm.contractBudgets = [];
+	        	}
+	        );
+        }
+        function budgetChanged(){
+        	if(vm.purchaseItem.budgetId && vm.purchaseItem.budgetId.key){
+        		vm.purchaseItem.budgetOriginal = vm.purchaseItem.budgetId.p2;
+        	}else{
+        		vm.purchaseItem.budgetOriginal = vm.purchaseItem.budgetOriginal;
+        	}
+        }
         function save () {
             vm.isSaving = true;
             var purchaseItem = {};
             purchaseItem.id = vm.purchaseItem.id;
             
             purchaseItem.contractId = vm.purchaseItem.contractId;
-//            purchaseItem.contractName = vm.purchaseItem.contractName;
-//            purchaseItem.contractNum = vm.purchaseItem.contractNum;
             
             purchaseItem.budgetId = vm.purchaseItem.budgetId;
-//            purchaseItem.budgetName = vm.purchaseItem.budgetName;
             
             purchaseItem.name = vm.purchaseItem.name;
             purchaseItem.quantity = vm.purchaseItem.quantity;
@@ -88,16 +133,30 @@
             if (purchaseItem.source) {
             	purchaseItem.source = purchaseItem.source.key;
 			}
-      
-            PurchaseItem.update(purchaseItem, onSaveSuccess, function(error){
-	        		vm.isSaving = false;
-	        	});
+          //校验对象
+            //预算和合同是否一致
+            if(purchaseItem.contractId && purchaseItem.contractId.key){
+            	purchaseItem.contractId = purchaseItem.contractId.key;
+            }
+            if(purchaseItem.budgetId && purchaseItem.budgetId.key){
+            	if(purchaseItem.budgetId.p1 == purchaseItem.contractId){
+            		purchaseItem.budgetId = purchaseItem.budgetId.key;
+            	}else{
+            	//	AlertService.error("cpmApp.purchaseItem.save.budgetError");
+            		vm.isSaving = false;
+            		return;
+            	}
+            }
+            PurchaseItem.update(purchaseItem, onSaveSuccess,onSaveError);
         }
-
         function onSaveSuccess (result) {
             	$state.go('purchase-item');
             	vm.isSaving = false;
-        	}	
+        	}
+        
+        function onSaveError (result) {
+            vm.isSaving = false;
+        }
         
         vm.priceChanged = priceChanged;
         vm.quantityChanged = quantityChanged;

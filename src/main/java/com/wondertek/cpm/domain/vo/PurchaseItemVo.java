@@ -82,6 +82,7 @@ public class PurchaseItemVo  {
     public PurchaseItemVo(PurchaseItem item ,String contractNum,String contractName, String budgetName) {
     	this.id = item.getId();
     	this.contractId = item.getContractId();
+    	this.budgetId = item.getBudgetId();
     	this.name = item.getName();
     	this.quantity = item.getQuantity();
     	this.price = item.getPrice();

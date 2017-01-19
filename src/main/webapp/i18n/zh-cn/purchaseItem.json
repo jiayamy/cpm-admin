@@ -16,6 +16,14 @@
             "detail": {
                 "title": "采购子项信息"
             },
+            "save":{
+            	"requiedError":"必填参数为空",
+            	"idNone":"数据异常，请刷新后操作",
+            	"contractIdError":"采购单和和合同数据异常",
+            	"statue2Error":"状态为删除的数据不可编辑",
+            	"purchaseItemError":"数据有误,不可修改",
+            	"budgetError":"合同和采购单绑定异常"
+            },
             "contract": "合同",
             "contractId": "合同ID",
             "serialNum": "合同编号",

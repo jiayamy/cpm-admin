@@ -6,6 +6,30 @@
 	<div class="container-fluid">
 		<div class="row form-horizontal">
 			<div class="form-group">
+				<div class="col-sm-6">
+					<label class="control-label" data-translate="cpmApp.purchaseItem.contract" for="field_contractId">Contract Id</label>
+					<select class="form-control" name="contractId" ng-model="vm.purchaseItem.contractId" id="field_contractId"
+	            		ng-required="true" ng-change="vm.contractChanged()" ng-disabled="vm.purchaseItem.id"
+		            	ng-options="contractInfo.val for contractInfo in vm.contractInfos track by contractInfo.key">
+		         	</select>
+	                <div class="help-block"
+	                   ng-hide="vm.purchaseItem.contractId" data-translate="entity.validation.required" style="color:red">
+	                    This field is required.
+	                </div>
+				</div>
+				<div class="col-sm-6">
+					<label class="control-label" data-translate="cpmApp.purchaseItem.budgetName" for="field_budgetId">Budget Id</label>
+					<select class="form-control" name="budgetId" ng-model="vm.purchaseItem.budgetId" id="field_budgetId"
+	            		ng-required="true" ng-change="vm.budgetChanged()" ng-disabled="vm.purchaseItem.id"
+		            	ng-options="contractBudget.val for contractBudget in vm.contractBudgets track by contractBudget.key">
+		            </select>
+	                <div class="help-block"
+	                   ng-hide="vm.purchaseItem.budgetId" data-translate="entity.validation.required" style="color:red">
+	                    This field is required.
+	                </div>
+				</div>
+			</div>
+			<div class="form-group">
         		<div class="col-sm-6">
         			<label class="control-label" data-translate="cpmApp.purchaseItem.name" for="field_name">Name</label>
 	            	<input type="text" class="form-control" name="name" id="field_name" ng-required="true" 
@@ -27,35 +51,19 @@
 	                </div>
        			</div>
         	</div>
-			<div class="form-group">
-				<div class="col-sm-6">
-					<label class="control-label" data-translate="cpmApp.purchaseItem.contract" for="field_contractId">Contract Id</label>
-					<select class="form-control" name="contractId" ng-model="vm.purchaseItem.contractId" id="field_contractId"
-	            		ng-required="true" ng-disabled="vm.purchaseItem.id"
-		            	ng-options="contractInfo.val for contractInfo in vm.contractInfos track by contractInfo.key">
-		         	</select>
-	                <div class="help-block"
-	                   ng-hide="vm.purchaseItem.contractId" data-translate="entity.validation.required" style="color:red">
-	                    This field is required.
-	                </div>
-				</div>
-				<div class="col-sm-6">
-					<label class="control-label" data-translate="cpmApp.purchaseItem.budgetName" for="field_budgetName">Budget Name</label>
-					<input type="text" class="form-control" name="budgetName" ng-model="vm.purchaseItem.budgetName" id="field_budgetName"
-		            		ng-required="true" ng-disabled="vm.purchaseItem.id"
-		            		/>
-	                <div class="help-block"
-	                   ng-hide="vm.purchaseItem.budgetName" data-translate="entity.validation.required" style="color:red">
-	                    This field is required.
-	                </div>
-				</div>
-			</div>
+			
 			<div class="form-group">
 				<div class="col-sm-6">
 					<label class="control-label" data-translate="cpmApp.purchaseItem.quantity" for="field_quantity">Quantity</label>
 					<input type="number" class="form-control" name="quantity" id="field_quantity"
 	                    	ng-model="vm.purchaseItem.quantity" step="1" min="0" ng-required="true" ng-change="vm.quantityChanged()"
 	                    	 />
+                   	 <div ng-show="myForm.quantity.$dirty&&myForm.quantity.$error.number" class="alert alert-danger help-block"> 
+                    	购买数量必须为数字
+                	</div>
+                	<div ng-show="myForm.quantity.$dirty&&myForm.quantity.$error.min" class="alert alert-danger help-block"> 
+                		购买数量最小值为0
+           			</div>
 	                <div class="help-block"
 	                   ng-hide="vm.purchaseItem.quantity" data-translate="entity.validation.required" style="color:red">
 	                    This field is required.
@@ -78,6 +86,12 @@
 					<input type="number" class="form-control" name="price" id="field_price"
                     	ng-model="vm.purchaseItem.price" step="0.1" min="0" ng-required="true" ng-change="vm.priceChanged()"
                      	/>
+                    <div ng-show="myForm.price.$dirty&&myForm.price.$error.number" class="alert alert-danger help-block"> 
+                    	单价必须为数字
+                	</div>
+                	<div ng-show="myForm.price.$dirty&&myForm.price.$error.min" class="alert alert-danger help-block"> 
+                		单价最小值为0
+           			</div>
                	 	<div class="help-block"
                   	 	ng-hide="vm.purchaseItem.price" data-translate="entity.validation.required" style="color:red">
                     	This field is required.
@@ -88,6 +102,12 @@
 					<input type="number" class="form-control" name="totalAmount" ng-model="vm.purchaseItem.totalAmount" id="field_totalAmount"
 	            		ng-required="true" ng-change="vm.totalAmountChanged()" step="0.1" min="0"
 	            		/>
+	            	<div ng-show="myForm.totalAmount.$dirty&&myForm.totalAmount.$error.number" class="alert alert-danger help-block"> 
+                    	总价必须为数字
+                	</div>
+                	<div ng-show="myForm.totalAmount.$dirty&&myForm.totalAmount.$error.min" class="alert alert-danger help-block"> 
+                		总价最小值为0
+           			</div>
                 	<div class="help-block"
                    		ng-hide="vm.purchaseItem.totalAmount" data-translate="entity.validation.required" style="color:red">
                     	This field is required.

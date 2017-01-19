@@ -130,7 +130,6 @@ public class PurchaseItemDaoImpl extends GenericDaoImpl<PurchaseItem, Long> impl
 		if(list != null && !list.isEmpty()){
 			return new PurchaseItemVo((PurchaseItem)list.get(0)[0],StringUtil.null2Str(list.get(0)[1]),StringUtil.null2Str(list.get(0)[2]),StringUtil.null2Str(list.get(0)[3]));
 		}
-		
 		return null;
 	}
 
