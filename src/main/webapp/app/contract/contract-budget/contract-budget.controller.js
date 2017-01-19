@@ -5,9 +5,9 @@
         .module('cpmApp')
         .controller('ContractBudgetController', ContractBudgetController);
 
-    ContractBudgetController.$inject = ['$scope', '$state', 'ContractBudget', 'ParseLinks', 'AlertService', 'paginationConstants', 'pagingParams'];
+    ContractBudgetController.$inject = ['$scope', '$state', 'ContractBudget', 'ParseLinks', 'AlertService', 'paginationConstants', 'pagingParams','ProjectInfo'];
 
-    function ContractBudgetController ($scope, $state, ContractBudget, ParseLinks, AlertService, paginationConstants, pagingParams) {
+    function ContractBudgetController ($scope, $state, ContractBudget, ParseLinks, AlertService, paginationConstants, pagingParams,ProjectInfo) {
         var vm = this;
 
         vm.loadPage = loadPage;
@@ -19,47 +19,59 @@
         vm.search = search;
         vm.loadAll = loadAll;
         vm.searchQuery = {}
-        var purchaseType = pagingParams.purchaseType;
-        if (purchaseType) {
-			if (purchaseType == 1) {
-				purchaseType = { id: 1, name: '硬件'};
-			}else if (purchaseType == 2) {
-				purchaseType = { id: 2, name: '软件'};
-			}else if (purchaseType == 3) {
-				purchaseType = { id: 3, name: '服务'};
+        //搜索中的参数
+        vm.purchaseTypes = [{id: 1,name: "硬件"},{id: 2,name: "软件"},{id: 3,name: "服务"}];
+        for (var i = 0; i < vm.purchaseTypes.length; i++) {
+			if (pagingParams.purchaseType == vm.purchaseTypes[i].id) {
+				vm.searchQuery.purchaseType = vm.purchaseTypes[i];
 			}
 		}
-        vm.searchQuery.purchaseType = pagingParams.purchaseType;
-        vm.searchQuery.serialNum = pagingParams.serialNum;
+        
+        vm.searchQuery.contractId = pagingParams.contractId;
         vm.searchQuery.name = pagingParams.name;
         vm.searchQuery.contractName = pagingParams.contractName;
-        vm.currentSearch = {};
-        vm.currentSearch.purchaseType = pagingParams.purchaseType;
-        vm.currentSearch.serialNum = pagingParams.serialNum;
-        vm.currentSearch.name = pagingParams.name;
-        vm.currentSearch.contractName = pagingParams.contractName;
-        if (!vm.currentSearch.serialNum && !vm.currentSearch.name && !vm.currentSearch.contractName){
-        	vm.currentSearch.haveSearch = null;
+        if (!vm.searchQuery.contractId && !vm.searchQuery.name && !vm.searchQuery.purchaseType){
+        	vm.haveSearch = null;
         }else{
-        	vm.currentSearch.haveSearch = true;
+        	vm.haveSearch = true;
         }
-        vm.purchaseTypes = [{ id: 1, name: '硬件' }, { id: 2, name: '软件' }, { id: 3, name: '服务'}];
+        
+        vm.contractInfos = [];
+        loadContract();
+        function loadContract(){
+        	ProjectInfo.queryUserContract({
+        		
+        	},
+        	function(data, headers){
+        		vm.contractInfos = data;
+        		if(vm.contractInfos && vm.contractInfos.length > 0){
+        			for(var i = 0; i < vm.contractInfos.length; i++){
+        				if(pagingParams.contractId == vm.contractInfos[i].key){
+        					vm.searchQuery.contractId = vm.contractInfos[i];
+        				}
+        			}
+        		}
+        	},
+        	function(error){
+        		AlertService.error(error.data.message);
+        	});
+        }
         loadAll();
 
         function loadAll () {
-            	if(pagingParams.serialNum == undefined){
-            		pagingParams.serialNum = "";
+            	if(pagingParams.contractId == undefined){
+            		pagingParams.contractId = "";
             	}
             	if(pagingParams.name == undefined){
             		pagingParams.name = "";
             	}
-            	if (pagingParams.contractName == undefined) {
-					pagingParams.contractName = "";
+            	if (pagingParams.purchaseType == undefined) {
+					pagingParams.purchaseType = "";
 				}
             	ContractBudget.query({
             		name: pagingParams.name,
-            		serialNum: pagingParams.serialNum,
-            		contractName: pagingParams.contractName,
+            		contractId: pagingParams.contractId,
+            		purchaseType: pagingParams.purchaseType,
                     page: pagingParams.page - 1,
                     size: vm.itemsPerPage,
                     sort: sort()
@@ -110,22 +122,21 @@
             $state.transitionTo($state.$current, {
                 page: vm.page,
                 sort: vm.predicate + ',' + (vm.reverse ? 'asc' : 'desc'),
-                serialNum:vm.currentSearch.serialNum,
-                name:vm.currentSearch.name,
-                contractName:vm.currentSearch.contractName
+                contractId: vm.searchQuery.contractId ? vm.searchQuery.contractId.key: "",
+                name:vm.searchQuery.name,
+                purchaseType:vm.searchQuery.purchaseType ? vm.searchQuery.purchaseType.id : ""
             });
         }
 
-        function search(searchQuery) {
-            if (!searchQuery.serialNum && !searchQuery.name && !searchQuery.contractName){
+        function search() {
+            if (!vm.searchQuery.contractId && !vm.searchQuery.name && !vm.searchQuery.purchaseType){
                 return vm.clear();
             }
             vm.links = null;
             vm.page = 1;
             vm.predicate = 'cb.id';
             vm.reverse = false;
-            vm.currentSearch = searchQuery;
-            vm.currentSearch.haveSearch = true;
+            vm.haveSearch = true;
             vm.transition();
         }
 
@@ -134,8 +145,8 @@
             vm.page = 1;
             vm.predicate = 'cb.id';
             vm.reverse = true;
-            vm.currentSearch = {};
-            vm.currentSearch.haveSearch = null;
+            vm.searchQuery = {};
+            vm.haveSearch = null;
             vm.transition();
         }
     }

@@ -37,21 +37,21 @@ public class ContractBudgetDaoImpl extends GenericDaoImpl<ContractBudget, Long> 
 	}
 
 	@Override
-	public Page<ContractBudgetVo> getPageByParams(String name, String serialNum,String contractName,Pageable pageable) {
+	public Page<ContractBudgetVo> getPageByParams(ContractBudget contractBudget,Pageable pageable) {
 		StringBuffer sql = new StringBuffer();
 		sql.append(" from w_contract_info ci inner join w_contract_budget cb on cb.contract_id = ci.id where 1=1");
 		List<Object> params = new ArrayList<Object>();
-		if (!StringUtil.isNullStr(serialNum)) {
-			sql.append(" and ci.serial_num = ?");
-			params.add(serialNum);
+		if (contractBudget.getContractId() != null) {
+			sql.append(" and cb.contract_id = ?");
+			params.add(contractBudget.getContractId());
 		}
-		if (!StringUtil.isNullStr(name)) {
-			sql.append(" and ci.name_ like ?");
-			params.add("%" + name + "%");
-		}
-		if (!StringUtil.isNullStr(contractName)) {
+		if (contractBudget.getName() != null) {
 			sql.append(" and cb.name_ like ?");
-			params.add("%" + contractName + "%");
+			params.add("%" + contractBudget.getName() + "%");
+		}
+		if (contractBudget.getPurchaseType() != null) {
+			sql.append(" and cb.purchase_type like ?");
+			params.add("%" + contractBudget.getPurchaseType() + "%");
 		}
 		StringBuffer orderSql = new StringBuffer();
     	if(pageable.getSort() != null){

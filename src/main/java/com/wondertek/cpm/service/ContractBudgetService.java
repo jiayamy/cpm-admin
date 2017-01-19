@@ -120,9 +120,8 @@ public class ContractBudgetService {
         return result;
     }
 
-	public Page<ContractBudgetVo> searchPage(String name,
-			String serialNum,String contractName,Pageable pageable) {
-		Page<ContractBudgetVo> page = contractBudgetDao.getPageByParams(name,serialNum,contractName,pageable);
+	public Page<ContractBudgetVo> searchPage(ContractBudget contractBudget,Pageable pageable) {
+		Page<ContractBudgetVo> page = contractBudgetDao.getPageByParams(contractBudget,pageable);
 		return page;
 	}
 

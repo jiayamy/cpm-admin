@@ -230,12 +230,22 @@ public class ContractBudgetResource {
     @Secured(AuthoritiesConstants.ROLE_CONTRACT_BUDGET)
     public ResponseEntity<List<ContractBudgetVo>> getAllContractBudgetsByParams(
     		@RequestParam(value = "name",required=false) String name,
-    		@RequestParam(value = "serialNum",required=false) String serialNum,
-    		@RequestParam(value = "contractName",required=false) String contractName,
+    		@RequestParam(value = "contractId",required=false) String contractId,
+    		@RequestParam(value = "purchaseType",required=false) String purchaseType,
     		@ApiParam Pageable pageable)
     	throws URISyntaxException{
     	log.debug("REST request to get a page of ContractBudget");
-    	Page<ContractBudgetVo> page = contractBudgetService.searchPage(name,serialNum,contractName,pageable);
+    	ContractBudget contractBudget = new ContractBudget();
+    	if (!StringUtil.isNullStr(name)) {
+			contractBudget.setName(name);
+		}
+    	if (!StringUtil.isNullStr(contractId)) {
+			contractBudget.setContractId(StringUtil.nullToLong(contractId));
+		}
+    	if (!StringUtil.isNullStr(purchaseType)) {
+			contractBudget.setPurchaseType(StringUtil.nullToInteger(purchaseType));
+		}
+    	Page<ContractBudgetVo> page = contractBudgetService.searchPage(contractBudget,pageable);
     	HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(name, page,"/api/contract-budgets");
     	return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
