@@ -127,7 +127,7 @@ public class ContractBudgetResource {
 		}else {
 			contractBudget.setCreateTime(updateTime);
     		contractBudget.setCreator(updator);
-    		contractBudget.setType(ContractBudget.TYPE_SALE);
+    		contractBudget.setType(ContractBudget.TYPE_PURCHASE);
     		contractBudget.setStatus(ContractBudget.STATUS_VALIDABLE);
 		}
         contractBudget.setUpdateTime(updateTime);
