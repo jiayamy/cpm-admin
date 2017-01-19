@@ -5,27 +5,55 @@
         .module('cpmApp')
         .controller('UserManagementDialogController',UserManagementDialogController);
 
-    UserManagementDialogController.$inject = ['$scope','$rootScope','$state','$stateParams',  'entity', 'User', 'JhiLanguageService','DeptInfo','previousState'];
+    UserManagementDialogController.$inject = ['$scope','$rootScope','$state','$stateParams',  'entity', 'User', 'JhiLanguageService','DeptInfo','previousState','WorkArea'];
 
-    function UserManagementDialogController ($scope,$rootScope,$state,$stateParams, entity, User, JhiLanguageService,DeptInfo,previousState) {
+    function UserManagementDialogController ($scope,$rootScope,$state,$stateParams, entity, User, JhiLanguageService,DeptInfo,previousState,WorkArea) {
         var vm = this;
         
         vm.previousState = previousState.name;
         vm.queryDept = previousState.queryDept;
 
-        vm.authorities = ['ROLE_ADMIN','ROLE_USER','ROLE_TIMESHEET','ROLE_INFO','ROLE_INFO_BASIC','ROLE_INFO_USERCOST','ROLE_CONTRACT','ROLE_CONTRACT_BUDGET','ROLE_CONTRACT_COST','ROLE_CONTRACT_FINISH','ROLE_CONTRACT_INFO','ROLE_CONTRACT_PRODUCTPRICE','ROLE_CONTRACT_PURCHASE','ROLE_CONTRACT_RECEIVE','ROLE_CONTRACT_TIMESHEET','ROLE_CONTRACT_USER','ROLE_PROJECT','ROLE_PROJECT_COST','ROLE_PROJECT_FINISH','ROLE_PROJECT_INFO','ROLE_PROJECT_TIMESHEET','ROLE_PROJECT_USER','ROLE_STAT','ROLE_STAT_CONTRACT','ROLE_STAT_PROJECT'];
+//        vm.authorities = ['ROLE_ADMIN','ROLE_USER','ROLE_TIMESHEET','ROLE_INFO','ROLE_INFO_BASIC','ROLE_INFO_USERCOST','ROLE_CONTRACT','ROLE_CONTRACT_BUDGET','ROLE_CONTRACT_COST','ROLE_CONTRACT_FINISH','ROLE_CONTRACT_INFO','ROLE_CONTRACT_PRODUCTPRICE','ROLE_CONTRACT_PURCHASE','ROLE_CONTRACT_RECEIVE','ROLE_CONTRACT_TIMESHEET','ROLE_CONTRACT_USER','ROLE_PROJECT','ROLE_PROJECT_COST','ROLE_PROJECT_FINISH','ROLE_PROJECT_INFO','ROLE_PROJECT_TIMESHEET','ROLE_PROJECT_USER','ROLE_STAT','ROLE_STAT_CONTRACT','ROLE_STAT_PROJECT'];
 
         vm.languages = null;
         vm.save = save;
         vm.user = entity;
+        
         vm.genders = [{key:1,val:"男"},{key:2,val:"女"}];
-
         for(var j = 0; j < vm.genders.length ; j++){
     		if(entity.gender == vm.genders[j].key){
 				vm.user.gender = vm.genders[j];
 			}
     	}
         
+        loadWorkArea();
+        function loadWorkArea(){
+        	WorkArea.queryAll({},function onSuccess(data, headers) {
+        		vm.allAreas = data;
+        		if(vm.allAreas && vm.allAreas.length > 0){
+        			if(vm.user.id == undefined){
+        				vm.user.workArea = vm.allAreas[0];
+        			}
+        		}
+        	});
+        }
+        User.queryAllAuthorities({},function onSuccess(data, headers) {
+        	vm.authorities = data;
+    		if(data && data.length > 0){
+    			if(vm.user.authorities && vm.user.authorities.length > 0){
+    				var authorities = [];
+    				for(var i = 0; i < vm.user.authorities.length; i++){
+    					for(var j = 0; j < vm.authorities.length; j++){
+    						if(vm.authorities[j].name == vm.user.authorities[i]){
+    							authorities.push(vm.authorities[j]);
+    							break;
+    						}
+    					}
+    				}
+    				vm.user.authorities = authorities;
+    			}
+    		}
+    	});
         JhiLanguageService.getAll().then(function (languages) {
             vm.languages = languages;
         });
@@ -64,7 +92,16 @@
             user.password=vm.user.password;
             user.serialNum=vm.user.serialNum;
             user.telephone=vm.user.telephone;
-        
+            user.workArea = vm.user.workArea;
+            
+            if(user.authorities && user.authorities.length > 0 && user.authorities[0].name){
+            	var authorities = [];
+            	for(var i = 0; i < user.authorities.length ; i++){
+            		authorities.push(user.authorities[i].name);
+            	}
+            	user.authorities = authorities;
+            }
+            
             if (vm.user.id !== null) {
                 User.update(user, onSaveSuccess, onSaveError);
             } else {

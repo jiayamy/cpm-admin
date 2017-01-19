@@ -2,6 +2,7 @@ package com.wondertek.cpm.service;
 
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -21,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.wondertek.cpm.config.StringUtil;
 import com.wondertek.cpm.domain.Authority;
 import com.wondertek.cpm.domain.User;
+import com.wondertek.cpm.domain.WorkArea;
 import com.wondertek.cpm.repository.AuthorityRepository;
 import com.wondertek.cpm.repository.PersistentTokenRepository;
 import com.wondertek.cpm.repository.UserDao;
@@ -303,5 +305,10 @@ public class UserService {
 
 	public Page<User> getUserPage(User user, Pageable pageable) {
 		return userDao.getUserPage(user, pageable);
+	}
+
+	public List<Authority> queryAllAuthorities() {
+		List<Authority> list = authorityRepository.findAll();
+		return list;
 	}
 }

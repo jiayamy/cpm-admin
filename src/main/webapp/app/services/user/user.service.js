@@ -19,7 +19,13 @@
             },
             'save': { method:'POST' },
             'update': { method:'PUT' },
-            'delete':{ method:'DELETE'}
+            'delete':{ method:'DELETE'},
+            'queryAllAuthorities':{
+            	method: 'GET',
+            	method:'GET',
+            	url:'api/_authorities/users/queryAll',
+            	isArray:true
+            }
         });
 
         return service;

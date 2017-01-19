@@ -31,6 +31,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.codahale.metrics.annotation.Timed;
 import com.wondertek.cpm.config.Constants;
+import com.wondertek.cpm.domain.Authority;
 import com.wondertek.cpm.domain.DeptInfo;
 import com.wondertek.cpm.domain.User;
 import com.wondertek.cpm.repository.DeptInfoRepository;
@@ -262,4 +263,13 @@ public class UserResource {
             .stream(userSearchRepository.search(queryStringQuery(query)).spliterator(), false)
             .collect(Collectors.toList());
     }
+    
+    @GetMapping("/_authorities/users/queryAll")
+    @Timed
+    @Secured(AuthoritiesConstants.ROLE_INFO_BASIC)
+    public ResponseEntity<List<Authority>> queryAllAuthorities() {
+    	List<Authority> page = userService.queryAllAuthorities();
+        return new ResponseEntity<>(page, null, HttpStatus.OK);
+    }
+    
 }
