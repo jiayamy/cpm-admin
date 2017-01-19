@@ -175,7 +175,7 @@
                     	contractName: null,
                         userName: null,
                         dept: null,
-                        purchaseType: null,
+                        purchaseType: 3,
                         budgetTotal: null,
                         id: null
                     };
