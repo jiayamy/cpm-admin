@@ -173,4 +173,43 @@ public class ProjectMonthlyStatResource {
     	chartReportVo.setLegend(legend);
     	return chartReportVo;
     }
+    
+    @GetMapping("/project-monthly-stats/queryFinishRateChart")
+    @Timed
+    @Secured(AuthoritiesConstants.ROLE_STAT_PROJECT)
+    public ChartReportVo getFinishRateChartReport(@ApiParam(value="fromDate") @RequestParam(value="fromDate") String fromDate,
+    		@ApiParam(value="toDate") @RequestParam(value="toDate") String toDate,
+    		@ApiParam(value="id") @RequestParam(value="id") Long statId){
+    	ChartReportVo chartReportVo = new ChartReportVo();
+    	ProjectMonthlyStatVo projectMonthlyStatvo = projectMonthlyStatService.findOne(statId);
+    	Long projectId = projectMonthlyStatvo.getProjectId();
+    	chartReportVo.setTitle(projectMonthlyStatvo.getSerialNum()+"-完成率");
+    	if(StringUtil.isNullStr(toDate)){
+    		toDate = projectMonthlyStatvo.getStatWeek().toString();
+    	}
+    	Date lMonth = DateUtil.parseyyyyMM("yyyy-MM", toDate);
+    	if(StringUtil.isNullStr(fromDate)){
+    		fromDate = DateUtil.formatDate("yyyyMM", DateUtil.addMonthNum(-6, lMonth));
+    	}
+    	Date fMonth = DateUtil.parseyyyyMM("yyyy-MM", fromDate);
+    	Calendar cal1 = Calendar.getInstance();
+    	Calendar cal2 = Calendar.getInstance();
+    	cal1.setTime(fMonth);
+    	cal2.setTime(lMonth);
+    	int yearCount = cal2.get(Calendar.YEAR) - cal1.get(Calendar.YEAR); 
+    	int count = 0;
+    	count += 12*yearCount;
+    	count += cal2.get(Calendar.MONTH) - cal1.get(Calendar.MONTH);
+    	List<String> category = new ArrayList<String>();
+    	for(int i = 0; i <= count; i++){
+    		category.add(DateUtil.formatDate("yyyy-MM", cal1.getTime()));
+    		cal1.add(Calendar.MONTH, 1);
+    	}
+    	chartReportVo.setCategory(category);
+    	List<ChartReportDataVo> datas = projectMonthlyStatService.getFinishRateData(fMonth, lMonth, projectId);
+    	chartReportVo.setSeries(datas);
+    	List<String> legend = new ArrayList<String>(Arrays.asList(new String[]{"完成率"}));
+    	chartReportVo.setLegend(legend);
+    	return chartReportVo;
+    }
 }

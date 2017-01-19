@@ -101,7 +101,7 @@ public class ContractWeeklyStatDaoImpl extends GenericDaoImpl<ContractWeeklyStat
 		StringBuffer countsql = new StringBuffer();
 		querysql.append(" select m.id, m.contractId, m.finishRate, m.receiveTotal, m.costTotal, m.grossProfit, m.salesHumanCost,"
 				+ "m.salesPayment , m.consultHumanCost ,m.consultPayment ,m.hardwarePurchase ,m.externalSoftware ,m.internalSoftware ,m.projectHumanCost ,"
-				+ "m.projectPayment ,m.statWeek ,m.createTime , i.serialNum ");
+				+ "m.projectPayment ,m.statWeek ,m.createTime , i.serialNum , i.name");
 		countsql.append(" select count(m.id)");
 		sb.append(" from ContractWeeklyStat m");
 		sb.append(" left join ContractInfo i on m.contractId = i.id");
@@ -197,7 +197,7 @@ public class ContractWeeklyStatDaoImpl extends GenericDaoImpl<ContractWeeklyStat
 		StringBuffer countsql = new StringBuffer();
 		querysql.append(" select m.id, m.contract_id, m.finish_rate, m.receive_total, m.cost_total, m.gross_profit, m.sales_human_cost,"
 				+ "m.sales_payment , m.consult_human_cost ,m.consult_payment ,m.hardware_purchase ,m.external_software ,m.internal_software ,m.project_human_cost ,"
-				+ "m.project_payment ,m.stat_week ,m.create_time , i.serial_num ");
+				+ "m.project_payment ,m.stat_week ,m.create_time , i.serial_num , i.name_");
 		countsql.append(" select count(m.id)");
 		sb.append(" from w_contract_weekly_stat m");
 		sb.append(" left join w_contract_info i on m.contract_id = i.id");
@@ -237,6 +237,7 @@ public class ContractWeeklyStatDaoImpl extends GenericDaoImpl<ContractWeeklyStat
 		contractWeeklyStatVo.setStatWeek(StringUtil.nullToLong(o[15]));
 		contractWeeklyStatVo.setCreateTime((ZonedDateTime) o[16]);
 		contractWeeklyStatVo.setSerialNum(StringUtil.null2Str(o[17]));
+		contractWeeklyStatVo.setName(StringUtil.null2Str(o[18]));
 		return contractWeeklyStatVo;
 	}
 	
@@ -260,6 +261,7 @@ public class ContractWeeklyStatDaoImpl extends GenericDaoImpl<ContractWeeklyStat
 		contractWeeklyStatVo.setStatWeek(StringUtil.nullToLong(o[15]));
 		contractWeeklyStatVo.setCreateTime(DateUtil.getZonedDateTime((Timestamp) o[16]));
 		contractWeeklyStatVo.setSerialNum(StringUtil.null2Str(o[17]));
+		contractWeeklyStatVo.setName(StringUtil.null2Str(o[18]));
 		return contractWeeklyStatVo;
 	}
 }

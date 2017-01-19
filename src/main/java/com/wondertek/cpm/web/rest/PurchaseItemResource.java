@@ -83,40 +83,44 @@ public class PurchaseItemResource {
     @PutMapping("/purchase-items")
     @Timed
     @Secured(AuthoritiesConstants.ROLE_CONTRACT_PURCHASE)
-    public ResponseEntity<PurchaseItem> updatePurchaseItem(@RequestBody PurchaseItem purchaseItem) throws URISyntaxException {
+    public ResponseEntity<Boolean> updatePurchaseItem(@RequestBody PurchaseItem purchaseItem) throws URISyntaxException {
         log.debug("REST request to update PurchaseItem : {}", purchaseItem);
         Boolean isNew = purchaseItem.getId() == null;
         if (purchaseItem.getBudgetId() == null || purchaseItem.getContractId() == null
         		|| StringUtil.isNullStr(purchaseItem.getName()) || purchaseItem.getSource() == null
         		|| purchaseItem.getType() == null || purchaseItem.getPrice() == null) {
-			
+        	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.purchaseItem.save.requiedError", "")).body(null);
 		}
-        PurchaseItem oldPurchaseItem = this.purchaseItemService.findOneById(purchaseItem.getId());
-        
-        if (purchaseItem.getId() == null) {
-        	purchaseItem.setCreateTime(ZonedDateTime.now());
-        	purchaseItem.setCreator(SecurityUtils.getCurrentUserLogin());
-        	purchaseItem.setUpdator(SecurityUtils.getCurrentUserLogin());
-        	purchaseItem.setUpdateTime(ZonedDateTime.now());
-        	purchaseItem.setStatus(1);
-            PurchaseItem result = purchaseItemService.save(purchaseItem);
+        String updator = SecurityUtils.getCurrentUserLogin();
+        ZonedDateTime updateTime = ZonedDateTime.now();
+        if (!isNew) {
+        	PurchaseItem oldPurchaseItem = this.purchaseItemService.findOneById(purchaseItem.getId());
+			if (oldPurchaseItem == null) {
+        		return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.purchaseItem.save.idNone", "")).body(null);
+			}else if (oldPurchaseItem.getStatus() == PurchaseItem.STATUS_DELETED) {
+        		return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.purchaseItem.save.statue2Error", "")).body(null);
+			}
+			purchaseItem.setCreateTime(oldPurchaseItem.getCreateTime());
+			purchaseItem.setCreator(oldPurchaseItem.getCreator());
+			purchaseItem.setStatus(oldPurchaseItem.getStatus());
 		}else {
-			oldPurchaseItem.setUpdator(SecurityUtils.getCurrentUserLogin());
-            oldPurchaseItem.setUpdateTime(ZonedDateTime.now());
-            oldPurchaseItem.setName(purchaseItem.getName());
-            oldPurchaseItem.setPrice(purchaseItem.getPrice());
-            oldPurchaseItem.setPurchaser(purchaseItem.getPurchaser());
-            oldPurchaseItem.setQuantity(purchaseItem.getQuantity());
-            oldPurchaseItem.setSource(purchaseItem.getSource());
-            oldPurchaseItem.setStatus(1);
-            oldPurchaseItem.setType(purchaseItem.getType());
-            oldPurchaseItem.setTotalAmount(purchaseItem.getTotalAmount());
-            oldPurchaseItem.setUnits(purchaseItem.getUnits());
-            PurchaseItem result = purchaseItemService.save(oldPurchaseItem);
+			purchaseItem.setCreateTime(updateTime);
+			purchaseItem.setCreator(updator);
+			purchaseItem.setStatus(PurchaseItem.STATUS_VALIBLE);
 		}
+        	purchaseItem.setUpdateTime(updateTime);
+        	purchaseItem.setUpdator(updator);
+        	PurchaseItem result =  purchaseItemService.save(purchaseItem);
         
-        
-        return new ResponseEntity<>(purchaseItem,HttpStatus.OK);
+        	if(isNew){
+            	return ResponseEntity.ok()
+                        .headers(HeaderUtil.createEntityCreationAlert("purchaseItem", result.getId().toString()))
+                        .body(isNew);
+            }else{
+            	return ResponseEntity.ok()
+            			.headers(HeaderUtil.createEntityUpdateAlert("purchaseItem", result.getId().toString()))
+            			.body(isNew);
+            }
     }
 
     /**
@@ -147,7 +151,7 @@ public class PurchaseItemResource {
     @Secured(AuthoritiesConstants.ROLE_CONTRACT_PURCHASE)
     public ResponseEntity<PurchaseItemVo> getPurchaseItem(@PathVariable Long id) {
         log.debug("REST request to get PurchaseItem : {}", id);
-        PurchaseItemVo purchaseItem = purchaseItemService.findOne(id);
+        PurchaseItemVo purchaseItem = purchaseItemService.getPurchaseItem(id);
         return Optional.ofNullable(purchaseItem)
             .map(result -> new ResponseEntity<>(
                 result,

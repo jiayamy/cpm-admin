@@ -43,6 +43,8 @@ public class ContractWeeklyStatVo implements Serializable {
 	
 	private String serialNum;
 	
+	private String name;
+	
 	public Long getId() {
 		return id;
 	}
@@ -185,6 +187,14 @@ public class ContractWeeklyStatVo implements Serializable {
 
 	public void setSerialNum(String serialNum) {
 		this.serialNum = serialNum;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 	
 	

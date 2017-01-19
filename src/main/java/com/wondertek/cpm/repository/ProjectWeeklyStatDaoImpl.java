@@ -128,7 +128,7 @@ public class ProjectWeeklyStatDaoImpl extends GenericDaoImpl<ProjectWeeklyStat, 
 		StringBuffer sb = new StringBuffer();
 		StringBuffer querysql = new StringBuffer();
 		StringBuffer countsql = new StringBuffer();
-		querysql.append(" select m.id, m.project_id, m.finish_rate, m.human_cost, m.payment_, m.stat_week, m.create_time, i.serial_num ");
+		querysql.append(" select m.id, m.project_id, m.finish_rate, m.human_cost, m.payment_, m.stat_week, m.create_time, i.serial_num, i.name_ ");
 		countsql.append(" select count(m.id)");
 		sb.append(" from w_project_weekly_stat m");
 		sb.append(" left join w_project_info i on m.project_id = i.id");
@@ -153,7 +153,7 @@ public class ProjectWeeklyStatDaoImpl extends GenericDaoImpl<ProjectWeeklyStat, 
 		StringBuffer sb = new StringBuffer();
 		StringBuffer querysql = new StringBuffer();
 		StringBuffer countsql = new StringBuffer();
-		querysql.append(" select m.id, m.projectId, m.finishRate, m.humanCost, m.payment, m.statWeek, m.createTime, i.serialNum ");
+		querysql.append(" select m.id, m.projectId, m.finishRate, m.humanCost, m.payment, m.statWeek, m.createTime, i.serialNum, i.name ");
 		countsql.append(" select count(m.id)");
 		sb.append(" from ProjectWeeklyStat m");
 		sb.append(" left join ProjectInfo i on m.projectId = i.id");
@@ -208,6 +208,7 @@ public class ProjectWeeklyStatDaoImpl extends GenericDaoImpl<ProjectWeeklyStat, 
 		vo.setStatWeek(StringUtil.nullToLong(o[5]));
 		vo.setCreateTime((ZonedDateTime) o[6]);
 		vo.setSerialNum(StringUtil.null2Str(o[7]));
+		vo.setName(StringUtil.null2Str(o[8]));
 		return vo;
 	}
 	
@@ -221,6 +222,7 @@ public class ProjectWeeklyStatDaoImpl extends GenericDaoImpl<ProjectWeeklyStat, 
 		vo.setStatWeek(StringUtil.nullToLong(o[5]));
 		vo.setCreateTime(DateUtil.getZonedDateTime((Timestamp) o[6]));
 		vo.setSerialNum(StringUtil.null2Str(o[7]));
+		vo.setName(StringUtil.null2Str(o[8]));
 		return vo;
 	}
 }

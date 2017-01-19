@@ -22,7 +22,8 @@ public class ProjectWeeklyStatVo implements Serializable{
     private ZonedDateTime createTime;
     
     private String serialNum;
-
+    
+    private String name;
 	public Long getId() {
 		return id;
 	}
@@ -85,6 +86,14 @@ public class ProjectWeeklyStatVo implements Serializable{
 
 	public void setSerialNum(String serialNum) {
 		this.serialNum = serialNum;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
     
     

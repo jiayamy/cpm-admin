@@ -35,30 +35,31 @@
 				            </div>
 				         </div>
 		            </div>
-		            <div class="col-sm-4">
-		            	<div class="row">
-			            	<div class="input-group pull-right" >
-			                   <span  class="width-min input-group-btn col-sm-2" >
-			                   		<div class="row">
-				                        <button class="btn btn-info" ng-click="vm.search()">
-				                            <span class="glyphicon glyphicon-search"></span>
-				                        </button>
-				                    </div>
-			                    </span>
-			                    <span class="width-min input-group-btn col-sm-2" ng-if="vm.haveSearch">
-			                        <button class="btn btn-info" ng-click="vm.clear()">
-			                            <span class="glyphicon glyphicon-trash"></span>
-			                        </button>
-			                    </span>
-			               </div>
-			             </div>
+		            <div class="col-sm-4 input-group pull-right">
+		            	<div class="col-sm-4">
+		            		&nbsp;
+		            	</div>
+		            	<div class="col-sm-8">
+		            		 <span  class="width-min input-group-btn" >
+		                        <button class="btn btn-info" ng-click="vm.search()">
+		                            <span class="glyphicon glyphicon-search"></span>
+		                            <span class="hidden-xs hidden-sm" data-translate="entity.action.search"></span>
+		                        </button>
+		                    </span>
+		                    <span class="width-min input-group-btn" ng-if="vm.haveSearch">
+		                        <button class="btn btn-info" ng-click="vm.clear()">
+		                            <span class="glyphicon glyphicon-trash"></span>
+		                            <span class="hidden-xs hidden-sm" data-translate="entity.action.clear"></span>
+		                        </button>
+		                    </span>
+		            	</div>
 		            </div>
-
 				</div>
            </form>
         </div>
     </div>
     <div id="tabcontent1" style="height: 400px;"></div>
+    <div id="tabcontent2" style="height: 400px;"></div>
 	<button type="submit"
             ui-sref="{{ vm.previousState }}"
             class="btn btn-info">

@@ -191,4 +191,28 @@ public class ProjectWeeklyStatService {
     	return datas;
     }
     
+    public List<ChartReportDataVo> getFinishRateData(Date fromDate, Date toDate, Long projectId){
+    	List<ChartReportDataVo> datas = new ArrayList<>();
+    	ChartReportDataVo data = new ChartReportDataVo();
+    	data.setName("完成率");
+    	data.setType("line");
+    	List<Double> dataD = new ArrayList<>();
+    	Long temp = fromDate.getTime();
+    	Long sevenDay = 7*24*60*60*1000L;
+    	while(temp <= toDate.getTime()){
+    		Long statWeek = StringUtil.nullToLong(DateUtil.formatDate("yyyyMMdd", new Date(temp)));
+    		List<ProjectWeeklyStat> projectWeeklyStats = projectWeeklyStatRepository.findByStatWeekAndProjectId(statWeek, projectId);
+    		Double FinishRate = 0D;
+    		if(projectWeeklyStats != null && projectWeeklyStats.size() > 0){
+    			int max = projectWeeklyStats.size() - 1;
+    			FinishRate = projectWeeklyStats.get(max).getFinishRate();
+    		}
+    		dataD.add(FinishRate);
+    		temp += sevenDay;
+    	}
+    	data.setData(dataD);
+    	datas.add(data);
+    	return datas;
+    }
+    
 }

@@ -1,12 +1,16 @@
 
 <div>
-    <h2><span data-translate="cpmApp.projectWeeklyStat.detail.title">Project Weekly Stat</span> {{vm.projectWeeklyStat.serialNum}}</h2>
+    <h2><span data-translate="cpmApp.projectWeeklyStat.detail.title">Project Weekly Stat</span> {{vm.projectWeeklyStat.serialNum}} : {{vm.projectWeeklyStat.name}}</h2>
     <hr>
     <jhi-alert-error></jhi-alert-error>
     <dl class="dl-horizontal jh-entity-details">
         <dt><span data-translate="cpmApp.projectWeeklyStat.serialNum">Serial Num</span></dt>
         <dd>
             <span>{{vm.projectWeeklyStat.serialNum}}</span>
+        </dd>
+        <dt><span data-translate="cpmApp.projectWeeklyStat.name">Project Name</span></dt>
+        <dd>
+            <span>{{vm.projectWeeklyStat.name}}</span>
         </dd>
         <dt><span data-translate="cpmApp.projectWeeklyStat.finishRate">Finish Rage</span></dt>
         <dd>

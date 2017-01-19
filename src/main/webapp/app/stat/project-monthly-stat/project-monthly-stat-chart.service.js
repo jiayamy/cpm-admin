@@ -13,6 +13,10 @@
             'queryChart':{
             	url:'api/project-monthly-stats/queryChart',
             	method:'GET'
+            },
+            'queryFinishRateChart':{
+            	url:'api/project-monthly-stats/queryFinishRateChart',
+            	method:'GET'
             }
         });
     }

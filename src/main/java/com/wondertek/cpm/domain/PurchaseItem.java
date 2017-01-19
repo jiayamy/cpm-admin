@@ -23,6 +23,8 @@ public class PurchaseItem implements Serializable {
 	public static final Integer TYPE_SOFTWARE = 2;
 	public static final Integer SOURCE_INTERNAL = 1;
 	public static final Integer SOURCE_EXTERNAL = 2;
+	public static final Integer STATUS_VALIBLE = 1;
+	public static final Integer STATUS_DELETED = 2;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
