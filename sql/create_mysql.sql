@@ -33,6 +33,7 @@ CREATE
     TABLE jhi_authority
     (
         name VARCHAR(50) COLLATE utf8_bin NOT NULL,
+        detail_ VARCHAR(50) COLLATE utf8_bin,
         PRIMARY KEY (name)
     )
     ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -75,8 +76,8 @@ CREATE
         lang_key VARCHAR(5) COLLATE utf8_bin,
         activation_key VARCHAR(20) COLLATE utf8_bin,
         reset_key VARCHAR(20) COLLATE utf8_bin,
-    CREATEd_by VARCHAR(50) COLLATE utf8_bin NOT NULL,
-    CREATEd_date TIMESTAMP,
+    	CREATEd_by VARCHAR(50) COLLATE utf8_bin NOT NULL,
+    	CREATEd_date TIMESTAMP,
         reset_date TIMESTAMP NULL,
         last_modified_by VARCHAR(50) COLLATE utf8_bin,
         last_modified_date TIMESTAMP NULL,
@@ -122,7 +123,7 @@ CREATE
         INDEX fk_authority_name (authority_name)
     )
     ENGINE=InnoDB DEFAULT CHARSET=utf8;
----20170119
+
 CREATE
     TABLE w_work_area
     (
@@ -153,7 +154,7 @@ CREATE
         type_ bigint COMMENT '部门类型',
         status_ INT COMMENT '状态（可用，删除）',
         creator_ VARCHAR(100) COLLATE utf8_bin,
-    CREATE_time TIMESTAMP NULL,
+    	CREATE_time TIMESTAMP NULL,
         updator_ VARCHAR(100) COLLATE utf8_bin,
         update_time TIMESTAMP NULL,
         PRIMARY KEY (id),
@@ -200,7 +201,7 @@ CREATE
         finish_rate DOUBLE(15,2) COMMENT '完成率（只展示）',
         status_ INT COMMENT '状态（1=开发中，2=结项，3=删除）',
         creator_ VARCHAR(100) COLLATE utf8_bin,
-    CREATE_time TIMESTAMP NULL,
+    	CREATE_time TIMESTAMP NULL,
         updator_ VARCHAR(100) COLLATE utf8_bin,
         update_time TIMESTAMP NULL,
         PRIMARY KEY (id),
@@ -222,7 +223,7 @@ CREATE
         budget_total DOUBLE(15,2) NOT NULL COMMENT '预算金额',
         status_ INT NOT NULL COMMENT '状态（可用，删除）',
         creator_ VARCHAR(100) COLLATE utf8_bin NOT NULL,
-    CREATE_time TIMESTAMP NULL,
+    	CREATE_time TIMESTAMP NULL,
         updator_ VARCHAR(100) COLLATE utf8_bin NOT NULL,
         update_time TIMESTAMP NULL,
         name_ VARCHAR(100) COLLATE utf8_bin NOT NULL,
@@ -246,7 +247,7 @@ CREATE
         cost_desc VARCHAR(1000) COMMENT '描述',
         status_ INT NOT NULL COMMENT '状态（可用，删除）',
         creator_ VARCHAR(100) COLLATE utf8_bin NOT NULL,
-    CREATE_time TIMESTAMP NULL,
+    	CREATE_time TIMESTAMP NULL,
         updator_ VARCHAR(100) COLLATE utf8_bin NOT NULL,
         update_time TIMESTAMP NULL,
         COST_DAY bigint NOT NULL,
@@ -265,7 +266,7 @@ CREATE
         contract_id bigint NOT NULL COMMENT '合同主键',
         finish_rate DOUBLE(15,2) NOT NULL COMMENT '完成率，实时更新到合同信息中',
         creator_ VARCHAR(100) COLLATE utf8_bin NOT NULL,
-    CREATE_time TIMESTAMP NULL,
+    	CREATE_time TIMESTAMP NULL,
         PRIMARY KEY (id),
         CONSTRAINT fk_c_fi_contractid FOREIGN KEY (contract_id) REFERENCES w_contract_info (id),
         INDEX fk_c_fi_contractid (contract_id)
@@ -327,7 +328,7 @@ CREATE
         join_day bigint COMMENT '加盟日',
         leave_day bigint COMMENT '离开日',
         creator_ VARCHAR(100) COLLATE utf8_bin,
-    CREATE_time TIMESTAMP NULL,
+    	CREATE_time TIMESTAMP NULL,
         updator_ VARCHAR(100) COLLATE utf8_bin,
         update_time TIMESTAMP NULL,
         PRIMARY KEY (id),
@@ -367,7 +368,7 @@ CREATE
         curr_day bigint NOT NULL COMMENT '当前天',
         type_ INT COMMENT '类型（正常工作日/正常假日/年假/国家假日）',
         creator_ VARCHAR(100) COLLATE utf8_bin,
-    CREATE_time TIMESTAMP NULL,
+    	CREATE_time TIMESTAMP NULL,
         updator_ VARCHAR(100) COLLATE utf8_bin,
         update_time TIMESTAMP NULL,
         PRIMARY KEY (id),
@@ -385,7 +386,7 @@ CREATE
         price_ DOUBLE(15,2) COMMENT '产品单价（元）',
         source_ INT COMMENT '产品来源（内部/外部）',
         creator_ VARCHAR(100) COLLATE utf8_bin,
-    CREATE_time TIMESTAMP NULL,
+    	CREATE_time TIMESTAMP NULL,
         updator_ VARCHAR(100) COLLATE utf8_bin,
         update_time TIMESTAMP NULL,
         PRIMARY KEY (id)
@@ -409,7 +410,7 @@ CREATE
         budget_total DOUBLE(15,2) NOT NULL COMMENT '预算总额',
         status_ INT COMMENT '状态（1=开发中，2=结项，3=删除）',
         finish_rate DOUBLE(15,2) COMMENT '完成率（只展示）',
-    CREATE_time TIMESTAMP NULL,
+    	CREATE_time TIMESTAMP NULL,
         creator_ VARCHAR(100),
         update_time TIMESTAMP NULL,
         updator_ VARCHAR(100),
@@ -435,7 +436,7 @@ CREATE
         cost_desc VARCHAR(1000) COMMENT '描述',
         status_ INT NOT NULL COMMENT '状态（可用，删除）',
         creator_ VARCHAR(100) COLLATE utf8_bin NOT NULL,
-    CREATE_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    	CREATE_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         updator_ VARCHAR(100) COLLATE utf8_bin NOT NULL,
         update_time TIMESTAMP DEFAULT '0000-00-00 00:00:00',
         cost_day bigint NOT NULL,
@@ -452,7 +453,7 @@ CREATE
         project_id bigint COMMENT '项目主键',
         finish_rate DOUBLE(15,2) COMMENT '完成率',
         creator_ VARCHAR(100) COLLATE utf8_bin,
-    CREATE_time TIMESTAMP NULL,
+    	CREATE_time TIMESTAMP NULL,
         PRIMARY KEY (id),
         CONSTRAINT fk_p_pfi_projectid FOREIGN KEY (project_id) REFERENCES w_project_info (id),
         INDEX fk_p_pfi_projectid (project_id)
@@ -468,7 +469,7 @@ CREATE
         human_cost DOUBLE(15,2),
         payment_ DOUBLE(15,2),
         stat_week bigint,
-    CREATE_time TIMESTAMP NULL,
+    	CREATE_time TIMESTAMP NULL,
         PRIMARY KEY (id)
     )
     ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -484,7 +485,7 @@ CREATE
         join_day bigint NOT NULL COMMENT '加盟日',
         leave_day bigint COMMENT '离开日',
         creator_ VARCHAR(100) COLLATE utf8_bin NOT NULL,
-    CREATE_time TIMESTAMP NULL,
+    	CREATE_time TIMESTAMP NULL,
         updator_ VARCHAR(100) COLLATE utf8_bin NOT NULL,
         update_time TIMESTAMP NULL,
         PRIMARY KEY (id),
@@ -502,7 +503,7 @@ CREATE
         human_cost DOUBLE(15,2) COMMENT '项目人工成本',
         payment_ DOUBLE(15,2) COMMENT '项目报销成本',
         stat_week bigint COMMENT '统计月(或周)',
-    CREATE_time TIMESTAMP NULL COMMENT '统计日期',
+    	CREATE_time TIMESTAMP NULL COMMENT '统计日期',
         PRIMARY KEY (id)
     )
     ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -523,7 +524,7 @@ CREATE
         total_amount DOUBLE(15,2) COMMENT '采购总金额（可以填写，也可以通过修改采购数量和采购单价相乘）',
         status_ INT COMMENT '状态（可用，删除）',
         creator_ VARCHAR(100) COLLATE utf8_bin,
-    CREATE_time TIMESTAMP NULL,
+    	CREATE_time TIMESTAMP NULL,
         updator_ VARCHAR(100) COLLATE utf8_bin,
         update_time TIMESTAMP NULL,
         PRIMARY KEY (id)
@@ -552,7 +553,7 @@ CREATE
         external_cost DOUBLE(15,2) COMMENT '外部成本',
         status_ INT COMMENT '状态（可用，删除）',
         creator_ VARCHAR(100) COLLATE utf8_bin,
-    CREATE_time TIMESTAMP NULL,
+    	CREATE_time TIMESTAMP NULL,
         updator_ VARCHAR(100) COLLATE utf8_bin,
         update_time TIMESTAMP NULL,
         PRIMARY KEY (id)
@@ -573,7 +574,7 @@ CREATE
         accept_input DOUBLE(15,2) COMMENT '工时产出（认可工时，统计员工贡献度需要）',
         status_ INT COMMENT '状态（可用，删除）',
         creator_ VARCHAR(100) COLLATE utf8_bin,
-    CREATE_time TIMESTAMP NULL,
+    	CREATE_time TIMESTAMP NULL,
         updator_ VARCHAR(100) COLLATE utf8_bin,
         update_time TIMESTAMP NULL,
         work_area VARCHAR(100) COLLATE utf8_bin,
@@ -581,49 +582,39 @@ CREATE
     )
     ENGINE=InnoDB DEFAULT CHARSET=utf8;
     
-    insert into jhi_authority (name) values ('ROLE_ADMIN');
-	insert into jhi_authority (name) values ('ROLE_CONTRACT');
-	insert into jhi_authority (name) values ('ROLE_CONTRACT_BUDGET');
-	insert into jhi_authority (name) values ('ROLE_CONTRACT_COST');
-	insert into jhi_authority (name) values ('ROLE_CONTRACT_FINISH');
-	insert into jhi_authority (name) values ('ROLE_CONTRACT_INFO');
-	insert into jhi_authority (name) values ('ROLE_CONTRACT_PRODUCTPRICE');
-	insert into jhi_authority (name) values ('ROLE_CONTRACT_PURCHASE');
-	insert into jhi_authority (name) values ('ROLE_CONTRACT_RECEIVE');
-	insert into jhi_authority (name) values ('ROLE_CONTRACT_TIMESHEET');
-	insert into jhi_authority (name) values ('ROLE_CONTRACT_USER');
-	insert into jhi_authority (name) values ('ROLE_INFO');
-	insert into jhi_authority (name) values ('ROLE_INFO_BASIC');
-	insert into jhi_authority (name) values ('ROLE_INFO_USERCOST');
-	insert into jhi_authority (name) values ('ROLE_PROJECT');
-	insert into jhi_authority (name) values ('ROLE_PROJECT_COST');
-	insert into jhi_authority (name) values ('ROLE_PROJECT_FINISH');
-	insert into jhi_authority (name) values ('ROLE_PROJECT_INFO');
-	insert into jhi_authority (name) values ('ROLE_PROJECT_TIMESHEET');
-	insert into jhi_authority (name) values ('ROLE_PROJECT_USER');
-	insert into jhi_authority (name) values ('ROLE_STAT');
-	insert into jhi_authority (name) values ('ROLE_STAT_CONTRACT');
-	insert into jhi_authority (name) values ('ROLE_STAT_PROJECT');
-	insert into jhi_authority (name) values ('ROLE_TIMESHEET');
-	insert into jhi_authority (name) values ('ROLE_USER');
-	insert into jhi_authority (name) values ('ROLE_USERCOST');
-
-	insert into jhi_user (id, login, password_hash, first_name, last_name, email, activated, lang_key, activation_key, reset_key, created_by, created_date, reset_date, last_modified_by, last_modified_date, dept_id, is_manager, duty_, grade_, gender_, birth_year, birth_day, telephone_, serial_num) values (3, 'admin', '$2a$10$NCJxXpFlvH9wBz56sUBCFeKSA9oseH7/YTsLfplfkQfZUClIBfGdq', 'Administrator', '员工3', 'admin@localhost', '1', 'zh-cn', null, null, 'system', '2016-12-19 10:29:53', null, 'admin', '2016-12-19 18:53:24', 16, '0', null, null, null, null, null, null, '3');
-
-	insert into jhi_user_authority (user_id, authority_name) values (1, 'ROLE_ADMIN');
-	insert into jhi_user_authority (user_id, authority_name) values (1, 'ROLE_USER');
-
-	insert into w_dept_type (id, name_) values (1, '管理');
-	insert into w_dept_type (id, name_) values (2, '销售');
-	insert into w_dept_type (id, name_) values (3, '产品咨询');
-	insert into w_dept_type (id, name_) values (4, '产品研发中心');
-	insert into w_dept_type (id, name_) values (5, '项目实施');
-	insert into w_dept_type (id, name_) values (6, '采购');
-	insert into w_dept_type (id, name_) values (7, '行政');
-	insert into w_dept_type (id, name_) values (8, '财务');
-	insert into w_dept_type (id, name_) values (9, '质量管理');
-	insert into w_dept_type (id, name_) values (10, '人力资源');
-	insert into w_dept_type (id, name_) values (11, '测试一下');
+    insert into jhi_authority (name, detail_) values ('ROLE_ADMIN', '管理');
+	insert into jhi_authority (name, detail_) values ('ROLE_CONTRACT', '合同管理');
+	insert into jhi_authority (name, detail_) values ('ROLE_CONTRACT_BUDGET', '合同管理-内部采购单');
+	insert into jhi_authority (name, detail_) values ('ROLE_CONTRACT_COST', '合同管理-合同成本');
+	insert into jhi_authority (name, detail_) values ('ROLE_CONTRACT_INFO', '合同管理-合同信息');
+	insert into jhi_authority (name, detail_) values ('ROLE_CONTRACT_PRODUCTPRICE', '合同管理-产品定价单');
+	insert into jhi_authority (name, detail_) values ('ROLE_CONTRACT_PURCHASE', '合同管理-采购子项');
+	insert into jhi_authority (name, detail_) values ('ROLE_CONTRACT_RECEIVE', '合同管理-回款信息');
+	insert into jhi_authority (name, detail_) values ('ROLE_CONTRACT_TIMESHEET', '合同管理-合同工时');
+	insert into jhi_authority (name, detail_) values ('ROLE_CONTRACT_USER', '合同管理-合同人员');
+	insert into jhi_authority (name, detail_) values ('ROLE_INFO', '系统设置');
+	insert into jhi_authority (name, detail_) values ('ROLE_INFO_BASIC', '系统设置-基本功能');
+	insert into jhi_authority (name, detail_) values ('ROLE_INFO_USERCOST', '系统设置-员工成本');
+	insert into jhi_authority (name, detail_) values ('ROLE_PROJECT', '项目管理');
+	insert into jhi_authority (name, detail_) values ('ROLE_PROJECT_COST', '项目管理-项目报销');
+	insert into jhi_authority (name, detail_) values ('ROLE_PROJECT_INFO', '项目管理-项目信息');
+	insert into jhi_authority (name, detail_) values ('ROLE_PROJECT_TIMESHEET', '项目管理-项目工时');
+	insert into jhi_authority (name, detail_) values ('ROLE_PROJECT_USER', '项目管理-项目人员');
+	insert into jhi_authority (name, detail_) values ('ROLE_STAT', '统计报表');
+	insert into jhi_authority (name, detail_) values ('ROLE_STAT_CONTRACT', '统计报表-合同相关');
+	insert into jhi_authority (name, detail_) values ('ROLE_STAT_PROJECT', '统计报表-项目相关');
+	insert into jhi_authority (name, detail_) values ('ROLE_TIMESHEET', '日报管理');
+	insert into jhi_authority (name, detail_) values ('ROLE_USER', '用户');
+	insert into jhi_authority (name, detail_) values ('ROLE_USERCOST', '日报管理-员工日报');
 	
+	insert into w_dept_info (id, name_, parent_id, id_path, type_, status_, creator_, create_time, updator_, update_time) values (1, '上海网达软件股份有限公司', null, '/', 1, 1, 'admin', '2017-01-01 00:00:00', 'admin', '2017-01-01 00:00:00');
+
+	insert into jhi_user (id, login, password_hash, first_name, last_name, email, activated, lang_key, activation_key, reset_key, created_by, created_date, reset_date, last_modified_by, last_modified_date, dept_id, is_manager, duty_, grade_, gender_, birth_year, birth_day, telephone_, serial_num, work_area) values 
+	(1, 'admin', '$2a$10$UCjAhdE2Qrskpck7/FoDGOJFTEiAGSBr6hpe95ndfLJk9f1cpxtMK', null, '管理人员', 'admin@localhost', true, 'zh-cn', null, null, 'system', '2017-01-01 00:00:00', null, 'admin', '2017-01-01 00:00:00', 1, true, null, null, 1, null, null, null, '0', '上海');
+
+	insert into jhi_user_authority (user_id, authority_name) values (1, 'ROLE_USER');
+	insert into jhi_user_authority (user_id, authority_name) values (1, 'ROLE_INFO');
+	insert into jhi_user_authority (user_id, authority_name) values (1, 'ROLE_INFO_BASIC');
 --20170119
-	ALTER TABLE jhi_user ADD (work_area VARCHAR(100))
+	ALTER TABLE jhi_user ADD (work_area VARCHAR(100));
+	

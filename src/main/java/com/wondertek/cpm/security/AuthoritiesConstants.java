@@ -45,10 +45,6 @@ public final class AuthoritiesConstants {
 	 */
     public static final String ROLE_CONTRACT_RECEIVE = "ROLE_CONTRACT_RECEIVE";
     /**
-	 * 合同完成信息权限
-	 */
-    public static final String ROLE_CONTRACT_FINISH = "ROLE_CONTRACT_FINISH";
-    /**
 	 * 合同人员信息权限
 	 */
     public static final String ROLE_CONTRACT_USER = "ROLE_CONTRACT_USER";
@@ -80,10 +76,6 @@ public final class AuthoritiesConstants {
 	 * 项目基本信息权限
 	 */
     public static final String ROLE_PROJECT_INFO = "ROLE_PROJECT_INFO";
-    /**
-	 * 项目完成信息权限
-	 */
-    public static final String ROLE_PROJECT_FINISH = "ROLE_PROJECT_FINISH";
     /**
 	 * 项目人员权限
 	 */
