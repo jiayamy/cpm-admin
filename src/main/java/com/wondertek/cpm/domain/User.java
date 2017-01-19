@@ -140,6 +140,11 @@ public class User extends AbstractAuditingEntity implements Serializable {
      */
     @Column(name = "telephone_")
     private String telephone;
+    /**
+     * 工作地点
+     */
+    @Column(name = "work_area")
+    private String workArea;
 	
     @JsonIgnore
     @ManyToMany
@@ -340,6 +345,14 @@ public class User extends AbstractAuditingEntity implements Serializable {
 		this.telephone = telephone;
 	}
 
+	public String getWorkArea() {
+		return workArea;
+	}
+
+	public void setWorkArea(String workArea) {
+		this.workArea = workArea;
+	}
+
 	@Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -363,16 +376,13 @@ public class User extends AbstractAuditingEntity implements Serializable {
         return login.hashCode();
     }
 
-    @Override
-    public String toString() {
-        return "User{" +
-            "login='" + login + '\'' +
-            ", firstName='" + firstName + '\'' +
-            ", lastName='" + lastName + '\'' +
-            ", email='" + email + '\'' +
-            ", activated='" + activated + '\'' +
-            ", langKey='" + langKey + '\'' +
-            ", activationKey='" + activationKey + '\'' +
-            "}";
-    }
+	@Override
+	public String toString() {
+		return "User [id=" + id + ", login=" + login + ", password=" + password
+				+ ", lastName=" + lastName + ", email=" + email + ", activated=" + activated + ", langKey=" + langKey
+				+ ", activationKey=" + activationKey + ", resetKey=" + resetKey + ", resetDate=" + resetDate
+				+ ", serialNum=" + serialNum + ", deptId=" + deptId + ", dept=" + dept + ", isManager=" + isManager
+				+ ", duty=" + duty + ", grade=" + grade + ", gender=" + gender + ", birthYear=" + birthYear
+				+ ", birthDay=" + birthDay + ", telephone=" + telephone + ", workArea=" + workArea + "]";
+	}    
 }

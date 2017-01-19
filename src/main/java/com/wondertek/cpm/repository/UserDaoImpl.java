@@ -58,6 +58,14 @@ public class UserDaoImpl extends GenericDaoImpl<User, Long> implements UserDao  
 			whereSql.append(" and user.serialNum like ?");
 			params.add("%" + user.getSerialNum() + "%");
 		}
+		if(!StringUtil.isNullStr(user.getWorkArea())){
+			whereSql.append(" and user.workArea = ?");
+			params.add(user.getWorkArea());
+		}
+		if(user.getDeptId() != null){
+			whereSql.append(" and user.deptId = ?");
+			params.add(user.getDeptId());
+		}
 		
 		querySql.append(whereSql.toString());
 		countSql.append(whereSql.toString());

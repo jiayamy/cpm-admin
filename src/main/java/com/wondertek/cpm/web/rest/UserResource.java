@@ -184,12 +184,16 @@ public class UserResource {
     		@RequestParam(value = "loginName",required=false) String login, 
     		@RequestParam(value = "serialNum",required=false) String serialNum, 
     		@RequestParam(value = "lastName",required=false) String lastName, 
+    		@RequestParam(value = "deptId",required=false) Long deptId, 
+    		@RequestParam(value = "workArea",required=false) String workArea, 
     		@ApiParam Pageable pageable)
         throws URISyntaxException {
     	User user = new User();
     	user.setLogin(login);
     	user.setSerialNum(serialNum);
     	user.setLastName(lastName);
+    	user.setDeptId(deptId);
+    	user.setWorkArea(workArea);
     	
 //        Page<User> page = userRepository.findAllWithAuthorities(pageable);
         Page<User> page = userService.getUserPage(user,pageable);

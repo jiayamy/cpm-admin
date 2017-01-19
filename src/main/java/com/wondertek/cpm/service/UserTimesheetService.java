@@ -178,9 +178,10 @@ public class UserTimesheetService {
 		Optional<User> user = userRepository.findOneByLogin(SecurityUtils.getCurrentUserLogin());
     	if(user.isPresent()){
     		Long userId = user.get().getId();
+    		String workArea = user.get().getWorkArea();
     		publicTimesheet.setUserId(userId);
     		//查询现有的所有记录
-    		List<UserTimesheet> list = userTimesheetDao.getByWorkDayAndUser(lds[0],lds[6],user.get().getId());
+    		List<UserTimesheet> list = userTimesheetDao.getByWorkDayAndUser(lds[0],lds[6],userId);
     		//转换为MAP
     		Map<String,Map<Long,UserTimesheet>> map = trans2Map(list);
     		//获取用户现有的所有项目和合同
@@ -209,12 +210,41 @@ public class UserTimesheetService {
     		if(!map.isEmpty()){
     			getOtherTimesheetForUser(returnList,areaTimesheet,map,userId,lds);
     		}
+    		//填充默认的工作地点
+    		checkAreaTimesheet(areaTimesheet,workArea);
     	}
     	//添加地区
     	returnList.add(1, areaTimesheet);
     	returnList.add(2, publicTimesheet);
 		return returnList;
 	}
+    /**
+     * 检查地点是否都已经填充
+     */
+	private void checkAreaTimesheet(UserTimesheetForUser areaTimesheet, String workArea) {
+		if(areaTimesheet.getData1() == null){
+			areaTimesheet.setData1(workArea);
+		}
+		if(areaTimesheet.getData2() == null){
+			areaTimesheet.setData2(workArea);
+		}
+		if(areaTimesheet.getData3() == null){
+			areaTimesheet.setData3(workArea);
+		}
+		if(areaTimesheet.getData4() == null){
+			areaTimesheet.setData4(workArea);
+		}
+		if(areaTimesheet.getData5() == null){
+			areaTimesheet.setData5(workArea);
+		}
+		if(areaTimesheet.getData6() == null){
+			areaTimesheet.setData6(workArea);
+		}
+		if(areaTimesheet.getData7() == null){
+			areaTimesheet.setData7(workArea);
+		}
+	}
+
 	private void getOtherTimesheetForUser(List<UserTimesheetForUser> returnList, UserTimesheetForUser areaTimesheet, Map<String, Map<Long, UserTimesheet>> map, Long userId, Long[] lds) {
 		UserTimesheet tmpTimesheet = null;
 		Map<Long, UserTimesheet> childs = null;
