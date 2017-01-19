@@ -15,17 +15,15 @@
         
         vm.contractBudget = entity;
         
-        if(vm.contractBudget.purchaseType == '硬件'){
-    		vm.contractBudget.purchaseType = { id: 1, name: '硬件' }; 
-    	}else if(vm.contractBudget.purchaseType == '软件'){
-    		vm.contractBudget.purchaseType = { id: 2, name: '软件' };
-    	}else if (vm.contractBudget.purchaseType == '服务') {
-    		vm.contractBudget.purchaseType = { id: 3, name: '服务' };
-		}
         vm.save = save;
         
         vm.purchaseTypes = [{ id: 1, name: '硬件' }, { id: 2, name: '软件' }, { id: 3, name: '服务'}];
         
+        for(var j = 0; j < vm.purchaseTypes.length; j++){
+        	if(vm.contractBudget.purchaseType == vm.purchaseTypes[j].id){
+        		vm.contractBudget.purchaseType = vm.purchaseTypes[j];
+        	}
+        }
         loadContract();
         function loadContract(){
         	ContractBudget.queryUserContract({

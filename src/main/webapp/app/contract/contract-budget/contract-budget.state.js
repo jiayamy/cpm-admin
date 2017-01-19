@@ -11,7 +11,7 @@
         $stateProvider
         .state('contract-budget', {
             parent: 'contract',
-            url: '/contract-budget?page&sort&serialNum&name&contractName',
+            url: '/contract-budget?page&sort&contractId&name&purchaseType',
             data: {
                 authorities: ['ROLE_CONTRACT_BUDGET'],
                 pageTitle: 'cpmApp.contractBudget.home.title'
@@ -43,9 +43,9 @@
                         sort: $stateParams.sort,
                         predicate: PaginationUtil.parsePredicate($stateParams.sort),
                         ascending: PaginationUtil.parseAscending($stateParams.sort),
-                        serialNum: $stateParams.serialNum,
+                        contractId: $stateParams.contractId,
                         name: $stateParams.name,
-                        contractName: $stateParams.contractName
+                        purchaseType: $stateParams.purchaseType
                         
                     };
                 }],
@@ -175,7 +175,7 @@
                     	contractName: null,
                         userName: null,
                         dept: null,
-                        purchaseType: null,
+                        purchaseType: 3,
                         budgetTotal: null,
                         id: null
                     };
