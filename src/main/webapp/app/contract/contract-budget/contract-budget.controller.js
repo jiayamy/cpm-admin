@@ -5,9 +5,9 @@
         .module('cpmApp')
         .controller('ContractBudgetController', ContractBudgetController);
 
-    ContractBudgetController.$inject = ['$scope', '$state', 'ContractBudget', 'ParseLinks', 'AlertService', 'paginationConstants', 'pagingParams','ProjectInfo'];
+    ContractBudgetController.$inject = ['$scope', '$state', 'ContractBudget', 'ParseLinks', 'AlertService', 'paginationConstants', 'pagingParams'];
 
-    function ContractBudgetController ($scope, $state, ContractBudget, ParseLinks, AlertService, paginationConstants, pagingParams,ProjectInfo) {
+    function ContractBudgetController ($scope, $state, ContractBudget, ParseLinks, AlertService, paginationConstants, pagingParams) {
         var vm = this;
 
         vm.loadPage = loadPage;
@@ -39,7 +39,7 @@
         vm.contractInfos = [];
         loadContract();
         function loadContract(){
-        	ProjectInfo.queryUserContract({
+        	ContractBudget.queryUserContract({
         		
         	},
         	function(data, headers){
@@ -78,8 +78,8 @@
                 }, onSuccess, onError);
             function sort() {
                 var result = [vm.predicate + ',' + (vm.reverse ? 'asc' : 'desc')];
-                if (vm.predicate !== 'cb.id') {
-                    result.push('cb.id');
+                if (vm.predicate !== 'wcb.id') {
+                    result.push('wcb.id');
                 }
                 return result;
             }
@@ -134,7 +134,7 @@
             }
             vm.links = null;
             vm.page = 1;
-            vm.predicate = 'cb.id';
+            vm.predicate = 'wcb.id';
             vm.reverse = false;
             vm.haveSearch = true;
             vm.transition();
@@ -143,7 +143,7 @@
         function clear() {
             vm.links = null;
             vm.page = 1;
-            vm.predicate = 'cb.id';
+            vm.predicate = 'wcb.id';
             vm.reverse = true;
             vm.searchQuery = {};
             vm.haveSearch = null;

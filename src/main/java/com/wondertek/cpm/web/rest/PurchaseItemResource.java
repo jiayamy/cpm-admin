@@ -170,6 +170,10 @@ public class PurchaseItemResource {
     @Secured(AuthoritiesConstants.ROLE_CONTRACT_PURCHASE)
     public ResponseEntity<Void> deletePurchaseItem(@PathVariable Long id) {
         log.debug("REST request to delete PurchaseItem : {}", id);
+        PurchaseItem purchaseItem = purchaseItemService.findOneById(id);
+        if (purchaseItem.getStatus() != PurchaseItem.STATUS_VALIBLE) {
+    		return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.purchaseItem.delete.hasDeleted", "")).body(null);
+		}
         purchaseItemService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert("purchaseItem", id.toString())).build();
     }

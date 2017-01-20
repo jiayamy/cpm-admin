@@ -29,7 +29,7 @@
                     squash: true
                 },
                 sort: {
-                    value: 'cb.id,asc',
+                    value: 'wcb.id,asc',
                     squash: true
                 },
                 serialNum: null,
