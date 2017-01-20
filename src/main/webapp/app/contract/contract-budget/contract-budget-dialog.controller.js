@@ -33,6 +33,8 @@
 	        		vm.contractInfos = data;
 	        		if(vm.contractInfos && vm.contractInfos.length > 0){
 	        			var select = false;
+	        			console.log(entity);
+	        			console.log(vm.contractInfos);
 	        			for(var i = 0; i < vm.contractInfos.length; i++){
 	        				if(entity.contractId == vm.contractInfos[i].key){
 	        					vm.contractBudget.contractId = vm.contractInfos[i];
@@ -72,7 +74,6 @@
         }
 
         function onSaveSuccess (result) {
-        	console.log("1:" +result);
             $scope.$emit('cpmApp:contractBudgetUpdate', result);
             $state.go('contract-budget');
             vm.isSaving = false;
@@ -80,7 +81,6 @@
 
         function onSaveError (result) {
             vm.isSaving = false;
-            console.log(result);
         }
 
         var unsubscribe = $rootScope.$on('cpmApp:deptInfoSelected', function(event, result) {

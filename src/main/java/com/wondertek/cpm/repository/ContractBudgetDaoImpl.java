@@ -50,10 +50,10 @@ public class ContractBudgetDaoImpl extends GenericDaoImpl<ContractBudget, Long> 
 		StringBuffer orderHql = new StringBuffer();
 		List<Object> params = new ArrayList<Object>();
 		queryHql.append("select wcb,");
-		queryHql.append("wci.serialNum,wci.name as contractName,wci.creator as contractCreator,wci.salesmanId,wci.consultantsId");
+		queryHql.append("wci.serialNum,wci.name as contractName,wci.creator as contractCreator,wci.salesmanId,wci.consultantsId,");
 		queryHql.append("wdi.id as wdiId,wdi.idPath as wdiIdPath,");
-		queryHql.append("wdi.id as wdi2Id,wdi.idPath as wdi2IdPath,");
-		queryHql.append("wdi.id as wdi3Id,wdi.idPath as wdi3IdPath");
+		queryHql.append("wdi2.id as wdi2Id,wdi2.idPath as wdi2IdPath,");
+		queryHql.append("wdi3.id as wdi3Id,wdi3.idPath as wdi3IdPath");
 		
 		countHql.append("select count(wci.id)");
 		whereHql.append(" from ContractBudget wcb");

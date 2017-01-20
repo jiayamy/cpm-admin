@@ -170,6 +170,7 @@ public class ContractBudgetResource {
         	contractBudgetVo.setUserName(contractBudget.getUserName());
         	contractBudgetVo.setPurchaseType(contractBudget.getPurchaseType());
         	contractBudgetVo.setUserId(contractBudget.getUserId());
+        	contractBudgetVo.setContractId(contractBudget.getContractId());
 		}
         if (contractInfo != null) {
 			contractBudgetVo.setSerialNum(contractInfo.getSerialNum());

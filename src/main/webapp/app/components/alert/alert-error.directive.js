@@ -52,7 +52,10 @@
                     return header.endsWith('app-error') || header.endsWith('app-params')
                 }).sort();
                 var errorHeader = httpResponse.headers(headers[0]);
-                var entityKey = httpResponse.headers(headers[1]);
+                var entityKey = "";
+                if(headers[1] != undefined){
+                	entityKey = httpResponse.headers(headers[1]);
+                }
                 if (errorHeader) {
                     var entityName = $translate.instant('global.menu.entities.' + entityKey);
                     addErrorAlert(errorHeader, errorHeader, {entityName: entityName});
