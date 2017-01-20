@@ -49,13 +49,17 @@ public class ContractBudgetDaoImpl extends GenericDaoImpl<ContractBudget, Long> 
 		StringBuffer whereHql = new StringBuffer();
 		StringBuffer orderHql = new StringBuffer();
 		List<Object> params = new ArrayList<Object>();
-		queryHql.append("select wcb,wci.serialNum,wci.name");
+		queryHql.append("select wcb,");
+		queryHql.append("wci.serialNum,wci.name as contractName,wci.creator as contractCreator,wci.salesmanId,wci.consultantsId");
+		queryHql.append("wdi.id as wdiId,wdi.idPath as wdiIdPath,");
+		queryHql.append("wdi.id as wdi2Id,wdi.idPath as wdi2IdPath,");
+		queryHql.append("wdi.id as wdi3Id,wdi.idPath as wdi3IdPath");
 		
 		countHql.append("select count(wci.id)");
-		whereHql.append(" from ContractInfo wci");
+		whereHql.append(" from ContractBudget wcb");
+		whereHql.append(" left join ContractInfo wci on wci.id = wcb.contractId");
 		whereHql.append(" left join DeptInfo wdi on wci.deptId = wdi.id");
 		whereHql.append(" left join DeptInfo wdi2 on wci.consultantsDeptId = wdi2.id");
-		whereHql.append(" left join ContractBudget wcb on wci.id = wcb.contractId");
 		whereHql.append(" left join DeptInfo wdi3 on wcb.deptId = wdi3.id");
 		//权限
 		whereHql.append(" where (wci.salesmanId = ? or wci.consultantsId = ? or wcb.userId = ? or wci.creator = ? or wcb.creator = ?");
@@ -127,15 +131,15 @@ public class ContractBudgetDaoImpl extends GenericDaoImpl<ContractBudget, Long> 
 		if (page.getContent() != null) {
 			System.out.println(page.getContent().size());
 			for (Object[] o : page.getContent()) {
-				returnList.add(transContractBudgetVo(o));
+				returnList.add(transContractBudgetVo(o,user.getId(),user.getLogin(),deptInfo.getId(),deptInfo.getIdPath() + deptInfo.getId() + "/"));
 			}
 		}
     	return new PageImpl(returnList, pageable, page.getTotalElements());
 }
 	
-	private ContractBudgetVo transContractBudgetVo(Object[] o){
-		
-		return new ContractBudgetVo((ContractBudget)o[0],StringUtil.null2Str(o[1]),StringUtil.null2Str(o[2]));
+	private ContractBudgetVo transContractBudgetVo(Object[] o, Long userId, String login, Long deptId, String idPath){
+//		return new ContractBudgetVo((ContractBudget)o[0],StringUtil.null2Str(o[1]),StringUtil.null2Str(o[2]));
+		return new ContractBudgetVo(o,userId,login,deptId,idPath);
 		
 	}
 
