@@ -97,7 +97,7 @@ public class ContractStateTask {
 		List<ContractInfo> contractInfos = contractInfoRepository.findByStatusOrUpdateTime(ContractInfo.STATUS_VALIDABLE, beginTime, endTime);
 		if(contractInfos != null && contractInfos.size() > 0){
 			for(ContractInfo contractInfo : contractInfos){
-				log.info("=========begin generate Contract : "+contractInfo.getName()+"=========");
+				log.info("=========begin generate Contract : "+contractInfo.getSerialNum()+"=========");
 				//初始化contractcost
 				try {
 					while(true){
@@ -116,7 +116,7 @@ public class ContractStateTask {
 							break;
 						}
 					}
-					ContractCost contractCost2 = contractCostRepository.findMaxByContractIdAndCostDay(contractInfo.getId(), StringUtil.nullToLong(dates[0]), StringUtil.nullToLong(dates[6]));
+					ContractCost contractCost2 = contractCostRepository.findMaxByContractIdAndCostDayAndType(contractInfo.getId(), StringUtil.nullToLong(dates[0]), StringUtil.nullToLong(dates[6]), ContractCost.TYPE_HUMAN_COST);
 					if(contractCost2 != null){
 						Date initDate = DateUtil.addOneDay(DateUtil.parseDate("yyyyMMdd", contractCost2.getCostDay().toString()));
 						if(contractInfo.getStatus() == ContractInfo.STATUS_VALIDABLE){
@@ -153,7 +153,7 @@ public class ContractStateTask {
 					ContractFinishInfo contractFinishInfo = contractFinishInfos.get(contractFinishInfos.size() - 1);
 					contractWeeklyStat.setFinishRate(contractFinishInfo.getFinishRate());
 				}else{
-					log.error("no finish rate found belong to " + contractInfo.getName());
+					log.error("no finish rate found belong to " + contractInfo.getSerialNum());
 					contractWeeklyStat.setFinishRate(0D);
 				}
 				//合同回款总额
@@ -164,7 +164,7 @@ public class ContractStateTask {
 						receiveTotal += contractReceive.getReceiveTotal();
 					}
 				}else{
-					log.error("no contract receives found belong to " + contractInfo.getName());
+					log.error("no contract receives found belong to " + contractInfo.getSerialNum());
 				}
 				contractWeeklyStat.setReceiveTotal(receiveTotal);
 				
@@ -191,7 +191,7 @@ public class ContractStateTask {
 								}
 							}
 						}else{
-							log.error("no sales deptInfo found belong to " + contractInfo.getName());
+							log.error("no sales deptInfo found belong to " + contractInfo.getSerialNum());
 						}
 					}
 					contractWeeklyStat.setSalesHumanCost(salesHumanCost);
@@ -218,7 +218,7 @@ public class ContractStateTask {
 								}
 							}
 						}else{
-							log.error("no consult deptInfo found belong to " + contractInfo.getName());
+							log.error("no consult deptInfo found belong to " + contractInfo.getSerialNum());
 						}
 					}
 					contractWeeklyStat.setConsultHumanCost(consultHumanCost);
@@ -231,7 +231,7 @@ public class ContractStateTask {
 							hardwarePurchase += purchaseItem.getQuantity()*purchaseItem.getPrice();
 						}
 					}else{
-						log.error("no hardware purchase item found belong to " + contractInfo.getName());
+						log.error("no hardware purchase item found belong to " + contractInfo.getSerialNum());
 					}
 					contractWeeklyStat.setHardwarePurchase(hardwarePurchase);
 					//外部软件采购成本
@@ -242,7 +242,7 @@ public class ContractStateTask {
 							externalSoftware += purchaseItem.getQuantity()*purchaseItem.getPrice();
 						}
 					}else{
-						log.error("no external software purchase item found belong to " + contractInfo.getName());
+						log.error("no external software purchase item found belong to " + contractInfo.getSerialNum());
 					}
 					contractWeeklyStat.setExternalSoftware(externalSoftware);
 					//内部软件采购成本
@@ -253,7 +253,7 @@ public class ContractStateTask {
 							internalSoftware += purchaseItem.getQuantity()*purchaseItem.getPrice();
 						}
 					}else{
-						log.error("no internal software purchase item found belong to " + contractInfo.getName());
+						log.error("no internal software purchase item found belong to " + contractInfo.getSerialNum());
 					}
 					contractWeeklyStat.setInternalSoftware(internalSoftware);
 					//项目人工成本
@@ -283,7 +283,7 @@ public class ContractStateTask {
 									
 								}
 							}else{
-								log.error(" no user Timesheets founded for project human cost belong to " + contractInfo.getName());
+								log.error(" no user Timesheets founded for project human cost belong to " + contractInfo.getSerialNum());
 							}
 							//报销成本
 							List<ProjectCost> projectCosts2 = projectCostRepository.findAllByProjectIdAndNoType(projectInfo.getId(), ProjectCost.TYPE_HUMAN_COST);
@@ -294,7 +294,7 @@ public class ContractStateTask {
 							}
 						}
 					}else{
-						log.error("no project found belong to " + contractInfo.getName());
+						log.error("no project found belong to " + contractInfo.getSerialNum());
 					}
 					contractWeeklyStat.setProjectHumanCost(projectHumanCost);
 					contractWeeklyStat.setProjectPayment(projectPayment);
@@ -324,7 +324,7 @@ public class ContractStateTask {
 				//统计日期
 				contractWeeklyStat.setCreateTime(ZonedDateTime.now());
 				contractWeeklyStatRepository.save(contractWeeklyStat);
-				log.info(" =======contract : "+contractInfo.getName()+" weekly stat saved======= ");
+				log.info(" =======contract : "+contractInfo.getSerialNum()+" weekly stat saved======= ");
 			}
 		}else{
 			log.error("no contractInfos found");
@@ -343,7 +343,7 @@ public class ContractStateTask {
 		List<ContractInfo> contractInfos = contractInfoRepository.findByStatusOrUpdateTime(ContractInfo.STATUS_VALIDABLE, beginTime, endTime);
 		if(contractInfos != null && contractInfos.size() > 0){
 			for(ContractInfo contractInfo : contractInfos){
-				log.info("=====begin generate Contract : "+contractInfo.getName()+"=======");
+				log.info("=====begin generate Contract : "+contractInfo.getSerialNum()+"=======");
 				//初始contractCost
 				try {
 					while(true){
@@ -362,7 +362,7 @@ public class ContractStateTask {
 							break;
 						}
 					}
-					ContractCost contractCost2 = contractCostRepository.findMaxByContractIdAndCostDay(contractInfo.getId(), StringUtil.nullToLong(fDay), StringUtil.nullToLong(lDay));
+					ContractCost contractCost2 = contractCostRepository.findMaxByContractIdAndCostDayAndType(contractInfo.getId(), StringUtil.nullToLong(fDay), StringUtil.nullToLong(lDay), ContractCost.TYPE_HUMAN_COST);
 					if(contractCost2 != null){
 						Date initDate = DateUtil.addOneDay(DateUtil.parseDate("yyyyMMdd", contractCost2.getCostDay().toString()));
 						if(contractInfo.getStatus() == ContractInfo.STATUS_VALIDABLE){
@@ -400,7 +400,7 @@ public class ContractStateTask {
 					ContractFinishInfo contractFinishInfo = contractFinishInfos.get(contractFinishInfos.size() - 1);
 					contractMonthlyStat.setFinishRate(contractFinishInfo.getFinishRate());
 				}else{
-					log.error("no finish rate found belong to " + contractInfo.getName());
+					log.error("no finish rate found belong to " + contractInfo.getSerialNum());
 					contractMonthlyStat.setFinishRate(0D);
 				}
 				//合同回款总额
@@ -411,7 +411,7 @@ public class ContractStateTask {
 						receiveTotal += contractReceive.getReceiveTotal();
 					}
 				}else{
-					log.error("no contract receives found belong to " + contractInfo.getName());
+					log.error("no contract receives found belong to " + contractInfo.getSerialNum());
 				}
 				contractMonthlyStat.setReceiveTotal(receiveTotal);
 				
@@ -438,7 +438,7 @@ public class ContractStateTask {
 								}
 							}
 						}else{
-							log.error("no sales deptInfo found belong to " + contractInfo.getName());
+							log.error("no sales deptInfo found belong to " + contractInfo.getSerialNum());
 						}
 					}
 					contractMonthlyStat.setSalesHumanCost(salesHumanCost);
@@ -466,7 +466,7 @@ public class ContractStateTask {
 								}
 							}
 						}else{
-							log.error("no consult deptInfo found belong to " + contractInfo.getName());
+							log.error("no consult deptInfo found belong to " + contractInfo.getSerialNum());
 						}
 					}
 					contractMonthlyStat.setConsultHumanCost(consultHumanCost);
@@ -480,7 +480,7 @@ public class ContractStateTask {
 							hardwarePurchase += purchaseItem.getQuantity()*purchaseItem.getPrice();
 						}
 					}else{
-						log.error("no hardware purchase item found belong to " + contractInfo.getName());
+						log.error("no hardware purchase item found belong to " + contractInfo.getSerialNum());
 					}
 					contractMonthlyStat.setHardwarePurchase(hardwarePurchase);
 					//外部软件采购成本
@@ -491,7 +491,7 @@ public class ContractStateTask {
 							externalSoftware += purchaseItem.getQuantity()*purchaseItem.getPrice();
 						}
 					}else{
-						log.error("no external software purchase item found belong to " + contractInfo.getName());
+						log.error("no external software purchase item found belong to " + contractInfo.getSerialNum());
 					}
 					contractMonthlyStat.setExternalSoftware(externalSoftware);
 					//内部软件采购成本
@@ -502,7 +502,7 @@ public class ContractStateTask {
 							internalSoftware += purchaseItem.getQuantity()*purchaseItem.getPrice();
 						}
 					}else{
-						log.error("no internal software purchase item found belong to " + contractInfo.getName());
+						log.error("no internal software purchase item found belong to " + contractInfo.getSerialNum());
 					}
 					contractMonthlyStat.setInternalSoftware(internalSoftware);
 					
@@ -528,7 +528,7 @@ public class ContractStateTask {
 									}
 								}
 							}else{
-								log.error(" no user Timesheets founded for project human cost belong to " + contractInfo.getName());
+								log.error(" no user Timesheets founded for project human cost belong to " + contractInfo.getSerialNum());
 							}
 							//报销成本
 							List<ProjectCost> projectCosts2 = projectCostRepository.findAllByProjectIdAndNoType(projectInfo.getId(), ProjectCost.TYPE_HUMAN_COST);
@@ -539,7 +539,7 @@ public class ContractStateTask {
 							}
 						}
 					}else{
-						log.error("no project found belong to " + contractInfo.getName());
+						log.error("no project found belong to " + contractInfo.getSerialNum());
 					}
 					contractMonthlyStat.setProjectHumanCost(projectHumanCost);
 					contractMonthlyStat.setProjectPayment(projectPayment);
@@ -570,7 +570,7 @@ public class ContractStateTask {
 				//统计日期
 				contractMonthlyStat.setCreateTime(ZonedDateTime.now());
 				contractMonthlyStatRepository.save(contractMonthlyStat);
-				log.info(" =======contract : "+contractInfo.getName()+" monthly stat saved======= ");
+				log.info(" =======contract : "+contractInfo.getSerialNum()+" monthly stat saved======= ");
 			}
 		}else{
 			log.error("no contractInfos found");
@@ -640,9 +640,9 @@ public class ContractStateTask {
 						UserCost userCost = userCostRepository.findMaxByCostMonthAndUserId(costMonth, userTimesheet.getUserId());
 						if(userCost != null){
 							if(contractType == ContractInfo.TYPE_INTERNAL){
-								total += userTimesheet.getRealInput() * (userCost.getInternalCost()/22.5/8);
+								total2 += userTimesheet.getRealInput() * (userCost.getInternalCost()/22.5/8);
 							}else if(contractType == ContractInfo.TYPE_EXTERNAL){
-								total += userTimesheet.getRealInput() * (userCost.getExternalCost()/22.5/8);
+								total2 += userTimesheet.getRealInput() * (userCost.getExternalCost()/22.5/8);
 							}else{
 								log.info(" no contractType found belong to UserTimesheet : " + userTimesheet.getId());
 							}

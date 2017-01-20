@@ -1,6 +1,5 @@
 package com.wondertek.cpm.web.rest;
 
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -18,12 +17,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -38,7 +33,6 @@ import com.wondertek.cpm.domain.vo.LongValue;
 import com.wondertek.cpm.domain.vo.ProjectWeeklyStatVo;
 import com.wondertek.cpm.security.AuthoritiesConstants;
 import com.wondertek.cpm.service.ProjectWeeklyStatService;
-import com.wondertek.cpm.web.rest.util.HeaderUtil;
 import com.wondertek.cpm.web.rest.util.PaginationUtil;
 
 import io.swagger.annotations.ApiParam;
@@ -54,50 +48,6 @@ public class ProjectWeeklyStatResource {
         
     @Inject
     private ProjectWeeklyStatService projectWeeklyStatService;
-
-    /**
-     * POST  /project-weekly-stats : Create a new projectWeeklyStat.
-     *
-     * @param projectWeeklyStat the projectWeeklyStat to create
-     * @return the ResponseEntity with status 201 (Created) and with body the new projectWeeklyStat, or with status 400 (Bad Request) if the projectWeeklyStat has already an ID
-     * @throws URISyntaxException if the Location URI syntax is incorrect
-     */
-    @PostMapping("/project-weekly-stats")
-    @Timed
-    @Secured(AuthoritiesConstants.ROLE_STAT_PROJECT)
-    public ResponseEntity<ProjectWeeklyStat> createProjectWeeklyStat(@RequestBody ProjectWeeklyStat projectWeeklyStat) throws URISyntaxException {
-        log.debug("REST request to save ProjectWeeklyStat : {}", projectWeeklyStat);
-        if (projectWeeklyStat.getId() != null) {
-            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("projectWeeklyStat", "idexists", "A new projectWeeklyStat cannot already have an ID")).body(null);
-        }
-        ProjectWeeklyStat result = projectWeeklyStatService.save(projectWeeklyStat);
-        return ResponseEntity.created(new URI("/api/project-weekly-stats/" + result.getId()))
-            .headers(HeaderUtil.createEntityCreationAlert("projectWeeklyStat", result.getId().toString()))
-            .body(result);
-    }
-
-    /**
-     * PUT  /project-weekly-stats : Updates an existing projectWeeklyStat.
-     *
-     * @param projectWeeklyStat the projectWeeklyStat to update
-     * @return the ResponseEntity with status 200 (OK) and with body the updated projectWeeklyStat,
-     * or with status 400 (Bad Request) if the projectWeeklyStat is not valid,
-     * or with status 500 (Internal Server Error) if the projectWeeklyStat couldnt be updated
-     * @throws URISyntaxException if the Location URI syntax is incorrect
-     */
-    @PutMapping("/project-weekly-stats")
-    @Timed
-    @Secured(AuthoritiesConstants.ROLE_STAT_PROJECT)
-    public ResponseEntity<ProjectWeeklyStat> updateProjectWeeklyStat(@RequestBody ProjectWeeklyStat projectWeeklyStat) throws URISyntaxException {
-        log.debug("REST request to update ProjectWeeklyStat : {}", projectWeeklyStat);
-        if (projectWeeklyStat.getId() == null) {
-            return createProjectWeeklyStat(projectWeeklyStat);
-        }
-        ProjectWeeklyStat result = projectWeeklyStatService.save(projectWeeklyStat);
-        return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert("projectWeeklyStat", projectWeeklyStat.getId().toString()))
-            .body(result);
-    }
 
     /**
      * GET  /project-weekly-stats : get all the projectWeeklyStats.
@@ -138,20 +88,6 @@ public class ProjectWeeklyStatResource {
             .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    /**
-     * DELETE  /project-weekly-stats/:id : delete the "id" projectWeeklyStat.
-     *
-     * @param id the id of the projectWeeklyStat to delete
-     * @return the ResponseEntity with status 200 (OK)
-     */
-    @DeleteMapping("/project-weekly-stats/{id}")
-    @Timed
-    @Secured(AuthoritiesConstants.ROLE_STAT_PROJECT)
-    public ResponseEntity<Void> deleteProjectWeeklyStat(@PathVariable Long id) {
-        log.debug("REST request to delete ProjectWeeklyStat : {}", id);
-        projectWeeklyStatService.delete(id);
-        return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert("projectWeeklyStat", id.toString())).build();
-    }
 
     /**
      * SEARCH  /_search/project-weekly-stats?query=:query : search for the projectWeeklyStat corresponding

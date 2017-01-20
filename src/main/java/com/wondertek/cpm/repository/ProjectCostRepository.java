@@ -19,6 +19,6 @@ public interface ProjectCostRepository extends JpaRepository<ProjectCost,Long> {
 	@Query("from ProjectCost where projectId = ?1 and type!=?2 and status=1")
 	List<ProjectCost> findAllByProjectIdAndNoType(Long projectId, Integer type);
 	
-	@Query(" from ProjectCost where id in (select max(id) from ProjectCost where status = 1 and projectId = ?1 and costDay >= ?2 and costDay <= ?3 group by projectId)")
-	ProjectCost findMaxByProjectIdAndCostDay(Long projectId, Long beginTime, Long endTime);
+	@Query(" from ProjectCost where id in (select max(id) from ProjectCost where status = 1 and projectId = ?1 and costDay >= ?2 and costDay <= ?3 and type = ?4 group by projectId)")
+	ProjectCost findMaxByProjectIdAndCostDayAndType(Long projectId, Long beginTime, Long endTime, Integer type);
 }
