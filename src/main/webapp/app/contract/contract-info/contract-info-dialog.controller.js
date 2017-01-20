@@ -66,7 +66,9 @@
         	ContractInfo.update(contractInfo,
 	    		function(data, headers){
             		vm.isSaving = false;
-            		$state.go(vm.previousState);
+            		if(headers("X-cpmApp-alert") == 'cpmApp.contractInfo.updated'){
+            			$state.go(vm.previousState);
+            		}
 	        	},
 	        	function(error){
 	        		vm.isSaving = false;

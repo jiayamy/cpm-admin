@@ -149,7 +149,6 @@ public class ContractInfoService {
 		return null;
 	}
 
-
 	public List<LongValue> queryUserContract() {
 		List<LongValue> returnList = new ArrayList<LongValue>();
 		List<Object[]> objs = userRepository.findUserInfoByLogin(SecurityUtils.getCurrentUserLogin());
@@ -162,9 +161,6 @@ public class ContractInfoService {
     	}
 		return returnList;
 	}
-
-
-	
 
 	public int finishContractInfo(Long id, Double finishRate) {
 		String updator = SecurityUtils.getCurrentUserLogin();

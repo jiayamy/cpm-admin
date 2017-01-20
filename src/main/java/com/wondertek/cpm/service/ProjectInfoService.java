@@ -203,7 +203,17 @@ public class ProjectInfoService {
 	 * 项目结项
 	 */
 	public int endProjectInfo(Long id) {
-		return projectInfoDao.endProjectInfo(id,SecurityUtils.getCurrentUserLogin());
+		String updator = SecurityUtils.getCurrentUserLogin();
+		//保存记录
+		ProjectFinishInfo projectFinishInfo = new ProjectFinishInfo();
+		projectFinishInfo.setCreateTime(ZonedDateTime.now());
+		projectFinishInfo.setCreator(updator);
+		projectFinishInfo.setFinishRate(100d);
+		projectFinishInfo.setId(null);
+		projectFinishInfo.setProjectId(id);
+		projectFinishInfoRepository.save(projectFinishInfo);
+		
+		return projectInfoDao.endProjectInfo(id,updator);
 	}
 
 	public List<LongValue> queryUserProject() {

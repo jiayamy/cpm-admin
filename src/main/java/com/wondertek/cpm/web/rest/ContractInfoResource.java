@@ -105,7 +105,7 @@ public class ContractInfoResource {
         	}else if(contractInfoVo.getIsPrepared() == false && contractInfo.getIsPrepared() == true){
         		return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.contractInfo.save.isPreparedError" ,"")).body(null);
         	}
-        	contractInfo.setCreateTime(contractInfo.getCreateTime());
+        	contractInfo.setCreateTime(contractInfoVo.getCreateTime());
         	contractInfo.setCreator(contractInfoVo.getCreator());
         	contractInfo.setStatus(contractInfoVo.getStatus());
         	contractInfo.setFinishTotal(contractInfoVo.getFinishTotal());
