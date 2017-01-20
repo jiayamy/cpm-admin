@@ -2,6 +2,7 @@ package com.wondertek.cpm.domain.vo;
 
 import java.time.ZonedDateTime;
 
+import com.wondertek.cpm.domain.ContractBudget;
 import com.wondertek.cpm.domain.UserTimesheet;
 
 public class ContractBudgetVo {
@@ -19,6 +20,28 @@ public class ContractBudgetVo {
 	private Integer status;
 	private ZonedDateTime createTime;
 	private ZonedDateTime updateTime;
+	
+	public ContractBudgetVo(){
+		
+	}
+	
+	public ContractBudgetVo(ContractBudget contractBudget,String serialNum,String contractName){
+		this.id = contractBudget.getId();
+		this.budgetTotal = contractBudget.getBudgetTotal();
+		this.contractId = contractBudget.getContractId();
+		this.dept = contractBudget.getDept();
+		this.deptId = contractBudget.getUserId();
+		this.purchaseType = contractBudget.getPurchaseType();
+		this.createTime = contractBudget.getCreateTime();
+		this.userId = contractBudget.getUserId();
+		this.userName = contractBudget.getUserName();
+		this.status = contractBudget.getStatus();
+		this.updateTime = contractBudget.getUpdateTime();
+		
+		this.serialNum = serialNum;
+		this.contractName = contractName;
+		
+	}
 	
 	public Long getId() {
 		return id;

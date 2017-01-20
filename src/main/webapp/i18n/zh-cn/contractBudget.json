@@ -22,7 +22,8 @@
             	"statue2Error": "采购单已删除",
             	"projectError1": "项目创建错误",
             	"projectError2": "项目创建错误",
-            	"projectError3": "构建项目的采购单不能修改实施者"
+            	"projectError3": "构建项目的采购单不能修改实施者",
+            	"haveDeleted": "该采购单已经被删除"
             },
             "contractId": "合同ID",
             "type": "预算类型",

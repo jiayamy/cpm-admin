@@ -7,11 +7,11 @@
                 "createOrEditLabel": "创建或者编辑",
                 "search": "Search for Purchase Item"
             },
-            "created": "A new Purchase Item is created with identifier {{ param }}",
-            "updated": "A Purchase Item is updated with identifier {{ param }}",
-            "deleted": "A Purchase Item is deleted with identifier {{ param }}",
+            "created": "新建成功",
+            "updated": "更新操作成功",
+            "deleted": "删除成功",
             "delete": {
-                "question": "Are you sure you want to delete Purchase Item {{ id }}?"
+                "question": "您确定要删除吗?"
             },
             "detail": {
                 "title": "采购子项信息"

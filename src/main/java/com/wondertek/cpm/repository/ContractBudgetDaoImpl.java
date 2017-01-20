@@ -18,7 +18,12 @@ import com.wondertek.cpm.CpmConstants;
 import com.wondertek.cpm.config.DateUtil;
 import com.wondertek.cpm.config.StringUtil;
 import com.wondertek.cpm.domain.ContractBudget;
+import com.wondertek.cpm.domain.DeptInfo;
+import com.wondertek.cpm.domain.PurchaseItem;
+import com.wondertek.cpm.domain.User;
 import com.wondertek.cpm.domain.vo.ContractBudgetVo;
+import com.wondertek.cpm.domain.vo.LongValue;
+import com.wondertek.cpm.domain.vo.PurchaseItemVo;
 
 @Repository("contractBudgetDao")
 public class ContractBudgetDaoImpl extends GenericDaoImpl<ContractBudget, Long> implements ContractBudgetDao {
@@ -37,70 +42,100 @@ public class ContractBudgetDaoImpl extends GenericDaoImpl<ContractBudget, Long> 
 	}
 
 	@Override
-	public Page<ContractBudgetVo> getPageByParams(ContractBudget contractBudget,Pageable pageable) {
-		StringBuffer sql = new StringBuffer();
-		sql.append(" from w_contract_info ci inner join w_contract_budget cb on cb.contract_id = ci.id where 1=1");
+	public Page<ContractBudgetVo> getPageByParams(ContractBudget contractBudget,User user,DeptInfo deptInfo,Pageable pageable) {
+		StringBuffer queryHql = new StringBuffer();
+		StringBuffer countHql = new StringBuffer();
+		
+		StringBuffer whereHql = new StringBuffer();
+		StringBuffer orderHql = new StringBuffer();
 		List<Object> params = new ArrayList<Object>();
+		queryHql.append("select wcb,wci.serialNum,wci.name");
+		
+		countHql.append("select count(wci.id)");
+		whereHql.append(" from ContractInfo wci");
+		whereHql.append(" left join DeptInfo wdi on wci.deptId = wdi.id");
+		whereHql.append(" left join DeptInfo wdi2 on wci.consultantsDeptId = wdi2.id");
+		whereHql.append(" left join ContractBudget wcb on wci.id = wcb.contractId");
+		whereHql.append(" left join DeptInfo wdi3 on wcb.deptId = wdi3.id");
+		//权限
+		whereHql.append(" where (wci.salesmanId = ? or wci.consultantsId = ? or wcb.userId = ? or wci.creator = ? or wcb.creator = ?");
+		params.add(user.getId());
+		params.add(user.getId());
+		params.add(user.getId());
+		params.add(user.getLogin());
+		params.add(user.getLogin());
+		if (user.getIsManager()) {
+			whereHql.append(" or wdi.idPath like ? or wdi.id = ?");
+			params.add(deptInfo.getIdPath() + deptInfo.getIdPath() + "/%");
+			params.add(deptInfo.getId());
+			
+			whereHql.append(" or wdi2.idPath like ? or wdi2.id = ?");
+			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
+			params.add(deptInfo.getId());
+			
+			whereHql.append(" or wdi3.idPath like ? or wdi3.id = ?");
+			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
+			params.add(deptInfo.getId());
+		}
+		whereHql.append(")");
+		
+		//页面搜索条件
 		if (contractBudget.getContractId() != null) {
-			sql.append(" and cb.contract_id = ?");
+			whereHql.append(" and wcb.contractId = ?");
 			params.add(contractBudget.getContractId());
 		}
 		if (contractBudget.getName() != null) {
-			sql.append(" and cb.name_ like ?");
+			whereHql.append(" and wcb.name like ?");
 			params.add("%" + contractBudget.getName() + "%");
 		}
 		if (contractBudget.getPurchaseType() != null) {
-			sql.append(" and cb.purchase_type like ?");
-			params.add("%" + contractBudget.getPurchaseType() + "%");
+			whereHql.append(" and wcb.purchaseType = ?");
+			params.add(contractBudget.getPurchaseType());
 		}
-		StringBuffer orderSql = new StringBuffer();
+		queryHql.append(whereHql.toString());
+		countHql.append(whereHql.toString());
+		whereHql.setLength(0);
+		whereHql = null;
     	if(pageable.getSort() != null){
     		for (Order order : pageable.getSort()) {
     			if(CpmConstants.ORDER_IGNORE_SCORE.equalsIgnoreCase(order.getProperty())){
     				continue;
     			}
-    			if(orderSql.length() != 0){
-    				orderSql.append(",");
+    			if(orderHql.length() != 0){
+    				orderHql.append(",");
     			}else{
-    				orderSql.append(" order by ");
+    				orderHql.append(" order by ");
     			}
-    			orderSql.append(order.getProperty());
+    			orderHql.append(order.getProperty());
     			if(order.isAscending()){
-    				orderSql.append(" asc");
+    				orderHql.append(" asc");
     			}else{
-    				orderSql.append(" desc");
+    				orderHql.append(" desc");
     			}
     	}
-    		
    }
-    	String querySql = "select cb.id,cb.name_,ci.serial_num,ci.name_ n,cb.budget_total,cb.user_name,cb.dept_,cb.status_,cb.create_time,cb.update_time,cb.purchase_type" + sql.toString() + orderSql.toString();
-		String countSql = "select count(ci.id)" + sql.toString();
-		Page<Object[]> page = this.querySqlPage(querySql, countSql, params.toArray(), pageable);
+    	queryHql.append(orderHql.toString());
+    	orderHql.setLength(0);
+    	orderHql = null;
+    	
+		System.out.println(queryHql.toString());
+		System.out.println(countHql.toString());
+		System.out.println(params.size());
+		
+		Page<Object[]> page = this.queryHqlPage(queryHql.toString(), countHql.toString(), params.toArray(), pageable);
 		List<ContractBudgetVo> returnList = new ArrayList<ContractBudgetVo>();
 		if (page.getContent() != null) {
-			DateTimeFormatter format = DateTimeFormatter.ofPattern(DateUtil.DATE_TIME_MS_PATTERN);
+			System.out.println(page.getContent().size());
 			for (Object[] o : page.getContent()) {
-					returnList.add(transContractBudgetVo(o,format));
+				returnList.add(transContractBudgetVo(o));
 			}
 		}
     	return new PageImpl(returnList, pageable, page.getTotalElements());
 }
 	
-	private ContractBudgetVo transContractBudgetVo(Object[] o,DateTimeFormatter format){
-		ContractBudgetVo vo = new ContractBudgetVo();
-		vo.setId(StringUtil.nullToLong(o[0]));
-		vo.setName(StringUtil.null2Str(o[1]));
-		vo.setSerialNum(StringUtil.null2Str(o[2]));
-		vo.setCtractName(StringUtil.null2Str(o[3]));
-		vo.setBudgetTotal(StringUtil.nullToDouble(o[4]));
-		vo.setUserName(StringUtil.null2Str(o[5]));
-		vo.setDept(StringUtil.null2Str(o[6]));
-		vo.setStatus(StringUtil.nullToInteger(o[7]));
-		vo.setCreateTime(DateUtil.getZonedDateTime((Timestamp) o[8]));
-		vo.setUpdateTime(DateUtil.getZonedDateTime((Timestamp) o[9]));
-		vo.setPurchaseType(StringUtil.nullToInteger(o[10]));
-
-		return vo;
+	private ContractBudgetVo transContractBudgetVo(Object[] o){
+		
+		return new ContractBudgetVo((ContractBudget)o[0],StringUtil.null2Str(o[1]),StringUtil.null2Str(o[2]));
 		
 	}
 
@@ -118,6 +153,49 @@ public class ContractBudgetDaoImpl extends GenericDaoImpl<ContractBudget, Long> 
 			return false;
 		}
 		return true;
+	}
+
+	@Override
+	public List<LongValue> queryUserContract(User user, DeptInfo deptInfo) {
+		StringBuffer queryHql = new StringBuffer();
+		ArrayList<Object> params = new ArrayList<Object>();
+		
+		queryHql.append(" select distinct wci.id,wci.serialNum,wci.name from ContractInfo as wci");
+		queryHql.append(" left join DeptInfo wdi on wci.deptId = wdi.id");
+		queryHql.append(" left join DeptInfo wdi2 on wci.consultantsDeptId = wdi2.id");
+		queryHql.append(" left join ContractBudget wcb on wci.id = wcb.contractId");
+		queryHql.append(" left join DeptInfo wdi3 on wcb.userId = wdi3.id");
+		queryHql.append(" where (wci.salesmanId = ? or wci.consultantsId = ? or wcb.userId = ? or wci.creator = ? or wcb.creator = ?");
+		
+		params.add(user.getId());
+		params.add(user.getId());
+		params.add(user.getId());
+		params.add(user.getLogin());
+		params.add(user.getLogin());
+		
+		if (user.getIsManager()) {
+			queryHql.append(" or wdi.idPath like ? or wdi.id = ?");
+			params.add(deptInfo.getIdPath() + deptInfo.getIdPath() + "/%");
+			params.add(deptInfo.getId());
+			
+			queryHql.append(" or wdi2.idPath like ? or wdi2.id = ?");
+			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
+			params.add(deptInfo.getId());
+			
+			queryHql.append(" or wdi3.idPath like ? or wdi3.id = ?");
+			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
+			params.add(deptInfo.getId());
+		}
+		
+		queryHql.append(")");
+		List<Object[]> list = this.queryAllHql(queryHql.toString(), params.toArray());
+		List<LongValue> resultList = new ArrayList<LongValue>();
+		if (list != null) {
+			for (Object[] o : list) {
+				resultList.add(new LongValue(StringUtil.nullToLong(o[0]), StringUtil.null2Str(o[1]) + ":" +StringUtil.null2Str(o[2])));
+			}
+		}
+		return resultList;
 	}
 }
 	
