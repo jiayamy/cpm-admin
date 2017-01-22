@@ -5,7 +5,7 @@
         <div class="row form-horizontal">
         	<div class="form-group">
            	 	<div class="col-xs-4">
-                	<button class="btn btn-primary" ui-sref="contract-budget.new" ng-if="vm.haveEdit" >
+                	<button class="btn btn-primary" ui-sref="contract-budget.new">
                     	<span class="glyphicon glyphicon-plus"></span>
                     	<span class=""  data-translate="cpmApp.contractBudget.home.createLabel">
                         	Create new Contract Budget
@@ -106,26 +106,31 @@
                                 <span class="glyphicon glyphicon-eye-open"></span>
                                 <span class="hidden-xs hidden-sm" data-translate="entity.action.view"></span>
                             </button>
-                            <button type="submit" ng-if="vm.haveEdit"
+                            <button type="submit" ng-if="contractBudget.haveEdit"
                                     ui-sref="contract-budget.edit({id:contractBudget.id})"
                                     class="btn btn-primary btn-sm">
                                 <span class="glyphicon glyphicon-pencil"></span>
                                 <span class="hidden-xs hidden-sm" data-translate="entity.action.edit"></span>
                             </button>
-                            <button type="submit" ng-if="vm.haveEdit"
+                            <button type="submit" ng-if="contractBudget.haveEdit"
                                     ui-sref="contract-budget.delete({id:contractBudget.id})"
                                     class="btn btn-danger btn-sm">
                                 <span class="glyphicon glyphicon-remove-circle"></span>
                                 <span class="hidden-xs hidden-sm" data-translate="entity.action.delete"></span>
                             </button>
-                            <button type="submit" ng-if="vm.haveCreateProject"
-                                    ui-sref="project-info.new"
+                            <button type="submit" ng-if="contractBudget.haveCreateProject"
+                                    ui-sref="contract-budget.createProject({id:contractBudget.id})"
                                     class="btn btn-warning btn-sm">
                                 <span class="glyphicon glyphicon-plus"></span>
                                 <span class="hidden-xs hidden-sm" data-translate="cpmApp.contractBudget.button.createProject"></span>
                             </button>
+<<<<<<< HEAD
                             <button type="submit" ng-if="vm.haveCreateItem"
                                     ui-sref="createPuchaseItem"
+=======
+                            <button type="submit" ng-if="contractBudget.haveCreateItem"
+                                    ui-sref="purchase-item.new"
+>>>>>>> 4b986b72b8f0d71be5ec26ae66fd487bbfb1a857
                                     class="btn btn-success btn-sm">
                                 <span class="glyphicon glyphicon-plus"></span>
                                 <span class="hidden-xs hidden-sm" data-translate="cpmApp.contractBudget.button.createPurchaseItem"></span>

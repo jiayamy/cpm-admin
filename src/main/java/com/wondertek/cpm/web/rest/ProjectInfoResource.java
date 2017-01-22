@@ -222,7 +222,7 @@ public class ProjectInfoResource {
     
     @GetMapping("/project-infos/queryUserContractBudget")
     @Timed
-    @Secured(AuthoritiesConstants.ROLE_PROJECT_INFO)
+    @Secured(AuthoritiesConstants.USER)
     public ResponseEntity<List<LongValue>> queryUserContractBudget(@RequestParam(value = "contractId") String contractId) throws URISyntaxException {
         log.debug("REST request to queryUserContract");
         Long contractIdLong = StringUtil.nullToCloneLong(contractId);
