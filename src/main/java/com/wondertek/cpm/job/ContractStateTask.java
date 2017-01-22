@@ -653,7 +653,7 @@ public class ContractStateTask {
 					}
 				}
 				contractCost2.setTotal(total2);
-				contractCost2.setName(contractInfo.getSerialNum() + "-humanCost-" +  DateUtil.formatDate("yyyyMMdd", currentDay).toString());
+				contractCost2.setName(contractInfo.getSerialNum() + "-" +  DateUtil.formatDate("yyyyMMdd", currentDay).toString());
 				contractCost2.setType(ContractCost.TYPE_HUMAN_COST);
 				contractCost2.setCostDesc(DateUtil.formatDate("yyyyMMdd", currentDay).toString());
 				contractCost2.setStatus(1);
@@ -710,7 +710,7 @@ public class ContractStateTask {
 				}
 				contractCost.setTotal(total);
 			}
-			contractCost.setName(contractInfo.getSerialNum() + "-humanCost-" +  DateUtil.formatDate("yyyyMMdd", currentDay).toString());
+			contractCost.setName(contractInfo.getSerialNum() + "-" +  DateUtil.formatDate("yyyyMMdd", currentDay).toString());
 			contractCost.setType(ContractCost.TYPE_HUMAN_COST);
 			contractCost.setCostDesc(DateUtil.formatDate("yyyyMMdd", currentDay).toString());
 			contractCost.setStatus(1);

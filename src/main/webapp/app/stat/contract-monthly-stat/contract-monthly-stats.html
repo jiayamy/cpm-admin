@@ -71,9 +71,12 @@
                                     ui-sref="contract-monthly-stat-detail({id:contractMonthlyStat.id})"
                                     class="btn btn-info btn-sm">
                                 <span class="glyphicon glyphicon-eye-open"></span>
-                                <span class="hidden-xs hidden-sm" data-translate="entity.action.view"></span>
+                                <span class="hidden-xs hidden-sm" data-translate="cpmApp.contractMonthlyStat.transDetail"></span>
                             </button>
-
+							<button type="button" ui-sref="contract-monthly-stat-detail.chart({id:vm.contractMonthlyStat.id})" class="btn btn-primary btn-sm">
+						        <span class="glyphicon glyphicon-pencil"></span>
+						        <span class="hidden-xs hidden-sm" data-translate="cpmApp.contractMonthlyStat.transChart"> Edit</span>
+						    </button>
                         </div>
                     </td>
                 </tr>

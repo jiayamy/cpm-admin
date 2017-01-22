@@ -26,6 +26,8 @@
             "fromDate" : "Create Date From",
             "toDate" : "Create Date End",
             "statDate" : "Stat Week",
+            "transChart": "Chart",
+            "transDetail" : "Detail",
             "contractSerialNum" : "Contract SerialNum",
             "contractId": "Contract Id",
             "finishRate" : "Finish Rate",

@@ -302,7 +302,7 @@ public class ProjectStateTask {
 			Long costMonth = StringUtil.nullToLong(DateUtil.formatDate("yyyyMM", currentDay).toString());
 			ProjectCost projectCost = new ProjectCost();
 			projectCost.setProjectId(projectInfo.getId());
-			projectCost.setName(projectInfo.getSerialNum() + "-humanCost-" + DateUtil.formatDate("yyyyMMdd", currentDay).toString());
+			projectCost.setName(projectInfo.getSerialNum() + "-" + DateUtil.formatDate("yyyyMMdd", currentDay).toString());
 			projectCost.setType(ProjectCost.TYPE_HUMAN_COST);
 			Double total = 0D; 
 			List<UserTimesheet> userTimesheets = userTimesheetRepository.findByWorkDayAndObjIdAndType(workDay, projectInfo.getId(), UserTimesheet.TYPE_PROJECT);
