@@ -125,6 +125,7 @@ public class ProjectCostResource {
     		@RequestParam(value = "projectId",required=false) Long projectId, 
     		@RequestParam(value = "type",required=false) Integer type, 
     		@RequestParam(value = "name",required=false) String name, 
+    		@RequestParam(value = "pageType",required=true) Integer pageType, 
     		@ApiParam Pageable pageable)
         throws URISyntaxException {
         log.debug("REST request to get a page of ProjectCosts");
@@ -133,7 +134,7 @@ public class ProjectCostResource {
         projectCost.setType(type);
         projectCost.setName(name);
         
-        Page<ProjectCostVo> page = projectCostService.getUserPage(projectCost,pageable);
+        Page<ProjectCostVo> page = projectCostService.getUserPage(projectCost,pageType,pageable);
         
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/project-costs");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);

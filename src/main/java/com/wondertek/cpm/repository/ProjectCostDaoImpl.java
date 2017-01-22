@@ -35,7 +35,7 @@ public class ProjectCostDaoImpl extends GenericDaoImpl<ProjectCost, Long> implem
 	}
 
 	@Override
-	public Page<ProjectCostVo> getUserPage(ProjectCost projectCost, User user, DeptInfo deptInfo, Pageable pageable) {
+	public Page<ProjectCostVo> getUserPage(ProjectCost projectCost,Integer pageType, User user, DeptInfo deptInfo, Pageable pageable) {
 		StringBuffer queryHql = new StringBuffer();
 		StringBuffer countHql = new StringBuffer();
 		
@@ -60,8 +60,13 @@ public class ProjectCostDaoImpl extends GenericDaoImpl<ProjectCost, Long> implem
 			params.add(deptInfo.getId());
 		}
 		whereHql.append(")");
-		whereHql.append(" and wpc.type > ?");	
-		params.add(ProjectCost.TYPE_HUMAN_COST);
+		if(pageType == 1){//工时
+			whereHql.append(" and wpc.type = ?");	
+			params.add(ProjectCost.TYPE_HUMAN_COST);
+		}else{//其他
+			whereHql.append(" and wpc.type > ?");	
+			params.add(ProjectCost.TYPE_HUMAN_COST);
+		}
 		
 		//查询条件
 		if(projectCost.getName() != null){

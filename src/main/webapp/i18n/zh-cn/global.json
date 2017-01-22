@@ -34,8 +34,8 @@
                 "projectInfo": "项目信息",
                 "projectUser": "项目人员",
                 "projectCost": "项目报销",
-                "projectTimesheet": "项目工时",
-                "projectFinishInfo": "项目完成情况"
+                "projectCostTimesheet": "工时成本",
+                "projectTimesheet": "项目日报"
             },
             "stat":{
             	"main":"统计报表",

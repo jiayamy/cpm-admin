@@ -1,8 +1,8 @@
 <div>
-    <h2 data-translate="cpmApp.projectCost.home.title">Project Costs</h2>
+    <h2 data-translate="{{vm.projectCostTitle}}">Project Costs</h2>
     <jhi-alert></jhi-alert>
     <div class="container-fluid">
-        <div class="row">
+        <div class="row" ng-show="vm.canEdit">
             <div class="col-xs-4">
                 <button class="btn btn-primary" ui-sref="project-cost.new" >
                     <span class="glyphicon glyphicon-plus"></span>
@@ -84,7 +84,7 @@
             </thead>
             <tbody>
                 <tr ng-repeat="projectCost in vm.projectCosts track by projectCost.id">
-                    <td><a ui-sref="project-cost-detail({id:projectCost.id})">{{projectCost.name}}</a></td>
+                    <td><a ui-sref="{{vm.viewUiSref}}({id:projectCost.id})">{{projectCost.name}}</a></td>
                     <td>{{projectCost.projectNum}}</td>
                     <td>{{projectCost.projectName}}</td>
                     <td>{{projectCost.typeName}}</td>
@@ -95,7 +95,7 @@
                     <td class="text-right">
                         <div class="btn-group flex-btn-group-container">
                             <button type="submit"
-                                    ui-sref="project-cost-detail({id:projectCost.id})"
+                                    ui-sref="{{vm.viewUiSref}}({id:projectCost.id})"
                                     class="btn btn-info btn-sm">
                                 <span class="glyphicon glyphicon-eye-open"></span>
                                 <span class="hidden-xs hidden-sm" data-translate="entity.action.view"></span>

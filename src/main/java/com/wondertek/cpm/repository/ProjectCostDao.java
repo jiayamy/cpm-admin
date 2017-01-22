@@ -12,7 +12,7 @@ public interface ProjectCostDao extends GenericDao<ProjectCost, Long> {
 	 * 项目经理查看的项目成本
 	 * @return
 	 */
-	Page<ProjectCostVo> getUserPage(ProjectCost projectCost, User user, DeptInfo deptInfo, Pageable pageable);
+	Page<ProjectCostVo> getUserPage(ProjectCost projectCost, Integer pageType, User user, DeptInfo deptInfo, Pageable pageable);
 	/**
 	 * 获取用户权限下的项目成本
 	 */

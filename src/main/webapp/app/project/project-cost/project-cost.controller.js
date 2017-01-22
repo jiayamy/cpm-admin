@@ -5,11 +5,10 @@
         .module('cpmApp')
         .controller('ProjectCostController', ProjectCostController);
 
-    ProjectCostController.$inject = ['$scope', '$state', 'ProjectCost', 'ParseLinks', 'AlertService','ProjectInfo', 'paginationConstants', 'pagingParams'];
+    ProjectCostController.$inject = ['$scope', '$state', 'ProjectCost', 'ParseLinks', 'AlertService','ProjectInfo','pageType', 'paginationConstants', 'pagingParams'];
 
-    function ProjectCostController ($scope, $state, ProjectCost, ParseLinks, AlertService,ProjectInfo, paginationConstants, pagingParams) {
+    function ProjectCostController ($scope, $state, ProjectCost, ParseLinks, AlertService,ProjectInfo,pageType, paginationConstants, pagingParams) {
         var vm = this;
-
         vm.loadPage = loadPage;
         vm.predicate = pagingParams.predicate;
         vm.reverse = pagingParams.ascending;
@@ -19,7 +18,17 @@
         vm.search = search;
         vm.loadAll = loadAll;
         
-        vm.types = [{key:1,val:'工时'},{key:2,val:'差旅'},{key:3,val:'采购'},{key:4,val:'商务'}];
+        if(pageType == 1){
+        	vm.types = [{key:1,val:'工时'}];
+        	vm.viewUiSref = "project-cost-timesheet-detail";
+        	vm.canEdit = false;
+        	vm.projectCostTitle = "cpmApp.projectCost.home.timesheetTitle";
+        }else{
+        	vm.types = [{key:2,val:'差旅'},{key:3,val:'采购'},{key:4,val:'商务'}];
+        	vm.viewUiSref = "project-cost-detail";
+        	vm.canEdit = true;
+        	vm.projectCostTitle = "cpmApp.projectCost.home.title";
+        }
         vm.statuss = [{key:1,val:'正常'},{key:2,val:'删除'}];
         vm.searchQuery = {};
         vm.searchQuery.projectId = pagingParams.projectId;
@@ -74,6 +83,7 @@
             	projectId: pagingParams.projectId,
                	type: pagingParams.type,
                 name: pagingParams.name,
+                pageType:pageType,
                 page: pagingParams.page - 1,
                 size: vm.itemsPerPage,
                 sort: sort()

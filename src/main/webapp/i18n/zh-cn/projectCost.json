@@ -3,6 +3,7 @@
         "projectCost" : {
             "home": {
                 "title": "项目报销",
+                "timesheetTitle": "工时成本",
                 "createLabel": "新增",
                 "createOrEditLabel": "项目报销信息"
             },
@@ -15,7 +16,8 @@
                 "type1Error":"类型为工时的数据不可删除"
             },
             "detail": {
-                "title": "项目成本信息"
+                "title": "项目报销信息",
+                "timesheetTitle": "工时成本信息"
             },
             "save":{
             	"paramNone":"必填参数为空",

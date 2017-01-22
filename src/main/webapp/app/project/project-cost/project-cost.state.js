@@ -48,6 +48,58 @@
                         name: $stateParams.name
                     };
                 }],
+                pageType:function(){
+                	return 2;
+                },
+                translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
+                    $translatePartialLoader.addPart('projectCost');
+                    $translatePartialLoader.addPart('global');
+                    return $translate.refresh();
+                }]
+            }
+        })
+        .state('project-cost-timesheet', {
+            parent: 'project',
+            url: '/project-cost-timesheet?page&sort&projectId&name&type',
+            data: {
+                authorities: ['ROLE_PROJECT_COST'],
+                pageTitle: 'cpmApp.projectCost.home.timesheetTitle'
+            },
+            views: {
+                'content@': {
+                    templateUrl: 'app/project/project-cost/project-costs.html',
+                    controller: 'ProjectCostController',
+                    controllerAs: 'vm'
+                }
+            },
+            params: {
+                page: {
+                    value: '1',
+                    squash: true
+                },
+                sort: {
+                    value: 'wpc.id,asc',
+                    squash: true
+                },
+                projectId: null,
+                type: null,
+                name: null
+            },
+            resolve: {
+                pagingParams: ['$stateParams', 'PaginationUtil', function ($stateParams, PaginationUtil) {
+                    return {
+                        page: PaginationUtil.parsePage($stateParams.page),
+                        sort: $stateParams.sort,
+                        predicate: PaginationUtil.parsePredicate($stateParams.sort),
+                        ascending: PaginationUtil.parseAscending($stateParams.sort),
+                        projectId: $stateParams.projectId,
+                        type: $stateParams.type,
+                        name: $stateParams.name
+                    };
+                }],
+                pageType:function(){
+                	return 1;
+                },
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                     $translatePartialLoader.addPart('projectCost');
                     $translatePartialLoader.addPart('global');
@@ -77,9 +129,47 @@
                 entity: ['$stateParams', 'ProjectCost', function($stateParams, ProjectCost) {
                     return ProjectCost.get({id : $stateParams.id}).$promise;
                 }],
+                pageType:function(){
+                	return 2;
+                },
                 previousState: ["$state", function ($state) {
                     var currentStateData = {
                         name: $state.current.name || 'project-cost',
+                        params: $state.params,
+                        url: $state.href($state.current.name, $state.params)
+                    };
+                    return currentStateData;
+                }]
+            }
+        })
+        .state('project-cost-timesheet-detail', {
+            parent: 'project-cost-timesheet',
+            url: '/detail/{id}',
+            data: {
+                authorities: ['ROLE_PROJECT_COST'],
+                pageTitle: 'cpmApp.projectCost.detail.timesheetTitle'
+            },
+            views: {
+                'content@': {
+                    templateUrl: 'app/project/project-cost/project-cost-detail.html',
+                    controller: 'ProjectCostDetailController',
+                    controllerAs: 'vm'
+                }
+            },
+            resolve: {
+                translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
+                    $translatePartialLoader.addPart('projectCost');
+                    return $translate.refresh();
+                }],
+                entity: ['$stateParams', 'ProjectCost', function($stateParams, ProjectCost) {
+                    return ProjectCost.get({id : $stateParams.id}).$promise;
+                }],
+                pageType:function(){
+                	return 1;
+                },
+                previousState: ["$state", function ($state) {
+                    var currentStateData = {
+                        name: $state.current.name || 'project-cost-timesheet',
                         params: $state.params,
                         url: $state.href($state.current.name, $state.params)
                     };
