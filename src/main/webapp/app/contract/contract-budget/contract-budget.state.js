@@ -303,6 +303,88 @@
                     $state.go('^');
                 });
             }]
+        })
+        .state('contract-budget.createProject', {
+            parent: 'contract-budget',
+            url: '/createProject/{id}',
+            data: {
+                authorities: ['ROLE_CONTRACT_BUDGET'],
+                pageTitle: 'cpmApp.projectInfo.detail.title'
+            },
+            views: {
+                'content@': {
+                    templateUrl: 'app/project/project-info/project-info-dialog.html',
+                    controller: 'ProjectInfoDialogController',
+                    controllerAs: 'vm'
+                }
+            },
+            resolve: {
+                translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
+                    $translatePartialLoader.addPart('projectInfo');
+                    $translatePartialLoader.addPart('deptInfo');
+                    return $translate.refresh();
+                }],
+                entity: function () {
+                    return {
+                        serialNum: null,
+                        contractId: null,
+                        budgetId: null,
+                        name: null,
+                        pm: null,
+                        dept: null,
+                        startDay: null,
+                        endDay: null,
+                        budgetTotal: null,
+                        status: null,
+                        creator: null,
+                        createTime: null,
+                        updator: null,
+                        updateTime: null,
+                        id: null,
+                        budgetOriginal:0
+                    };
+                },
+                budgetEntity: ['$stateParams','ContractBudget', function($stateParams,ContractBudget) {
+                    return ContractBudget.get({id : $stateParams.id}).$promise;
+                }],
+                previousState: ["$state", function ($state) {
+                    var currentStateData = {
+                    	queryDept:'contract-budget.createProject.queryDept',
+                        name: $state.current.name || 'contract-budget',
+                        params: $state.params,
+                        url: $state.href($state.current.name, $state.params)
+                    };
+                    return currentStateData;
+                }]
+            }
+        })
+        .state('contract-budget.createProject.queryDept', {
+            parent: 'contract-budget.createProject',
+            url: '/queryDept?selectType&showChild',
+            data: {
+                authorities: ['ROLE_CONTRACT_BUDGET']
+            },
+            onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
+                $uibModal.open({
+                    templateUrl: 'app/info/dept-info/dept-info-query.html',
+                    controller: 'DeptInfoQueryController',
+                    controllerAs: 'vm',
+                    backdrop: 'static',
+                    size: 'lg',
+                    resolve: {
+                        entity: function() {
+                            return {
+                            	selectType : $stateParams.selectType,
+                            	showChild : $stateParams.showChild
+                            }
+                        }
+                    }
+                }).result.then(function() {
+                    $state.go('^', {}, { reload: false });
+                }, function() {
+                    $state.go('^');
+                });
+            }]
         });
     }
 

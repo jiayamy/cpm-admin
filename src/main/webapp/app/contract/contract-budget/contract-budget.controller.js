@@ -109,21 +109,21 @@
 						data[i].purchaseType = "服务";
 					}
 					if (data[i].isEdit == true) {
-						vm.haveEdit = true;
+						data[i].haveEdit = true;
 					}else if (data[i].isEdit == false) {
-						vm.haveEdit = null;
+						data[i].haveEdit = null;
 					}
 					if (data[i].isCreate == true) {
 						if (data[i].purchaseType == "服务") {
-							vm.haveCreateProject = true;
-							vm.haveCreateItem = null;
+							data[i].haveCreateProject = true;
+							data[i].haveCreateItem = null;
 						}else {
-							vm.haveCreateItem = true;
-							vm.haveCreateProject = null;
+							data[i].haveCreateItem = true;
+							data[i].haveCreateProject = null;
 						}
 					}else{
-						vm.haveCreateProject = null;
-						vm.haveCreateItem = null;
+						data[i].haveCreateProject = null;
+						data[i].haveCreateItem = null;
 					}
 				}
 			}
