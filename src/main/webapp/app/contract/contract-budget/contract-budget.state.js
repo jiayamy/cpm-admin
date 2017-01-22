@@ -303,6 +303,60 @@
                     $state.go('^');
                 });
             }]
+        })
+        .state('createPuchaseItem', {
+            parent: 'contract-budget',
+            url: '/createPuchaseItem/{id}',
+            data: {
+                authorities: ['ROLE_CONTRACT_PURCHASE']
+            },
+            views:{
+            	'content@':{
+            		templateUrl: 'app/contract/purchase-item/purchase-item-dialog.html',
+            		controller: 'PurchaseItemDialogController',
+            		controllerAs: 'vm'
+            	}
+            },
+            resolve: {
+           	 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
+                    $translatePartialLoader.addPart('purchaseItem');
+                    return $translate.refresh();
+                }],
+                entity: function () {
+                    return {
+                        contractId: null,
+                        budgetId: null,
+                        name: null,
+                        quantity: null,
+                        price: null,
+                        units: null,
+                        type: null,
+                        source: null,
+                        purchaser: null,
+                        totalAmount: null,
+                        status: null,
+                        creator: null,
+                        createTime: null,
+                        updator: null,
+                        updateTime: null,
+                        id: null,
+                        contractNum: null,
+                        contractName: null,
+                        budgetOriginal:0
+                    };
+                },
+                budgetEtity: ['ContractBudget', function(ContractBudget) {
+                    return ContractBudget.get({id : $stateParams.id}).$promise;
+                }],
+                previousState: ["$state", function ($state) {
+                    var currentStateData = {
+                        name: $state.current.name || 'purchase-item',
+                        params: $state.params,
+                        url: $state.href($state.current.name, $state.params)
+                    };
+                    return currentStateData;
+                }]
+            }
         });
     }
 
