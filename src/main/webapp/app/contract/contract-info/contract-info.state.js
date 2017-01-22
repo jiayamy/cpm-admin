@@ -124,35 +124,35 @@
                  }]
         	}
         })
-        .state('contract-info-detail.edit.queryDept', {
-            parent: 'contract-info-detail.edit',
-            url: '/queryDept?selectType&showChild&dataType',
-            data: {
-                authorities: ['ROLE_USER']
-            },
-            onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
-                $uibModal.open({
-                    templateUrl: 'app/info/dept-info/dept-info-query.html',
-                    controller: 'DeptInfoQueryController',
-                    controllerAs: 'vm',
-                    backdrop: 'static',
-                    size: 'lg',
-                    resolve: {
-                        entity: function() {
-                            return {
-                            	selectType : $stateParams.selectType,
-                            	showChild : $stateParams.showChild,
-                            	dataType:$stateParams.dataType
-                            }
-                        }
-                    }
-                }).result.then(function() {
-                    $state.go('^', {}, { reload: false });
-                }, function() {
-                    $state.go('^');
-                });
-            }]
-        })
+//        .state('contract-info-detail.edit.queryDept', {
+//            parent: 'contract-info-detail.edit',
+//            url: '/queryDept?selectType&showChild&dataType',
+//            data: {
+//                authorities: ['ROLE_USER']
+//            },
+//            onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
+//                $uibModal.open({
+//                    templateUrl: 'app/info/dept-info/dept-info-query.html',
+//                    controller: 'DeptInfoQueryController',
+//                    controllerAs: 'vm',
+//                    backdrop: 'static',
+//                    size: 'lg',
+//                    resolve: {
+//                        entity: function() {
+//                            return {
+//                            	selectType : $stateParams.selectType,
+//                            	showChild : $stateParams.showChild,
+//                            	dataType:$stateParams.dataType
+//                            }
+//                        }
+//                    }
+//                }).result.then(function() {
+//                    $state.go('^', {}, { reload: false });
+//                }, function() {
+//                    $state.go('^');
+//                });
+//            }]
+//        })
         .state('contract-info.new',{
         	parent: 'contract-info',
             url: '/new',

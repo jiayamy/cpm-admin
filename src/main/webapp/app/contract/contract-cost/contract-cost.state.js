@@ -58,7 +58,7 @@
         })
         .state('contract-cost-detail', {
             parent: 'contract',
-            url: '/contract-cost/{id}',
+            url: '/detail/{id}',
             data: {
                 authorities: ['ROLE_USER'],
                 pageTitle: 'cpmApp.contractCost.detail.title'
@@ -90,8 +90,8 @@
         })
         
         .state('contract-cost-detail.edit',{
-        	parent: 'contract-cost',
-            url: '/{id}/edit',
+        	parent: 'contract-cost-detail',
+            url: '/edit',
             data: {
                 authorities: ['ROLE_USER']
             },
@@ -109,6 +109,14 @@
                 }],
                 entity: ['$stateParams', 'ContractCost', function($stateParams, ContractCost) {
                     return ContractCost.get({id : $stateParams.id}).$promise;
+                }],
+                previousState: ["$state", function ($state) {
+                    var currentStateData = {
+                        name: $state.current.name || 'contract-cost-detail',
+                        params: $state.params,
+                        url: $state.href($state.current.name, $state.params)
+                    };
+                    return currentStateData;
                 }]
             }
         })
@@ -147,7 +155,15 @@
                          updateTime: null,
                          id: null
                      };
-                 }
+                 },
+                 previousState: ["$state", function ($state) {
+                     var currentStateData = {
+                         name: $state.current.name || 'contract-cost',
+                         params: $state.params,
+                         url: $state.href($state.current.name, $state.params)
+                     };
+                     return currentStateData;
+                 }]
                  
         	}
         })        
@@ -171,6 +187,14 @@
                 }],
                 entity: ['$stateParams', 'ContractCost', function($stateParams, ContractCost) {
                     return ContractCost.get({id : $stateParams.id}).$promise;
+                }],
+                previousState: ["$state", function ($state) {
+                    var currentStateData = {
+                        name: $state.current.name || 'contract-cost',
+                        params: $state.params,
+                        url: $state.href($state.current.name, $state.params)
+                    };
+                    return currentStateData;
                 }]
             }
         })
