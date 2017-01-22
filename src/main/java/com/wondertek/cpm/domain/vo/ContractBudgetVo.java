@@ -30,6 +30,7 @@ public class ContractBudgetVo {
 	
 	public ContractBudgetVo(ContractBudget contractBudget,String serialNum,String contractName){
 		this.id = contractBudget.getId();
+		this.name = contractBudget.getName();
 		this.budgetTotal = contractBudget.getBudgetTotal();
 		this.contractId = contractBudget.getContractId();
 		this.dept = contractBudget.getDept();
@@ -49,6 +50,7 @@ public class ContractBudgetVo {
 		ContractBudget contractBudget = (ContractBudget)o[0];
 		
 		this.id = contractBudget.getId();
+		this.name = contractBudget.getName();
 		this.budgetTotal = contractBudget.getBudgetTotal();
 		this.contractId = contractBudget.getContractId();
 		this.dept = contractBudget.getDept();

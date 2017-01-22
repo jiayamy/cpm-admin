@@ -29,13 +29,12 @@
         
         vm.searchQuery.contractId = pagingParams.contractId;
         vm.searchQuery.name = pagingParams.name;
-        vm.searchQuery.contractName = pagingParams.contractName;
+        vm.searchQuery.purchaseType = pagingParams.purchaseType;
         if (!vm.searchQuery.contractId && !vm.searchQuery.name && !vm.searchQuery.purchaseType){
         	vm.haveSearch = null;
         }else{
         	vm.haveSearch = true;
         }
-        
         vm.contractInfos = [];
         loadContract();
         function loadContract(){
@@ -108,6 +107,23 @@
 						data[i].purchaseType = "软件";
 					}else if (data[i].purchaseType == 3) {
 						data[i].purchaseType = "服务";
+					}
+					if (data[i].isEdit == true) {
+						vm.haveEdit = true;
+					}else if (data[i].isEdit == false) {
+						vm.haveEdit = null;
+					}
+					if (data[i].isCreate == true) {
+						if (data[i].purchaseType == "服务") {
+							vm.haveCreateProject = true;
+							vm.haveCreateItem = null;
+						}else {
+							vm.haveCreateItem = true;
+							vm.haveCreateProject = null;
+						}
+					}else{
+						vm.haveCreateProject = null;
+						vm.haveCreateItem = null;
 					}
 				}
 			}
