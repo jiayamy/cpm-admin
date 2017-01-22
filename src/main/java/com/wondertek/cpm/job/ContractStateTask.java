@@ -694,6 +694,12 @@ public class ContractStateTask {
 								total += userTimesheet.getRealInput() * (userCost.getInternalCost()/22.5/8);
 							}else if(contractType == ContractInfo.TYPE_EXTERNAL){
 								total += userTimesheet.getRealInput() * (userCost.getExternalCost()/22.5/8);
+							}else if (contractType == ContractInfo.TYPE_PUBLIC) {
+								if(contractInfo.getIsEpibolic()){
+									total += userTimesheet.getRealInput() * (userCost.getExternalCost()/22.5/8);
+								}else{
+									total += userTimesheet.getRealInput() * (userCost.getInternalCost()/22.5/8);
+								}
 							}else{
 								log.info(" no contractType found belong to UserTimesheet : " + userTimesheet.getId());
 							}
