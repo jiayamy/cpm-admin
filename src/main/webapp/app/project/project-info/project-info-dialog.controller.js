@@ -131,7 +131,10 @@
 	    		function(data, headers){
             		vm.isSaving = false;
 //            		AlertService.error(error.data.message);
-            		$state.go(vm.previousState);
+
+            		if(headers("X-cpmApp-alert") == 'cpmApp.projectInfo.updated'){
+            			$state.go(vm.previousState);
+            		}
 	        	},
 	        	function(error){
 	        		vm.isSaving = false;

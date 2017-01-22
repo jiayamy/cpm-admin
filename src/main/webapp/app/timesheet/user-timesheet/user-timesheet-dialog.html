@@ -15,7 +15,6 @@
             </div>
         </div>
     </div>
-    <jhi-alert></jhi-alert>
 	<form name="editForm" role="form" novalidate ng-submit="vm.save()">
 	    <div class="table-responsive">
 	        <table class="jh-table table table-striped">
@@ -104,6 +103,7 @@
 	            </tbody>
 	        </table>
 	    </div>
+	    <jhi-alert></jhi-alert>
 	    <button id="go_back" type="button" ui-sref="{{vm.previousState}}" class="btn btn-info">
 	        <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span data-translate="entity.action.back"> Back</span>
 	    </button>

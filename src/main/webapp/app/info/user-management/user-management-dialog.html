@@ -1,7 +1,5 @@
 <h2><span data-translate="userManagement.home.createOrEditLabel">Create or edit a Project Info</span></h2>
 <hr>
-<jhi-alert-error></jhi-alert-error>
-<jhi-alert></jhi-alert>
 <form name="myForm" role="form" novalidate ng-submit="vm.save()" show-validation>
     <div class="container-fluid">
     	<div class="row form-horizontal">
@@ -225,9 +223,11 @@
 		    	<div class="col-sm-6">
 	        	</div>
         	</div>
-	    </div>
-	 </div>
-	 <hr>
+		</div>
+	</div>
+	<hr>
+	<jhi-alert-error></jhi-alert-error>
+	<jhi-alert></jhi-alert>
     <button type="submit"
        ui-sref="{{ vm.previousState }}"
        class="btn btn-info">
