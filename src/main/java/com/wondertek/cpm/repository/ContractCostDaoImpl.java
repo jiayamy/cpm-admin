@@ -59,18 +59,18 @@ public class ContractCostDaoImpl extends GenericDaoImpl<ContractCost, Long> impl
 		params.add(user.getId());
 		params.add(user.getLogin());
 		
-//		if (user.getIsManager()) {
-//			whereHql.append(" or wdi.idPath like ? or wdi.id = ?");
-//			params.add(deptInfo.getIdPath()+deptInfo.getId()+"/%");
-//			params.add(deptInfo.getId());
-//			
-//			whereHql.append(" or wdi2.idPath like ? or wdi2.id = ?");
-//			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
-//			params.add(deptInfo.getId());
-//		}
+		if (user.getIsManager()) {
+			whereHql.append(" or wdi.idPath like ? or wdi.id = ?");
+			params.add(deptInfo.getIdPath()+deptInfo.getId()+"/%");
+			params.add(deptInfo.getId());
+			
+			whereHql.append(" or wdi2.idPath like ? or wdi2.id = ?");
+			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
+			params.add(deptInfo.getId());
+		}
 		whereHql.append(")");
-//		whereHql.append(" and wcc.type>?");
-//		params.add(contractCost.TYPE_HUMAN_COST);
+		whereHql.append(" and wcc.type>?");
+		params.add(contractCost.TYPE_HUMAN_COST);
 		
 		//查询条件
 		if (contractCost.getName() != null) {
