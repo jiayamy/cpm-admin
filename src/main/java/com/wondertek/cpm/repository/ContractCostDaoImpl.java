@@ -156,7 +156,6 @@ public class ContractCostDaoImpl extends GenericDaoImpl<ContractCost, Long> impl
 		params.add(id);
 		List<Object[]> list = this.queryAllHql(queryHql.toString(), params.toArray());
 		if (list != null && !list.isEmpty()) {
-			
 			return new ContractCostVo((ContractCost)list.get(0)[0],StringUtil.null2Str(list.get(0)[1]),StringUtil.null2Str(list.get(0)[2]),StringUtil.nullToDouble(list.get(0)[3]));
 		}
 		return null;
