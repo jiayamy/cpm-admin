@@ -44,7 +44,9 @@
             "projectHumanCost": "Project Human Cost",
             "projectPayment": "Project Payment",
             "statWeek": "Stat Week",
-            "createTime": "Create Time"
+            "createTime": "Create Time",
+            "transChart": "Chart",
+            "transDetail" : "Detail"
         }
     }
 }

@@ -1,77 +1,102 @@
-
-<form name="editForm" role="form" novalidate ng-submit="vm.save()">
-
-    <div class="modal-header">
-        <h2 class="modal-title" id="myContractCostLabel" data-translate="cpmApp.contractCost.home.createOrEditLabel">Create or edit a Contract Cost</h2>
+<h2><span data-translate="cpmApp.contractCost.home.createOrEditLabel">Create or edit a Contract Cost</span></h2>
+<hr>
+<jhi-alert></jhi-alert>
+<jhi-alert-error></jhi-alert-error>
+<form name="myForm" role="form" novalidate ng-submit="vm.save()">
+	<div class="container-fluid">
+		<div class="row form-horizontal">
+			<div class="form-group">
+				<div class="col-sm-6">
+		            <label class="control-label" data-translate="cpmApp.contractCost.contractId" for="field_contractId">Contract Id</label>
+              		<select class="form-control"  name="contractId" id="field_contractId" ng-model="vm.contractCost.contractId"
+	            		ng-required="true" ng-disabled="vm.contractCost.id"
+		            	ng-options="contractInfo.val for contractInfo in vm.contractInfos track by contractInfo.key">
+		         	</select>
+	                <div class="help-block"
+	                   ng-hide="vm.contractCost.contractId" data-translate="entity.validation.required" style="color:red">
+	                    This field is required.
+	                </div>
+        		</div>
+        		<div class="col-sm-6">
+        			<label class="control-label" data-translate="cpmApp.contractCost.budgetId" for="field_budgetId">Budget Id</label>
+              		<select class="form-control"  name="budgetId" id="field_budgetId" ng-model="vm.contractCost.budgetId"
+	            		ng-required="true" 
+		            	ng-options="budget.val for budget in vm.contractBudgets track by budget.key"
+		            	>
+		         	</select>
+	                <div class="help-block"
+	                   ng-hide="vm.contractCost.budgetId" data-translate="entity.validation.required" style="color:red">
+	                    This field is required.
+	                </div>
+        		</div>
+        	</div>
+        	<div class="form-group">
+        		<div class="col-sm-6">
+        			<label class="control-label" data-translate="cpmApp.contractCost.name" for="field_name">Name</label>
+	            	<input type="text" class="form-control" name="name" id="field_name" ng-required="true" ng-model="vm.contractCost.name"
+	                     />
+	                <div class="help-block"
+	                   ng-show="myForm.name.$error.required" data-translate="entity.validation.required" style="color:red">
+	                    This field is required.
+	                </div>
+        		</div>
+				<div class="col-sm-6">
+					<label class="control-label" data-translate="cpmApp.contractCost.type" for="field_type">Type</label>
+					<select class="form-control" name="type" ng-model="vm.contractCost.type" id="field_type"
+	            		ng-required="true" ng-disabled="vm.contractCost.id"
+		            	ng-options="type.val for type in vm.types track by type.key">
+		         	</select>
+		         	<div class="help-block"
+	                   ng-hide="vm.contractCost.type" data-translate="entity.validation.required" style="color:red">
+	                    This field is required.
+	                </div>
+				</div>
+        	</div>
+        	
+			<div class="form-group">
+				<div class="col-sm-6">
+					<label class="control-label" data-translate="cpmApp.contractCost.costDay" for="field_costDay">Day</label>
+	                <div class="input-group">
+	                    <input id="field_costDay" type="text" class="form-control" name="costDay" datetime-picker="yyyyMMdd"
+	                    	enable-time="false" ng-required="true" ng-minlength="1" readonly
+	                     	ng-model="vm.contractCost.costDay" is-open="vm.datePickerOpenStatus.costDay"
+	                      />
+	                    <span class="input-group-btn">
+	                        <button type="button" class="btn btn-default" ng-click="vm.openCalendar('costDay')"><i class="glyphicon glyphicon-calendar"></i></button>
+	                    </span>
+	                </div>
+	                <div class="help-block"
+	                   ng-hide="vm.contractCost.costDay" data-translate="entity.validation.required" style="color:red">
+	                    This field is required.
+	                </div>
+					
+        		</div>
+				<div class="col-sm-6">
+					<label class="control-label" data-translate="cpmApp.contractCost.total" for="field_total">Total</label>
+	            	<input type="number" class="form-control" name="total" id="field_total"
+	                    ng-model="vm.contractCost.total" step="0.01" min="0" ng-required="true"
+	                     />
+					<div class="help-block"
+	                   ng-show="myForm.total.$error.required" data-translate="entity.validation.required" style="color:red">
+	                    This field is required.
+	                </div>
+				</div>
+        	</div>
+        	<div class="form-group">
+				<div class="col-sm-12">
+					<label class="control-label" data-translate="cpmApp.contractCost.costDesc" for="field_costDesc">Cost Desc</label>
+	            	<textarea class="form-control" name="costDesc" id="field_costDesc"
+	                    ng-model="vm.contractCost.costDesc"
+	                     />
+				</div>
+        	</div>
+	  	</div>
     </div>
-    <div class="modal-body">
-        <jhi-alert-error></jhi-alert-error>
-        <div class="form-group" ng-show="vm.contractCost.id">
-            <label for="id" data-translate="global.field.id">ID</label>
-            <input type="text" class="form-control" id="id" name="id"
-                    ng-model="vm.contractCost.id" readonly />
-        </div>
-        <div class="form-group">
-            <label class="control-label" data-translate="cpmApp.contractCost.contractId" for="field_contractId">Contract Id</label>
-            <input type="number" class="form-control" name="contractId" id="field_contractId"
-                    ng-model="vm.contractCost.contractId"
-                     />
-        </div>
-        <div class="form-group">
-            <label class="control-label" data-translate="cpmApp.contractCost.budgetId" for="field_budgetId">Budget Id</label>
-            <input type="number" class="form-control" name="budgetId" id="field_budgetId"
-                    ng-model="vm.contractCost.budgetId"
-                     />
-        </div>
-        <div class="form-group">
-            <label class="control-label" data-translate="cpmApp.contractCost.deptId" for="field_deptId">Dept Id</label>
-            <input type="number" class="form-control" name="deptId" id="field_deptId"
-                    ng-model="vm.contractCost.deptId"
-                     />
-        </div>
-        <div class="form-group">
-            <label class="control-label" data-translate="cpmApp.contractCost.dept" for="field_dept">Dept</label>
-            <input type="text" class="form-control" name="dept" id="field_dept"
-                    ng-model="vm.contractCost.dept"
-                     />
-        </div>
-        <div class="form-group">
-            <label class="control-label" data-translate="cpmApp.contractCost.name" for="field_name">Name</label>
-            <input type="text" class="form-control" name="name" id="field_name"
-                    ng-model="vm.contractCost.name"
-                     />
-        </div>
-        <div class="form-group">
-            <label class="control-label" data-translate="cpmApp.contractCost.type" for="field_type">Type</label>
-            <input type="number" class="form-control" name="type" id="field_type"
-                    ng-model="vm.contractCost.type"
-                     />
-        </div>
-        <div class="form-group">
-            <label class="control-label" data-translate="cpmApp.contractCost.total" for="field_total">Total</label>
-            <input type="number" class="form-control" name="total" id="field_total"
-                    ng-model="vm.contractCost.total"
-                     />
-        </div>
-        <div class="form-group">
-            <label class="control-label" data-translate="cpmApp.contractCost.costDesc" for="field_costDesc">Cost Desc</label>
-            <input type="text" class="form-control" name="costDesc" id="field_costDesc"
-                    ng-model="vm.contractCost.costDesc"
-                     />
-        </div>
-        <div class="form-group">
-            <label class="control-label" data-translate="cpmApp.contractCost.status" for="field_status">Status</label>
-            <input type="number" class="form-control" name="status" id="field_status"
-                    ng-model="vm.contractCost.status"
-                     />
-        </div>
-    </div>
-    <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="vm.clear()">
-            <span class="glyphicon glyphicon-ban-circle"></span>&nbsp;<span data-translate="entity.action.cancel">Cancel</span>
-        </button>
-        <button type="submit" ng-disabled="editForm.$invalid || vm.isSaving" class="btn btn-primary">
-            <span class="glyphicon glyphicon-save"></span>&nbsp;<span data-translate="entity.action.save">Save</span>
-        </button>
-    </div>
+	<hr>
+    <button type="button" class="btn btn-info" ui-sref="{{ vm.previousState }}">
+        <span class="glyphicon glyphicon-ban-circle"></span>&nbsp;<span data-translate="entity.action.cancel">Cancel</span>
+    </button>
+    <button type="submit" ng-disabled="!myForm.$valid || vm.isSaving" class="btn btn-primary">
+        <span class="glyphicon glyphicon-save"></span>&nbsp;<span data-translate="entity.action.save">Save</span>
+    </button>
 </form>

@@ -26,6 +26,8 @@
             "fromDate" : "创建日期开始",
             "toDate" : "创建日期结束",
             "statDate" : "统计月",
+            "transChart": "表格",
+            "transDetail" : "详情",
             "projectSerialNum" : "项目编号",
             "projectId": "项目主键",
             "serialNum" : "项目编号",

@@ -17,6 +17,6 @@ public interface ContractCostDao extends GenericDao<ContractCost, Long>{
 	/**
 	 * 获取用户权限下的合同成本
 	 */
-	ContractCostVo getProjectCost(User user, DeptInfo deptInfo, Long id);
+	ContractCostVo getContractCost(User user, DeptInfo deptInfo, Long id);
 
 }

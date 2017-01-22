@@ -43,7 +43,7 @@ public class ContractCostDaoImpl extends GenericDaoImpl<ContractCost, Long> impl
 		
 		StringBuffer whereHql = new StringBuffer();
 		StringBuffer orderHql = new StringBuffer();
-		ArrayList<Object> params = new ArrayList<Object>();
+		List<Object> params = new ArrayList<Object>();
 		
 		queryHql.append("select wcc,wci.serialNum,wci.name,wcb.budgetTotal");
 		countHql.append("select count(wcc.id)");
@@ -127,13 +127,14 @@ public class ContractCostDaoImpl extends GenericDaoImpl<ContractCost, Long> impl
 	}
 
 	@Override
-	public ContractCostVo getProjectCost(User user, DeptInfo deptInfo, Long id) {
+	public ContractCostVo getContractCost(User user, DeptInfo deptInfo, Long id) {
 		StringBuffer queryHql = new StringBuffer();
 		List<Object> params = new ArrayList<Object>();
 		
 		queryHql.append("select wcc,wci.serialNum,wci.name,wcb.budgetTotal");
 		queryHql.append(" from ContractCost wcc");
 		queryHql.append(" left join ContractInfo wci on wci.id = wcc.contractId");
+		queryHql.append(" left join ContractBudget wcb on wcb.id = wcc.budgetId");
 		queryHql.append(" left join DeptInfo wdi on wdi.id = wci.deptId");
 		queryHql.append(" left join DeptInfo wdi2 on wci.consultantsDeptId = wdi2.id");
 		queryHql.append(" where (wci.salesmanId = ? or wci.consultantsId = ? or wci.creator = ?");
@@ -154,7 +155,7 @@ public class ContractCostDaoImpl extends GenericDaoImpl<ContractCost, Long> impl
 		queryHql.append(") and wcc.id = ?");
 		params.add(id);
 		List<Object[]> list = this.queryAllHql(queryHql.toString(), params.toArray());
-		if (list != null && list.isEmpty()) {
+		if (list != null && !list.isEmpty()) {
 			return new ContractCostVo((ContractCost)list.get(0)[0],StringUtil.null2Str(list.get(0)[1]),StringUtil.null2Str(list.get(0)[2]),StringUtil.nullToDouble(list.get(0)[3]));
 		}
 		return null;

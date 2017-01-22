@@ -2,6 +2,7 @@ package com.wondertek.cpm.service;
 
 import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
 
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -53,7 +54,7 @@ public class ContractCostService {
     public ContractCost save(ContractCost contractCost) {
         log.debug("Request to save ContractCost : {}", contractCost);
         ContractCost result = contractCostRepository.save(contractCost);
-        contractCostSearchRepository.save(result);
+        //contractCostSearchRepository.save(result);
         return result;
     }
 
@@ -93,10 +94,10 @@ public class ContractCostService {
         ContractCost contractCost = contractCostRepository.findOne(id);
         if (contractCost != null) {
 			contractCost.setStatus(CpmConstants.STATUS_DELETED);
+			contractCost.setUpdateTime(ZonedDateTime.now());
+			contractCost.setUpdator(SecurityUtils.getCurrentUserLogin());
 			contractCostRepository.save(contractCost);
 		}
-        contractCostRepository.delete(id);
-        contractCostSearchRepository.delete(id);
     }
 
     /**
@@ -122,7 +123,7 @@ public class ContractCostService {
 		if (objs != null && !objs.isEmpty()) {
 			Object[] o = objs.get(0);
 			User user = (User) o[0];
-			DeptInfo deptInfo = (DeptInfo) o[1];
+			DeptInfo deptInfo = (DeptInfo)o[1];
 			return contractCostDao.getUserPage(contractCost,user,deptInfo,pageable);
 		}
 		
@@ -137,8 +138,22 @@ public class ContractCostService {
     		User user = (User) o[0];
     		DeptInfo deptInfo = (DeptInfo) o[1];
     		
-    		return contractCostDao.getProjectCost(user,deptInfo,id);
+    		return contractCostDao.getContractCost(user,deptInfo,id);
     	}
     	return null;
+	}
+
+	public ContractCost getNewContratCost(ContractCost contractCost) {
+		List<Object[]> objs = userRepository.findUserInfoByLogin(SecurityUtils.getCurrentUserLogin());
+    	if(objs != null && !objs.isEmpty()){
+    		Object[] o = objs.get(0);
+    		User user = (User) o[0];
+    		DeptInfo deptInfo = (DeptInfo) o[1];
+    		contractCost.setDept(deptInfo.getName());
+    		contractCost.setDeptId(deptInfo.getId());
+    		return contractCost;
+    	}
+		
+		return null;
 	}
 }
