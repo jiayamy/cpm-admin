@@ -32,6 +32,10 @@ public final class HeaderUtil {
     public static HttpHeaders createEntityDeletionAlert(String entityName, String param) {
         return createAlert("cpmApp." + entityName + ".deleted", param);
     }
+    
+    public static HttpHeaders createEntityUploadAlert(String entityName, String param){
+    	return createAlert("cpmApp." + entityName + ".uploaded", param);
+    }
 
     public static HttpHeaders createFailureAlert(String entityName, String errorKey, String defaultMessage) {
         log.error("Entity creation failed, {}", defaultMessage);

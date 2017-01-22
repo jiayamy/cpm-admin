@@ -2,7 +2,6 @@
 	<h2 data-translate="cpmApp.holidayInfo.home.createOrEditLabel" ng-hide="{{vm.holidayInfo.currDay}}">Create or edit a Holiday Info</h2>
 	<h2 data-translate="cpmApp.holidayInfo.home.editLabel" ng-show="{{vm.holidayInfo.currDay}}">Create or edit a Holiday Info</h2>
 	<hr>
-	<jhi-alert-error></jhi-alert-error>
 	<form name="editForm" role="form" novalidate ng-submit="vm.save()">
 		<div class="container-fluid">
 			<div class="row form-horizontal">
@@ -28,6 +27,8 @@
 			</div>
 	    </div>
 	    <hr>
+	    <jhi-alert></jhi-alert>
+		<jhi-alert-error></jhi-alert-error>
         <button type="button" class="btn btn-info" data-dismiss="modal" ng-click="vm.clear()">
             <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span data-translate="entity.action.back">Cancel</span>
         </button>

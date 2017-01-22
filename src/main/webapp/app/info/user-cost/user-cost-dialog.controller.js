@@ -31,14 +31,6 @@
         	vm.userCost.costMonth = new Date(vm.sdf.substring(0,4),vm.sdf.substring(4,6)-1);
         }
         
-//        $timeout(function (){
-//            angular.element('.form-group:eq(1)>input').focus();
-//        });
-
-//        function clear () {
-//            $uibModalInstance.dismiss('cancel');
-//        	$state.go('user-cost', null, { reload: 'user-cost' });
-//        }
 
         function save () {
             vm.isSaving = true;
@@ -55,18 +47,9 @@
             	return;
             }
             UserCost.update(userCost, onSaveSuccess, onSaveError);
-//            if (vm.userCost.id !== null) {
-//                UserCost.update(vm.userCost, onSaveSuccess, onSaveError);
-//            } else {
-//                UserCost.save(vm.userCost, onSaveSuccess, onSaveError);
-//            }
         }
 
-//        function onSaveSuccess (result) {
         function onSaveSuccess (data,headers) {
-//            $scope.$emit('cpmApp:userCostUpdate', result);
-//            $uibModalInstance.close(result);
-//        	$state.go('user-cost');
             vm.isSaving = false;
             if(headers("X-cpmApp-alert") == 'cpmApp.userCost.updated'){
     			$state.go(vm.previousState);
@@ -83,10 +66,8 @@
         }
         
         var unsubscribe = $rootScope.$on('cpmApp:deptInfoSelected', function(event, result) {
-//        	vm.userCost.userNameId = result.objId;
+        	vm.userCost.userId = result.objId;
         	vm.userCost.userName = result.name;
-//        	vm.userCost.deptId = result.parentId;
-//        	vm.userCost.dept = result.parentName;
         });
         $scope.$on('$destroy', unsubscribe);
     }

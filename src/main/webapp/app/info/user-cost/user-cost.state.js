@@ -310,6 +310,41 @@
                     $state.go('^');
                 });
             }]
+        })
+        .state('user-cost.upload', {
+            parent: 'user-cost',
+            url: '/upload',
+            data: {
+                authorities: ['ROLE_INFO_USERCOST'],
+            },
+            views: {
+                'content@': {
+                    templateUrl: 'app/info/user-cost/user-cost-upload.html',
+                    controller: 'UserCostUploadController',
+                    controllerAs: 'vm'
+                }
+            },
+            resolve: {
+            	translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
+                    $translatePartialLoader.addPart('userCost');
+//                    $translatePartialLoader.addPart('deptInfo');
+                    console.log("000000");
+                    return $translate.refresh();
+                }],
+//            ,
+//                entity: ['$stateParams','UserCost', function($stateParams,UserCost) {
+//                  return UserCost.uploadExcel({id : $stateParams.id}).$promise;
+//                  }],
+                previousState: ["$state", function ($state) {
+                	var currentStateData = {
+//                		queryDept:'user-cost.edit.queryDept',
+            			name: $state.current.name || 'user-cost',
+            			params: $state.params,
+            			url: $state.href($state.current.name, $state.params)
+                	};
+                	return currentStateData;
+	            }]
+            }
         });
     }
 
