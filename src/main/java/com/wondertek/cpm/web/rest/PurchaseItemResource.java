@@ -1,14 +1,12 @@
 package com.wondertek.cpm.web.rest;
 
-import com.codahale.metrics.annotation.Timed;
-import com.wondertek.cpm.config.StringUtil;
-import com.wondertek.cpm.domain.PurchaseItem;
-import com.wondertek.cpm.domain.vo.PurchaseItemVo;
-import com.wondertek.cpm.service.PurchaseItemService;
-import com.wondertek.cpm.web.rest.util.HeaderUtil;
-import com.wondertek.cpm.web.rest.util.PaginationUtil;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.time.ZonedDateTime;
+import java.util.List;
+import java.util.Optional;
 
-import io.swagger.annotations.ApiParam;
+import javax.inject.Inject;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,18 +15,28 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
-import javax.inject.Inject;
+import com.codahale.metrics.annotation.Timed;
+import com.wondertek.cpm.config.StringUtil;
+import com.wondertek.cpm.domain.PurchaseItem;
+import com.wondertek.cpm.domain.vo.PurchaseItemVo;
+import com.wondertek.cpm.security.AuthoritiesConstants;
+import com.wondertek.cpm.security.SecurityUtils;
+import com.wondertek.cpm.service.PurchaseItemService;
+import com.wondertek.cpm.web.rest.util.HeaderUtil;
+import com.wondertek.cpm.web.rest.util.PaginationUtil;
 
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
-
-import static org.elasticsearch.index.query.QueryBuilders.*;
+import io.swagger.annotations.ApiParam;
 
 /**
  * REST controller for managing PurchaseItem.
@@ -51,6 +59,7 @@ public class PurchaseItemResource {
      */
     @PostMapping("/purchase-items")
     @Timed
+    @Secured(AuthoritiesConstants.ROLE_CONTRACT_PURCHASE)
     public ResponseEntity<PurchaseItem> createPurchaseItem(@RequestBody PurchaseItem purchaseItem) throws URISyntaxException {
         log.debug("REST request to save PurchaseItem : {}", purchaseItem);
         if (purchaseItem.getId() != null) {
@@ -73,15 +82,45 @@ public class PurchaseItemResource {
      */
     @PutMapping("/purchase-items")
     @Timed
-    public ResponseEntity<PurchaseItem> updatePurchaseItem(@RequestBody PurchaseItem purchaseItem) throws URISyntaxException {
+    @Secured(AuthoritiesConstants.ROLE_CONTRACT_PURCHASE)
+    public ResponseEntity<Boolean> updatePurchaseItem(@RequestBody PurchaseItem purchaseItem) throws URISyntaxException {
         log.debug("REST request to update PurchaseItem : {}", purchaseItem);
-        if (purchaseItem.getId() == null) {
-            return createPurchaseItem(purchaseItem);
-        }
-        PurchaseItem result = purchaseItemService.save(purchaseItem);
-        return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert("purchaseItem", purchaseItem.getId().toString()))
-            .body(result);
+        Boolean isNew = purchaseItem.getId() == null;
+        if (purchaseItem.getBudgetId() == null || purchaseItem.getContractId() == null
+        		|| StringUtil.isNullStr(purchaseItem.getName()) || purchaseItem.getSource() == null
+        		|| purchaseItem.getType() == null || purchaseItem.getPrice() == null) {
+        	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.purchaseItem.save.requiedError", "")).body(null);
+		}
+        String updator = SecurityUtils.getCurrentUserLogin();
+        ZonedDateTime updateTime = ZonedDateTime.now();
+        if (!isNew) {
+        	PurchaseItem oldPurchaseItem = this.purchaseItemService.findOneById(purchaseItem.getId());
+			if (oldPurchaseItem == null) {
+        		return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.purchaseItem.save.idNone", "")).body(null);
+			}else if (oldPurchaseItem.getStatus() == PurchaseItem.STATUS_DELETED) {
+        		return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.purchaseItem.save.statue2Error", "")).body(null);
+			}
+			purchaseItem.setCreateTime(oldPurchaseItem.getCreateTime());
+			purchaseItem.setCreator(oldPurchaseItem.getCreator());
+			purchaseItem.setStatus(oldPurchaseItem.getStatus());
+		}else {
+			purchaseItem.setCreateTime(updateTime);
+			purchaseItem.setCreator(updator);
+			purchaseItem.setStatus(PurchaseItem.STATUS_VALIBLE);
+		}
+        	purchaseItem.setUpdateTime(updateTime);
+        	purchaseItem.setUpdator(updator);
+        	PurchaseItem result =  purchaseItemService.save(purchaseItem);
+        
+        	if(isNew){
+            	return ResponseEntity.ok()
+                        .headers(HeaderUtil.createEntityCreationAlert("purchaseItem", result.getId().toString()))
+                        .body(isNew);
+            }else{
+            	return ResponseEntity.ok()
+            			.headers(HeaderUtil.createEntityUpdateAlert("purchaseItem", result.getId().toString()))
+            			.body(isNew);
+            }
     }
 
     /**
@@ -109,9 +148,10 @@ public class PurchaseItemResource {
      */
     @GetMapping("/purchase-items/{id}")
     @Timed
-    public ResponseEntity<PurchaseItem> getPurchaseItem(@PathVariable Long id) {
+    @Secured(AuthoritiesConstants.ROLE_CONTRACT_PURCHASE)
+    public ResponseEntity<PurchaseItemVo> getPurchaseItem(@PathVariable Long id) {
         log.debug("REST request to get PurchaseItem : {}", id);
-        PurchaseItem purchaseItem = purchaseItemService.findOne(id);
+        PurchaseItemVo purchaseItem = purchaseItemService.getPurchaseItem(id);
         return Optional.ofNullable(purchaseItem)
             .map(result -> new ResponseEntity<>(
                 result,
@@ -127,8 +167,13 @@ public class PurchaseItemResource {
      */
     @DeleteMapping("/purchase-items/{id}")
     @Timed
+    @Secured(AuthoritiesConstants.ROLE_CONTRACT_PURCHASE)
     public ResponseEntity<Void> deletePurchaseItem(@PathVariable Long id) {
         log.debug("REST request to delete PurchaseItem : {}", id);
+        PurchaseItem purchaseItem = purchaseItemService.findOneById(id);
+        if (purchaseItem.getStatus() != PurchaseItem.STATUS_VALIBLE) {
+    		return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.purchaseItem.delete.hasDeleted", "")).body(null);
+		}
         purchaseItemService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert("purchaseItem", id.toString())).build();
     }
@@ -144,6 +189,7 @@ public class PurchaseItemResource {
      */
     @GetMapping("/purchase-items")
     @Timed
+    @Secured(AuthoritiesConstants.ROLE_CONTRACT_PURCHASE)
     public ResponseEntity<List<PurchaseItemVo>> searchPurchaseItems(@RequestParam String name, 
     		@RequestParam String contractId,
     		@RequestParam String source,

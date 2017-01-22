@@ -108,6 +108,9 @@
                 entity: ['ProjectInfo','$stateParams', function(ProjectInfo,$stateParams) {
                     return ProjectInfo.get({id : $stateParams.id}).$promise;
                 }],
+                budgetEntity:function(){
+                	return null;
+                },
                 previousState: ["$state", function ($state) {
                     var currentStateData = {
                     	queryDept:'project-info-detail.edit.queryDept',
@@ -187,6 +190,9 @@
                         budgetOriginal:0
                     };
                 },
+                budgetEntity:function(){
+                	return null;
+                },
                 previousState: ["$state", function ($state) {
                     var currentStateData = {
                     	queryDept:'project-info.new.queryDept',
@@ -249,6 +255,9 @@
                 entity: ['ProjectInfo','$stateParams', function(ProjectInfo,$stateParams) {
                     return ProjectInfo.get({id : $stateParams.id}).$promise;
                 }],
+                budgetEntity:function(){
+                	return null;
+                },
                 previousState: ["$state", function ($state) {
                     var currentStateData = {
                     	queryDept:'project-info.edit.queryDept',

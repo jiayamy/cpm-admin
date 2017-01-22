@@ -1,7 +1,5 @@
 <h2><span data-translate="cpmApp.projectUser.home.createOrEditLabel">Create or edit a Project User</span></h2>
 <hr>
-<jhi-alert></jhi-alert>
-<jhi-alert-error></jhi-alert-error>
 <form name="myForm" role="form" ng-submit="vm.save()">
  <div class="container-fluid">
 		<div class="row form-horizontal">
@@ -83,6 +81,8 @@
 		</div>
 	</div>
 	<hr>
+	<jhi-alert></jhi-alert>
+	<jhi-alert-error></jhi-alert-error>
 	<button type="submit"
         ui-sref="{{ vm.previousState }}"
         class="btn btn-info">

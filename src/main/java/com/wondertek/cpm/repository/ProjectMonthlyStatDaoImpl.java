@@ -45,7 +45,7 @@ public class ProjectMonthlyStatDaoImpl extends GenericDaoImpl<ProjectMonthlyStat
 		StringBuffer sb = new StringBuffer();
 		StringBuffer querysql = new StringBuffer();
 		StringBuffer countsql = new StringBuffer();
-		querysql.append(" select m.id, m.projectId, m.finishRate, m.humanCost, m.payment, m.statWeek, m.createTime, i.serialNum ");
+		querysql.append(" select m.id, m.projectId, m.finishRate, m.humanCost, m.payment, m.statWeek, m.createTime, i.serialNum , i.name");
 		countsql.append(" select count(m.id)");
 		sb.append(" from ProjectMonthlyStat m");
 		sb.append(" left join ProjectInfo i on m.projectId = i.id");
@@ -100,6 +100,7 @@ public class ProjectMonthlyStatDaoImpl extends GenericDaoImpl<ProjectMonthlyStat
 		vo.setStatWeek(StringUtil.nullToLong(o[5]));
 		vo.setCreateTime((ZonedDateTime) o[6]);
 		vo.setSerialNum(StringUtil.null2Str(o[7]));
+		vo.setName(StringUtil.null2Str(o[8]));
 		return vo;
 	}
 	
@@ -113,18 +114,30 @@ public class ProjectMonthlyStatDaoImpl extends GenericDaoImpl<ProjectMonthlyStat
 		vo.setStatWeek(StringUtil.nullToLong(o[5]));
 		vo.setCreateTime(DateUtil.getZonedDateTime((Timestamp) o[6]));
 		vo.setSerialNum(StringUtil.null2Str(o[7]));
+		vo.setName(StringUtil.null2Str(o[8]));
 		return vo;
 	}
 	@Override
 	public List<LongValue> queryUserProject(User user, DeptInfo deptInfo) {
-		StringBuffer querysql = new StringBuffer();
-		StringBuffer countsql = new StringBuffer();
-		StringBuffer wheresql = new StringBuffer();
+		StringBuffer querySql = new StringBuffer();
 		List<Object> params = new ArrayList<Object>();
-		querysql.append("select p.id, p.serial_num, p.name_ ");
-		countsql.append("select count(p.id) ");
-		wheresql.append("from w_project_info p ");
-		List<Object[]> list = this.queryAllSql(querysql.toString()+wheresql.toString(), params.toArray());
+		
+		querySql.append(" select wpi.id,wpi.serial_num,wpi.name_ from w_project_info wpi");
+		querySql.append(" left join w_dept_info wdi on wpi.dept_id = wdi.id");
+		
+		querySql.append(" where (wpi.pm_id = ? or wpi.creator_ = ?");
+		params.add(user.getId());
+		params.add(user.getLogin());
+		
+		if(user.getIsManager()){
+			querySql.append(" or wdi.id_path like ? or wdi.id = ?");
+			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
+			params.add(deptInfo.getId());
+		}
+		querySql.append(")");
+		
+		List<Object[]> list = this.queryAllSql(querySql.toString(), params.toArray());
+		
 		List<LongValue> returnList = new ArrayList<LongValue>();
 		if(list != null){
 			for(Object[] o : list){
@@ -138,7 +151,7 @@ public class ProjectMonthlyStatDaoImpl extends GenericDaoImpl<ProjectMonthlyStat
 		StringBuffer sb = new StringBuffer();
 		StringBuffer querysql = new StringBuffer();
 		StringBuffer countsql = new StringBuffer();
-		querysql.append(" select m.id, m.project_id, m.finish_rate, m.human_cost, m.payment_, m.stat_week, m.create_time, i.serial_num ");
+		querysql.append(" select m.id, m.project_id, m.finish_rate, m.human_cost, m.payment_, m.stat_week, m.create_time, i.serial_num , i.name_");
 		countsql.append(" select count(m.id)");
 		sb.append(" from w_project_monthly_stat m");
 		sb.append(" left join w_project_info i on m.project_id = i.id");

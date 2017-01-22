@@ -2,6 +2,7 @@
 <div>
     <h2><span data-translate="cpmApp.userCost.detail.title">User Cost</span> {{vm.userCost.id}}</h2>
     <hr>
+    <jhi-alert></jhi-alert>
     <jhi-alert-error></jhi-alert-error>
     <dl class="dl-horizontal jh-entity-details">
         <dt><span data-translate="cpmApp.userCost.userId">User Id</span></dt>
@@ -26,7 +27,7 @@
         </dd>
         <dt><span data-translate="cpmApp.userCost.status">Status</span></dt>
         <dd>
-            <span>{{vm.userCost.status}}</span>
+            <span>{{vm.userCost.statusName}}</span>
         </dd>
         <dt><span data-translate="cpmApp.userCost.creator">Creator</span></dt>
         <dd>

@@ -21,7 +21,6 @@
     	}else if(vm.productPrice.type == 1){
     		vm.productPrice.type = { id: 1, name: '软件' };
     	}
-        console.log(vm.productPrice);
         
         vm.clear = clear;
         vm.datePickerOpenStatus = {};
@@ -40,7 +39,6 @@
 
         function save () {
             vm.isSaving = true;
-            console.log(vm.productPrice);
             var post = vm.productPrice;
             if(vm.productPrice.source){
             	if(vm.productPrice.source.id == 0){

@@ -6,13 +6,13 @@ import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
-import com.wondertek.cpm.domain.ContractFinshInfo;
+import com.wondertek.cpm.domain.ContractFinishInfo;
 
 /**
- * Spring Data JPA repository for the ContractFinshInfo entity.
+ * Spring Data JPA repository for the ContractFinishInfo entity.
  */
-public interface ContractFinishInfoRepository extends JpaRepository<ContractFinshInfo,Long> {
+public interface ContractFinishInfoRepository extends JpaRepository<ContractFinishInfo,Long> {
 
-	@Query("from ContractFinshInfo where contractId = ?1 and createTime < ?2 order by createTime asc")
-	List<ContractFinshInfo> findAllByContractIdAndCreateTimeBefore(Long contractId, ZonedDateTime createTime);
+	@Query("from ContractFinishInfo where contractId = ?1 and createTime < ?2 order by createTime asc")
+	List<ContractFinishInfo> findAllByContractIdAndCreateTimeBefore(Long contractId, ZonedDateTime createTime);
 }

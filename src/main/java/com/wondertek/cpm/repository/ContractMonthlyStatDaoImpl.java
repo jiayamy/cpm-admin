@@ -18,6 +18,7 @@ import org.springframework.stereotype.Repository;
 import com.wondertek.cpm.CpmConstants;
 import com.wondertek.cpm.config.DateUtil;
 import com.wondertek.cpm.config.StringUtil;
+import com.wondertek.cpm.domain.ContractBudget;
 import com.wondertek.cpm.domain.ContractMonthlyStat;
 import com.wondertek.cpm.domain.DeptInfo;
 import com.wondertek.cpm.domain.User;
@@ -102,7 +103,7 @@ public class ContractMonthlyStatDaoImpl extends GenericDaoImpl<ContractMonthlySt
 		StringBuffer countsql = new StringBuffer();
 		querysql.append(" select m.id, m.contractId, m.finishRate, m.receiveTotal, m.costTotal, m.grossProfit, m.salesHumanCost,"
 				+ "m.salesPayment , m.consultHumanCost ,m.consultPayment ,m.hardwarePurchase ,m.externalSoftware ,m.internalSoftware ,m.projectHumanCost ,"
-				+ "m.projectPayment ,m.statWeek ,m.createTime , i.serialNum ");
+				+ "m.projectPayment ,m.statWeek ,m.createTime , i.serialNum , i.name");
 		countsql.append(" select count(m.id)");
 		sb.append(" from ContractMonthlyStat m");
 		sb.append(" left join ContractInfo i on m.contractId = i.id");
@@ -167,6 +168,7 @@ public class ContractMonthlyStatDaoImpl extends GenericDaoImpl<ContractMonthlySt
 		contractMonthlyStatVo.setStatWeek(StringUtil.nullToLong(o[15]));
 		contractMonthlyStatVo.setCreateTime((ZonedDateTime) o[16]);
 		contractMonthlyStatVo.setSerialNum(StringUtil.null2Str(o[17]));
+		contractMonthlyStatVo.setName(StringUtil.null2Str(o[18]));
 		return contractMonthlyStatVo;
 	}
 	
@@ -190,19 +192,45 @@ public class ContractMonthlyStatDaoImpl extends GenericDaoImpl<ContractMonthlySt
 		contractMonthlyStatVo.setStatWeek(StringUtil.nullToLong(o[15]));
 		contractMonthlyStatVo.setCreateTime(DateUtil.getZonedDateTime((Timestamp) o[16]));
 		contractMonthlyStatVo.setSerialNum(StringUtil.null2Str(o[17]));
+		contractMonthlyStatVo.setName(StringUtil.null2Str(o[18]));
 		return contractMonthlyStatVo;
 	}
 
 	@Override
 	public List<LongValue> queryUserContract(User user, DeptInfo deptInfo) {
-		StringBuffer querysql = new StringBuffer();
-		StringBuffer countsql = new StringBuffer();
-		StringBuffer wheresql = new StringBuffer();
+		StringBuffer sql = new StringBuffer();
 		List<Object> params = new ArrayList<Object>();
-		querysql.append("select p.id, p.serial_num, p.name_ ");
-		countsql.append("select count(p.id) ");
-		wheresql.append("from w_contract_info p ");
-		List<Object[]> list = this.queryAllSql(querysql.toString()+wheresql.toString(), params.toArray());
+		//只有项目经理，预算指定经理，项目创建人，项目部门以上部门管理人员能看到对应的项目
+		
+		sql.append("select a.id,a.serial_num,a.name_ from w_contract_info a where a.id in(");
+			sql.append("select distinct b.contract_id from (");
+				sql.append("select c.contract_id as contract_id from w_project_info c left join w_dept_info d on d.id = c.dept_id");
+				sql.append(" where c.pm_id = ? or c.creator_ = ?");
+				params.add(user.getId());
+				params.add(user.getLogin());
+				
+				if(user.getIsManager()){
+					sql.append(" or d.id_path like ? or d.id = ?");
+					params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
+					params.add(deptInfo.getId());
+				}
+				sql.append(" union all ");
+				sql.append("select e.contract_id as contract_id from w_contract_budget e left join w_dept_info f on f.id = e.dept_id");
+				sql.append(" where (e.user_id = ?");
+				params.add(user.getId());
+				if(user.getIsManager()){
+					sql.append(" or f.id_path like ? or f.id = ?");
+					params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
+					params.add(deptInfo.getId());
+				}
+				sql.append(") and e.type_ = ? and e.purchase_type = ?");
+				params.add(ContractBudget.TYPE_PURCHASE);
+				params.add(ContractBudget.PURCHASETYPE_SERVICE);
+			sql.append(") b");
+		sql.append(") order by a.id desc");
+		
+		List<Object[]> list = this.queryAllSql(sql.toString(), params.toArray());
+		
 		List<LongValue> returnList = new ArrayList<LongValue>();
 		if(list != null){
 			for(Object[] o : list){
@@ -219,7 +247,7 @@ public class ContractMonthlyStatDaoImpl extends GenericDaoImpl<ContractMonthlySt
 		StringBuffer countsql = new StringBuffer();
 		querysql.append(" select m.id, m.contract_id, m.finish_rate, m.receive_total, m.cost_total, m.gross_profit, m.sales_human_cost,"
 				+ "m.sales_payment , m.consult_human_cost ,m.consult_payment ,m.hardware_purchase ,m.external_software ,m.internal_software ,m.project_human_cost ,"
-				+ "m.project_payment ,m.stat_week ,m.create_time , i.serial_num ");
+				+ "m.project_payment ,m.stat_week ,m.create_time , i.serial_num , i.name_");
 		countsql.append(" select count(m.id)");
 		sb.append(" from w_contract_monthly_stat m");
 		sb.append(" left join w_contract_info i on m.contract_id = i.id");

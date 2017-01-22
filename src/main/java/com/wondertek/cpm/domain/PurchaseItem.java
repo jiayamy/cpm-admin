@@ -19,7 +19,12 @@ import java.util.Objects;
 public class PurchaseItem implements Serializable {
 
     private static final long serialVersionUID = 1L;
-
+    public static final Integer TYPE_HARDWARE = 1;
+	public static final Integer TYPE_SOFTWARE = 2;
+	public static final Integer SOURCE_INTERNAL = 1;
+	public static final Integer SOURCE_EXTERNAL = 2;
+	public static final Integer STATUS_VALIBLE = 1;
+	public static final Integer STATUS_DELETED = 2;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;

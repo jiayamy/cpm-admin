@@ -61,6 +61,7 @@ public class ProjectMonthlyStatResource {
      */
     @GetMapping("/project-monthly-stats")
     @Timed
+    @Secured(AuthoritiesConstants.ROLE_STAT_PROJECT)
     public ResponseEntity<List<ProjectMonthlyStatVo>> getAllProjectMonthlyStats(
     		@ApiParam(value="projectId") @RequestParam(value="projectId") String projectId,
     		@ApiParam Pageable pageable)
@@ -79,6 +80,7 @@ public class ProjectMonthlyStatResource {
      */
     @GetMapping("/project-monthly-stats/{id}")
     @Timed
+    @Secured(AuthoritiesConstants.ROLE_STAT_PROJECT)
     public ResponseEntity<ProjectMonthlyStatVo> getProjectMonthlyStat(@PathVariable Long id) {
         log.debug("REST request to get ProjectMonthlyStats : {}", id);
         ProjectMonthlyStatVo projectMonthlyStat = projectMonthlyStatService.findOne(id);
@@ -97,6 +99,7 @@ public class ProjectMonthlyStatResource {
      */
     @DeleteMapping("/project-monthly-stats/{id}")
     @Timed
+    @Secured(AuthoritiesConstants.ROLE_STAT_PROJECT)
     public ResponseEntity<Void> deleteProjectMonthlyStat(@PathVariable Long id) {
         log.debug("REST request to delete ProjectMonthlyStats : {}", id);
         projectMonthlyStatService.delete(id);
@@ -114,6 +117,7 @@ public class ProjectMonthlyStatResource {
      */
     @GetMapping("/_search/project-monthly-stats")
     @Timed
+    @Secured(AuthoritiesConstants.ROLE_STAT_PROJECT)
     public ResponseEntity<List<ProjectMonthlyStat>> searchProjectMonthlyStats(@RequestParam String query, @ApiParam Pageable pageable)
         throws URISyntaxException {
         log.debug("REST request to search for a page of ProjectMonthlyStat for query {}", query);
@@ -124,6 +128,7 @@ public class ProjectMonthlyStatResource {
     
     @GetMapping("/project-monthly-stats/queryUserProject")
     @Timed
+    @Secured(AuthoritiesConstants.ROLE_STAT_PROJECT)
 	public ResponseEntity<List<LongValue>> queryUserProject() throws URISyntaxException {
 	    log.debug("REST request to queryUserProject");
 	    List<LongValue> list = projectMonthlyStatService.queryUserProject();
@@ -132,16 +137,16 @@ public class ProjectMonthlyStatResource {
     
     @GetMapping("/project-monthly-stats/queryChart")
     @Timed
+    @Secured(AuthoritiesConstants.ROLE_STAT_PROJECT)
     public ChartReportVo getChartReport(@ApiParam(value="fromDate") @RequestParam(value="fromDate") String fromDate,
     		@ApiParam(value="toDate") @RequestParam(value="toDate") String toDate,
     		@ApiParam(value="id") @RequestParam(value="id") Long statId){
     	ChartReportVo chartReportVo = new ChartReportVo();
     	ProjectMonthlyStatVo projectMonthlyStatvo = projectMonthlyStatService.findOne(statId);
     	Long projectId = projectMonthlyStatvo.getProjectId();
-    	ProjectMonthlyStat recentOne = projectMonthlyStatService.getRecentlyOne(projectId);
     	chartReportVo.setTitle(projectMonthlyStatvo.getSerialNum());
     	if(StringUtil.isNullStr(toDate)){
-    		toDate = recentOne.getStatWeek().toString();
+    		toDate = projectMonthlyStatvo.getStatWeek().toString();
     	}
     	Date lMonth = DateUtil.parseyyyyMM("yyyy-MM", toDate);
     	if(StringUtil.isNullStr(fromDate)){
@@ -165,6 +170,45 @@ public class ProjectMonthlyStatResource {
     	List<ChartReportDataVo> datas = projectMonthlyStatService.getChartData(fMonth, lMonth, projectId);
     	chartReportVo.setSeries(datas);
     	List<String> legend = new ArrayList<String>(Arrays.asList(new String[]{"人工成本","报销成本"}));
+    	chartReportVo.setLegend(legend);
+    	return chartReportVo;
+    }
+    
+    @GetMapping("/project-monthly-stats/queryFinishRateChart")
+    @Timed
+    @Secured(AuthoritiesConstants.ROLE_STAT_PROJECT)
+    public ChartReportVo getFinishRateChartReport(@ApiParam(value="fromDate") @RequestParam(value="fromDate") String fromDate,
+    		@ApiParam(value="toDate") @RequestParam(value="toDate") String toDate,
+    		@ApiParam(value="id") @RequestParam(value="id") Long statId){
+    	ChartReportVo chartReportVo = new ChartReportVo();
+    	ProjectMonthlyStatVo projectMonthlyStatvo = projectMonthlyStatService.findOne(statId);
+    	Long projectId = projectMonthlyStatvo.getProjectId();
+    	chartReportVo.setTitle(projectMonthlyStatvo.getSerialNum()+"-完成率");
+    	if(StringUtil.isNullStr(toDate)){
+    		toDate = projectMonthlyStatvo.getStatWeek().toString();
+    	}
+    	Date lMonth = DateUtil.parseyyyyMM("yyyy-MM", toDate);
+    	if(StringUtil.isNullStr(fromDate)){
+    		fromDate = DateUtil.formatDate("yyyyMM", DateUtil.addMonthNum(-6, lMonth));
+    	}
+    	Date fMonth = DateUtil.parseyyyyMM("yyyy-MM", fromDate);
+    	Calendar cal1 = Calendar.getInstance();
+    	Calendar cal2 = Calendar.getInstance();
+    	cal1.setTime(fMonth);
+    	cal2.setTime(lMonth);
+    	int yearCount = cal2.get(Calendar.YEAR) - cal1.get(Calendar.YEAR); 
+    	int count = 0;
+    	count += 12*yearCount;
+    	count += cal2.get(Calendar.MONTH) - cal1.get(Calendar.MONTH);
+    	List<String> category = new ArrayList<String>();
+    	for(int i = 0; i <= count; i++){
+    		category.add(DateUtil.formatDate("yyyy-MM", cal1.getTime()));
+    		cal1.add(Calendar.MONTH, 1);
+    	}
+    	chartReportVo.setCategory(category);
+    	List<ChartReportDataVo> datas = projectMonthlyStatService.getFinishRateData(fMonth, lMonth, projectId);
+    	chartReportVo.setSeries(datas);
+    	List<String> legend = new ArrayList<String>(Arrays.asList(new String[]{"完成率"}));
     	chartReportVo.setLegend(legend);
     	return chartReportVo;
     }

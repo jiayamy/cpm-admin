@@ -9,7 +9,6 @@
 
     function ProjectMonthlyStatChartController ($scope,$state,DateUtils,$rootScope, $stateParams, pagingParams, ProjectMonthlyStatChart, AlertService,previousState) {
     	var vm = this;
-//    	console.log($state);
         vm.transition = transition;
         vm.clear = clear;
         vm.loadAll = loadAll;
@@ -68,13 +67,16 @@
                             mark: {
                                 show: true
                             },
+                            dataZoom: {
+                                yAxisIndex: 'none'
+                            },
                             dataView: {
                                 show: true,
                                 readOnly: false
                             },
                             magicType: {
                                 show: true,
-                                type: ['line', 'bar']
+                                type: ['line', 'bar','stack', 'tiled']
                             },
                             restore: {
                                 show: true
@@ -116,6 +118,11 @@
                                     name: '最小值'
                                 }]
                             },
+//                            label: {
+//                                normal: {
+//                                    show: true
+//                                }
+//                            },
                             markLine: {
                                 data: [{
                                     type: 'average',
@@ -135,6 +142,11 @@
                                     name: '最小值'
                                 }]
                             },
+//                            label: {
+//                                normal: {
+//                                    show: true
+//                                }
+//                            },
                             itemStyle: {
                                 normal: {
                                     color: '#ff8c00'
@@ -146,6 +158,7 @@
                                     name: '平均值'
                                 }]
                             }
+
                         }
                     ]
                 };
@@ -171,6 +184,110 @@
             }
         }
 
+         loadFinishRateChart();
+         function loadFinishRateChart () {
+         	if(pagingParams.fromDate == undefined){
+         		pagingParams.fromDate = "";
+         	};
+         	if(pagingParams.toDate == undefined){
+         		pagingParams.toDate = "";
+         	};
+         	if(pagingParams.id == undefined){
+         		pagingParams.id = "";
+         	};
+         	ProjectMonthlyStatChart.queryFinishRateChart({
+                 fromDate : pagingParams.fromDate,
+                 toDate : pagingParams.toDate,
+                 id : pagingParams.id
+             }, onSuccess, onError);
+            function onSuccess(data, headers) {
+         	   //第三方参数设置
+                 var option = {
+                     title: {
+                         text: "订单数",
+                         subtext: "",
+                         sublink: ""
+                     },
+                     tooltip: {
+                         trigger: 'axis'
+                     },
+                     legend: {
+                         data: []
+                     },
+                     toolbox: {
+                         show: true,
+                         feature: {
+                             mark: {
+                                 show: true
+                             },
+                             dataZoom: {
+                                 yAxisIndex: 'none'
+                             },
+                             dataView: {
+                                 show: true,
+                                 readOnly: false
+                             },
+                             magicType: {
+                                 show: true,
+                                 type: ['line', 'bar']
+                             },
+                             restore: {
+                                 show: true
+                             },
+                             saveAsImage: {
+                                 show: true
+                             }
+                         }
+                     },
+                     calculable: true,
+                     xAxis: [{
+                         type: 'category',
+                         boundaryGap: false,
+                         data: []
+                     }],
+                     yAxis: [{
+                         type: 'value',
+                         axisLabel: {
+                             formatter: '{value}%'
+                         },
+                         splitArea: {
+                             show: true
+                         }
+                     }],
+                     grid: {
+                         width: '80%'
+                     },
+                     series: [
+                         {
+                             name: '',
+                             type: '',
+                             data: [],//必须是Integer类型的,String计算平均值会出错
+                             markPoint: {
+                                 data: [{
+                                     type: 'max',
+                                     name: '最大值'
+                                 }, {
+                                     type: 'min',
+                                     name: '最小值'
+                                 }]
+                             }
+                         }
+                     ]
+                 };
+                 var chartBottom = echarts.init(document.getElementById('tabcontent2'));
+                 option.legend.data = data.legend;
+                 option.title.text = data.title;
+                 option.xAxis[0].data = data.category;
+                 option.series[0].data = data.series[0].data;
+                 option.series[0].name = data.series[0].name;
+                 option.series[0].type = data.series[0].type;
+                 chartBottom.hideLoading();
+                 chartBottom.setOption(option);
+             }
+             function onError(error) {
+                 AlertService.error(error.data.message);
+             }
+         }
         function transition() {
             $state.transitionTo($state.$current, {
                 fromDate: DateUtils.convertLocalDateToFormat(vm.searchQuery.fromDate,"yyyyMM"),
@@ -179,7 +296,6 @@
             });
         }
         vm.backDetail = backDetail;
-        console.log(pagingParams);
         function backDetail(){
         	$state.go('project-monthly-stat-detail', {
         		id: pagingParams.id

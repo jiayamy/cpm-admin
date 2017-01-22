@@ -11,9 +11,9 @@
         $stateProvider
         .state('contract-weekly-stat', {
             parent: 'stat',
-            url: '/contract-weekly-stat?page&sort&fromDate&toDate&statDate',
+            url: '/contract-weekly-stat?page&contractId',
             data: {
-                authorities: ['ROLE_USER'],
+                authorities: ['ROLE_STAT_CONTRACT'],
                 pageTitle: 'cpmApp.contractWeeklyStat.home.title'
             },
             views: {
@@ -29,12 +29,10 @@
                     squash: true
                 },
                 sort: {
-                    value: 'id,asc',
+                    value: 'm.id,asc',
                     squash: true
                 },
-                fromDate : null,
-                toDate: null,
-                statDate: null
+                contractId : null
             },
             resolve: {
                 pagingParams: ['$stateParams', 'PaginationUtil', function ($stateParams, PaginationUtil) {
@@ -43,9 +41,7 @@
                         sort: $stateParams.sort,
                         predicate: PaginationUtil.parsePredicate($stateParams.sort),
                         ascending: PaginationUtil.parseAscending($stateParams.sort),
-                        fromDate: $stateParams.fromDate,
-                        toDate: $stateParams.toDate,
-                        statDate: $stateParams.statDate
+                        contractId: $stateParams.contractId
                     };
                 }],
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
@@ -56,10 +52,10 @@
             }
         })
         .state('contract-weekly-stat-detail', {
-            parent: 'stat',
-            url: '/contract-weekly-stat/{id}',
+            parent: 'contract-weekly-stat',
+            url: '/detail/{id}',
             data: {
-                authorities: ['ROLE_USER'],
+                authorities: ['ROLE_STAT_CONTRACT'],
                 pageTitle: 'cpmApp.contractWeeklyStat.detail.title'
             },
             views: {
@@ -71,20 +67,103 @@
             },
             resolve: {
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
-                    $translatePartialLoader.addPart('contractWeeklyStat');
+                	$translatePartialLoader.addPart('contractWeeklyStat');
+                    $translatePartialLoader.addPart('global');
                     return $translate.refresh();
                 }],
                 entity: ['$stateParams', 'ContractWeeklyStat', function($stateParams, ContractWeeklyStat) {
                     return ContractWeeklyStat.get({id : $stateParams.id}).$promise;
                 }],
                 previousState: ["$state", function ($state) {
+                	var currentStateData = {
+                            name: 'contract-weekly-stat',
+                            params: {
+                                page: {
+                                    value: '1',
+                                    squash: true
+                                },
+                                sort: {
+                                    value: 'm.id,asc',
+                                    squash: true
+                                },
+                                contractId: null
+                            },
+                            url: $state.href($state.current.name, {
+                                page: {
+                                    value: '1',
+                                    squash: true
+                                },
+                                sort: {
+                                    value: 'm.id,asc',
+                                    squash: true
+                                },
+                                contractId: null
+                            })
+                        };
+                    return currentStateData;
+                }]
+            }
+        }).state('contract-weekly-stat-detail.chart', {
+            parent: 'contract-weekly-stat',
+            url: '/chart/{id}/queryChart?fromDate&toDate',
+            data: {
+                authorities: ['ROLE_STAT_CONTRACT'],
+                pageTitle: 'cpmApp.contractInfo.detail.title'
+            },
+            views: {
+                'content@': {
+                    templateUrl: 'app/stat/contract-weekly-stat/contract-weekly-stat-chart.html',
+                    controller: 'ContractWeeklyStatChartController',
+                    controllerAs: 'vm'
+                }
+            },
+            params: {
+                fromDate: null,
+                toDate : null,
+                id : null
+            },
+            resolve: {
+                translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
+                	$translatePartialLoader.addPart('contractWeeklyStat');
+                    $translatePartialLoader.addPart('global');
+                    return $translate.refresh();
+                }],
+                pagingParams: ['$stateParams', 'PaginationUtil', function ($stateParams, PaginationUtil) {
+                    return {
+                        fromDate: $stateParams.fromDate,
+                        toDate : $stateParams.toDate,
+                        id : $stateParams.id
+                    };
+                }],
+                previousState: ["$state", function ($state) {
                     var currentStateData = {
-                        name: $state.current.name || 'contract-weekly-stat',
-                        params: $state.params,
-                        url: $state.href($state.current.name, $state.params)
+                        name: 'contract-weekly-stat',
+                        params: {
+                            page: {
+                                value: '1',
+                                squash: true
+                            },
+                            sort: {
+                                value: 'm.id,asc',
+                                squash: true
+                            },
+                            contractId: null
+                        },
+                        url: $state.href('contract-weekly-stat', {
+                            page: {
+                                value: '1',
+                                squash: true
+                            },
+                            sort: {
+                                value: 'm.id,asc',
+                                squash: true
+                            },
+                            contractId: null
+                        })
                     };
                     return currentStateData;
                 }]
+                
             }
         });
     }

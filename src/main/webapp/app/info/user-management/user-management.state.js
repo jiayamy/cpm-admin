@@ -11,7 +11,7 @@
         $stateProvider
         .state('user-management', {
             parent: 'info',
-            url: '/user-management?page&sort&login&serialNum&lastName',
+            url: '/user-management?page&sort&loginName&serialNum&lastName&workArea&deptId&deptName',
             data: {
                 authorities: ['ROLE_INFO_BASIC'],
                 pageTitle: 'userManagement.home.title'
@@ -32,9 +32,12 @@
                     value: 'user.id,desc',
                     squash: true
                 },
-                login:null,
+                loginName:null,
                 serialNum:null,
-                lastName:null
+                lastName:null,
+                deptId:null,
+                deptName:null,
+                workArea:null
             },
             resolve: {
                 pagingParams: ['$stateParams', 'PaginationUtil', function ($stateParams, PaginationUtil) {
@@ -43,17 +46,50 @@
                         sort: $stateParams.sort,
                         predicate: PaginationUtil.parsePredicate($stateParams.sort),
                         ascending: PaginationUtil.parseAscending($stateParams.sort),
-                        login: $stateParams.login,
+                        loginName: $stateParams.loginName,
                         serialNum: $stateParams.serialNum,
-                        lastName: $stateParams.lastName
+                        lastName: $stateParams.lastName,
+                        deptId: $stateParams.deptId,
+                        deptName: $stateParams.deptName,
+                        workArea: $stateParams.workArea
                     };
                 }],
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                     $translatePartialLoader.addPart('user-management');
+                    $translatePartialLoader.addPart('deptInfo');
                     return $translate.refresh();
                 }]
 
             }        })
+        .state('user-management.queryDept', {
+            parent: 'user-management',
+            url: '/queryDept?selectType&showChild&showUser',
+            data: {
+                authorities: ['ROLE_INFO_BASIC']
+            },
+            onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
+                $uibModal.open({
+                    templateUrl: 'app/info/dept-info/dept-info-query.html',
+                    controller: 'DeptInfoQueryController',
+                    controllerAs: 'vm',
+                    backdrop: 'static',
+                    size: 'lg',
+                    resolve: {
+                        entity: function() {
+                            return {
+                            	selectType : $stateParams.selectType,
+                            	showChild : $stateParams.showChild,
+                            	showUser : $stateParams.showUser
+                            }
+                        }
+                    }
+                }).result.then(function() {
+                    $state.go('^', {}, { reload: false });
+                }, function() {
+                    $state.go('^');
+                });
+            }]
+        })
         .state('user-management-detail', {
             parent: 'user-management',
             url: '/detail/:login',
@@ -117,7 +153,7 @@
             parent: 'user-management.new',
             url: '/queryDept?selectType&showChild&showUser',
             data: {
-                authorities: ['ROLE_PROJECT_INFO']
+                authorities: ['ROLE_INFO_BASIC']
             },
             onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
                 $uibModal.open({
@@ -179,7 +215,7 @@
             parent: 'user-management.edit',
             url: '/queryDept?selectType&showChild&showUser',
             data: {
-                authorities: ['ROLE_PROJECT_INFO']
+                authorities: ['ROLE_INFO_BASIC']
             },
             onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
                 $uibModal.open({

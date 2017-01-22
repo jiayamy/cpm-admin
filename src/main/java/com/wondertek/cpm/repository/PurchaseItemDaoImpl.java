@@ -14,7 +14,9 @@ import org.springframework.stereotype.Repository;
 
 import com.wondertek.cpm.CpmConstants;
 import com.wondertek.cpm.config.StringUtil;
+import com.wondertek.cpm.domain.ContractInfo;
 import com.wondertek.cpm.domain.PurchaseItem;
+import com.wondertek.cpm.domain.vo.ContractInfoVo;
 import com.wondertek.cpm.domain.vo.PurchaseItemVo;
 
 @Repository("purchaseItemDao")
@@ -59,7 +61,7 @@ public class PurchaseItemDaoImpl extends GenericDaoImpl<PurchaseItem, Long> impl
 		}
 		if (purchaseItem.getName() != null) {
 			whereHql.append(" and wpi.name like ?");
-			params.add(purchaseItem.getName());
+			params.add("%" + purchaseItem.getName() + "%");
 		}
 		if (purchaseItem.getType() != null) {
 			whereHql.append(" and wpi.type = ?");
@@ -109,6 +111,26 @@ public class PurchaseItemDaoImpl extends GenericDaoImpl<PurchaseItem, Long> impl
 
 	private PurchaseItemVo transPurchaseItemVo(Object[] o) {
 		return new PurchaseItemVo((PurchaseItem)o[0],StringUtil.null2Str(o[1]),StringUtil.null2Str(o[2]),StringUtil.null2Str(o[3]));
+	}
+
+	@Override
+	public PurchaseItemVo findPurchaseItemById(Long id) {
+		StringBuffer 	queryHql = new StringBuffer();
+		List<Object> params = new ArrayList<Object>();
+		
+		queryHql.append("select wpi,wci.serialNum,wci.name as contractName,wcb.name as budgetName");
+		queryHql.append(" from PurchaseItem wpi");
+		queryHql.append(" left join ContractInfo wci on wci.id = wpi.contractId");
+		queryHql.append(" left join ContractBudget wcb on wcb.id = wpi.budgetId");
+		if (id != null) {
+			queryHql.append(" where wpi.id = ?");
+			params.add(id);
+		}
+		List<Object[]> list = this.queryAllHql(queryHql.toString(),params.toArray());
+		if(list != null && !list.isEmpty()){
+			return new PurchaseItemVo((PurchaseItem)list.get(0)[0],StringUtil.null2Str(list.get(0)[1]),StringUtil.null2Str(list.get(0)[2]),StringUtil.null2Str(list.get(0)[3]));
+		}
+		return null;
 	}
 
 

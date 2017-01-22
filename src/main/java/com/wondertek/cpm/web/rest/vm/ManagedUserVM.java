@@ -39,6 +39,7 @@ public class ManagedUserVM extends UserDTO {
     private String birthYear;
     private String birthDay;
     private String telephone;
+    private String workArea;
     
     public ManagedUserVM() {
     }
@@ -62,6 +63,7 @@ public class ManagedUserVM extends UserDTO {
       	this.birthYear = user.getBirthYear();
       	this.birthDay = user.getBirthDay();
       	this.telephone = user.getTelephone();
+      	this.workArea = user.getWorkArea();
     }
 
     public ManagedUserVM(Long id, String login, String password, String firstName, String lastName,
@@ -201,14 +203,20 @@ public class ManagedUserVM extends UserDTO {
 		this.telephone = telephone;
 	}
 
+	public String getWorkArea() {
+		return workArea;
+	}
+
+	public void setWorkArea(String workArea) {
+		this.workArea = workArea;
+	}
+
 	@Override
-    public String toString() {
-        return "ManagedUserVM{" +
-            "id=" + id +
-            ", createdBy=" + createdBy +
-            ", createdDate=" + createdDate +
-            ", lastModifiedBy='" + lastModifiedBy + '\'' +
-            ", lastModifiedDate=" + lastModifiedDate +
-            "} " + super.toString();
-    }
+	public String toString() {
+		return "ManagedUserVM [id=" + id + ", createdBy=" + createdBy + ", createdDate=" + createdDate
+				+ ", lastModifiedBy=" + lastModifiedBy + ", lastModifiedDate=" + lastModifiedDate + ", password="
+				+ password + ", serialNum=" + serialNum + ", deptId=" + deptId + ", dept=" + dept + ", isManager="
+				+ isManager + ", duty=" + duty + ", grade=" + grade + ", gender=" + gender + ", birthYear=" + birthYear
+				+ ", birthDay=" + birthDay + ", telephone=" + telephone + ", workArea=" + workArea + "]" + super.toString();
+	}
 }

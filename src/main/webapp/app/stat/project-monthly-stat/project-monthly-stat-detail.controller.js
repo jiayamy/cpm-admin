@@ -12,7 +12,6 @@
 
         vm.projectMonthlyStat = entity;
         vm.previousState = previousState.name;
-//        console.log(previousState);
         var unsubscribe = $rootScope.$on('cpmApp:projectMonthlyStatUpdate', function(event, result) {
             vm.projectMonthlyStat = result;
         });

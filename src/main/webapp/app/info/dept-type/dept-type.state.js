@@ -13,7 +13,7 @@
             parent: 'info',
             url: '/dept-type?page&sort&search',
             data: {
-                authorities: ['ROLE_USER'],
+                authorities: ['ROLE_INFO_BASIC'],
                 pageTitle: 'cpmApp.deptType.home.title'
             },
             views: {
@@ -52,10 +52,10 @@
             }
         })
         .state('dept-type-detail', {
-            parent: 'info',
-            url: '/dept-type/{id}',
+            parent: 'dept-type',
+            url: '/detail/{id}',
             data: {
-                authorities: ['ROLE_USER'],
+                authorities: ['ROLE_INFO_BASIC'],
                 pageTitle: 'cpmApp.deptType.detail.title'
             },
             views: {
@@ -85,9 +85,9 @@
         })
         .state('dept-type-detail.edit', {
             parent: 'dept-type-detail',
-            url: '/detail/edit',
+            url: '/edit',
             data: {
-                authorities: ['ROLE_USER']
+                authorities: ['ROLE_INFO_BASIC']
             },
             onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
                 $uibModal.open({
@@ -112,7 +112,7 @@
             parent: 'dept-type',
             url: '/new',
             data: {
-                authorities: ['ROLE_USER']
+                authorities: ['ROLE_INFO_BASIC']
             },
             onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
                 $uibModal.open({
@@ -138,9 +138,9 @@
         })
         .state('dept-type.edit', {
             parent: 'dept-type',
-            url: '/{id}/edit',
+            url: '/edit/{id}',
             data: {
-                authorities: ['ROLE_USER']
+                authorities: ['ROLE_INFO_BASIC']
             },
             onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
                 $uibModal.open({
@@ -163,9 +163,9 @@
         })
         .state('dept-type.delete', {
             parent: 'dept-type',
-            url: '/{id}/delete',
+            url: '/delete/{id}',
             data: {
-                authorities: ['ROLE_USER']
+                authorities: ['ROLE_ADMIN']
             },
             onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
                 $uibModal.open({

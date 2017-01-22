@@ -1,0 +1,72 @@
+
+<div>
+    <h2><span data-translate="cpmApp.contractWeeklyStat.detail.title">Contract Weekly Stat</span> {{vm.contractWeeklyStat.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <div class="container-fluid">
+        <div class="row">
+            <form name="searchForm" class="form-horizontal">
+	           <div class="form-group">
+	               <div class="col-sm-4">
+	               		<div class="row">
+							<label class="col-sm-4 control-label" data-translate="cpmApp.contractWeeklyStat.echarts.fromDate">From Date</label>
+				            <div class="col-sm-8">
+				                <p class="input-group">
+				                    <input id="search_fromDate" type="text" class="form-control" name="fromDate" datetime-picker="yyyyMMdd"
+					           		 		enable-time="false" ng-model="vm.searchQuery.fromDate" is-open="vm.datePickerOpenStatus.fromDate"/>
+					          		<span class="input-group-btn">
+					           			<button type="button" class="btn btn-default" ng-click="vm.openCalendar('fromDate')"><i class="glyphicon glyphicon-calendar"></i></button>
+					            	</span>
+				                </p>
+				            </div>
+	               		</div>
+					</div>
+		            <div class="col-sm-4">
+			            <div class="row">
+			          		<label class="col-sm-4 control-label" data-translate="cpmApp.contractWeeklyStat.echarts.toDate">To Date</label>
+				            <div class="col-sm-8">
+				                <p class="input-group">
+				                    <input id="search_toDate" type="text" class="form-control" name="toDate" datetime-picker="yyyyMMdd"
+					           		 		enable-time="false" ng-model="vm.searchQuery.toDate" is-open="vm.datePickerOpenStatus.toDate"/>
+					          		<span class="input-group-btn">
+					           			<button type="button" class="btn btn-default" ng-click="vm.openCalendar('toDate')"><i class="glyphicon glyphicon-calendar"></i></button>
+					            	</span>
+				                </p>
+				            </div>
+				         </div>
+		            </div>
+		            <div class="col-sm-4 input-group pull-right">
+		            	<div class="col-sm-4">
+		            		&nbsp;
+		            	</div>
+		            	<div class="col-sm-8">
+		            		 <span  class="width-min input-group-btn" >
+		                        <button class="btn btn-info" ng-click="vm.search()">
+		                            <span class="glyphicon glyphicon-search"></span>
+		                            <span class="hidden-xs hidden-sm" data-translate="entity.action.search"></span>
+		                        </button>
+		                    </span>
+		                    <span class="width-min input-group-btn" ng-if="vm.haveSearch">
+		                        <button class="btn btn-info" ng-click="vm.clear()">
+		                            <span class="glyphicon glyphicon-trash"></span>
+		                            <span class="hidden-xs hidden-sm" data-translate="entity.action.clear"></span>
+		                        </button>
+		                    </span>
+		            	</div>
+		            </div>
+				</div>
+           </form>
+        </div>
+    </div>
+    <div id="tabcontent1" style="height: 400px;"></div>
+	<div id="tabcontent2" style="height: 400px;"></div>
+    <button type="submit"
+            ui-sref="{{ vm.previousState }}"
+            class="btn btn-info">
+        <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span data-translate="entity.action.back"> Back</span>
+    </button>
+    <button type="button" ng-click="vm.backDetail()" class="btn btn-primary">
+        <span class="glyphicon glyphicon-pencil"></span>
+        <span class="hidden-xs hidden-sm" data-translate="cpmApp.contractWeeklyStat.echarts.transDetail"> Edit</span>
+    </button>
+</div>

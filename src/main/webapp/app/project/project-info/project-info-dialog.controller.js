@@ -5,12 +5,19 @@
         .module('cpmApp')
         .controller('ProjectInfoDialogController', ProjectInfoDialogController);
 
-    ProjectInfoDialogController.$inject = ['$scope', '$rootScope','$state', '$stateParams', 'previousState', 'entity', 'ProjectInfo','AlertService','DateUtils'];
+    ProjectInfoDialogController.$inject = ['$scope', '$rootScope','$state', '$stateParams', 'previousState', 'entity', 'budgetEntity', 'ProjectInfo','AlertService','DateUtils'];
 
-    function ProjectInfoDialogController ($scope, $rootScope,$state, $stateParams, previousState, entity, ProjectInfo,AlertService,DateUtils) {
+    function ProjectInfoDialogController ($scope, $rootScope,$state, $stateParams, previousState, entity, budgetEntity, ProjectInfo,AlertService,DateUtils) {
         var vm = this;
 
         vm.projectInfo = entity;
+        
+        vm.contractInfoDisable = vm.projectInfo.id;
+        if(budgetEntity != null && budgetEntity.purchaseType == 3 && entity.id == null ){
+        	entity.contractId = budgetEntity.contractId;
+        	entity.budgetId = budgetEntity.id;
+        	vm.contractInfoDisable = true;
+        }
         vm.previousState = previousState.name;
         vm.queryDept = previousState.queryDept;
         vm.contractChanged = contractChanged;
@@ -124,7 +131,10 @@
 	    		function(data, headers){
             		vm.isSaving = false;
 //            		AlertService.error(error.data.message);
-            		$state.go(vm.previousState);
+
+            		if(headers("X-cpmApp-alert") == 'cpmApp.projectInfo.updated'){
+            			$state.go(vm.previousState);
+            		}
 	        	},
 	        	function(error){
 	        		vm.isSaving = false;

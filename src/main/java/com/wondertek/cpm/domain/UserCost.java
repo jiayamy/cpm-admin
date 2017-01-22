@@ -219,19 +219,11 @@ public class UserCost implements Serializable {
         return Objects.hashCode(id);
     }
 
-    @Override
-    public String toString() {
-        return "UserCost{" +
-            "id=" + id +
-            ", userId='" + userId + "'" +
-            ", costMonth='" + costMonth + "'" +
-            ", internalCost='" + internalCost + "'" +
-            ", externalCost='" + externalCost + "'" +
-            ", status='" + status + "'" +
-            ", creator='" + creator + "'" +
-            ", createTime='" + createTime + "'" +
-            ", updator='" + updator + "'" +
-            ", updateTime='" + updateTime + "'" +
-            '}';
-    }
+	@Override
+	public String toString() {
+		return "UserCost [id=" + id + ", userId=" + userId + ", userName=" + userName + ", costMonth=" + costMonth
+				+ ", internalCost=" + internalCost + ", externalCost=" + externalCost + ", status=" + status
+				+ ", creator=" + creator + ", createTime=" + createTime + ", updator=" + updator + ", updateTime="
+				+ updateTime + "]";
+	}
 }

@@ -3,6 +3,7 @@ package com.wondertek.cpm.repository;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
 import javax.persistence.EntityManager;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Repository;
 
 import com.wondertek.cpm.CpmConstants;
 import com.wondertek.cpm.config.StringUtil;
+import com.wondertek.cpm.domain.DeptInfo;
 import com.wondertek.cpm.domain.User;
 @Repository("userDao")
 public class UserDaoImpl extends GenericDaoImpl<User, Long> implements UserDao  {
@@ -29,7 +31,10 @@ public class UserDaoImpl extends GenericDaoImpl<User, Long> implements UserDao  
 	public EntityManager getEntityManager() {
 		return entityManager;
 	}
-
+	
+	@Inject
+	public DeptInfoRepository deptInfoRepository;
+	
 	@Override
 	public Page<User> getUserPage(User user, Pageable pageable) {
 		StringBuffer querySql = new StringBuffer();
@@ -39,9 +44,9 @@ public class UserDaoImpl extends GenericDaoImpl<User, Long> implements UserDao  
 		StringBuffer orderSql = new StringBuffer();
 		List<Object> params = new ArrayList<Object>();
 		
-		querySql.append("select distinct user from User user left join fetch user.authorities");
+		querySql.append("select distinct user from User user left join fetch user.authorities left join DeptInfo wdi on wdi.id = user.deptId");
 		
-		countSql.append("select count(user.id) from User user");
+		countSql.append("select count(user.id) from User user left join DeptInfo wdi on wdi.id = user.deptId");
 		
 		whereSql.append(" where 1=1");
 		
@@ -57,6 +62,21 @@ public class UserDaoImpl extends GenericDaoImpl<User, Long> implements UserDao  
 		if(!StringUtil.isNullStr(user.getSerialNum())){
 			whereSql.append(" and user.serialNum like ?");
 			params.add("%" + user.getSerialNum() + "%");
+		}
+		if(!StringUtil.isNullStr(user.getWorkArea())){
+			whereSql.append(" and user.workArea = ?");
+			params.add(user.getWorkArea());
+		}
+		if(user.getDeptId() != null){
+			DeptInfo deptInfo = deptInfoRepository.getOne(user.getDeptId());
+			if(deptInfo != null){
+				whereSql.append(" and (user.deptId = ? or wdi.idPath like ?)");
+				params.add(user.getDeptId());
+				params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
+			}else{
+				whereSql.append(" and user.deptId = ?");
+				params.add(user.getDeptId());
+			}
 		}
 		
 		querySql.append(whereSql.toString());

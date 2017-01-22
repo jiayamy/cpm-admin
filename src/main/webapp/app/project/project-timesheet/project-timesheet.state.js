@@ -52,8 +52,8 @@
             }
         })
         .state('project-timesheet-detail', {
-            parent: 'project',
-            url: '/project-timesheet/{id}',
+            parent: 'project-timesheet',
+            url: '/detail/{id}',
             data: {
                 authorities: ['ROLE_PROJECT_TIMESHEET'],
                 pageTitle: 'cpmApp.projectTimesheet.detail.title'
@@ -85,7 +85,7 @@
         })
         .state('project-timesheet-detail.edit', {
             parent: 'project-timesheet-detail',
-            url: '/detail/edit',
+            url: '/edit',
             data: {
                 authorities: ['ROLE_PROJECT_TIMESHEET']
             },
@@ -147,7 +147,7 @@
         })
         .state('project-timesheet.edit', {
             parent: 'project-timesheet',
-            url: '/{id}/edit',
+            url: '/edit/{id}',
             data: {
                 authorities: ['ROLE_PROJECT_TIMESHEET']
             },
@@ -172,7 +172,7 @@
         })
         .state('project-timesheet.delete', {
             parent: 'project-timesheet',
-            url: '/{id}/delete',
+            url: '/delete/{id}',
             data: {
                 authorities: ['ROLE_PROJECT_TIMESHEET']
             },

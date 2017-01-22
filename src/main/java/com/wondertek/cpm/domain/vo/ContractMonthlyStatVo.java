@@ -15,6 +15,7 @@ public class ContractMonthlyStatVo implements Serializable{
     private Long id;
     private Long contractId;
     private String serialNum;
+    private String name;
     private Double finishRate;
     private Double receiveTotal;
     private Double costTotal;
@@ -48,6 +49,13 @@ public class ContractMonthlyStatVo implements Serializable{
 	}
 	public void setSerialNum(String serialNum) {
 		this.serialNum = serialNum;
+	}
+	
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
 	}
 	public Double getFinishRate() {
 		return finishRate;

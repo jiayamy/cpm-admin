@@ -11,9 +11,9 @@
         $stateProvider
         .state('project-weekly-stat', {
             parent: 'stat',
-            url: '/project-weekly-stat?page&sort&fromDate&toDate&statDate',
+            url: '/project-weekly-stat?page&projectId',
             data: {
-                authorities: ['ROLE_USER'],
+                authorities: ['ROLE_STAT_PROJECT'],
                 pageTitle: 'cpmApp.projectWeeklyStat.home.title'
             },
             views: {
@@ -29,12 +29,10 @@
                     squash: true
                 },
                 sort: {
-                    value: 'id,asc',
+                    value: 'm.id,asc',
                     squash: true
                 },
-                fromDate : null,
-                toDate: null,
-                statDate: null
+                projectId: null
             },
             resolve: {
                 pagingParams: ['$stateParams', 'PaginationUtil', function ($stateParams, PaginationUtil) {
@@ -43,9 +41,7 @@
                         sort: $stateParams.sort,
                         predicate: PaginationUtil.parsePredicate($stateParams.sort),
                         ascending: PaginationUtil.parseAscending($stateParams.sort),
-                        fromDate: $stateParams.fromDate,
-                        toDate: $stateParams.toDate,
-                        statDate: $stateParams.statDate
+                        projectId: $stateParams.projectId
                     };
                 }],
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
@@ -56,10 +52,10 @@
             }
         })
         .state('project-weekly-stat-detail', {
-            parent: 'stat',
-            url: '/project-weekly-stat/{id}',
+            parent: 'project-weekly-stat',
+            url: '/detail/{id}',
             data: {
-                authorities: ['ROLE_USER'],
+                authorities: ['ROLE_STAT_PROJECT'],
                 pageTitle: 'cpmApp.projectWeeklyStat.detail.title'
             },
             views: {
@@ -85,6 +81,69 @@
                     };
                     return currentStateData;
                 }]
+            }
+        })
+        .state('project-weekly-stat-detail.chart', {
+            parent: 'project-weekly-stat',
+            url: '/chart/{id}/queryChart?fromDate&toDate',
+            data: {
+                authorities: ['ROLE_STAT_PROJECT'],
+                pageTitle: 'cpmApp.projectInfo.detail.title'
+            },
+            views: {
+                'content@': {
+                    templateUrl: 'app/stat/project-weekly-stat/project-weekly-stat-chart.html',
+                    controller: 'ProjectWeeklyStatChartController',
+                    controllerAs: 'vm'
+                }
+            },
+            params: {
+                fromDate: null,
+                toDate : null,
+                id : null
+            },
+            resolve: {
+                translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
+                	$translatePartialLoader.addPart('projectWeeklyStat');
+                    $translatePartialLoader.addPart('global');
+                    return $translate.refresh();
+                }],
+                pagingParams: ['$stateParams', 'PaginationUtil', function ($stateParams, PaginationUtil) {
+                    return {
+                        fromDate: $stateParams.fromDate,
+                        toDate : $stateParams.toDate,
+                        id : $stateParams.id
+                    };
+                }],
+                previousState: ["$state", function ($state) {
+                    var currentStateData = {
+                        name: 'project-weekly-stat',
+                        params: {
+                            page: {
+                                value: '1',
+                                squash: true
+                            },
+                            sort: {
+                                value: 'm.id,asc',
+                                squash: true
+                            },
+                            projectId: null
+                        },
+                        url: $state.href('project-weekly-stat', {
+                            page: {
+                                value: '1',
+                                squash: true
+                            },
+                            sort: {
+                                value: 'm.id,asc',
+                                squash: true
+                            },
+                            projectId: null
+                        })
+                    };
+                    return currentStateData;
+                }]
+                
             }
         });
     }

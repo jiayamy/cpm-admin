@@ -1,10 +1,12 @@
 package com.wondertek.cpm.service;
 
+import com.wondertek.cpm.domain.ContractBudget;
 import com.wondertek.cpm.domain.PurchaseItem;
 import com.wondertek.cpm.domain.vo.PurchaseItemVo;
 import com.wondertek.cpm.repository.PurchaseItemDao;
 import com.wondertek.cpm.repository.PurchaseItemRepository;
 import com.wondertek.cpm.repository.search.PurchaseItemSearchRepository;
+import com.wondertek.cpm.security.SecurityUtils;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
 
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -72,9 +75,9 @@ public class PurchaseItemService {
      *  @return the entity
      */
     @Transactional(readOnly = true) 
-    public PurchaseItem findOne(Long id) {
+    public PurchaseItemVo getPurchaseItem(Long id) {
         log.debug("Request to get PurchaseItem : {}", id);
-        PurchaseItem purchaseItem = purchaseItemRepository.findOne(id);
+        PurchaseItemVo purchaseItem = purchaseItemDao.findPurchaseItemById(id);
         return purchaseItem;
     }
 
@@ -85,8 +88,13 @@ public class PurchaseItemService {
      */
     public void delete(Long id) {
         log.debug("Request to delete PurchaseItem : {}", id);
-        purchaseItemRepository.delete(id);
-        purchaseItemSearchRepository.delete(id);
+        PurchaseItem purchaseItem = purchaseItemRepository.findOne(id);
+        if(purchaseItem != null){
+        	purchaseItem.setStatus(PurchaseItem.STATUS_DELETED);
+        	purchaseItem.setUpdateTime(ZonedDateTime.now());
+        	purchaseItem.setUpdator(SecurityUtils.getCurrentUserLogin());
+        	purchaseItemRepository.save(purchaseItem);
+        }
     }
 
     /**
@@ -106,5 +114,10 @@ public class PurchaseItemService {
 			Pageable pageable) {
 		Page<PurchaseItemVo> page = purchaseItemDao.getPurchaserPage(purchaseItem,pageable);
 		return page;
+	}
+
+	public PurchaseItem findOneById(Long id) {
+		PurchaseItem purchaseItem = purchaseItemRepository.findOne(id);
+		return purchaseItem;
 	}
 }

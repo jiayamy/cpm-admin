@@ -13,7 +13,7 @@
             parent: 'contract',
             url: '/contract-receive?page&sort&contractId',
             data: {
-                authorities: ['ROLE_USER'],
+                authorities: ['ROLE_CONTRACT_RECEIVE'],
                 pageTitle: 'cpmApp.contractReceive.home.title'
             },
             views: {
@@ -53,10 +53,10 @@
             }
         })
         .state('contract-receive-detail', {
-            parent: 'contract',
-            url: '/contract-receive/{id}',
+            parent: 'contract-receive',
+            url: '/detail/{id}',
             data: {
-                authorities: ['ROLE_USER'],
+                authorities: ['ROLE_CONTRACT_RECEIVE'],
                 pageTitle: 'cpmApp.contractReceive.detail.title'
             },
             views: {
@@ -89,7 +89,7 @@
         	parent: 'contract-receive-detail',
         	url: '/{id}/edit',
             data: {
-                authorities: ['ROLE_USER']
+                authorities: ['ROLE_CONTRACT_RECEIVE']
             },
             views:{
             	'content@':{
@@ -150,7 +150,7 @@
         	parent:'contract-receive',
         	url:'/new',
         	data:{
-        		 authorities: ['ROLE_USER']
+        		 authorities: ['ROLE_CONTRACT_RECEIVE']
         	},
         	views:{
         		'content@':{
@@ -222,9 +222,9 @@
 
         .state('contract-receive.edit',{
         	parent: 'contract-receive',
-            url: '/{id}/edit',
+            url: '/edit/{id}',
             data: {
-                authorities: ['ROLE_USER']
+                authorities: ['ROLE_CONTRACT_RECEIVE']
             },
             views:{
             	'content@':{
@@ -274,9 +274,9 @@
         })
         .state('contract-receive.delete', {
             parent: 'contract-receive',
-            url: '/{id}/delete',
+            url: '/delete/{id}',
             data: {
-                authorities: ['ROLE_USER']
+                authorities: ['ROLE_CONTRACT_RECEIVE']
             },
             onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
                 $uibModal.open({

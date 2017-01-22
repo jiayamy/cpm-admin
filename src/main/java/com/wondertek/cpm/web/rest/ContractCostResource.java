@@ -14,6 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -51,7 +52,7 @@ public class ContractCostResource {
     @Inject
     private ContractBudgetService contractBudgetService;
     /**
-     * æ–°å¢å’Œä¿®æ”¹
+     * ĞÂÔöºÍĞŞ¸Ä
      * @param contractCost
      * @return
      * @throws URISyntaxException
@@ -110,7 +111,7 @@ public class ContractCostResource {
 		}
     }
     /**
-     * é¡µé¢æœç´¢æŸ¥è¯¢
+     * Ò³ÃæËÑË÷²éÑ¯
      * @param contractId
      * @param type
      * @param name
@@ -120,6 +121,7 @@ public class ContractCostResource {
      */
     @GetMapping("/contract-costs")
     @Timed
+    @Secured(AuthoritiesConstants.ROLE_CONTRACT_COST)
     public ResponseEntity<List<ContractCostVo>> getAllContractCosts(
     		@RequestParam(value = "contractId",required=false) Long contractId, 
     		@RequestParam(value = "type",required=false) Integer type, 
@@ -138,12 +140,13 @@ public class ContractCostResource {
         return new ResponseEntity<List<ContractCostVo>>(page.getContent(), headers,HttpStatus.OK);
     }
     /**
-     * æ ¹æ®idæŸ¥è¯¢ContractCostVo è¿”ç»™é¡µé¢ï¼Œå›æ˜¾
+     * ¸ù¾İid²éÑ¯ContractCostVo ·µ¸øÒ³Ãæ£¬»ØÏÔ
      * @param id
      * @return
      */
     @GetMapping("/contract-costs/{id}")
     @Timed
+    @Secured(AuthoritiesConstants.ROLE_CONTRACT_COST)
     public ResponseEntity<ContractCostVo> getContractCost(@PathVariable Long id) {
         log.debug("REST request to get ContractCost : {}", id);
         ContractCostVo contractCost = contractCostService.getContractCost(id);
@@ -156,6 +159,7 @@ public class ContractCostResource {
 
     @DeleteMapping("/contract-costs/{id}")
     @Timed
+    @Secured(AuthoritiesConstants.ROLE_CONTRACT_COST)
     public ResponseEntity<Void> deleteContractCost(@PathVariable Long id) {
         log.debug("REST request to delete ContractCost : {}", id);
         ContractCostVo contractCost = contractCostService.getContractCost(id);

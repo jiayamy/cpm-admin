@@ -16,10 +16,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.wondertek.cpm.domain.DeptInfo;
+import com.wondertek.cpm.domain.ProjectFinishInfo;
 import com.wondertek.cpm.domain.ProjectInfo;
 import com.wondertek.cpm.domain.User;
 import com.wondertek.cpm.domain.vo.LongValue;
 import com.wondertek.cpm.domain.vo.ProjectInfoVo;
+import com.wondertek.cpm.repository.ProjectFinishInfoRepository;
 import com.wondertek.cpm.repository.ProjectInfoDao;
 import com.wondertek.cpm.repository.ProjectInfoRepository;
 import com.wondertek.cpm.repository.UserRepository;
@@ -38,6 +40,9 @@ public class ProjectInfoService {
     private ProjectInfoRepository projectInfoRepository;
     @Inject
     private UserRepository userRepository;
+    
+    @Inject
+    private ProjectFinishInfoRepository projectFinishInfoRepository;
     
 //    @Inject
 //    private ProjectInfoSearchRepository projectInfoSearchRepository;
@@ -182,13 +187,33 @@ public class ProjectInfoService {
      * 项目完成率
      */
 	public int finishProjectInfo(Long id, Double finishRate) {
-		return projectInfoDao.finishProjectInfo(id,finishRate,SecurityUtils.getCurrentUserLogin());
+		String updator = SecurityUtils.getCurrentUserLogin();
+		//保存记录
+		ProjectFinishInfo projectFinishInfo = new ProjectFinishInfo();
+		projectFinishInfo.setCreateTime(ZonedDateTime.now());
+		projectFinishInfo.setCreator(updator);
+		projectFinishInfo.setFinishRate(finishRate);
+		projectFinishInfo.setId(null);
+		projectFinishInfo.setProjectId(id);
+		projectFinishInfoRepository.save(projectFinishInfo);
+		
+		return projectInfoDao.finishProjectInfo(id,finishRate,updator);
 	}
 	/**
 	 * 项目结项
 	 */
 	public int endProjectInfo(Long id) {
-		return projectInfoDao.endProjectInfo(id,SecurityUtils.getCurrentUserLogin());
+		String updator = SecurityUtils.getCurrentUserLogin();
+		//保存记录
+		ProjectFinishInfo projectFinishInfo = new ProjectFinishInfo();
+		projectFinishInfo.setCreateTime(ZonedDateTime.now());
+		projectFinishInfo.setCreator(updator);
+		projectFinishInfo.setFinishRate(100d);
+		projectFinishInfo.setId(null);
+		projectFinishInfo.setProjectId(id);
+		projectFinishInfoRepository.save(projectFinishInfo);
+		
+		return projectInfoDao.endProjectInfo(id,updator);
 	}
 
 	public List<LongValue> queryUserProject() {

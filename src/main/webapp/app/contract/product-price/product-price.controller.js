@@ -128,7 +128,6 @@
             vm.predicate = '_score';
             vm.reverse = false;
             vm.currentSearch = searchQuery;
-            console.log(searchQuery);
             vm.currentSearch.haveSearch = true;
             vm.transition();
         }

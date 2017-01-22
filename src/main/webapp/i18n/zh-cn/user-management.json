@@ -1,9 +1,9 @@
 {
     "userManagement": {
         "home": {
-            "title": "用户",
-            "createLabel": "创建新用户",
-            "createOrEditLabel": "创建或编辑用户"
+            "title": "用户信息",
+            "createLabel": "新建",
+            "createOrEditLabel": "用户信息"
         },
         "created": "用户 {{ param }} 创建成功",
         "updated": "用户 {{ param }} 更新成功",
@@ -28,13 +28,14 @@
         "birthYear":"出生年份",
         "birthDay":"生日",
         "gender":"性别",
+        "workArea":"工作地点",
         "activated": "已激活",
         "deactivated": "失效",
         "profiles": "角色",
         "langKey": "语言",
-        "createdBy": "创建人",
+        "createdBy": "创建者",
         "createdDate": "创建时间",
-        "lastModifiedBy": "最近修改人",
-        "lastModifiedDate": "最近修改时间"
+        "lastModifiedBy": "更新者",
+        "lastModifiedDate": "更新时间"
     }
 }

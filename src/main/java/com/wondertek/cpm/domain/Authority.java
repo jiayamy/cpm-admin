@@ -25,7 +25,10 @@ public class Authority implements Serializable {
     @Id
     @Column(length = 50)
     private String name;
-
+    
+    @Column(length = 100,name="detail_")
+    private String detail;
+    
     public String getName() {
         return name;
     }
@@ -33,8 +36,15 @@ public class Authority implements Serializable {
     public void setName(String name) {
         this.name = name;
     }
+    public String getDetail() {
+		return detail;
+	}
 
-    @Override
+	public void setDetail(String detail) {
+		this.detail = detail;
+	}
+
+	@Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -57,10 +67,8 @@ public class Authority implements Serializable {
         return name != null ? name.hashCode() : 0;
     }
 
-    @Override
-    public String toString() {
-        return "Authority{" +
-            "name='" + name + '\'' +
-            "}";
-    }
+	@Override
+	public String toString() {
+		return "Authority [name=" + name + ", detail=" + detail + "]";
+	}
 }

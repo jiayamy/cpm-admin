@@ -13,7 +13,7 @@
             parent: 'contract',
             url: '/contract-cost?page&sort&contractId&type&name',
             data: {
-                authorities: ['ROLE_USER'],
+                authorities: ['ROLE_CONTRACT_COST'],
                 pageTitle: 'cpmApp.contractCost.home.title'
             },
             views: {
@@ -57,10 +57,10 @@
             }
         })
         .state('contract-cost-detail', {
-            parent: 'contract',
+            parent: 'contract-cost',
             url: '/detail/{id}',
             data: {
-                authorities: ['ROLE_USER'],
+                authorities: ['ROLE_CONTRACT_COST'],
                 pageTitle: 'cpmApp.contractCost.detail.title'
             },
             views: {
@@ -93,7 +93,7 @@
         	parent: 'contract-cost-detail',
             url: '/edit',
             data: {
-                authorities: ['ROLE_USER']
+                authorities: ['ROLE_CONTRACT_COST']
             },
             views:{
             	'content@':{
@@ -124,7 +124,7 @@
         	parent: 'contract-cost',
             url: '/new',
             data: {
-                authorities: ['ROLE_USER']
+                authorities: ['ROLE_CONTRACT_COST']
             },
             views:{
             	'content@':{
@@ -169,9 +169,9 @@
         })        
         .state('contract-cost.edit',{
         	parent: 'contract-cost',
-            url: '/{id}/edit',
+            url: '/edit/{id}',
             data: {
-                authorities: ['ROLE_USER']
+                authorities: ['ROLE_CONTRACT_COST']
             },
             views:{
             	'content@':{
@@ -200,9 +200,9 @@
         })
         .state('contract-cost.delete', {
             parent: 'contract-cost',
-            url: '/{id}/delete',
+            url: '/delete/{id}',
             data: {
-                authorities: ['ROLE_USER']
+                authorities: ['ROLE_CONTRACT_COST']
             },
             onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
                 $uibModal.open({

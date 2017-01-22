@@ -14,7 +14,7 @@
                 "question": "Are you sure you want to delete Contract Monthly Stat {{ id }}?"
             },
             "detail": {
-                "title": "合同月报统计",
+                "title": "合同月报统计详情",
                 "transChart": "转变表格"
             },
             "echarts":{
@@ -28,7 +28,8 @@
             "statDate" : "统计月",
             "contractSerialNum" : "合同编号",
             "contractId": "合同主键",
-            "serialNum" : "项目编号",
+            "serialNum" : "合同编号",
+            "name" : "合同名称",
             "finishRate" : "完成率",
             "receiveTotal": "回款总额",
             "costTotal": "所有成本",

@@ -3,9 +3,13 @@ package com.wondertek.cpm.service;
 import com.wondertek.cpm.config.DateUtil;
 import com.wondertek.cpm.config.StringUtil;
 import com.wondertek.cpm.domain.ContractWeeklyStat;
+import com.wondertek.cpm.domain.DeptInfo;
 import com.wondertek.cpm.domain.ProjectMonthlyStat;
 import com.wondertek.cpm.domain.ProjectWeeklyStat;
 import com.wondertek.cpm.domain.User;
+import com.wondertek.cpm.domain.vo.ChartReportDataVo;
+import com.wondertek.cpm.domain.vo.LongValue;
+import com.wondertek.cpm.domain.vo.ProjectWeeklyStatVo;
 import com.wondertek.cpm.repository.ProjectWeeklyStatDao;
 import com.wondertek.cpm.repository.ProjectWeeklyStatRepository;
 import com.wondertek.cpm.repository.UserRepository;
@@ -23,6 +27,7 @@ import org.springframework.stereotype.Service;
 import javax.inject.Inject;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -85,10 +90,11 @@ public class ProjectWeeklyStatService {
      *  @return the entity
      */
     @Transactional(readOnly = true) 
-    public ProjectWeeklyStat findOne(Long id) {
+    public ProjectWeeklyStatVo findOne(Long id) {
         log.debug("Request to get ProjectWeeklyStat : {}", id);
-        ProjectWeeklyStat projectWeeklyStat = projectWeeklyStatRepository.findOne(id);
-        return projectWeeklyStat;
+//        ProjectWeeklyStat projectWeeklyStat = projectWeeklyStatRepository.findOne(id);
+        ProjectWeeklyStatVo projectWeeklyStatVo = projectWeeklyStatDao.getById(id);
+        return projectWeeklyStatVo;
     }
 
     /**
@@ -124,50 +130,89 @@ public class ProjectWeeklyStatService {
      * @return
      */
     @Transactional(readOnly = true)
-    public Page<ProjectWeeklyStat> getStatPage(String fromDate, String endDate, String statDate, Pageable pageable){
+    public Page<ProjectWeeklyStatVo> getStatPage(String projectId, Pageable pageable){
     	Optional<User> user = userRepository.findOneByLogin(SecurityUtils.getCurrentUserLogin());
     	if(user.isPresent()){
-    		Page<ProjectWeeklyStat> page = projectWeeklyStatDao.getUserPage(fromDate, endDate, statDate, pageable, user.get());
+    		Page<ProjectWeeklyStatVo> page = projectWeeklyStatDao.getUserPage(projectId, pageable, user.get());
         	return page;
     	}else{
-    		return new PageImpl(new ArrayList<ProjectWeeklyStat>(), pageable, 0);
+    		return new PageImpl(new ArrayList<ProjectWeeklyStatVo>(), pageable, 0);
     	}
     }
     
+    /**
+     * 查询用户的所有项目，管理人员能看到部门下面所有人员的项目信息
+     */
     @Transactional(readOnly = true)
-    public List<Double> getHumanCost(Date fromDate, Date toDate, Long projectId){
-    	List<Double> data = new ArrayList<>();
+	public List<LongValue> queryUserProject() {
+    	List<LongValue> returnList = new ArrayList<LongValue>();
+    	List<Object[]> objs = userRepository.findUserInfoByLogin(SecurityUtils.getCurrentUserLogin());
+    	if(objs != null && !objs.isEmpty()){
+    		Object[] o = objs.get(0);
+    		User user = (User) o[0];
+    		DeptInfo deptInfo = (DeptInfo) o[1];
+    		
+    		returnList = projectWeeklyStatDao.queryUserProject(user,deptInfo);
+    	}
+		return returnList;
+	}
+    
+    @Transactional(readOnly = true)
+    public List<ChartReportDataVo> getChartData(Date fromDate, Date toDate, Long projectId){
+    	List<ChartReportDataVo> datas = new ArrayList<>();
+    	ChartReportDataVo data1 = new ChartReportDataVo();
+    	ChartReportDataVo data2 = new ChartReportDataVo();
+    	data1.setName("人工成本");
+    	data1.setType("line");
+    	data2.setName("报销成本");
+    	data2.setType("line");
+    	List<Double> dataD1 = new ArrayList<>();
+    	List<Double> dataD2 = new ArrayList<>();
     	Long temp = fromDate.getTime();
-    	Long oneDay = 24*60*60*1000L;
+    	Long sevenDay = 7*24*60*60*1000L;
     	while(temp <= toDate.getTime()){
     		Long statWeek = StringUtil.nullToLong(DateUtil.formatDate("yyyyMMdd", new Date(temp)));
-    		List<ProjectWeeklyStat> projectMonthlyStats = projectWeeklyStatRepository.findByStatWeekAndProjectId(statWeek, projectId);
+    		List<ProjectWeeklyStat> projectWeeklyStats = projectWeeklyStatRepository.findByStatWeekAndProjectId(statWeek, projectId);
     		Double humanCost = 0D;
-    		if(projectMonthlyStats != null && projectMonthlyStats.size() > 0){
-    			humanCost = projectMonthlyStats.get(0).getHumanCost();
+    		Double payment = 0D;
+    		if(projectWeeklyStats != null && projectWeeklyStats.size() > 0){
+    			int max = projectWeeklyStats.size() - 1;
+    			humanCost = projectWeeklyStats.get(max).getHumanCost();
+    			payment = projectWeeklyStats.get(max).getPayment();
     		}
-    		data.add(humanCost);
-    		temp += oneDay;
+    		dataD1.add(humanCost);
+    		dataD2.add(payment);
+    		temp += sevenDay;
     	}
-    	return data;
+    	data1.setData(dataD1);
+    	data2.setData(dataD2);
+    	datas.add(data1);
+    	datas.add(data2);
+    	return datas;
     }
     
-    @Transactional(readOnly = true)
-    public List<Double> getPayment(Date fromDate, Date toDate, Long projectId){
-    	List<Double> data = new ArrayList<>();
+    public List<ChartReportDataVo> getFinishRateData(Date fromDate, Date toDate, Long projectId){
+    	List<ChartReportDataVo> datas = new ArrayList<>();
+    	ChartReportDataVo data = new ChartReportDataVo();
+    	data.setName("完成率");
+    	data.setType("line");
+    	List<Double> dataD = new ArrayList<>();
     	Long temp = fromDate.getTime();
-    	Long oneDay = 24*60*60*1000L;
+    	Long sevenDay = 7*24*60*60*1000L;
     	while(temp <= toDate.getTime()){
     		Long statWeek = StringUtil.nullToLong(DateUtil.formatDate("yyyyMMdd", new Date(temp)));
-    		List<ProjectWeeklyStat> projectMonthlyStats = projectWeeklyStatRepository.findByStatWeekAndProjectId(statWeek, projectId);
-    		Double payment = 0D;
-    		if(projectMonthlyStats != null && projectMonthlyStats.size() > 0){
-    			data.add(projectMonthlyStats.get(0).getPayment());
-    		}else{
-    			data.add(payment);
+    		List<ProjectWeeklyStat> projectWeeklyStats = projectWeeklyStatRepository.findByStatWeekAndProjectId(statWeek, projectId);
+    		Double FinishRate = 0D;
+    		if(projectWeeklyStats != null && projectWeeklyStats.size() > 0){
+    			int max = projectWeeklyStats.size() - 1;
+    			FinishRate = projectWeeklyStats.get(max).getFinishRate();
     		}
-    		temp += oneDay;
+    		dataD.add(FinishRate);
+    		temp += sevenDay;
     	}
-    	return data;
+    	data.setData(dataD);
+    	datas.add(data);
+    	return datas;
     }
+    
 }

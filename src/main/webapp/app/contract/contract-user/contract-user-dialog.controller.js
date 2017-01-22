@@ -17,7 +17,6 @@
         
         vm.previousState = previousState.name;
         vm.queryDept = previousState.queryDept;
-        console.log(vm.previousState);
         vm.datePickerOpenStatus = {};
         vm.openCalendar = openCalendar;
         

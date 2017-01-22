@@ -5,12 +5,11 @@
         .module('cpmApp')
         .controller('UserManagementController', UserManagementController);
 
-    UserManagementController.$inject = ['Principal', 'User', 'ParseLinks', 'AlertService', '$state', 'pagingParams', 'paginationConstants', 'JhiLanguageService'];
+    UserManagementController.$inject = ['Principal', 'User','WorkArea', 'ParseLinks', 'AlertService','$scope','$rootScope', '$state', 'pagingParams', 'paginationConstants', 'JhiLanguageService'];
 
-    function UserManagementController(Principal, User, ParseLinks, AlertService, $state, pagingParams, paginationConstants, JhiLanguageService) {
+    function UserManagementController(Principal, User,WorkArea, ParseLinks, AlertService,$scope,$rootScope, $state, pagingParams, paginationConstants, JhiLanguageService) {
         var vm = this;
 
-        vm.authorities = ['ROLE_ADMIN','ROLE_USER','ROLE_TIMESHEET','ROLE_INFO','ROLE_INFO_BASIC','ROLE_INFO_USERCOST','ROLE_CONTRACT','ROLE_CONTRACT_BUDGET','ROLE_CONTRACT_COST','ROLE_CONTRACT_FINISH','ROLE_CONTRACT_INFO','ROLE_CONTRACT_PRODUCTPRICE','ROLE_CONTRACT_PURCHASE','ROLE_CONTRACT_RECEIVE','ROLE_CONTRACT_TIMESHEET','ROLE_CONTRACT_USER','ROLE_PROJECT','ROLE_PROJECT_COST','ROLE_PROJECT_FINISH','ROLE_PROJECT_INFO','ROLE_PROJECT_TIMESHEET','ROLE_PROJECT_USER','ROLE_STAT','ROLE_STAT_CONTRACT','ROLE_STAT_PROJECT'];
         vm.currentAccount = null;
         vm.languages = null;
         vm.loadAll = loadAll;
@@ -31,15 +30,27 @@
         vm.searchQuery = {};
         vm.searchQuery.serialNum = pagingParams.serialNum;
         vm.searchQuery.lastName = pagingParams.lastName;
-        vm.searchQuery.login = pagingParams.login;
+        vm.searchQuery.loginName = pagingParams.loginName;
+        vm.searchQuery.deptId = pagingParams.deptId;
+        vm.searchQuery.deptName = pagingParams.deptName;
+        vm.searchQuery.workArea = pagingParams.workArea;
         if (vm.searchQuery.serialNum == undefined&& vm.searchQuery.lastName == undefined
-        		&& vm.searchQuery.login == undefined){
+        		&& vm.searchQuery.loginName == undefined && vm.searchQuery.deptId == undefined
+        		&& vm.searchQuery.workArea == undefined){
         	vm.haveSearch = null;
         }else{
         	vm.haveSearch = true;
         }
         
         vm.loadAll();
+        
+        loadWorkArea();
+        function loadWorkArea(){
+        	WorkArea.queryAll({},function onSuccess(data, headers) {
+        		vm.allAreas = data;
+        	});
+        }
+        
         JhiLanguageService.getAll().then(function (languages) {
             vm.languages = languages;
         });
@@ -57,9 +68,11 @@
 
         function loadAll () {
             User.query({
-            	loginName:pagingParams.login,
+            	loginName:pagingParams.loginName,
             	lastName:pagingParams.lastName,
             	serialNum:pagingParams.serialNum,
+            	deptId:pagingParams.deptId,
+            	workArea:pagingParams.workArea,
                 page: pagingParams.page - 1,
                 size: vm.itemsPerPage,
                 sort: sort()
@@ -67,7 +80,6 @@
         }
 
         function onSuccess(data, headers) {
-            //hide anonymous user from user management: it's a required user for Spring Security
             var hiddenUsersSize = 0;
             for (var i in data) {
                 if (data[i]['login'] === 'anonymoususer') {
@@ -114,12 +126,16 @@
                 sort: vm.predicate + ',' + (vm.reverse ? 'asc' : 'desc'),
                 serialNum:vm.searchQuery.serialNum,
                 lastName:vm.searchQuery.lastName,
-                login:vm.searchQuery.login
+                loginName:vm.searchQuery.loginName,
+                deptId:vm.searchQuery.deptId,
+                deptName:vm.searchQuery.deptName,
+                workArea:vm.searchQuery.workArea
             });
         }
         function search() {
         	if (vm.searchQuery.serialNum == undefined&& vm.searchQuery.lastName == undefined
-            		&& vm.searchQuery.login == undefined){
+            		&& vm.searchQuery.loginName == undefined&& vm.searchQuery.deptId == undefined
+            		&& vm.searchQuery.workArea == undefined){
                 return vm.clear();
             }
             vm.links = null;
@@ -139,5 +155,11 @@
             vm.haveSearch = null;
             vm.transition();
         }
+        
+        var unsubscribe = $rootScope.$on('cpmApp:deptInfoSelected', function(event, result) {
+        	vm.searchQuery.deptId = result.objId;
+        	vm.searchQuery.deptName = result.name;
+        });
+        $scope.$on('$destroy', unsubscribe);
     }
 })();

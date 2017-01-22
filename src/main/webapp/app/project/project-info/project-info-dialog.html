@@ -1,6 +1,5 @@
 <h2><span data-translate="cpmApp.projectInfo.home.createOrEditLabel">Create or edit a Project Info</span></h2>
 <hr>
-<jhi-alert-error></jhi-alert-error>
 <form name="myForm" role="form" ng-submit="vm.save()">
 	<div class="container-fluid">
 		<div class="row form-horizontal">
@@ -8,7 +7,7 @@
 				<div class="col-sm-6">
 					<label class="control-label" data-translate="cpmApp.projectInfo.contractId" for="field_contractId">Contract Id</label>
 	            	<select class="form-control" name="contractId" ng-model="vm.projectInfo.contractId" id="field_contractId"
-	            		ng-required="true" ng-change="vm.contractChanged()" ng-disabled="vm.projectInfo.id"
+	            		ng-required="true" ng-change="vm.contractChanged()" ng-disabled="vm.contractInfoDisable"
 		            	ng-options="contractInfo.val for contractInfo in vm.contractInfos track by contractInfo.key">
 		            </select>
 		            <div class="help-block"
@@ -19,7 +18,7 @@
 				<div class="col-sm-6">
 	          		<label class="control-label" data-translate="cpmApp.projectInfo.budgetId" for="field_budgetId">Budget Id</label>
 	              	<select class="form-control" name="budgetId" ng-model="vm.projectInfo.budgetId" id="field_budgetId"
-	            		ng-required="true" ng-change="vm.budgetChanged()" ng-disabled="vm.projectInfo.id"
+	            		ng-required="true" ng-change="vm.budgetChanged()" ng-disabled="vm.contractInfoDisable"
 		            	ng-options="contractBudget.val for contractBudget in vm.contractBudgets track by contractBudget.key">
 		            </select>
 		            <div class="help-block"
@@ -144,6 +143,8 @@
 		</div>
 	</div>
 	<hr>
+	<jhi-alert></jhi-alert>
+	<jhi-alert-error></jhi-alert-error>
 	<button type="submit"
         ui-sref="{{ vm.previousState }}"
         class="btn btn-info">

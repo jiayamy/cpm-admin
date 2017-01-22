@@ -21,8 +21,8 @@ import org.springframework.data.elasticsearch.annotations.Document;
 @Entity
 @Table(name = "w_contract_finish_info")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-@Document(indexName = "contractfinshinfo")
-public class ContractFinshInfo implements Serializable {
+@Document(indexName = "contractfinishinfo")
+public class ContractFinishInfo implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -94,11 +94,11 @@ public class ContractFinshInfo implements Serializable {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        ContractFinshInfo contractReceive = (ContractFinshInfo) o;
-        if (contractReceive.id == null || id == null) {
+        ContractFinishInfo contractFinishInfo = (ContractFinishInfo) o;
+        if (contractFinishInfo.id == null || id == null) {
             return false;
         }
-        return Objects.equals(id, contractReceive.id);
+        return Objects.equals(id, contractFinishInfo.id);
     }
 
     @Override
@@ -108,7 +108,7 @@ public class ContractFinshInfo implements Serializable {
 
 	@Override
 	public String toString() {
-		return "ContractFinshInfo [id=" + id + ", contractId=" + contractId + ", finishRate=" + finishRate
+		return "ContractFinishInfo [id=" + id + ", contractId=" + contractId + ", finishRate=" + finishRate
 				+ ", creator=" + creator + ", createTime=" + createTime + "]";
 	}
 }

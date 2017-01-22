@@ -15,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -29,7 +30,9 @@ import com.codahale.metrics.annotation.Timed;
 import com.wondertek.cpm.CpmConstants;
 import com.wondertek.cpm.config.StringUtil;
 import com.wondertek.cpm.domain.ContractReceive;
+import com.wondertek.cpm.domain.ContractReceive;
 import com.wondertek.cpm.domain.vo.ContractReceiveVo;
+import com.wondertek.cpm.security.AuthoritiesConstants;
 import com.wondertek.cpm.security.SecurityUtils;
 import com.wondertek.cpm.service.ContractReceiveService;
 import com.wondertek.cpm.web.rest.util.HeaderUtil;
@@ -51,6 +54,7 @@ public class ContractReceiveResource {
 
     @PostMapping("/contract-receives")
     @Timed
+    @Secured(AuthoritiesConstants.ROLE_CONTRACT_RECEIVE)
     public ResponseEntity<ContractReceive> createContractReceive(@RequestBody ContractReceive contractReceive) throws URISyntaxException {
         log.debug("REST request to save ContractReceive : {}", contractReceive);
         if (contractReceive.getId() != null) {
@@ -120,6 +124,7 @@ public class ContractReceiveResource {
 
     @GetMapping("/contract-receives/{id}")
     @Timed
+    @Secured(AuthoritiesConstants.ROLE_CONTRACT_RECEIVE)
     public ResponseEntity<ContractReceiveVo> getContractReceive(@PathVariable Long id) {
         log.debug("REST request to get ContractReceive : {}", id);
         ContractReceiveVo contractReceive = contractReceiveService.getContractReceive(id);
@@ -132,6 +137,7 @@ public class ContractReceiveResource {
 
     @DeleteMapping("/contract-receives/{id}")
     @Timed
+    @Secured(AuthoritiesConstants.ROLE_CONTRACT_RECEIVE)
     public ResponseEntity<Void> deleteContractReceive(@PathVariable Long id) {
         log.debug("REST request to delete ContractReceive : {}", id);
         contractReceiveService.delete(id);

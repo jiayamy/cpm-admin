@@ -11,9 +11,9 @@
         $stateProvider
         .state('user-cost', {
             parent: 'info',
-            url: '/user-cost?page&sort&userId&userName&costMonth&statuss',
+            url: '/user-cost?page&sort&userId&userName&costMonth&status',
             data: {
-                authorities: ['ROLE_USER'],
+                authorities: ['ROLE_INFO_USERCOST'],
                 pageTitle: 'cpmApp.userCost.home.title'
             },
             views: {
@@ -60,10 +60,10 @@
             }
         })
         .state('user-cost-detail', {
-            parent: 'info',
-            url: '/user-cost/{id}',
+            parent: 'user-cost',
+            url: '/detail/{id}',
             data: {
-                authorities: ['ROLE_USER'],
+                authorities: ['ROLE_INFO_USERCOST'],
                 pageTitle: 'cpmApp.userCost.detail.title'
             },
             views: {
@@ -76,6 +76,7 @@
             resolve: {
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                     $translatePartialLoader.addPart('userCost');
+                    $translatePartialLoader.addPart('deptInfo');
                     return $translate.refresh();
                 }],
                 entity: ['$stateParams', 'UserCost', function($stateParams, UserCost) {
@@ -93,21 +94,57 @@
         })
         .state('user-cost-detail.edit', {
             parent: 'user-cost-detail',
-            url: '/detail/edit',
+            url: '/edit',
             data: {
-                authorities: ['ROLE_USER']
+                authorities: ['ROLE_INFO_USERCOST']
+            },
+            views: {
+                'content@': {
+                    templateUrl: 'app/info/user-cost/user-cost-dialog.html',
+                    controller: 'UserCostDialogController',
+                    controllerAs: 'vm'
+                }
+            },
+            resolve: {
+	            translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
+	                $translatePartialLoader.addPart('userCost');
+	                $translatePartialLoader.addPart('deptInfo');
+	                return $translate.refresh();
+	            }],
+	            entity: ['$stateParams', 'UserCost', function($stateParams, UserCost) {
+	                return UserCost.get({id : $stateParams.id}).$promise;
+	            }],
+	            previousState: ["$state", function ($state) {
+	                var currentStateData = {
+	                	queryDept:'user-cost-detail.edit.queryDept',
+	                    name: $state.current.name || 'user-cost-detail',
+	                    params: $state.params,
+	                    url: $state.href($state.current.name, $state.params)
+	                };
+	                return currentStateData;
+	            }]
+            }
+        })
+        .state('user-cost-detail.edit.queryDept', {
+            parent: 'user-cost-detail.edit',
+            url: '/queryDept?selectType&showChild',
+            data: {
+                authorities: ['ROLE_PROJECT_INFO']
             },
             onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
                 $uibModal.open({
-                    templateUrl: 'app/info/user-cost/user-cost-dialog.html',
-                    controller: 'UserCostDialogController',
+                    templateUrl: 'app/info/dept-info/dept-info-query.html',
+                    controller: 'DeptInfoQueryController',
                     controllerAs: 'vm',
                     backdrop: 'static',
                     size: 'lg',
                     resolve: {
-                        entity: ['UserCost', function(UserCost) {
-                            return UserCost.get({id : $stateParams.id}).$promise;
-                        }]
+                        entity: function() {
+                            return {
+                            	selectType : $stateParams.selectType,
+                            	showChild : $stateParams.showChild
+                            }
+                        }
                     }
                 }).result.then(function() {
                     $state.go('^', {}, { reload: false });
@@ -119,59 +156,132 @@
         .state('user-cost.new', {
             parent: 'user-cost',
             url: '/new',
+            pageTitle: 'cpmApp.userCost.home.createOrEditLabel',
             data: {
-                authorities: ['ROLE_USER']
+                authorities: ['ROLE_INFO_USERCOST']
+            },
+            views: {
+                'content@': {
+                    templateUrl: 'app/info/user-cost/user-cost-dialog.html',
+                    controller: 'UserCostDialogController',
+                    controllerAs: 'vm'
+                }
+            },
+            resolve: {
+            	translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
+                    $translatePartialLoader.addPart('userCost');
+                    $translatePartialLoader.addPart('deptInfo');
+                    return $translate.refresh();
+                }],
+                entity: function () {
+                    return {
+	                    userId: null,
+	                    costMonth: null,
+	                    internalCost: null,
+	                    externalCost: null,
+	                    status: null,
+	                    creator: null,
+	                    createTime: null,
+	                    updator: null,
+	                    updateTime: null,
+	                    id: null
+                    };
+                },
+                previousState: ["$state", function ($state) {
+                	var currentStateData = {
+                		queryDept:'user-cost.new.queryDept',
+            			name: $state.current.name || 'user-cost',
+            			params: $state.params,
+            			url: $state.href($state.current.name, $state.params)
+                	};
+                	return currentStateData;
+	            }]
+            }
+        })
+        .state('user-cost.new.queryDept', {
+            parent: 'user-cost.new',
+            url: '/queryDept?selectType&showChild',
+            data: {
+                authorities: ['ROLE_PROJECT_INFO']
             },
             onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
                 $uibModal.open({
-                    templateUrl: 'app/info/user-cost/user-cost-dialog.html',
-                    controller: 'UserCostDialogController',
+                    templateUrl: 'app/info/dept-info/dept-info-query.html',
+                    controller: 'DeptInfoQueryController',
                     controllerAs: 'vm',
                     backdrop: 'static',
                     size: 'lg',
                     resolve: {
-                        entity: function () {
+                        entity: function() {
                             return {
-                                userId: null,
-                                costMonth: null,
-                                internalCost: null,
-                                externalCost: null,
-                                status: null,
-                                creator: null,
-                                createTime: null,
-                                updator: null,
-                                updateTime: null,
-                                id: null
-                            };
+                            	selectType : $stateParams.selectType,
+                            	showChild : $stateParams.showChild
+                            }
                         }
                     }
                 }).result.then(function() {
-                    $state.go('user-cost', null, { reload: 'user-cost' });
+                    $state.go('^', {}, { reload: false });
                 }, function() {
-                    $state.go('user-cost');
+                    $state.go('^');
                 });
             }]
         })
         .state('user-cost.edit', {
             parent: 'user-cost',
-            url: '/{id}/edit',
+            url: '/edit/{id}',
             data: {
-                authorities: ['ROLE_USER']
+                authorities: ['ROLE_INFO_USERCOST']
+            },
+            views: {
+                'content@': {
+                    templateUrl: 'app/info/user-cost/user-cost-dialog.html',
+                    controller: 'UserCostDialogController',
+                    controllerAs: 'vm'
+                }
+            },
+            resolve: {
+            	translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
+                    $translatePartialLoader.addPart('userCost');
+                    $translatePartialLoader.addPart('deptInfo');
+                    return $translate.refresh();
+                }],
+                entity: ['$stateParams','UserCost', function($stateParams,UserCost) {
+                  return UserCost.get({id : $stateParams.id}).$promise;
+                  }],
+                previousState: ["$state", function ($state) {
+                	var currentStateData = {
+                		queryDept:'user-cost.edit.queryDept',
+            			name: $state.current.name || 'user-cost-detail',
+            			params: $state.params,
+            			url: $state.href($state.current.name, $state.params)
+                	};
+                	return currentStateData;
+	            }]
+            }
+        })
+        .state('user-cost.edit.queryDept', {
+            parent: 'user-cost.edit',
+            url: '/queryDept?selectType&showChild',
+            data: {
+                authorities: ['ROLE_PROJECT_INFO']
             },
             onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
                 $uibModal.open({
-                    templateUrl: 'app/info/user-cost/user-cost-dialog.html',
-                    controller: 'UserCostDialogController',
+                    templateUrl: 'app/info/dept-info/dept-info-query.html',
+                    controller: 'DeptInfoQueryController',
                     controllerAs: 'vm',
                     backdrop: 'static',
                     size: 'lg',
                     resolve: {
-                        entity: ['UserCost', function(UserCost) {
-                            return UserCost.get({id : $stateParams.id}).$promise;
-                        }]
+                        entity: function() {
+                            return {
+                            	selectType : $stateParams.selectType,
+                            	showChild : $stateParams.showChild
+                            }
+                        }
                     }
                 }).result.then(function() {
-                    $state.go('user-cost', null, { reload: 'user-cost' });
+                    $state.go('^', {}, { reload: false });
                 }, function() {
                     $state.go('^');
                 });
@@ -179,9 +289,9 @@
         })
         .state('user-cost.delete', {
             parent: 'user-cost',
-            url: '/{id}/delete',
+            url: '/delete/{id}',
             data: {
-                authorities: ['ROLE_USER']
+                authorities: ['ROLE_INFO_USERCOST']
             },
             onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
                 $uibModal.open({

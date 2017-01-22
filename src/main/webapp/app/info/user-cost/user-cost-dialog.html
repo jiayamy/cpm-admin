@@ -1,88 +1,69 @@
-
+<h2><span data-translate="cpmApp.userCost.home.createOrEditLabel" ng-hide="vm.userCost.id">Create or edit a User Cost</span></h2>
+<h2><span data-translate="cpmApp.userCost.home.editLabel" ng-show="vm.userCost.id">Edit a User Cost</span></h2>
+<hr>
+<jhi-alert></jhi-alert>
+<jhi-alert-error></jhi-alert-error>
 <form name="editForm" role="form" novalidate ng-submit="vm.save()">
-
-    <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
-                ng-click="vm.clear()">&times;</button>
-        <h4 class="modal-title" id="myUserCostLabel" data-translate="cpmApp.userCost.home.createOrEditLabel">Create or edit a User Cost</h4>
-    </div>
-    <div class="modal-body">
-        <jhi-alert-error></jhi-alert-error>
-        <div class="form-group" ng-show="vm.userCost.id">
-            <label for="id" data-translate="global.field.id">ID</label>
-            <input type="text" class="form-control" id="id" name="id"
-                    ng-model="vm.userCost.id" readonly />
-        </div>
-        <div class="form-group">
-            <label class="control-label" data-translate="cpmApp.userCost.userId" for="field_userId">User Id</label>
-            <input type="number" class="form-control" name="userId" id="field_userId"
-                    ng-model="vm.userCost.userId"
-                     />
-        </div>
-        <div class="form-group">
-            <label class="control-label" data-translate="cpmApp.userCost.costMonth" for="field_costMonth">Cost Month</label>
-            <input type="text" class="form-control" name="costMonth" id="field_costMonth"
-                    ng-model="vm.userCost.costMonth"
-                     />
-        </div>
-        <div class="form-group">
-            <label class="control-label" data-translate="cpmApp.userCost.internalCost" for="field_internalCost">Internal Cost</label>
-            <input type="number" class="form-control" name="internalCost" id="field_internalCost"
-                    ng-model="vm.userCost.internalCost"
-                     />
-        </div>
-        <div class="form-group">
-            <label class="control-label" data-translate="cpmApp.userCost.externalCost" for="field_externalCost">External Cost</label>
-            <input type="number" class="form-control" name="externalCost" id="field_externalCost"
-                    ng-model="vm.userCost.externalCost"
-                     />
-        </div>
-        <div class="form-group">
-            <label class="control-label" data-translate="cpmApp.userCost.status" for="field_status">Status</label>
-            <input type="number" class="form-control" name="status" id="field_status"
-                    ng-model="vm.userCost.status"
-                     />
-        </div>
-        <div class="form-group">
-            <label class="control-label" data-translate="cpmApp.userCost.creator" for="field_creator">Creator</label>
-            <input type="text" class="form-control" name="creator" id="field_creator"
-                    ng-model="vm.userCost.creator"
-                     />
-        </div>
-        <div class="form-group">
-            <label class="control-label" data-translate="cpmApp.userCost.createTime" for="field_createTime">Create Time</label>
-                <div class="input-group">
-                    <input id="field_createTime" type="text" class="form-control" name="createTime" datetime-picker="{{dateformat}}" ng-model="vm.userCost.createTime" is-open="vm.datePickerOpenStatus.createTime"
-                      />
-                    <span class="input-group-btn">
-                        <button type="button" class="btn btn-default" ng-click="vm.openCalendar('createTime')"><i class="glyphicon glyphicon-calendar"></i></button>
-                    </span>
-                </div>
-        </div>
-        <div class="form-group">
-            <label class="control-label" data-translate="cpmApp.userCost.updator" for="field_updator">Updator</label>
-            <input type="text" class="form-control" name="updator" id="field_updator"
-                    ng-model="vm.userCost.updator"
-                     />
-        </div>
-        <div class="form-group">
-            <label class="control-label" data-translate="cpmApp.userCost.updateTime" for="field_updateTime">Update Time</label>
-                <div class="input-group">
-                    <input id="field_updateTime" type="text" class="form-control" name="updateTime" datetime-picker="{{dateformat}}" ng-model="vm.userCost.updateTime" is-open="vm.datePickerOpenStatus.updateTime"
-                      />
-                    <span class="input-group-btn">
-                        <button type="button" class="btn btn-default" ng-click="vm.openCalendar('updateTime')"><i class="glyphicon glyphicon-calendar"></i></button>
-                    </span>
-                </div>
-        </div>
-
-    </div>
-    <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="vm.clear()">
-            <span class="glyphicon glyphicon-ban-circle"></span>&nbsp;<span data-translate="entity.action.cancel">Cancel</span>
-        </button>
-        <button type="submit" ng-disabled="editForm.$invalid || vm.isSaving" class="btn btn-primary">
-            <span class="glyphicon glyphicon-save"></span>&nbsp;<span data-translate="entity.action.save">Save</span>
-        </button>
-    </div>
+	<div class="container-fluid">
+		<div class="row form-horizontal">
+			<div class="form-group">
+				<div class="col-sm-6">
+					<label class="control-label" data-translate="cpmApp.userCost.userId" for="field_userId">User Id</label>
+					<input type="text" class="form-control" name="userId" id="field_userId" ng-model="vm.userCost.userId" ng-required="true"
+						ng-disabled="vm.userCost.id"/>
+				</div>
+				<div class="col-sm-6">
+					<label class="control-label" data-translate="cpmApp.userCost.userName" for="field_userName">User Name</label>
+					<div class="input-group">
+						<input type="text" class="form-control" name="userName" id="field_userName" ng-model="vm.userCost.userName" ng-required="true"
+							readOnly/>
+						<span class="input-group-btn">
+		                	<button type="button" class="btn btn-default" ng-disabled="vm.userCost.id" ui-sref="{{vm.queryDept}}({selectType:3,showChild:true})"><i class="glyphicon glyphicon-user"></i></button>
+		                </span>
+	                </div>
+				</div>
+			</div>
+			<div class="form-group">
+				<div class="col-sm-6">
+					<label class="control-label" data-translate="cpmApp.userCost.costMonth" for="field_costMonth">Cost Month</label>
+					<div class="input-group">
+						<input type="text" class="form-control" name="costMonth" id="field_costMonth" ng-model="vm.userCost.costMonth"
+            				readOnly datetime-picker="yyyyMM" enable-time="false" ng-required="true" is-open="vm.datePickerOpenStatus.costMonth"
+            				/>
+            			<span class="input-group-btn">
+	                		<button type="button" class="btn btn-default" ng-disabled="vm.userCost.id" ng-click="vm.openCalendar('costMonth')"><i class="glyphicon glyphicon-calendar"></i></button>
+	               		</span>
+					</div>
+				</div>
+				<div class="col-sm-6">
+					<label class="control-label" data-translate="cpmApp.userCost.internalCost" for="field_internalCost">Internal Cost</label>
+            		<input type="number" class="form-control" name="internalCost" id="field_internalCost" step="100" min="0" ng-required="true"
+                    ng-model="vm.userCost.internalCost"/>
+				</div>
+			</div>
+			<div class="form-group">
+				<div class="col-sm-6">
+					<label class="control-label" data-translate="cpmApp.userCost.externalCost" for="field_externalCost">External Cost</label>
+            		<input type="number" class="form-control" name="externalCost" id="field_externalCost" ng-model="vm.userCost.externalCost"
+            		step="100" min="0" ng-required="true"/>
+				</div>
+				<div class="col-sm-6">
+					<label class="control-label" data-translate="cpmApp.userCost.status" for="field_status">Status</label>
+					<select class="form-control" name="status" ng-model="vm.userCost.status" id="field_status"
+	            		ng-required="true" ng-disabled="vm.projectCost.userId"
+		            	ng-options="status.val for status in vm.statuss track by status.key">
+		            	<option value="">--状态--</option>
+		         	</select>
+            		<!-- <input type="number" class="form-control" name="status" id="field_status" ng-model="vm.userCost.status"/> -->
+				</div>
+			</div>
+		</div>
+	</div>
+    <hr>
+    <button type="button" class="btn btn-info" ui-sref="{{ vm.previousState }}">
+    	<span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span data-translate="entity.action.back">Back</span>
+    </button>
+    <button type="submit" ng-disabled="editForm.$invalid || vm.isSaving" class="btn btn-primary">
+    	<span class="glyphicon glyphicon-save"></span>&nbsp;<span data-translate="entity.action.save">Save</span>
+    </button>
 </form>

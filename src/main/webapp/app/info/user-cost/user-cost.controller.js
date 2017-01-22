@@ -18,13 +18,12 @@
         vm.clear = clear;
         vm.search = search;
         vm.loadAll = loadAll;
-//        vm.searchQuery = pagingParams.search;
-//        vm.currentSearch = pagingParams.search;
+
         vm.searchQuery = {};
         vm.searchQuery.userId = pagingParams.userId;
         vm.searchQuery.userName = pagingParams.userName;
-        vm.searchQuery.costMonth = DateUtils.convertLocalDateToFormat(pagingParams.costMonth,"yyyyMM");
-        vm.searchQuery.status = pagingParams.status;
+        vm.sdf = pagingParams.costMonth+"";
+        vm.searchQuery.costMonth = pagingParams.costMonth?new Date(vm.sdf.substring(0,4),vm.sdf.substring(4,6)-1):"";
         
         vm.statuss = [{key:1,val:'可用'},{key:2,val:'删除'}];
         
@@ -33,7 +32,6 @@
         		vm.searchQuery.status = vm.statuss[i];
         	}
         }
-        
         if (!vm.searchQuery.userId && !vm.searchQuery.userName && !vm.searchQuery.costMonth &&!vm.searchQuery.status){
         	vm.haveSearch = null;
         }else{
@@ -43,15 +41,14 @@
         loadAll();
 
         function loadAll () {
-        	console.log(vm.searchQuery.status);
             UserCost.query({
                 page: pagingParams.page - 1,
                 size: vm.itemsPerPage,
                 sort: sort(),
-                userId:vm.searchQuery.userId,
-                userName:vm.searchQuery.userName,
-                costMonth:DateUtils.convertLocalDateToFormat(vm.searchQuery.fromCurrDay,"yyyyMM"),
-                status:vm.searchQuery.status
+                userId:pagingParams.userId,
+                userName:pagingParams.userName,
+                costMonth:pagingParams.costMonth,
+                status:pagingParams.status
             }, onSuccess, onError);
             function sort() {
                 var result = [vm.predicate + ',' + (vm.reverse ? 'asc' : 'desc')];
@@ -94,11 +91,10 @@
             $state.transitionTo($state.$current, {
                 page: vm.page,
                 sort: vm.predicate + ',' + (vm.reverse ? 'asc' : 'desc'),
-//                search: vm.currentSearch
                 userId:vm.searchQuery.userId,
                 userName:vm.searchQuery.userName,
-                costMonth:DateUtils.convertLocalDateToFormat(vm.searchQuery.fromCurrDay,"yyyyMM"),
-                status:vm.searchQuery.status
+                costMonth:DateUtils.convertLocalDateToFormat(vm.searchQuery.costMonth,"yyyyMM"),
+                status:vm.searchQuery.status?vm.searchQuery.status.key:"",
             });
         }
 

@@ -7,15 +7,24 @@
                 "createOrEditLabel": "创建或者编辑",
                 "search": "Search for Purchase Item"
             },
-            "created": "A new Purchase Item is created with identifier {{ param }}",
-            "updated": "A Purchase Item is updated with identifier {{ param }}",
-            "deleted": "A Purchase Item is deleted with identifier {{ param }}",
+            "created": "新建成功",
+            "updated": "更新操作成功",
+            "deleted": "删除成功",
             "delete": {
-                "question": "Are you sure you want to delete Purchase Item {{ id }}?"
+                "question": "您确定要删除吗?"
             },
             "detail": {
-                "title": "Purchase Item"
+                "title": "采购子项信息"
             },
+            "save":{
+            	"requiedError":"必填参数为空",
+            	"idNone":"数据异常，请刷新后操作",
+            	"contractIdError":"采购单和和合同数据异常",
+            	"statue2Error":"状态为删除的数据不可编辑",
+            	"purchaseItemError":"数据有误,不可修改",
+            	"budgetError":"合同和采购单绑定异常"
+            },
+            "contract": "合同",
             "contractId": "合同ID",
             "serialNum": "合同编号",
             "contractName": "合同名称",

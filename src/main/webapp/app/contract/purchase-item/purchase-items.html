@@ -5,7 +5,7 @@
        <div class="row form-horizontal">
         	<div class="form-group">
 	            <div class="col-xs-4">
-	                <button class="btn btn-primary" ui-sref="project-info.new" >
+	                <button class="btn btn-primary" ui-sref="purchase-item.new" >
 	                    <span class="glyphicon glyphicon-plus"></span>
 	                    <span class=""  data-translate="cpmApp.purchaseItem.home.createLabel">
 	                        Create new Purchase Item
@@ -51,6 +51,8 @@
 			            </select>
 		            </div>
 	            </div>
+	         </div>
+	         <div class="form-group">
 	            <div class="col-sm-4">
 	            </div>
 	            <div class="col-sm-4 pull-right input-group">
@@ -77,20 +79,20 @@
         <table class="jh-table table table-striped">
             <thead>
                 <tr jh-sort="vm.predicate" ascending="vm.reverse" callback="vm.transition()">
-                    <th jh-sort-by="wpi.name_"><span data-translate="cpmApp.purchaseItem.name">Name</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="wci.serial_num"><span data-translate="cpmApp.purchaseItem.serialNum">Serial Num</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="wci.name_"><span data-translate="cpmApp.purchaseItem.contractName">Contract Name</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="wcb.name_"><span data-translate="cpmApp.purchaseItem.budgetName">Budget Name</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="wpi.quantity_"><span data-translate="cpmApp.purchaseItem.quantity">Quantity</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="wpi.price_"><span data-translate="cpmApp.purchaseItem.price">Price</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="wpi.units_"><span data-translate="cpmApp.purchaseItem.units">Units</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="wpi.type_"><span data-translate="cpmApp.purchaseItem.type">Type</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="wpi.source_"><span data-translate="cpmApp.purchaseItem.source">Source</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="wpi.purchaser_"><span data-translate="cpmApp.purchaseItem.purchaser">Purchaser</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="wpi.totalAmount_"><span data-translate="cpmApp.purchaseItem.totalAmount">Total Amount</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="wpi.status_"><span data-translate="cpmApp.purchaseItem.status">Status</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="wpi.createTime_"><span data-translate="cpmApp.purchaseItem.createTime">Create Time</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="wpi.updateTime_"><span data-translate="cpmApp.purchaseItem.updateTime">Update Time</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="wpi.name"><span data-translate="cpmApp.purchaseItem.name">Name</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="wci.serialNum"><span data-translate="cpmApp.purchaseItem.serialNum">Serial Num</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="wci.name"><span data-translate="cpmApp.purchaseItem.contractName">Contract Name</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="wcb.name"><span data-translate="cpmApp.purchaseItem.budgetName">Budget Name</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="wpi.quantity"><span data-translate="cpmApp.purchaseItem.quantity">Quantity</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="wpi.price"><span data-translate="cpmApp.purchaseItem.price">Price</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="wpi.units"><span data-translate="cpmApp.purchaseItem.units">Units</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="wpi.type"><span data-translate="cpmApp.purchaseItem.type">Type</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="wpi.source"><span data-translate="cpmApp.purchaseItem.source">Source</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="wpi.purchaser"><span data-translate="cpmApp.purchaseItem.purchaser">Purchaser</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="wpi.totalAmount"><span data-translate="cpmApp.purchaseItem.totalAmount">Total Amount</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="wpi.status"><span data-translate="cpmApp.purchaseItem.status">Status</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="wpi.createTime"><span data-translate="cpmApp.purchaseItem.createTime">Create Time</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="wpi.updateTime"><span data-translate="cpmApp.purchaseItem.updateTime">Update Time</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th></th>
                 </tr>
             </thead>

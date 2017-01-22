@@ -13,7 +13,7 @@
             parent: 'contract',
             url: '/product-price?page&sort&type&source&name',
             data: {
-                authorities: ['ROLE_USER'],
+                authorities: ['ROLE_CONTRACT_PRODUCTPRICE'],
                 pageTitle: 'cpmApp.productPrice.home.title'
             },
             views: {
@@ -56,10 +56,10 @@
             }
         })
         .state('product-price-detail', {
-            parent: 'contract',
-            url: '/product-price/{id}',
+            parent: 'product-price',
+            url: '/detail/{id}',
             data: {
-                authorities: ['ROLE_USER'],
+                authorities: ['ROLE_CONTRACT_PRODUCTPRICE'],
                 pageTitle: 'cpmApp.productPrice.detail.title'
             },
             views: {
@@ -89,9 +89,9 @@
         })
         .state('product-price-detail.edit', {
             parent: 'product-price-detail',
-            url: '/detail/edit',
+            url: '/edit',
             data: {
-                authorities: ['ROLE_USER']
+                authorities: ['ROLE_CONTRACT_PRODUCTPRICE']
             },
             onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
                 $uibModal.open({
@@ -116,7 +116,7 @@
             parent: 'product-price',
             url: '/new',
             data: {
-                authorities: ['ROLE_USER']
+                authorities: ['ROLE_CONTRACT_PRODUCTPRICE']
             },
             onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
                 $uibModal.open({
@@ -150,9 +150,9 @@
         })
         .state('product-price.edit', {
             parent: 'product-price',
-            url: '/{id}/edit',
+            url: '/edit/{id}',
             data: {
-                authorities: ['ROLE_USER']
+                authorities: ['ROLE_CONTRACT_PRODUCTPRICE']
             },
             onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
                 $uibModal.open({
@@ -175,9 +175,9 @@
         })
         .state('product-price.delete', {
             parent: 'product-price',
-            url: '/{id}/delete',
+            url: '/delete/{id}',
             data: {
-                authorities: ['ROLE_USER']
+                authorities: ['ROLE_CONTRACT_PRODUCTPRICE']
             },
             onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
                 $uibModal.open({

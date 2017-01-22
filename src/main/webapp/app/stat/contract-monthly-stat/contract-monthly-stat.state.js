@@ -13,7 +13,7 @@
             parent: 'stat',
             url: '/contract-monthly-stat?page&contractId',
             data: {
-                authorities: ['ROLE_USER'],
+                authorities: ['ROLE_STAT_CONTRACT'],
                 pageTitle: 'cpmApp.contractMonthlyStat.home.title'
             },
             views: {
@@ -52,10 +52,10 @@
             }
         })
         .state('contract-monthly-stat-detail', {
-            parent: 'stat',
-            url: '/contract-monthly-stat/{id}',
+            parent: 'contract-monthly-stat',
+            url: '/detail/{id}',
             data: {
-                authorities: ['ROLE_USER'],
+                authorities: ['ROLE_STAT_CONTRACT'],
                 pageTitle: 'cpmApp.contractMonthlyStat.detail.title'
             },
             views: {
@@ -104,10 +104,10 @@
                 }]
             }
         }).state('contract-monthly-stat-detail.chart', {
-            parent: 'stat',
-            url: '/contract-monthly-stat/{id}/queryChart?fromDate&toDate&contractId',
+            parent: 'contract-monthly-stat',
+            url: '/chart/{id}/queryChart?fromDate&toDate',
             data: {
-                authorities: ['ROLE_USER'],
+                authorities: ['ROLE_STAT_CONTRACT'],
                 pageTitle: 'cpmApp.contractInfo.detail.title'
             },
             views: {
@@ -119,7 +119,8 @@
             },
             params: {
                 fromDate: null,
-                toDate : null
+                toDate : null,
+                id : null
             },
             resolve: {
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
@@ -131,7 +132,7 @@
                     return {
                         fromDate: $stateParams.fromDate,
                         toDate : $stateParams.toDate,
-                        contractId : $stateParams.id
+                        id : $stateParams.id
                     };
                 }],
                 previousState: ["$state", function ($state) {

@@ -22,6 +22,9 @@ public class ContractInfo implements Serializable {
     public static final int STATUS_VALIDABLE = 1;
     public static final int STATU_FINISH = 2;
 	public static final int STATUS_DELETED = 3;
+	public static final Integer TYPE_INTERNAL = 1;
+	public static final Integer TYPE_EXTERNAL = 2;
+	public static final Integer TYPE_PUBLIC = 4;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;

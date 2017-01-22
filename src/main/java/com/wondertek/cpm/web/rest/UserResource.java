@@ -31,6 +31,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.codahale.metrics.annotation.Timed;
 import com.wondertek.cpm.config.Constants;
+import com.wondertek.cpm.domain.Authority;
 import com.wondertek.cpm.domain.DeptInfo;
 import com.wondertek.cpm.domain.User;
 import com.wondertek.cpm.repository.DeptInfoRepository;
@@ -184,12 +185,16 @@ public class UserResource {
     		@RequestParam(value = "loginName",required=false) String login, 
     		@RequestParam(value = "serialNum",required=false) String serialNum, 
     		@RequestParam(value = "lastName",required=false) String lastName, 
+    		@RequestParam(value = "deptId",required=false) Long deptId, 
+    		@RequestParam(value = "workArea",required=false) String workArea, 
     		@ApiParam Pageable pageable)
         throws URISyntaxException {
     	User user = new User();
     	user.setLogin(login);
     	user.setSerialNum(serialNum);
     	user.setLastName(lastName);
+    	user.setDeptId(deptId);
+    	user.setWorkArea(workArea);
     	
 //        Page<User> page = userRepository.findAllWithAuthorities(pageable);
         Page<User> page = userService.getUserPage(user,pageable);
@@ -252,9 +257,19 @@ public class UserResource {
      */
     @GetMapping("/_search/users/{query}")
     @Timed
+    @Secured(AuthoritiesConstants.ROLE_INFO_BASIC)
     public List<User> search(@PathVariable String query) {
         return StreamSupport
             .stream(userSearchRepository.search(queryStringQuery(query)).spliterator(), false)
             .collect(Collectors.toList());
     }
+    
+    @GetMapping("/_authorities/users/queryAll")
+    @Timed
+    @Secured(AuthoritiesConstants.ROLE_INFO_BASIC)
+    public ResponseEntity<List<Authority>> queryAllAuthorities() {
+    	List<Authority> page = userService.queryAllAuthorities();
+        return new ResponseEntity<>(page, null, HttpStatus.OK);
+    }
+    
 }

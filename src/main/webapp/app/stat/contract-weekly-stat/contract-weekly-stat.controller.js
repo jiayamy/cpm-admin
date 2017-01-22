@@ -5,10 +5,10 @@
         .module('cpmApp')
         .controller('ContractWeeklyStatController', ContractWeeklyStatController);
 
-    ContractWeeklyStatController.$inject = ['$scope', '$state', 'DateUtils','ContractWeeklyStat', 'ContractWeeklyStatSearch', 'ParseLinks', 'AlertService', 'paginationConstants', 'pagingParams'];
+    ContractWeeklyStatController.$inject = ['$scope', '$state', 'DateUtils','ContractWeeklyStat','ParseLinks', 'AlertService', 'paginationConstants', 'pagingParams'];
 
-    function ContractWeeklyStatController ($scope, $state,DateUtils, ContractWeeklyStat, ContractWeeklyStatSearch, ParseLinks, AlertService, paginationConstants, pagingParams) {
-    	var vm = this;
+    function ContractWeeklyStatController ($scope, $state,DateUtils, ContractWeeklyStat, ParseLinks, AlertService, paginationConstants, pagingParams) {
+        var vm = this;
 
         vm.loadPage = loadPage;
         vm.predicate = pagingParams.predicate;
@@ -19,52 +19,50 @@
         vm.search = search;
         vm.loadAll = loadAll;
         vm.searchQuery = {};
-        vm.currentSearch = pagingParams.search;
-        var fromDate = pagingParams.fromDate;
-        var toDate = pagingParams.toDate;
-        var statDate = pagingParams.statDate;
-        if(fromDate && fromDate.length == 8){
-        	fromDate = new Date(fromDate.substring(0,4),parseInt(fromDate.substring(4,6))-1,fromDate.substring(6,8));
-        }
-        if(toDate && toDate.length == 8){
-        	toDate = new Date(toDate.substring(0,4),parseInt(toDate.substring(4,6))-1,toDate.substring(6,8));
-        }
-        if(statDate && statDate.length == 8){
-        	statDate = new Date(statDate.substring(0,4),parseInt(statDate.substring(4,6))-1,statDate.substring(6,8));
-        }
-        vm.searchQuery.fromDate= fromDate;
-        vm.searchQuery.toDate = toDate;
-        vm.searchQuery.statDate = statDate;
-        if (!vm.searchQuery.fromDate && !vm.searchQuery.toDate && !vm.searchQuery.statDate){
+        vm.searchQuery.contractId= pagingParams.contractId;
+        vm.contractInfos = [];
+        if (!vm.searchQuery.contractId){
         	vm.haveSearch = null;
         }else{
         	vm.haveSearch = true;
         }
+        loadContract();
+        function loadContract(){
+        	ContractWeeklyStat.queryUserContract({
+        		
+        	},
+        	function(data, headers){
+        		vm.contractInfos = data;
+        		if(vm.contractInfos && vm.contractInfos.length > 0){
+        			for(var i = 0; i < vm.contractInfos.length; i++){
+        				if(pagingParams.contractId == vm.contractInfos[i].key){
+        					vm.searchQuery.contractId = vm.contractInfos[i];
+        				}
+        			}
+        		}
+        	},
+        	function(error){
+        		AlertService.error(error.data.message);
+        	});
+        }
+        
         loadAll();
 
         function loadAll () {
-        	if(pagingParams.fromDate == undefined){
-        		pagingParams.fromDate = "";
-        	}
-        	if(pagingParams.toDate == undefined){
-        		pagingParams.toDate = "";
-        	}
-        	if(pagingParams.statDate == undefined){
-        		pagingParams.statDate = "";
+        	if(pagingParams.contractId == undefined){
+        		pagingParams.contractId = "";
         	}
         	ContractWeeklyStat.query({
                 page: pagingParams.page - 1,
                 size: vm.itemsPerPage,
                 sort: sort(),
-                fromDate : pagingParams.fromDate,
-                toDate : pagingParams.toDate,
-                statDate : pagingParams.statDate
+                contractId : pagingParams.contractId
             }, onSuccess, onError);
            
             function sort() {
                 var result = [vm.predicate + ',' + (vm.reverse ? 'asc' : 'desc')];
-                if (vm.predicate !== 'id') {
-                    result.push('id');
+                if (vm.predicate !== 'm.id') {
+                    result.push('m.id');
                 }
                 return result;
             }
@@ -89,19 +87,17 @@
             $state.transitionTo($state.$current, {
                 page: vm.page,
                 sort: vm.predicate + ',' + (vm.reverse ? 'asc' : 'desc'),
-                fromDate: DateUtils.convertLocalDateToFormat(vm.searchQuery.fromDate,"yyyyMMdd"),
-                toDate: DateUtils.convertLocalDateToFormat(vm.searchQuery.toDate,"yyyyMMdd"),
-                statDate: DateUtils.convertLocalDateToFormat(vm.searchQuery.statDate,"yyyyMMdd"),
+                contractId:vm.searchQuery.contractId ? vm.searchQuery.contractId.key : ""
             });
         }
 
         function search(searchQuery) {
-        	if (!vm.searchQuery.workDay && !vm.searchQuery.toDate && !vm.searchQuery.statDate){
+        	if (!vm.searchQuery.contractId){
                 return vm.clear();
             }
             vm.links = null;
             vm.page = 1;
-            vm.predicate = 'id';
+            vm.predicate = 'm.id';
             vm.reverse = false;
             vm.haveSearch = true;
             vm.transition();
@@ -110,19 +106,12 @@
         function clear() {
             vm.links = null;
             vm.page = 1;
-            vm.predicate = 'id';
+            vm.predicate = 'm.id';
             vm.reverse = true;
             vm.searchQuery = {};
             vm.haveSearch = null;
             vm.transition();
         }
-        vm.datePickerOpenStatus = {};
-        vm.openCalendar = openCalendar;
-        vm.datePickerOpenStatus.fromDate = false;
-        vm.datePickerOpenStatus.toDate = false;
-        vm.datePickerOpenStatus.statDate = false;
-        function openCalendar (date) {
-            vm.datePickerOpenStatus[date] = true;
-        }
+        
     }
 })();

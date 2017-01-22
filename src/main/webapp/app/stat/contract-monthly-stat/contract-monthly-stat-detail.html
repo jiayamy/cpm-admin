@@ -1,12 +1,16 @@
 
 <div>
-    <h2><span data-translate="cpmApp.contractMonthlyStat.detail.title">Contract Monthly Stat</span> {{vm.contractMonthlyStat.serialNum}}</h2>
+    <h2><span data-translate="cpmApp.contractMonthlyStat.detail.title">Contract Monthly Stat</span> {{vm.contractMonthlyStat.serialNum}} : {{vm.contractMonthlyStat.name}}</h2>
     <hr>
     <jhi-alert-error></jhi-alert-error>
     <dl class="dl-horizontal jh-entity-details">
         <dt><span data-translate="cpmApp.contractMonthlyStat.serialNum">Serial Num</span></dt>
         <dd>
             <span>{{vm.contractMonthlyStat.serialNum}}</span>
+        </dd>
+        <dt><span data-translate="cpmApp.contractMonthlyStat.name">Contract Name</span></dt>
+        <dd>
+            <span>{{vm.contractMonthlyStat.name}}</span>
         </dd>
         <dt><span data-translate="cpmApp.contractMonthlyStat.finishRate">Finish Rate</span></dt>
         <dd>
