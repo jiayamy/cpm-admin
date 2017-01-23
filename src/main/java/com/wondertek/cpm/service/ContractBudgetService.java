@@ -151,4 +151,17 @@ public class ContractBudgetService {
 		return contractBudgetDao.checkBudgetExit(contractBudget);
 	}
 
+	public List<LongValue> queryUserContractBudget(Long contractId) {
+		List<Object[]> objs = this.userRepository.findUserInfoByLogin(SecurityUtils.getCurrentUserLogin());;
+		List<LongValue> returnList = new ArrayList<LongValue>();
+		if(objs != null && !objs.isEmpty()){
+    		Object[] o = objs.get(0);
+    		User user = (User) o[0];
+    		DeptInfo deptInfo = (DeptInfo) o[1];
+    		
+    		returnList = contractBudgetDao.queryUserContractBudget(user,deptInfo,contractId);
+    	}
+		return returnList;
+	}
+
 }

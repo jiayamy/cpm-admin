@@ -2,6 +2,7 @@ package com.wondertek.cpm.web.rest;
 
 import java.net.URISyntaxException;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -259,5 +260,17 @@ public class ContractBudgetResource {
 		List<LongValue> list = contractBudgetService.queryUserContract();
         return new ResponseEntity<>(list, null, HttpStatus.OK);
     	
+    }
+    @GetMapping("/contract-budgets/queryUserContractBudget")
+    @Timed
+    @Secured(AuthoritiesConstants.USER)
+    public ResponseEntity<List<LongValue>> queryUserContractBudget(@RequestParam(value = "contractId") String contractId) throws URISyntaxException{
+    	 log.debug("REST request to queryUserContract");
+    	 Long contractIdLong = StringUtil.nullToCloneLong(contractId);
+    	 if (contractIdLong == null) {
+    		 return new ResponseEntity<>(new ArrayList<LongValue>(), null, HttpStatus.OK);
+		}
+    	 List<LongValue> list = contractBudgetService.queryUserContractBudget(contractIdLong);
+    	 return new ResponseEntity<>(list, null, HttpStatus.OK);
     }
 }

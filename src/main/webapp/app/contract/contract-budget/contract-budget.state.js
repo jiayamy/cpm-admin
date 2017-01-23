@@ -304,24 +304,6 @@
                 });
             }]
         })
-<<<<<<< HEAD
-        .state('createPuchaseItem', {
-            parent: 'contract-budget',
-            url: '/createPuchaseItem/{id}',
-            data: {
-                authorities: ['ROLE_CONTRACT_PURCHASE']
-            },
-            views:{
-            	'content@':{
-            		templateUrl: 'app/contract/purchase-item/purchase-item-dialog.html',
-            		controller: 'PurchaseItemDialogController',
-            		controllerAs: 'vm'
-            	}
-            },
-            resolve: {
-           	 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
-                    $translatePartialLoader.addPart('purchaseItem');
-=======
         .state('contract-budget.createProject', {
             parent: 'contract-budget',
             url: '/createProject/{id}',
@@ -340,23 +322,10 @@
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                     $translatePartialLoader.addPart('projectInfo');
                     $translatePartialLoader.addPart('deptInfo');
->>>>>>> 4b986b72b8f0d71be5ec26ae66fd487bbfb1a857
                     return $translate.refresh();
                 }],
                 entity: function () {
                     return {
-<<<<<<< HEAD
-                        contractId: null,
-                        budgetId: null,
-                        name: null,
-                        quantity: null,
-                        price: null,
-                        units: null,
-                        type: null,
-                        source: null,
-                        purchaser: null,
-                        totalAmount: null,
-=======
                         serialNum: null,
                         contractId: null,
                         budgetId: null,
@@ -366,44 +335,28 @@
                         startDay: null,
                         endDay: null,
                         budgetTotal: null,
->>>>>>> 4b986b72b8f0d71be5ec26ae66fd487bbfb1a857
                         status: null,
                         creator: null,
                         createTime: null,
                         updator: null,
                         updateTime: null,
                         id: null,
-<<<<<<< HEAD
-                        contractNum: null,
-                        contractName: null,
-                        budgetOriginal:0
-                    };
-                },
-                budgetEtity: ['ContractBudget', function(ContractBudget) {
-=======
                         budgetOriginal:0
                     };
                 },
                 budgetEntity: ['$stateParams','ContractBudget', function($stateParams,ContractBudget) {
->>>>>>> 4b986b72b8f0d71be5ec26ae66fd487bbfb1a857
                     return ContractBudget.get({id : $stateParams.id}).$promise;
                 }],
                 previousState: ["$state", function ($state) {
                     var currentStateData = {
-<<<<<<< HEAD
-                        name: $state.current.name || 'purchase-item',
-=======
                     	queryDept:'contract-budget.createProject.queryDept',
                         name: $state.current.name || 'contract-budget',
->>>>>>> 4b986b72b8f0d71be5ec26ae66fd487bbfb1a857
                         params: $state.params,
                         url: $state.href($state.current.name, $state.params)
                     };
                     return currentStateData;
                 }]
             }
-<<<<<<< HEAD
-=======
         })
         .state('contract-budget.createProject.queryDept', {
             parent: 'contract-budget.createProject',
@@ -432,8 +385,60 @@
                     $state.go('^');
                 });
             }]
->>>>>>> 4b986b72b8f0d71be5ec26ae66fd487bbfb1a857
-        });
+        })
+        .state('contract-budget.createPurchaseItem', {
+            parent: 'contract-budget',
+            url: '/createPurchaseItem/{id}',
+            data: {
+                authorities: ['ROLE_CONTRACT_PURCHASE']
+            },
+            views:{
+            	'content@':{
+            		templateUrl: 'app/contract/purchase-item/purchase-item-dialog.html',
+            		controller: 'PurchaseItemDialogController',
+            		controllerAs: 'vm'
+            	}
+            },
+            resolve: {
+           	 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
+                    $translatePartialLoader.addPart('purchaseItem');
+                    return $translate.refresh();
+                }],
+                entity: function () {
+                    return {
+                        contractId: null,
+                        budgetId: null,
+                        name: null,
+                        quantity: null,
+                        price: null,
+                        units: null,
+                        type: null,
+                        source: null,
+                        purchaser: null,
+                        totalAmount: null,
+                        status: null,
+                        creator: null,
+                        createTime: null,
+                        updator: null,
+                        updateTime: null,
+                        id: null,
+                        contractNum: null,
+                        contractName: null,
+                        budgetOriginal:0
+                    };
+                },
+                budgetEntity: ['$stateParams','ContractBudget', function($stateParams,ContractBudget) {
+                    return ContractBudget.get({id : $stateParams.id}).$promise;
+                }],
+                previousState: ["$state", function ($state) {
+                    var currentStateData = {
+                        name: $state.current.name || 'contract-budget',
+                        params: $state.params,
+                        url: $state.href($state.current.name, $state.params)
+                    };
+                    return currentStateData;
+                }]
+            }
+        })
     }
-
 })();

@@ -40,6 +40,11 @@
             	url:'api/contract-budgets/queryUserContract',
             	method:'GET',
             	isArray:true
+            },
+            'queryUserContractBudget':{
+            	url:'api/contract-budgets/queryUserContractBudget',
+            	method:'GET',
+            	isArray:true
             }
         });
     }

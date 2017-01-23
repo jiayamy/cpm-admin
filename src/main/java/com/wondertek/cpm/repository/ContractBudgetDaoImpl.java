@@ -1,7 +1,5 @@
 package com.wondertek.cpm.repository;
 
-import java.sql.Timestamp;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,15 +13,12 @@ import org.springframework.data.domain.Sort.Order;
 import org.springframework.stereotype.Repository;
 
 import com.wondertek.cpm.CpmConstants;
-import com.wondertek.cpm.config.DateUtil;
 import com.wondertek.cpm.config.StringUtil;
 import com.wondertek.cpm.domain.ContractBudget;
 import com.wondertek.cpm.domain.DeptInfo;
-import com.wondertek.cpm.domain.PurchaseItem;
 import com.wondertek.cpm.domain.User;
 import com.wondertek.cpm.domain.vo.ContractBudgetVo;
 import com.wondertek.cpm.domain.vo.LongValue;
-import com.wondertek.cpm.domain.vo.PurchaseItemVo;
 
 @Repository("contractBudgetDao")
 public class ContractBudgetDaoImpl extends GenericDaoImpl<ContractBudget, Long> implements ContractBudgetDao {
@@ -197,6 +192,53 @@ public class ContractBudgetDaoImpl extends GenericDaoImpl<ContractBudget, Long> 
 		if (list != null) {
 			for (Object[] o : list) {
 				resultList.add(new LongValue(StringUtil.nullToLong(o[0]), StringUtil.null2Str(o[1]) + ":" +StringUtil.null2Str(o[2])));
+			}
+		}
+		return resultList;
+	}
+
+	@Override
+	public List<LongValue> queryUserContractBudget(User user,
+			DeptInfo deptInfo, Long contractId) {
+		StringBuffer queryHql = new StringBuffer();
+		ArrayList<Object> params = new ArrayList<Object>();
+		
+		queryHql.append("select distinct wcb.id,wcb.name,wcb.contractId from ContractBudget as wcb");
+		queryHql.append(" left join ContractInfo wci on wci.id = wcb.contractId");
+		queryHql.append(" left join DeptInfo wdi on wci.deptId = wdi.id");
+		queryHql.append(" left join DeptInfo wdi2 on wci.consultantsDeptId = wdi2.id");
+		queryHql.append(" left join DeptInfo wdi3 on wcb.userId = wdi3.id");
+		queryHql.append(" where (wci.salesmanId = ? or wci.consultantsId = ? or wcb.userId = ? or wci.creator = ? or wcb.creator = ?");
+		
+		params.add(user.getId());
+		params.add(user.getId());
+		params.add(user.getId());
+		params.add(user.getLogin());
+		params.add(user.getLogin());
+		
+		if (user.getIsManager()) {
+			queryHql.append(" or wdi.idPath like ? or wdi.id = ?");
+			params.add(deptInfo.getIdPath() + deptInfo.getIdPath() + "/%");
+			params.add(deptInfo.getId());
+			
+			queryHql.append(" or wdi2.idPath like ? or wdi2.id = ?");
+			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
+			params.add(deptInfo.getId());
+			
+			queryHql.append(" or wdi3.idPath like ? or wdi3.id = ?");
+			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
+			params.add(deptInfo.getId());
+		}
+		queryHql.append(")");
+		if (contractId != null ) {
+			queryHql.append(" and wcb.contractId = ?");
+			params.add(contractId);
+		}
+		List<Object[]> list = this.queryAllHql(queryHql.toString(), params.toArray());
+		List<LongValue> resultList = new ArrayList<LongValue>();
+		if (list != null) {
+			for (Object[] o : list) {
+				resultList.add(new LongValue(StringUtil.nullToLong(o[0]), StringUtil.null2Str(o[1]),StringUtil.nullToLong(o[2]),null));
 			}
 		}
 		return resultList;

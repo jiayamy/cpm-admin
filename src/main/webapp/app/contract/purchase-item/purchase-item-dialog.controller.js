@@ -5,12 +5,19 @@
         .module('cpmApp')
         .controller('PurchaseItemDialogController', PurchaseItemDialogController);
 
-    PurchaseItemDialogController.$inject = ['$timeout','$scope', 'entity', 'PurchaseItem','ProjectInfo','previousState','$state'];
+    PurchaseItemDialogController.$inject = ['$timeout','$scope', 'entity', 'PurchaseItem','ContractBudget','previousState','$state','budgetEntity','AlertService'];
 
-    function PurchaseItemDialogController ($timeout, $scope, entity, PurchaseItem,ProjectInfo,previousState,$state) {
+    function PurchaseItemDialogController ($timeout, $scope, entity, PurchaseItem,ContractBudget,previousState,$state,budgetEntity,AlertService) {
         var vm = this;
 
         vm.purchaseItem = entity;
+        
+        vm.contractInfoDisable = vm.purchaseItem.id;
+        if (budgetEntity != null && budgetEntity.purchaseType != 3 && entity.id == null) {
+        	entity.contractId = budgetEntity.contractId;
+        	entity.budgetId = budgetEntity.id;
+        	vm.contractInfoDisable = true;
+		}
         vm.contractChanged = contractChanged;
         vm.budgetChanged = budgetChanged;
         
@@ -37,7 +44,7 @@
         vm.contractInfos = [];
         loadContract();
         function loadContract(){
-        	ProjectInfo.queryUserContract({
+        	ContractBudget.queryUserContract({
         		
         	},
         	function(data, headers){
@@ -72,7 +79,7 @@
         		vm.contractBudgets = [];
         		return;
         	}
-        	ProjectInfo.queryUserContractBudget({
+        	ContractBudget.queryUserContractBudget({
         		contractId:contractId
 	        	},
 	    		function(data, headers){
@@ -112,7 +119,7 @@
             purchaseItem.contractId = vm.purchaseItem.contractId;
             
             purchaseItem.budgetId = vm.purchaseItem.budgetId;
-            
+            console.log(purchaseItem.budgetId);
             purchaseItem.name = vm.purchaseItem.name;
             purchaseItem.quantity = vm.purchaseItem.quantity;
             purchaseItem.price = vm.purchaseItem.price;
@@ -140,9 +147,10 @@
             }
             if(purchaseItem.budgetId && purchaseItem.budgetId.key){
             	if(purchaseItem.budgetId.p1 == purchaseItem.contractId){
+            		console.log(purchaseItem.budgetId.p1);
             		purchaseItem.budgetId = purchaseItem.budgetId.key;
             	}else{
-            	//	AlertService.error("cpmApp.purchaseItem.save.budgetError");
+            		AlertService.error("cpmApp.purchaseItem.save.budgetError");
             		vm.isSaving = false;
             		return;
             	}

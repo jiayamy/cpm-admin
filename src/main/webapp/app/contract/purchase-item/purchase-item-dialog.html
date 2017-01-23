@@ -1,7 +1,5 @@
 <h2><span data-translate="cpmApp.purchaseItem.home.createOrEditLabel">Create or edit a Purchase Item</span></h2>
 <hr>
-<jhi-alert></jhi-alert>
-<jhi-alert-error></jhi-alert-error>
 <form name="myForm" role="form" ng-submit="vm.save()">
 	<div class="container-fluid">
 		<div class="row form-horizontal">
@@ -9,7 +7,7 @@
 				<div class="col-sm-6">
 					<label class="control-label" data-translate="cpmApp.purchaseItem.contract" for="field_contractId">Contract Id</label>
 					<select class="form-control" name="contractId" ng-model="vm.purchaseItem.contractId" id="field_contractId"
-	            		ng-required="true" ng-change="vm.contractChanged()" ng-disabled="vm.purchaseItem.id"
+	            		ng-required="true" ng-change="vm.contractChanged()" ng-disabled="vm.contractInfoDisable"
 		            	ng-options="contractInfo.val for contractInfo in vm.contractInfos track by contractInfo.key">
 		         	</select>
 	                <div class="help-block"
@@ -20,11 +18,35 @@
 				<div class="col-sm-6">
 					<label class="control-label" data-translate="cpmApp.purchaseItem.budgetName" for="field_budgetId">Budget Id</label>
 					<select class="form-control" name="budgetId" ng-model="vm.purchaseItem.budgetId" id="field_budgetId"
-	            		ng-required="true" ng-change="vm.budgetChanged()" ng-disabled="vm.purchaseItem.id"
+	            		ng-required="true" ng-change="vm.budgetChanged()" ng-disabled="vm.contractInfoDisable"
 		            	ng-options="contractBudget.val for contractBudget in vm.contractBudgets track by contractBudget.key">
 		            </select>
 	                <div class="help-block"
 	                   ng-hide="vm.purchaseItem.budgetId" data-translate="entity.validation.required" style="color:red">
+	                    This field is required.
+	                </div>
+				</div>
+			</div>
+			<div class="form-group">
+				<div class="col-sm-6">
+					<label class="control-label" data-translate="cpmApp.purchaseItem.type" for="field_type">Type</label>
+					<select class="form-control" name="type" ng-model="vm.purchaseItem.type" id="field_type"
+		            	ng-options="type.val for type in vm.types track by type.key"
+	            		ng-required="true">
+		         	</select>
+	                <div class="help-block"
+	                   ng-hide="vm.purchaseItem.type" data-translate="entity.validation.required" style="color:red">
+	                    This field is required.
+	                </div>
+				</div>
+				<div class="col-sm-6">
+					<label class="control-label" data-translate="cpmApp.purchaseItem.source" for="field_source">Source</label>
+					<select class="form-control" name="source" ng-model="vm.purchaseItem.source" id="field_source"
+		            	ng-options="source.val for source in vm.sources track by source.key"
+	            		ng-required="true">
+		         	</select>
+	                <div class="help-block"
+	                   ng-hide="vm.purchaseItem.source" data-translate="entity.validation.required" style="color:red">
 	                    This field is required.
 	                </div>
 				</div>
@@ -46,7 +68,7 @@
                     	ng-model="vm.purchaseItem.purchaser"
                      	/>
                      <div class="help-block"
-	                  	ng-show="myForm.purchaser.$error.required" data-translate="entity.validation.required" style="color:red">
+	                  	ng-hide="vm.purchaseItem.purchaser" data-translate="entity.validation.required" style="color:red">
 	                    This field is required.
 	                </div>
        			</div>
@@ -114,33 +136,11 @@
                 	</div>
 				</div>
 			</div>
-			<div class="form-group">
-				<div class="col-sm-6">
-					<label class="control-label" data-translate="cpmApp.purchaseItem.type" for="field_type">Type</label>
-					<select class="form-control" name="type" ng-model="vm.purchaseItem.type" id="field_type"
-		            	ng-options="type.val for type in vm.types track by type.key"
-	            		ng-required="true">
-		         	</select>
-	                <div class="help-block"
-	                   ng-hide="vm.purchaseItem.type" data-translate="entity.validation.required" style="color:red">
-	                    This field is required.
-	                </div>
-				</div>
-				<div class="col-sm-6">
-					<label class="control-label" data-translate="cpmApp.purchaseItem.source" for="field_source">Source</label>
-					<select class="form-control" name="source" ng-model="vm.purchaseItem.source" id="field_source"
-		            	ng-options="source.val for source in vm.sources track by source.key"
-	            		ng-required="true">
-		         	</select>
-	                <div class="help-block"
-	                   ng-hide="vm.purchaseItem.source" data-translate="entity.validation.required" style="color:red">
-	                    This field is required.
-	                </div>
-				</div>
-			</div>
 		</div>
 	</div>
 	<hr>
+	<jhi-alert></jhi-alert>
+	<jhi-alert-error></jhi-alert-error>
     <button type="submit"
         ui-sref="{{ vm.previousState }}"
         class="btn btn-info">
