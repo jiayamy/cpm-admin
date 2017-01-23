@@ -30,7 +30,6 @@ import com.wondertek.cpm.domain.ContractWeeklyStat;
 import com.wondertek.cpm.domain.vo.ChartReportDataVo;
 import com.wondertek.cpm.domain.vo.ChartReportVo;
 import com.wondertek.cpm.domain.vo.ContractWeeklyStatVo;
-import com.wondertek.cpm.domain.vo.LongValue;
 import com.wondertek.cpm.security.AuthoritiesConstants;
 import com.wondertek.cpm.service.ContractWeeklyStatService;
 import com.wondertek.cpm.web.rest.util.PaginationUtil;
@@ -107,15 +106,6 @@ public class ContractWeeklyStatResource {
         HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/contract-weekly-stats");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
-    
-    @GetMapping("/contract-weekly-stats/queryUserContract")
-    @Timed
-    @Secured(AuthoritiesConstants.ROLE_STAT_CONTRACT)
-	public ResponseEntity<List<LongValue>> queryUserContract() throws URISyntaxException {
-	    log.debug("REST request to queryUserContract");
-	    List<LongValue> list = contractWeeklyStatService.queryUserContract();
-	    return new ResponseEntity<>(list, null, HttpStatus.OK);
-	}
     
     @GetMapping("/contract-weekly-stats/queryChart")
     @Timed

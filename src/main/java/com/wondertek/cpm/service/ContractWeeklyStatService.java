@@ -3,7 +3,6 @@ package com.wondertek.cpm.service;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 import javax.inject.Inject;
 
@@ -22,9 +21,7 @@ import com.wondertek.cpm.domain.DeptInfo;
 import com.wondertek.cpm.domain.User;
 import com.wondertek.cpm.domain.vo.ChartReportDataVo;
 import com.wondertek.cpm.domain.vo.ContractWeeklyStatVo;
-import com.wondertek.cpm.domain.vo.LongValue;
 import com.wondertek.cpm.repository.ContractWeeklyStatDao;
-import com.wondertek.cpm.repository.ContractWeeklyStatRepository;
 import com.wondertek.cpm.repository.UserRepository;
 import com.wondertek.cpm.security.SecurityUtils;
 
@@ -37,9 +34,6 @@ public class ContractWeeklyStatService {
 
     private final Logger log = LoggerFactory.getLogger(ContractWeeklyStatService.class);
     
-    @Inject
-    private ContractWeeklyStatRepository contractWeeklyStatRepository;
-
 //    @Inject
 //    private ContractWeeklyStatSearchRepository contractWeeklyStatSearchRepository;
     
@@ -50,19 +44,6 @@ public class ContractWeeklyStatService {
     private ContractWeeklyStatDao contractWeeklyStatDao;
 
     /**
-     *  Get all the contractWeeklyStats.
-     *  
-     *  @param pageable the pagination information
-     *  @return the list of entities
-     */
-    @Transactional(readOnly = true) 
-    public Page<ContractWeeklyStat> findAll(Pageable pageable) {
-        log.debug("Request to get all ContractWeeklyStats");
-        Page<ContractWeeklyStat> result = contractWeeklyStatRepository.findAll(pageable);
-        return result;
-    }
-
-    /**
      *  Get one contractWeeklyStat by id.
      *
      *  @param id the id of the entity
@@ -71,10 +52,16 @@ public class ContractWeeklyStatService {
     @Transactional(readOnly = true) 
     public ContractWeeklyStatVo findOne(Long id) {
         log.debug("Request to get ContractWeeklyStat : {}", id);
-        ContractWeeklyStatVo contractWeeklyStat = contractWeeklyStatDao.getById(id);
-        return contractWeeklyStat;
+        List<Object[]> objs = userRepository.findUserInfoByLogin(SecurityUtils.getCurrentUserLogin());
+		if (objs != null) {
+			Object[] o = objs.get(0);
+			User user = (User)o[0];
+			DeptInfo deptInfo = (DeptInfo)o[1];
+	        ContractWeeklyStatVo contractWeeklyStat = contractWeeklyStatDao.getById(id , user, deptInfo);
+	        return contractWeeklyStat;
+		}
+		return null;
     }
-
 
     /**
      * Search for the contractWeeklyStat corresponding to the query.
@@ -100,36 +87,25 @@ public class ContractWeeklyStatService {
      */
     @Transactional(readOnly = true)
     public Page<ContractWeeklyStatVo> getStatPage(String contractId, Pageable pageable){
-    	Optional<User> user = userRepository.findOneByLogin(SecurityUtils.getCurrentUserLogin());
-    	if(user.isPresent()){
-    		Page<ContractWeeklyStatVo> page = contractWeeklyStatDao.getUserPage(contractId, pageable, user.get());
+    	List<Object[]> objs = userRepository.findUserInfoByLogin(SecurityUtils.getCurrentUserLogin());
+		if (objs != null) {
+			Object[] o = objs.get(0);
+			User user = (User)o[0];
+			DeptInfo deptInfo = (DeptInfo)o[1];
+    		Page<ContractWeeklyStatVo> page = contractWeeklyStatDao.getUserPage(contractId, pageable, user, deptInfo);
         	return page;
     	}else{
     		return new PageImpl(new ArrayList<ContractWeeklyStatVo>(), pageable, 0);
     	}
     }
     
-    /**
-     * 查询用户的所有项目，管理人员能看到部门下面所有人员的项目信息
-     */
-    @Transactional(readOnly = true)
-	public List<LongValue> queryUserContract() {
-    	List<LongValue> returnList = new ArrayList<LongValue>();
-    	List<Object[]> objs = userRepository.findUserInfoByLogin(SecurityUtils.getCurrentUserLogin());
-    	if(objs != null && !objs.isEmpty()){
-    		Object[] o = objs.get(0);
-    		User user = (User) o[0];
-    		DeptInfo deptInfo = (DeptInfo) o[1];
-    		
-    		returnList = contractWeeklyStatDao.queryUserContract(user,deptInfo);
-    	}
-		return returnList;
-	}
-    
     @Transactional(readOnly = true)
     public List<ChartReportDataVo> getChartData(Date fromDate, Date toDate, Long contractId){
     	List<Object[]> objs = userRepository.findUserInfoByLogin(SecurityUtils.getCurrentUserLogin());
     	if(objs != null && !objs.isEmpty()){
+    		Object[] o = objs.get(0);
+			User user = (User)o[0];
+			DeptInfo deptInfo = (DeptInfo)o[1];
     		List<ChartReportDataVo> datas = new ArrayList<>();
         	ChartReportDataVo data1 = new ChartReportDataVo();//receive_total
         	ChartReportDataVo data2 = new ChartReportDataVo();//cost_total
@@ -160,7 +136,7 @@ public class ContractWeeklyStatService {
         	Long sevenDay = 7*24*60*60*1000L;
         	while(temp <= toDate.getTime()){
         		Long statWeek = StringUtil.nullToLong(DateUtil.formatDate("yyyyMMdd", new Date(temp)));
-        		List<ContractWeeklyStat> contractWeeklyStats = contractWeeklyStatRepository.findByStatWeekAndContractId(statWeek, contractId);
+        		ContractWeeklyStatVo contractWeeklyStatVo = contractWeeklyStatDao.getByStatWeekAndContractId(statWeek, contractId, user, deptInfo);
         		Double receiveTotal = 0D;
         		Double costTotal = 0D;
         		Double grossProfit = 0D;
@@ -173,20 +149,19 @@ public class ContractWeeklyStatService {
         		Double internalSoftware = 0D;
         		Double projectHumanCost = 0D;
         		Double projectPayment = 0D;
-        		if(contractWeeklyStats != null && contractWeeklyStats.size() > 0){
-        			int max = contractWeeklyStats.size() - 1;
-        			receiveTotal = contractWeeklyStats.get(max).getReceiveTotal();
-        			costTotal = contractWeeklyStats.get(max).getCostTotal();
-        			grossProfit = contractWeeklyStats.get(max).getGrossProfit();
-        			salesHumanCost = contractWeeklyStats.get(max).getSalesHumanCost();
-        			salesPayment = contractWeeklyStats.get(max).getSalesPayment();
-        			consultHumanCost = contractWeeklyStats.get(max).getConsultHumanCost();
-        			consultPayment = contractWeeklyStats.get(max).getConsultPayment();
-        			hardwarePurchase = contractWeeklyStats.get(max).getHardwarePurchase();
-        			externalSoftware = contractWeeklyStats.get(max).getExternalSoftware();
-        			internalSoftware = contractWeeklyStats.get(max).getInternalSoftware();
-        			projectHumanCost = contractWeeklyStats.get(max).getProjectHumanCost();
-        			projectPayment = contractWeeklyStats.get(max).getProjectPayment();
+        		if(contractWeeklyStatVo != null){
+        			receiveTotal = contractWeeklyStatVo.getReceiveTotal();
+        			costTotal = contractWeeklyStatVo.getCostTotal();
+        			grossProfit = contractWeeklyStatVo.getGrossProfit();
+        			salesHumanCost = contractWeeklyStatVo.getSalesHumanCost();
+        			salesPayment = contractWeeklyStatVo.getSalesPayment();
+        			consultHumanCost = contractWeeklyStatVo.getConsultHumanCost();
+        			consultPayment = contractWeeklyStatVo.getConsultPayment();
+        			hardwarePurchase = contractWeeklyStatVo.getHardwarePurchase();
+        			externalSoftware = contractWeeklyStatVo.getExternalSoftware();
+        			internalSoftware = contractWeeklyStatVo.getInternalSoftware();
+        			projectHumanCost = contractWeeklyStatVo.getProjectHumanCost();
+        			projectPayment = contractWeeklyStatVo.getProjectPayment();
         		}
         		dataD1.add(receiveTotal);
         		dataD2.add(costTotal);
@@ -239,6 +214,9 @@ public class ContractWeeklyStatService {
     public List<ChartReportDataVo> getFinishRateData(Date fromDate, Date toDate, Long contractId){
     	List<Object[]> objs = userRepository.findUserInfoByLogin(SecurityUtils.getCurrentUserLogin());
     	if(objs != null && !objs.isEmpty()){
+    		Object[] o = objs.get(0);
+			User user = (User)o[0];
+			DeptInfo deptInfo = (DeptInfo)o[1];
     		List<ChartReportDataVo> datas = new ArrayList<>();
         	ChartReportDataVo data1 = new ChartReportDataVo();//finish_rate
         	data1.setName("完成率");
@@ -248,11 +226,10 @@ public class ContractWeeklyStatService {
         	Long sevenDay = 7*24*60*60*1000L;
         	while(temp <= toDate.getTime()){
         		Long statWeek = StringUtil.nullToLong(DateUtil.formatDate("yyyyMMdd", new Date(temp)));
-        		List<ContractWeeklyStat> contractWeeklyStats = contractWeeklyStatRepository.findByStatWeekAndContractId(statWeek, contractId);
+        		ContractWeeklyStatVo contractWeeklyStatVo = contractWeeklyStatDao.getByStatWeekAndContractId(statWeek, contractId, user, deptInfo);
         		Double finishRate = 0D;
-        		if(contractWeeklyStats != null && contractWeeklyStats.size() > 0){
-        			int max = contractWeeklyStats.size() - 1;
-        			finishRate = contractWeeklyStats.get(max).getFinishRate();
+        		if(contractWeeklyStatVo != null){
+        			finishRate = contractWeeklyStatVo.getFinishRate();
         		}
         		dataD1.add(finishRate);
         		temp += sevenDay;

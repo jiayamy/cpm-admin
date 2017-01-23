@@ -3,7 +3,6 @@ package com.wondertek.cpm.repository;
 import java.sql.Timestamp;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -18,13 +17,10 @@ import org.springframework.stereotype.Repository;
 import com.wondertek.cpm.CpmConstants;
 import com.wondertek.cpm.config.DateUtil;
 import com.wondertek.cpm.config.StringUtil;
-import com.wondertek.cpm.domain.ContractBudget;
 import com.wondertek.cpm.domain.ContractMonthlyStat;
 import com.wondertek.cpm.domain.DeptInfo;
 import com.wondertek.cpm.domain.User;
 import com.wondertek.cpm.domain.vo.ContractMonthlyStatVo;
-import com.wondertek.cpm.domain.vo.LongValue;
-import com.wondertek.cpm.domain.vo.ProjectMonthlyStatVo;
 
 @Repository("contractMonthlyStatDao")
 public class ContractMonthlyStatDaoImpl extends GenericDaoImpl<ContractMonthlyStat, Long> implements ContractMonthlyStatDao{
@@ -43,61 +39,7 @@ public class ContractMonthlyStatDaoImpl extends GenericDaoImpl<ContractMonthlySt
 	}
 
 	@Override
-	public Page<ContractMonthlyStat> getUserPage(String beginDate, String endDate, String statDate, Pageable pageable,
-			User user) {
-		StringBuffer sb = new StringBuffer();
-    	List<Object> params = new ArrayList<Object>();
-    	sb.append("where 1=1");
-    	if(!StringUtil.isNullStr(beginDate)){
-    		Date bgDate = DateUtil.parseDate("yyyyMMdd", beginDate);
-    		ZonedDateTime bg = DateUtil.getZonedDateTime(bgDate.getTime());
-    		sb.append(" and createTime >= ?");
-    		params.add(bg);
-    	}
-    	if(!StringUtil.isNullStr(endDate)){
-    		Date edDate = DateUtil.parseDate("yyyyMMdd", endDate);
-    		ZonedDateTime ed = DateUtil.getZonedDateTime(edDate.getTime());
-    		sb.append(" and createTime <= ?");
-    		params.add(ed);
-    	}
-    	if(!StringUtil.isNullStr(statDate)){
-//    		String stDate = DateUtil.formatDate("yyyy-MM", DateUtil.parseDate("yyyyMMdd", statDate)).toString();
-//    		Long st = StringUtil.nullToLong(DateUtil.getLastDayOfMonth("yyyyMMdd",stDate));
-    		Long st = StringUtil.nullToLong(DateUtil.formatDate("yyyyMM", DateUtil.parseDate("yyyyMMdd", statDate)).toString());
-    		sb.append(" and statWeek = ?");
-    		params.add(st);
-    	}
-//    	sb.append(" and status = ?");
-//    	params.add(CpmConstants.STATUS_VALID);
-    	StringBuffer orderHql = new StringBuffer();
-    	if(pageable.getSort() != null){//页面都会有个默认排序
-    		for (Order order : pageable.getSort()) {
-    			if(CpmConstants.ORDER_IGNORE_SCORE.equalsIgnoreCase(order.getProperty())){
-    				continue;
-    			}
-    			if(orderHql.length() != 0){
-    				orderHql.append(",");
-    			}else{
-    				orderHql.append(" order by ");
-    			}
-    			if(order.isAscending()){
-    				orderHql.append(order.getProperty()).append(" asc");
-    			}else{
-    				orderHql.append(order.getProperty()).append(" desc");
-    			}
-    		}
-    	}
-    	Page<ContractMonthlyStat> page = this.queryHqlPage(
-    			"from ContractMonthlyStat " + sb.toString() + orderHql.toString(), 
-    			"select count(id) from ContractMonthlyStat " + sb.toString(), 
-    			params.toArray(), 
-    			pageable
-    		);
-    	return page;
-	}
-
-	@Override
-	public Page<ContractMonthlyStatVo> getUserPage(String contractId, Pageable pageable,User user) {
+	public Page<ContractMonthlyStatVo> getUserPage(String contractId, Pageable pageable,User user, DeptInfo deptInfo) {
 		StringBuffer sb = new StringBuffer();
 		StringBuffer querysql = new StringBuffer();
 		StringBuffer countsql = new StringBuffer();
@@ -107,6 +49,8 @@ public class ContractMonthlyStatDaoImpl extends GenericDaoImpl<ContractMonthlySt
 		countsql.append(" select count(m.id)");
 		sb.append(" from ContractMonthlyStat m");
 		sb.append(" left join ContractInfo i on m.contractId = i.id");
+		sb.append(" left join DeptInfo wdi on i.deptId = wdi.id");
+		sb.append(" left join DeptInfo wdi2 on i.consultantsDeptId = wdi2.id");
 		List<Object> params = new ArrayList<Object>();
     	sb.append(" where m.id in (select max(id) from ContractMonthlyStat where 1=1 ");
     	if(!StringUtil.isNullStr(contractId)){
@@ -114,6 +58,20 @@ public class ContractMonthlyStatDaoImpl extends GenericDaoImpl<ContractMonthlySt
     		params.add(StringUtil.nullToLong(contractId));
     	}
     	sb.append(" group by contractId");
+    	sb.append(" )");
+    	sb.append(" and ( i.creator = ? or i.salesmanId = ? or i.consultantsId = ? ");
+    	params.add(user.getLogin());
+		params.add(user.getId());
+		params.add(user.getId());
+		if(user.getIsManager()){
+			sb.append(" or wdi.idPath like ? or wdi.id = ?");
+			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
+			params.add(deptInfo.getId());
+			
+			sb.append(" or wdi2.idPath like ? or wdi2.id = ?");
+			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
+			params.add(deptInfo.getId());
+		}
     	sb.append(" )");
     	StringBuffer orderHql = new StringBuffer();
     	if(pageable.getSort() != null){//页面都会有个默认排序
@@ -197,51 +155,7 @@ public class ContractMonthlyStatDaoImpl extends GenericDaoImpl<ContractMonthlySt
 	}
 
 	@Override
-	public List<LongValue> queryUserContract(User user, DeptInfo deptInfo) {
-		StringBuffer sql = new StringBuffer();
-		List<Object> params = new ArrayList<Object>();
-		//只有项目经理，预算指定经理，项目创建人，项目部门以上部门管理人员能看到对应的项目
-		
-		sql.append("select a.id,a.serial_num,a.name_ from w_contract_info a where a.id in(");
-			sql.append("select distinct b.contract_id from (");
-				sql.append("select c.contract_id as contract_id from w_project_info c left join w_dept_info d on d.id = c.dept_id");
-				sql.append(" where c.pm_id = ? or c.creator_ = ?");
-				params.add(user.getId());
-				params.add(user.getLogin());
-				
-				if(user.getIsManager()){
-					sql.append(" or d.id_path like ? or d.id = ?");
-					params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
-					params.add(deptInfo.getId());
-				}
-				sql.append(" union all ");
-				sql.append("select e.contract_id as contract_id from w_contract_budget e left join w_dept_info f on f.id = e.dept_id");
-				sql.append(" where (e.user_id = ?");
-				params.add(user.getId());
-				if(user.getIsManager()){
-					sql.append(" or f.id_path like ? or f.id = ?");
-					params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
-					params.add(deptInfo.getId());
-				}
-				sql.append(") and e.type_ = ? and e.purchase_type = ?");
-				params.add(ContractBudget.TYPE_PURCHASE);
-				params.add(ContractBudget.PURCHASETYPE_SERVICE);
-			sql.append(") b");
-		sql.append(") order by a.id desc");
-		
-		List<Object[]> list = this.queryAllSql(sql.toString(), params.toArray());
-		
-		List<LongValue> returnList = new ArrayList<LongValue>();
-		if(list != null){
-			for(Object[] o : list){
-				returnList.add(new LongValue(StringUtil.nullToLong(o[0]),StringUtil.null2Str(o[1]) + ":" + StringUtil.null2Str(o[2])));
-			}
-		}
-		return returnList;
-	}
-
-	@Override
-	public ContractMonthlyStatVo getById(Long id) {
+	public ContractMonthlyStatVo getById(Long id,  User user, DeptInfo deptInfo) {
 		StringBuffer sb = new StringBuffer();
 		StringBuffer querysql = new StringBuffer();
 		StringBuffer countsql = new StringBuffer();
@@ -251,6 +165,8 @@ public class ContractMonthlyStatDaoImpl extends GenericDaoImpl<ContractMonthlySt
 		countsql.append(" select count(m.id)");
 		sb.append(" from w_contract_monthly_stat m");
 		sb.append(" left join w_contract_info i on m.contract_id = i.id");
+		sb.append(" left join w_dept_info wdi on i.dept_id = wdi.id");
+		sb.append(" left join w_dept_info wdi2 on i.consultants_dept_id = wdi2.id");
 		List<Object> params = new ArrayList<Object>();
     	sb.append(" where m.id in (select max(id) from w_contract_monthly_stat where 1=1 ");
     	if(!StringUtil.isNullStr(id)){
@@ -259,7 +175,66 @@ public class ContractMonthlyStatDaoImpl extends GenericDaoImpl<ContractMonthlySt
     	}
     	sb.append(" group by contract_id");
     	sb.append(" )");
-    	
+    	sb.append(" and ( i.creator_ = ? or i.sales_man_id = ? or i.consultants_id = ?");
+    	params.add(user.getLogin());
+		params.add(user.getId());
+		params.add(user.getId());
+		if(user.getIsManager()){
+			sb.append(" or wdi.id_path like ? or wdi.id = ?");
+			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
+			params.add(deptInfo.getId());
+			
+			sb.append(" or wdi2.id_path like ? or wdi2.id = ?");
+			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
+			params.add(deptInfo.getId());
+		}
+    	sb.append(" )");
+    	List<Object[]> list = this.queryAllSql(querysql.toString()+sb.toString(), params.toArray());
+    	if(list != null && !list.isEmpty()){
+			return transContractMonthlyStatVo2(list.get(0));
+		}
+		return null;
+	}
+
+	@Override
+	public ContractMonthlyStatVo getByStatWeekAndContractId(Long statWeek, Long contractId, User user,DeptInfo deptInfo) {
+		StringBuffer sb = new StringBuffer();
+		StringBuffer querysql = new StringBuffer();
+		StringBuffer countsql = new StringBuffer();
+		querysql.append(" select m.id, m.contract_id, m.finish_rate, m.receive_total, m.cost_total, m.gross_profit, m.sales_human_cost,"
+				+ "m.sales_payment , m.consult_human_cost ,m.consult_payment ,m.hardware_purchase ,m.external_software ,m.internal_software ,m.project_human_cost ,"
+				+ "m.project_payment ,m.stat_week ,m.create_time , i.serial_num , i.name_");
+		countsql.append(" select count(m.id)");
+		sb.append(" from w_contract_monthly_stat m");
+		sb.append(" left join w_contract_info i on m.contract_id = i.id");
+		sb.append(" left join w_dept_info wdi on i.dept_id = wdi.id");
+		sb.append(" left join w_dept_info wdi2 on i.consultants_dept_id = wdi2.id");
+		List<Object> params = new ArrayList<Object>();
+    	sb.append(" where m.id in (select max(id) from w_contract_monthly_stat where 1=1 ");
+    	if(!StringUtil.isNullStr(contractId)){
+    		sb.append(" and contract_id = ?");
+    		params.add(contractId);
+    	}
+    	if(!StringUtil.isNullStr(statWeek)){
+    		sb.append(" and stat_week = ?");
+    		params.add(statWeek);
+    	}
+    	sb.append(" group by contract_id");
+    	sb.append(" )");
+    	sb.append(" and ( i.creator_ = ? or i.sales_man_id = ? or i.consultants_id = ?");
+    	params.add(user.getLogin());
+		params.add(user.getId());
+		params.add(user.getId());
+		if(user.getIsManager()){
+			sb.append(" or wdi.id_path like ? or wdi.id = ?");
+			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
+			params.add(deptInfo.getId());
+			
+			sb.append(" or wdi2.id_path like ? or wdi2.id = ?");
+			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
+			params.add(deptInfo.getId());
+		}
+    	sb.append(" )");
     	List<Object[]> list = this.queryAllSql(querysql.toString()+sb.toString(), params.toArray());
     	if(list != null && !list.isEmpty()){
 			return transContractMonthlyStatVo2(list.get(0));

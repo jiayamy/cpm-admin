@@ -30,7 +30,6 @@ import com.wondertek.cpm.config.StringUtil;
 import com.wondertek.cpm.domain.ProjectMonthlyStat;
 import com.wondertek.cpm.domain.vo.ChartReportDataVo;
 import com.wondertek.cpm.domain.vo.ChartReportVo;
-import com.wondertek.cpm.domain.vo.LongValue;
 import com.wondertek.cpm.domain.vo.ProjectMonthlyStatVo;
 import com.wondertek.cpm.security.AuthoritiesConstants;
 import com.wondertek.cpm.service.ProjectMonthlyStatService;
@@ -109,15 +108,6 @@ public class ProjectMonthlyStatResource {
         HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/project-monthly-stats");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
-    
-    @GetMapping("/project-monthly-stats/queryUserProject")
-    @Timed
-    @Secured(AuthoritiesConstants.ROLE_STAT_PROJECT)
-	public ResponseEntity<List<LongValue>> queryUserProject() throws URISyntaxException {
-	    log.debug("REST request to queryUserProject");
-	    List<LongValue> list = projectMonthlyStatService.queryUserProject();
-	    return new ResponseEntity<>(list, null, HttpStatus.OK);
-	}
     
     @GetMapping("/project-monthly-stats/queryChart")
     @Timed

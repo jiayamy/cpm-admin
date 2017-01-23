@@ -18,7 +18,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,10 +31,8 @@ import com.wondertek.cpm.domain.ContractMonthlyStat;
 import com.wondertek.cpm.domain.vo.ChartReportDataVo;
 import com.wondertek.cpm.domain.vo.ChartReportVo;
 import com.wondertek.cpm.domain.vo.ContractMonthlyStatVo;
-import com.wondertek.cpm.domain.vo.LongValue;
 import com.wondertek.cpm.security.AuthoritiesConstants;
 import com.wondertek.cpm.service.ContractMonthlyStatService;
-import com.wondertek.cpm.web.rest.util.HeaderUtil;
 import com.wondertek.cpm.web.rest.util.PaginationUtil;
 
 import io.swagger.annotations.ApiParam;
@@ -111,15 +108,6 @@ public class ContractMonthlyStatResource {
         HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/contract-monthly-stats");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
-    
-    @GetMapping("/contract-monthly-stats/queryUserContract")
-    @Timed
-    @Secured(AuthoritiesConstants.ROLE_STAT_CONTRACT)
-	public ResponseEntity<List<LongValue>> queryUserContract() throws URISyntaxException {
-	    log.debug("REST request to queryUserProject");
-	    List<LongValue> list = contractMonthlyStatService.queryUserContract();
-	    return new ResponseEntity<>(list, null, HttpStatus.OK);
-	}
     
     @GetMapping("/contract-monthly-stats/queryChart")
     @Timed

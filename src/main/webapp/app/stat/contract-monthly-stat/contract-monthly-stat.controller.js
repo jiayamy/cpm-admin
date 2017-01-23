@@ -5,9 +5,9 @@
         .module('cpmApp')
         .controller('ContractMonthlyStatController', ContractMonthlyStatController);
 
-    ContractMonthlyStatController.$inject = ['$scope', '$state', 'DateUtils','ContractMonthlyStat', 'ParseLinks', 'AlertService', 'paginationConstants', 'pagingParams'];
+    ContractMonthlyStatController.$inject = ['ContractInfo','$scope', '$state', 'DateUtils','ContractMonthlyStat', 'ParseLinks', 'AlertService', 'paginationConstants', 'pagingParams'];
 
-    function ContractMonthlyStatController ($scope, $state,DateUtils, ContractMonthlyStat, ParseLinks, AlertService, paginationConstants, pagingParams) {
+    function ContractMonthlyStatController (ContractInfo,$scope, $state,DateUtils, ContractMonthlyStat, ParseLinks, AlertService, paginationConstants, pagingParams) {
         var vm = this;
 
         vm.loadPage = loadPage;
@@ -28,7 +28,7 @@
         }
         loadContract();
         function loadContract(){
-        	ContractMonthlyStat.queryUserContract({
+        	ContractInfo.queryContractInfo({
         		
         	},
         	function(data, headers){
