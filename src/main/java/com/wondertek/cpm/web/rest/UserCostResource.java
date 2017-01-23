@@ -1,12 +1,20 @@
 package com.wondertek.cpm.web.rest;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.text.SimpleDateFormat;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,6 +33,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.codahale.metrics.annotation.Timed;
 import com.wondertek.cpm.CpmConstants;
@@ -33,6 +43,7 @@ import com.wondertek.cpm.domain.UserCost;
 import com.wondertek.cpm.security.AuthoritiesConstants;
 import com.wondertek.cpm.security.SecurityUtils;
 import com.wondertek.cpm.service.UserCostService;
+import com.wondertek.cpm.web.rest.util.ExcelRead;
 import com.wondertek.cpm.web.rest.util.HeaderUtil;
 import com.wondertek.cpm.web.rest.util.PaginationUtil;
 
@@ -232,6 +243,71 @@ public class UserCostResource {
         HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/user-costs");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
+    
+	@PostMapping("/user-costs/uploadExcel")
+    @Timed
+    @Secured(AuthoritiesConstants.ROLE_INFO_USERCOST)
+    public ResponseEntity<List<UserCost>> uploadExcel(@RequestParam(value="file",required=false) MultipartFile file)
+            throws URISyntaxException {
+            log.debug("REST request to upload UserCosts Excel for fileName {}",file.getOriginalFilename());
+            List<UserCost> result = null;
+            try {
+				List<UserCost> userCosts = null;
+				List<ArrayList<String>> lists = new ExcelRead().readExcel(file);
+				userCosts = new ArrayList<UserCost>();
+				for (List<String> ls : lists) {
+					if (ls == null || ls.isEmpty()) {
+						continue;
+					}
+					String updator = SecurityUtils.getCurrentUserLogin();
+					ZonedDateTime updateTime = ZonedDateTime.now();
+					int i = 0;
+					UserCost userCost = new UserCost();
+					if (!StringUtil.isNull(ls.get(i)) && !ls.get(i).isEmpty()) {
+						userCost.setId(Long.valueOf(ls.get(i)));
+						userCost.setUpdator(updator);
+						userCost.setUpdateTime(updateTime);
+					} else {
+						userCost.setCreator(updator);
+						userCost.setCreateTime(updateTime);
+						userCost.setUpdator(updator);
+						userCost.setUpdateTime(updateTime);
+					}
+					i++;
+					if (!StringUtil.isNull(ls.get(i)) && !ls.get(i).isEmpty()) {
+						userCost.setUserId(Long.valueOf(ls.get(i)));
+					}
+					i++;
+					if (!StringUtil.isNull(ls.get(i)) && !ls.get(i).isEmpty()) {
+						userCost.setUserName(ls.get(i));
+					}
+					i++;
+					if (!StringUtil.isNull(ls.get(i)) && !ls.get(i).isEmpty()) {
+						userCost.setCostMonth(Long.valueOf(ls.get(i).substring(0, 4) + ls.get(i).substring(5, 7)));
+					}
+					i++;
+					if (!StringUtil.isNull(ls.get(i)) && !ls.get(i).isEmpty()) {
+						userCost.setInternalCost(Double.valueOf(ls.get(i)));
+					}
+					i++;
+					if (!StringUtil.isNull(ls.get(i)) && !ls.get(i).isEmpty()) {
+						userCost.setExternalCost(Double.valueOf(ls.get(i)));
+					}
+					i++;
+					if (!StringUtil.isNull(ls.get(i)) && !ls.get(i).isEmpty()) {
+						userCost.setStatus(Integer.valueOf(ls.get(i)));
+					}
 
-
+					System.out.println(userCost);
+					userCosts.add(userCost);
+				} 
+//				}
+				result = userCostService.save(userCosts);
+//				log.debug("8888888888888--result:"+result);
+			} catch (IOException e2) {
+//				log.debug("9999999999999999999999");
+				e2.printStackTrace();
+			}
+            return ResponseEntity.ok().headers(HeaderUtil.createEntityUploadAlert("userCost", null)).body(result);
+        }
 }

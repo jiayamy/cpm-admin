@@ -6,11 +6,13 @@
                 "createLabel": "新建",
                 "createOrEditLabel": "添加员工成本",
                 "editLabel": "编辑员工成本",
-                "search": "Search for User Cost"
+                "search": "Search for User Cost",
+                "import": "导入Excel"
             },
             "created": "新增成功",
             "updated": "更新成功",
             "deleted": "删除成功",
+            "uploaded": "上传成功",
             "delete": {
                 "question": "确定删除该员工成本信息 ?",
                 "statusError": "删除状态的数据不可以再执行删除操作"
@@ -24,6 +26,11 @@
             	"noExistError":"数据错误，请刷新重试",
             	"statusError": "删除状态不能编辑",
             	"userNameError": "不能修改员工姓名"
+            },
+            "upload":{
+            	"requiredError":"",
+            	"up": "上传",
+            	"upError": "上传失败"
             },
             "userId": "员工号",
             "userName": "员工姓名",

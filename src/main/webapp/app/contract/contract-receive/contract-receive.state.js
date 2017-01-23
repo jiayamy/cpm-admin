@@ -11,7 +11,7 @@
         $stateProvider
         .state('contract-receive', {
             parent: 'contract',
-            url: '/contract-receive?page&sort&search',
+            url: '/contract-receive?page&sort&contractId',
             data: {
                 authorities: ['ROLE_CONTRACT_RECEIVE'],
                 pageTitle: 'cpmApp.contractReceive.home.title'
@@ -32,7 +32,7 @@
                     value: 'id,asc',
                     squash: true
                 },
-                search: null
+                contractId: null
             },
             resolve: {
                 pagingParams: ['$stateParams', 'PaginationUtil', function ($stateParams, PaginationUtil) {
@@ -41,7 +41,7 @@
                         sort: $stateParams.sort,
                         predicate: PaginationUtil.parsePredicate($stateParams.sort),
                         ascending: PaginationUtil.parseAscending($stateParams.sort),
-                        search: $stateParams.search
+                        contractId: $stateParams.contractId
                     };
                 }],
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
@@ -86,8 +86,8 @@
         })
         
         .state('contract-receive-detail.edit',{
-        	parent: 'contract-receive',
-        	url: '/edit/{id}',
+        	parent: 'contract-receive-detail',
+        	url: '/{id}/edit',
             data: {
                 authorities: ['ROLE_CONTRACT_RECEIVE']
             },
@@ -105,10 +105,47 @@
                  }],
                  entity: ['$stateParams', 'ContractReceive', function($stateParams, ContractReceive) {
                      return ContractReceive.get({id : $stateParams.id}).$promise;
+                 }],
+                 previousState: ["$state", function ($state) {
+                     var currentStateData = {
+                         queryDept:'contract-receive-detail.edit.queryDept',
+                         name: $state.current.name || 'contract-receive-detail',
+                         params: $state.params,
+                         url: $state.href($state.current.name, $state.params)
+                     };
+                     return currentStateData;
                  }]
             }
         })
-        
+        .state('contract-info-detail.edit.queryDept', {
+            parent: 'contract-info-detail.edit',
+            url: '/queryDept?selectType&showChild&dataType',
+            data: {
+                authorities: ['ROLE_USER']
+            },
+            onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
+                $uibModal.open({
+                    templateUrl: 'app/info/dept-info/dept-info-query.html',
+                    controller: 'DeptInfoQueryController',
+                    controllerAs: 'vm',
+                    backdrop: 'static',
+                    size: 'lg',
+                    resolve: {
+                        entity: function() {
+                            return {
+                            	selectType : $stateParams.selectType,
+                            	showChild : $stateParams.showChild,
+                            	dataType:$stateParams.dataType
+                            }
+                        }
+                    }
+                }).result.then(function() {
+                    $state.go('^', {}, { reload: false });
+                }, function() {
+                    $state.go('^');
+                });
+            }]
+        })
         .state('contract-receive.new',{
         	parent:'contract-receive',
         	url:'/new',
@@ -140,10 +177,48 @@
 	                   receiver: null,
 	                   id: null
 	               };
-	           }
+	           },
+	           previousState: ["$state", function ($state) {
+                   var currentStateData = {
+                   	queryDept:'contract-receive.new.queryDept',
+                       name: $state.current.name || 'contract-receive',
+                       params: $state.params,
+                       url: $state.href($state.current.name, $state.params)
+                   };
+                   return currentStateData;
+               }]
+        	
         	}
         })
-        
+        .state('contract-receive.new.queryDept', {
+            parent: 'contract-receive.new',
+            url: '/queryDept?selectType&showChild&dataType',
+            data: {
+                authorities: ['ROLE_USER']
+            },
+            onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
+                $uibModal.open({
+                    templateUrl: 'app/info/dept-info/dept-info-query.html',
+                    controller: 'DeptInfoQueryController',
+                    controllerAs: 'vm',
+                    backdrop: 'static',
+                    size: 'lg',
+                    resolve: {
+                        entity: function() {
+                            return {
+                            	selectType : $stateParams.selectType,
+                            	showChild : $stateParams.showChild,
+                            	dataType:$stateParams.dataType
+                            }
+                        }
+                    }
+                }).result.then(function() {
+                    $state.go('^', {}, { reload: false });
+                }, function() {
+                    $state.go('^');
+                });
+            }]
+        }) 
 
         .state('contract-receive.edit',{
         	parent: 'contract-receive',
@@ -167,6 +242,35 @@
                     return ContractReceive.get({id : $stateParams.id}).$promise;
                 }]
             }
+        })
+        .state('contract-receive.edit.queryDept', {
+            parent: 'contract-receive.edit',
+            url: '/queryDept?selectType&showChild&dataType',
+            data: {
+                authorities: ['ROLE_USER']
+            },
+            onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
+                $uibModal.open({
+                    templateUrl: 'app/info/dept-info/dept-info-query.html',
+                    controller: 'DeptInfoQueryController',
+                    controllerAs: 'vm',
+                    backdrop: 'static',
+                    size: 'lg',
+                    resolve: {
+                        entity: function() {
+                            return {
+                            	selectType : $stateParams.selectType,
+                            	showChild : $stateParams.showChild,
+                            	dataType:$stateParams.dataType
+                            }
+                        }
+                    }
+                }).result.then(function() {
+                    $state.go('^', {}, { reload: false });
+                }, function() {
+                    $state.go('^');
+                });
+            }]
         })
         .state('contract-receive.delete', {
             parent: 'contract-receive',

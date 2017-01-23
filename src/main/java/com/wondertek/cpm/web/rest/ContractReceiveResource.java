@@ -2,6 +2,7 @@ package com.wondertek.cpm.web.rest;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,8 +27,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.codahale.metrics.annotation.Timed;
+import com.wondertek.cpm.CpmConstants;
+import com.wondertek.cpm.config.StringUtil;
 import com.wondertek.cpm.domain.ContractReceive;
+import com.wondertek.cpm.domain.ContractReceive;
+import com.wondertek.cpm.domain.vo.ContractReceiveVo;
 import com.wondertek.cpm.security.AuthoritiesConstants;
+import com.wondertek.cpm.security.SecurityUtils;
 import com.wondertek.cpm.service.ContractReceiveService;
 import com.wondertek.cpm.web.rest.util.HeaderUtil;
 import com.wondertek.cpm.web.rest.util.PaginationUtil;
@@ -46,13 +52,6 @@ public class ContractReceiveResource {
     @Inject
     private ContractReceiveService contractReceiveService;
 
-    /**
-     * POST  /contract-receives : Create a new contractReceive.
-     *
-     * @param contractReceive the contractReceive to create
-     * @return the ResponseEntity with status 201 (Created) and with body the new contractReceive, or with status 400 (Bad Request) if the contractReceive has already an ID
-     * @throws URISyntaxException if the Location URI syntax is incorrect
-     */
     @PostMapping("/contract-receives")
     @Timed
     @Secured(AuthoritiesConstants.ROLE_CONTRACT_RECEIVE)
@@ -67,59 +66,68 @@ public class ContractReceiveResource {
             .body(result);
     }
 
-    /**
-     * PUT  /contract-receives : Updates an existing contractReceive.
-     *
-     * @param contractReceive the contractReceive to update
-     * @return the ResponseEntity with status 200 (OK) and with body the updated contractReceive,
-     * or with status 400 (Bad Request) if the contractReceive is not valid,
-     * or with status 500 (Internal Server Error) if the contractReceive couldnt be updated
-     * @throws URISyntaxException if the Location URI syntax is incorrect
-     */
     @PutMapping("/contract-receives")
     @Timed
-    @Secured(AuthoritiesConstants.ROLE_CONTRACT_RECEIVE)
-    public ResponseEntity<ContractReceive> updateContractReceive(@RequestBody ContractReceive contractReceive) throws URISyntaxException {
+    public ResponseEntity<Boolean> updateContractReceive(@RequestBody ContractReceive contractReceive) throws URISyntaxException {
         log.debug("REST request to update ContractReceive : {}", contractReceive);
-        if (contractReceive.getId() == null) {
-            return createContractReceive(contractReceive);
-        }
+        Boolean isNew = contractReceive.getId() == null;
+        if (contractReceive.getContractId() == null || contractReceive.getCreateTime() == null
+        		|| StringUtil.isNullStr(contractReceive.getReceiver()) || contractReceive.getReceiveDay() == null
+        		|| contractReceive.getReceiveTotal() == null) { 
+        		
+        		return null;
+		}
+        String updator = SecurityUtils.getCurrentUserLogin();
+        ZonedDateTime updateTime = ZonedDateTime.now();
+        if (isNew) {
+			contractReceive.setStatus(CpmConstants.STATUS_VALID);
+			contractReceive.setCreateTime(updateTime);
+		}else {
+			ContractReceiveVo contractReceiveVo = contractReceiveService.getContractReceive(contractReceive.getId());
+			if (contractReceiveVo == null) {
+				return null;
+			}
+			ContractReceive old = contractReceiveService.findOne(contractReceive.getId());
+			if(old == null){
+        		return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.projectCost.save.idNone", "")).body(null);
+        	}else if(old.getContractId() != contractReceive.getContractId().longValue()){
+        		return null;
+        	}else if(old.getStatus() == CpmConstants.STATUS_DELETED){
+        		return null;
+        	}
+			contractReceive.setStatus(old.getStatus());
+			contractReceive.setCreateTime(old.getCreateTime());
+			contractReceive.setCreator(old.getCreator());
+		}
+        contractReceive.setUpdateTime(updateTime);
+        contractReceive.setUpdator(updator);
         ContractReceive result = contractReceiveService.save(contractReceive);
         return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert("contractReceive", contractReceive.getId().toString()))
-            .body(result);
+            .headers(HeaderUtil.createEntityUpdateAlert("contractReceive", result.getId().toString()))
+            .body(isNew);
     }
 
-    /**
-     * GET  /contract-receives : get all the contractReceives.
-     *
-     * @param pageable the pagination information
-     * @return the ResponseEntity with status 200 (OK) and the list of contractReceives in body
-     * @throws URISyntaxException if there is an error to generate the pagination HTTP headers
-     */
     @GetMapping("/contract-receives")
     @Timed
-    @Secured(AuthoritiesConstants.ROLE_CONTRACT_RECEIVE)
-    public ResponseEntity<List<ContractReceive>> getAllContractReceives(@ApiParam Pageable pageable)
+    public ResponseEntity<List<ContractReceiveVo>> getAllContractReceives(@RequestParam(value="contractId",required = false) Long contractId,@ApiParam Pageable pageable)
         throws URISyntaxException {
         log.debug("REST request to get a page of ContractReceives");
-        Page<ContractReceive> page = contractReceiveService.findAll(pageable);
+        ContractReceive contractReceive = new ContractReceive();
+        contractReceive.setContractId(contractId);
+        
+        
+        Page<ContractReceiveVo> page = contractReceiveService.getuserPage(contractReceive,pageable);
+        
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/contract-receives");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
 
-    /**
-     * GET  /contract-receives/:id : get the "id" contractReceive.
-     *
-     * @param id the id of the contractReceive to retrieve
-     * @return the ResponseEntity with status 200 (OK) and with body the contractReceive, or with status 404 (Not Found)
-     */
     @GetMapping("/contract-receives/{id}")
     @Timed
     @Secured(AuthoritiesConstants.ROLE_CONTRACT_RECEIVE)
-    public ResponseEntity<ContractReceive> getContractReceive(@PathVariable Long id) {
+    public ResponseEntity<ContractReceiveVo> getContractReceive(@PathVariable Long id) {
         log.debug("REST request to get ContractReceive : {}", id);
-        ContractReceive contractReceive = contractReceiveService.findOne(id);
+        ContractReceiveVo contractReceive = contractReceiveService.getContractReceive(id);
         return Optional.ofNullable(contractReceive)
             .map(result -> new ResponseEntity<>(
                 result,
@@ -127,12 +135,6 @@ public class ContractReceiveResource {
             .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    /**
-     * DELETE  /contract-receives/:id : delete the "id" contractReceive.
-     *
-     * @param id the id of the contractReceive to delete
-     * @return the ResponseEntity with status 200 (OK)
-     */
     @DeleteMapping("/contract-receives/{id}")
     @Timed
     @Secured(AuthoritiesConstants.ROLE_CONTRACT_RECEIVE)
@@ -141,26 +143,4 @@ public class ContractReceiveResource {
         contractReceiveService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert("contractReceive", id.toString())).build();
     }
-
-    /**
-     * SEARCH  /_search/contract-receives?query=:query : search for the contractReceive corresponding
-     * to the query.
-     *
-     * @param query the query of the contractReceive search 
-     * @param pageable the pagination information
-     * @return the result of the search
-     * @throws URISyntaxException if there is an error to generate the pagination HTTP headers
-     */
-    @GetMapping("/_search/contract-receives")
-    @Timed
-    @Secured(AuthoritiesConstants.ROLE_CONTRACT_RECEIVE)
-    public ResponseEntity<List<ContractReceive>> searchContractReceives(@RequestParam String query, @ApiParam Pageable pageable)
-        throws URISyntaxException {
-        log.debug("REST request to search for a page of ContractReceives for query {}", query);
-        Page<ContractReceive> page = contractReceiveService.search(query, pageable);
-        HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/contract-receives");
-        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
-    }
-
-
 }

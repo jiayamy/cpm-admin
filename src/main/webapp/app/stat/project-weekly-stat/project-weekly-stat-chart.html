@@ -1,6 +1,6 @@
 
 <div>
-    <h2><span data-translate="cpmApp.projectWeeklyStat.detail.title">Project Weekly Stat</span> {{vm.projectWeeklyStat.id}}</h2>
+    <h2><span data-translate="cpmApp.projectWeeklyStat.echarts.title">Project Weekly Stat</span> {{vm.projectWeeklyStat.id}}</h2>
     <hr>
     <jhi-alert-error></jhi-alert-error>
     <div class="container-fluid">
@@ -64,9 +64,5 @@
             ui-sref="{{ vm.previousState }}"
             class="btn btn-info">
         <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span data-translate="entity.action.back"> Back</span>
-    </button>
-    <button type="button" ng-click="vm.backDetail()" class="btn btn-primary">
-        <span class="glyphicon glyphicon-pencil"></span>
-        <span class="hidden-xs hidden-sm" data-translate="cpmApp.projectWeeklyStat.echarts.transDetail"> Edit</span>
     </button>
 </div>

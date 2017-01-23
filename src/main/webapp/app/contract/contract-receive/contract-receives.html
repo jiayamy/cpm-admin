@@ -29,64 +29,37 @@
 	            <div class="col-sm-4">
 	            	<label class="col-sm-4 control-label" data-translate="cpmApp.contractInfo.name">ContractInfo Name</label>
 		            <div class="col-sm-8">
-		                <select class="form-control" name="isEpibolic" ng-model="vm.searchQuery.isEpibolic"
-			            	ng-options="isEpibolic.name for isEpibolic in vm.isEpibolics track by isEpibolic.id">
-			            	<option value="">--选择合同名称--</option>
+		            	<select class="form-control" ng-model="vm.searchQuery.contractId"
+			            	ng-options="contractInfo.val for contractInfo in vm.contractInfos track by contractInfo.key">
+			            	<option value="">--项目编号--</option>
 			            </select>
 		            </div>
+	            </div>
+	            <div class="col-sm-4 pull-right input-group">
+	            	<div class="col-sm-4">
+	            </div>
+	            <div class="col-sm-4">
 	            </div>
 	            <div class="col-sm-4 pull-right input-group">
 	            	<div class="col-sm-4">
 	            	</div>
 	            	<div class="col-sm-8" >
 		            	<span  class="width-min" >
-	                         <button class="btn btn-info" ng-click="vm.search(vm.searchQuery)">
-                                <span class="glyphicon glyphicon-search"></span>
-                            </button>
+	                        <button class="btn btn-info" ng-click="vm.search()">
+	                            <span class="glyphicon glyphicon-search"></span>
+	                        </button>
 	                    </span>
 	                    <span class="width-min" ng-if="vm.haveSearch">
 	                        <button class="btn btn-info" ng-click="vm.clear()">
-                                <span class="glyphicon glyphicon-trash"></span>
-                            </button>
+	                            <span class="glyphicon glyphicon-trash"></span>
+	                        </button>
 	                    </span>
 	            	</div>
+	            </div>
 	            </div>
             </div>
         </form>
     </div>
-    
-    
-  
-    <!-- <div class="container-fluid">
-        <div class="row">
-            <div class="col-xs-4 no-padding-left">
-                <button class="btn btn-primary" ui-sref="contract-receive.new" >
-                    <span class="glyphicon glyphicon-plus"></span>
-                    <span class="hidden-xs"  data-translate="cpmApp.contractReceive.home.createLabel">
-                        Create new Contract Receive
-                    </span>
-                </button>
-            </div>
-            <div class="col-xs-8 no-padding-right">
-                <form name="searchForm" class="form-inline">
-                    <div class="input-group pull-right" >
-                        <input type="text" class="form-control" ng-model="vm.searchQuery" id="searchQuery" placeholder="{{ 'cpmApp.contractReceive.home.search' | translate }}">
-                        <span  class="input-group-btn width-min" >
-                            <button class="btn btn-info" ng-click="vm.search(vm.searchQuery)">
-                                <span class="glyphicon glyphicon-search"></span>
-                            </button>
-                        </span>
-                        <span class="input-group-btn width-min" ng-if="vm.currentSearch">
-                            <button class="btn btn-info" ng-click="vm.clear()">
-                                <span class="glyphicon glyphicon-trash"></span>
-                            </button>
-                        </span>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div> -->
-    
     <br/>
     <div class="table-responsive">
         <table class="jh-table table table-striped">

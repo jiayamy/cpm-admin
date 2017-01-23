@@ -2,30 +2,23 @@
     "cpmApp": {
         "projectTimesheet" : {
             "home": {
-                "title": "Project Timesheets",
-                "createLabel": "Create a new Project Timesheet",
-                "createOrEditLabel": "Create or edit a Project Timesheet",
-                "search": "Search for Project Timesheet"
+                "title": "项目日报",
+                "createOrEditLabel": "日报详情"
             },
-            "created": "A new Project Timesheet is created with identifier {{ param }}",
-            "updated": "A Project Timesheet is updated with identifier {{ param }}",
-            "deleted": "A Project Timesheet is deleted with identifier {{ param }}",
-            "delete": {
-                "question": "Are you sure you want to delete Project Timesheet {{ id }}?"
-            },
+            "updated": "更新成功",
             "detail": {
-                "title": "Project Timesheet"
+                "title": "日报详情"
             },
-            "projectId": "Project Id",
-            "userId": "User Id",
-            "realInput": "Real Input",
-            "acceptInput": "Accept Input",
-            "workDay": "Work Day",
-            "status": "Status",
-            "creator": "Creator",
-            "createTime": "Create Time",
-            "updator": "Updator",
-            "updateTime": "Update Time"
+            "projectId": "项目编号",
+            "userId": "用户名",
+            "realInput": "实际投入",
+            "acceptInput": "认可投入",
+            "workDay": "日期",
+            "status": "状态",
+            "creator": "创建者",
+            "createTime": "创建时间",
+            "updator": "更新者",
+            "updateTime": "更新时间"
         }
     }
 }

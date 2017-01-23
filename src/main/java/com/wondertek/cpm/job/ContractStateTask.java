@@ -653,7 +653,7 @@ public class ContractStateTask {
 					}
 				}
 				contractCost2.setTotal(total2);
-				contractCost2.setName(contractInfo.getSerialNum() + "-humanCost-" +  DateUtil.formatDate("yyyyMMdd", currentDay).toString());
+				contractCost2.setName(contractInfo.getSerialNum() + "-" +  DateUtil.formatDate("yyyyMMdd", currentDay).toString());
 				contractCost2.setType(ContractCost.TYPE_HUMAN_COST);
 				contractCost2.setCostDesc(DateUtil.formatDate("yyyyMMdd", currentDay).toString());
 				contractCost2.setStatus(1);
@@ -694,6 +694,12 @@ public class ContractStateTask {
 								total += userTimesheet.getRealInput() * (userCost.getInternalCost()/22.5/8);
 							}else if(contractType == ContractInfo.TYPE_EXTERNAL){
 								total += userTimesheet.getRealInput() * (userCost.getExternalCost()/22.5/8);
+							}else if (contractType == ContractInfo.TYPE_PUBLIC) {
+								if(contractInfo.getIsEpibolic()){
+									total += userTimesheet.getRealInput() * (userCost.getExternalCost()/22.5/8);
+								}else{
+									total += userTimesheet.getRealInput() * (userCost.getInternalCost()/22.5/8);
+								}
 							}else{
 								log.info(" no contractType found belong to UserTimesheet : " + userTimesheet.getId());
 							}
@@ -704,7 +710,7 @@ public class ContractStateTask {
 				}
 				contractCost.setTotal(total);
 			}
-			contractCost.setName(contractInfo.getSerialNum() + "-humanCost-" +  DateUtil.formatDate("yyyyMMdd", currentDay).toString());
+			contractCost.setName(contractInfo.getSerialNum() + "-" +  DateUtil.formatDate("yyyyMMdd", currentDay).toString());
 			contractCost.setType(ContractCost.TYPE_HUMAN_COST);
 			contractCost.setCostDesc(DateUtil.formatDate("yyyyMMdd", currentDay).toString());
 			contractCost.setStatus(1);

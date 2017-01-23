@@ -57,9 +57,10 @@ public class ProjectCostService {
     }
     /**
      * 查询列表
+     * @param pageType 
      * @return
      */
-    public Page<ProjectCostVo> getUserPage(ProjectCost projectCost, Pageable pageable) {
+    public Page<ProjectCostVo> getUserPage(ProjectCost projectCost, Integer pageType, Pageable pageable) {
     	log.debug("Request to get all ProjectCosts");
         
         List<Object[]> objs = userRepository.findUserInfoByLogin(SecurityUtils.getCurrentUserLogin());
@@ -68,7 +69,7 @@ public class ProjectCostService {
     		User user = (User) o[0];
     		DeptInfo deptInfo = (DeptInfo) o[1];
     		
-    		return projectCostDao.getUserPage(projectCost,user,deptInfo,pageable);
+    		return projectCostDao.getUserPage(projectCost,pageType,user,deptInfo,pageable);
     	}
     	
     	return new PageImpl(new ArrayList<ProjectCostVo>(), pageable, 0);

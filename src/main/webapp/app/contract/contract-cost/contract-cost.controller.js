@@ -137,7 +137,7 @@
             });
         }
 
-        function search(searchQuery) {
+        function search() {
         	if (!vm.searchQuery.contractId 
         			&& !vm.searchQuery.type 
         			&& !vm.searchQuery.name){

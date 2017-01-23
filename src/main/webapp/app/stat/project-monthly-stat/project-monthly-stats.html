@@ -69,9 +69,12 @@
                                     ui-sref="project-monthly-stat-detail({id:projectMonthlyStat.id})"
                                     class="btn btn-info btn-sm">
                                 <span class="glyphicon glyphicon-eye-open"></span>
-                                <span class="hidden-xs hidden-sm" data-translate="entity.action.view"></span>
+                                <span class="hidden-xs hidden-sm" data-translate="cpmApp.projectMonthlyStat.transDetail"></span>
                             </button>
-
+								<button type="button" ui-sref="project-monthly-stat-detail.chart({id:projectMonthlyStat.id})" class="btn btn-primary btn-sm">
+						        <span class="glyphicon glyphicon-pencil"></span>
+						        <span class="hidden-xs hidden-sm" data-translate="cpmApp.projectMonthlyStat.transChart"> Edit</span>
+						    </button>
                         </div>
                     </td>
                 </tr>

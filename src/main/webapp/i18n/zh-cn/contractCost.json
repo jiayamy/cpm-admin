@@ -36,6 +36,7 @@
             "name": "名称",
             "type": "成本类型",
             "total": "成本金额",
+            "costDay":"成本日期",
             "costDesc": "成本描述",
             "status": "状态",
             "creator": "创建者",

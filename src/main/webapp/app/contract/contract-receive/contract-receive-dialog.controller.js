@@ -5,52 +5,79 @@
         .module('cpmApp')
         .controller('ContractReceiveDialogController', ContractReceiveDialogController);
 
-    ContractReceiveDialogController.$inject = ['$timeout', '$scope', '$stateParams', 'entity', 'ContractReceive', '$state'];
+    ContractReceiveDialogController.$inject = ['ContractInfo','previousState','$timeout', '$scope', '$stateParams', 'entity', 'ContractReceive', '$state'];
 
-    function ContractReceiveDialogController ($timeout, $scope, $stateParams, entity, ContractReceive, $state) {
+    function ContractReceiveDialogController (ContractInfo,previousState,$timeout, $scope, $stateParams, entity, ContractReceive, $state) {
         var vm = this;
 
         vm.contractReceive = entity;
-        vm.clear = clear;
         vm.datePickerOpenStatus = {};
         vm.openCalendar = openCalendar;
         vm.save = save;
-
-        $timeout(function (){
-            angular.element('.form-group:eq(1)>input').focus();
-        });
-
-        function clear () {
-        	$state.go('contract-receive', null, { reload: 'contract-receive'});
+        
+        vm.previousState = previousState.name;
+        vm.queryDept = previousState.queryDept;
+        
+        //处理costDay
+        vm.contractReceive.receiveDay = DateUtils.convertYYYYMMDDDayToDate(vm.contractReceive.receiveDay);
+        loadContractInfos();
+        
+        //加载合同信息
+        function loadContractInfos(){
+        	ContractInfo.queryContractInfo(
+        		{
+        			
+        		},
+        		function(data, headers){
+        			vm.contractInfos = data;
+            		if(vm.contractInfos && vm.contractInfos.length > 0){
+            			for(var i = 0; i < vm.contractInfos.length; i++){
+            				if(entity.contractId == vm.contractInfos[i].key){
+            					vm.contractCost.contractId = vm.contractInfos[i];
+            				}
+            			}
+            		}
+        		},
+        		function(error){
+        			AlertService.error(error.data.message);
+        			vm.contractInfos = [];
+        		}
+        	);
         }
-
         function save () {
             vm.isSaving = true;
-            if (vm.contractReceive.id !== null) {
-                ContractReceive.update(vm.contractReceive, onSaveSuccess, onSaveError);
-            } else {
-                ContractReceive.save(vm.contractReceive, onSaveSuccess, onSaveError);
+            var contractReceive = {};
+            contractReceive.contractId = vm.contractReceive.contractId;
+            contractReceive.receiveTotal = vm.contractReceive.receiveTotal;
+            contractReceive.receiveDay = vm.contractReceive.receiveDay;
+            contractReceive.receiver = vm.contractReceive.receiver;
+            console.log(contractReceive);
+            
+            if( !contractReceive.contractId || !contractReceive.receiveTotal || !contractReceive.receiveDay || !contractReceive.receiver || !contractReceive.contractId ){
+            	AlertService.error("cpmApp.contractReceive.save.paramNone");
+            	return;
             }
+            ContractReceive.update(contractReceive,
+            	function(data, headers){
+            		vm.isSaving = false;
+            		if(headers("X-cpmApp-alert") == 'cpmApp.contractReceive.updated'){
+            			$state.go(vm.previousState);
+            		}
+	        	},
+	        	function(error){
+	        		vm.isSaving = false;
+	        	}
+            );
+            
         }
-
-        function onSaveSuccess (result) {
-            $scope.$emit('cpmApp:contractReceiveUpdate', result);
-            $state.go('contract-receive');
-            vm.isSaving = false;
-           
-        }
-
-        function onSaveError () {
-            vm.isSaving = false;
-            $state.go('contract-receive');
-        }
-
         vm.datePickerOpenStatus.receiveDay = false;
-        vm.datePickerOpenStatus.createTime = false;
-        vm.datePickerOpenStatus.updateTime = false;
-
         function openCalendar (date) {
             vm.datePickerOpenStatus[date] = true;
         }
+        //员工模态框
+        var unsubscribe = $rootScope.$on('cpmApp:deptInfoSelected', function(event, result) {
+        	vm.contractReceive.receiver = result.name;
+        	console.log(result);
+        });
     }
 })();

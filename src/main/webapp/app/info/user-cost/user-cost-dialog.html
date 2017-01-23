@@ -1,8 +1,6 @@
 <h2><span data-translate="cpmApp.userCost.home.createOrEditLabel" ng-hide="vm.userCost.id">Create or edit a User Cost</span></h2>
 <h2><span data-translate="cpmApp.userCost.home.editLabel" ng-show="vm.userCost.id">Edit a User Cost</span></h2>
 <hr>
-<jhi-alert></jhi-alert>
-<jhi-alert-error></jhi-alert-error>
 <form name="editForm" role="form" novalidate ng-submit="vm.save()">
 	<div class="container-fluid">
 		<div class="row form-horizontal">
@@ -10,7 +8,7 @@
 				<div class="col-sm-6">
 					<label class="control-label" data-translate="cpmApp.userCost.userId" for="field_userId">User Id</label>
 					<input type="text" class="form-control" name="userId" id="field_userId" ng-model="vm.userCost.userId" ng-required="true"
-						ng-disabled="vm.userCost.id"/>
+						ng-disabled="vm.userCost.id" readOnly/>
 				</div>
 				<div class="col-sm-6">
 					<label class="control-label" data-translate="cpmApp.userCost.userName" for="field_userName">User Name</label>
@@ -60,6 +58,8 @@
 		</div>
 	</div>
     <hr>
+    <jhi-alert></jhi-alert>
+	<jhi-alert-error></jhi-alert-error>
     <button type="button" class="btn btn-info" ui-sref="{{ vm.previousState }}">
     	<span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span data-translate="entity.action.back">Back</span>
     </button>
