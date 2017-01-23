@@ -1,6 +1,6 @@
 
 <div>
-    <h2><span data-translate="cpmApp.contractCost.detail.title">Contract Cost</span> {{vm.contractCost.id}}</h2>
+    <h2><span data-translate="{{vm.contractCostDetailTitle}}">Contract Cost</span> {{vm.contractCost.id}}</h2>
     <hr>
     <jhi-alert-error></jhi-alert-error>
     <dl class="dl-horizontal jh-entity-details">
@@ -12,14 +12,6 @@
         <dd>
             <span>{{vm.contractCost.contractName}}</span>
         </dd>
-        <dt><span data-translate="cpmApp.contractCost.budgetId">Budget Id</span></dt>
-        <dd>
-            <span>{{vm.contractCost.budgetTotal}}</span>
-        </dd>
-        <dt><span data-translate="cpmApp.contractCost.dept">Dept</span></dt>
-        <dd>
-            <span>{{vm.contractCost.dept}}</span>
-        </dd>
         <dt><span data-translate="cpmApp.contractCost.name">Name</span></dt>
         <dd>
             <span>{{vm.contractCost.name}}</span>
@@ -27,6 +19,10 @@
         <dt><span data-translate="cpmApp.contractCost.type">Type</span></dt>
         <dd>
             <span>{{vm.contractCost.typeName}}</span>
+        </dd>
+        <dt><span data-translate="cpmApp.contractCost.dept">Dept</span></dt>
+        <dd>
+            <span>{{vm.contractCost.dept}}</span>
         </dd>
         <dt><span data-translate="cpmApp.contractCost.total">Total</span></dt>
         <dd>
@@ -64,7 +60,7 @@
         <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span data-translate="entity.action.back"> Back</span>
     </button>
 
-    <button type="button" ui-sref="contract-cost-detail.edit({id:vm.contractCost.id})" class="btn btn-primary">
+    <button type="button" ui-sref="contract-cost-detail.edit({id:vm.contractCost.id})" class="btn btn-primary"  ng-hide="{{vm.contractCost.type == 1}}">
         <span class="glyphicon glyphicon-pencil"></span>
         <span class="hidden-xs hidden-sm" data-translate="entity.action.edit"> Edit</span>
     </button>

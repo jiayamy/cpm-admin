@@ -2,16 +2,7 @@
     "cpmApp": {
         "projectMonthlyStat" : {
             "home": {
-                "title": "项目月报统计",
-                "createLabel": "Create a new Project Monthly Stat",
-                "createOrEditLabel": "Create or edit a Project Monthly Stat",
-                "search": "Search for Project Monthly Stat"
-            },
-            "created": "A new Project Monthly Stat is created with identifier {{ param }}",
-            "updated": "A Project Monthly Stat is updated with identifier {{ param }}",
-            "deleted": "A Project Monthly Stat is deleted with identifier {{ param }}",
-            "delete": {
-                "question": "Are you sure you want to delete Project Monthly Stat {{ id }}?"
+                "title": "项目月报统计"
             },
             "detail": {
                 "title": "项目月报统计详情",

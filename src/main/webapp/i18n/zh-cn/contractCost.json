@@ -2,10 +2,10 @@
     "cpmApp": {
         "contractCost" : {
             "home": {
-                "title": "合同成本信息",
-                "createLabel": "新建",
-                "createOrEditLabel": "合同成本信息",
-                "search": "查询"
+                "title": "合同报销",
+                "timesheetTitle":"工时成本",
+                "createLabel": "新增",
+                "createOrEditLabel": "合同报销信息"
             },
             "created": "创建成功",
             "updated": "修改成功",
@@ -16,7 +16,8 @@
                 "type1Error":"类型为工时的数据不可删除"
             },
             "detail": {
-                "title": "合同成本信息"
+                "title": "合同报销信息",
+                "timesheetTitle": "工时成本信息"
             },
             "save":{
             	"paramNone":"必填参数为空",

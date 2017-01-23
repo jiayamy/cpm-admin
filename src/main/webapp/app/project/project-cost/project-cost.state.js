@@ -29,7 +29,7 @@
                     squash: true
                 },
                 sort: {
-                    value: 'wpc.id,asc',
+                    value: 'wpc.id,desc',
                     squash: true
                 },
                 projectId: null,
@@ -78,7 +78,7 @@
                     squash: true
                 },
                 sort: {
-                    value: 'wpc.id,asc',
+                    value: 'wpc.id,desc',
                     squash: true
                 },
                 projectId: null,

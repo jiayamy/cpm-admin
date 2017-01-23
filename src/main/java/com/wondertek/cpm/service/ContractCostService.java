@@ -112,9 +112,10 @@ public class ContractCostService {
     }
     /**
      * 查询列表
+     * @param pageType 
      * @return
      */
-	public Page<ContractCostVo> getUserPage(ContractCost contractCost, Pageable pageable) {
+	public Page<ContractCostVo> getUserPage(ContractCost contractCost, Integer pageType, Pageable pageable) {
 		log.debug("Request to get all contractCosts");
 		List<Object[]> objs = userRepository.findUserInfoByLogin(SecurityUtils.getCurrentUserLogin());
 		
@@ -122,9 +123,8 @@ public class ContractCostService {
 			Object[] o = objs.get(0);
 			User user = (User) o[0];
 			DeptInfo deptInfo = (DeptInfo)o[1];
-			return contractCostDao.getUserPage(contractCost,user,deptInfo,pageable);
+			return contractCostDao.getUserPage(contractCost,pageType,user,deptInfo,pageable);
 		}
-		
 		
 		return new PageImpl<>(new ArrayList<ContractCostVo>(), pageable, 0);
 	}

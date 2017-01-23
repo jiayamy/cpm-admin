@@ -29,7 +29,6 @@ import com.wondertek.cpm.CpmConstants;
 import com.wondertek.cpm.config.StringUtil;
 import com.wondertek.cpm.domain.ContractCost;
 import com.wondertek.cpm.domain.vo.ContractCostVo;
-import com.wondertek.cpm.domain.vo.LongValue;
 import com.wondertek.cpm.security.AuthoritiesConstants;
 import com.wondertek.cpm.security.SecurityUtils;
 import com.wondertek.cpm.service.ContractBudgetService;
@@ -59,43 +58,45 @@ public class ContractCostResource {
     public ResponseEntity<Boolean> updateContractCost(@RequestBody ContractCost contractCost) throws URISyntaxException {
         log.debug("REST request to update ContractCost : {}", contractCost);
         Boolean isNew = contractCost.getId() == null;
-        if (contractCost.getContractId() == null || contractCost.getBudgetId() == null
+        if (contractCost.getContractId() == null
         		|| contractCost.getType() == null || contractCost.getCostDay() == null
-        		|| contractCost.getTotal() == null || StringUtil.isNullStr(contractCost.getName())) {
+        		|| contractCost.getTotal() == null || StringUtil.isNullStr(contractCost.getName())
+        		|| contractCost.getTotal() < 0 || contractCost.getDeptId() ==  null
+        		|| StringUtil.isNullStr(contractCost.getDept())) {
         	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.contractCost.save.paramNone", "")).body(null);
 		}
-        if (contractCost.getType() == contractCost.TYPE_HUMAN_COST) {
+        if (contractCost.getType() == ContractCost.TYPE_HUMAN_COST) {
         	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.contractCost.save.type1Error", "")).body(null);
 		}
         String updator = SecurityUtils.getCurrentUserLogin();
         ZonedDateTime updateTime = ZonedDateTime.now();
-        ContractCost newContractCost = contractCostService.getNewContratCost(contractCost);
+//        ContractCost newContractCost = contractCostService.getNewContratCost(contractCost);
         if (isNew) {
-        	newContractCost.setStatus(CpmConstants.STATUS_VALID);
-        	newContractCost.setCreateTime(updateTime);
-        	newContractCost.setCreator(updator);
+        	contractCost.setStatus(CpmConstants.STATUS_VALID);
+        	contractCost.setCreateTime(updateTime);
+        	contractCost.setCreator(updator);
 		}else {
-			ContractCostVo contractCostVo = contractCostService.getContractCost(newContractCost.getId());
+			ContractCostVo contractCostVo = contractCostService.getContractCost(contractCost.getId());
 			if (contractCostVo == null) {
 				return  ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.contractCost.save.noPerm", "")).body(null);
 			}
-			ContractCost old = contractCostService.findOne(newContractCost.getId());
+			ContractCost old = contractCostService.findOne(contractCost.getId());
 			if (old == null) {
 				return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.contractCost.save.idNone", "")).body(null);
-			}else if (old.getContractId() != newContractCost.getContractId().longValue() || old.getBudgetId() != newContractCost.getBudgetId().longValue() ) {
+			}else if (old.getContractId() != contractCost.getContractId().longValue()) {
 				return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.contractCost.save.contractIdError", "")).body(null);
 			}else if (old.getStatus() == CpmConstants.STATUS_DELETED) {
 				return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.contractCost.save.statue2Error", "")).body(null);
-			}else if (old.getType().intValue() != newContractCost.getType()) {
+			}else if (old.getType().intValue() != contractCost.getType()) {
 				return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.contractCost.save.type1Error", "")).body(null);
 			}
-			newContractCost.setStatus(old.getStatus());
-			newContractCost.setCreateTime(old.getCreateTime());
-			newContractCost.setCreator(old.getCreator());
+			contractCost.setStatus(old.getStatus());
+			contractCost.setCreateTime(old.getCreateTime());
+			contractCost.setCreator(old.getCreator());
 		}
-        newContractCost.setUpdateTime(updateTime);
-        newContractCost.setUpdator(updator);
-        ContractCost result =  contractCostService.save(newContractCost);
+        contractCost.setUpdateTime(updateTime);
+        contractCost.setUpdator(updator);
+        ContractCost result =  contractCostService.save(contractCost);
         if (isNew) {
         	return ResponseEntity.ok()
                     .headers(HeaderUtil.createEntityCreationAlert("contractCost", result.getId().toString()))
@@ -114,6 +115,7 @@ public class ContractCostResource {
     		@RequestParam(value = "contractId",required=false) Long contractId, 
     		@RequestParam(value = "type",required=false) Integer type, 
     		@RequestParam(value = "name",required=false) String name, 
+    		@RequestParam(value = "pageType",required=true) Integer pageType, 
     		@ApiParam Pageable pageable)
         throws URISyntaxException {
         log.debug("REST request to get a page of ContractCosts");
@@ -121,7 +123,7 @@ public class ContractCostResource {
         contractCost.setContractId(contractId);
         contractCost.setType(type);
         contractCost.setName(name);
-        Page<ContractCostVo> page = contractCostService.getUserPage(contractCost,pageable);
+        Page<ContractCostVo> page = contractCostService.getUserPage(contractCost,pageType,pageable);
         
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/contract-costs");
         
@@ -146,7 +148,7 @@ public class ContractCostResource {
     public ResponseEntity<Void> deleteContractCost(@PathVariable Long id) {
         log.debug("REST request to delete ContractCost : {}", id);
         ContractCostVo contractCost = contractCostService.getContractCost(id);
-        if (contractCost != null) {
+        if (contractCost == null) {
         	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.contractCost.save.noPerm", "")).body(null);
 		}
         if (contractCost.getStatus() == CpmConstants.STATUS_DELETED) {
@@ -157,18 +159,5 @@ public class ContractCostResource {
 		}
         contractCostService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert("contractCost", id.toString())).build();
-    }
-    
-    @GetMapping("/contract-costs/queryBudges")
-    public ResponseEntity<List<LongValue>> queryBudges(@RequestParam(value = "contractId",required=false) Long contractId){
-    	log.debug("REST request to queryBudges");
-    	List<LongValue> list = contractBudgetService.queryBudges(contractId);
-    	return new ResponseEntity<List<LongValue>>(list, HttpStatus.OK);
-    }
-    @GetMapping("/contract-costs/queryAllBudges")
-    public ResponseEntity<List<LongValue>> queryAllBudges(){
-    	log.debug("REST request to queryBudges");
-    	List<LongValue> list = contractBudgetService.queryBudges();
-    	return new ResponseEntity<List<LongValue>>(list, HttpStatus.OK);
     }
 }

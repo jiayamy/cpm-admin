@@ -160,32 +160,5 @@ public class ContractBudgetService {
     		returnList = contractBudgetDao.queryUserContractBudget(user,deptInfo,contractId);
     	}
 		return returnList;
-	}
-
-	public List<LongValue> queryBudges(Long contractId) {
-		List<LongValue> returnList = new ArrayList<LongValue>();
-		List<ContractBudget> list = contractBudgetRepository.findAll();
-		if (list != null) {
-			for (ContractBudget contractBudget : list) {
-				if (contractBudget.getContractId() == contractId) {
-					returnList.add(new LongValue(contractBudget.getId(), contractBudget.getName()+" : "+contractBudget.getBudgetTotal()));
-				}
-			}
-			return returnList;
-		}
-		return null;
-	}
-	
-	public List<LongValue> queryBudges() {
-		List<LongValue> returnList = new ArrayList<LongValue>();
-		List<ContractBudget> list = contractBudgetRepository.findAll();
-		if (list != null) {
-			for (ContractBudget contractBudget : list) {
-				returnList.add(new LongValue(contractBudget.getId(), contractBudget.getName()+" : "+contractBudget.getBudgetTotal()));
-			}
-			return returnList;
-		}
-		return null;
-	}
-	
+	}	
 }

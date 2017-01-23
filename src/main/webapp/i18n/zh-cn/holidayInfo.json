@@ -3,7 +3,7 @@
         "holidayInfo" : {
             "home": {
                 "title": "节假日信息",
-                "createLabel": "添加节假日",
+                "createLabel": "新增",
                 "createOrEditLabel": "添加节假日信息",
                 "editLabel": "编辑节假日信息",
                 "search": "搜索节假日信息",

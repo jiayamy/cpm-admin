@@ -19,7 +19,6 @@ import com.wondertek.cpm.domain.DeptInfo;
 import com.wondertek.cpm.domain.ProjectCost;
 import com.wondertek.cpm.domain.User;
 import com.wondertek.cpm.domain.vo.ContractCostVo;
-import com.wondertek.cpm.domain.vo.ProjectCostVo;
 @Repository("contractCostDao")
 public class ContractCostDaoImpl extends GenericDaoImpl<ContractCost, Long> implements ContractCostDao {
 	@Autowired
@@ -36,7 +35,7 @@ public class ContractCostDaoImpl extends GenericDaoImpl<ContractCost, Long> impl
 	}
 
 	@Override
-	public Page<ContractCostVo> getUserPage(ContractCost contractCost, User user, DeptInfo deptInfo,
+	public Page<ContractCostVo> getUserPage(ContractCost contractCost, Integer pageType, User user, DeptInfo deptInfo,
 			Pageable pageable) {
 		StringBuffer countHql = new StringBuffer();
 		StringBuffer queryHql = new StringBuffer();
@@ -69,9 +68,13 @@ public class ContractCostDaoImpl extends GenericDaoImpl<ContractCost, Long> impl
 			params.add(deptInfo.getId());
 		}
 		whereHql.append(")");
-		whereHql.append(" and wcc.type>?");
-		params.add(contractCost.TYPE_HUMAN_COST);
-		
+		if(pageType == 1){//工时
+			whereHql.append(" and wcc.type = ?");	
+			params.add(ProjectCost.TYPE_HUMAN_COST);
+		}else{//其他
+			whereHql.append(" and wcc.type > ?");	
+			params.add(ProjectCost.TYPE_HUMAN_COST);
+		}
 		//查询条件
 		if (contractCost.getName() != null) {
 			whereHql.append(" and wcc.name like ?");

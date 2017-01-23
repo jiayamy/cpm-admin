@@ -2,7 +2,7 @@
 <hr>
 <jhi-alert></jhi-alert>
 <jhi-alert-error></jhi-alert-error>
-<form name="myForm" role="form" novalidate ng-submit="vm.save()">
+<form name="myForm" role="form" ng-submit="vm.save()">
 	<div class="container-fluid">
 		<div class="row form-horizontal">
 			<div class="form-group">
@@ -18,20 +18,6 @@
 	                </div>
         		</div>
         		<div class="col-sm-6">
-        			<label class="control-label" data-translate="cpmApp.contractCost.budgetId" for="field_budgetId">Budget Id</label>
-              		<select class="form-control"  name="budgetId" id="field_budgetId" ng-model="vm.contractCost.budgetId"
-	            		ng-required="true" 
-		            	ng-options="budget.val for budget in vm.contractBudgets track by budget.key"
-		            	>
-		         	</select>
-	                <div class="help-block"
-	                   ng-hide="vm.contractCost.budgetId" data-translate="entity.validation.required" style="color:red">
-	                    This field is required.
-	                </div>
-        		</div>
-        	</div>
-        	<div class="form-group">
-        		<div class="col-sm-6">
         			<label class="control-label" data-translate="cpmApp.contractCost.name" for="field_name">Name</label>
 	            	<input type="text" class="form-control" name="name" id="field_name" ng-required="true" ng-model="vm.contractCost.name"
 	                     />
@@ -40,6 +26,23 @@
 	                    This field is required.
 	                </div>
         		</div>
+        	</div>
+        	<div class="form-group">
+        		<div class="col-sm-6">
+        			<label class="control-label" for="field_dept" data-translate="cpmApp.contractCost.dept">Dept</label>
+					<div class="input-group">
+		     			<input type="text" class="form-control" name="dept" id="field_dept"
+		                  	ng-model="vm.contractCost.dept" ng-required="true" readOnly="true"
+		                   	/>
+	                   	<span class="input-group-btn">
+	                     	<button type="button" class="btn btn-default" ui-sref="{{vm.queryDept}}({selectType:2,showChild:true,showUser:false})"><i class="glyphicon glyphicon-home"></i></button>
+	                 	</span>
+	     			</div>
+	     			<div class="help-block"
+	                   ng-show="myForm.dept.$error.required" data-translate="entity.validation.required" style="color:red">
+	                    This field is required.
+	                </div>
+	     		</div>
 				<div class="col-sm-6">
 					<label class="control-label" data-translate="cpmApp.contractCost.type" for="field_type">Type</label>
 					<select class="form-control" name="type" ng-model="vm.contractCost.type" id="field_type"

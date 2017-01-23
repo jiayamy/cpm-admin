@@ -3,7 +3,7 @@
         "userCost" : {
             "home": {
                 "title": "员工成本",
-                "createLabel": "新建",
+                "createLabel": "新增",
                 "createOrEditLabel": "添加员工成本",
                 "editLabel": "编辑员工成本",
                 "search": "Search for User Cost",
