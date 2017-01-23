@@ -117,8 +117,8 @@
                  }]
             }
         })
-        .state('contract-info-detail.edit.queryDept', {
-            parent: 'contract-info-detail.edit',
+        .state('contract-recieve-detail.edit.queryDept', {
+            parent: 'contract-recieve-detail.edit',
             url: '/queryDept?selectType&showChild&dataType',
             data: {
                 authorities: ['ROLE_USER']

@@ -11,5 +11,9 @@ import java.util.List;
  */
 @SuppressWarnings("unused")
 public interface ProductPriceRepository extends JpaRepository<ProductPrice,Long> {
+	
+	@Query(" from ProductPrice where name = ?1 and source = ?2 and type = ?3")
+	List<ProductPrice> findListByParams(String name, Integer source,
+			Integer type);
 
 }

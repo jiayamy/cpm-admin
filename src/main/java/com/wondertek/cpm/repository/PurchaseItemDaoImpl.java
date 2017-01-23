@@ -15,8 +15,11 @@ import org.springframework.stereotype.Repository;
 import com.wondertek.cpm.CpmConstants;
 import com.wondertek.cpm.config.StringUtil;
 import com.wondertek.cpm.domain.ContractInfo;
+import com.wondertek.cpm.domain.DeptInfo;
 import com.wondertek.cpm.domain.PurchaseItem;
+import com.wondertek.cpm.domain.User;
 import com.wondertek.cpm.domain.vo.ContractInfoVo;
+import com.wondertek.cpm.domain.vo.LongValue;
 import com.wondertek.cpm.domain.vo.PurchaseItemVo;
 
 @Repository("purchaseItemDao")
@@ -36,7 +39,7 @@ public class PurchaseItemDaoImpl extends GenericDaoImpl<PurchaseItem, Long> impl
 	}
 
 	@Override
-	public Page<PurchaseItemVo> getPurchaserPage(PurchaseItem purchaseItem,
+	public Page<PurchaseItemVo> getPurchaserPage(PurchaseItem purchaseItem,User user,DeptInfo deptInfo,
 			Pageable pageable) {
 		StringBuffer queryHql = new StringBuffer();
 		StringBuffer countHql = new StringBuffer();
@@ -49,10 +52,19 @@ public class PurchaseItemDaoImpl extends GenericDaoImpl<PurchaseItem, Long> impl
 		countHql.append("select count(wpi.id)");
 		
 		whereHql.append(" from PurchaseItem wpi");
+		whereHql.append(" left join User wju on wpi.creator = wju.login");
+		whereHql.append(" left join DeptInfo wdi on wju.deptId = wdi.id");
 		whereHql.append(" left join ContractInfo wci on wci.id = wpi.contractId");
 		whereHql.append(" left join ContractBudget wcb on wcb.id = wpi.budgetId");
-		
-		whereHql.append(" where 1=1");
+		//权限
+		whereHql.append(" where (wpi.creator = ?");
+		params.add(user.getLogin());
+		if (user.getIsManager()) {
+			whereHql.append(" or wdi.idPath like ? or wdi.id = ?");
+			params.add(deptInfo.getIdPath() + deptInfo.getIdPath() + "/%");
+			params.add(deptInfo.getId());
+		}
+		whereHql.append(")");
 		
 		//查询条件
 		if (purchaseItem.getContractId() != null) {
@@ -131,6 +143,36 @@ public class PurchaseItemDaoImpl extends GenericDaoImpl<PurchaseItem, Long> impl
 			return new PurchaseItemVo((PurchaseItem)list.get(0)[0],StringUtil.null2Str(list.get(0)[1]),StringUtil.null2Str(list.get(0)[2]),StringUtil.null2Str(list.get(0)[3]));
 		}
 		return null;
+	}
+
+	@Override
+	public List<LongValue> queryUserContract(User user,DeptInfo deptInfo) {
+		StringBuffer queryHql = new StringBuffer();
+		ArrayList<Object> params = new ArrayList<Object>();
+		
+		queryHql.append(" select distinct wci.id,wci.serialNum,wci.name from ContractInfo as wci");
+		queryHql.append(" left join PurchaseItem wpi on wci.id = wpi.contractId");
+		queryHql.append(" left join User wju on wpi.creator = wju.login");
+		queryHql.append(" left join DeptInfo wdi on wju.deptId = wdi.id");
+		queryHql.append(" where (wpi.creator = ?");
+		
+		params.add(user.getLogin());
+		
+		if (user.getIsManager()) {
+			queryHql.append(" or wdi.idPath like ? or wdi.id = ?");
+			params.add(deptInfo.getIdPath() + deptInfo.getIdPath() + "/%");
+			params.add(deptInfo.getId());
+		}
+		
+		queryHql.append(")");
+		List<Object[]> list = this.queryAllHql(queryHql.toString(), params.toArray());
+		List<LongValue> resultList = new ArrayList<LongValue>();
+		if (list != null && !list.isEmpty()) {
+			for (Object[] o : list) {
+				resultList.add(new LongValue(StringUtil.nullToLong(o[0]), StringUtil.null2Str(o[1]) + ":" + StringUtil.null2Str(o[2])));
+			}
+		}
+		return resultList;
 	}
 
 

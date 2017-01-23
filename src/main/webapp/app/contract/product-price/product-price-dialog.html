@@ -1,90 +1,85 @@
-
-<form name="editForm" role="form" novalidate ng-submit="vm.save()">
-
-    <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
-                ng-click="vm.clear()">&times;</button>
-        <h4 class="modal-title" id="myProductPriceLabel" data-translate="cpmApp.productPrice.home.createOrEditLabel">Create or edit a Product Price</h4>
-    </div>
-    <div class="modal-body">
-        <jhi-alert-error></jhi-alert-error>
-        <div class="form-group" ng-show="vm.productPrice.id">
-            <label for="id" data-translate="global.field.id">ID</label>
-            <input type="text" class="form-control" id="id" name="id"
-                    ng-model="vm.productPrice.id" readonly />
-        </div>
-        <div class="form-group">
-            <label class="control-label" data-translate="cpmApp.productPrice.name" for="field_name">Name</label>
-            <input type="text" class="form-control" name="name" id="field_name"
-                    ng-model="vm.productPrice.name"
-                    required />
-        </div>
-        <div ng-show="editForm.name.$invalid">
-                <p class="help-block"
-                   ng-show="editForm.name.$error.required" data-translate="entity.validation.required" style="color:red">
-                    This field is required.
-                </p>
-         </div>
-        <div class="form-group">
-            <label class="control-label" data-translate="cpmApp.productPrice.type" for="field_type">Type</label>
-            <select class="form-control" name="type" ng-model="vm.productPrice.type"
-					ng-options="type.name for type in vm.types track by type.id" required>
-					<option value="" data-translate="cpmApp.productPrice.home.search1">Please chose type</option>
-			</select>
-        </div>
-        <div ng-show="editForm.type.$invalid">
-                <p class="help-block"
-                   ng-show="editForm.type.$error.required" data-translate="entity.validation.required" style="color:red">
-                    This field is required.
-                </p>
-        </div>
-        
-        <div class="form-group">
-            <label class="control-label" data-translate="cpmApp.productPrice.units" for="field_units">Units</label>
-            <input type="text" class="form-control" name="units" id="field_units"
-                    ng-model="vm.productPrice.units"
-                     required />
-        </div>
-        <div ng-show="editForm.source.$invalid">
-                <p class="help-block"
-                   ng-show="editForm.source.$error.required" data-translate="entity.validation.required" style="color:red">
-                    This field is required.
-                </p>
-        </div>
-        
-        <div class="form-group">
-            <label class="control-label" data-translate="cpmApp.productPrice.price" for="field_price">Price</label>
-            <input type="number" class="form-control" name="price" id="field_price"
-                    ng-model="vm.productPrice.price"
-                     required />
-        </div>
-        <div ng-show="editForm.price.$invalid">
-                <p class="help-block"
-                   ng-show="editForm.price.$error.required" data-translate="entity.validation.required" style="color:red">
-                    This field is required.
-                </p>
-        </div>
-        
-        <div class="form-group">
-            <label class="control-label" data-translate="cpmApp.productPrice.source" for="field_source">Source</label>
-            <select class="form-control" name="source" ng-model="vm.productPrice.source"
-					ng-options="source.name for source in vm.sources track by source.id" required>
-					<option value="" data-translate="cpmApp.productPrice.home.search2">Please chose source</option>
-			</select>
-        </div>
-        <div ng-show="editForm.source.$invalid">
-                <p class="help-block"
-                   ng-show="editForm.source.$error.required" data-translate="entity.validation.required" style="color:red">
-                    This field is required.
-                </p>
-        </div>
-    </div>
-    <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="vm.clear()">
-            <span class="glyphicon glyphicon-ban-circle"></span>&nbsp;<span data-translate="entity.action.cancel">Cancel</span>
-        </button>
-        <button type="submit" ng-disabled="editForm.$invalid || vm.isSaving" class="btn btn-primary">
-            <span class="glyphicon glyphicon-save"></span>&nbsp;<span data-translate="entity.action.save">Save</span>
-        </button>
-    </div>
+<h2><span data-translate="cpmApp.productPrice.home.createOrEditLabel">Create or edit a Project Info</span></h2>
+<hr>
+<form name="myForm" role="form" ng-submit="vm.save()">
+	<div class="container-fluid">
+		<div class="row form-horizontal">
+			<div class="form-group">
+				<div class="col-sm-6">
+					<label class="control-label" data-translate="cpmApp.productPrice.name" for="field_name"> Name</label>
+					<input type="text" class="form-control" id="field_name" name="name"
+                		ng-model="vm.productPrice.name" ng-required="true" ng-minlength="1" ng-maxlength="100" />
+                	<div ng-show="myForm.name.$dirty&&myForm.name.$error.maxlength" class="alert alert-danger help-block"> 
+                    	定价单名称不能大于100
+                	</div>
+                	<div class="help-block"
+	                   ng-show="myForm.name.$error.required" data-translate="cpmApp.productPrice.home.required" style="color:red">
+	                    	This field is required.
+	                </div>
+				</div>
+			</div>
+			<div class="form-group">
+	     		<div class="col-sm-6">
+					<label class="control-label" data-translate="cpmApp.productPrice.type" for="field_type">Type</label>
+	         		<select class="form-control" name="type" ng-model="vm.productPrice.type" id="field_type"
+	            		ng-required="true"
+		            	ng-options="type.name for type in vm.types track by type.id">
+		            </select>
+		            <div class="help-block"
+	                   ng-hide="vm.productPrice.type" data-translate="cpmApp.productPrice.home.required1" style="color:red">
+	                    This field is required.
+	                </div>
+				</div>
+				<div class="col-sm-6">
+					<label class="control-label" data-translate="cpmApp.productPrice.source" for="field_source" >Source</label>
+	                <select class="form-control" name="source" ng-model="vm.productPrice.source" id="field_source"
+	            		ng-required="true"
+		            	ng-options="source.name for source in vm.sources track by source.id">
+		            </select>
+		            <div class="help-block"
+	                   ng-hide="vm.productPrice.source" data-translate="cpmApp.productPrice.home.required2" style="color:red">
+	                    This field is required.
+	                </div>
+				</div>
+	     	</div>
+	     	<div class="form-group">
+	     		<div class="col-sm-6">
+	          		<label class="control-label" data-translate="cpmApp.productPrice.units" for="field_units">Units</label>
+		          		<input type="text" class="form-control" name="units" id="field_units"
+		                  	ng-model="vm.productPrice.units" ng-required="true" ng-minlength="1"
+	                   	/>
+                   	<div class="help-block"
+	                   ng-hide="vm.productPrice.units" data-translate="cpmApp.productPrice.home.required3" style="color:red">
+	                    This field is required.
+	                </div>
+	      		</div>
+				<div class="col-sm-6">
+	     			<label class="control-label" data-translate="cpmApp.productPrice.price" for="field_price" >Price</label>
+	  				<input type="number" class="form-control" name="price" id="field_price"
+	                  	ng-model="vm.productPrice.price" ng-required="true" ng-minlength="1"
+	                   	/>
+                   	<div ng-show="myForm.price.$dirty&&myForm.price.$error.number" class="alert alert-danger help-block"> 
+                    	单价必须为数字
+                	</div>
+                	<div ng-show="myForm.price.$dirty&&myForm.price.$error.min" class="alert alert-danger help-block"> 
+                		单价最小值为0
+           			</div>
+           			<div class="help-block"
+	                   ng-hide="vm.productPrice.price" data-translate="cpmApp.productPrice.home.required4" style="color:red">
+	                    This field is required.
+	                </div>
+				</div>
+	     	</div>
+		</div>
+	</div>
+	<hr>
+	<jhi-alert></jhi-alert>
+	<jhi-alert-error></jhi-alert-error>
+    <button type="submit"
+        ui-sref="{{ vm.previousState }}"
+        class="btn btn-info">
+        <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span data-translate="entity.action.back"> Back</span>
+    </button>
+    <button type="submit" ng-disabled="!myForm.$valid || vm.isSaving" class="btn btn-primary">
+        <span class="glyphicon glyphicon-save"></span>&nbsp;<span data-translate="entity.action.save">Save</span>
+    </button>
 </form>

@@ -5,9 +5,9 @@
         .module('cpmApp')
         .controller('PurchaseItemController', PurchaseItemController);
 
-    PurchaseItemController.$inject = ['$scope', '$state', 'PurchaseItem', 'ProjectInfo', 'ParseLinks', 'AlertService', 'paginationConstants', 'pagingParams'];
+    PurchaseItemController.$inject = ['$scope', '$state', 'PurchaseItem', 'ParseLinks', 'AlertService', 'paginationConstants', 'pagingParams'];
 
-    function PurchaseItemController ($scope, $state, PurchaseItem,ProjectInfo, ParseLinks, AlertService, paginationConstants, pagingParams) {
+    function PurchaseItemController ($scope, $state, PurchaseItem, ParseLinks, AlertService, paginationConstants, pagingParams) {
         var vm = this;
 
         vm.loadPage = loadPage;
@@ -43,7 +43,7 @@
         vm.contractInfos = [];
         loadContract();
         function loadContract(){
-        	ProjectInfo.queryUserContract({
+        	PurchaseItem.queryUserContract({
         		
         	},
         	function(data, headers){

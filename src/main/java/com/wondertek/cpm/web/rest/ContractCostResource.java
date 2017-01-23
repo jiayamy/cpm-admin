@@ -30,6 +30,7 @@ import com.wondertek.cpm.config.StringUtil;
 import com.wondertek.cpm.domain.ContractCost;
 import com.wondertek.cpm.domain.vo.ContractCostVo;
 import com.wondertek.cpm.domain.vo.LongValue;
+import com.wondertek.cpm.security.AuthoritiesConstants;
 import com.wondertek.cpm.security.SecurityUtils;
 import com.wondertek.cpm.service.ContractBudgetService;
 import com.wondertek.cpm.service.ContractCostService;
@@ -52,7 +53,7 @@ public class ContractCostResource {
     @Inject
     private ContractBudgetService contractBudgetService;
     /**
-     * ÐÂÔöºÍÐÞ¸Ä
+     * ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Þ¸ï¿½
      * @param contractCost
      * @return
      * @throws URISyntaxException
@@ -111,7 +112,7 @@ public class ContractCostResource {
 		}
     }
     /**
-     * Ò³ÃæËÑË÷²éÑ¯
+     * Ò³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ñ¯
      * @param contractId
      * @param type
      * @param name
@@ -140,7 +141,7 @@ public class ContractCostResource {
         return new ResponseEntity<List<ContractCostVo>>(page.getContent(), headers,HttpStatus.OK);
     }
     /**
-     * ¸ù¾Ýid²éÑ¯ContractCostVo ·µ¸øÒ³Ãæ£¬»ØÏÔ
+     * ï¿½ï¿½ï¿½ï¿½idï¿½ï¿½Ñ¯ContractCostVo ï¿½ï¿½ï¿½ï¿½Ò³ï¿½æ£¬ï¿½ï¿½ï¿½ï¿½
      * @param id
      * @return
      */

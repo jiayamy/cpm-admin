@@ -33,8 +33,6 @@
 	        		vm.contractInfos = data;
 	        		if(vm.contractInfos && vm.contractInfos.length > 0){
 	        			var select = false;
-	        			console.log(entity);
-	        			console.log(vm.contractInfos);
 	        			for(var i = 0; i < vm.contractInfos.length; i++){
 	        				if(entity.contractId == vm.contractInfos[i].key){
 	        					vm.contractBudget.contractId = vm.contractInfos[i];
@@ -56,7 +54,7 @@
             vm.isSaving = true;
             
            var contractBudget = {};
-           contractBudget.id = vm.contractBudget.id
+           contractBudget.id = vm.contractBudget.id;
            contractBudget.contractId = vm.contractBudget.contractId;
            contractBudget.userId = vm.contractBudget.userId;
            contractBudget.userName = vm.contractBudget.userName;
