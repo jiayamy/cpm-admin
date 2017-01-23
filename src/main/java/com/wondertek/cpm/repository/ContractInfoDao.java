@@ -30,8 +30,15 @@ public interface ContractInfoDao extends GenericDao<ContractInfo, Long>{
 	 * 查询用户能看到的合同信息
 	 */
 	public List<LongValue> queryUserContract(User user, DeptInfo deptInfo);
-	
+	/**
+	 * 更新完成率
+	 * @return
+	 */
 	public int finishContractInfo(Long id, Double finishRate, String updator);
+	/**
+	 * 更新合同的回款总额
+	 */
+	public int updateReceiveTotal(Long contractId, Double receiveTotal, Double oldTotal);
 	
 	
 }

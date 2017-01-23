@@ -43,8 +43,8 @@ public class ContractReceiveDaoImpl extends GenericDaoImpl<ContractReceive, Long
 		queryHql.append(" from ContractReceive wcr");
 		queryHql.append(" left join ContractInfo wci on wci.id = wcr.contractId");
 		queryHql.append(" left join DeptInfo wdi on wdi.id = wci.deptId");
-		queryHql.append(" left join DeptInfo wdi2 on wdi.id = wci.consultantsDeptId");
-		queryHql.append(" where (wci.salesmanid = ? or wci.consultantsDeptId = ? or wci.creator = ?");
+		queryHql.append(" left join DeptInfo wdi2 on wdi2.id = wci.consultantsDeptId");
+		queryHql.append(" where (wci.salesmanId = ? or wci.consultantsDeptId = ? or wci.creator = ?");
 		
 		params.add(user.getId());
 		params.add(user.getId());
@@ -61,9 +61,9 @@ public class ContractReceiveDaoImpl extends GenericDaoImpl<ContractReceive, Long
 		}
 		queryHql.append(") and wcr.id = ?");
 		params.add(id);
-		List list = this.queryAllHql(queryHql.toString(),params.toArray());
-		if (list != null && list.isEmpty()) {
-			return new ContractReceiveVo((ContractReceive)list.get(0),StringUtil.null2Str(list.get(1)),StringUtil.null2Str(list.get(2)));
+		List<Object[]> list = this.queryAllHql(queryHql.toString(),params.toArray());
+		if (list != null && !list.isEmpty()) {
+			return new ContractReceiveVo((ContractReceive)list.get(0)[0],StringUtil.null2Str(list.get(0)[1]),StringUtil.null2Str(list.get(0)[2]));
 		}
 		return null;
 	}
@@ -79,13 +79,13 @@ public class ContractReceiveDaoImpl extends GenericDaoImpl<ContractReceive, Long
 		List<Object> params = new ArrayList<Object>();
 		
 		queryHql.append("select wcr,wci.serialNum,wci.name");
-		countHql.append("select count(wcc.id)");
+		countHql.append("select count(wcr.id)");
 		
 		whereHql.append(" from ContractReceive wcr");
 		whereHql.append(" left join ContractInfo wci on wci.id = wcr.contractId");
 		whereHql.append(" left join DeptInfo wdi on wdi.id = wci.deptId");
-		whereHql.append(" left join DeptInfo wdi2 on wdi.id = wci.consultantsDeptId");
-		whereHql.append(" where (wci.salesmanid = ? or wci.consultantsDeptId = ? or wci.creator = ?");
+		whereHql.append(" left join DeptInfo wdi2 on wdi2.id = wci.consultantsDeptId");
+		whereHql.append(" where (wci.salesmanId = ? or wci.consultantsDeptId = ? or wci.creator = ?");
 		
 		params.add(user.getId());
 		params.add(user.getId());

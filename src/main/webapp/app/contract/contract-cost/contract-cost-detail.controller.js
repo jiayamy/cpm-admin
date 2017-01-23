@@ -5,13 +5,21 @@
         .module('cpmApp')
         .controller('ContractCostDetailController', ContractCostDetailController);
 
-    ContractCostDetailController.$inject = ['$scope', '$rootScope', '$stateParams', 'previousState', 'entity', 'ContractCost'];
+    ContractCostDetailController.$inject = ['$scope', '$rootScope', '$stateParams', 'previousState', 'entity', 'ContractCost','pageType'];
 
-    function ContractCostDetailController($scope, $rootScope, $stateParams, previousState, entity, ContractCost) {
+    function ContractCostDetailController($scope, $rootScope, $stateParams, previousState, entity, ContractCost,pageType) {
         var vm = this;
 
         vm.contractCost = entity;
-        vm.types = [{key:1,val:'工时'},{key:2,val:'差旅'},{key:3,val:'采购'},{key:4,val:'商务'}];
+        if(pageType == 1){
+        	vm.types = [{key:1,val:'工时'}];
+        	vm.canEdit = false;
+        	vm.contractCostDetailTitle = "cpmApp.contractCost.detail.timesheetTitle";
+        }else{
+        	vm.types = [{key:2,val:'差旅'},{key:3,val:'采购'},{key:4,val:'商务'}];
+        	vm.canEdit = true;
+        	vm.contractCostDetailTitle = "cpmApp.contractCost.detail.title";
+        }
         vm.statuss = [{key:1,val:'正常'},{key:2,val:'删除'}];
         for(var j = 0; j < vm.types.length; j++){
         	if(vm.contractCost.type == vm.types[j].key){

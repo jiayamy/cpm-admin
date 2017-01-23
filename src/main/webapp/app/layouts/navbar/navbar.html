@@ -39,7 +39,7 @@
                         </li>
                         <li ui-sref-active="active" has-authority="ROLE_CONTRACT_RECEIVE">
                             <a ui-sref="contract-receive" ng-click="vm.collapseNavbar()">
-                                <span class="glyphicon glyphicon-usd"></span>&nbsp;
+                                <span class="glyphicon glyphicon-euro"></span>&nbsp;
                                 <span data-translate="global.menu.contract.contractReceive">Contract Receive</span>
                             </a>
                         </li>
@@ -69,8 +69,14 @@
                         </li>
                         <li ui-sref-active="active" has-authority="ROLE_CONTRACT_COST">
                             <a ui-sref="contract-cost" ng-click="vm.collapseNavbar()">
-                                <span class="glyphicon glyphicon-euro"></span>&nbsp;
+                                <span class="glyphicon glyphicon-usd"></span>&nbsp;
                                 <span data-translate="global.menu.contract.contractCost">Contract Cost</span>
+                            </a>
+                        </li>
+                        <li ui-sref-active="active" has-authority="ROLE_CONTRACT_COST">
+                            <a ui-sref="contract-cost-timesheet" ng-click="vm.collapseNavbar()">
+                                <span class="glyphicon glyphicon-gbp"></span>&nbsp;
+                                <span data-translate="global.menu.contract.contractCostTimesheet">Contract Timesheet Cost</span>
                             </a>
                         </li>
                         <li ui-sref-active="active" has-authority="ROLE_CONTRACT_TIMESHEET">

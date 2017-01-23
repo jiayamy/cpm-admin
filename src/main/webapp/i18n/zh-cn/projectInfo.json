@@ -3,7 +3,7 @@
         "projectInfo" : {
             "home": {
                 "title": "项目信息",
-                "createLabel": "新建",
+                "createLabel": "新增",
                 "createOrEditLabel": "项目信息"
             },
             "created": "新建成功",

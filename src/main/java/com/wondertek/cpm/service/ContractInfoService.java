@@ -1,7 +1,5 @@
 package com.wondertek.cpm.service;
 
-import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
-
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +25,6 @@ import com.wondertek.cpm.repository.ContractFinishInfoRepository;
 import com.wondertek.cpm.repository.ContractInfoDao;
 import com.wondertek.cpm.repository.ContractInfoRepository;
 import com.wondertek.cpm.repository.UserRepository;
-import com.wondertek.cpm.repository.search.ContractInfoSearchRepository;
 import com.wondertek.cpm.security.SecurityUtils;
 
 /**
@@ -42,8 +39,8 @@ public class ContractInfoService {
     @Inject
     private ContractInfoRepository contractInfoRepository;
 
-    @Inject
-    private ContractInfoSearchRepository contractInfoSearchRepository;
+//    @Inject
+//    private ContractInfoSearchRepository contractInfoSearchRepository;
     
     @Inject
     private ContractInfoDao contractInfoDao;
@@ -104,7 +101,7 @@ public class ContractInfoService {
         	contractInfo.setStatus(CpmConstants.STATUS_DELETED);
         	contractInfo.setUpdateTime(ZonedDateTime.now());
         	contractInfo.setUpdator(SecurityUtils.getCurrentUserLogin());
-            contractInfoSearchRepository.save(contractInfo);
+            contractInfoRepository.save(contractInfo);
 		}
     }
 
@@ -117,10 +114,11 @@ public class ContractInfoService {
     @Transactional(readOnly = true)
     public Page<ContractInfo> search(String query, Pageable pageable) {
     	log.debug("Request to search for a page of ContractInfos for query {}", query);
-        Page<ContractInfo> result = contractInfoSearchRepository.search(queryStringQuery(query), pageable);
+    	Page<ContractInfo> result = null;
+//        Page<ContractInfo> result = contractInfoSearchRepository.search(queryStringQuery(query), pageable);
         return result;
     }
-    
+    @Transactional(readOnly = true) 
 	public Page<ContractInfoVo> getContractInfoPage(ContractInfo contractInfo, Pageable pageable) {
 		List<Object[]> objs = userRepository.findUserInfoByLogin(SecurityUtils.getCurrentUserLogin());
 		if (objs != null) {
@@ -132,11 +130,11 @@ public class ContractInfoService {
 		}
 		return new PageImpl(new ArrayList<ContractInfoVo>(), pageable, 0);
 	}
-
+    @Transactional(readOnly = true) 
 	public boolean checkByContract(String serialNum, Long id) {
 		return contractInfoDao.checkByContract(serialNum, id);
 	}
-
+    @Transactional(readOnly = true) 
 	public ContractInfoVo getUserContractInfo(Long id) {
 		List<Object[]> objs = userRepository.findUserInfoByLogin(SecurityUtils.getCurrentUserLogin());
 		if (objs != null) {
@@ -148,7 +146,7 @@ public class ContractInfoService {
 		}
 		return null;
 	}
-
+    @Transactional(readOnly = true) 
 	public List<LongValue> queryUserContract() {
 		List<LongValue> returnList = new ArrayList<LongValue>();
 		List<Object[]> objs = userRepository.findUserInfoByLogin(SecurityUtils.getCurrentUserLogin());

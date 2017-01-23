@@ -5,9 +5,9 @@
         .module('cpmApp')
         .controller('ContractCostController', ContractCostController);
 
-    ContractCostController.$inject = ['ContractInfo','$scope', '$state', 'ContractCost', 'ContractCostSearch', 'ParseLinks', 'AlertService', 'paginationConstants', 'pagingParams'];
+    ContractCostController.$inject = ['ContractInfo','$scope', '$state', 'ContractCost', 'ContractCostSearch', 'ParseLinks', 'AlertService', 'paginationConstants', 'pagingParams','pageType'];
 
-    function ContractCostController (ContractInfo,$scope, $state, ContractCost, ContractCostSearch, ParseLinks, AlertService, paginationConstants, pagingParams) {
+    function ContractCostController (ContractInfo,$scope, $state, ContractCost, ContractCostSearch, ParseLinks, AlertService, paginationConstants, pagingParams,pageType) {
         var vm = this;
 
         vm.loadPage = loadPage;
@@ -19,8 +19,17 @@
         vm.search = search;
         vm.loadAll = loadAll;
         
-        //枚举值
-        vm.types = [{key:1,val:'工时'},{key:2,val:'差旅'},{key:3,val:'采购'},{key:4,val:'商务'}];
+        if(pageType == 1){
+        	vm.types = [{key:1,val:'工时'}];
+        	vm.viewUiSref = "contract-cost-timesheet-detail";
+        	vm.canEdit = false;
+        	vm.contractCostTitle = "cpmApp.contractCost.home.timesheetTitle";
+        }else{
+        	vm.types = [{key:2,val:'差旅'},{key:3,val:'采购'},{key:4,val:'商务'}];
+        	vm.viewUiSref = "contract-cost-detail";
+        	vm.canEdit = true;
+        	vm.contractCostTitle = "cpmApp.contractCost.home.title";
+        }
         vm.statuss = [{key:1,val:'可用'},{key:2,val:'删除'}];
         vm.searchQuery = {};
         
@@ -64,7 +73,6 @@
         	);
         }
         
-        
         function loadAll () {
         	if(pagingParams.contractId == undefined){
         		pagingParams.contractId = "";
@@ -81,6 +89,7 @@
             	contractId: pagingParams.contractId,
                	type: pagingParams.type,
                 name: pagingParams.name,
+                pageType:pageType,
                 page: pagingParams.page - 1,
                 size: vm.itemsPerPage,
                 sort: sort()

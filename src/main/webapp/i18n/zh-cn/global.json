@@ -26,7 +26,8 @@
                 "contractBudget": "内部采购单",
                 "purchaseItem": "采购子项",
                 "productPrice": "产品定价单",
-                "contractCost": "合同成本",
+                "contractCost": "合同报销",
+                "contractCostTimesheet": "工时成本",
                 "contractTimesheet": "合同工时"
             },
             "project":{

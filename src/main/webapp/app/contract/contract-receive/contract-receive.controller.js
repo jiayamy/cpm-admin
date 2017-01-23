@@ -5,9 +5,9 @@
         .module('cpmApp')
         .controller('ContractReceiveController', ContractReceiveController);
 
-    ContractReceiveController.$inject = ['$scope', '$state', 'ContractReceive', 'ContractReceiveSearch', 'ParseLinks', 'AlertService', 'paginationConstants', 'pagingParams'];
+    ContractReceiveController.$inject = ['$scope', '$state', 'ContractReceive', 'ContractReceiveSearch', 'ParseLinks', 'AlertService', 'paginationConstants', 'pagingParams','ContractInfo'];
 
-    function ContractReceiveController ($scope, $state, ContractReceive, ContractReceiveSearch, ParseLinks, AlertService, paginationConstants, pagingParams) {
+    function ContractReceiveController ($scope, $state, ContractReceive, ContractReceiveSearch, ParseLinks, AlertService, paginationConstants, pagingParams,ContractInfo) {
         var vm = this;
 
         vm.loadPage = loadPage;
@@ -18,15 +18,18 @@
         vm.clear = clear;
         vm.search = search;
         vm.loadAll = loadAll;
-        vm.searchQuery ={};
         
         vm.statuss = [{key:1,val:'可用'},{key:2,val:'删除'}];
+
+        vm.searchQuery ={};
         vm.searchQuery.contractId = pagingParams.contractId;
+        console.log(pagingParams.contractId);
         if (!vm.searchQuery.contractId){
         	vm.haveSearch = null;
         }else{
         	vm.haveSearch = true;
         }
+        
         vm.contractInfos = [];
         loadContractInfos();
         loadAll();
@@ -56,14 +59,15 @@
         		pagingParams.contractId = "";
         	}
             ContractReceive.query({
+            	contractId:pagingParams.contractId,
                 page: pagingParams.page - 1,
                 size: vm.itemsPerPage,
                 sort: sort()
             }, onSuccess, onError);
             function sort() {
                 var result = [vm.predicate + ',' + (vm.reverse ? 'asc' : 'desc')];
-                if (vm.predicate !== 'id') {
-                    result.push('id');
+                if (vm.predicate !== 'wcr.id') {
+                    result.push('wcr.id');
                 }
                 return result;
             }
@@ -79,11 +83,15 @@
             }
             //处理status 的显示
             function handleData(data){
-            	for(var j = 0; j < vm.statuss.length; j++){
-    	        	if(data[i].status == vm.statuss[j].key){
-    	        		data[i].statusName = vm.statuss[j].val;
-    	        	}
-    	        }
+            	if(data && data.length > 0){
+            		for(var i = 0; i < data.length; i++){
+            			for(var j = 0; j < vm.statuss.length; j++){
+            				if(data[i].status == vm.statuss[j].key){
+            					data[i].statusName = vm.statuss[j].val;
+            				}
+            			}
+            		}
+            	}
             	return data;
             }
         }
@@ -96,17 +104,17 @@
             $state.transitionTo($state.$current, {
                 page: vm.page,
                 sort: vm.predicate + ',' + (vm.reverse ? 'asc' : 'desc'),
-                contractId:vm.searchQuery.contractId ? vm.searchQuery.contractId.key : "",
+                contractId:vm.searchQuery.contractId ? vm.searchQuery.contractId.key : null,
             });
         }
 
         function search() {
-            if (!vm.searchQuery.contractId){
+            if (vm.searchQuery.contractId == undefined){
                 return vm.clear();
             }
             vm.links = null;
             vm.page = 1;
-            vm.predicate = '_score';
+            vm.predicate = 'wcr.id';
             vm.reverse = false;
             vm.haveSearch = true;
             vm.transition();
@@ -115,9 +123,10 @@
         function clear() {
             vm.links = null;
             vm.page = 1;
-            vm.predicate = 'id';
-            vm.reverse = true;
+            vm.predicate = 'wcr.id';
+            vm.reverse = false;
             vm.haveSearch = null;
+            vm.searchQuery = {};
             vm.transition();
         }
     }

@@ -1,7 +1,5 @@
 package com.wondertek.cpm.service;
 
-import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -19,7 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.wondertek.cpm.domain.HolidayInfo;
 import com.wondertek.cpm.repository.HolidayInfoDao;
 import com.wondertek.cpm.repository.HolidayInfoRepository;
-import com.wondertek.cpm.repository.search.HolidayInfoSearchRepository;
 
 /**
  * Service Implementation for managing HolidayInfo.
@@ -33,8 +30,8 @@ public class HolidayInfoService {
     @Inject
     private HolidayInfoRepository holidayInfoRepository;
 
-    @Inject
-    private HolidayInfoSearchRepository holidayInfoSearchRepository;
+//    @Inject
+//    private HolidayInfoSearchRepository holidayInfoSearchRepository;
     
     @Autowired
     private HolidayInfoDao holidayInfoDao;
@@ -48,7 +45,7 @@ public class HolidayInfoService {
     public HolidayInfo save(HolidayInfo holidayInfo) {
         log.debug("Request to save HolidayInfo : {}", holidayInfo);
         HolidayInfo result = holidayInfoRepository.save(holidayInfo);
-        holidayInfoSearchRepository.save(result);
+//        holidayInfoSearchRepository.save(result);
         return result;
     }
 
@@ -86,7 +83,7 @@ public class HolidayInfoService {
     public void delete(Long id) {
         log.debug("Request to delete HolidayInfo : {}", id);
         holidayInfoRepository.delete(id);
-        holidayInfoSearchRepository.delete(id);
+//        holidayInfoSearchRepository.delete(id);
     }
 
     /**
@@ -98,7 +95,8 @@ public class HolidayInfoService {
     @Transactional(readOnly = true)
     public Page<HolidayInfo> search(String query, Pageable pageable) {
         log.debug("Request to search for a page of HolidayInfos for query {}", query);
-        Page<HolidayInfo> result = holidayInfoSearchRepository.search(queryStringQuery(query), pageable);
+        Page<HolidayInfo> result = null;
+//        Page<HolidayInfo> result = holidayInfoSearchRepository.search(queryStringQuery(query), pageable);
         return result;
     }
     

@@ -3,7 +3,7 @@
         "contractInfo" : {
             "home": {
                 "title": "合同信息",
-                "createLabel": "新建",
+                "createLabel": "新增",
                 "createOrEditLabel": "合同信息"
             },
             "created": "新建成功",

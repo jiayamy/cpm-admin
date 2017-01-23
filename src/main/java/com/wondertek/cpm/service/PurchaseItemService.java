@@ -1,35 +1,28 @@
 package com.wondertek.cpm.service;
 
-import com.wondertek.cpm.domain.ContractBudget;
-import com.wondertek.cpm.domain.DeptInfo;
-import com.wondertek.cpm.domain.PurchaseItem;
-import com.wondertek.cpm.domain.User;
-import com.wondertek.cpm.domain.vo.ContractBudgetVo;
-import com.wondertek.cpm.domain.vo.LongValue;
-import com.wondertek.cpm.domain.vo.PurchaseItemVo;
-import com.wondertek.cpm.repository.PurchaseItemDao;
-import com.wondertek.cpm.repository.PurchaseItemRepository;
-import com.wondertek.cpm.repository.UserRepository;
-import com.wondertek.cpm.repository.search.PurchaseItemSearchRepository;
-import com.wondertek.cpm.security.SecurityUtils;
+import java.time.ZonedDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.inject.Inject;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.inject.Inject;
-
-import java.time.ZonedDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
-
-import static org.elasticsearch.index.query.QueryBuilders.*;
+import com.wondertek.cpm.domain.DeptInfo;
+import com.wondertek.cpm.domain.PurchaseItem;
+import com.wondertek.cpm.domain.User;
+import com.wondertek.cpm.domain.vo.LongValue;
+import com.wondertek.cpm.domain.vo.PurchaseItemVo;
+import com.wondertek.cpm.repository.PurchaseItemDao;
+import com.wondertek.cpm.repository.PurchaseItemRepository;
+import com.wondertek.cpm.repository.UserRepository;
+import com.wondertek.cpm.security.SecurityUtils;
 
 /**
  * Service Implementation for managing PurchaseItem.
@@ -43,8 +36,8 @@ public class PurchaseItemService {
     @Inject
     private PurchaseItemRepository purchaseItemRepository;
 
-    @Inject
-    private PurchaseItemSearchRepository purchaseItemSearchRepository;
+//    @Inject
+//    private PurchaseItemSearchRepository purchaseItemSearchRepository;
     
     @Inject
     private PurchaseItemDao purchaseItemDao;
@@ -61,7 +54,7 @@ public class PurchaseItemService {
     public PurchaseItem save(PurchaseItem purchaseItem) {
         log.debug("Request to save PurchaseItem : {}", purchaseItem);
         PurchaseItem result = purchaseItemRepository.save(purchaseItem);
-        purchaseItemSearchRepository.save(result);
+//        purchaseItemSearchRepository.save(result);
         return result;
     }
 
@@ -116,7 +109,8 @@ public class PurchaseItemService {
     @Transactional(readOnly = true)
     public Page<PurchaseItem> search(String query, Pageable pageable) {
         log.debug("Request to search for a page of PurchaseItems for query {}", query);
-        Page<PurchaseItem> result = purchaseItemSearchRepository.search(queryStringQuery(query), pageable);
+        Page<PurchaseItem> result = null;
+//        Page<PurchaseItem> result = purchaseItemSearchRepository.search(queryStringQuery(query), pageable);
         return result;
     }
 

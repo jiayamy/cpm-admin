@@ -3,7 +3,7 @@
         "purchaseItem" : {
             "home": {
                 "title": "采购子项",
-                "createLabel": "新建",
+                "createLabel": "新增",
                 "createOrEditLabel": "创建或者编辑",
                 "search": "Search for Purchase Item"
             },

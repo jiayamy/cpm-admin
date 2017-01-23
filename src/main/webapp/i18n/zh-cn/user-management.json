@@ -2,7 +2,7 @@
     "userManagement": {
         "home": {
             "title": "用户信息",
-            "createLabel": "新建",
+            "createLabel": "新增",
             "createOrEditLabel": "用户信息"
         },
         "created": "用户 {{ param }} 创建成功",

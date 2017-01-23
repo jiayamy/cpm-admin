@@ -1,7 +1,5 @@
 package com.wondertek.cpm.service;
 
-import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
-
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Date;
@@ -27,7 +25,6 @@ import com.wondertek.cpm.domain.vo.ProjectUserVo;
 import com.wondertek.cpm.repository.ContractUserDao;
 import com.wondertek.cpm.repository.ContractUserRepository;
 import com.wondertek.cpm.repository.UserRepository;
-import com.wondertek.cpm.repository.search.ContractUserSearchRepository;
 import com.wondertek.cpm.security.SecurityUtils;
 
 /**
@@ -42,8 +39,8 @@ public class ContractUserService {
     @Inject
     private ContractUserRepository contractUserRepository;
 
-    @Inject
-    private ContractUserSearchRepository contractUserSearchRepository;
+//    @Inject
+//    private ContractUserSearchRepository contractUserSearchRepository;
     
     @Inject
     private UserRepository userRepository;
@@ -60,7 +57,7 @@ public class ContractUserService {
     public ContractUser save(ContractUser contractUser) {
         log.debug("Request to save ContractUser : {}", contractUser);
         ContractUser result = contractUserRepository.save(contractUser);
-        contractUserSearchRepository.save(result);
+//        contractUserSearchRepository.save(result);
         return result;
     }
 
@@ -121,7 +118,8 @@ public class ContractUserService {
     @Transactional(readOnly = true)
     public Page<ContractUser> search(String query, Pageable pageable) {
         log.debug("Request to search for a page of ContractUsers for query {}", query);
-        Page<ContractUser> result = contractUserSearchRepository.search(queryStringQuery(query), pageable);
+        Page<ContractUser> result = null;
+//        Page<ContractUser> result = contractUserSearchRepository.search(queryStringQuery(query), pageable);
         return result;
     }
     @Transactional(readOnly = true) 

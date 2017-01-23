@@ -1,7 +1,5 @@
 package com.wondertek.cpm.service;
 
-import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
-
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +22,6 @@ import com.wondertek.cpm.domain.vo.ContractCostVo;
 import com.wondertek.cpm.repository.ContractCostDao;
 import com.wondertek.cpm.repository.ContractCostRepository;
 import com.wondertek.cpm.repository.UserRepository;
-import com.wondertek.cpm.repository.search.ContractCostSearchRepository;
 import com.wondertek.cpm.security.SecurityUtils;
 
 /**
@@ -38,8 +35,8 @@ public class ContractCostService {
     
     @Inject
     private ContractCostRepository contractCostRepository;
-    @Inject
-    private ContractCostSearchRepository contractCostSearchRepository;
+//    @Inject
+//    private ContractCostSearchRepository contractCostSearchRepository;
     @Inject
     private UserRepository userRepository;
     @Inject
@@ -109,14 +106,16 @@ public class ContractCostService {
     @Transactional(readOnly = true)
     public Page<ContractCost> search(String query, Pageable pageable) {
         log.debug("Request to search for a page of ContractCosts for query {}", query);
-        Page<ContractCost> result = contractCostSearchRepository.search(queryStringQuery(query), pageable);
+        Page<ContractCost> result = null;
+//        Page<ContractCost> result = contractCostSearchRepository.search(queryStringQuery(query), pageable);
         return result;
     }
     /**
      * 查询列表
+     * @param pageType 
      * @return
      */
-	public Page<ContractCostVo> getUserPage(ContractCost contractCost, Pageable pageable) {
+	public Page<ContractCostVo> getUserPage(ContractCost contractCost, Integer pageType, Pageable pageable) {
 		log.debug("Request to get all contractCosts");
 		List<Object[]> objs = userRepository.findUserInfoByLogin(SecurityUtils.getCurrentUserLogin());
 		
@@ -124,9 +123,8 @@ public class ContractCostService {
 			Object[] o = objs.get(0);
 			User user = (User) o[0];
 			DeptInfo deptInfo = (DeptInfo)o[1];
-			return contractCostDao.getUserPage(contractCost,user,deptInfo,pageable);
+			return contractCostDao.getUserPage(contractCost,pageType,user,deptInfo,pageable);
 		}
-		
 		
 		return new PageImpl<>(new ArrayList<ContractCostVo>(), pageable, 0);
 	}

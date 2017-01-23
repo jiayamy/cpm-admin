@@ -29,7 +29,7 @@
                     squash: true
                 },
                 sort: {
-                    value: 'm.id,asc',
+                    value: 'm.id,desc',
                     squash: true
                 },
                 projectId: null
@@ -124,7 +124,7 @@
                                 squash: true
                             },
                             sort: {
-                                value: 'm.id,asc',
+                                value: 'm.id,desc',
                                 squash: true
                             },
                             projectId: null
@@ -135,7 +135,7 @@
                                 squash: true
                             },
                             sort: {
-                                value: 'm.id,asc',
+                                value: 'm.id,desc',
                                 squash: true
                             },
                             projectId: null

@@ -2,16 +2,7 @@
     "cpmApp": {
         "contractMonthlyStat" : {
             "home": {
-                "title": "合同月报统计",
-                "createLabel": "Create a new Contract Monthly Stat",
-                "createOrEditLabel": "Create or edit a Contract Monthly Stat",
-                "search": "Search for Contract Monthly Stat"
-            },
-            "created": "A new Contract Monthly Stat is created with identifier {{ param }}",
-            "updated": "A Contract Monthly Stat is updated with identifier {{ param }}",
-            "deleted": "A Contract Monthly Stat is deleted with identifier {{ param }}",
-            "delete": {
-                "question": "Are you sure you want to delete Contract Monthly Stat {{ id }}?"
+                "title": "合同月报统计"
             },
             "detail": {
                 "title": "合同月报统计详情",

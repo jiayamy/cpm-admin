@@ -214,8 +214,12 @@ public class ContractInfoDaoImpl extends GenericDaoImpl<ContractInfo, Long> impl
 		return returnList;
 	}
 
-
 	public int finishContractInfo(Long id, Double finishRate, String updator) {
 		return this.excuteHql("update ContractInfo set finishRate = ? , updator = ?, updateTime = ? where id = ?", new Object[]{finishRate,updator,ZonedDateTime.now(),id});
+	}
+
+	@Override
+	public int updateReceiveTotal(Long contractId, Double receiveTotal, Double oldTotal) {
+		return this.excuteSql("update w_contract_info set receive_total = receive_total - ? + ? where id = ?", new Object[]{oldTotal,receiveTotal,contractId});
 	}
 }

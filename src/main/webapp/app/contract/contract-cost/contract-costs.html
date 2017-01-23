@@ -1,8 +1,8 @@
 <div>
-    <h2 data-translate="cpmApp.contractCost.home.title">Contract Costs</h2>
+    <h2 data-translate="{{vm.contractCostTitle}}">Contract Costs</h2>
     <jhi-alert></jhi-alert>
     <div class="container-fluid">
-        <div class="row">
+        <div class="row" ng-show="vm.canEdit">
             <div class="col-xs-4">
                 <button class="btn btn-primary" ui-sref="contract-cost.new" >
                     <span class="glyphicon glyphicon-plus"></span>
@@ -71,42 +71,37 @@
                     <th jh-sort-by="wcc.name" class="text-center"><span data-translate="cpmApp.contractCost.name">Name</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="wci.serialNum"><span data-translate="cpmApp.contractCost.contractId">Contract Id</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="wci.name"><span data-translate="cpmApp.contractCost.contractName">Contract Id</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="wcb.budgetTotal"><span data-translate="cpmApp.contractCost.budgetId">Budget Id</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="wcc.dept"><span data-translate="cpmApp.contractCost.dept">Dept</span> <span class="glyphicon glyphicon-sort"></span></th>
-                   
                     <th jh-sort-by="wcc.type"><span data-translate="cpmApp.contractCost.type">Type</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="wcc.total"><span data-translate="cpmApp.contractCost.total">Total</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="wcc.costDesc"><span data-translate="cpmApp.contractCost.costDesc">Cost Desc</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="wcc.status"><span data-translate="cpmApp.contractCost.status">Status</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th></th>
                 </tr>
             </thead>
             <tbody>
                 <tr ng-repeat="contractCost in vm.contractCosts track by contractCost.id">
-                    <td class="text-center"><a ui-sref="contract-cost-detail({id:contractCost.id})">{{contractCost.name}}</a></td>
+                    <td class="text-center"><a ui-sref="{{vm.viewUiSref}}({id:contractCost.id})">{{contractCost.name}}</a></td>
                     <td class="text-center">{{contractCost.contractNum}}</td>
                     <td class="text-center">{{contractCost.contractName}}</td>
-                    <td class="text-center">{{contractCost.budgetTotal}}</td>
                     <td class="text-center">{{contractCost.dept}}</td>
                     <td class="text-center">{{contractCost.typeName}}</td>
                     <td class="text-center">{{contractCost.total}}</td>
-                    <td class="text-center">{{contractCost.costDesc}}</td>
                     <td class="text-center">{{contractCost.statusName}}</td>
                     <td class="text-right">
                         <div class="btn-group flex-btn-group-container">
                             <button type="submit"
-                                    ui-sref="contract-cost-detail({id:contractCost.id})"
+                                    ui-sref="{{vm.viewUiSref}}({id:contractCost.id})"
                                     class="btn btn-info btn-sm">
                                 <span class="glyphicon glyphicon-eye-open"></span>
                                 <span class="hidden-xs hidden-sm" data-translate="entity.action.view"></span>
                             </button>
-                            <button type="submit"
+                            <button type="submit" ng-hide="{{contractCost.type == 1}}"
                                     ui-sref="contract-cost.edit({id:contractCost.id})"
                                     class="btn btn-primary btn-sm">
                                 <span class="glyphicon glyphicon-pencil"></span>
                                 <span class="hidden-xs hidden-sm" data-translate="entity.action.edit"></span>
                             </button>
-                            <button type="submit"
+                            <button type="submit" ng-hide="{{contractCost.type == 1}}"
                                     ui-sref="contract-cost.delete({id:contractCost.id})"
                                     class="btn btn-danger btn-sm">
                                 <span class="glyphicon glyphicon-remove-circle"></span>

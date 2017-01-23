@@ -1,29 +1,24 @@
 package com.wondertek.cpm.service;
 
-import com.wondertek.cpm.CpmConstants;
-import com.wondertek.cpm.domain.UserCost;
-import com.wondertek.cpm.repository.UserCostDao;
-import com.wondertek.cpm.repository.UserCostRepository;
-import com.wondertek.cpm.repository.search.UserCostSearchRepository;
-import com.wondertek.cpm.security.SecurityUtils;
+import java.time.ZonedDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.inject.Inject;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.inject.Inject;
-
-import java.time.ZonedDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
-
-import static org.elasticsearch.index.query.QueryBuilders.*;
+import com.wondertek.cpm.CpmConstants;
+import com.wondertek.cpm.domain.UserCost;
+import com.wondertek.cpm.repository.UserCostDao;
+import com.wondertek.cpm.repository.UserCostRepository;
+import com.wondertek.cpm.security.SecurityUtils;
 
 /**
  * Service Implementation for managing UserCost.
@@ -37,8 +32,8 @@ public class UserCostService {
     @Inject
     private UserCostRepository userCostRepository;
 
-    @Inject
-    private UserCostSearchRepository userCostSearchRepository;
+//    @Inject
+//    private UserCostSearchRepository userCostSearchRepository;
     
     @Autowired
     private UserCostDao userCostDao;
@@ -52,7 +47,7 @@ public class UserCostService {
     public UserCost save(UserCost userCost) {
         log.debug("Request to save UserCost : {}", userCost);
         UserCost result = userCostRepository.save(userCost);
-        userCostSearchRepository.save(result);
+//        userCostSearchRepository.save(result);
         return result;
     }
 
@@ -107,7 +102,8 @@ public class UserCostService {
     @Transactional(readOnly = true)
     public Page<UserCost> search(String query, Pageable pageable) {
         log.debug("Request to search for a page of UserCosts for query {}", query);
-        Page<UserCost> result = userCostSearchRepository.search(queryStringQuery(query), pageable);
+        Page<UserCost> result = null;
+//        Page<UserCost> result = userCostSearchRepository.search(queryStringQuery(query), pageable);
         return result;
     }
     

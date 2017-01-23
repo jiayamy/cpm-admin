@@ -1,24 +1,32 @@
 
 <div>
-    <h2><span data-translate="cpmApp.contractReceive.detail.title">Contract Receive</span> {{vm.contractReceive.id}}</h2>
+    <h2><span data-translate="cpmApp.contractReceive.detail.title">Contract Receive</span> {{vm.contractReceive.receiver}}-{{vm.contractReceive.receiveDay}}</h2>
     <hr>
     <jhi-alert-error></jhi-alert-error>
     <dl class="dl-horizontal jh-entity-details">
-        <dt><span data-translate="cpmApp.contractReceive.contractId">Contract Id</span></dt>
+        <dt><span data-translate="cpmApp.contractReceive.contractId">Contract Num</span></dt>
         <dd>
-            <span>{{vm.contractReceive.contractId}}</span>
+            <span>{{vm.contractReceive.contractNum}}</span>
+        </dd>
+        <dt><span data-translate="cpmApp.contractReceive.contractName">Contract Name</span></dt>
+        <dd>
+            <span>{{vm.contractReceive.contractName}}</span>
+        </dd>
+        <dt><span data-translate="cpmApp.contractReceive.receiveDay">Receive Day</span></dt>
+        <dd>
+            <span>{{vm.contractReceive.receiveDay}}</span>
+        </dd>
+        <dt><span data-translate="cpmApp.contractReceive.receiver">Receiver</span></dt>
+        <dd>
+            <span>{{vm.contractReceive.receiver}}</span>
         </dd>
         <dt><span data-translate="cpmApp.contractReceive.receiveTotal">Receive Total</span></dt>
         <dd>
             <span>{{vm.contractReceive.receiveTotal}}</span>
         </dd>
-        <dt><span data-translate="cpmApp.contractReceive.receiveDay">Receive Day</span></dt>
-        <dd>
-            <span>{{vm.contractReceive.receiveDay | date:'medium'}}</span>
-        </dd>
         <dt><span data-translate="cpmApp.contractReceive.status">Status</span></dt>
         <dd>
-            <span>{{vm.contractReceive.status}}</span>
+            <span>{{vm.contractReceive.statusName}}</span>
         </dd>
         <dt><span data-translate="cpmApp.contractReceive.creator">Creator</span></dt>
         <dd>
@@ -35,10 +43,6 @@
         <dt><span data-translate="cpmApp.contractReceive.updateTime">Update Time</span></dt>
         <dd>
             <span>{{vm.contractReceive.updateTime | date:'medium'}}</span>
-        </dd>
-        <dt><span data-translate="cpmApp.contractReceive.receiver">Receiver</span></dt>
-        <dd>
-            <span>{{vm.contractReceive.receiver}}</span>
         </dd>
     </dl>
 

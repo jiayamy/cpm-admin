@@ -19,18 +19,12 @@
         <maven>3.0.0</maven>
     </prerequisites>
     <properties>
-    <!-- File upload -->
-        <commons-fileupload.version>1.2.2</commons-fileupload.version>
-        <poi.version>3.11</poi.version>
-        <poi-ooxml.version>3.11</poi-ooxml.version>
-        <poi-ooxml-schemas.version>3.11</poi-ooxml-schemas.version>
-        <xmlbeans.version>2.6.0</xmlbeans.version>
-        <poi-excelant.version>3.11</poi-excelant.version>
-        <poi-scratchpad.version>3.11</poi-scratchpad.version>
-        
+
         <argLine>-Djava.security.egd=file:/dev/./urandom -Xmx256m</argLine>
         <assertj-core.version>3.5.2</assertj-core.version>
         <awaitility.version>1.7.0</awaitility.version>
+        <!-- File upload -->
+        <commons-fileupload.version>1.2.2</commons-fileupload.version>
         <commons-io.version>2.5</commons-io.version>
         <commons-lang.version>3.4</commons-lang.version>
         <frontend-maven-plugin.version>1.2</frontend-maven-plugin.version>
@@ -55,6 +49,11 @@
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <metrics-spring.version>3.1.3</metrics-spring.version>
+        <poi-excelant.version>3.11</poi-excelant.version>
+        <poi-ooxml-schemas.version>3.11</poi-ooxml-schemas.version>
+        <poi-ooxml.version>3.11</poi-ooxml.version>
+        <poi-scratchpad.version>3.11</poi-scratchpad.version>
+        <poi.version>3.11</poi.version>
         <!-- These remain empty unless the corresponding profile is active -->
         <profile.no-liquibase />
         <profile.swagger />
@@ -90,52 +89,11 @@
         <sortpom-maven-plugin.version>2.5.0</sortpom-maven-plugin.version>
         <spring-security.version>4.1.3.RELEASE</spring-security.version>
         <springfox.version>2.6.1</springfox.version>
+        <xmlbeans.version>2.6.0</xmlbeans.version>
     </properties>
 
     <dependencies>
-    	<!-- file upload -->
-    	<dependency>
-            <groupId>commons-fileupload</groupId>
-            <artifactId>commons-fileupload</artifactId>
-            <version>${commons-fileupload.version}</version>
-            <classifier>sources</classifier>
-        </dependency>
-        <dependency>
-		  <groupId>org.apache.poi</groupId>
-		  <artifactId>poi</artifactId>
-		  <version>${poi.version}</version>
-		  <classifier>sources</classifier>
-		</dependency>
-		<dependency>
-		  <groupId>org.apache.poi</groupId>
-		  <artifactId>poi-ooxml</artifactId>
-		  <version>${poi-ooxml.version}</version>
-		  <classifier>sources</classifier>
-		</dependency>
-		<dependency>
-		  <groupId>org.apache.poi</groupId>
-		  <artifactId>poi-ooxml-schemas</artifactId>
-		  <version>${poi-ooxml-schemas.version}</version>
-		</dependency>
-		<dependency>
-		  <groupId>org.apache.xmlbeans</groupId>
-		  <artifactId>xmlbeans</artifactId>
-		  <version>${xmlbeans.version}</version>
-		  <classifier>source</classifier>
-		</dependency>
-		<dependency>
-		  <groupId>org.apache.poi</groupId>
-		  <artifactId>poi-excelant</artifactId>
-		  <version>${poi-excelant.version}</version>
-		  <classifier>sources</classifier>
-		</dependency>
-		<dependency>
-		  <groupId>org.apache.poi</groupId>
-		  <artifactId>poi-scratchpad</artifactId>
-		  <version>${poi-scratchpad.version}</version>
-		  <classifier>sources</classifier>
-		</dependency>
-		
+
         <dependency>
             <groupId>com.fasterxml.jackson.datatype</groupId>
             <artifactId>jackson-datatype-hibernate5</artifactId>
@@ -209,6 +167,13 @@
                     <groupId>com.sun</groupId>
                 </exclusion>
             </exclusions>
+        </dependency>
+        <!-- file upload -->
+        <dependency>
+            <groupId>commons-fileupload</groupId>
+            <artifactId>commons-fileupload</artifactId>
+            <version>${commons-fileupload.version}</version>
+            <classifier>sources</classifier>
         </dependency>
         <dependency>
             <groupId>commons-io</groupId>
@@ -338,6 +303,41 @@
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
             <version>${commons-lang.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi</artifactId>
+            <version>${poi.version}</version>
+            <classifier>sources</classifier>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-excelant</artifactId>
+            <version>${poi-excelant.version}</version>
+            <classifier>sources</classifier>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-ooxml</artifactId>
+            <version>${poi-ooxml.version}</version>
+            <classifier>sources</classifier>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-ooxml-schemas</artifactId>
+            <version>${poi-ooxml-schemas.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-scratchpad</artifactId>
+            <version>${poi-scratchpad.version}</version>
+            <classifier>sources</classifier>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.xmlbeans</groupId>
+            <artifactId>xmlbeans</artifactId>
+            <version>${xmlbeans.version}</version>
+            <classifier>source</classifier>
         </dependency>
         <dependency>
             <groupId>org.assertj</groupId>

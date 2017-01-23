@@ -5,9 +5,9 @@
         .module('cpmApp')
         .controller('ContractReceiveDialogController', ContractReceiveDialogController);
 
-    ContractReceiveDialogController.$inject = ['ContractInfo','previousState','$timeout', '$scope', '$stateParams', 'entity', 'ContractReceive', '$state'];
+    ContractReceiveDialogController.$inject = ['ContractInfo','previousState','$timeout', '$scope','$rootScope', '$stateParams', 'entity', 'ContractReceive', '$state', 'DateUtils'];
 
-    function ContractReceiveDialogController (ContractInfo,previousState,$timeout, $scope, $stateParams, entity, ContractReceive, $state) {
+    function ContractReceiveDialogController (ContractInfo,previousState,$timeout, $scope, $rootScope, $stateParams, entity, ContractReceive, $state, DateUtils) {
         var vm = this;
 
         vm.contractReceive = entity;
@@ -20,8 +20,8 @@
         
         //处理costDay
         vm.contractReceive.receiveDay = DateUtils.convertYYYYMMDDDayToDate(vm.contractReceive.receiveDay);
+        console.log(vm.contractReceive);
         loadContractInfos();
-        
         //加载合同信息
         function loadContractInfos(){
         	ContractInfo.queryContractInfo(
@@ -33,7 +33,7 @@
             		if(vm.contractInfos && vm.contractInfos.length > 0){
             			for(var i = 0; i < vm.contractInfos.length; i++){
             				if(entity.contractId == vm.contractInfos[i].key){
-            					vm.contractCost.contractId = vm.contractInfos[i];
+            					vm.contractReceive.contractId = vm.contractInfos[i];
             				}
             			}
             		}
@@ -47,13 +47,14 @@
         function save () {
             vm.isSaving = true;
             var contractReceive = {};
-            contractReceive.contractId = vm.contractReceive.contractId;
+            contractReceive.id = vm.contractReceive.id;
+            contractReceive.contractId = vm.contractReceive.contractId ? vm.contractReceive.contractId.key : "";
             contractReceive.receiveTotal = vm.contractReceive.receiveTotal;
-            contractReceive.receiveDay = vm.contractReceive.receiveDay;
+            contractReceive.receiveDay = DateUtils.convertLocalDateToFormat(vm.contractReceive.receiveDay,"yyyyMMdd");
             contractReceive.receiver = vm.contractReceive.receiver;
-            console.log(contractReceive);
             
-            if( !contractReceive.contractId || !contractReceive.receiveTotal || !contractReceive.receiveDay || !contractReceive.receiver || !contractReceive.contractId ){
+            if( !contractReceive.contractId || contractReceive.receiveTotal == undefined
+            		|| !contractReceive.receiveDay || !contractReceive.receiver){
             	AlertService.error("cpmApp.contractReceive.save.paramNone");
             	return;
             }
@@ -77,7 +78,7 @@
         //员工模态框
         var unsubscribe = $rootScope.$on('cpmApp:deptInfoSelected', function(event, result) {
         	vm.contractReceive.receiver = result.name;
-        	console.log(result);
         });
+        $scope.$on('$destroy', unsubscribe);
     }
 })();

@@ -2,30 +2,38 @@
     "cpmApp": {
         "contractReceive" : {
             "home": {
-                "title": "合同回款记录",
-                "createLabel": "创建一个回款记录",
-                "createOrEditLabel": "更新回款记录",
-                "search": "查询"
+                "title": "合同回款信息",
+                "createLabel": "新增",
+                "createOrEditLabel": "回款信息"
             },
-            "created": "创建回款记录{{ param }}",
-            "updated": "更新回款记录{{ param }}",
-            "deleted": "删除回款记录 {{ param }}",
-            "import": "导入excel",
+            "created": "回款信息创建成功",
+            "updated": "回款信息更新成功",
+            "deleted": "回款信息删除成功",
             "delete": {
-                "question": "确定删除回款记录{{ id }}?"
+                "question": "确定删除该回款信息?",
+                "status2Error":"已删除的记录不可再次删除"
             },
             "detail": {
-                "title": "回款记录"
+                "title": "回款信息"
             },
-            "contractId": "合同Id",
-            "receiveTotal": "回款金额",
+            "save":{
+            	"paramNone":"必填参数为空",
+            	"receiveTotalError":"回款额必须大于0",
+            	"receiveDayError":"回款时间必须小于当前时间",
+            	"noPerm":"无此权限",
+            	"contractChanged":"合同编号不可修改",
+            	"status2Error":"已删除的记录不可修改"
+            },
+            "contractId": "合同编号",
+            "contractName": "合同名称",
+            "receiveTotal": "回款额",
             "receiveDay": "回款时间",
             "status": "状态",
             "creator": "创建者",
             "createTime": "创建时间",
             "updator": "更新者",
             "updateTime": "更新时间",
-            "receiver": "回款接收人"
+            "receiver": "回款人"
         }
     }
 }

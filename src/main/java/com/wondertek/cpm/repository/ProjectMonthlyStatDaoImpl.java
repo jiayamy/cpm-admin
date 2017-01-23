@@ -3,7 +3,6 @@ package com.wondertek.cpm.repository;
 import java.sql.Timestamp;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -21,7 +20,6 @@ import com.wondertek.cpm.config.StringUtil;
 import com.wondertek.cpm.domain.DeptInfo;
 import com.wondertek.cpm.domain.ProjectMonthlyStat;
 import com.wondertek.cpm.domain.User;
-import com.wondertek.cpm.domain.vo.LongValue;
 import com.wondertek.cpm.domain.vo.ProjectMonthlyStatVo;
 
 @Repository("projectMonthlyStatDao")
@@ -41,7 +39,7 @@ public class ProjectMonthlyStatDaoImpl extends GenericDaoImpl<ProjectMonthlyStat
 	}
 	
 	@Override
-	public Page<ProjectMonthlyStatVo> getUserPage(String projectId, Pageable pageable,User user) {
+	public Page<ProjectMonthlyStatVo> getUserPage(String projectId, Pageable pageable,User user, DeptInfo deptInfo) {
 		StringBuffer sb = new StringBuffer();
 		StringBuffer querysql = new StringBuffer();
 		StringBuffer countsql = new StringBuffer();
@@ -49,6 +47,7 @@ public class ProjectMonthlyStatDaoImpl extends GenericDaoImpl<ProjectMonthlyStat
 		countsql.append(" select count(m.id)");
 		sb.append(" from ProjectMonthlyStat m");
 		sb.append(" left join ProjectInfo i on m.projectId = i.id");
+		sb.append(" left join DeptInfo wdi on wdi.id = i.deptId");
 		List<Object> params = new ArrayList<Object>();
     	sb.append(" where m.id in (select max(id) from ProjectMonthlyStat where 1=1 ");
     	if(!StringUtil.isNullStr(projectId)){
@@ -56,6 +55,15 @@ public class ProjectMonthlyStatDaoImpl extends GenericDaoImpl<ProjectMonthlyStat
     		params.add(StringUtil.nullToLong(projectId));
     	}
     	sb.append(" group by projectId");
+    	sb.append(" )");
+    	sb.append(" and ( i.creator = ? or i.pmId = ?");
+    	params.add(user.getLogin());
+    	params.add(user.getId());
+    	if(user.getIsManager()){
+    		sb.append(" or wdi.idPath like ? or wdi.id = ?");
+    		params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
+			params.add(deptInfo.getId());
+    	}
     	sb.append(" )");
     	StringBuffer orderHql = new StringBuffer();
     	if(pageable.getSort() != null){//页面都会有个默认排序
@@ -117,37 +125,8 @@ public class ProjectMonthlyStatDaoImpl extends GenericDaoImpl<ProjectMonthlyStat
 		vo.setName(StringUtil.null2Str(o[8]));
 		return vo;
 	}
-	@Override
-	public List<LongValue> queryUserProject(User user, DeptInfo deptInfo) {
-		StringBuffer querySql = new StringBuffer();
-		List<Object> params = new ArrayList<Object>();
-		
-		querySql.append(" select wpi.id,wpi.serial_num,wpi.name_ from w_project_info wpi");
-		querySql.append(" left join w_dept_info wdi on wpi.dept_id = wdi.id");
-		
-		querySql.append(" where (wpi.pm_id = ? or wpi.creator_ = ?");
-		params.add(user.getId());
-		params.add(user.getLogin());
-		
-		if(user.getIsManager()){
-			querySql.append(" or wdi.id_path like ? or wdi.id = ?");
-			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
-			params.add(deptInfo.getId());
-		}
-		querySql.append(")");
-		
-		List<Object[]> list = this.queryAllSql(querySql.toString(), params.toArray());
-		
-		List<LongValue> returnList = new ArrayList<LongValue>();
-		if(list != null){
-			for(Object[] o : list){
-				returnList.add(new LongValue(StringUtil.nullToLong(o[0]),StringUtil.null2Str(o[1]) + ":" + StringUtil.null2Str(o[2])));
-			}
-		}
-		return returnList;
-	}
 	
-	public ProjectMonthlyStatVo getById(Long id){
+	public ProjectMonthlyStatVo getById(Long id, User user, DeptInfo deptInfo){
 		StringBuffer sb = new StringBuffer();
 		StringBuffer querysql = new StringBuffer();
 		StringBuffer countsql = new StringBuffer();
@@ -155,6 +134,7 @@ public class ProjectMonthlyStatDaoImpl extends GenericDaoImpl<ProjectMonthlyStat
 		countsql.append(" select count(m.id)");
 		sb.append(" from w_project_monthly_stat m");
 		sb.append(" left join w_project_info i on m.project_id = i.id");
+		sb.append(" left join w_dept_info wdi on wdi.id = i.dept_id");
 		List<Object> params = new ArrayList<Object>();
     	sb.append(" where m.id in (select max(id) from w_project_monthly_stat where 1=1 ");
     	if(!StringUtil.isNullStr(id)){
@@ -163,7 +143,53 @@ public class ProjectMonthlyStatDaoImpl extends GenericDaoImpl<ProjectMonthlyStat
     	}
     	sb.append(" group by project_id");
     	sb.append(" )");
-    	
+    	sb.append(" and ( i.creator_ = ? or i.pm_id = ?");
+    	params.add(user.getLogin());
+    	params.add(user.getId());
+    	if(user.getIsManager()){
+    		sb.append(" or wdi.id_path like ? or wdi.id = ?");
+    		params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
+			params.add(deptInfo.getId());
+    	}
+    	sb.append(" )");
+    	List<Object[]> list = this.queryAllSql(querysql.toString()+sb.toString(), params.toArray());
+    	if(list != null && !list.isEmpty()){
+			return transProjectMonthlyStatVo2(list.get(0));
+		}
+		return null;
+	}
+
+	@Override
+	public ProjectMonthlyStatVo getByStatWeekAndProjectId(Long statWeek, Long projectId, User user, DeptInfo deptInfo) {
+		StringBuffer sb = new StringBuffer();
+		StringBuffer querysql = new StringBuffer();
+		StringBuffer countsql = new StringBuffer();
+		querysql.append(" select m.id, m.project_id, m.finish_rate, m.human_cost, m.payment_, m.stat_week, m.create_time, i.serial_num , i.name_");
+		countsql.append(" select count(m.id)");
+		sb.append(" from w_project_monthly_stat m");
+		sb.append(" left join w_project_info i on m.project_id = i.id");
+		sb.append(" left join w_dept_info wdi on wdi.id = i.dept_id");
+		List<Object> params = new ArrayList<Object>();
+    	sb.append(" where m.id in (select max(id) from w_project_monthly_stat where 1=1 ");
+    	if(!StringUtil.isNullStr(statWeek)){
+    		sb.append(" and stat_week = ?");
+    		params.add(statWeek);
+    	}
+    	if(!StringUtil.isNullStr(projectId)){
+    		sb.append(" and project_id = ?");
+    		params.add(projectId);
+    	}
+    	sb.append(" group by project_id");
+    	sb.append(" )");
+    	sb.append(" and ( i.creator_ = ? or i.pm_id = ?");
+    	params.add(user.getLogin());
+    	params.add(user.getId());
+    	if(user.getIsManager()){
+    		sb.append(" or wdi.id_path like ? or wdi.id = ?");
+    		params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
+			params.add(deptInfo.getId());
+    	}
+    	sb.append(" )");
     	List<Object[]> list = this.queryAllSql(querysql.toString()+sb.toString(), params.toArray());
     	if(list != null && !list.isEmpty()){
 			return transProjectMonthlyStatVo2(list.get(0));

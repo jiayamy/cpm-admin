@@ -3,7 +3,7 @@
         "productPrice" : {
             "home": {
                 "title": "产品定价单",
-                "createLabel": "新建",
+                "createLabel": "新增",
                 "createOrEditLabel": "创建或者编辑产品定价单",
                 "search": "根据产品名称筛选",
                 "hardware": "硬件",

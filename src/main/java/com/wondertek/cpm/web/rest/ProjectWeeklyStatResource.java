@@ -29,7 +29,6 @@ import com.wondertek.cpm.config.StringUtil;
 import com.wondertek.cpm.domain.ProjectWeeklyStat;
 import com.wondertek.cpm.domain.vo.ChartReportDataVo;
 import com.wondertek.cpm.domain.vo.ChartReportVo;
-import com.wondertek.cpm.domain.vo.LongValue;
 import com.wondertek.cpm.domain.vo.ProjectWeeklyStatVo;
 import com.wondertek.cpm.security.AuthoritiesConstants;
 import com.wondertek.cpm.service.ProjectWeeklyStatService;
@@ -88,7 +87,6 @@ public class ProjectWeeklyStatResource {
             .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-
     /**
      * SEARCH  /_search/project-weekly-stats?query=:query : search for the projectWeeklyStat corresponding
      * to the query.
@@ -109,23 +107,17 @@ public class ProjectWeeklyStatResource {
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
     
-    @GetMapping("/project-weekly-stats/queryUserProject")
-    @Timed
-    @Secured(AuthoritiesConstants.ROLE_STAT_PROJECT)
-	public ResponseEntity<List<LongValue>> queryUserProject() throws URISyntaxException {
-	    log.debug("REST request to queryUserProject");
-	    List<LongValue> list = projectWeeklyStatService.queryUserProject();
-	    return new ResponseEntity<>(list, null, HttpStatus.OK);
-	}
-    
     @GetMapping("/project-weekly-stats/queryChart")
     @Timed
     @Secured(AuthoritiesConstants.ROLE_STAT_PROJECT)
-    public ChartReportVo getChartReport(@ApiParam(value="fromDate") @RequestParam(value="fromDate") String fromDate,
+    public ResponseEntity<ChartReportVo> getChartReport(@ApiParam(value="fromDate") @RequestParam(value="fromDate") String fromDate,
     		@ApiParam(value="toDate") @RequestParam(value="toDate") String toDate,
     		@ApiParam(value="id") @RequestParam(value="id", required = true) Long statId){
     	ChartReportVo chartReportVo = new ChartReportVo();
     	ProjectWeeklyStatVo projectWeeklyStatVo = projectWeeklyStatService.findOne(statId);
+    	if(projectWeeklyStatVo == null){
+    		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    	}
     	Long projectId = projectWeeklyStatVo.getProjectId();
     	chartReportVo.setTitle(projectWeeklyStatVo.getSerialNum());
     	if(StringUtil.isNullStr(toDate)){
@@ -151,18 +143,25 @@ public class ProjectWeeklyStatResource {
     	}
     	chartReportVo.setCategory(category);
     	List<ChartReportDataVo> datas = projectWeeklyStatService.getChartData(fDay, lDay, projectId);
+    	if(datas == null){
+    		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    	}
     	chartReportVo.setSeries(datas);
-    	return chartReportVo;
+    	return Optional.ofNullable(chartReportVo).map(result -> new ResponseEntity<>(result,HttpStatus.OK))
+                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
     
     @GetMapping("/project-weekly-stats/queryFinishRateChart")
     @Timed
     @Secured(AuthoritiesConstants.ROLE_STAT_PROJECT)
-    public ChartReportVo getFinishRateChartReport(@ApiParam(value="fromDate") @RequestParam(value="fromDate") String fromDate,
+    public ResponseEntity<ChartReportVo> getFinishRateChartReport(@ApiParam(value="fromDate") @RequestParam(value="fromDate") String fromDate,
     		@ApiParam(value="toDate") @RequestParam(value="toDate") String toDate,
     		@ApiParam(value="id") @RequestParam(value="id", required = true) Long statId){
     	ChartReportVo chartReportVo = new ChartReportVo();
     	ProjectWeeklyStatVo projectWeeklyStatVo = projectWeeklyStatService.findOne(statId);
+    	if(projectWeeklyStatVo == null){
+    		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    	}
     	Long projectId = projectWeeklyStatVo.getProjectId();
     	chartReportVo.setTitle(projectWeeklyStatVo.getSerialNum() + "-完成率");
     	if(StringUtil.isNullStr(toDate)){
@@ -188,7 +187,11 @@ public class ProjectWeeklyStatResource {
     	}
     	chartReportVo.setCategory(category);
     	List<ChartReportDataVo> datas = projectWeeklyStatService.getFinishRateData(fDay, lDay, projectId);
+    	if(datas == null){
+    		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    	}
     	chartReportVo.setSeries(datas);
-    	return chartReportVo;
+    	return Optional.ofNullable(chartReportVo).map(result -> new ResponseEntity<>(result,HttpStatus.OK))
+                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 }

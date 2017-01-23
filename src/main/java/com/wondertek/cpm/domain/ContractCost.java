@@ -37,8 +37,9 @@ public class ContractCost implements Serializable {
     @Column(name = "contract_id")
     private Long contractId;
     /**
-     * 合同预算主键（可能为空）
+     * 合同预算主键（肯定为空，已经不需要了，成本都跟着合同走，不跟着预算走）
      */
+    @Deprecated
     @Column(name = "budget_id")
     private Long budgetId;
     /**
@@ -115,15 +116,16 @@ public class ContractCost implements Serializable {
         this.contractId = contractId;
     }
 
+    @Deprecated
     public Long getBudgetId() {
         return budgetId;
     }
-
+    
     public ContractCost budgetId(Long budgetId) {
         this.budgetId = budgetId;
         return this;
     }
-
+    @Deprecated
     public void setBudgetId(Long budgetId) {
         this.budgetId = budgetId;
     }

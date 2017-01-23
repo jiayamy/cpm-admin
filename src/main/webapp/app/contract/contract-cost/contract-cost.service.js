@@ -22,17 +22,7 @@
                     return data;
                 }
             },
-            'update': { method:'PUT' },
-            'queryContractBudgets':{ 
-            	url:'api/contract-costs/queryBudges',
-            	method: 'GET', 
-            	isArray: true
-            },
-            'queryAllBudges':{ 
-            	url:'api/contract-costs/queryAllBudges',
-            	method: 'GET', 
-            	isArray: true
-            }
+            'update': { method:'PUT' }
         });
     }
 })();
