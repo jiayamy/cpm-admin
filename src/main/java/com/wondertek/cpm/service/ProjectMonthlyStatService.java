@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 import javax.inject.Inject;
 
@@ -22,10 +21,8 @@ import com.wondertek.cpm.domain.DeptInfo;
 import com.wondertek.cpm.domain.ProjectMonthlyStat;
 import com.wondertek.cpm.domain.User;
 import com.wondertek.cpm.domain.vo.ChartReportDataVo;
-import com.wondertek.cpm.domain.vo.LongValue;
 import com.wondertek.cpm.domain.vo.ProjectMonthlyStatVo;
 import com.wondertek.cpm.repository.ProjectMonthlyStatDao;
-import com.wondertek.cpm.repository.ProjectMonthlyStatRepository;
 import com.wondertek.cpm.repository.UserRepository;
 import com.wondertek.cpm.security.SecurityUtils;
 
@@ -34,9 +31,6 @@ import com.wondertek.cpm.security.SecurityUtils;
 public class ProjectMonthlyStatService {
 	
 	private final Logger log = LoggerFactory.getLogger(ProjectMonthlyStatService.class);
-	
-	@Inject
-	private ProjectMonthlyStatRepository projectMonthlyStatRepository;
 	
 	@Inject
 	private ProjectMonthlyStatDao projectMonthlyStatDao;
@@ -48,19 +42,6 @@ public class ProjectMonthlyStatService {
     private UserRepository userRepository;
 	
 	/**
-     *  Get all the ProjectMonthlyStats.
-     *  
-     *  @param pageable the pagination information
-     *  @return the list of entities
-     */
-    @Transactional(readOnly = true) 
-    public Page<ProjectMonthlyStat> findAll(Pageable pageable) {
-        log.debug("Request to get all ProjectMonthlyStat");
-        Page<ProjectMonthlyStat> result = projectMonthlyStatRepository.findAll(pageable);
-        return result;
-    }
-    
-    /**
      *  Get one ProjectMonthlyStat by id.
      *
      *  @param id the id of the entity
@@ -69,11 +50,16 @@ public class ProjectMonthlyStatService {
     @Transactional(readOnly = true) 
     public ProjectMonthlyStatVo findOne(Long id) {
         log.debug("Request to get ProjectMonthlyStat : {}", id);
-//        ProjectMonthlyStat projectMonthlyStat = projectMonthlyStatRepository.findOne(id);
-        ProjectMonthlyStatVo projectMonthlyStat = projectMonthlyStatDao.getById(id);
-        return projectMonthlyStat;
+        List<Object[]> objs = userRepository.findUserInfoByLogin(SecurityUtils.getCurrentUserLogin());
+		if (objs != null) {
+			Object[] o = objs.get(0);
+			User user = (User)o[0];
+			DeptInfo deptInfo = (DeptInfo)o[1];
+	        ProjectMonthlyStatVo projectMonthlyStat = projectMonthlyStatDao.getById(id, user, deptInfo);
+	        return projectMonthlyStat;
+		}
+		return null;
     }
-    
     
     /**
      * Search for the ProjectMonthlyStats corresponding to the query.
@@ -99,36 +85,25 @@ public class ProjectMonthlyStatService {
      */
     @Transactional(readOnly = true)
     public Page<ProjectMonthlyStatVo> getStatPage(String projectId, Pageable pageable){
-    	Optional<User> user = userRepository.findOneByLogin(SecurityUtils.getCurrentUserLogin());
-    	if(user.isPresent()){
-    		Page<ProjectMonthlyStatVo> page = projectMonthlyStatDao.getUserPage(projectId, pageable, user.get());
+    	List<Object[]> objs = userRepository.findUserInfoByLogin(SecurityUtils.getCurrentUserLogin());
+    	if (objs != null) {
+			Object[] o = objs.get(0);
+			User user = (User)o[0];
+			DeptInfo deptInfo = (DeptInfo)o[1];
+    		Page<ProjectMonthlyStatVo> page = projectMonthlyStatDao.getUserPage(projectId, pageable, user, deptInfo);
         	return page;
     	}else{
     		return new PageImpl(new ArrayList<ProjectMonthlyStatVo>(), pageable, 0);
     	}
     }
     
-    /**
-     * 查询用户的所有项目，管理人员能看到部门下面所有人员的项目信息
-     */
-    @Transactional(readOnly = true)
-	public List<LongValue> queryUserProject() {
-    	List<LongValue> returnList = new ArrayList<LongValue>();
-    	List<Object[]> objs = userRepository.findUserInfoByLogin(SecurityUtils.getCurrentUserLogin());
-    	if(objs != null && !objs.isEmpty()){
-    		Object[] o = objs.get(0);
-    		User user = (User) o[0];
-    		DeptInfo deptInfo = (DeptInfo) o[1];
-    		
-    		returnList = projectMonthlyStatDao.queryUserProject(user,deptInfo);
-    	}
-		return returnList;
-	}
-    
     @Transactional(readOnly = true)
     public List<ChartReportDataVo> getChartData(Date fromMonth, Date toMonth, Long projectId){
     	List<Object[]> objs = userRepository.findUserInfoByLogin(SecurityUtils.getCurrentUserLogin());
     	if(objs != null && !objs.isEmpty()){
+    		Object[] o = objs.get(0);
+			User user = (User)o[0];
+			DeptInfo deptInfo = (DeptInfo)o[1];
     		List<ChartReportDataVo> datas = new ArrayList<>();
         	ChartReportDataVo data1 = new ChartReportDataVo();
         	ChartReportDataVo data2 = new ChartReportDataVo();
@@ -148,13 +123,12 @@ public class ProjectMonthlyStatService {
         	count += cal2.get(Calendar.MONTH) - cal1.get(Calendar.MONTH);
         	for(int i = 0 ; i <= count; i++){
         		Long statWeek = StringUtil.nullToLong(DateUtil.formatDate("yyyyMM", cal1.getTime()));
-        		List<ProjectMonthlyStat> projectMonthlyStats = projectMonthlyStatRepository.findByStatWeekAndProjectId(statWeek, projectId);
+        		ProjectMonthlyStatVo projectMonthlyStatVo = projectMonthlyStatDao.getByStatWeekAndProjectId(statWeek, projectId, user, deptInfo);
         		Double humanCost = 0D;
         		Double payment = 0D;
-        		if(projectMonthlyStats != null && projectMonthlyStats.size() > 0){
-        			int max = projectMonthlyStats.size() - 1;
-        			humanCost = projectMonthlyStats.get(max).getHumanCost();
-        			payment = projectMonthlyStats.get(max).getPayment();
+        		if(projectMonthlyStatVo != null ){
+        			humanCost = projectMonthlyStatVo.getHumanCost();
+        			payment = projectMonthlyStatVo.getPayment();
         		}
         		dataD1.add(humanCost);
         		dataD2.add(payment);
@@ -172,6 +146,9 @@ public class ProjectMonthlyStatService {
     public List<ChartReportDataVo> getFinishRateData(Date fromMonth, Date toMonth, Long projectId){
     	List<Object[]> objs = userRepository.findUserInfoByLogin(SecurityUtils.getCurrentUserLogin());
     	if(objs != null && !objs.isEmpty()){
+    		Object[] o = objs.get(0);
+			User user = (User)o[0];
+			DeptInfo deptInfo = (DeptInfo)o[1];
     		List<ChartReportDataVo> datas = new ArrayList<>();
         	ChartReportDataVo data = new ChartReportDataVo();
         	data.setName("完成率");
@@ -187,11 +164,10 @@ public class ProjectMonthlyStatService {
         	count += cal2.get(Calendar.MONTH) - cal1.get(Calendar.MONTH);
         	for(int i = 0 ; i <= count; i++){
         		Long statWeek = StringUtil.nullToLong(DateUtil.formatDate("yyyyMM", cal1.getTime()));
-        		List<ProjectMonthlyStat> projectMonthlyStats = projectMonthlyStatRepository.findByStatWeekAndProjectId(statWeek, projectId);
+        		ProjectMonthlyStatVo projectMonthlyStatVo = projectMonthlyStatDao.getByStatWeekAndProjectId(statWeek, projectId, user, deptInfo);
         		Double finishRate = 0D;
-        		if(projectMonthlyStats != null && projectMonthlyStats.size() > 0){
-        			int max = projectMonthlyStats.size() - 1;
-        			finishRate = projectMonthlyStats.get(max).getFinishRate();
+        		if(projectMonthlyStatVo != null){
+        			finishRate = projectMonthlyStatVo.getFinishRate();
         		}
         		dataD.add(finishRate);
         		cal1.add(Calendar.MONTH, 1);

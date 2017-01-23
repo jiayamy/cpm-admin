@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 import javax.inject.Inject;
 
@@ -23,9 +22,7 @@ import com.wondertek.cpm.domain.DeptInfo;
 import com.wondertek.cpm.domain.User;
 import com.wondertek.cpm.domain.vo.ChartReportDataVo;
 import com.wondertek.cpm.domain.vo.ContractMonthlyStatVo;
-import com.wondertek.cpm.domain.vo.LongValue;
 import com.wondertek.cpm.repository.ContractMonthlyStatDao;
-import com.wondertek.cpm.repository.ContractMonthlyStatRepository;
 import com.wondertek.cpm.repository.UserRepository;
 import com.wondertek.cpm.security.SecurityUtils;
 
@@ -38,9 +35,6 @@ public class ContractMonthlyStatService {
 	
 	private final Logger log = LoggerFactory.getLogger(ContractMonthlyStatService.class);
 	
-	@Inject
-	private ContractMonthlyStatRepository contractMonthlyStatRepository;
-	
 //	@Inject
 //	private ContractMonthlyStatSearchRepository contractMonthlyStatSearchRepository;
 	
@@ -50,20 +44,7 @@ public class ContractMonthlyStatService {
 	@Inject
 	private ContractMonthlyStatDao contractMonthlyStatDao;
 	
-	 /**
-     *  Get all the contractMonthlyStats.
-     *  
-     *  @param pageable the pagination information
-     *  @return the list of entities
-     */
-    @Transactional(readOnly = true) 
-    public Page<ContractMonthlyStat> findAll(Pageable pageable) {
-        log.debug("Request to get all ContractMonthlyStat");
-        Page<ContractMonthlyStat> result = contractMonthlyStatRepository.findAll(pageable);
-        return result;
-    }
-    
-    /**
+	/**
      *  Get one contractMonthlyStats by id.
      *
      *  @param id the id of the entity
@@ -72,8 +53,15 @@ public class ContractMonthlyStatService {
     @Transactional(readOnly = true) 
     public ContractMonthlyStatVo findOne(Long id) {
         log.debug("Request to get ContractMonthlyStat : {}", id);
-        ContractMonthlyStatVo contractMonthlyStat = contractMonthlyStatDao.getById(id);
-        return contractMonthlyStat;
+        List<Object[]> objs = userRepository.findUserInfoByLogin(SecurityUtils.getCurrentUserLogin());
+		if (objs != null) {
+			Object[] o = objs.get(0);
+			User user = (User)o[0];
+			DeptInfo deptInfo = (DeptInfo)o[1];
+	        ContractMonthlyStatVo contractMonthlyStat = contractMonthlyStatDao.getById(id, user, deptInfo);
+	        return contractMonthlyStat;
+		}
+		return null;
     }
     
     /**
@@ -100,36 +88,25 @@ public class ContractMonthlyStatService {
      */
     @Transactional(readOnly = true)
     public Page<ContractMonthlyStatVo> getStatPage(String contractId, Pageable pageable){
-    	Optional<User> user = userRepository.findOneByLogin(SecurityUtils.getCurrentUserLogin());
-    	if(user.isPresent()){
-    		Page<ContractMonthlyStatVo> page = contractMonthlyStatDao.getUserPage(contractId, pageable, user.get());
+    	List<Object[]> objs = userRepository.findUserInfoByLogin(SecurityUtils.getCurrentUserLogin());
+    	if (objs != null) {
+			Object[] o = objs.get(0);
+			User user = (User)o[0];
+			DeptInfo deptInfo = (DeptInfo)o[1];
+    		Page<ContractMonthlyStatVo> page = contractMonthlyStatDao.getUserPage(contractId, pageable, user, deptInfo);
         	return page;
     	}else{
     		return new PageImpl(new ArrayList<ContractMonthlyStatVo>(), pageable, 0);
     	}
     }
     
-    /**
-     * 查询用户的所有项目，管理人员能看到部门下面所有人员的项目信息
-     */
-    @Transactional(readOnly = true)
-	public List<LongValue> queryUserContract() {
-    	List<LongValue> returnList = new ArrayList<LongValue>();
-    	List<Object[]> objs = userRepository.findUserInfoByLogin(SecurityUtils.getCurrentUserLogin());
-    	if(objs != null && !objs.isEmpty()){
-    		Object[] o = objs.get(0);
-    		User user = (User) o[0];
-    		DeptInfo deptInfo = (DeptInfo) o[1];
-    		
-    		returnList = contractMonthlyStatDao.queryUserContract(user,deptInfo);
-    	}
-		return returnList;
-	}
-    
     @Transactional(readOnly = true)
     public List<ChartReportDataVo> getChartData(Date fromMonth, Date toMonth, Long contractId){
     	List<Object[]> objs = userRepository.findUserInfoByLogin(SecurityUtils.getCurrentUserLogin());
     	if(objs != null && !objs.isEmpty()){
+    		Object[] o = objs.get(0);
+			User user = (User)o[0];
+			DeptInfo deptInfo = (DeptInfo)o[1];
     		List<ChartReportDataVo> datas = new ArrayList<>();
         	ChartReportDataVo data1 = new ChartReportDataVo();//receive_total
         	ChartReportDataVo data2 = new ChartReportDataVo();//cost_total
@@ -166,7 +143,7 @@ public class ContractMonthlyStatService {
         	count += cal2.get(Calendar.MONTH) - cal1.get(Calendar.MONTH);
         	for(int i = 0 ; i <= count; i++){
         		Long statWeek = StringUtil.nullToLong(DateUtil.formatDate("yyyyMM", cal1.getTime()));
-        		List<ContractMonthlyStat> contractMonthlyStats = contractMonthlyStatRepository.findByStatWeekAndContractId(statWeek, contractId);
+        		ContractMonthlyStatVo contractMonthlyStatVo = contractMonthlyStatDao.getByStatWeekAndContractId(statWeek, contractId, user, deptInfo);
         		Double receiveTotal = 0D;
         		Double costTotal = 0D;
         		Double grossProfit = 0D;
@@ -179,20 +156,19 @@ public class ContractMonthlyStatService {
         		Double internalSoftware = 0D;
         		Double projectHumanCost = 0D;
         		Double projectPayment = 0D;
-        		if(contractMonthlyStats != null && contractMonthlyStats.size() > 0){
-        			int max = contractMonthlyStats.size() - 1;
-        			receiveTotal = contractMonthlyStats.get(max).getReceiveTotal();
-        			costTotal = contractMonthlyStats.get(max).getCostTotal();
-        			grossProfit = contractMonthlyStats.get(max).getGrossProfit();
-        			salesHumanCost = contractMonthlyStats.get(max).getSalesHumanCost();
-        			salesPayment = contractMonthlyStats.get(max).getSalesPayment();
-        			consultHumanCost = contractMonthlyStats.get(max).getConsultHumanCost();
-        			consultPayment = contractMonthlyStats.get(max).getConsultPayment();
-        			hardwarePurchase = contractMonthlyStats.get(max).getHardwarePurchase();
-        			externalSoftware = contractMonthlyStats.get(max).getExternalSoftware();
-        			internalSoftware = contractMonthlyStats.get(max).getInternalSoftware();
-        			projectHumanCost = contractMonthlyStats.get(max).getProjectHumanCost();
-        			projectPayment = contractMonthlyStats.get(max).getProjectPayment();
+        		if(contractMonthlyStatVo != null){
+        			receiveTotal = contractMonthlyStatVo.getReceiveTotal();
+        			costTotal = contractMonthlyStatVo.getCostTotal();
+        			grossProfit = contractMonthlyStatVo.getGrossProfit();
+        			salesHumanCost = contractMonthlyStatVo.getSalesHumanCost();
+        			salesPayment = contractMonthlyStatVo.getSalesPayment();
+        			consultHumanCost = contractMonthlyStatVo.getConsultHumanCost();
+        			consultPayment = contractMonthlyStatVo.getConsultPayment();
+        			hardwarePurchase = contractMonthlyStatVo.getHardwarePurchase();
+        			externalSoftware = contractMonthlyStatVo.getExternalSoftware();
+        			internalSoftware = contractMonthlyStatVo.getInternalSoftware();
+        			projectHumanCost = contractMonthlyStatVo.getProjectHumanCost();
+        			projectPayment = contractMonthlyStatVo.getProjectPayment();
         		}
         		dataD1.add(receiveTotal);
         		dataD2.add(costTotal);
@@ -245,6 +221,9 @@ public class ContractMonthlyStatService {
     public List<ChartReportDataVo> getFinishRateData(Date fromMonth, Date toMonth, Long contractId){
     	List<Object[]> objs = userRepository.findUserInfoByLogin(SecurityUtils.getCurrentUserLogin());
     	if(objs != null && !objs.isEmpty()){
+    		Object[] o = objs.get(0);
+			User user = (User)o[0];
+			DeptInfo deptInfo = (DeptInfo)o[1];
     		List<ChartReportDataVo> datas = new ArrayList<>();
         	ChartReportDataVo data1 = new ChartReportDataVo();//finish_rate
         	data1.setName("完成率");
@@ -260,11 +239,10 @@ public class ContractMonthlyStatService {
         	count += cal2.get(Calendar.MONTH) - cal1.get(Calendar.MONTH);
         	for(int i = 0 ; i <= count; i++){
         		Long statWeek = StringUtil.nullToLong(DateUtil.formatDate("yyyyMM", cal1.getTime()));
-        		List<ContractMonthlyStat> contractMonthlyStats = contractMonthlyStatRepository.findByStatWeekAndContractId(statWeek, contractId);
+        		ContractMonthlyStatVo contractMonthlyStatVo = contractMonthlyStatDao.getByStatWeekAndContractId(statWeek, contractId, user, deptInfo);
         		Double finishRate = 0D;
-        		if(contractMonthlyStats != null && contractMonthlyStats.size() > 0){
-        			int max = contractMonthlyStats.size() - 1;
-        			finishRate = contractMonthlyStats.get(max).getFinishRate();
+        		if(contractMonthlyStatVo != null){
+        			finishRate = contractMonthlyStatVo.getFinishRate();
         		}
         		dataD1.add(finishRate);
         		cal1.add(Calendar.MONTH, 1);

@@ -5,9 +5,9 @@
         .module('cpmApp')
         .controller('ProjectWeeklyStatController', ProjectWeeklyStatController);
 
-    ProjectWeeklyStatController.$inject = ['$scope', '$state', 'DateUtils','ProjectWeeklyStat', 'ParseLinks', 'AlertService', 'paginationConstants', 'pagingParams'];
+    ProjectWeeklyStatController.$inject = ['ProjectInfo','$scope', '$state', 'DateUtils','ProjectWeeklyStat', 'ParseLinks', 'AlertService', 'paginationConstants', 'pagingParams'];
 
-    function ProjectWeeklyStatController ($scope, $state,DateUtils,  ProjectWeeklyStat, ParseLinks, AlertService, paginationConstants, pagingParams) {
+    function ProjectWeeklyStatController (ProjectInfo,$scope, $state,DateUtils,  ProjectWeeklyStat, ParseLinks, AlertService, paginationConstants, pagingParams) {
     	var vm = this;
 
         vm.loadPage = loadPage;
@@ -28,7 +28,7 @@
         }
         loadProject();
         function loadProject(){
-        	ProjectWeeklyStat.queryUserProject({
+        	ProjectInfo.queryProjectInfo({
         		
         	},
         	function(data, headers){
