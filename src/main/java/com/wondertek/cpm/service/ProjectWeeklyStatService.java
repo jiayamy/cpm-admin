@@ -1,7 +1,5 @@
 package com.wondertek.cpm.service;
 
-import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -28,7 +26,6 @@ import com.wondertek.cpm.domain.vo.ProjectWeeklyStatVo;
 import com.wondertek.cpm.repository.ProjectWeeklyStatDao;
 import com.wondertek.cpm.repository.ProjectWeeklyStatRepository;
 import com.wondertek.cpm.repository.UserRepository;
-import com.wondertek.cpm.repository.search.ProjectWeeklyStatSearchRepository;
 import com.wondertek.cpm.security.SecurityUtils;
 
 /**
@@ -43,8 +40,8 @@ public class ProjectWeeklyStatService {
     @Inject
     private ProjectWeeklyStatRepository projectWeeklyStatRepository;
 
-    @Inject
-    private ProjectWeeklyStatSearchRepository projectWeeklyStatSearchRepository;
+//    @Inject
+//    private ProjectWeeklyStatSearchRepository projectWeeklyStatSearchRepository;
     
     @Inject
     private UserRepository userRepository;
@@ -90,7 +87,8 @@ public class ProjectWeeklyStatService {
     @Transactional(readOnly = true)
     public Page<ProjectWeeklyStat> search(String query, Pageable pageable) {
         log.debug("Request to search for a page of ProjectWeeklyStats for query {}", query);
-        Page<ProjectWeeklyStat> result = projectWeeklyStatSearchRepository.search(queryStringQuery(query), pageable);
+        Page<ProjectWeeklyStat> result = null;
+//        Page<ProjectWeeklyStat> result = projectWeeklyStatSearchRepository.search(queryStringQuery(query), pageable);
         return result;
     }
     

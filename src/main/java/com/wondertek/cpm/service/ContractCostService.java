@@ -1,7 +1,5 @@
 package com.wondertek.cpm.service;
 
-import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
-
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +22,6 @@ import com.wondertek.cpm.domain.vo.ContractCostVo;
 import com.wondertek.cpm.repository.ContractCostDao;
 import com.wondertek.cpm.repository.ContractCostRepository;
 import com.wondertek.cpm.repository.UserRepository;
-import com.wondertek.cpm.repository.search.ContractCostSearchRepository;
 import com.wondertek.cpm.security.SecurityUtils;
 
 /**
@@ -38,8 +35,8 @@ public class ContractCostService {
     
     @Inject
     private ContractCostRepository contractCostRepository;
-    @Inject
-    private ContractCostSearchRepository contractCostSearchRepository;
+//    @Inject
+//    private ContractCostSearchRepository contractCostSearchRepository;
     @Inject
     private UserRepository userRepository;
     @Inject
@@ -109,7 +106,8 @@ public class ContractCostService {
     @Transactional(readOnly = true)
     public Page<ContractCost> search(String query, Pageable pageable) {
         log.debug("Request to search for a page of ContractCosts for query {}", query);
-        Page<ContractCost> result = contractCostSearchRepository.search(queryStringQuery(query), pageable);
+        Page<ContractCost> result = null;
+//        Page<ContractCost> result = contractCostSearchRepository.search(queryStringQuery(query), pageable);
         return result;
     }
     /**

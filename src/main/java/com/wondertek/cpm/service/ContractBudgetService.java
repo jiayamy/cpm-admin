@@ -1,5 +1,19 @@
 package com.wondertek.cpm.service;
 
+import java.time.ZonedDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.inject.Inject;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.wondertek.cpm.domain.ContractBudget;
 import com.wondertek.cpm.domain.DeptInfo;
 import com.wondertek.cpm.domain.User;
@@ -8,24 +22,7 @@ import com.wondertek.cpm.domain.vo.LongValue;
 import com.wondertek.cpm.repository.ContractBudgetDao;
 import com.wondertek.cpm.repository.ContractBudgetRepository;
 import com.wondertek.cpm.repository.UserRepository;
-import com.wondertek.cpm.repository.search.ContractBudgetSearchRepository;
 import com.wondertek.cpm.security.SecurityUtils;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.stereotype.Service;
-
-import javax.inject.Inject;
-
-import java.time.ZonedDateTime;
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.elasticsearch.index.query.QueryBuilders.*;
 
 /**
  * Service Implementation for managing ContractBudget.
@@ -42,8 +39,8 @@ public class ContractBudgetService {
     @Inject
     private ContractBudgetRepository contractBudgetRepository;
     
-    @Inject
-    private ContractBudgetSearchRepository contractBudgetSearchRepository;
+//    @Inject
+//    private ContractBudgetSearchRepository contractBudgetSearchRepository;
     
     @Inject
     private ContractBudgetDao contractBudgetDao;
@@ -57,7 +54,7 @@ public class ContractBudgetService {
     public ContractBudget save(ContractBudget contractBudget) {
         log.debug("Request to save ContractBudget : {}", contractBudget);
         ContractBudget result = contractBudgetRepository.save(contractBudget);
-        contractBudgetSearchRepository.save(result);
+//        contractBudgetSearchRepository.save(result);
         return result;
     }
 
@@ -112,7 +109,8 @@ public class ContractBudgetService {
     @Transactional(readOnly = true)
     public Page<ContractBudget> search(String query, Pageable pageable) {
         log.debug("Request to search for a page of ContractBudgets for query {}", query);
-        Page<ContractBudget> result = contractBudgetSearchRepository.search(queryStringQuery(query), pageable);
+        Page<ContractBudget> result = null;
+//        Page<ContractBudget> result = contractBudgetSearchRepository.search(queryStringQuery(query), pageable);
         return result;
     }
 

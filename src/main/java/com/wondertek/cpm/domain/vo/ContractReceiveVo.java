@@ -93,22 +93,7 @@ public class ContractReceiveVo {
 	}
 	public ContractReceiveVo() {
 	}
-	public ContractReceiveVo(Long id, Long contractId, String contractNum, String contractName, Double receiveTotal,
-			Long receiveDay, String receiver, Integer status, String creator, ZonedDateTime createTime, String updator,
-			ZonedDateTime updateTime) {
-		this.id = id;
-		this.contractId = contractId;
-		this.contractNum = contractNum;
-		this.contractName = contractName;
-		this.receiveTotal = receiveTotal;
-		this.receiveDay = receiveDay;
-		this.receiver = receiver;
-		this.status = status;
-		this.creator = creator;
-		this.createTime = createTime;
-		this.updator = updator;
-		this.updateTime = updateTime;
-	}
+
 	public ContractReceiveVo(ContractReceive contractReceive,String contractNum,String contractName ) {
 		this.id = contractReceive.getId();
 		this.contractId = contractReceive.getContractId();

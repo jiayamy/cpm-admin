@@ -1,7 +1,5 @@
 package com.wondertek.cpm.service;
 
-import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
-
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -29,7 +27,6 @@ import com.wondertek.cpm.domain.vo.LongValue;
 import com.wondertek.cpm.repository.ContractMonthlyStatDao;
 import com.wondertek.cpm.repository.ContractMonthlyStatRepository;
 import com.wondertek.cpm.repository.UserRepository;
-import com.wondertek.cpm.repository.search.ContractMonthlyStatSearchRepository;
 import com.wondertek.cpm.security.SecurityUtils;
 
 /**
@@ -44,8 +41,8 @@ public class ContractMonthlyStatService {
 	@Inject
 	private ContractMonthlyStatRepository contractMonthlyStatRepository;
 	
-	@Inject
-	private ContractMonthlyStatSearchRepository contractMonthlyStatSearchRepository;
+//	@Inject
+//	private ContractMonthlyStatSearchRepository contractMonthlyStatSearchRepository;
 	
 	@Inject
     private UserRepository userRepository;
@@ -88,7 +85,8 @@ public class ContractMonthlyStatService {
     @Transactional(readOnly = true)
     public Page<ContractMonthlyStat> search(String query, Pageable pageable) {
         log.debug("Request to search for a page of ContractMonthlyStat for query {}", query);
-        Page<ContractMonthlyStat> result = contractMonthlyStatSearchRepository.search(queryStringQuery(query), pageable);
+        Page<ContractMonthlyStat> result = null;
+//        Page<ContractMonthlyStat> result = contractMonthlyStatSearchRepository.search(queryStringQuery(query), pageable);
         return result;
     }
     

@@ -1,7 +1,6 @@
 package com.wondertek.cpm.service;
 
-import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
-
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,10 +19,10 @@ import com.wondertek.cpm.domain.ContractReceive;
 import com.wondertek.cpm.domain.DeptInfo;
 import com.wondertek.cpm.domain.User;
 import com.wondertek.cpm.domain.vo.ContractReceiveVo;
+import com.wondertek.cpm.repository.ContractInfoDao;
 import com.wondertek.cpm.repository.ContractReceiveDao;
 import com.wondertek.cpm.repository.ContractReceiveRepository;
 import com.wondertek.cpm.repository.UserRepository;
-import com.wondertek.cpm.repository.search.ContractReceiveSearchRepository;
 import com.wondertek.cpm.security.SecurityUtils;
 
 /**
@@ -37,45 +36,16 @@ public class ContractReceiveService {
     @Inject
     private ContractReceiveRepository contractReceiveRepository;
 
-    @Inject
-    private ContractReceiveSearchRepository contractReceiveSearchRepository;
+//    @Inject
+//    private ContractReceiveSearchRepository contractReceiveSearchRepository;
     @Inject
     private ContractReceiveDao contractReceiveDao;
     @Inject
+    private ContractInfoDao contractInfoDao;
+    
+    @Inject
     private UserRepository userRepository;
 
-    /**
-     * Save a contractReceive.
-     *
-     * @param contractReceive the entity to save
-     * @return the persisted entity
-     */
-    public ContractReceive save(ContractReceive contractReceive) {
-        log.debug("Request to save ContractReceive : {}", contractReceive);
-        ContractReceive result = contractReceiveRepository.save(contractReceive);
-       // contractReceiveSearchRepository.save(result);
-        return result;
-    }
-
-    /**
-     *  Get all the contractReceives.
-     *  
-     *  @param pageable the pagination information
-     *  @return the list of entities
-     */
-    @Transactional(readOnly = true) 
-    public Page<ContractReceive> findAll(Pageable pageable) {
-        log.debug("Request to get all ContractReceives");
-        Page<ContractReceive> result = contractReceiveRepository.findAll(pageable);
-        return result;
-    }
-
-    /**
-     *  Get one contractReceive by id.
-     *
-     *  @param id the id of the entity
-     *  @return the entity
-     */
     @Transactional(readOnly = true) 
     public ContractReceive findOne(Long id) {
         log.debug("Request to get ContractReceive : {}", id);
@@ -83,44 +53,32 @@ public class ContractReceiveService {
         return contractReceive;
     }
 
-    /**
-     *  Delete the  contractReceive by id.
-     *
-     *  @param id the id of the entity
-     */
     public void delete(Long id) {
         log.debug("Request to delete ContractReceive : {}", id);
         ContractReceive contractReceive = contractReceiveRepository.findOne(id);
-        contractReceive.setStatus(CpmConstants.STATUS_DELETED);
-        contractReceiveRepository.save(contractReceive);
+        if(contractReceive != null){
+        	contractReceive.setStatus(CpmConstants.STATUS_DELETED);
+        	contractReceive.setUpdateTime(ZonedDateTime.now());
+        	contractReceive.setUpdator(SecurityUtils.getCurrentUserLogin());
+        	contractReceiveRepository.save(contractReceive);
+        	
+        	contractInfoDao.updateReceiveTotal(contractReceive.getContractId(),0d,contractReceive.getReceiveTotal());
+        }
     }
-
-    /**
-     * Search for the contractReceive corresponding to the query.
-     *
-     *  @param query the query of the search
-     *  @return the list of entities
-     */
-    @Transactional(readOnly = true)
-    public Page<ContractReceive> search(String query, Pageable pageable) {
-        log.debug("Request to search for a page of ContractReceives for query {}", query);
-        Page<ContractReceive> result = contractReceiveSearchRepository.search(queryStringQuery(query), pageable);
-        return result;
-    }
-
+    @Transactional(readOnly = true) 
 	public ContractReceiveVo getContractReceive(Long id) {
 		List<Object[]> objs = userRepository.findUserInfoByLogin(SecurityUtils.getCurrentUserLogin());
 		if (objs != null && !objs.isEmpty()) {
 			Object[] o = objs.get(0);
 			User user = (User)o[0];
-			DeptInfo deptInfo = (DeptInfo)o[0];
+			DeptInfo deptInfo = (DeptInfo)o[1];
 			return contractReceiveDao.getContractReceive(user,deptInfo,id);
 		}
 		
 		return null;
 	}
-
-	public Page<ContractReceiveVo> getuserPage(ContractReceive contractReceive, Pageable pageable) {
+    @Transactional(readOnly = true) 
+	public Page<ContractReceiveVo> getUserPage(ContractReceive contractReceive, Pageable pageable) {
 		log.debug("Request to get all contractReceive");
 		List<Object[]> objs = userRepository.findUserInfoByLogin(SecurityUtils.getCurrentUserLogin());
 		
@@ -131,5 +89,11 @@ public class ContractReceiveService {
 			return contractReceiveDao.getUserPage(contractReceive,user,deptInfo,pageable);
 		}
 		return new PageImpl<>(new ArrayList<ContractReceiveVo>(), pageable, 0);
+	}
+
+	public ContractReceive save(ContractReceive contractReceive, Double oldTotal) {
+		contractReceive = contractReceiveRepository.save(contractReceive);
+		contractInfoDao.updateReceiveTotal(contractReceive.getContractId(),contractReceive.getReceiveTotal(),oldTotal);
+		return contractReceive;
 	}
 }

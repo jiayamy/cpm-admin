@@ -13,9 +13,11 @@
         vm.contractReceive = entity;
         vm.previousState = previousState.name;
 
-        var unsubscribe = $rootScope.$on('cpmApp:contractReceiveUpdate', function(event, result) {
-            vm.contractReceive = result;
-        });
-        $scope.$on('$destroy', unsubscribe);
+        vm.statuss = [{key:1,val:'可用'},{key:2,val:'删除'}];
+        for(var j = 0; j < vm.statuss.length; j++){
+			if(vm.contractReceive.status == vm.statuss[j].key){
+				vm.contractReceive.statusName = vm.statuss[j].val;
+			}
+		}
     }
 })();

@@ -1,26 +1,23 @@
 package com.wondertek.cpm.service;
 
-import com.wondertek.cpm.CpmConstants;
-import com.wondertek.cpm.config.StringUtil;
-import com.wondertek.cpm.domain.ProductPrice;
-import com.wondertek.cpm.repository.ProductPriceDao;
-import com.wondertek.cpm.repository.ProductPriceRepository;
-import com.wondertek.cpm.repository.search.ProductPriceSearchRepository;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.inject.Inject;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Order;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.inject.Inject;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.elasticsearch.index.query.QueryBuilders.*;
+import com.wondertek.cpm.CpmConstants;
+import com.wondertek.cpm.config.StringUtil;
+import com.wondertek.cpm.domain.ProductPrice;
+import com.wondertek.cpm.repository.ProductPriceDao;
+import com.wondertek.cpm.repository.ProductPriceRepository;
 
 /**
  * Service Imppementation for managing ProductPrice.
@@ -34,8 +31,8 @@ public class ProductPriceService {
     @Inject
     private ProductPriceRepository productPriceRepository;
 
-    @Inject
-    private ProductPriceSearchRepository productPriceSearchRepository;
+//    @Inject
+//    private ProductPriceSearchRepository productPriceSearchRepository;
     
     @Inject
     private ProductPriceDao productPriceDao;
@@ -48,7 +45,7 @@ public class ProductPriceService {
     public ProductPrice save(ProductPrice productPrice) {
         log.debug("Request to save ProductPrice : {}", productPrice);
         ProductPrice result = productPriceRepository.save(productPrice);
-        productPriceSearchRepository.save(result);
+//        productPriceSearchRepository.save(result);
         return result;
     }
 
@@ -86,7 +83,7 @@ public class ProductPriceService {
     public void delete(Long id) {
         log.debug("Request to delete ProductPrice : {}", id);
         productPriceRepository.delete(id);
-        productPriceSearchRepository.delete(id);
+//        productPriceSearchRepository.delete(id);
     }
 
     /**
@@ -98,7 +95,8 @@ public class ProductPriceService {
     @Transactional(readOnly = true)
     public Page<ProductPrice> search(String query, Pageable pageable) {
         log.debug("Request to search for a page of ProductPrices for query {}", query);
-        Page<ProductPrice> result = productPriceSearchRepository.search(queryStringQuery(query), pageable);
+        Page<ProductPrice> result = null;
+//        Page<ProductPrice> result = productPriceSearchRepository.search(queryStringQuery(query), pageable);
         return result;
     }
 

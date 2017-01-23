@@ -29,7 +29,7 @@
                     squash: true
                 },
                 sort: {
-                    value: 'id,asc',
+                    value: 'wcr.id,asc',
                     squash: true
                 },
                 contractId: null
@@ -46,7 +46,6 @@
                 }],
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                     $translatePartialLoader.addPart('contractReceive');
-                    $translatePartialLoader.addPart('contractInfo');
                     $translatePartialLoader.addPart('global');
                     return $translate.refresh();
                 }]
@@ -87,7 +86,7 @@
         
         .state('contract-receive-detail.edit',{
         	parent: 'contract-receive-detail',
-        	url: '/{id}/edit',
+        	url: '/edit',
             data: {
                 authorities: ['ROLE_CONTRACT_RECEIVE']
             },
@@ -101,6 +100,7 @@
             resolve:{
             	translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                      $translatePartialLoader.addPart('contractReceive');
+                     $translatePartialLoader.addPart('deptInfo');
                      return $translate.refresh();
                  }],
                  entity: ['$stateParams', 'ContractReceive', function($stateParams, ContractReceive) {
@@ -162,6 +162,7 @@
         	resolve:{
 	    		 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
 	                 $translatePartialLoader.addPart('contractReceive');
+	                 $translatePartialLoader.addPart('deptInfo');
 	                 return $translate.refresh();
 	             }],
 	             entity: function () {
@@ -240,6 +241,15 @@
                 }],
                 entity: ['$stateParams', 'ContractReceive', function($stateParams, ContractReceive) {
                     return ContractReceive.get({id : $stateParams.id}).$promise;
+                }],
+                previousState: ["$state", function ($state) {
+                    var currentStateData = {
+                        queryDept:'contract-receive.edit.queryDept',
+                        name: $state.current.name || 'contract-receive',
+                        params: $state.params,
+                        url: $state.href($state.current.name, $state.params)
+                    };
+                    return currentStateData;
                 }]
             }
         })
@@ -247,7 +257,7 @@
             parent: 'contract-receive.edit',
             url: '/queryDept?selectType&showChild&dataType',
             data: {
-                authorities: ['ROLE_USER']
+                authorities: ['ROLE_CONTRACT_RECEIVE']
             },
             onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
                 $uibModal.open({
