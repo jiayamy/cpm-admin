@@ -131,131 +131,139 @@ public class ContractWeeklyStatService {
     
     @Transactional(readOnly = true)
     public List<ChartReportDataVo> getChartData(Date fromDate, Date toDate, Long contractId){
-    	List<ChartReportDataVo> datas = new ArrayList<>();
-    	ChartReportDataVo data1 = new ChartReportDataVo();//receive_total
-    	ChartReportDataVo data2 = new ChartReportDataVo();//cost_total
-    	ChartReportDataVo data3 = new ChartReportDataVo();//gross_profit
-    	ChartReportDataVo data4 = new ChartReportDataVo();//sales_human_cost
-    	ChartReportDataVo data5 = new ChartReportDataVo();//sales_payment
-    	ChartReportDataVo data6 = new ChartReportDataVo();//consult_human_cost
-    	ChartReportDataVo data7 = new ChartReportDataVo();//consult_payment
-    	ChartReportDataVo data8 = new ChartReportDataVo();//hardware_purchase
-    	ChartReportDataVo data9 = new ChartReportDataVo();//external_software
-    	ChartReportDataVo data10 = new ChartReportDataVo();//internal_software
-    	ChartReportDataVo data11 = new ChartReportDataVo();//project_human_cost
-    	ChartReportDataVo data12 = new ChartReportDataVo();//project_payment
-    	String[] names = new String[]{"合同回款总额","所有成本","合同毛利","销售人工成本","销售报销成本","咨询人工成本","咨询报销成本","硬件采购成本","外部软件采购成本","内容软件采购成本","项目人工成本","项目报销成本"};
-    	List<Double> dataD1 = new ArrayList<>();
-    	List<Double> dataD2 = new ArrayList<>();
-    	List<Double> dataD3 = new ArrayList<>();
-    	List<Double> dataD4 = new ArrayList<>();
-    	List<Double> dataD5 = new ArrayList<>();
-    	List<Double> dataD6 = new ArrayList<>();
-    	List<Double> dataD7 = new ArrayList<>();
-    	List<Double> dataD8 = new ArrayList<>();
-    	List<Double> dataD9 = new ArrayList<>();
-    	List<Double> dataD10 = new ArrayList<>();
-    	List<Double> dataD11 = new ArrayList<>();
-    	List<Double> dataD12 = new ArrayList<>();
-    	Long temp = fromDate.getTime();
-    	Long sevenDay = 7*24*60*60*1000L;
-    	while(temp <= toDate.getTime()){
-    		Long statWeek = StringUtil.nullToLong(DateUtil.formatDate("yyyyMMdd", new Date(temp)));
-    		List<ContractWeeklyStat> contractWeeklyStats = contractWeeklyStatRepository.findByStatWeekAndContractId(statWeek, contractId);
-    		Double receiveTotal = 0D;
-    		Double costTotal = 0D;
-    		Double grossProfit = 0D;
-    		Double salesHumanCost = 0D;
-    		Double salesPayment = 0D;
-    		Double consultHumanCost = 0D;
-    		Double consultPayment = 0D;
-    		Double hardwarePurchase = 0D;
-    		Double externalSoftware = 0D;
-    		Double internalSoftware = 0D;
-    		Double projectHumanCost = 0D;
-    		Double projectPayment = 0D;
-    		if(contractWeeklyStats != null && contractWeeklyStats.size() > 0){
-    			int max = contractWeeklyStats.size() - 1;
-    			receiveTotal = contractWeeklyStats.get(max).getReceiveTotal();
-    			costTotal = contractWeeklyStats.get(max).getCostTotal();
-    			grossProfit = contractWeeklyStats.get(max).getGrossProfit();
-    			salesHumanCost = contractWeeklyStats.get(max).getSalesHumanCost();
-    			salesPayment = contractWeeklyStats.get(max).getSalesPayment();
-    			consultHumanCost = contractWeeklyStats.get(max).getConsultHumanCost();
-    			consultPayment = contractWeeklyStats.get(max).getConsultPayment();
-    			hardwarePurchase = contractWeeklyStats.get(max).getHardwarePurchase();
-    			externalSoftware = contractWeeklyStats.get(max).getExternalSoftware();
-    			internalSoftware = contractWeeklyStats.get(max).getInternalSoftware();
-    			projectHumanCost = contractWeeklyStats.get(max).getProjectHumanCost();
-    			projectPayment = contractWeeklyStats.get(max).getProjectPayment();
-    		}
-    		dataD1.add(receiveTotal);
-    		dataD2.add(costTotal);
-    		dataD3.add(grossProfit);
-    		dataD4.add(salesHumanCost);
-    		dataD5.add(salesPayment);
-    		dataD6.add(consultHumanCost);
-    		dataD7.add(consultPayment);
-    		dataD8.add(hardwarePurchase);
-    		dataD9.add(externalSoftware);
-    		dataD10.add(internalSoftware);
-    		dataD11.add(projectHumanCost);
-    		dataD12.add(projectPayment);
-    		temp += sevenDay;
+    	List<Object[]> objs = userRepository.findUserInfoByLogin(SecurityUtils.getCurrentUserLogin());
+    	if(objs != null && !objs.isEmpty()){
+    		List<ChartReportDataVo> datas = new ArrayList<>();
+        	ChartReportDataVo data1 = new ChartReportDataVo();//receive_total
+        	ChartReportDataVo data2 = new ChartReportDataVo();//cost_total
+        	ChartReportDataVo data3 = new ChartReportDataVo();//gross_profit
+        	ChartReportDataVo data4 = new ChartReportDataVo();//sales_human_cost
+        	ChartReportDataVo data5 = new ChartReportDataVo();//sales_payment
+        	ChartReportDataVo data6 = new ChartReportDataVo();//consult_human_cost
+        	ChartReportDataVo data7 = new ChartReportDataVo();//consult_payment
+        	ChartReportDataVo data8 = new ChartReportDataVo();//hardware_purchase
+        	ChartReportDataVo data9 = new ChartReportDataVo();//external_software
+        	ChartReportDataVo data10 = new ChartReportDataVo();//internal_software
+        	ChartReportDataVo data11 = new ChartReportDataVo();//project_human_cost
+        	ChartReportDataVo data12 = new ChartReportDataVo();//project_payment
+        	String[] names = new String[]{"合同回款总额","所有成本","合同毛利","销售人工成本","销售报销成本","咨询人工成本","咨询报销成本","硬件采购成本","外部软件采购成本","内容软件采购成本","项目人工成本","项目报销成本"};
+        	List<Double> dataD1 = new ArrayList<>();
+        	List<Double> dataD2 = new ArrayList<>();
+        	List<Double> dataD3 = new ArrayList<>();
+        	List<Double> dataD4 = new ArrayList<>();
+        	List<Double> dataD5 = new ArrayList<>();
+        	List<Double> dataD6 = new ArrayList<>();
+        	List<Double> dataD7 = new ArrayList<>();
+        	List<Double> dataD8 = new ArrayList<>();
+        	List<Double> dataD9 = new ArrayList<>();
+        	List<Double> dataD10 = new ArrayList<>();
+        	List<Double> dataD11 = new ArrayList<>();
+        	List<Double> dataD12 = new ArrayList<>();
+        	Long temp = fromDate.getTime();
+        	Long sevenDay = 7*24*60*60*1000L;
+        	while(temp <= toDate.getTime()){
+        		Long statWeek = StringUtil.nullToLong(DateUtil.formatDate("yyyyMMdd", new Date(temp)));
+        		List<ContractWeeklyStat> contractWeeklyStats = contractWeeklyStatRepository.findByStatWeekAndContractId(statWeek, contractId);
+        		Double receiveTotal = 0D;
+        		Double costTotal = 0D;
+        		Double grossProfit = 0D;
+        		Double salesHumanCost = 0D;
+        		Double salesPayment = 0D;
+        		Double consultHumanCost = 0D;
+        		Double consultPayment = 0D;
+        		Double hardwarePurchase = 0D;
+        		Double externalSoftware = 0D;
+        		Double internalSoftware = 0D;
+        		Double projectHumanCost = 0D;
+        		Double projectPayment = 0D;
+        		if(contractWeeklyStats != null && contractWeeklyStats.size() > 0){
+        			int max = contractWeeklyStats.size() - 1;
+        			receiveTotal = contractWeeklyStats.get(max).getReceiveTotal();
+        			costTotal = contractWeeklyStats.get(max).getCostTotal();
+        			grossProfit = contractWeeklyStats.get(max).getGrossProfit();
+        			salesHumanCost = contractWeeklyStats.get(max).getSalesHumanCost();
+        			salesPayment = contractWeeklyStats.get(max).getSalesPayment();
+        			consultHumanCost = contractWeeklyStats.get(max).getConsultHumanCost();
+        			consultPayment = contractWeeklyStats.get(max).getConsultPayment();
+        			hardwarePurchase = contractWeeklyStats.get(max).getHardwarePurchase();
+        			externalSoftware = contractWeeklyStats.get(max).getExternalSoftware();
+        			internalSoftware = contractWeeklyStats.get(max).getInternalSoftware();
+        			projectHumanCost = contractWeeklyStats.get(max).getProjectHumanCost();
+        			projectPayment = contractWeeklyStats.get(max).getProjectPayment();
+        		}
+        		dataD1.add(receiveTotal);
+        		dataD2.add(costTotal);
+        		dataD3.add(grossProfit);
+        		dataD4.add(salesHumanCost);
+        		dataD5.add(salesPayment);
+        		dataD6.add(consultHumanCost);
+        		dataD7.add(consultPayment);
+        		dataD8.add(hardwarePurchase);
+        		dataD9.add(externalSoftware);
+        		dataD10.add(internalSoftware);
+        		dataD11.add(projectHumanCost);
+        		dataD12.add(projectPayment);
+        		temp += sevenDay;
+        	}
+        	data1.setData(dataD1);
+        	data2.setData(dataD2);
+        	data3.setData(dataD3);
+        	data4.setData(dataD4);
+        	data5.setData(dataD5);
+        	data6.setData(dataD6);
+        	data7.setData(dataD7);
+        	data8.setData(dataD8);
+        	data9.setData(dataD9);
+        	data10.setData(dataD10);
+        	data11.setData(dataD11);
+        	data12.setData(dataD12);
+        	datas.add(data1);
+        	datas.add(data2);
+        	datas.add(data3);
+        	datas.add(data4);
+        	datas.add(data5);
+        	datas.add(data6);
+        	datas.add(data7);
+        	datas.add(data8);
+        	datas.add(data9);
+        	datas.add(data10);
+        	datas.add(data11);
+        	datas.add(data12);
+        	for(int i = 0; i < 12; i++){
+        		datas.get(i).setName(names[i]);
+        		datas.get(i).setType("line");
+        	}
+        	return datas;
     	}
-    	data1.setData(dataD1);
-    	data2.setData(dataD2);
-    	data3.setData(dataD3);
-    	data4.setData(dataD4);
-    	data5.setData(dataD5);
-    	data6.setData(dataD6);
-    	data7.setData(dataD7);
-    	data8.setData(dataD8);
-    	data9.setData(dataD9);
-    	data10.setData(dataD10);
-    	data11.setData(dataD11);
-    	data12.setData(dataD12);
-    	datas.add(data1);
-    	datas.add(data2);
-    	datas.add(data3);
-    	datas.add(data4);
-    	datas.add(data5);
-    	datas.add(data6);
-    	datas.add(data7);
-    	datas.add(data8);
-    	datas.add(data9);
-    	datas.add(data10);
-    	datas.add(data11);
-    	datas.add(data12);
-    	for(int i = 0; i < 12; i++){
-    		datas.get(i).setName(names[i]);
-    		datas.get(i).setType("line");
-    	}
-    	return datas;
+    	return null;
     }
     
     @Transactional(readOnly = true)
     public List<ChartReportDataVo> getFinishRateData(Date fromDate, Date toDate, Long contractId){
-    	List<ChartReportDataVo> datas = new ArrayList<>();
-    	ChartReportDataVo data1 = new ChartReportDataVo();//finish_rate
-    	data1.setName("完成率");
-    	data1.setType("line");
-    	List<Double> dataD1 = new ArrayList<>();
-    	Long temp = fromDate.getTime();
-    	Long sevenDay = 7*24*60*60*1000L;
-    	while(temp <= toDate.getTime()){
-    		Long statWeek = StringUtil.nullToLong(DateUtil.formatDate("yyyyMMdd", new Date(temp)));
-    		List<ContractWeeklyStat> contractWeeklyStats = contractWeeklyStatRepository.findByStatWeekAndContractId(statWeek, contractId);
-    		Double finishRate = 0D;
-    		if(contractWeeklyStats != null && contractWeeklyStats.size() > 0){
-    			int max = contractWeeklyStats.size() - 1;
-    			finishRate = contractWeeklyStats.get(max).getFinishRate();
-    		}
-    		dataD1.add(finishRate);
-    		temp += sevenDay;
+    	List<Object[]> objs = userRepository.findUserInfoByLogin(SecurityUtils.getCurrentUserLogin());
+    	if(objs != null && !objs.isEmpty()){
+    		List<ChartReportDataVo> datas = new ArrayList<>();
+        	ChartReportDataVo data1 = new ChartReportDataVo();//finish_rate
+        	data1.setName("完成率");
+        	data1.setType("line");
+        	List<Double> dataD1 = new ArrayList<>();
+        	Long temp = fromDate.getTime();
+        	Long sevenDay = 7*24*60*60*1000L;
+        	while(temp <= toDate.getTime()){
+        		Long statWeek = StringUtil.nullToLong(DateUtil.formatDate("yyyyMMdd", new Date(temp)));
+        		List<ContractWeeklyStat> contractWeeklyStats = contractWeeklyStatRepository.findByStatWeekAndContractId(statWeek, contractId);
+        		Double finishRate = 0D;
+        		if(contractWeeklyStats != null && contractWeeklyStats.size() > 0){
+        			int max = contractWeeklyStats.size() - 1;
+        			finishRate = contractWeeklyStats.get(max).getFinishRate();
+        		}
+        		dataD1.add(finishRate);
+        		temp += sevenDay;
+        	}
+        	data1.setData(dataD1);
+        	datas.add(data1);
+        	return datas;
     	}
-    	data1.setData(dataD1);
-    	datas.add(data1);
-    	return datas;
+    	return null;
     }
 }

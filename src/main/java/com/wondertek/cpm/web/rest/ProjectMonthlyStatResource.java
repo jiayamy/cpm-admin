@@ -18,7 +18,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -35,7 +34,6 @@ import com.wondertek.cpm.domain.vo.LongValue;
 import com.wondertek.cpm.domain.vo.ProjectMonthlyStatVo;
 import com.wondertek.cpm.security.AuthoritiesConstants;
 import com.wondertek.cpm.service.ProjectMonthlyStatService;
-import com.wondertek.cpm.web.rest.util.HeaderUtil;
 import com.wondertek.cpm.web.rest.util.PaginationUtil;
 
 import io.swagger.annotations.ApiParam;
@@ -91,20 +89,6 @@ public class ProjectMonthlyStatResource {
             .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
     
-    /**
-     * DELETE  /project-monthly-stats/:id : delete the "id" ProjectMonthlyStats.
-     *
-     * @param id the id of the ProjectMonthlyStats to delete
-     * @return the ResponseEntity with status 200 (OK)
-     */
-    @DeleteMapping("/project-monthly-stats/{id}")
-    @Timed
-    @Secured(AuthoritiesConstants.ROLE_STAT_PROJECT)
-    public ResponseEntity<Void> deleteProjectMonthlyStat(@PathVariable Long id) {
-        log.debug("REST request to delete ProjectMonthlyStats : {}", id);
-        projectMonthlyStatService.delete(id);
-        return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert("projectMonthlyStats", id.toString())).build();
-    }
     
     /**
      * SEARCH  /_search/project-monthly-stats?query=:query : search for the ProjectMonthlyStats corresponding
@@ -138,11 +122,14 @@ public class ProjectMonthlyStatResource {
     @GetMapping("/project-monthly-stats/queryChart")
     @Timed
     @Secured(AuthoritiesConstants.ROLE_STAT_PROJECT)
-    public ChartReportVo getChartReport(@ApiParam(value="fromDate") @RequestParam(value="fromDate") String fromDate,
+    public ResponseEntity<ChartReportVo> getChartReport(@ApiParam(value="fromDate") @RequestParam(value="fromDate") String fromDate,
     		@ApiParam(value="toDate") @RequestParam(value="toDate") String toDate,
     		@ApiParam(value="id") @RequestParam(value="id") Long statId){
     	ChartReportVo chartReportVo = new ChartReportVo();
     	ProjectMonthlyStatVo projectMonthlyStatvo = projectMonthlyStatService.findOne(statId);
+    	if(projectMonthlyStatvo == null){
+    		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    	}
     	Long projectId = projectMonthlyStatvo.getProjectId();
     	chartReportVo.setTitle(projectMonthlyStatvo.getSerialNum());
     	if(StringUtil.isNullStr(toDate)){
@@ -168,20 +155,27 @@ public class ProjectMonthlyStatResource {
     	}
     	chartReportVo.setCategory(category);
     	List<ChartReportDataVo> datas = projectMonthlyStatService.getChartData(fMonth, lMonth, projectId);
+    	if(datas == null){
+    		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    	}
     	chartReportVo.setSeries(datas);
     	List<String> legend = new ArrayList<String>(Arrays.asList(new String[]{"人工成本","报销成本"}));
     	chartReportVo.setLegend(legend);
-    	return chartReportVo;
+    	return Optional.ofNullable(chartReportVo).map(result -> new ResponseEntity<>(result,HttpStatus.OK))
+                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
     
     @GetMapping("/project-monthly-stats/queryFinishRateChart")
     @Timed
     @Secured(AuthoritiesConstants.ROLE_STAT_PROJECT)
-    public ChartReportVo getFinishRateChartReport(@ApiParam(value="fromDate") @RequestParam(value="fromDate") String fromDate,
+    public ResponseEntity<ChartReportVo> getFinishRateChartReport(@ApiParam(value="fromDate") @RequestParam(value="fromDate") String fromDate,
     		@ApiParam(value="toDate") @RequestParam(value="toDate") String toDate,
     		@ApiParam(value="id") @RequestParam(value="id") Long statId){
     	ChartReportVo chartReportVo = new ChartReportVo();
     	ProjectMonthlyStatVo projectMonthlyStatvo = projectMonthlyStatService.findOne(statId);
+    	if(projectMonthlyStatvo == null){
+    		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    	}
     	Long projectId = projectMonthlyStatvo.getProjectId();
     	chartReportVo.setTitle(projectMonthlyStatvo.getSerialNum()+"-完成率");
     	if(StringUtil.isNullStr(toDate)){
@@ -207,9 +201,13 @@ public class ProjectMonthlyStatResource {
     	}
     	chartReportVo.setCategory(category);
     	List<ChartReportDataVo> datas = projectMonthlyStatService.getFinishRateData(fMonth, lMonth, projectId);
+    	if(datas == null){
+    		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    	}
     	chartReportVo.setSeries(datas);
     	List<String> legend = new ArrayList<String>(Arrays.asList(new String[]{"完成率"}));
     	chartReportVo.setLegend(legend);
-    	return chartReportVo;
+    	return Optional.ofNullable(chartReportVo).map(result -> new ResponseEntity<>(result,HttpStatus.OK))
+                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 }

@@ -120,11 +120,14 @@ public class ContractWeeklyStatResource {
     @GetMapping("/contract-weekly-stats/queryChart")
     @Timed
     @Secured(AuthoritiesConstants.ROLE_STAT_CONTRACT)
-    public ChartReportVo getChartReport(@ApiParam(value="fromDate") @RequestParam(value="fromDate") String fromDate,
+    public ResponseEntity<ChartReportVo> getChartReport(@ApiParam(value="fromDate") @RequestParam(value="fromDate") String fromDate,
     		@ApiParam(value="toDate") @RequestParam(value="toDate") String toDate,
     		@ApiParam(value="id") @RequestParam(value="id") Long statId){
     	ChartReportVo chartReportVo = new ChartReportVo();
     	ContractWeeklyStatVo contractWeeklyStatvo = contractWeeklyStatService.findOne(statId);
+    	if(contractWeeklyStatvo == null){
+    		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    	}
     	Long contractId = contractWeeklyStatvo.getContractId();
     	chartReportVo.setTitle(contractWeeklyStatvo.getSerialNum());
     	if(StringUtil.isNullStr(toDate)){
@@ -148,20 +151,27 @@ public class ContractWeeklyStatResource {
     	}
     	chartReportVo.setCategory(category);
     	List<ChartReportDataVo> datas = contractWeeklyStatService.getChartData(fDay, lDay, contractId);
+    	if(datas == null){
+    		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    	}
     	chartReportVo.setSeries(datas);
     	List<String> legend = new ArrayList<String>(Arrays.asList(new String[]{"合同回款总额","所有成本","合同毛利","销售人工成本","销售报销成本","咨询人工成本","咨询报销成本","硬件采购成本","外部软件采购成本","内容软件采购成本","项目人工成本","项目报销成本"}));
     	chartReportVo.setLegend(legend);
-    	return chartReportVo;
+    	return Optional.ofNullable(chartReportVo).map(result -> new ResponseEntity<>(result,HttpStatus.OK))
+                    .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
     
     @GetMapping("/contract-weekly-stats/queryFinishRateChart")
     @Timed
     @Secured(AuthoritiesConstants.ROLE_STAT_CONTRACT)
-    public ChartReportVo getFinishRateChartReport(@ApiParam(value="fromDate") @RequestParam(value="fromDate") String fromDate,
+    public ResponseEntity<ChartReportVo>getFinishRateChartReport(@ApiParam(value="fromDate") @RequestParam(value="fromDate") String fromDate,
     		@ApiParam(value="toDate") @RequestParam(value="toDate") String toDate,
     		@ApiParam(value="id") @RequestParam(value="id") Long statId){
     	ChartReportVo chartReportVo = new ChartReportVo();
     	ContractWeeklyStatVo contractWeeklyStatvo = contractWeeklyStatService.findOne(statId);
+    	if(contractWeeklyStatvo == null){
+    		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    	}
     	Long contractId = contractWeeklyStatvo.getContractId();
     	chartReportVo.setTitle(contractWeeklyStatvo.getSerialNum()+"-完成率");
     	if(StringUtil.isNullStr(toDate)){
@@ -185,10 +195,14 @@ public class ContractWeeklyStatResource {
     	}
     	chartReportVo.setCategory(category);
     	List<ChartReportDataVo> datas = contractWeeklyStatService.getFinishRateData(fDay, lDay, contractId);
+    	if(datas == null){
+    		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    	}
     	chartReportVo.setSeries(datas);
     	List<String> legend = new ArrayList<String>(Arrays.asList(new String[]{"完成率"}));
     	chartReportVo.setLegend(legend);
-    	return chartReportVo;
+    	return Optional.ofNullable(chartReportVo).map(result -> new ResponseEntity<>(result,HttpStatus.OK))
+                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
 }

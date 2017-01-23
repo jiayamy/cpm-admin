@@ -77,16 +77,6 @@ public class ProjectMonthlyStatService {
         return projectMonthlyStat;
     }
     
-    /**
-     *  Delete the  ProjectMonthlyStat by id.
-     *
-     *  @param id the id of the entity
-     */
-    public void delete(Long id) {
-        log.debug("Request to delete ProjectMonthlyStat : {}", id);
-        projectMonthlyStatRepository.delete(id);
-        projectMonthlyStatSearchRepository.delete(id);
-    }
     
     /**
      * Search for the ProjectMonthlyStats corresponding to the query.
@@ -138,117 +128,80 @@ public class ProjectMonthlyStatService {
 	}
     
     @Transactional(readOnly = true)
-    public List<Double> getHumanCost(Date fromMonth, Date toMonth, Long projectId){
-    	List<Double> data = new ArrayList<>();
-    	Calendar cal1 = Calendar.getInstance();
-    	Calendar cal2 = Calendar.getInstance();
-    	cal1.setTime(fromMonth);
-    	cal2.setTime(toMonth);
-    	int yearCount = cal2.get(Calendar.YEAR) - cal1.get(Calendar.YEAR); 
-    	int count = 0;
-    	count += 12*yearCount;
-    	count += cal2.get(Calendar.MONTH) - cal1.get(Calendar.MONTH);
-    	for(int i = 0 ; i <= count; i++){
-    		Long statWeek = StringUtil.nullToLong(DateUtil.formatDate("yyyyMM", cal1.getTime()));
-    		List<ProjectMonthlyStat> projectMonthlyStats = projectMonthlyStatRepository.findByStatWeekAndProjectId(statWeek, projectId);
-    		Double humanCost = 0D;
-    		if(projectMonthlyStats != null && projectMonthlyStats.size() > 0){
-    			humanCost = projectMonthlyStats.get(0).getHumanCost();
-    		}
-    		data.add(humanCost);
-    		cal1.add(Calendar.MONTH, i+1);
-    	}
-    	return data;
-    }
-    
-    @Transactional(readOnly = true)
-    public List<Double> getPayment(Date fromMonth, Date toMonth, Long projectId){
-    	List<Double> data = new ArrayList<>();
-    	Calendar cal1 = Calendar.getInstance();
-    	Calendar cal2 = Calendar.getInstance();
-    	cal1.setTime(fromMonth);
-    	cal2.setTime(toMonth);
-    	int count = cal2.get(Calendar.MONTH) - cal1.get(Calendar.MONTH);
-    	for(int i = 0 ; i <= count; i++){
-    		Long statWeek = StringUtil.nullToLong(DateUtil.formatDate("yyyyMM", cal1.getTime()));
-    		List<ProjectMonthlyStat> projectMonthlyStats = projectMonthlyStatRepository.findByStatWeekAndProjectId(statWeek, projectId);
-    		Double humanCost = 0D;
-    		if(projectMonthlyStats != null && projectMonthlyStats.size() > 0){
-    			humanCost = projectMonthlyStats.get(0).getPayment();
-    		}
-    		data.add(humanCost);
-    		cal1.add(Calendar.MONTH, i+1);
-    	}
-    	return data;
-    }
-    
-    @Transactional(readOnly = true)
     public List<ChartReportDataVo> getChartData(Date fromMonth, Date toMonth, Long projectId){
-    	List<ChartReportDataVo> datas = new ArrayList<>();
-    	ChartReportDataVo data1 = new ChartReportDataVo();
-    	ChartReportDataVo data2 = new ChartReportDataVo();
-    	data1.setName("人工成本");
-    	data1.setType("line");
-    	data2.setName("报销成本");
-    	data2.setType("line");
-    	List<Double> dataD1 = new ArrayList<>();
-    	List<Double> dataD2 = new ArrayList<>();
-    	Calendar cal1 = Calendar.getInstance();
-    	Calendar cal2 = Calendar.getInstance();
-    	cal1.setTime(fromMonth);
-    	cal2.setTime(toMonth);
-    	int yearCount = cal2.get(Calendar.YEAR) - cal1.get(Calendar.YEAR); 
-    	int count = 0;
-    	count += 12*yearCount;
-    	count += cal2.get(Calendar.MONTH) - cal1.get(Calendar.MONTH);
-    	for(int i = 0 ; i <= count; i++){
-    		Long statWeek = StringUtil.nullToLong(DateUtil.formatDate("yyyyMM", cal1.getTime()));
-    		List<ProjectMonthlyStat> projectMonthlyStats = projectMonthlyStatRepository.findByStatWeekAndProjectId(statWeek, projectId);
-    		Double humanCost = 0D;
-    		Double payment = 0D;
-    		if(projectMonthlyStats != null && projectMonthlyStats.size() > 0){
-    			int max = projectMonthlyStats.size() - 1;
-    			humanCost = projectMonthlyStats.get(max).getHumanCost();
-    			payment = projectMonthlyStats.get(max).getPayment();
-    		}
-    		dataD1.add(humanCost);
-    		dataD2.add(payment);
-    		cal1.add(Calendar.MONTH, 1);
+    	List<Object[]> objs = userRepository.findUserInfoByLogin(SecurityUtils.getCurrentUserLogin());
+    	if(objs != null && !objs.isEmpty()){
+    		List<ChartReportDataVo> datas = new ArrayList<>();
+        	ChartReportDataVo data1 = new ChartReportDataVo();
+        	ChartReportDataVo data2 = new ChartReportDataVo();
+        	data1.setName("人工成本");
+        	data1.setType("line");
+        	data2.setName("报销成本");
+        	data2.setType("line");
+        	List<Double> dataD1 = new ArrayList<>();
+        	List<Double> dataD2 = new ArrayList<>();
+        	Calendar cal1 = Calendar.getInstance();
+        	Calendar cal2 = Calendar.getInstance();
+        	cal1.setTime(fromMonth);
+        	cal2.setTime(toMonth);
+        	int yearCount = cal2.get(Calendar.YEAR) - cal1.get(Calendar.YEAR); 
+        	int count = 0;
+        	count += 12*yearCount;
+        	count += cal2.get(Calendar.MONTH) - cal1.get(Calendar.MONTH);
+        	for(int i = 0 ; i <= count; i++){
+        		Long statWeek = StringUtil.nullToLong(DateUtil.formatDate("yyyyMM", cal1.getTime()));
+        		List<ProjectMonthlyStat> projectMonthlyStats = projectMonthlyStatRepository.findByStatWeekAndProjectId(statWeek, projectId);
+        		Double humanCost = 0D;
+        		Double payment = 0D;
+        		if(projectMonthlyStats != null && projectMonthlyStats.size() > 0){
+        			int max = projectMonthlyStats.size() - 1;
+        			humanCost = projectMonthlyStats.get(max).getHumanCost();
+        			payment = projectMonthlyStats.get(max).getPayment();
+        		}
+        		dataD1.add(humanCost);
+        		dataD2.add(payment);
+        		cal1.add(Calendar.MONTH, 1);
+        	}
+        	data1.setData(dataD1);
+        	data2.setData(dataD2);
+        	datas.add(data1);
+        	datas.add(data2);
+        	return datas;
     	}
-    	data1.setData(dataD1);
-    	data2.setData(dataD2);
-    	datas.add(data1);
-    	datas.add(data2);
-    	return datas;
+    	return null;
     }
     
     public List<ChartReportDataVo> getFinishRateData(Date fromMonth, Date toMonth, Long projectId){
-    	List<ChartReportDataVo> datas = new ArrayList<>();
-    	ChartReportDataVo data = new ChartReportDataVo();
-    	data.setName("完成率");
-    	data.setType("line");
-    	List<Double> dataD = new ArrayList<>();
-    	Calendar cal1 = Calendar.getInstance();
-    	Calendar cal2 = Calendar.getInstance();
-    	cal1.setTime(fromMonth);
-    	cal2.setTime(toMonth);
-    	int yearCount = cal2.get(Calendar.YEAR) - cal1.get(Calendar.YEAR); 
-    	int count = 0;
-    	count += 12*yearCount;
-    	count += cal2.get(Calendar.MONTH) - cal1.get(Calendar.MONTH);
-    	for(int i = 0 ; i <= count; i++){
-    		Long statWeek = StringUtil.nullToLong(DateUtil.formatDate("yyyyMM", cal1.getTime()));
-    		List<ProjectMonthlyStat> projectMonthlyStats = projectMonthlyStatRepository.findByStatWeekAndProjectId(statWeek, projectId);
-    		Double finishRate = 0D;
-    		if(projectMonthlyStats != null && projectMonthlyStats.size() > 0){
-    			int max = projectMonthlyStats.size() - 1;
-    			finishRate = projectMonthlyStats.get(max).getFinishRate();
-    		}
-    		dataD.add(finishRate);
-    		cal1.add(Calendar.MONTH, 1);
+    	List<Object[]> objs = userRepository.findUserInfoByLogin(SecurityUtils.getCurrentUserLogin());
+    	if(objs != null && !objs.isEmpty()){
+    		List<ChartReportDataVo> datas = new ArrayList<>();
+        	ChartReportDataVo data = new ChartReportDataVo();
+        	data.setName("完成率");
+        	data.setType("line");
+        	List<Double> dataD = new ArrayList<>();
+        	Calendar cal1 = Calendar.getInstance();
+        	Calendar cal2 = Calendar.getInstance();
+        	cal1.setTime(fromMonth);
+        	cal2.setTime(toMonth);
+        	int yearCount = cal2.get(Calendar.YEAR) - cal1.get(Calendar.YEAR); 
+        	int count = 0;
+        	count += 12*yearCount;
+        	count += cal2.get(Calendar.MONTH) - cal1.get(Calendar.MONTH);
+        	for(int i = 0 ; i <= count; i++){
+        		Long statWeek = StringUtil.nullToLong(DateUtil.formatDate("yyyyMM", cal1.getTime()));
+        		List<ProjectMonthlyStat> projectMonthlyStats = projectMonthlyStatRepository.findByStatWeekAndProjectId(statWeek, projectId);
+        		Double finishRate = 0D;
+        		if(projectMonthlyStats != null && projectMonthlyStats.size() > 0){
+        			int max = projectMonthlyStats.size() - 1;
+        			finishRate = projectMonthlyStats.get(max).getFinishRate();
+        		}
+        		dataD.add(finishRate);
+        		cal1.add(Calendar.MONTH, 1);
+        	}
+        	data.setData(dataD);
+        	datas.add(data);
+        	return datas;
     	}
-    	data.setData(dataD);
-    	datas.add(data);
-    	return datas;
+    	return null;
     }
 }

@@ -1,10 +1,25 @@
 package com.wondertek.cpm.service;
 
+import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
+
+import javax.inject.Inject;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.wondertek.cpm.config.DateUtil;
 import com.wondertek.cpm.config.StringUtil;
-import com.wondertek.cpm.domain.ContractWeeklyStat;
 import com.wondertek.cpm.domain.DeptInfo;
-import com.wondertek.cpm.domain.ProjectMonthlyStat;
 import com.wondertek.cpm.domain.ProjectWeeklyStat;
 import com.wondertek.cpm.domain.User;
 import com.wondertek.cpm.domain.vo.ChartReportDataVo;
@@ -15,26 +30,6 @@ import com.wondertek.cpm.repository.ProjectWeeklyStatRepository;
 import com.wondertek.cpm.repository.UserRepository;
 import com.wondertek.cpm.repository.search.ProjectWeeklyStatSearchRepository;
 import com.wondertek.cpm.security.SecurityUtils;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.stereotype.Service;
-
-import javax.inject.Inject;
-
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
-
-import static org.elasticsearch.index.query.QueryBuilders.*;
 
 /**
  * Service Implementation for managing ProjectWeeklyStat.
@@ -57,18 +52,6 @@ public class ProjectWeeklyStatService {
     @Inject
     private ProjectWeeklyStatDao projectWeeklyStatDao;
 
-    /**
-     * Save a projectWeeklyStat.
-     *
-     * @param projectWeeklyStat the entity to save
-     * @return the persisted entity
-     */
-    public ProjectWeeklyStat save(ProjectWeeklyStat projectWeeklyStat) {
-        log.debug("Request to save ProjectWeeklyStat : {}", projectWeeklyStat);
-        ProjectWeeklyStat result = projectWeeklyStatRepository.save(projectWeeklyStat);
-        projectWeeklyStatSearchRepository.save(result);
-        return result;
-    }
 
     /**
      *  Get all the projectWeeklyStats.
@@ -97,16 +80,6 @@ public class ProjectWeeklyStatService {
         return projectWeeklyStatVo;
     }
 
-    /**
-     *  Delete the  projectWeeklyStat by id.
-     *
-     *  @param id the id of the entity
-     */
-    public void delete(Long id) {
-        log.debug("Request to delete ProjectWeeklyStat : {}", id);
-        projectWeeklyStatRepository.delete(id);
-        projectWeeklyStatSearchRepository.delete(id);
-    }
 
     /**
      * Search for the projectWeeklyStat corresponding to the query.
@@ -159,60 +132,68 @@ public class ProjectWeeklyStatService {
     
     @Transactional(readOnly = true)
     public List<ChartReportDataVo> getChartData(Date fromDate, Date toDate, Long projectId){
-    	List<ChartReportDataVo> datas = new ArrayList<>();
-    	ChartReportDataVo data1 = new ChartReportDataVo();
-    	ChartReportDataVo data2 = new ChartReportDataVo();
-    	data1.setName("人工成本");
-    	data1.setType("line");
-    	data2.setName("报销成本");
-    	data2.setType("line");
-    	List<Double> dataD1 = new ArrayList<>();
-    	List<Double> dataD2 = new ArrayList<>();
-    	Long temp = fromDate.getTime();
-    	Long sevenDay = 7*24*60*60*1000L;
-    	while(temp <= toDate.getTime()){
-    		Long statWeek = StringUtil.nullToLong(DateUtil.formatDate("yyyyMMdd", new Date(temp)));
-    		List<ProjectWeeklyStat> projectWeeklyStats = projectWeeklyStatRepository.findByStatWeekAndProjectId(statWeek, projectId);
-    		Double humanCost = 0D;
-    		Double payment = 0D;
-    		if(projectWeeklyStats != null && projectWeeklyStats.size() > 0){
-    			int max = projectWeeklyStats.size() - 1;
-    			humanCost = projectWeeklyStats.get(max).getHumanCost();
-    			payment = projectWeeklyStats.get(max).getPayment();
-    		}
-    		dataD1.add(humanCost);
-    		dataD2.add(payment);
-    		temp += sevenDay;
+    	List<Object[]> objs = userRepository.findUserInfoByLogin(SecurityUtils.getCurrentUserLogin());
+    	if(objs != null && !objs.isEmpty()){
+    		List<ChartReportDataVo> datas = new ArrayList<>();
+        	ChartReportDataVo data1 = new ChartReportDataVo();
+        	ChartReportDataVo data2 = new ChartReportDataVo();
+        	data1.setName("人工成本");
+        	data1.setType("line");
+        	data2.setName("报销成本");
+        	data2.setType("line");
+        	List<Double> dataD1 = new ArrayList<>();
+        	List<Double> dataD2 = new ArrayList<>();
+        	Long temp = fromDate.getTime();
+        	Long sevenDay = 7*24*60*60*1000L;
+        	while(temp <= toDate.getTime()){
+        		Long statWeek = StringUtil.nullToLong(DateUtil.formatDate("yyyyMMdd", new Date(temp)));
+        		List<ProjectWeeklyStat> projectWeeklyStats = projectWeeklyStatRepository.findByStatWeekAndProjectId(statWeek, projectId);
+        		Double humanCost = 0D;
+        		Double payment = 0D;
+        		if(projectWeeklyStats != null && projectWeeklyStats.size() > 0){
+        			int max = projectWeeklyStats.size() - 1;
+        			humanCost = projectWeeklyStats.get(max).getHumanCost();
+        			payment = projectWeeklyStats.get(max).getPayment();
+        		}
+        		dataD1.add(humanCost);
+        		dataD2.add(payment);
+        		temp += sevenDay;
+        	}
+        	data1.setData(dataD1);
+        	data2.setData(dataD2);
+        	datas.add(data1);
+        	datas.add(data2);
+        	return datas;
     	}
-    	data1.setData(dataD1);
-    	data2.setData(dataD2);
-    	datas.add(data1);
-    	datas.add(data2);
-    	return datas;
+    	return null;
     }
     
     public List<ChartReportDataVo> getFinishRateData(Date fromDate, Date toDate, Long projectId){
-    	List<ChartReportDataVo> datas = new ArrayList<>();
-    	ChartReportDataVo data = new ChartReportDataVo();
-    	data.setName("完成率");
-    	data.setType("line");
-    	List<Double> dataD = new ArrayList<>();
-    	Long temp = fromDate.getTime();
-    	Long sevenDay = 7*24*60*60*1000L;
-    	while(temp <= toDate.getTime()){
-    		Long statWeek = StringUtil.nullToLong(DateUtil.formatDate("yyyyMMdd", new Date(temp)));
-    		List<ProjectWeeklyStat> projectWeeklyStats = projectWeeklyStatRepository.findByStatWeekAndProjectId(statWeek, projectId);
-    		Double FinishRate = 0D;
-    		if(projectWeeklyStats != null && projectWeeklyStats.size() > 0){
-    			int max = projectWeeklyStats.size() - 1;
-    			FinishRate = projectWeeklyStats.get(max).getFinishRate();
-    		}
-    		dataD.add(FinishRate);
-    		temp += sevenDay;
+    	List<Object[]> objs = userRepository.findUserInfoByLogin(SecurityUtils.getCurrentUserLogin());
+    	if(objs != null && !objs.isEmpty()){
+    		List<ChartReportDataVo> datas = new ArrayList<>();
+        	ChartReportDataVo data = new ChartReportDataVo();
+        	data.setName("完成率");
+        	data.setType("line");
+        	List<Double> dataD = new ArrayList<>();
+        	Long temp = fromDate.getTime();
+        	Long sevenDay = 7*24*60*60*1000L;
+        	while(temp <= toDate.getTime()){
+        		Long statWeek = StringUtil.nullToLong(DateUtil.formatDate("yyyyMMdd", new Date(temp)));
+        		List<ProjectWeeklyStat> projectWeeklyStats = projectWeeklyStatRepository.findByStatWeekAndProjectId(statWeek, projectId);
+        		Double FinishRate = 0D;
+        		if(projectWeeklyStats != null && projectWeeklyStats.size() > 0){
+        			int max = projectWeeklyStats.size() - 1;
+        			FinishRate = projectWeeklyStats.get(max).getFinishRate();
+        		}
+        		dataD.add(FinishRate);
+        		temp += sevenDay;
+        	}
+        	data.setData(dataD);
+        	datas.add(data);
+        	return datas;
     	}
-    	data.setData(dataD);
-    	datas.add(data);
-    	return datas;
+    	return null;
     }
     
 }
