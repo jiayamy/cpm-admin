@@ -19,4 +19,7 @@ public interface ContractBudgetDao extends GenericDao<ContractBudget, Long> {
 
 	List<LongValue> queryUserContract(User user, DeptInfo deptInfo);
 
+	List<LongValue> queryUserContractBudget(User user, DeptInfo deptInfo,
+			Long contractId);
+
 }

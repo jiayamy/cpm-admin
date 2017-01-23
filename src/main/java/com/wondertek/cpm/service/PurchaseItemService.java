@@ -120,4 +120,10 @@ public class PurchaseItemService {
 		PurchaseItem purchaseItem = purchaseItemRepository.findOne(id);
 		return purchaseItem;
 	}
+
+	public List<PurchaseItem> findOneByParams(String name, Integer source,
+			Integer type) {
+		List<PurchaseItem> list = purchaseItemRepository.findByNameAndSourceAndPurchaseType(name,source,type);
+		return list;
+	}
 }

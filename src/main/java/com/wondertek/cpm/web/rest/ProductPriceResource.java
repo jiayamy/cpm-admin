@@ -2,6 +2,7 @@ package com.wondertek.cpm.web.rest;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,6 +29,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.codahale.metrics.annotation.Timed;
 import com.wondertek.cpm.domain.ProductPrice;
 import com.wondertek.cpm.security.AuthoritiesConstants;
+import com.wondertek.cpm.security.SecurityUtils;
 import com.wondertek.cpm.service.ProductPriceService;
 import com.wondertek.cpm.web.rest.util.HeaderUtil;
 import com.wondertek.cpm.web.rest.util.PaginationUtil;
@@ -61,6 +63,12 @@ public class ProductPriceResource {
         if (productPrice.getId() != null) {
             return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("productPrice", "idexists", "A new productPrice cannot already have an ID")).body(null);
         }
+        String updator = SecurityUtils.getCurrentUserLogin();
+        ZonedDateTime updateTime = ZonedDateTime.now();
+        productPrice.setCreateTime(updateTime);
+        productPrice.setCreator(updator);
+        productPrice.setUpdateTime(updateTime);
+        productPrice.setUpdator(updator);
         ProductPrice result = productPriceService.save(productPrice);
         return ResponseEntity.created(new URI("/api/product-prices/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert("productPrice", result.getId().toString()))
@@ -84,6 +92,13 @@ public class ProductPriceResource {
         if (productPrice.getId() == null) {
             return createProductPrice(productPrice);
         }
+        String updator = SecurityUtils.getCurrentUserLogin();
+        ZonedDateTime updateTime = ZonedDateTime.now();
+        productPrice.setUpdator(updator);
+        productPrice.setUpdateTime(updateTime);
+        ProductPrice oldProductPrice = productPriceService.findOne(productPrice.getId());
+        productPrice.setCreateTime(oldProductPrice.getCreateTime());
+        productPrice.setCreator(oldProductPrice.getCreator());
         ProductPrice result = productPriceService.save(productPrice);
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert("productPrice", productPrice.getId().toString()))

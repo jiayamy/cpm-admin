@@ -101,7 +101,10 @@
                     resolve: {
                         entity: ['PurchaseItem', function(PurchaseItem) {
                             return PurchaseItem.get({id : $stateParams.id}).$promise;
-                        }]
+                        }],
+                        budgetEntity:function(){
+                        	return null;
+                        },
                     }
                 }).result.then(function() {
                     $state.go('^', {}, { reload: false });
@@ -151,6 +154,9 @@
                         budgetOriginal:0
                     };
                 },
+                budgetEntity:function(){
+                	return null;
+                },
                 previousState: ["$state", function ($state) {
                     var currentStateData = {
                         name: $state.current.name || 'purchase-item',
@@ -183,6 +189,9 @@
                 entity: ['PurchaseItem','$stateParams', function(PurchaseItem,$stateParams) {
                 	return PurchaseItem.get({id : $stateParams.id}).$promise;
                 }],
+                budgetEntity:function(){
+                	return null;
+                },
                 previousState: ["$state", function ($state) {
                     var currentStateData = {
                         name: $state.current.name || 'purchase-item',

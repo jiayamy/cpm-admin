@@ -125,7 +125,7 @@
                                 <span class="hidden-xs hidden-sm" data-translate="cpmApp.contractBudget.button.createProject"></span>
                             </button>
                             <button type="submit" ng-if="contractBudget.haveCreateItem"
-                                    ui-sref="purchase-item.new"
+                                    ui-sref="contract-budget.createPurchaseItem({id:contractBudget.id})"
                                     class="btn btn-success btn-sm">
                                 <span class="glyphicon glyphicon-plus"></span>
                                 <span class="hidden-xs hidden-sm" data-translate="cpmApp.contractBudget.button.createPurchaseItem"></span>

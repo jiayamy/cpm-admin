@@ -104,6 +104,10 @@ public class PurchaseItemResource {
 			purchaseItem.setCreator(oldPurchaseItem.getCreator());
 			purchaseItem.setStatus(oldPurchaseItem.getStatus());
 		}else {
+			List<PurchaseItem> list = this.purchaseItemService.findOneByParams(purchaseItem.getName(),purchaseItem.getSource(),purchaseItem.getType());
+			if (list != null && !list.isEmpty()) {
+				return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.purchaseItem.save.purchaseItemHaveExit", "")).body(null);
+			}			
 			purchaseItem.setCreateTime(updateTime);
 			purchaseItem.setCreator(updator);
 			purchaseItem.setStatus(PurchaseItem.STATUS_VALIBLE);
