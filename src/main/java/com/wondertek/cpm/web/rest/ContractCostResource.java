@@ -30,6 +30,7 @@ import com.wondertek.cpm.config.StringUtil;
 import com.wondertek.cpm.domain.ContractCost;
 import com.wondertek.cpm.domain.vo.ContractCostVo;
 import com.wondertek.cpm.domain.vo.LongValue;
+import com.wondertek.cpm.security.AuthoritiesConstants;
 import com.wondertek.cpm.security.SecurityUtils;
 import com.wondertek.cpm.service.ContractBudgetService;
 import com.wondertek.cpm.service.ContractCostService;
@@ -51,14 +52,10 @@ public class ContractCostResource {
     private ContractCostService contractCostService;
     @Inject
     private ContractBudgetService contractBudgetService;
-    /**
-     * 新增和修改
-     * @param contractCost
-     * @return
-     * @throws URISyntaxException
-     */
+
     @PutMapping("/contract-costs")
     @Timed
+    @Secured(AuthoritiesConstants.ROLE_CONTRACT_COST)
     public ResponseEntity<Boolean> updateContractCost(@RequestBody ContractCost contractCost) throws URISyntaxException {
         log.debug("REST request to update ContractCost : {}", contractCost);
         Boolean isNew = contractCost.getId() == null;
@@ -110,15 +107,6 @@ public class ContractCostResource {
         			.body(isNew);
 		}
     }
-    /**
-     * 页面搜索查询
-     * @param contractId
-     * @param type
-     * @param name
-     * @param pageable
-     * @return
-     * @throws URISyntaxException
-     */
     @GetMapping("/contract-costs")
     @Timed
     @Secured(AuthoritiesConstants.ROLE_CONTRACT_COST)
@@ -139,11 +127,6 @@ public class ContractCostResource {
         
         return new ResponseEntity<List<ContractCostVo>>(page.getContent(), headers,HttpStatus.OK);
     }
-    /**
-     * 根据id查询ContractCostVo 返给页面，回显
-     * @param id
-     * @return
-     */
     @GetMapping("/contract-costs/{id}")
     @Timed
     @Secured(AuthoritiesConstants.ROLE_CONTRACT_COST)
