@@ -117,10 +117,6 @@ public class ContractBudgetDaoImpl extends GenericDaoImpl<ContractBudget, Long> 
     	orderHql.setLength(0);
     	orderHql = null;
     	
-		System.out.println(queryHql.toString());
-		System.out.println(countHql.toString());
-		System.out.println(params.size());
-		
 		Page<Object[]> page = this.queryHqlPage(queryHql.toString(), countHql.toString(), params.toArray(), pageable);
 		List<ContractBudgetVo> returnList = new ArrayList<ContractBudgetVo>();
 		if (page.getContent() != null) {
@@ -242,6 +238,52 @@ public class ContractBudgetDaoImpl extends GenericDaoImpl<ContractBudget, Long> 
 			}
 		}
 		return resultList;
+	}
+
+	@Override
+	public ContractBudgetVo getUserBudget(Long id, User user,
+			DeptInfo deptInfo) {
+		StringBuffer queryHql = new StringBuffer();
+		ArrayList<Object> params = new ArrayList<Object>();
+		
+		queryHql.append("select wcb,wci.name,wci.serialNum from ContractBudget as wcb");
+		queryHql.append(" left join ContractInfo wci on wci.id = wcb.contractId");
+		queryHql.append(" left join DeptInfo wdi on wci.deptId = wdi.id");
+		queryHql.append(" left join DeptInfo wdi2 on wci.consultantsDeptId = wdi2.id");
+		queryHql.append(" left join DeptInfo wdi3 on wcb.deptId = wdi3.id");
+		queryHql.append(" where (wci.salesmanId = ? or wci.consultantsId = ? or wcb.userId = ? or wci.creator = ? or wcb.creator = ?");
+		
+		params.add(user.getId());
+		params.add(user.getId());
+		params.add(user.getId());
+		params.add(user.getLogin());
+		params.add(user.getLogin());
+		
+		if (user.getIsManager()) {
+			queryHql.append(" or wdi.idPath like ? or wdi.id = ?");
+			params.add(deptInfo.getIdPath() + deptInfo.getIdPath() + "/%");
+			params.add(deptInfo.getId());
+			
+			queryHql.append(" or wdi2.idPath like ? or wdi2.id = ?");
+			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
+			params.add(deptInfo.getId());
+			
+			queryHql.append(" or wdi3.idPath like ? or wdi3.id = ?");
+			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
+			params.add(deptInfo.getId());
+		}
+		queryHql.append(")");
+		//搜索条件
+		if (id != null) {
+			queryHql.append(" and wcb.id = ?");
+			params.add(id);
+		}
+		List<Object[]> list = this.queryAllHql(queryHql.toString(), params.toArray());
+		
+		if (list != null && !list.isEmpty()) {
+			return new ContractBudgetVo((ContractBudget) list.get(0)[0],StringUtil.null2Str(list.get(0)[1]),StringUtil.null2Str(list.get(0)[2]));
+		}
+		return null;
 	}
 }
 	

@@ -515,6 +515,7 @@ CREATE
         id bigint NOT NULL AUTO_INCREMENT,
         contract_id bigint COMMENT '合同主键',
         budget_id bigint COMMENT '合同预算主键',
+        product_price_id bigint COMMENT '产品定价单主键',
         name_ VARCHAR(100) COMMENT '采购项目----采购的是什么？用户填写后，可以点击“参考价”显示该采购项目的产品定价单',
         quantity_ INT COMMENT '采购数量',
         price_ DOUBLE COMMENT '采购单价',

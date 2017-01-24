@@ -15,7 +15,7 @@ public interface PurchaseItemDao extends GenericDao<PurchaseItem, Long> {
 
 	Page<PurchaseItemVo> getPurchaserPage(PurchaseItem purchaseItem,User user,DeptInfo deptInfo,Pageable pageable);
 
-	PurchaseItemVo findPurchaseItemById(Long id);
+	PurchaseItemVo findPurchaseItemById(Long id,User user,DeptInfo deptInfo);
 
 	List<LongValue> queryUserContract(User user,DeptInfo deptInfo);
 

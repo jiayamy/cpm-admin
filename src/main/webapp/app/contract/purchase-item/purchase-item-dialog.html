@@ -28,6 +28,28 @@
 				</div>
 			</div>
 			<div class="form-group">
+        		<div class="col-sm-6">
+        			<label class="control-label" data-translate="cpmApp.purchaseItem.name" for="field_name">Name</label>
+	            	<input type="text" class="form-control" name="name" id="field_name" ng-required="true" 
+	                    ng-model="vm.purchaseItem.name"
+	                     />
+	                <div class="help-block"
+	                   ng-show="myForm.name.$error.required" data-translate="entity.validation.required" style="color:red">
+	                    This field is required.
+	                </div>
+        		</div>
+        		<div class="col-sm-6">
+            		<label class="control-label" data-translate="cpmApp.purchaseItem.purchaser" for="field_purchaser">Purchaser</label>
+            		<input type="text" class="form-control" name="purchaser" id="field_purchaser"
+                    	ng-model="vm.purchaseItem.purchaser"
+                     	/>
+                     <div class="help-block"
+	                  	ng-hide="vm.purchaseItem.purchaser" data-translate="entity.validation.required" style="color:red">
+	                    This field is required.
+	                </div>
+       			</div>
+        	</div>
+			<div class="form-group">
 				<div class="col-sm-6">
 					<label class="control-label" data-translate="cpmApp.purchaseItem.type" for="field_type">Type</label>
 					<select class="form-control" name="type" ng-model="vm.purchaseItem.type" id="field_type"
@@ -51,29 +73,6 @@
 	                </div>
 				</div>
 			</div>
-			<div class="form-group">
-        		<div class="col-sm-6">
-        			<label class="control-label" data-translate="cpmApp.purchaseItem.name" for="field_name">Name</label>
-	            	<input type="text" class="form-control" name="name" id="field_name" ng-required="true" 
-	                    ng-model="vm.purchaseItem.name"
-	                     />
-	                <div class="help-block"
-	                   ng-show="myForm.name.$error.required" data-translate="entity.validation.required" style="color:red">
-	                    This field is required.
-	                </div>
-        		</div>
-        		<div class="col-sm-6">
-            		<label class="control-label" data-translate="cpmApp.purchaseItem.purchaser" for="field_purchaser">Purchaser</label>
-            		<input type="text" class="form-control" name="purchaser" id="field_purchaser"
-                    	ng-model="vm.purchaseItem.purchaser"
-                     	/>
-                     <div class="help-block"
-	                  	ng-hide="vm.purchaseItem.purchaser" data-translate="entity.validation.required" style="color:red">
-	                    This field is required.
-	                </div>
-       			</div>
-        	</div>
-			
 			<div class="form-group">
 				<div class="col-sm-6">
 					<label class="control-label" data-translate="cpmApp.purchaseItem.quantity" for="field_quantity">Quantity</label>

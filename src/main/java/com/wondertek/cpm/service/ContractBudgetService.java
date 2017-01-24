@@ -93,7 +93,7 @@ public class ContractBudgetService {
         log.debug("Request to delete ContractBudget : {}", id);
         ContractBudget contractBudget = contractBudgetRepository.findOne(id);
         if(contractBudget != null){
-        	contractBudget.setStatus(2);
+        	contractBudget.setStatus(ContractBudget.STATUS_DELETED);
         	contractBudget.setUpdateTime(ZonedDateTime.now());
         	contractBudget.setUpdator(SecurityUtils.getCurrentUserLogin());
         	contractBudgetRepository.save(contractBudget);
@@ -150,7 +150,7 @@ public class ContractBudgetService {
 	}
 
 	public List<LongValue> queryUserContractBudget(Long contractId) {
-		List<Object[]> objs = this.userRepository.findUserInfoByLogin(SecurityUtils.getCurrentUserLogin());;
+		List<Object[]> objs = this.userRepository.findUserInfoByLogin(SecurityUtils.getCurrentUserLogin());
 		List<LongValue> returnList = new ArrayList<LongValue>();
 		if(objs != null && !objs.isEmpty()){
     		Object[] o = objs.get(0);
@@ -160,5 +160,17 @@ public class ContractBudgetService {
     		returnList = contractBudgetDao.queryUserContractBudget(user,deptInfo,contractId);
     	}
 		return returnList;
+	}
+
+	public ContractBudgetVo getUserBudget(Long id) {
+		List<Object[]> objs = this.userRepository.findUserInfoByLogin(SecurityUtils.getCurrentUserLogin());
+		if (objs != null && !objs.isEmpty()) {
+			Object[] o = objs.get(0);
+			User user = (User) o[0];
+			DeptInfo deptInfo = (DeptInfo) o[1];
+			
+			return contractBudgetDao.getUserBudget(id,user,deptInfo);
+		}
+		return null;
 	}	
 }

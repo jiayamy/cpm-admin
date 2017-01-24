@@ -126,16 +126,29 @@ public class PurchaseItemDaoImpl extends GenericDaoImpl<PurchaseItem, Long> impl
 	}
 
 	@Override
-	public PurchaseItemVo findPurchaseItemById(Long id) {
+	public PurchaseItemVo findPurchaseItemById(Long id,User user, DeptInfo deptInfo) {
 		StringBuffer 	queryHql = new StringBuffer();
 		List<Object> params = new ArrayList<Object>();
 		
 		queryHql.append("select wpi,wci.serialNum,wci.name as contractName,wcb.name as budgetName");
 		queryHql.append(" from PurchaseItem wpi");
+		queryHql.append(" left join User wju on wpi.creator = wju.login");
+		queryHql.append(" left join DeptInfo wdi on wju.deptId = wdi.id");
 		queryHql.append(" left join ContractInfo wci on wci.id = wpi.contractId");
 		queryHql.append(" left join ContractBudget wcb on wcb.id = wpi.budgetId");
+		
+		//权限
+		queryHql.append(" where (wpi.creator = ?");
+		params.add(user.getLogin());
+		if (user.getIsManager()) {
+			queryHql.append(" or wdi.idPath like ? or wdi.id = ?");
+			params.add(deptInfo.getIdPath() + deptInfo.getIdPath() + "/%");
+			params.add(deptInfo.getId());
+		}
+		queryHql.append(")");
+		
 		if (id != null) {
-			queryHql.append(" where wpi.id = ?");
+			queryHql.append(" and wpi.id = ?");
 			params.add(id);
 		}
 		List<Object[]> list = this.queryAllHql(queryHql.toString(),params.toArray());

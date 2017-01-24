@@ -16,7 +16,6 @@
                 transformResponse: function (data) {
                     if (data) {
                         data = angular.fromJson(data);
-                        console.log(data);
                         data.createTime = DateUtils.convertDateTimeFromServer(data.createTime);
                         data.updateTime = DateUtils.convertDateTimeFromServer(data.updateTime);
                         if (data.status == 1) {
@@ -26,8 +25,8 @@
 						}
                         if (data.purchaseType == 1) {
 							data.purchaseTypeName = "硬件";
-						}else if (data.purchaseTypeName == 2) {
-							data.purchaseType = "软件";
+						}else if (data.purchaseType == 2) {
+							data.purchaseTypeName = "软件";
 						}else if (data.purchaseType == 3) {
 							data.purchaseTypeName = "服务";
 						}
