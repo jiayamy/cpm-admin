@@ -120,7 +120,7 @@ public class ContractMonthlyStatService {
         	ChartReportDataVo data10 = new ChartReportDataVo();//internal_software
         	ChartReportDataVo data11 = new ChartReportDataVo();//project_human_cost
         	ChartReportDataVo data12 = new ChartReportDataVo();//project_payment
-        	String[] names = new String[]{"合同回款总额","所有成本","合同毛利","销售人工成本","销售报销成本","咨询人工成本","咨询报销成本","硬件采购成本","外部软件采购成本","内容软件采购成本","项目人工成本","项目报销成本"};
+        	String[] names = new String[]{"合同回款总额","所有成本","合同毛利","销售人工成本","销售报销成本","咨询人工成本","咨询报销成本","硬件采购成本","外部软件采购成本","内部软件采购成本","项目人工成本","项目报销成本"};
         	List<Double> dataD1 = new ArrayList<>();
         	List<Double> dataD2 = new ArrayList<>();
         	List<Double> dataD3 = new ArrayList<>();
