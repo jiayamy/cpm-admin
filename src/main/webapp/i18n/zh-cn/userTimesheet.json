@@ -11,7 +11,8 @@
             "updated": "A User Timesheet is updated with identifier {{ param }}",
             "deleted": "日报已成功删除",
             "delete": {
-                "question": "确定删除该日报?"
+                "question": "确定删除该日报?",
+                "statusError":"已删除的日报不可再次删除"
             },
             "save":{
             	"success":"保存成功",

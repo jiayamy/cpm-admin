@@ -180,30 +180,29 @@ public class ContractInfoDaoImpl extends GenericDaoImpl<ContractInfo, Long> impl
 	@Override
 
 	public List<LongValue> queryUserContract(User user, DeptInfo deptInfo) {
-		StringBuffer querySql = new StringBuffer();
-		ArrayList<Object> params = new ArrayList<Object>();
+		StringBuffer queryHql = new StringBuffer();
+		List<Object> params = new ArrayList<Object>();
 		
-		querySql.append(" select wci.id,wci.serial_num,wci.name_ from w_contract_info wci");
-		querySql.append(" left join w_dept_info wdi on wci.dept_id = wdi.id");
-		querySql.append(" left join w_dept_info wdi2 on wci.consultants_id = wdi2.id");
-		querySql.append(" where (wci.sales_man_id = ? or wci.consultants_id = ? or wci.creator_ = ?");
+		queryHql.append("select wci.id,wci.serialNum,wci.name from ContractInfo wci");
+		queryHql.append(" left join DeptInfo wdi on wci.deptId = wdi.id");
+		queryHql.append(" left join DeptInfo wdi2 on wci.consultantsDeptId = wdi2.id");
 		
-		params.add(user.getId());
-		params.add(user.getId());
+		queryHql.append(" where (wci.creator = ? or wci.salesmanId = ? or wci.consultantsId = ?");
 		params.add(user.getLogin());
-		
-		if (user.getIsManager()) {
-			querySql.append(" or wdi.id_path like ? or wdi.id = ?");
+		params.add(user.getId());
+		params.add(user.getId());
+		if(user.getIsManager()){
+			queryHql.append(" or wdi.idPath like ? or wdi.id = ?");
 			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
 			params.add(deptInfo.getId());
 			
-			querySql.append(" or wdi2.id_path like ? or wdi2.id = ?");
+			queryHql.append(" or wdi2.idPath like ? or wdi2.id = ?");
 			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
 			params.add(deptInfo.getId());
 		}
+		queryHql.append(")");
 		
-		querySql.append(")");
-		List<Object[]> list = this.queryAllSql(querySql.toString(), params.toArray());
+		List<Object[]> list = this.queryAllHql(queryHql.toString(), params.toArray());
 		List<LongValue> returnList = new ArrayList<LongValue>();
 		if(list != null){
 			for(Object[] o : list){

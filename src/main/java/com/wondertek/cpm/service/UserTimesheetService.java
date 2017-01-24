@@ -22,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.wondertek.cpm.CpmConstants;
 import com.wondertek.cpm.config.DateUtil;
 import com.wondertek.cpm.config.StringUtil;
+import com.wondertek.cpm.domain.DeptInfo;
 import com.wondertek.cpm.domain.HolidayInfo;
 import com.wondertek.cpm.domain.User;
 import com.wondertek.cpm.domain.UserTimesheet;
@@ -148,6 +149,32 @@ public class UserTimesheetService {
     		return new PageImpl(new ArrayList<UserTimesheet>(), pageable, 0);
     	}
     }
+    @Transactional(readOnly = true) 
+    public Page<UserTimesheet> getContractPage(UserTimesheet userTimesheet, Pageable pageable) {
+    	List<Object[]> objs = userRepository.findUserInfoByLogin(SecurityUtils.getCurrentUserLogin());
+    	if(objs != null && !objs.isEmpty()){
+    		Object[] o = objs.get(0);
+    		User user = (User) o[0];
+    		DeptInfo deptInfo = (DeptInfo) o[1];
+    		Page<UserTimesheet> page = userTimesheetDao.getContractPage(userTimesheet,user,deptInfo,pageable);
+        	return page;
+    	}else{
+    		return new PageImpl(new ArrayList<UserTimesheet>(), pageable, 0);
+    	}
+	}
+    @Transactional(readOnly = true) 
+    public Page<UserTimesheet> getProjectPage(UserTimesheet userTimesheet, Pageable pageable) {
+    	List<Object[]> objs = userRepository.findUserInfoByLogin(SecurityUtils.getCurrentUserLogin());
+    	if(objs != null && !objs.isEmpty()){
+    		Object[] o = objs.get(0);
+    		User user = (User) o[0];
+    		DeptInfo deptInfo = (DeptInfo) o[1];
+    		Page<UserTimesheet> page = userTimesheetDao.getProjectPage(userTimesheet,user,deptInfo,pageable);
+        	return page;
+    	}else{
+    		return new PageImpl(new ArrayList<UserTimesheet>(), pageable, 0);
+    	}
+	}
     /**
      * 获取编辑列表中的数据
      * @param workDayDate
@@ -699,5 +726,38 @@ public class UserTimesheetService {
 		userTimesheet.setWorkArea(workArea);
 		userTimesheet.setWorkDay(workDay);
 		return userTimesheet;
+	}
+	@Transactional(readOnly = true) 
+	public UserTimesheet getUserTimesheetForUser(Long id) {
+		Optional<User> user = userRepository.findOneByLogin(SecurityUtils.getCurrentUserLogin());
+    	if(user.isPresent()){
+    		return userTimesheetRepository.findOneByIdAndUserId(id,user.get().getId());
+    	}
+		return null;
+	}
+
+	public UserTimesheet getUserTimesheetForContract(Long id) {
+		List<Object[]> objs = userRepository.findUserInfoByLogin(SecurityUtils.getCurrentUserLogin());
+		if (objs != null) {
+			Object[] o = objs.get(0);
+			User user = (User)o[0];
+			DeptInfo deptInfo = (DeptInfo)o[1];
+			
+			return userTimesheetDao.getUserTimesheetForContract(id,user,deptInfo);
+		}
+		return null;
+	}
+
+	public UserTimesheet getUserTimesheetForProject(Long id) {
+		
+		List<Object[]> objs = userRepository.findUserInfoByLogin(SecurityUtils.getCurrentUserLogin());
+		if (objs != null) {
+			Object[] o = objs.get(0);
+			User user = (User)o[0];
+			DeptInfo deptInfo = (DeptInfo)o[1];
+			
+			return userTimesheetDao.getUserTimesheetForProject(id,user,deptInfo);
+		}
+		return null;
 	}
 }

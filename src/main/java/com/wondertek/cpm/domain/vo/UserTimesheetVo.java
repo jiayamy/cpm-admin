@@ -20,7 +20,9 @@ public class UserTimesheetVo {
 	private ZonedDateTime createTime;
 	private String updator;
 	private ZonedDateTime updateTime;
-	
+	/**
+	 * 查看所有的
+	 */
 	public UserTimesheetVo(UserTimesheet userTimesheet){
 		this.id = userTimesheet.getId();
 		this.workDay = userTimesheet.getWorkDay();

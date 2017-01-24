@@ -18,6 +18,9 @@ public interface UserTimesheetRepository extends JpaRepository<UserTimesheet,Lon
 	@Query("select count(ut.id) from UserTimesheet ut where ut.status = 1 and ut.userId = ?1 and ut.workDay >= ?2 and ut.workDay <= ?3 and ut.id not in ?4")
 	public Long findByUserIdAndId(Long userId, Long startDay, Long endDay, List<Long> ids);
 	
+	@Query(" from UserTimesheet where userId = ?2 and id = ?1")
+	public UserTimesheet findOneByIdAndUserId(Long id, Long userId);
+	
 	@Query(" from UserTimesheet where workDay >= ?1 and workDay <= ?2 and status = 1")
 	public List<UserTimesheet> findByWorkday(Long beginDay, Long endDay);
 	

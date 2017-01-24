@@ -29,7 +29,7 @@
                     squash: true
                 },
                 sort: {
-                    value: 'id,desc',
+                    value: 'wut.workDay,desc',
                     squash: true
                 },
                 search: null

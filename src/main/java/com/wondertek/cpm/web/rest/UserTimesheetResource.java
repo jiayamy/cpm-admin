@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.codahale.metrics.annotation.Timed;
+import com.wondertek.cpm.CpmConstants;
 import com.wondertek.cpm.config.DateUtil;
 import com.wondertek.cpm.config.StringUtil;
 import com.wondertek.cpm.domain.UserTimesheet;
@@ -93,10 +94,14 @@ public class UserTimesheetResource {
     @GetMapping("/user-timesheets/{id}")
     @Timed
     @Secured(AuthoritiesConstants.ROLE_TIMESHEET)
-    public ResponseEntity<UserTimesheet> getUserTimesheet(@PathVariable Long id) {
+    public ResponseEntity<UserTimesheetVo> getUserTimesheet(@PathVariable Long id) {
         log.debug("REST request to get UserTimesheet : {}", id);
-        UserTimesheet userTimesheet = userTimesheetService.findOne(id);
-        return Optional.ofNullable(userTimesheet)
+        UserTimesheet userTimesheet = userTimesheetService.getUserTimesheetForUser(id);
+        UserTimesheetVo vo = null;
+        if(userTimesheet != null){
+        	vo = new UserTimesheetVo(userTimesheet,null);
+        }
+        return Optional.ofNullable(vo)
             .map(result -> new ResponseEntity<>(
                 result,
                 HttpStatus.OK))
@@ -114,6 +119,12 @@ public class UserTimesheetResource {
     @Secured(AuthoritiesConstants.ROLE_TIMESHEET)
     public ResponseEntity<Void> deleteUserTimesheet(@PathVariable Long id) {
         log.debug("REST request to delete UserTimesheet : {}", id);
+        UserTimesheet userTimesheet = userTimesheetService.getUserTimesheetForUser(id);
+        if(userTimesheet == null){
+        	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.userTimesheet.save.noPermit", "")).body(null);
+        }else if(userTimesheet.getStatus() == CpmConstants.STATUS_DELETED){
+        	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.userTimesheet.delete.statusError", "")).body(null);
+        }
         userTimesheetService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert("userTimesheet", id.toString())).build();
     }
@@ -131,7 +142,6 @@ public class UserTimesheetResource {
         if(workDayDate == null){
         	workDayDate = new Date();
         }
-        
         List<UserTimesheetForUser> list = userTimesheetService.queryEditByUser(workDayDate);
         return new ResponseEntity<>(list, null, HttpStatus.OK);
     }

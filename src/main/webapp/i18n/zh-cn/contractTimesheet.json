@@ -2,32 +2,30 @@
     "cpmApp": {
         "contractTimesheet" : {
             "home": {
-                "title": "Contract Timesheets",
-                "createLabel": "Create a new Contract Timesheet",
-                "createOrEditLabel": "Create or edit a Contract Timesheet",
-                "search": "Search for Contract Timesheet"
+                "title": "合同日报",
+                "createLabel": "新增",
+                "createOrEditLabel": "合同日报信息"
             },
-            "created": "A new Contract Timesheet is created with identifier {{ param }}",
-            "updated": "A Contract Timesheet is updated with identifier {{ param }}",
-            "deleted": "A Contract Timesheet is deleted with identifier {{ param }}",
+            "created": "创建成功",
+            "updated": "更新成功",
+            "deleted": "删除成功",
             "delete": {
-                "question": "Are you sure you want to delete Contract Timesheet {{ id }}?"
+                "question": "确定删除所选日报?"
             },
             "detail": {
-                "title": "Contract Timesheet"
+                "title": "合同日报信息"
             },
-            "contractId": "Contract Id",
-            "deptId": "Dept Id",
-            "dept": "Dept",
-            "userId": "User Id",
-            "realInput": "Real Input",
-            "acceptInput": "Accept Input",
-            "workDay": "Work Day",
-            "status": "Status",
-            "creator": "Creator",
-            "createTime": "Create Time",
-            "updator": "Updator",
-            "updateTime": "Update Time"
+            "contractId": "合同名称",
+            "userName": "员工",
+            "realInput": "工时投入",
+            "acceptInput": "认可工时",
+            "objName":"合同信息",
+            "workDay": "日期",
+            "status": "状态",
+            "creator": "创建者",
+            "createTime": "创建时间",
+            "updator": "更新者",
+            "updateTime": "更新时间"
         }
     }
 }

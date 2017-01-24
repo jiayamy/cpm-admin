@@ -28,7 +28,7 @@
                 "productPrice": "产品定价单",
                 "contractCost": "合同报销",
                 "contractCostTimesheet": "工时成本",
-                "contractTimesheet": "合同工时"
+                "contractTimesheet": "合同日报"
             },
             "project":{
             	"main":"项目管理",
