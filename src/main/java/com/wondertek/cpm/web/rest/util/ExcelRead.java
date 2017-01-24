@@ -13,7 +13,11 @@ import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.multipart.MultipartFile;
+
+import com.wondertek.cpm.web.rest.UserCostResource;
 
 /**
  * 读取Excel
@@ -21,6 +25,8 @@ import org.springframework.web.multipart.MultipartFile;
  *
  */
 public class ExcelRead {
+	
+	private final Logger log = LoggerFactory.getLogger(UserCostResource.class);
 
 	public int totalRows; //sheet中总行数  
     public static int totalCells; //每一行总单元格数  
@@ -53,8 +59,8 @@ public class ExcelRead {
      * @param file
      * @return
      */
-    @SuppressWarnings("deprecation")  
-    public List<ArrayList<String>> readXlsx(MultipartFile file){  
+    public List<ArrayList<String>> readXlsx(MultipartFile file){ 
+    	log.debug("Upload Excel readXlsx start for {}:",file.getOriginalFilename());
         List<ArrayList<String>> list = new ArrayList<ArrayList<String>>();  
         // IO流读取文件  
         InputStream input = null;  
@@ -92,31 +98,31 @@ public class ExcelRead {
 								rowList.add(str);
 							}
                         }                                                 
-                    }  
+                    }
+                    log.debug("Uploaded Excel Per Row:",rowList);
                 }  
-            }  
+            }
+            log.debug("Upload Excel readXlsx end");
             return list;  
         } catch (IOException e) {             
-            e.printStackTrace();  
+            log.error("Excel Read error:", e);  
         } finally{  
             try {  
                 input.close();  
             } catch (IOException e) {  
-                e.printStackTrace();  
+                log.error("InputStream close error:", e);  
             }  
-        }  
+        }
         return null;  
     }
     
     /** 
      * 读取 Excel .xls 
      * @param file 
-     * @param beanclazz 
-     * @param titleExist 
      * @return 
-     * @throws IOException  
      */  
-    public List<ArrayList<String>> readXls(MultipartFile file){   
+    public List<ArrayList<String>> readXls(MultipartFile file){
+    	log.debug("Upload Excel readXls start for {}:",file.getOriginalFilename());
         List<ArrayList<String>> list = new ArrayList<ArrayList<String>>();  
         // IO流读取文件  
         InputStream input = null;  
@@ -132,9 +138,9 @@ public class ExcelRead {
                 if(hssfSheet == null){  
                     continue;  
                 }  
-                totalRows = hssfSheet.getLastRowNum();                
+                totalRows = hssfSheet.getLastRowNum(); 
                 //读取Row,从第二行开始  
-                for(int rowNum = 1;rowNum < totalRows;rowNum++){  
+                for(int rowNum = 1;rowNum < totalRows+1;rowNum++){  
                     HSSFRow hssfRow = hssfSheet.getRow(rowNum);  
                     if(hssfRow!=null){  
                         rowList = new ArrayList<String>();  
@@ -153,19 +159,21 @@ public class ExcelRead {
 							}else{
 								rowList.add(str);
 							}
-                        }          
+                        }    
                         list.add(rowList);  
-                    }                     
-                }  
-            }  
+                    }    
+                    log.debug("Uploaded Excel Per Row:"+rowList);
+                }
+            } 
+            log.debug("Upload Excel readXlsx end");
             return list;  
         } catch (IOException e) {             
-            e.printStackTrace();  
+        	log.error("Excel Read error:", e);  
         } finally{  
             try {  
                 input.close();  
             } catch (IOException e) {  
-                e.printStackTrace();  
+            	log.error("InputStream close error:", e);  
             }  
         }  
         return null;  

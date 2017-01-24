@@ -28,7 +28,7 @@
             	"userNameError": "不能修改员工姓名"
             },
             "upload":{
-            	"requiredError":"",
+            	"requiredError":"上传文件数据有误，请重新核对",
             	"up": "上传",
             	"upError": "上传失败"
             },

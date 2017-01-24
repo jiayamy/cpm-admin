@@ -10,8 +10,10 @@ public class CpmConstants {
 	
 	public static final String ORDER_IGNORE_SCORE = "_score";
 	
-	public static final int STATUS_VALID = 1;
-	public static final int STATUS_DELETED = 2;
+	public static final int STATUS_VALID = 1;		//可用
+	public static final int STATUS_DELETED = 2;		//删除
+	public static final Double DEFAULT_UPLOAD_EXCEL_USER_COST = 0D;
+	public static final String DEFAULT_USER_COST_COSTMONTH_FROMAT = "yyyyMM";	//所属年月格式
 	/**
 	 * 用户默认组织，顶级部门的默认父部门ID
 	 */
