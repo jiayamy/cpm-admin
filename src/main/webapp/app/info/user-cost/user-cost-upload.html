@@ -1,38 +1,24 @@
 <h2><span data-translate="cpmApp.userCost.home.import">Import Excel</span></h2>
 <hr>
 <form name="editForm" role="form" novalidate>
-	<!-- <a href="javascript:;" class="choose-key"> -->
-  <!-- <input type="file" name="key" nv-file-select uploader="uploader1" ng-click="clearItems1()"/>浏览 -->
-		<!-- <input type="file" nv-file-select uploader="uploader" file-model="vm.file"
-			    name="file" ngf-max-size="5MB" ngf-min-height="100" accept="application/msexcel" multiple="multiple/form-data"/>
-	</a>
-	<button name="xuanze" type="button" class="btn btn-primary" ng-click="vm.test()">上传</button> -->
 	<div class="container-fluid">
 		<div class="row form-horizontal">
 			<div class="form-group">
-				<!-- <div class="col-sm-1">
-					<label class="col-sm-4 control-label" data-translate="" for="field_userId">文件名</label>
-					<div class="col-sm-8">
-						<input class="form-control" type="file" nv-file-select uploader="uploader" file-model="vm.file" readOnly
-			    			name="file" ngf-max-size="5MB" ngf-min-height="100" accept="application/msexcel" multiple="multiple/form-data">
-		    			<input class="form-control" type="text" readonly="readonly" ng-model="vm.fileName"/>
-					</div>
-				</div> -->
 				<div class="col-sm-6">
 	    			<!-- <a href="javascript:;" name="file"> -->
-						<input type="file" nv-file-select uploader="uploader"
-		    				name="file" ngf-max-size="5MB" ngf-min-height="100" accept="application/msexcel" 
-		    				multiple="multiple/form-data" ng-model="vm.file" ng-change="vm.showName()">
+						<input type="file" nv-file-select name="file" ngf-max-size="20MB" ngf-min-height="100" 
+							accept="application/msexcel">
 					<!-- </a> -->
 				</div>
 			</div>
 		</div>
-		<!-- <button class="col-sm-4" ng-click="vm.clearFile()"></button> -->
-        
+	</div>
 	<jhi-alert></jhi-alert>
 	<jhi-alert-error></jhi-alert-error>
 	<button type="button" class="btn btn-info" ui-sref="{{ vm.previousState }}">
     	<span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span data-translate="entity.action.back">Back</span>
     </button>
-	<button type="button" class="btn btn-primary" ng-click="vm.upload()">上传</button>
+	<button type="submit" class="btn btn-primary" ng-click="vm.upload()">
+		<span class="glyphicon glyphicon-open"></span>&nbsp;<span data-translate="entity.action.upload">Upload</span>
+	</button>
 </form>
