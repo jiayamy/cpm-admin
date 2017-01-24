@@ -107,19 +107,19 @@
         	if (data.length > 0) {
 				for(var i = 0; i< data.length ; i++){
 					if (data[i].status == 1) {
-						data[i].status = "可用";
+						data[i].statusName = "可用";
 					}else if (data[i].status == 2) {
-						data[i].status = "已删除";
+						data[i].statusName = "已删除";
 					}
 					if (data[i].type == 1) {
-						data[i].type = "硬件";
+						data[i].typeName = "硬件";
 					}else if (data[i].type == 2) {
-						data[i].type = "软件";
+						data[i].typeName = "软件";
 					}
 					if (data[i].source == 1) {
-						data[i].source = "内部";
+						data[i].sourceName = "内部";
 					}else if (data[i].source == 2) {
-						data[i].source = "外部";
+						data[i].sourceName = "外部";
 					}
 				}
 			}

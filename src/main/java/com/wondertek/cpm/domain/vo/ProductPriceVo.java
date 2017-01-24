@@ -79,6 +79,7 @@ public class ProductPriceVo {
 		this.updator = updator;
 	}
 	
+	//查看列表使用
 	public ProductPriceVo (ProductPrice productPrice ,Integer key){
 		this.id = productPrice.getId();
 		this.name = productPrice.getName();
@@ -89,5 +90,6 @@ public class ProductPriceVo {
 		this.creator = productPrice.getCreator();
 		this.updateTime = productPrice.getUpdateTime();
 		this.updator = productPrice.getUpdator();
+		this.units = productPrice.getUnits();
 	}
 }

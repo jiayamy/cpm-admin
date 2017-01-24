@@ -97,16 +97,16 @@
         	if (data.length > 0) {
 				for(var i = 0; i< data.length ; i++){
 					if (data[i].status == 1) {
-						data[i].status = "可用";
+						data[i].statusName = "可用";
 					}else if (data[i].status == 2) {
-						data[i].status = "删除";
+						data[i].statusName = "删除";
 					}
 					if (data[i].purchaseType == 1) {
-						data[i].purchaseType = "硬件";
+						data[i].purchaseTypeName = "硬件";
 					}else if (data[i].purchaseType == 2) {
-						data[i].purchaseType = "软件";
+						data[i].purchaseTypeName = "软件";
 					}else if (data[i].purchaseType == 3) {
-						data[i].purchaseType = "服务";
+						data[i].purchaseTypeName = "服务";
 					}
 					if (data[i].isEdit == true) {
 						data[i].haveEdit = true;
@@ -114,7 +114,7 @@
 						data[i].haveEdit = null;
 					}
 					if (data[i].isCreate == true) {
-						if (data[i].purchaseType == "服务") {
+						if (data[i].purchaseTypeName == "服务") {
 							data[i].haveCreateProject = true;
 							data[i].haveCreateItem = null;
 						}else {

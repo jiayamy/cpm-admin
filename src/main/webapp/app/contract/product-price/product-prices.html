@@ -84,10 +84,10 @@
                 <tr ng-repeat="productPrice in vm.productPrices track by productPrice.id">
                     <td><a ui-sref="product-price-detail({id:productPrice.id})">{{productPrice.id}}</a></td>
                     <td>{{productPrice.name}}</td>
-                    <td>{{productPrice.type}}</td>
+                    <td>{{productPrice.typeName}}</td>
                     <td>{{productPrice.units}}</td>
                     <td>{{productPrice.price}}</td>
-                    <td>{{productPrice.source}}</td>
+                    <td>{{productPrice.sourceName}}</td>
                     <td>{{productPrice.createTime | date:'medium'}}</td>
                     <td>{{productPrice.updateTime | date:'medium'}}</td>
                     <td class="text-right">
