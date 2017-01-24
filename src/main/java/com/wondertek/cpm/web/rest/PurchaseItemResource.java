@@ -3,6 +3,7 @@ package com.wondertek.cpm.web.rest;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,6 +30,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.codahale.metrics.annotation.Timed;
 import com.wondertek.cpm.config.StringUtil;
 import com.wondertek.cpm.domain.PurchaseItem;
+import com.wondertek.cpm.domain.vo.LongValue;
 import com.wondertek.cpm.domain.vo.PurchaseItemVo;
 import com.wondertek.cpm.security.AuthoritiesConstants;
 import com.wondertek.cpm.security.SecurityUtils;
@@ -219,5 +221,13 @@ public class PurchaseItemResource {
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
 
+    @GetMapping("/purchase-item/queryUserContract")
+    @Timed
+    @Secured(AuthoritiesConstants.USER)
+    public ResponseEntity<List<LongValue>> queryUserContract() throws URISyntaxException{
+    	 log.debug("REST request to queryUserContract");
+    	 List<LongValue> list = purchaseItemService.queryUserContract();
+    	 return new ResponseEntity<>(list, null, HttpStatus.OK);
+    }
 
 }

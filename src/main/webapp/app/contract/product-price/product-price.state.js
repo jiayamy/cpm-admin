@@ -29,7 +29,7 @@
                     squash: true
                 },
                 sort: {
-                    value: 'id,desc',
+                    value: 'wpp.id,asc',
                     squash: true
                 },
                 type: null,
@@ -118,35 +118,41 @@
             data: {
                 authorities: ['ROLE_CONTRACT_PRODUCTPRICE']
             },
-            onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
-                $uibModal.open({
-                    templateUrl: 'app/contract/product-price/product-price-dialog.html',
-                    controller: 'ProductPriceDialogController',
-                    controllerAs: 'vm',
-                    backdrop: 'static',
-                    size: 'lg',
-                    resolve: {
-                        entity: function () {
-                            return {
-                                name: null,
-                                type: null,
-                                units: null,
-                                price: null,
-                                source: null,
-                                creator: null,
-                                createTime: null,
-                                updator: null,
-                                updateTime: null,
-                                id: null
-                            };
-                        }
-                    }
-                }).result.then(function() {
-                    $state.go('product-price', null, { reload: 'product-price' });
-                }, function() {
-                    $state.go('product-price');
-                });
-            }]
+            views:{
+            	'content@':{
+            		templateUrl: 'app/contract/product-price/product-price-dialog.html',
+            		controller: 'ProductPriceDialogController',
+            		controllerAs: 'vm',
+            	}
+            },       
+            resolve: {
+            	translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
+                    $translatePartialLoader.addPart('productPrice');
+                    return $translate.refresh();
+                }],
+                entity: function () {
+                    return {
+                        name: null,
+                        type: 0,
+                        units: null,
+                        price: null,
+                        source: 0,
+                        creator: null,
+                        createTime: null,
+                        updator: null,
+                        updateTime: null,
+                        id: null
+                    };
+                },
+                previousState: ["$state", function ($state) {
+                    var currentStateData = {
+                        name: $state.current.name || 'product-price',
+                        params: $state.params,
+                        url: $state.href($state.current.name, $state.params)
+                    };
+                    return currentStateData;
+                }]
+            }
         })
         .state('product-price.edit', {
             parent: 'product-price',
@@ -154,24 +160,30 @@
             data: {
                 authorities: ['ROLE_CONTRACT_PRODUCTPRICE']
             },
-            onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
-                $uibModal.open({
-                    templateUrl: 'app/contract/product-price/product-price-dialog.html',
-                    controller: 'ProductPriceDialogController',
-                    controllerAs: 'vm',
-                    backdrop: 'static',
-                    size: 'lg',
-                    resolve: {
-                        entity: ['ProductPrice', function(ProductPrice) {
-                            return ProductPrice.get({id : $stateParams.id}).$promise;
-                        }]
-                    }
-                }).result.then(function() {
-                    $state.go('product-price', null, { reload: 'product-price' });
-                }, function() {
-                    $state.go('^');
-                });
-            }]
+            views: {
+            	'content@': {
+            		templateUrl: 'app/contract/product-price/product-price-dialog.html',
+            		controller: 'ProductPriceDialogController',
+            		controllerAs: 'vm',
+            	}
+            },  
+            resolve: {
+            	translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
+            		$translatePartialLoader.addPart('productPrice');
+	                return $translate.refresh();
+            	}],
+                entity: ['ProductPrice','$stateParams', function(ProductPrice,$stateParams) {
+                    return ProductPrice.get({id : $stateParams.id}).$promise;
+                }],
+                previousState: ["$state", function ($state) {
+ 	                var currentStateData = {
+ 	                    name: $state.current.name || 'product-price',
+ 	                    params: $state.params,
+ 	                    url: $state.href($state.current.name, $state.params)
+ 	                };
+ 	                return currentStateData;
+                }]
+            }
         })
         .state('product-price.delete', {
             parent: 'product-price',

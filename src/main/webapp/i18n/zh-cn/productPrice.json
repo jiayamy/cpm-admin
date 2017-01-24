@@ -6,18 +6,23 @@
                 "createLabel": "新增",
                 "createOrEditLabel": "创建或者编辑产品定价单",
                 "search": "根据产品名称筛选",
-                "search1": "----根据产品类型筛选----",
-                "search2": "----根据产品来源筛选----",
                 "hardware": "硬件",
                 "software": "软件",
                 "external": "外部",
-                "inside": "内部"
+                "inside": "内部",
+                "required": "定价单名称必填",
+                "required1": "定价单类型必选",
+                "required2": "定件单商品来源必选",
+                "required3": "商品的单位必填",
+                "required4": "商品的价格必填",
+                "search": "--选择--",
+                "productPriceHaveExit": "该定价单已经存在"
             },
-            "created": "产品定单 {{ param }} 创建成功",
-            "updated": "产品定单 {{ param }} 更新成功",
-            "deleted": "产品定单 {{ param }} 删除成功",
+            "created": "产品定单创建成功",
+            "updated": "产品定单更新成功",
+            "deleted": "产品定单删除成功",
             "delete": {
-                "question": "您确定要删除  {{ id }} 产品定价单?"
+                "question": "您确定要删除产品定价单?"
             },
             "detail": {
                 "title": "产品定价单"

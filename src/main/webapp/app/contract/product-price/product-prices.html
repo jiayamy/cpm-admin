@@ -4,80 +4,79 @@
     <div class="container-fluid">
         <div class="row form-horizontal">
         	<div class="form-group">
-            	<div class="col-xs-4">
+            	<div class="col-xs-2">
                 	<button class="btn btn-primary" ui-sref="product-price.new" >
                     	<span class="glyphicon glyphicon-plus"></span>
                     	<span class=""  data-translate="cpmApp.productPrice.home.createLabel">
-                        Create new Product Price
+                        	Create new Product Price
                     	</span>
                 	</button>
             	</div>
-            	<div class="col-xs-8 no-padding-right">
-            	</div>
-            </div>
-          </div>
-                <form name="searchForm" class="form-horizontal">
-                <div class="form-group" >
-                	<div class="col-sm-4">
-                   		 <div class="col-sm-8">
-							<select class="form-control" name="type" ng-model="vm.searchQuery.type"
-								ng-options="type.name for type in vm.types track by type.id">
-								<option value="" data-translate="cpmApp.productPrice.home.search1">Please chose type</option>
-							</select>
-        				</div>
-        			</div>
-        			<div class="col-sm-4">
-        				<div class="col-sm-8">
-							<select class="form-control" name="source" ng-model="vm.searchQuery.source"
-								ng-options="source.name for source in vm.sources track by source.id">
-								<option value="" data-translate="cpmApp.productPrice.home.search2">Please chose source</option>
-							</select>
-        				</div>  
-        			</div>
-        			<div class="col-sm-4">
-        				<div class="col-sm-8">
-        		   			<input type="text" class="form-control" ng-model="vm.searchQuery.name" placeholder="根据产品名称筛选">
-        				</div>
-        			</div>
-                </div>
-                <div class="form-group">
-	            <div class="col-sm-4">
-	            </div>
-	            <div class="col-sm-4">
-	            </div>
-	            <div class="col-sm-4 pull-right input-group">
-	            	<div class="col-sm-4">
-	            	</div>
-	            	<div class="col-sm-8" >
-		            	<span  class="width-min" >
-	                        <button class="btn btn-info" ng-click="vm.search(vm.searchQuery)">
-	                            <span class="glyphicon glyphicon-search"></span>
-	                        </button>
-	                    </span>
-	                    <span class="width-min" ng-if="vm.currentSearch.haveSearch">
-	                        <button class="btn btn-info" ng-click="vm.clear()">
-	                            <span class="glyphicon glyphicon-trash"></span>
-	                        </button>
-	                    </span>
-	            	</div>
-	            </div>
-            </div>
-    	</form>
+           	</div>
+         </div>
+         <form name="searchForm" class="form-horizontal">
+          <div class="form-group" >
+	             <div class="col-sm-4">
+	            	<label class="col-sm-4 control-label" data-translate="cpmApp.productPrice.type">Type</label>
+	              	<div class="col-sm-8">
+						<select class="form-control" name="type" ng-model="vm.searchQuery.type"
+							ng-options="type.name for type in vm.types track by type.id">
+							<option value="" data-translate="cpmApp.productPrice.home.search">Please chose type</option>
+						</select>
+	     			</div>	 	
+	       		</div>	
+	        	<div class="col-sm-4">
+	        		<label class="col-sm-4 control-label" data-translate="cpmApp.productPrice.source">source</label>
+	      			<div class="col-sm-8">
+						<select class="form-control" name="source" ng-model="vm.searchQuery.source"
+							ng-options="source.name for source in vm.sources track by source.id">
+							<option value="" data-translate="cpmApp.productPrice.home.search">Please chose source</option>
+						</select>
+	      			</div>
+	      		</div>
+	        	<div class="col-sm-4">
+	        		<label class="col-sm-4 control-label" data-translate="cpmApp.productPrice.name">Name</label>
+	      			<div class="col-sm-8">
+	      		   	<input type="text" class="form-control" ng-model="vm.searchQuery.name">
+	      			</div>		
+	        	</div>
+        	</div> 
+        	<div class="form-group">
+        		<div class="col-sm-4 pull-right input-group">
+		        	<div class="col-sm-4">
+		        		&nbsp;
+		        	</div>
+		        	<div class="col-sm-8" >
+		         		<span  class="width-min" >
+		                	<button class="btn btn-info" ng-click="vm.search(vm.searchQuery)">
+		                       <span class="glyphicon glyphicon-search"></span>
+		                       <span class="hidden-xs hidden-sm" data-translate="entity.action.search"></span>
+		                   </button>   
+		                </span>
+		                <span class="width-min" ng-if="vm.currentSearch.haveSearch">
+		                    <button class="btn btn-info" ng-click="vm.clear()">
+		                        <span class="glyphicon glyphicon-trash"></span>
+		                        <span class="hidden-xs hidden-sm" data-translate="entity.action.clear"></span>
+		                    </button>
+		                </span>
+		        	</div>
+	        	</div>
+        	</div>
+    </form>       
     </div>
     <br/>
-    
     <div class="table-responsive">
         <table class="jh-table table table-striped">
             <thead>
                 <tr jh-sort="vm.predicate" ascending="vm.reverse" callback="vm.transition()">
-                    <th jh-sort-by="id"><span data-translate="global.field.id">ID</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="name"><span data-translate="cpmApp.productPrice.name">Name</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="type"><span data-translate="cpmApp.productPrice.type">Type</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="units"><span data-translate="cpmApp.productPrice.units">Units</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="price"><span data-translate="cpmApp.productPrice.price">Price</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="source"><span data-translate="cpmApp.productPrice.source">Source</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="createTime"><span data-translate="cpmApp.productPrice.createTime">Create Time</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="updateTime"><span data-translate="cpmApp.productPrice.updateTime">Update Time</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="wpp.id"><span data-translate="global.field.id">ID</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="wpp.name"><span data-translate="cpmApp.productPrice.name">Name</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="wpp.type"><span data-translate="cpmApp.productPrice.type">Type</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="wpp.units"><span data-translate="cpmApp.productPrice.units">Units</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="wpp.price"><span data-translate="cpmApp.productPrice.price">Price</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="wpp.source"><span data-translate="cpmApp.productPrice.source">Source</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="wpp.createTime"><span data-translate="cpmApp.productPrice.createTime">Create Time</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="wpp.updateTime"><span data-translate="cpmApp.productPrice.updateTime">Update Time</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th></th>
                 </tr>
             </thead>
@@ -85,10 +84,10 @@
                 <tr ng-repeat="productPrice in vm.productPrices track by productPrice.id">
                     <td><a ui-sref="product-price-detail({id:productPrice.id})">{{productPrice.id}}</a></td>
                     <td>{{productPrice.name}}</td>
-                    <td>{{productPrice.type}}</td>
+                    <td>{{productPrice.typeName}}</td>
                     <td>{{productPrice.units}}</td>
                     <td>{{productPrice.price}}</td>
-                    <td>{{productPrice.source}}</td>
+                    <td>{{productPrice.sourceName}}</td>
                     <td>{{productPrice.createTime | date:'medium'}}</td>
                     <td>{{productPrice.updateTime | date:'medium'}}</td>
                     <td class="text-right">

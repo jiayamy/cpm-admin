@@ -163,7 +163,7 @@ public class ContractBudgetDaoImpl extends GenericDaoImpl<ContractBudget, Long> 
 		queryHql.append(" left join DeptInfo wdi on wci.deptId = wdi.id");
 		queryHql.append(" left join DeptInfo wdi2 on wci.consultantsDeptId = wdi2.id");
 		queryHql.append(" left join ContractBudget wcb on wci.id = wcb.contractId");
-		queryHql.append(" left join DeptInfo wdi3 on wcb.userId = wdi3.id");
+		queryHql.append(" left join DeptInfo wdi3 on wcb.deptId = wdi3.id");
 		queryHql.append(" where (wci.salesmanId = ? or wci.consultantsId = ? or wcb.userId = ? or wci.creator = ? or wcb.creator = ?");
 		
 		params.add(user.getId());
@@ -207,7 +207,7 @@ public class ContractBudgetDaoImpl extends GenericDaoImpl<ContractBudget, Long> 
 		queryHql.append(" left join ContractInfo wci on wci.id = wcb.contractId");
 		queryHql.append(" left join DeptInfo wdi on wci.deptId = wdi.id");
 		queryHql.append(" left join DeptInfo wdi2 on wci.consultantsDeptId = wdi2.id");
-		queryHql.append(" left join DeptInfo wdi3 on wcb.userId = wdi3.id");
+		queryHql.append(" left join DeptInfo wdi3 on wcb.deptId = wdi3.id");
 		queryHql.append(" where (wci.salesmanId = ? or wci.consultantsId = ? or wcb.userId = ? or wci.creator = ? or wcb.creator = ?");
 		
 		params.add(user.getId());

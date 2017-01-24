@@ -1,6 +1,7 @@
 package com.wondertek.cpm.service;
 
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -8,14 +9,19 @@ import javax.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.wondertek.cpm.domain.DeptInfo;
 import com.wondertek.cpm.domain.PurchaseItem;
+import com.wondertek.cpm.domain.User;
+import com.wondertek.cpm.domain.vo.LongValue;
 import com.wondertek.cpm.domain.vo.PurchaseItemVo;
 import com.wondertek.cpm.repository.PurchaseItemDao;
 import com.wondertek.cpm.repository.PurchaseItemRepository;
+import com.wondertek.cpm.repository.UserRepository;
 import com.wondertek.cpm.security.SecurityUtils;
 
 /**
@@ -35,6 +41,9 @@ public class PurchaseItemService {
     
     @Inject
     private PurchaseItemDao purchaseItemDao;
+    
+    @Inject
+    private UserRepository userRepository;
 
     /**
      * Save a purchaseItem.
@@ -107,8 +116,16 @@ public class PurchaseItemService {
 
 	public Page<PurchaseItemVo> getPurchasePage(PurchaseItem purchaseItem,
 			Pageable pageable) {
-		Page<PurchaseItemVo> page = purchaseItemDao.getPurchaserPage(purchaseItem,pageable);
-		return page;
+		List<Object[]> objs = userRepository.findUserInfoByLogin(SecurityUtils.getCurrentUserLogin());
+		if (objs != null && !objs.isEmpty()) {
+			Object[] o = objs.get(0);
+			User user = (User) o[0];
+			DeptInfo deptInfo = (DeptInfo) o[1];
+			Page<PurchaseItemVo> page = purchaseItemDao.getPurchaserPage(purchaseItem,user,deptInfo,pageable);
+			return page;
+		}else {
+			return new PageImpl<PurchaseItemVo>(new ArrayList<PurchaseItemVo>(),pageable,0);
+		}
 	}
 
 	public PurchaseItem findOneById(Long id) {
@@ -120,5 +137,17 @@ public class PurchaseItemService {
 			Integer type) {
 		List<PurchaseItem> list = purchaseItemRepository.findByNameAndSourceAndPurchaseType(name,source,type);
 		return list;
+	}
+
+	public List<LongValue> queryUserContract() {
+		List<Object[]> objs = this.userRepository.findUserInfoByLogin(SecurityUtils.getCurrentUserLogin());
+		List<LongValue> returnList = new ArrayList<LongValue>();
+		if (objs != null && objs.size() != 0) {
+			Object[] o = objs.get(0);
+			User user = (User) o[0];
+			DeptInfo deptInfo = (DeptInfo) o[1];			
+			returnList = purchaseItemDao.queryUserContract(user,deptInfo);
+		}
+		return returnList;
 	}
 }

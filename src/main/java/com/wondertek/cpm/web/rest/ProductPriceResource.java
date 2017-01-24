@@ -3,6 +3,7 @@ package com.wondertek.cpm.web.rest;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -11,6 +12,7 @@ import javax.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -27,7 +29,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.codahale.metrics.annotation.Timed;
+import com.wondertek.cpm.config.StringUtil;
+import com.wondertek.cpm.domain.DeptInfo;
 import com.wondertek.cpm.domain.ProductPrice;
+import com.wondertek.cpm.domain.User;
+import com.wondertek.cpm.domain.vo.ProductPriceVo;
+import com.wondertek.cpm.domain.vo.PurchaseItemVo;
+import com.wondertek.cpm.repository.ProductPriceDao;
+import com.wondertek.cpm.repository.UserRepository;
 import com.wondertek.cpm.security.AuthoritiesConstants;
 import com.wondertek.cpm.security.SecurityUtils;
 import com.wondertek.cpm.service.ProductPriceService;
@@ -47,7 +56,8 @@ public class ProductPriceResource {
         
     @Inject
     private ProductPriceService productPriceService;
-
+    
+    
     /**
      * POST  /product-prices : Create a new productPrice.
      *
@@ -63,6 +73,10 @@ public class ProductPriceResource {
         if (productPrice.getId() != null) {
             return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("productPrice", "idexists", "A new productPrice cannot already have an ID")).body(null);
         }
+        List<ProductPrice> list = productPriceService.findListByParams(productPrice.getName(),productPrice.getSource(),productPrice.getType());
+        if (list != null && !list.isEmpty()) {
+        	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.productPrice.home.productPriceHaveExit", "")).body(null);
+		}
         String updator = SecurityUtils.getCurrentUserLogin();
         ZonedDateTime updateTime = ZonedDateTime.now();
         productPrice.setCreateTime(updateTime);
@@ -156,29 +170,29 @@ public class ProductPriceResource {
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert("productPrice", id.toString())).build();
     }
 
-    /**
-     * SEARCH  /_search/product-prices?query=:query : search for the productPrice corresponding
-     * to the query.
-     *
-     * @param query the query of the productPrice search 
-     * @param pageable the pagination information
-     * @return the result of the search
-     * @throws URISyntaxException if there is an error to generate the pagination HTTP headers
-     */
-    @GetMapping("/_search/product-prices")
-    @Timed
-    @Secured(AuthoritiesConstants.ROLE_CONTRACT_PRODUCTPRICE)
-    public ResponseEntity<List<ProductPrice>> searchProductPrices(
-    		@RequestParam(value = "name",required=false) String name,
-    		@RequestParam(value = "type",required=false) String type,
-    		@RequestParam(value = "source",required=false) String source,
-    		@ApiParam Pageable pageable)
-        throws URISyntaxException {
-        log.debug("REST request to search for a page of ProductPrices for query {}", name);
-        Page<ProductPrice> page = productPriceService.search(name,type,source, pageable);
-        HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(name,page, "/api/_search/product-prices");
-        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
-    }
+//    /**
+//     * SEARCH  /_search/product-prices?query=:query : search for the productPrice corresponding
+//     * to the query.
+//     *
+//     * @param query the query of the productPrice search 
+//     * @param pageable the pagination information
+//     * @return the result of the search
+//     * @throws URISyntaxException if there is an error to generate the pagination HTTP headers
+//     */
+//    @GetMapping("/_search/product-prices")
+//    @Timed
+//    @Secured(AuthoritiesConstants.ROLE_CONTRACT_PRODUCTPRICE)
+//    public ResponseEntity<List<ProductPrice>> searchProductPrices(
+//    		@RequestParam(value = "name",required=false) String name,
+//    		@RequestParam(value = "type",required=false) String type,
+//    		@RequestParam(value = "source",required=false) String source,
+//    		@ApiParam Pageable pageable)
+//        throws URISyntaxException {
+//        log.debug("REST request to search for a page of ProductPrices for query {}", name);
+//        Page<ProductPrice> page = productPriceService.search(name,type,source, pageable);
+//        HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(name,page, "/api/_search/product-prices");
+//        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+//    }
     /**
      * GET  /product-prices : get all the productPrice corresponding
      * to the query.
@@ -191,14 +205,25 @@ public class ProductPriceResource {
     @GetMapping("/product-prices")
     @Timed
     @Secured(AuthoritiesConstants.ROLE_CONTRACT_PRODUCTPRICE)
-    public ResponseEntity<List<ProductPrice>> getAllProductPrices(
+    public ResponseEntity<List<ProductPriceVo>> getAllProductPrices(
     		@RequestParam(value = "source",required=false) String source,
     		@RequestParam(value = "type",required=false) String type,
     		@RequestParam(value = "name",required=false) String name,
     		@ApiParam Pageable pageable)
     	throws URISyntaxException{
     	log.debug("REST request to get a page of ProductPrice");
-    	 Page<ProductPrice> page = productPriceService.search(name,type,source, pageable);
+    	ProductPrice productPrice = new ProductPrice();
+    	if (!StringUtil.isNullStr(name)) {
+			productPrice.setName(name);
+		}
+    	if (!StringUtil.isNullStr(source)) {
+			productPrice.setSource(StringUtil.nullToInteger(source));
+		}
+    	if (!StringUtil.isNullStr(type)) {
+			productPrice.setType(StringUtil.nullToInteger(type));
+		}
+    	
+    	 Page<ProductPriceVo> page = productPriceService.searchPricePage(productPrice, pageable);
          HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(name,page, "/api/product-prices");
          return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }

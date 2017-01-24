@@ -1,6 +1,5 @@
 package com.wondertek.cpm.service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -9,15 +8,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort.Order;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.wondertek.cpm.CpmConstants;
-import com.wondertek.cpm.config.StringUtil;
 import com.wondertek.cpm.domain.ProductPrice;
+import com.wondertek.cpm.domain.vo.ProductPriceVo;
 import com.wondertek.cpm.repository.ProductPriceDao;
 import com.wondertek.cpm.repository.ProductPriceRepository;
+import com.wondertek.cpm.repository.UserRepository;
+
+
 
 /**
  * Service Imppementation for managing ProductPrice.
@@ -36,6 +36,9 @@ public class ProductPriceService {
     
     @Inject
     private ProductPriceDao productPriceDao;
+    
+    @Inject
+    private UserRepository userRepository;
     /**
      * Save a productPrice.
      *
@@ -100,44 +103,18 @@ public class ProductPriceService {
         return result;
     }
 
-	public Page<ProductPrice> search(String name, String type, String source,
+
+	public List<ProductPrice> findListByParams(String name, Integer source,
+			Integer type) {
+		List<ProductPrice> list = this.productPriceRepository.findListByParams(name,source,type);
+		return list;
+	}
+
+	public Page<ProductPriceVo> searchPricePage(ProductPrice productPrice,
 			Pageable pageable) {
-		StringBuffer hql = new StringBuffer();
-		hql.append("where 1=1");
-		List<Object> params = new ArrayList<Object>();
-		if (!StringUtil.isNullStr(name)) {
-			hql.append(" and pp.name like ?");
-			params.add("%"+name+"%");
-		}
-		if (!StringUtil.isNullStr(type)) {
-			hql.append(" and pp.type = ?");
-			params.add(Integer.valueOf(type));
-		}
-		if (!StringUtil.isNullStr(source)) {
-			hql.append(" and pp.source = ?");
-			params.add(Integer.valueOf(source));
-		}
 		
-		StringBuffer orderHql = new StringBuffer();
-    	if(pageable.getSort() != null){
-    		for (Order order : pageable.getSort()) {
-    			if(CpmConstants.ORDER_IGNORE_SCORE.equalsIgnoreCase(order.getProperty())){
-    				continue;
-    			}
-    			if(orderHql.length() != 0){
-    				orderHql.append(",");
-    			}else{
-    				orderHql.append(" order by ");
-    			}
-    			if(order.isAscending()){
-    				orderHql.append(order.getProperty()).append(" asc");
-    			}else{
-    				orderHql.append(order.getProperty()).append(" desc");
-    			}
-    		}
-    	}
-		String queryHql = "from ProductPrice pp " + hql.toString() + orderHql.toString();
-		String countHql = "select count(pp.id) from ProductPrice pp " + hql.toString();
-		return productPriceDao.queryHqlPage(queryHql,countHql,params.toArray(),pageable);
+			Page<ProductPriceVo> page = productPriceDao.getPricePage(productPrice,pageable);
+			return page;
+		
 	}
 }

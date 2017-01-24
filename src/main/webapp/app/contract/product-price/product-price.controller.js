@@ -71,8 +71,8 @@
             }, onSuccess, onError);
             function sort() {
                 var result = [vm.predicate + ',' + (vm.reverse ? 'asc' : 'desc')];
-                if (vm.predicate !== 'id') {
-                    result.push('id');
+                if (vm.predicate !== 'wpp.id') {
+                    result.push('wpp.id');
                 }
                 return result;
             }
@@ -91,14 +91,14 @@
         	if(data.length > 0){
         		for(var i = 0; i< data.length ; i++){
         			if(data[i].type == 0){
-        				data[i].type = "硬件";
+        				data[i].typeName = "硬件";
         			}else if(data[i].type == 1){
-        				data[i].type = "软件";
+        				data[i].typeName = "软件";
         			}
         			if(data[i].source == 0){
-        				data[i].source = "外部";
+        				data[i].sourceName = "外部";
         			}else if(data[i].source == 1){
-        				data[i].source = "内部";
+        				data[i].sourceName = "内部";
         			}
         		}
         	}
@@ -135,7 +135,7 @@
         function clear() {
             vm.links = null;
             vm.page = 1;
-            vm.predicate = 'id';
+            vm.predicate = 'wpp.id';
             vm.reverse = true;
             vm.currentSearch = {};
             vm.currentSearch.haveSearch = null;

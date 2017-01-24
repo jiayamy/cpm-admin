@@ -36,6 +36,10 @@
                 	<div ng-show="myForm.name.$dirty&&myForm.name.$error.maxlength" class="alert alert-danger help-block"> 
                     	采购单名称不能大于100
                 	</div>
+                	<div class="help-block"
+	                   ng-show="myForm.name.$error.required" data-translate="entity.validation.required" style="color:red">
+	                    This field is required.
+	                </div>
 				</div>
 				<div class="col-sm-6">
 					<label class="control-label" data-translate="cpmApp.contractBudget.purchaseType" for="field_purchaseType" >Purchase Type</label>

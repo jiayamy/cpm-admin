@@ -24,9 +24,9 @@
             				data.typeName = "软件";
             			}
             			if(data.source == 0){
-            				data.sourceName = "外部";
-            			}else if(data.source == 1){
             				data.sourceName = "内部";
+            			}else if(data.source == 1){
+            				data.sourceName = "外部";
             			}
                     }
                     return data;
