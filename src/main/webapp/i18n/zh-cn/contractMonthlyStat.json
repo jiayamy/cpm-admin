@@ -33,7 +33,7 @@
             "consultPayment": "咨询报销成本",
             "hardwarePurchase": "硬件成本",
             "externalSoftware": "外部软件成本",
-            "internalSoftware": "内容软件成本",
+            "internalSoftware": "内部软件成本",
             "projectHumanCost": "项目人工成本",
             "projectPayment": "项目报销成本",
             "statWeek": "统计月",
