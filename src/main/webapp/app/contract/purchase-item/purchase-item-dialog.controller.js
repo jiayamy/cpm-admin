@@ -119,7 +119,6 @@
             purchaseItem.contractId = vm.purchaseItem.contractId;
             
             purchaseItem.budgetId = vm.purchaseItem.budgetId;
-            console.log(purchaseItem.budgetId);
             purchaseItem.name = vm.purchaseItem.name;
             purchaseItem.quantity = vm.purchaseItem.quantity;
             purchaseItem.price = vm.purchaseItem.price;
@@ -147,7 +146,6 @@
             }
             if(purchaseItem.budgetId && purchaseItem.budgetId.key){
             	if(purchaseItem.budgetId.p1 == purchaseItem.contractId){
-            		console.log(purchaseItem.budgetId.p1);
             		purchaseItem.budgetId = purchaseItem.budgetId.key;
             	}else{
             		AlertService.error("cpmApp.purchaseItem.save.budgetError");

@@ -28,9 +28,11 @@
             	"userNameError": "不能修改员工姓名"
             },
             "upload":{
-            	"requiredError":"",
+            	"requiredError":"上传文件数据有误，请重新核对",
             	"up": "上传",
-            	"upError": "上传失败"
+            	"upError": "上传失败",
+            	"nonFile":"文件不能为空！",
+            	"numFile":"选择的文件数量不能大于1！"
             },
             "userId": "员工号",
             "userName": "员工姓名",

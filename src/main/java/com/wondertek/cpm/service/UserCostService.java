@@ -148,13 +148,8 @@ public class UserCostService {
     			if(uc.getId() != null){
     				UserCost old = userCostRepository.findOne(uc.getId());
     				if (old != null) {
-						log.info("ininin--old.getUserId():" + old.getUserId());
-						log.info("ininin--uc.getUserId():" + uc.getUserId());
-						log.info("ininin--old.getCostMonth():" + old.getCostMonth());
-						log.info("ininin--uc.getCostMonth():" + uc.getCostMonth());
 						if (!old.getUserId().equals(uc.getUserId()) || !old.getCostMonth().equals(uc.getCostMonth())) {
 							removedUserCost.add(uc);
-							log.info("11111111111111111111");
 							continue;
 						}
 						old.setExternalCost(uc.getExternalCost());
@@ -162,10 +157,8 @@ public class UserCostService {
 	    				old.setStatus(uc.getStatus());
 	    				old.setUpdateTime(uc.getUpdateTime());
 	    				old.setUpdator(uc.getUpdator());
-	    				log.info("22222222222--old1:"+old);
 					}else{
 						removedUserCost.add(uc);
-						log.info("22222222222--old2:"+old);
 					}
 //					old.setExternalCost(uc.getExternalCost());
 //    				old.setInternalCost(uc.getInternalCost());
@@ -175,7 +168,6 @@ public class UserCostService {
     			}else{
     				if(uc.getUserId() == null || uc.getCostMonth() == null){
     					removedUserCost.add(uc);
-    					log.info("3333333333333--removedUserCost:"+removedUserCost);
     					continue;
     				}
     				UserCost old =  userCostRepository.findByUserIdAndCostMonth(uc.getUserId(), uc.getCostMonth());
@@ -183,15 +175,12 @@ public class UserCostService {
     					removedUserCost.add(uc);
     				}
     			}
-    			log.info("000000000000000000:");
     		}
     		if(!removedUserCost.isEmpty()){
     			userCosts.removeAll(removedUserCost);
-    			log.info("4444444444444--removedUserCost:"+removedUserCost);
     		}
     		if(!userCosts.isEmpty()){
     			result = userCostRepository.save(userCosts);
-    			log.info("55555555555555555--result:"+result);
     		}
     	}
     	return result;

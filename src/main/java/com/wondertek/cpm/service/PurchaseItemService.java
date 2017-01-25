@@ -80,8 +80,15 @@ public class PurchaseItemService {
     @Transactional(readOnly = true) 
     public PurchaseItemVo getPurchaseItem(Long id) {
         log.debug("Request to get PurchaseItem : {}", id);
-        PurchaseItemVo purchaseItem = purchaseItemDao.findPurchaseItemById(id);
-        return purchaseItem;
+        List<Object[]> objs = this.userRepository.findUserInfoByLogin(SecurityUtils.getCurrentUserLogin());
+        if (objs != null && !objs.isEmpty()) {
+        	Object[] o = objs.get(0);
+			User user = (User) o[0];
+			DeptInfo deptInfo = (DeptInfo) o[1];
+			
+			return purchaseItemDao.findPurchaseItemById(id,user,deptInfo);
+		}
+        return null;
     }
 
     /**

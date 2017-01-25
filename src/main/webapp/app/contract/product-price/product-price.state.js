@@ -93,24 +93,30 @@
             data: {
                 authorities: ['ROLE_CONTRACT_PRODUCTPRICE']
             },
-            onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
-                $uibModal.open({
-                    templateUrl: 'app/contract/product-price/product-price-dialog.html',
-                    controller: 'ProductPriceDialogController',
-                    controllerAs: 'vm',
-                    backdrop: 'static',
-                    size: 'lg',
-                    resolve: {
-                        entity: ['ProductPrice', function(ProductPrice) {
-                            return ProductPrice.get({id : $stateParams.id}).$promise;
-                        }]
-                    }
-                }).result.then(function() {
-                    $state.go('^', {}, { reload: false });
-                }, function() {
-                    $state.go('^');
-                });
-            }]
+            views:{
+            	'content@':{
+            		 templateUrl: 'app/contract/product-price/product-price-dialog.html',
+            		 controller: 'ProductPriceDialogController',
+            		 controllerAs: 'vm'
+            	}       
+            },
+            resolve: {
+            	translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
+                    $translatePartialLoader.addPart('productPrice');
+                    return $translate.refresh();
+                }],
+                entity: ['ProductPrice','$stateParams', function(ProductPrice,$stateParams) {
+                    return ProductPrice.get({id : $stateParams.id}).$promise;
+                }],
+                previousState: ["$state", function ($state) {
+                    var currentStateData = {
+                        name: $state.current.name || 'product-price-detail',
+                        params: $state.params,
+                        url: $state.href($state.current.name, $state.params)
+                    };
+                    return currentStateData;
+                }]
+            }
         })
         .state('product-price.new', {
             parent: 'product-price',

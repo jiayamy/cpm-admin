@@ -133,7 +133,8 @@
             "add": "新增",
             "close":"关闭",
             "search":"搜索",
-            "clear":"重置"
+            "clear":"重置",
+            "upload":"上传"
         },
         "detail": {
             "field": "字段",

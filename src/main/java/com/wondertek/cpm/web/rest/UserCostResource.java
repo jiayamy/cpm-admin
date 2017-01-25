@@ -5,9 +5,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -44,6 +46,7 @@ import com.wondertek.cpm.security.AuthoritiesConstants;
 import com.wondertek.cpm.security.SecurityUtils;
 import com.wondertek.cpm.service.UserCostService;
 import com.wondertek.cpm.web.rest.util.ExcelRead;
+import com.wondertek.cpm.web.rest.util.ExcelUtil;
 import com.wondertek.cpm.web.rest.util.HeaderUtil;
 import com.wondertek.cpm.web.rest.util.PaginationUtil;
 
@@ -254,6 +257,14 @@ public class UserCostResource {
             try {
 				List<UserCost> userCosts = null;
 				List<ArrayList<String>> lists = new ExcelRead().readExcel(file);
+				if(lists == null || lists.isEmpty()){
+					return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.userCost.upload.requiredError", "")).body(null);
+				}
+				log.debug("***************:"+lists.size());
+//				List<Map<String,List<String>>> errorLists = new ArrayList<Map<String,List<String>>>();	//错误数据:String:userId-List:costMonth
+//				String regex = "[0-9]+";
+//				SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
+				SimpleDateFormat sdf = ExcelUtil.sdf;	//日期转换格式
 				userCosts = new ArrayList<UserCost>();
 				for (List<String> ls : lists) {
 					if (ls == null || ls.isEmpty()) {
@@ -264,6 +275,9 @@ public class UserCostResource {
 					int i = 0;
 					UserCost userCost = new UserCost();
 					if (!StringUtil.isNull(ls.get(i)) && !ls.get(i).isEmpty()) {
+						if(!StringUtil.isNumeric(ls.get(i))){
+							continue;
+						}
 						userCost.setId(Long.valueOf(ls.get(i)));
 						userCost.setUpdator(updator);
 						userCost.setUpdateTime(updateTime);
@@ -275,6 +289,9 @@ public class UserCostResource {
 					}
 					i++;
 					if (!StringUtil.isNull(ls.get(i)) && !ls.get(i).isEmpty()) {
+						if(!StringUtil.isNumeric(ls.get(i))){
+							continue;
+						}
 						userCost.setUserId(Long.valueOf(ls.get(i)));
 					}
 					i++;
@@ -283,29 +300,50 @@ public class UserCostResource {
 					}
 					i++;
 					if (!StringUtil.isNull(ls.get(i)) && !ls.get(i).isEmpty()) {
-						userCost.setCostMonth(Long.valueOf(ls.get(i).substring(0, 4) + ls.get(i).substring(5, 7)));
+						try {
+							Date date = sdf.parse(ls.get(i));
+							SimpleDateFormat sdfCost = new SimpleDateFormat(CpmConstants.DEFAULT_USER_COST_COSTMONTH_FROMAT);
+							userCost.setCostMonth(Long.valueOf(sdfCost.format(date)));
+//							userCost.setCostMonth(Long.valueOf(ls.get(i).substring(0, 4) + ls.get(i).substring(5, 7)));
+						} catch (ParseException e) {
+							log.error("Date parse exception:", e);
+							continue;
+						}
 					}
 					i++;
 					if (!StringUtil.isNull(ls.get(i)) && !ls.get(i).isEmpty()) {
-						userCost.setInternalCost(Double.valueOf(ls.get(i)));
+						if(StringUtil.isDouble(ls.get(i))){
+							Double dou = Double.valueOf(ls.get(i));
+							userCost.setInternalCost(dou>=0?dou:CpmConstants.DEFAULT_UPLOAD_EXCEL_USER_COST);
+						}
+					}else{
+						userCost.setInternalCost(CpmConstants.DEFAULT_UPLOAD_EXCEL_USER_COST);
 					}
 					i++;
 					if (!StringUtil.isNull(ls.get(i)) && !ls.get(i).isEmpty()) {
-						userCost.setExternalCost(Double.valueOf(ls.get(i)));
+						if (StringUtil.isDouble(ls.get(i))) {
+							Double dou = Double.valueOf(ls.get(i));
+							userCost.setExternalCost(dou>=0?dou:CpmConstants.DEFAULT_UPLOAD_EXCEL_USER_COST);
+						}
+					}else{
+						userCost.setExternalCost(CpmConstants.DEFAULT_UPLOAD_EXCEL_USER_COST);
 					}
 					i++;
 					if (!StringUtil.isNull(ls.get(i)) && !ls.get(i).isEmpty()) {
-						userCost.setStatus(Integer.valueOf(ls.get(i)));
+						if(StringUtil.isInteger(ls.get(i))){
+							Integer sta = Integer.valueOf(ls.get(i));
+							userCost.setStatus(sta==CpmConstants.STATUS_VALID || sta == CpmConstants.STATUS_DELETED?sta:CpmConstants.STATUS_VALID);
+						}
+//						userCost.setStatus(Integer.valueOf(ls.get(i)));
+					}else{
+						userCost.setStatus(CpmConstants.STATUS_VALID);
 					}
 
 					System.out.println(userCost);
 					userCosts.add(userCost);
 				} 
-//				}
 				result = userCostService.save(userCosts);
-//				log.debug("8888888888888--result:"+result);
 			} catch (IOException e2) {
-//				log.debug("9999999999999999999999");
 				e2.printStackTrace();
 			}
             return ResponseEntity.ok().headers(HeaderUtil.createEntityUploadAlert("userCost", null)).body(result);

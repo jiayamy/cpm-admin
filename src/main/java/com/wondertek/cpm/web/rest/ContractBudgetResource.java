@@ -4,6 +4,7 @@ import java.net.URISyntaxException;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.inject.Inject;
 
@@ -30,6 +31,7 @@ import com.wondertek.cpm.domain.ContractBudget;
 import com.wondertek.cpm.domain.ContractInfo;
 import com.wondertek.cpm.domain.vo.ContractBudgetVo;
 import com.wondertek.cpm.domain.vo.LongValue;
+import com.wondertek.cpm.domain.vo.PurchaseItemVo;
 import com.wondertek.cpm.security.AuthoritiesConstants;
 import com.wondertek.cpm.security.SecurityUtils;
 import com.wondertek.cpm.service.ContractBudgetService;
@@ -158,26 +160,12 @@ public class ContractBudgetResource {
     @Secured(AuthoritiesConstants.ROLE_CONTRACT_BUDGET)
     public ResponseEntity<ContractBudgetVo> getContractBudgetVo(@PathVariable Long id) {
         log.debug("REST request to get ContractBudget : {}", id);
-        ContractBudget contractBudget = contractBudgetService.findOneById(id);
-        ContractInfo contractInfo = contractInfoService.findOne(contractBudget.getContractId());
-        ContractBudgetVo contractBudgetVo = new ContractBudgetVo();
-        if (contractBudget != null) {
-        	contractBudgetVo.setBudgetTotal(contractBudget.getBudgetTotal());
-        	contractBudgetVo.setName(contractBudget.getName());
-        	contractBudgetVo.setId(contractBudget.getId());
-        	contractBudgetVo.setDept(contractBudget.getDept());
-        	contractBudgetVo.setDeptId(contractBudget.getDeptId());
-        	contractBudgetVo.setStatus(contractBudget.getStatus());
-        	contractBudgetVo.setUserName(contractBudget.getUserName());
-        	contractBudgetVo.setPurchaseType(contractBudget.getPurchaseType());
-        	contractBudgetVo.setUserId(contractBudget.getUserId());
-        	contractBudgetVo.setContractId(contractBudget.getContractId());
-		}
-        if (contractInfo != null) {
-			contractBudgetVo.setSerialNum(contractInfo.getSerialNum());
-			contractBudgetVo.setCtractName(contractInfo.getName());
-		}
-        return new ResponseEntity<>(contractBudgetVo,HttpStatus.OK);
+        ContractBudgetVo contractBudget = contractBudgetService.getUserBudget(id);
+        return Optional.ofNullable(contractBudget)
+            .map(result -> new ResponseEntity<>(
+                result,
+                HttpStatus.OK))
+            .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     /**
@@ -191,33 +179,17 @@ public class ContractBudgetResource {
     @Secured(AuthoritiesConstants.ROLE_CONTRACT_BUDGET)
     public ResponseEntity<Void> deleteContractBudget(@PathVariable Long id) {
         log.debug("REST request to delete ContractBudget : {}", id);
-        ContractBudget contractBudget = contractBudgetService.findOne(id);
-        if (contractBudget.getStatus() != 1) {
+        ContractBudgetVo contractBudget = contractBudgetService.getUserBudget(id);
+        if (contractBudget == null) {
+        	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.contractBudget.save.noPerm", "")).body(null);
+		}
+        if (contractBudget.getStatus() == ContractBudget.STATUS_DELETED) {
         	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.contractBudget.save.haveDeleted", "")).body(null);
 		}
         contractBudgetService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert("contractBudget", id.toString())).build();
     }
 
-    /**
-     * SEARCH  /_search/contract-budgets?query=:query : search for the contractBudget corresponding
-     * to the query.
-     *
-     * @param query the query of the contractBudget search 
-     * @param pageable the pagination information
-     * @return the result of the search
-     * @throws URISyntaxException if there is an error to generate the pagination HTTP headers
-     */
-    @GetMapping("/_search/contract-budgets")
-    @Timed
-    @Secured(AuthoritiesConstants.ROLE_CONTRACT_BUDGET)
-    public ResponseEntity<List<ContractBudget>> searchContractBudgets(@RequestParam String query, @ApiParam Pageable pageable)
-        throws URISyntaxException {
-        log.debug("REST request to search for a page of ContractBudgets for query {}", query);
-        Page<ContractBudget> page = contractBudgetService.search(query, pageable);
-        HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/contract-budgets");
-        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
-    }
     /**
      * GET  /product-prices : get all the contractBudget corresponding
      * to the query.

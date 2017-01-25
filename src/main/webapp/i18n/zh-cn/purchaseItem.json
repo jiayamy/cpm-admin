@@ -23,7 +23,8 @@
             	"statue2Error":"状态为删除的数据不可编辑",
             	"purchaseItemError":"数据有误,不可修改",
             	"budgetError":"合同和采购单绑定异常",
-            	"purchaseItemHaveExit": "采购子项已经存在"
+            	"purchaseItemHaveExit": "采购子项已经存在",
+            	"noPerm": "没有权限执行操作"
             },
             "contract": "合同",
             "contractId": "合同ID",
