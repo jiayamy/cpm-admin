@@ -27,6 +27,7 @@ import com.wondertek.cpm.domain.HolidayInfo;
 import com.wondertek.cpm.domain.User;
 import com.wondertek.cpm.domain.UserTimesheet;
 import com.wondertek.cpm.domain.vo.LongValue;
+import com.wondertek.cpm.domain.vo.UserTimesheetForOther;
 import com.wondertek.cpm.domain.vo.UserTimesheetForUser;
 import com.wondertek.cpm.repository.ContractUserDao;
 import com.wondertek.cpm.repository.HolidayInfoRepository;
@@ -759,5 +760,147 @@ public class UserTimesheetService {
 			return userTimesheetDao.getUserTimesheetForProject(id,user,deptInfo);
 		}
 		return null;
+	}
+	/**
+	 * 获取合同或者项目中看到的员工日报编辑页面数据
+	 */
+	public List<UserTimesheetForOther> queryEditByOther(Long id, Integer type, Date workDay) {
+		UserTimesheet userTimesheet = null;
+		if(type == UserTimesheet.TYPE_CONTRACT){
+			userTimesheet = this.getUserTimesheetForContract(id);
+		}else{
+			userTimesheet = this.getUserTimesheetForProject(id);
+		}
+		if(userTimesheet != null && workDay == null){
+			workDay = DateUtil.parseDate(DateUtil.DATE_YYYYMMDD_PATTERN, userTimesheet.getWorkDay().toString());
+		}
+		if(workDay == null){
+			workDay = new Date();
+		}
+		//查询现有的所有日报
+		List<UserTimesheetForOther> returnList = new ArrayList<UserTimesheetForOther>();
+		//查询当天的周一至周日
+		String[] ds = DateUtil.getWholeWeekByDate(workDay);
+		//添加第一行日期
+		returnList.add(new UserTimesheetForOther(UserTimesheet.TYPE_DAY,ds[0],ds[1],ds[2],ds[3],ds[4],ds[5],ds[6]));
+		if(userTimesheet == null){//没有权限，直接返回日期列表
+			return returnList;
+		}
+		Long[] lds = new Long[7];
+		lds[0] = StringUtil.nullToLong(ds[0]);
+		lds[1] = StringUtil.nullToLong(ds[1]);
+		lds[2] = StringUtil.nullToLong(ds[2]);
+		lds[3] = StringUtil.nullToLong(ds[3]);
+		lds[4] = StringUtil.nullToLong(ds[4]);
+		lds[5] = StringUtil.nullToLong(ds[5]);
+		lds[6] = StringUtil.nullToLong(ds[6]);
+		
+		Long objId = userTimesheet.getObjId();
+		//查询现有的所有记录
+		List<UserTimesheet> list = userTimesheetDao.getByWorkDayAndObjType(lds[0],lds[6],objId,type);
+		
+		//转换为MAP
+		Map<Long,Map<Long,UserTimesheet>> map = trans2OtherMap(list);
+		Map<Long,UserTimesheet> childs = null;
+		for(Long userId : map.keySet()){
+			childs = map.get(userId);
+			if(childs != null){
+				UserTimesheetForOther timesheet = getUserTimesheetForOther(userId,childs,lds,objId,type);
+				returnList.add(timesheet);
+			}
+		}
+		return returnList;
+	}
+	private UserTimesheetForOther getUserTimesheetForOther(Long userId, Map<Long, UserTimesheet> childs, Long[] lds, Long objId, Integer type) {
+		UserTimesheetForOther userTimesheetForOther = new UserTimesheetForOther();
+		userTimesheetForOther.setObjId(objId);
+		userTimesheetForOther.setUserId(userId);
+		userTimesheetForOther.setUserName(null);
+		userTimesheetForOther.setType(type);
+		UserTimesheet tmp = childs.get(lds[0]);
+		if(tmp != null){
+			userTimesheetForOther.setData1(tmp.getRealInput().toString());
+			userTimesheetForOther.setCheck1(tmp.getAcceptInput().toString());
+			userTimesheetForOther.setUserName(tmp.getUserName());
+			userTimesheetForOther.setId1(tmp.getId());
+		}else{
+			userTimesheetForOther.setData1(CpmConstants.DFAULT_USER_TIMESHEET_OTHER_INPUT);
+			userTimesheetForOther.setCheck1(CpmConstants.DFAULT_USER_TIMESHEET_OTHER_CHECK);
+		}
+		tmp = childs.get(lds[1]);
+		if(tmp != null){
+			userTimesheetForOther.setData2(tmp.getRealInput().toString());
+			userTimesheetForOther.setCheck2(tmp.getAcceptInput().toString());
+			userTimesheetForOther.setUserName(tmp.getUserName());
+			userTimesheetForOther.setId2(tmp.getId());
+		}else{
+			userTimesheetForOther.setData2(CpmConstants.DFAULT_USER_TIMESHEET_OTHER_INPUT);
+			userTimesheetForOther.setCheck2(CpmConstants.DFAULT_USER_TIMESHEET_OTHER_CHECK);
+		}
+		tmp = childs.get(lds[2]);
+		if(tmp != null){
+			userTimesheetForOther.setData3(tmp.getRealInput().toString());
+			userTimesheetForOther.setCheck3(tmp.getAcceptInput().toString());
+			userTimesheetForOther.setUserName(tmp.getUserName());
+			userTimesheetForOther.setId3(tmp.getId());
+		}else{
+			userTimesheetForOther.setData3(CpmConstants.DFAULT_USER_TIMESHEET_OTHER_INPUT);
+			userTimesheetForOther.setCheck3(CpmConstants.DFAULT_USER_TIMESHEET_OTHER_CHECK);
+		}
+		tmp = childs.get(lds[3]);
+		if(tmp != null){
+			userTimesheetForOther.setData4(tmp.getRealInput().toString());
+			userTimesheetForOther.setCheck4(tmp.getAcceptInput().toString());
+			userTimesheetForOther.setUserName(tmp.getUserName());
+			userTimesheetForOther.setId4(tmp.getId());
+		}else{
+			userTimesheetForOther.setData4(CpmConstants.DFAULT_USER_TIMESHEET_OTHER_INPUT);
+			userTimesheetForOther.setCheck4(CpmConstants.DFAULT_USER_TIMESHEET_OTHER_CHECK);
+		}
+		tmp = childs.get(lds[4]);
+		if(tmp != null){
+			userTimesheetForOther.setData5(tmp.getRealInput().toString());
+			userTimesheetForOther.setCheck5(tmp.getAcceptInput().toString());
+			userTimesheetForOther.setUserName(tmp.getUserName());
+			userTimesheetForOther.setId5(tmp.getId());
+		}else{
+			userTimesheetForOther.setData5(CpmConstants.DFAULT_USER_TIMESHEET_OTHER_INPUT);
+			userTimesheetForOther.setCheck5(CpmConstants.DFAULT_USER_TIMESHEET_OTHER_CHECK);
+		}
+		tmp = childs.get(lds[5]);
+		if(tmp != null){
+			userTimesheetForOther.setData6(tmp.getRealInput().toString());
+			userTimesheetForOther.setCheck6(tmp.getAcceptInput().toString());
+			userTimesheetForOther.setUserName(tmp.getUserName());
+			userTimesheetForOther.setId6(tmp.getId());
+		}else{
+			userTimesheetForOther.setData6(CpmConstants.DFAULT_USER_TIMESHEET_OTHER_INPUT);
+			userTimesheetForOther.setCheck6(CpmConstants.DFAULT_USER_TIMESHEET_OTHER_CHECK);
+		}
+		tmp = childs.get(lds[6]);
+		if(tmp != null){
+			userTimesheetForOther.setData7(tmp.getRealInput().toString());
+			userTimesheetForOther.setCheck7(tmp.getAcceptInput().toString());
+			userTimesheetForOther.setUserName(tmp.getUserName());
+			userTimesheetForOther.setId7(tmp.getId());
+		}else{
+			userTimesheetForOther.setData7(CpmConstants.DFAULT_USER_TIMESHEET_OTHER_INPUT);
+			userTimesheetForOther.setCheck7(CpmConstants.DFAULT_USER_TIMESHEET_OTHER_CHECK);
+		}
+		
+		return userTimesheetForOther;
+	}
+
+	private Map<Long, Map<Long, UserTimesheet>> trans2OtherMap(List<UserTimesheet> list) {
+		Map<Long, Map<Long, UserTimesheet>> returnMap = new HashMap<Long, Map<Long, UserTimesheet>>();
+		if(list != null){
+			for(UserTimesheet userTimesheet : list){
+				if(!returnMap.containsKey(userTimesheet.getUserId())){
+					returnMap.put(userTimesheet.getUserId(), new HashMap<Long, UserTimesheet>());
+				}
+				returnMap.get(userTimesheet.getUserId()).put(userTimesheet.getWorkDay(), userTimesheet);
+			}
+		}
+		return returnMap;
 	}
 }

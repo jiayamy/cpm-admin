@@ -11,7 +11,7 @@
         $stateProvider
         .state('contract-timesheet', {
             parent: 'contract',
-            url: '/contract-timesheet?page&sort&search',
+            url: '/contract-timesheet?page&sort&workDay&contractId&userId&userName',
             data: {
                 authorities: ['ROLE_CONTRACT_TIMESHEET'],
                 pageTitle: 'cpmApp.contractTimesheet.home.title'
@@ -32,7 +32,10 @@
                     value: 'wut.workDay,desc',
                     squash: true
                 },
-                search: null
+                workDay: null,
+                contractId: null,
+                userId: null,
+                userName: null
             },
             resolve: {
                 pagingParams: ['$stateParams', 'PaginationUtil', function ($stateParams, PaginationUtil) {
@@ -41,15 +44,46 @@
                         sort: $stateParams.sort,
                         predicate: PaginationUtil.parsePredicate($stateParams.sort),
                         ascending: PaginationUtil.parseAscending($stateParams.sort),
-                        search: $stateParams.search
+                        workDay: $stateParams.workDay,
+                        contractId: $stateParams.contractId,
+                        userId: $stateParams.userId,
+                        userName: $stateParams.userName
                     };
                 }],
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                     $translatePartialLoader.addPart('contractTimesheet');
-                    $translatePartialLoader.addPart('global');
+                    $translatePartialLoader.addPart('deptInfo');
                     return $translate.refresh();
                 }]
             }
+        })
+        .state('contract-timesheet.queryDept', {
+            parent: 'contract-timesheet',
+            url: '/queryDept?selectType&showChild',
+            data: {
+                authorities: ['ROLE_CONTRACT_USER']
+            },
+            onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
+                $uibModal.open({
+                    templateUrl: 'app/info/dept-info/dept-info-query.html',
+                    controller: 'DeptInfoQueryController',
+                    controllerAs: 'vm',
+                    backdrop: 'static',
+                    size: 'lg',
+                    resolve: {
+                        entity: function() {
+                            return {
+                            	selectType : $stateParams.selectType,
+                            	showChild : $stateParams.showChild
+                            }
+                        }
+                    }
+                }).result.then(function() {
+                    $state.go('^', {}, { reload: false });
+                }, function() {
+                    $state.go('^');
+                });
+            }]
         })
         .state('contract-timesheet-detail', {
             parent: 'contract-timesheet',
@@ -89,24 +123,32 @@
             data: {
                 authorities: ['ROLE_CONTRACT_TIMESHEET']
             },
-            onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
-                $uibModal.open({
+            views: {
+                'content@': {
                     templateUrl: 'app/contract/contract-timesheet/contract-timesheet-dialog.html',
                     controller: 'ContractTimesheetDialogController',
-                    controllerAs: 'vm',
-                    backdrop: 'static',
-                    size: 'lg',
-                    resolve: {
-                        entity: ['ContractTimesheet', function(ContractTimesheet) {
-                            return ContractTimesheet.get({id : $stateParams.id}).$promise;
-                        }]
-                    }
-                }).result.then(function() {
-                    $state.go('^', {}, { reload: false });
-                }, function() {
-                    $state.go('^');
-                });
-            }]
+                    controllerAs: 'vm'
+                }
+            },
+            resolve: {
+                translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
+                    $translatePartialLoader.addPart('contractTimesheet');
+                    $translatePartialLoader.addPart('userTimesheet');
+                    
+                    return $translate.refresh();
+                }],
+                entity: ['$stateParams', 'ContractTimesheet', function($stateParams, ContractTimesheet) {
+                    return ContractTimesheet.get({id : $stateParams.id}).$promise;
+                }],
+                previousState: ["$state", function ($state) {
+                    var currentStateData = {
+                        name: $state.current.name || 'contract-timesheet-detail',
+                        params: $state.params,
+                        url: $state.href($state.current.name, $state.params)
+                    };
+                    return currentStateData;
+                }]
+            }
         })
         .state('contract-timesheet.new', {
             parent: 'contract-timesheet',
@@ -160,30 +202,6 @@
                     controllerAs: 'vm',
                     backdrop: 'static',
                     size: 'lg',
-                    resolve: {
-                        entity: ['ContractTimesheet', function(ContractTimesheet) {
-                            return ContractTimesheet.get({id : $stateParams.id}).$promise;
-                        }]
-                    }
-                }).result.then(function() {
-                    $state.go('contract-timesheet', null, { reload: 'contract-timesheet' });
-                }, function() {
-                    $state.go('^');
-                });
-            }]
-        })
-        .state('contract-timesheet.delete', {
-            parent: 'contract-timesheet',
-            url: '/delete/{id}',
-            data: {
-                authorities: ['ROLE_CONTRACT_TIMESHEET']
-            },
-            onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
-                $uibModal.open({
-                    templateUrl: 'app/contract/contract-timesheet/contract-timesheet-delete-dialog.html',
-                    controller: 'ContractTimesheetDeleteController',
-                    controllerAs: 'vm',
-                    size: 'md',
                     resolve: {
                         entity: ['ContractTimesheet', function(ContractTimesheet) {
                             return ContractTimesheet.get({id : $stateParams.id}).$promise;

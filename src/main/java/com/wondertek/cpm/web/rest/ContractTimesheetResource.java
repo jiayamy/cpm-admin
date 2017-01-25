@@ -2,6 +2,7 @@ package com.wondertek.cpm.web.rest;
 
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,7 +23,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.codahale.metrics.annotation.Timed;
+import com.wondertek.cpm.config.DateUtil;
+import com.wondertek.cpm.config.StringUtil;
 import com.wondertek.cpm.domain.UserTimesheet;
+import com.wondertek.cpm.domain.vo.UserTimesheetForOther;
+import com.wondertek.cpm.domain.vo.UserTimesheetForUser;
 import com.wondertek.cpm.domain.vo.UserTimesheetVo;
 import com.wondertek.cpm.security.AuthoritiesConstants;
 import com.wondertek.cpm.service.UserTimesheetService;
@@ -84,5 +89,21 @@ public class ContractTimesheetResource {
                 result,
                 HttpStatus.OK))
             .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
+    
+    @GetMapping("/contract-timesheets/queryEdit")
+    @Timed
+    @Secured(AuthoritiesConstants.ROLE_CONTRACT_TIMESHEET)
+    public ResponseEntity<List<UserTimesheetForOther>> getEditUserTimesheets(
+    		@RequestParam(value = "workDay") String workDay,
+    		@RequestParam(value = "id") Long id
+    		) {
+        log.debug("REST request to get UserTimesheet : {}", id);
+        Date workDayDate = null;
+        if(!StringUtil.isNullStr(workDay)){
+        	workDayDate = DateUtil.parseDate(DateUtil.DATE_YYYYMMDD_PATTERN, workDay);
+        }
+        List<UserTimesheetForOther> list = userTimesheetService.queryEditByOther(id,UserTimesheet.TYPE_CONTRACT,workDayDate);
+        return new ResponseEntity<>(list, null, HttpStatus.OK);
     }
 }

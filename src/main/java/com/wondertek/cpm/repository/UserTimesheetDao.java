@@ -37,4 +37,8 @@ public interface UserTimesheetDao extends GenericDao<UserTimesheet, Long> {
 	 * 项目工时中查看日报信息
 	 */
 	public UserTimesheet getUserTimesheetForProject(Long id, User user, DeptInfo deptInfo);
+	/**
+	 * 获取某个类型的对象在某个时间段内的所有日报
+	 */
+	public List<UserTimesheet> getByWorkDayAndObjType(Long long1, Long long2, Long objId, Integer type);
 }

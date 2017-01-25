@@ -5,9 +5,9 @@
         .module('cpmApp')
         .controller('ContractTimesheetController', ContractTimesheetController);
 
-    ContractTimesheetController.$inject = ['$scope', '$state', 'ContractTimesheet', 'ContractInfo', 'ParseLinks', 'AlertService', 'paginationConstants', 'pagingParams','DateUtils'];
+    ContractTimesheetController.$inject = ['$scope','$rootScope', '$state', 'ContractTimesheet', 'ContractInfo', 'ParseLinks', 'AlertService', 'paginationConstants', 'pagingParams','DateUtils'];
 
-    function ContractTimesheetController ($scope, $state, ContractTimesheet, ContractInfo, ParseLinks, AlertService, paginationConstants, pagingParams, DateUtils) {
+    function ContractTimesheetController ($scope,$rootScope, $state, ContractTimesheet, ContractInfo, ParseLinks, AlertService, paginationConstants, pagingParams, DateUtils) {
         var vm = this;
 
         vm.loadPage = loadPage;
@@ -19,6 +19,9 @@
         vm.clear = clear;
         vm.search = search;
         vm.loadAll = loadAll;
+        
+        vm.datePickerOpenStatus = {};
+        vm.openCalendar = openCalendar;
         
         vm.searchQuery = {};
         vm.searchQuery.workDay= DateUtils.convertDayToDate(pagingParams.workDay);
@@ -54,6 +57,9 @@
         loadAll();
         function loadAll () {
             ContractTimesheet.query({
+            	workDay: pagingParams.workDay,
+            	contractId: pagingParams.contractId,
+            	userId: pagingParams.userId,
                 page: pagingParams.page - 1,
                 size: vm.itemsPerPage,
                 sort: sort()
@@ -123,5 +129,16 @@
             vm.searchQuery = {};
             vm.transition();
         }
+        
+        vm.datePickerOpenStatus.workDay = false;
+        function openCalendar (date) {
+            vm.datePickerOpenStatus[date] = true;
+        }
+        
+        var unsubscribe = $rootScope.$on('cpmApp:deptInfoSelected', function(event, result) {
+        	vm.searchQuery.userId = result.objId;
+        	vm.searchQuery.userName = result.name;
+        });
+        $scope.$on('$destroy', unsubscribe);
     }
 })();

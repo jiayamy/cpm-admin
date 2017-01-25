@@ -235,9 +235,11 @@ public class UserTimesheetDaoImpl extends GenericDaoImpl<UserTimesheet, Long> im
 		}
 		if(updateList != null && !updateList.isEmpty()){
 			for(UserTimesheet userTimesheet : updateList){
-				this.excuteHql("update UserTimesheet set realInput = ?,status = ?,workArea = ?,updator = ?,updateTime = ? where id = ?",
+				this.excuteHql("update UserTimesheet set realInput = ?,status = ?,workArea = ?,updator = ?,updateTime = ? where (realInput != ? or workArea != ?) id = ?",
 						new Object[]{userTimesheet.getRealInput(),userTimesheet.getStatus(),userTimesheet.getWorkArea(),
-								userTimesheet.getUpdator(),userTimesheet.getUpdateTime(),userTimesheet.getId()});
+								userTimesheet.getUpdator(),userTimesheet.getUpdateTime(),
+								userTimesheet.getRealInput(),userTimesheet.getWorkArea(),
+								userTimesheet.getId()});
 			}
 		}
 	}
@@ -299,6 +301,10 @@ public class UserTimesheetDaoImpl extends GenericDaoImpl<UserTimesheet, Long> im
     		return list.get(0);
     	}
     	return null;
-    	
+	}
+	@Override
+	public List<UserTimesheet> getByWorkDayAndObjType(Long startDay, Long endDay, Long objId, Integer type){
+		return this.queryAllHql("from UserTimesheet where workDay >= ? and workDay <= ? and status = ? and objId = ? and type = ? order by workDay asc,id asc",
+				new Object[]{startDay,endDay,CpmConstants.STATUS_VALID,objId,type});
 	}
 }

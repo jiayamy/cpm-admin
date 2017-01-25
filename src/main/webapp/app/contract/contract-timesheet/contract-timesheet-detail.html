@@ -1,24 +1,20 @@
 
 <div>
-    <h2><span data-translate="cpmApp.contractTimesheet.detail.title">Contract Timesheet</span> {{vm.contractTimesheet.id}}</h2>
+    <h2><span data-translate="cpmApp.contractTimesheet.detail.title">Contract Timesheet</span> {{vm.contractTimesheet.workDay}}-{{vm.contractTimesheet.userName}}</h2>
     <hr>
     <jhi-alert-error></jhi-alert-error>
     <dl class="dl-horizontal jh-entity-details">
-        <dt><span data-translate="cpmApp.contractTimesheet.contractId">Contract Id</span></dt>
+        <dt><span data-translate="cpmApp.contractTimesheet.objName">Contract Info</span></dt>
         <dd>
-            <span>{{vm.contractTimesheet.contractId}}</span>
+            <span>{{vm.contractTimesheet.objName}}</span>
         </dd>
-        <dt><span data-translate="cpmApp.contractTimesheet.deptId">Dept Id</span></dt>
+        <dt><span data-translate="cpmApp.contractTimesheet.workDay">Work Day</span></dt>
         <dd>
-            <span>{{vm.contractTimesheet.deptId}}</span>
+            <span>{{vm.contractTimesheet.workDay}}</span>
         </dd>
-        <dt><span data-translate="cpmApp.contractTimesheet.dept">Dept</span></dt>
+        <dt><span data-translate="cpmApp.contractTimesheet.userName">User Name</span></dt>
         <dd>
-            <span>{{vm.contractTimesheet.dept}}</span>
-        </dd>
-        <dt><span data-translate="cpmApp.contractTimesheet.userId">User Id</span></dt>
-        <dd>
-            <span>{{vm.contractTimesheet.userId}}</span>
+            <span>{{vm.contractTimesheet.userName}}</span>
         </dd>
         <dt><span data-translate="cpmApp.contractTimesheet.realInput">Real Input</span></dt>
         <dd>
@@ -27,14 +23,6 @@
         <dt><span data-translate="cpmApp.contractTimesheet.acceptInput">Accept Input</span></dt>
         <dd>
             <span>{{vm.contractTimesheet.acceptInput}}</span>
-        </dd>
-        <dt><span data-translate="cpmApp.contractTimesheet.workDay">Work Day</span></dt>
-        <dd>
-            <span>{{vm.contractTimesheet.workDay}}</span>
-        </dd>
-        <dt><span data-translate="cpmApp.contractTimesheet.status">Status</span></dt>
-        <dd>
-            <span>{{vm.contractTimesheet.status}}</span>
         </dd>
         <dt><span data-translate="cpmApp.contractTimesheet.creator">Creator</span></dt>
         <dd>

@@ -15,11 +15,11 @@
         <form name="searchForm" class="form-horizontal">
 			<div class="form-group">
 	            <div class="col-sm-4">
-	          		<label class="col-sm-4 control-label" data-translate="cpmApp.contractCost.contractId">Project Num</label>
+	          		<label class="col-sm-4 control-label" data-translate="cpmApp.contractCost.contractId">Contract Num</label>
 		            <div class="col-sm-8">
 		            	<select class="form-control" ng-model="vm.searchQuery.contractId"
 			            	ng-options="contractInfo.val for contractInfo in vm.contractInfos track by contractInfo.key">
-			            	<option value="">--项目编号--</option>
+			            	<option value="">--合同编号--</option>
 			            </select>
 		            </div>
 	            </div>

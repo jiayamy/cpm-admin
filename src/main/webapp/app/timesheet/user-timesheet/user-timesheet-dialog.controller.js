@@ -124,12 +124,14 @@
             		//校验是否为空
             		if(!tmp.data1 || !tmp.data2 || !tmp.data3 || !tmp.data4 
             				|| !tmp.data5|| !tmp.data6|| !tmp.data7){
+            			vm.isSaving = false;
             			AlertService.error("cpmApp.userTimesheet.save.dataNull");
             			return false;
             		}
             		//校验是否为小数后1位
             		if(!reg.test(tmp.data1) || !reg.test(tmp.data2) || !reg.test(tmp.data3) || !reg.test(tmp.data4) 
             				|| !reg.test(tmp.data5)||!reg.test(tmp.data6)||!reg.test(tmp.data7)){
+            			vm.isSaving = false;
             			AlertService.error("cpmApp.userTimesheet.save.dataError");
             			return false;
             		}
@@ -143,6 +145,7 @@
             		d7 = parseFloat(tmp.data7);
             		if(d1 < 0 || d1 > 8 || d2 < 0 || d2 > 8 || d3 < 0 || d3 > 8 || d4 < 0 || d4 > 8
             				 || d5 < 0 || d5 > 8 || d6 < 0 || d6 > 8 || d7 < 0 || d7 > 8){
+            			vm.isSaving = false;
             			AlertService.error("cpmApp.userTimesheet.save.dataError");
             			return false;
             		}
@@ -156,6 +159,7 @@
             		td7 += d7;
             		if(td1 > 8 || td2 > 8 || td3 > 8 || td4 > 8
             				 || td5 > 8 || td6 > 8 || td7 > 8){
+            			vm.isSaving = false;
             			AlertService.error("cpmApp.userTimesheet.save.dayDataMax");
             			return false;
             		}

@@ -22,7 +22,11 @@
                     return data;
                 }
             },
-            'update': { method:'PUT' }
+            'update': { method:'PUT' },
+            'getEditUserTimesheets':{
+            	url:'api/contract-timesheets/queryEdit',
+            	method: 'GET', isArray: true
+            }
         });
     }
 })();
