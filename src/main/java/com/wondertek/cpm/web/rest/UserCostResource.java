@@ -1,8 +1,6 @@
 package com.wondertek.cpm.web.rest;
 
-import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.text.ParseException;
@@ -10,13 +8,10 @@ import java.text.SimpleDateFormat;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import javax.inject.Inject;
-import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,12 +31,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.codahale.metrics.annotation.Timed;
 import com.wondertek.cpm.CpmConstants;
 import com.wondertek.cpm.config.StringUtil;
+import com.wondertek.cpm.domain.User;
 import com.wondertek.cpm.domain.UserCost;
+import com.wondertek.cpm.domain.vo.UserCostVo;
+import com.wondertek.cpm.repository.UserRepository;
 import com.wondertek.cpm.security.AuthoritiesConstants;
 import com.wondertek.cpm.security.SecurityUtils;
 import com.wondertek.cpm.service.UserCostService;
@@ -63,6 +60,9 @@ public class UserCostResource {
         
     @Inject
     private UserCostService userCostService;
+    
+    @Inject
+    private UserRepository userRepository;
 
     /**
      * POST  /user-costs : Create a new userCost.
@@ -101,7 +101,7 @@ public class UserCostResource {
         log.debug("REST request to update UserCost : {}", userCost);
         Boolean isNew = null;
         if(userCost == null || userCost.getUserId() == null || userCost.getCostMonth() == null || 
-        		userCost.getUserName() == null || userCost.getStatus() == null){
+        		userCost.getUserName() == null || userCost.getSal() == null || userCost.getSocialSecurity() == null || userCost.getFund() == null){
     		return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.userCost.save.requriedError", "")).body(null);
     	}
         //获取当前用户
@@ -126,7 +126,7 @@ public class UserCostResource {
         	findUserCost = userCostService.findByUserIdAndCostMonth(userCost.getUserId(),userCost.getCostMonth());
         	if(findUserCost == null){
         		return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.userCost.save.noExistError", "")).body(null);
-        	}else if(userCost.getUserName() == null || userCost.getStatus() == null){
+        	}else if(userCost.getUserName() == null){
         		return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.userCost.save.requriedError", "")).body(null);
         	}else if(findUserCost.getStatus() == CpmConstants.STATUS_DELETED){
         		return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.userCost.save.statusError", "")).body(null);
@@ -134,8 +134,11 @@ public class UserCostResource {
         		return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.userCost.save.userNameError", "")).body(null);
         	}
         }
-        findUserCost.setStatus(userCost.getStatus());
-        findUserCost.setExternalCost(userCost.getExternalCost());
+//        findUserCost.setStatus(userCost.getStatus());
+        findUserCost.setSal(userCost.getSal());
+        findUserCost.setSocialSecurity(userCost.getSocialSecurity());
+        findUserCost.setFund(userCost.getFund());
+        findUserCost.setExternalCost(userCost.getSal()+userCost.getSocialSecurity()+userCost.getFund());//
     	findUserCost.setInternalCost(userCost.getInternalCost());
     	findUserCost.setUpdateTime(updateTime);
     	findUserCost.setUpdator(updator);
@@ -162,8 +165,8 @@ public class UserCostResource {
     @GetMapping("/user-costs")
     @Timed
     @Secured(AuthoritiesConstants.ROLE_INFO_USERCOST)
-    public ResponseEntity<List<UserCost>> getAllUserCosts(
-    		@RequestParam(value = "userId",required=false) String userId,
+    public ResponseEntity<List<UserCostVo>> getAllUserCosts(
+    		@RequestParam(value = "serialNum",required=false) String serialNum,
     		@RequestParam(value = "userName",required=false) String userName,
     		@RequestParam(value = "costMonth",required=false) String costMonth,
     		@RequestParam(value = "status",required=false) String status,
@@ -171,9 +174,14 @@ public class UserCostResource {
         throws URISyntaxException {
         log.debug("REST request to get a page of UserCosts");
         UserCost userCost = new UserCost();
-        if(!StringUtil.isNullStr(userId)){
-        	userCost.setUserId(StringUtil.nullToLong(userId));
+        Optional<User> user = userRepository.findOneBySerialNum(serialNum);
+        if(user.isPresent()){
+        	userCost.setUserId(user.get().getId());
         }
+//        userCost.setUserId(userId);
+//        if(!StringUtil.isNullStr(userId)){
+//        	userCost.setUserId(StringUtil.nullToLong(userId));
+//        }
         if(!StringUtil.isNullStr(userName)){
         	userCost.setUserName(userName);
         }
@@ -183,8 +191,7 @@ public class UserCostResource {
         if(!StringUtil.isNullStr(status)){
         	userCost.setStatus(StringUtil.nullToInteger(status));
         }
-        Page<UserCost> page = userCostService.getUserCostPage(userCost,pageable);
-//        Page<UserCost> page = userCostService.findAll(pageable);
+        Page<UserCostVo> page = userCostService.getUserCostPage(userCost,pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/user-costs");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
@@ -247,6 +254,25 @@ public class UserCostResource {
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
     
+    @GetMapping("/user-costs/getSerialNumByuserId")
+    @Timed
+    @Secured(AuthoritiesConstants.ROLE_INFO_USERCOST)
+    public ResponseEntity<UserCostVo> getSerialNumByuserId(@RequestParam(value="id",required=false) Long id) throws URISyntaxException{
+    	log.debug("REST request to get serialNum for getSerialNumByuserId {}",id);
+    	if(id == null){
+//    		return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.userCost.get.userIdNon", "")).body(null);
+    		return new ResponseEntity<>(null,HttpStatus.BAD_REQUEST);
+    	}
+    	User user = userRepository.findOne(id);
+    	if(user == null){
+//    		return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.userCost.get.userNon", "")).body(null);
+    		return new ResponseEntity<>(null,HttpStatus.BAD_REQUEST);
+    	}
+    	UserCostVo userCostVo = new UserCostVo();
+    	userCostVo.setSerialNum(user.getSerialNum());
+    	return new ResponseEntity<>(userCostVo,HttpStatus.OK);
+    }
+    
 	@PostMapping("/user-costs/uploadExcel")
     @Timed
     @Secured(AuthoritiesConstants.ROLE_INFO_USERCOST)
@@ -261,9 +287,6 @@ public class UserCostResource {
 					return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.userCost.upload.requiredError", "")).body(null);
 				}
 				log.debug("***************:"+lists.size());
-//				List<Map<String,List<String>>> errorLists = new ArrayList<Map<String,List<String>>>();	//错误数据:String:userId-List:costMonth
-//				String regex = "[0-9]+";
-//				SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
 				SimpleDateFormat sdf = ExcelUtil.sdf;	//日期转换格式
 				userCosts = new ArrayList<UserCost>();
 				for (List<String> ls : lists) {
@@ -274,7 +297,7 @@ public class UserCostResource {
 					ZonedDateTime updateTime = ZonedDateTime.now();
 					int i = 0;
 					UserCost userCost = new UserCost();
-					if (!StringUtil.isNull(ls.get(i)) && !ls.get(i).isEmpty()) {
+					if (!StringUtil.isNull(ls.get(i)) && !ls.get(i).isEmpty()) {//员工成本 UserCost Id
 						if(!StringUtil.isNumeric(ls.get(i))){
 							continue;
 						}
@@ -288,18 +311,27 @@ public class UserCostResource {
 						userCost.setUpdateTime(updateTime);
 					}
 					i++;
-					if (!StringUtil.isNull(ls.get(i)) && !ls.get(i).isEmpty()) {
-						if(!StringUtil.isNumeric(ls.get(i))){
+					Optional<User> user = null;
+					if (!StringUtil.isNull(ls.get(i)) && !ls.get(i).isEmpty()) {//员工 userId
+						user = userRepository.findOneBySerialNum(ls.get(i));
+						if(!user.isPresent()){
 							continue;
 						}
-						userCost.setUserId(Long.valueOf(ls.get(i)));
+						userCost.setUserId(user.get().getId());
+					}else{
+						continue;
 					}
 					i++;
-					if (!StringUtil.isNull(ls.get(i)) && !ls.get(i).isEmpty()) {
+					if (!StringUtil.isNull(ls.get(i)) && !ls.get(i).isEmpty()) {//员工姓名
+						if(!user.get().getLastName().equals(ls.get(i))){
+							continue;
+						}
 						userCost.setUserName(ls.get(i));
+					}else{
+						userCost.setUserName(user.get().getLastName());
 					}
 					i++;
-					if (!StringUtil.isNull(ls.get(i)) && !ls.get(i).isEmpty()) {
+					if (!StringUtil.isNull(ls.get(i)) && !ls.get(i).isEmpty()) {//所属年月
 						try {
 							Date date = sdf.parse(ls.get(i));
 							SimpleDateFormat sdfCost = new SimpleDateFormat(CpmConstants.DEFAULT_USER_COST_COSTMONTH_FROMAT);
@@ -311,7 +343,7 @@ public class UserCostResource {
 						}
 					}
 					i++;
-					if (!StringUtil.isNull(ls.get(i)) && !ls.get(i).isEmpty()) {
+					if (!StringUtil.isNull(ls.get(i)) && !ls.get(i).isEmpty()) {//内部成本
 						if(StringUtil.isDouble(ls.get(i))){
 							Double dou = Double.valueOf(ls.get(i));
 							userCost.setInternalCost(dou>=0?dou:CpmConstants.DEFAULT_UPLOAD_EXCEL_USER_COST);
@@ -319,27 +351,54 @@ public class UserCostResource {
 					}else{
 						userCost.setInternalCost(CpmConstants.DEFAULT_UPLOAD_EXCEL_USER_COST);
 					}
+//					i++;
+//					if (!StringUtil.isNull(ls.get(i)) && !ls.get(i).isEmpty()) {//外部成本
+//						if (StringUtil.isDouble(ls.get(i))) {
+//							Double dou = Double.valueOf(ls.get(i));
+//							userCost.setExternalCost(dou>=0?dou:CpmConstants.DEFAULT_UPLOAD_EXCEL_USER_COST);
+//						}
+//					}else{
+//						userCost.setExternalCost(CpmConstants.DEFAULT_UPLOAD_EXCEL_USER_COST);
+//					}
 					i++;
-					if (!StringUtil.isNull(ls.get(i)) && !ls.get(i).isEmpty()) {
-						if (StringUtil.isDouble(ls.get(i))) {
-							Double dou = Double.valueOf(ls.get(i));
-							userCost.setExternalCost(dou>=0?dou:CpmConstants.DEFAULT_UPLOAD_EXCEL_USER_COST);
-						}
-					}else{
-						userCost.setExternalCost(CpmConstants.DEFAULT_UPLOAD_EXCEL_USER_COST);
-					}
-					i++;
-					if (!StringUtil.isNull(ls.get(i)) && !ls.get(i).isEmpty()) {
+					if (!StringUtil.isNull(ls.get(i)) && !ls.get(i).isEmpty()) {//状态
 						if(StringUtil.isInteger(ls.get(i))){
 							Integer sta = Integer.valueOf(ls.get(i));
 							userCost.setStatus(sta==CpmConstants.STATUS_VALID || sta == CpmConstants.STATUS_DELETED?sta:CpmConstants.STATUS_VALID);
 						}
-//						userCost.setStatus(Integer.valueOf(ls.get(i)));
 					}else{
 						userCost.setStatus(CpmConstants.STATUS_VALID);
 					}
+					i++;
+					if (!StringUtil.isNull(ls.get(i)) && !ls.get(i).isEmpty()) {//员工工资
+						if (StringUtil.isDouble(ls.get(i))) {
+							Double dou = Double.valueOf(ls.get(i));
+							userCost.setSal(dou>=0?dou:CpmConstants.DEFAULT_UPLOAD_EXCEL_USER_COST);
+						}
+					}else{
+						userCost.setSal(CpmConstants.DEFAULT_UPLOAD_EXCEL_USER_COST);
+					}
+					i++;
+					if (!StringUtil.isNull(ls.get(i)) && !ls.get(i).isEmpty()) {//员工社保
+						if (StringUtil.isDouble(ls.get(i))) {
+							Double dou = Double.valueOf(ls.get(i));
+							userCost.setSocialSecurity(dou>=0?dou:CpmConstants.DEFAULT_UPLOAD_EXCEL_USER_COST);
+						}
+					}else{
+						userCost.setSocialSecurity(CpmConstants.DEFAULT_UPLOAD_EXCEL_USER_COST);
+					}
+					i++;
+					if (!StringUtil.isNull(ls.get(i)) && !ls.get(i).isEmpty()) {//员工公积金
+						if (StringUtil.isDouble(ls.get(i))) {
+							Double dou = Double.valueOf(ls.get(i));
+							userCost.setFund(dou>=0?dou:CpmConstants.DEFAULT_UPLOAD_EXCEL_USER_COST);
+						}
+					}else{
+						userCost.setFund(CpmConstants.DEFAULT_UPLOAD_EXCEL_USER_COST);
+					}
+					userCost.setExternalCost(userCost.getSal()+userCost.getSocialSecurity()+userCost.getFund());//外部成本
 
-					System.out.println(userCost);
+					log.debug(userCost.toString());
 					userCosts.add(userCost);
 				} 
 				result = userCostService.save(userCosts);

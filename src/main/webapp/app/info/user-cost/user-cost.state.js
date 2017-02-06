@@ -11,7 +11,7 @@
         $stateProvider
         .state('user-cost', {
             parent: 'info',
-            url: '/user-cost?page&sort&userId&userName&costMonth&status',
+            url: '/user-cost?page&sort&serialNum&userName&costMonth&status',
             data: {
                 authorities: ['ROLE_INFO_USERCOST'],
                 pageTitle: 'cpmApp.userCost.home.title'
@@ -33,7 +33,7 @@
                     squash: true
                 },
 //                search: null
-                userId:null,
+                serialNum:null,
                 userName:null,
                 costMonth:null,
                 status:null
@@ -46,7 +46,7 @@
                         predicate: PaginationUtil.parsePredicate($stateParams.sort),
                         ascending: PaginationUtil.parseAscending($stateParams.sort),
 //                        search: $stateParams.search
-                        userId:$stateParams.userId,
+                        serialNum:$stateParams.serialNum,
                         userName:$stateParams.userName,
                         costMonth:$stateParams.costMonth,
                         status:$stateParams.status

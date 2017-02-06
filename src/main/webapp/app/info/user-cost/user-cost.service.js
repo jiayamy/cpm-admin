@@ -27,7 +27,8 @@
                     return data;
                 }
             },
-            'update': { method:'PUT' }
+            'update': { method:'PUT' },
+            'getSerialNumByuserId': {method:'GET',url:"api/user-costs/getSerialNumByuserId"}
         });
     }
 })();

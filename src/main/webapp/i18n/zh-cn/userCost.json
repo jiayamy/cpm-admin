@@ -34,11 +34,19 @@
             	"nonFile":"文件不能为空！",
             	"numFile":"选择的文件数量不能大于1！"
             },
+            "get":{
+            	"userIdNon":"员工Id参数为空",
+            	"userNon":"无与此Id对应的员工号"
+            },
             "userId": "员工号",
+            "serialNum": "员工号",
             "userName": "员工姓名",
             "costMonth": "所属年月",
             "internalCost": "内部成本",
             "externalCost": "外部成本",
+            "sal": "工资",
+            "socialSecurity": "社保",
+            "fund": "公积金及其他",
             "status": "状态",
             "creator": "创建者",
             "createTime": "创建时间",

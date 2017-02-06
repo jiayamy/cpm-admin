@@ -12,6 +12,10 @@
 
         vm.userCost = entity;
         vm.previousState = previousState.name;
+        
+        UserCost.getSerialNumByuserId({id:entity.userId},function(data){
+        	vm.serialNum = data.serialNum;
+        },function(){vm.serialNum = "";});
 
 //        var unsubscribe = $rootScope.$on('cpmApp:userCostUpdate', function(event, result) {
 //            vm.userCost = result;

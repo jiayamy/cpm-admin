@@ -65,8 +65,56 @@ public class UserCost implements Serializable {
 
     @Column(name = "update_time")
     private ZonedDateTime updateTime;
+    
+    @Column(name = "sal_")
+    private Double sal;
+    
+    @Column(name = "social_security")
+    private Double socialSecurity;
+    
+    @Column(name = "fund_")
+    private Double fund;
 
-    public Long getId() {
+    public Double getSal() {
+		return sal;
+	}
+    
+    public UserCost sal(Double sal) {
+        this.sal = sal;
+        return this;
+    }
+
+	public void setSal(Double sal) {
+		this.sal = sal;
+	}
+
+	public Double getSocialSecurity() {
+		return socialSecurity;
+	}
+	
+	public UserCost socialSecurity(Double socialSecurity) {
+        this.socialSecurity = socialSecurity;
+        return this;
+    }
+
+	public void setSocialSecurity(Double socialSecurity) {
+		this.socialSecurity = socialSecurity;
+	}
+
+	public Double getFund() {
+		return fund;
+	}
+	
+	public UserCost fund(Double fund) {
+        this.fund = fund;
+        return this;
+    }
+
+	public void setFund(Double fund) {
+		this.fund = fund;
+	}
+
+	public Long getId() {
         return id;
     }
 
@@ -224,6 +272,6 @@ public class UserCost implements Serializable {
 		return "UserCost [id=" + id + ", userId=" + userId + ", userName=" + userName + ", costMonth=" + costMonth
 				+ ", internalCost=" + internalCost + ", externalCost=" + externalCost + ", status=" + status
 				+ ", creator=" + creator + ", createTime=" + createTime + ", updator=" + updator + ", updateTime="
-				+ updateTime + "]";
+				+ updateTime + ", sal=" + sal + ", socialSecurity=" + socialSecurity + ", fund=" + fund + "]";
 	}
 }

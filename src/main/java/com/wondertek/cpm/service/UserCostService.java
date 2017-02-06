@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.wondertek.cpm.CpmConstants;
 import com.wondertek.cpm.domain.UserCost;
+import com.wondertek.cpm.domain.vo.UserCostVo;
 import com.wondertek.cpm.repository.UserCostDao;
 import com.wondertek.cpm.repository.UserCostRepository;
 import com.wondertek.cpm.security.SecurityUtils;
@@ -114,9 +115,9 @@ public class UserCostService {
      * @return
      */
     @Transactional(readOnly = true)
-    public Page<UserCost> getUserCostPage(UserCost userCost,Pageable pageable){
+    public Page<UserCostVo> getUserCostPage(UserCost userCost,Pageable pageable){
     	log.debug("Request to a page of UserCosts {}",userCost);
-    	Page<UserCost> page = userCostDao.getUserCostPage(userCost, pageable);
+    	Page<UserCostVo> page = userCostDao.getUserCostPage(userCost, pageable);
     	return page;
     }
     
@@ -132,7 +133,7 @@ public class UserCostService {
     	return userCost;
     }
     /**
-     * 保存多个员工成本信息
+     * 根据UserCost中的id和costMonth 保存多个员工成本信息
      * @param userCosts
      * @return
      */

@@ -20,7 +20,7 @@
         vm.loadAll = loadAll;
 
         vm.searchQuery = {};
-        vm.searchQuery.userId = pagingParams.userId;
+        vm.searchQuery.serialNum = pagingParams.serialNum;
         vm.searchQuery.userName = pagingParams.userName;
         vm.sdf = pagingParams.costMonth+"";
         vm.searchQuery.costMonth = pagingParams.costMonth?new Date(vm.sdf.substring(0,4),vm.sdf.substring(4,6)-1):"";
@@ -32,7 +32,7 @@
         		vm.searchQuery.status = vm.statuss[i];
         	}
         }
-        if (!vm.searchQuery.userId && !vm.searchQuery.userName && !vm.searchQuery.costMonth &&!vm.searchQuery.status){
+        if (!vm.searchQuery.serialNum && !vm.searchQuery.userName && !vm.searchQuery.costMonth &&!vm.searchQuery.status){
         	vm.haveSearch = null;
         }else{
         	vm.haveSearch = true;
@@ -45,15 +45,15 @@
                 page: pagingParams.page - 1,
                 size: vm.itemsPerPage,
                 sort: sort(),
-                userId:pagingParams.userId,
+                serialNum:pagingParams.serialNum,
                 userName:pagingParams.userName,
                 costMonth:pagingParams.costMonth,
                 status:pagingParams.status
             }, onSuccess, onError);
             function sort() {
                 var result = [vm.predicate + ',' + (vm.reverse ? 'asc' : 'desc')];
-                if (vm.predicate !== 'id') {
-                    result.push('id');
+                if (vm.predicate !== 'wuc.id') {
+                    result.push('wuc.id');
                 }
                 return result;
             }
@@ -91,7 +91,7 @@
             $state.transitionTo($state.$current, {
                 page: vm.page,
                 sort: vm.predicate + ',' + (vm.reverse ? 'asc' : 'desc'),
-                userId:vm.searchQuery.userId,
+                serialNum:vm.searchQuery.serialNum,
                 userName:vm.searchQuery.userName,
                 costMonth:DateUtils.convertLocalDateToFormat(vm.searchQuery.costMonth,"yyyyMM"),
                 status:vm.searchQuery.status?vm.searchQuery.status.key:"",
@@ -104,7 +104,7 @@
             }
             vm.links = null;
             vm.page = 1;
-            vm.predicate = 'id';
+            vm.predicate = 'wuc.id';
             vm.reverse = false;
             vm.haveSearch = true;
             vm.transition();
@@ -113,7 +113,7 @@
         function clear() {
             vm.links = null;
             vm.page = 1;
-            vm.predicate = 'id';
+            vm.predicate = 'wuc.id';
             vm.reverse = true;
             vm.haveSearch = false;
             vm.searchQuery = {};

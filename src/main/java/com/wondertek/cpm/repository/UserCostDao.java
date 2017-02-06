@@ -4,6 +4,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import com.wondertek.cpm.domain.UserCost;
+import com.wondertek.cpm.domain.vo.UserCostVo;
 
 public interface UserCostDao extends GenericDao<UserCost, Long> {
 
@@ -13,5 +14,5 @@ public interface UserCostDao extends GenericDao<UserCost, Long> {
 	 * @param pageable
 	 * @return
 	 */
-	public Page<UserCost> getUserCostPage(UserCost userCost,Pageable pageable);
+	public Page<UserCostVo> getUserCostPage(UserCost userCost,Pageable pageable);
 }
