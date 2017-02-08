@@ -87,7 +87,7 @@ public class ProjectSupportCost implements Serializable{
 	 * 内部采购成本（结算成本*项目工时）、
 	 */
 	@Column(name = "internal_budget_cost")
-	private Double internalBdgetCost;
+	private Double internalBudgetCost;
 	
 	/**
 	 * 工资（从员工成本中获取统计日期时的员工工资）、
@@ -234,11 +234,11 @@ public class ProjectSupportCost implements Serializable{
 	}
 
 	public Double getInternalBdgetCost() {
-		return internalBdgetCost;
+		return internalBudgetCost;
 	}
 
-	public void setInternalBdgetCost(Double internalBdgetCost) {
-		this.internalBdgetCost = internalBdgetCost;
+	public void setInternalBdgetCost(Double internalBudgetCost) {
+		this.internalBudgetCost = internalBudgetCost;
 	}
 
 	public Double getSal() {
