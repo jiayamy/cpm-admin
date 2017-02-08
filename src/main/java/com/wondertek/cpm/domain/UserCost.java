@@ -69,11 +69,11 @@ public class UserCost implements Serializable {
     @Column(name = "sal_")
     private Double sal;
     
-    @Column(name = "social_security")
-    private Double socialSecurity;
+    @Column(name = "social_security_fund")
+    private Double socialSecurityFund;
     
-    @Column(name = "fund_")
-    private Double fund;
+    @Column(name = "other_expense")
+    private Double otherExpense;
 
     public Double getSal() {
 		return sal;
@@ -88,30 +88,30 @@ public class UserCost implements Serializable {
 		this.sal = sal;
 	}
 
-	public Double getSocialSecurity() {
-		return socialSecurity;
+	public Double getSocialSecurityFund() {
+		return socialSecurityFund;
 	}
 	
-	public UserCost socialSecurity(Double socialSecurity) {
-        this.socialSecurity = socialSecurity;
+	public UserCost socialSecurityFund(Double socialSecurityFund) {
+        this.socialSecurityFund = socialSecurityFund;
         return this;
     }
 
-	public void setSocialSecurity(Double socialSecurity) {
-		this.socialSecurity = socialSecurity;
+	public void setSocialSecurityFund(Double socialSecurityFund) {
+		this.socialSecurityFund = socialSecurityFund;
 	}
 
-	public Double getFund() {
-		return fund;
+	public Double getOtherExpense() {
+		return otherExpense;
 	}
 	
-	public UserCost fund(Double fund) {
-        this.fund = fund;
+	public UserCost otherExpense(Double otherExpense) {
+        this.otherExpense = otherExpense;
         return this;
     }
 
-	public void setFund(Double fund) {
-		this.fund = fund;
+	public void setOtherExpense(Double otherExpense) {
+		this.otherExpense = otherExpense;
 	}
 
 	public Long getId() {
@@ -272,6 +272,7 @@ public class UserCost implements Serializable {
 		return "UserCost [id=" + id + ", userId=" + userId + ", userName=" + userName + ", costMonth=" + costMonth
 				+ ", internalCost=" + internalCost + ", externalCost=" + externalCost + ", status=" + status
 				+ ", creator=" + creator + ", createTime=" + createTime + ", updator=" + updator + ", updateTime="
-				+ updateTime + ", sal=" + sal + ", socialSecurity=" + socialSecurity + ", fund=" + fund + "]";
+				+ updateTime + ", sal=" + sal + ", socialSecurityFund=" + socialSecurityFund + ", otherExpense="
+				+ otherExpense + "]";
 	}
 }

@@ -29,13 +29,13 @@
         <dd>
             <span>{{vm.userCost.sal}}</span>
         </dd>
-        <dt><span data-translate="cpmApp.userCost.socialSecurity">Social Security</span></dt>
+        <dt><span data-translate="cpmApp.userCost.socialSecurityFund">Social Security Fund</span></dt>
         <dd>
-            <span>{{vm.userCost.socialSecurity}}</span>
+            <span>{{vm.userCost.socialSecurityFund}}</span>
         </dd>
-        <dt><span data-translate="cpmApp.userCost.fund">Fund</span></dt>
+        <dt><span data-translate="cpmApp.userCost.otherExpense">Other Expense</span></dt>
         <dd>
-            <span>{{vm.userCost.fund}}</span>
+            <span>{{vm.userCost.otherExpense}}</span>
         </dd>
         <dt><span data-translate="cpmApp.userCost.status">Status</span></dt>
         <dd>
@@ -60,7 +60,7 @@
     </dl>
 
     <button type="submit"
-            ui-sref="{{ vm.previousState }}"
+            ui-sref="user-cost"
             class="btn btn-info">
         <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span data-translate="entity.action.back"> Back</span>
     </button>

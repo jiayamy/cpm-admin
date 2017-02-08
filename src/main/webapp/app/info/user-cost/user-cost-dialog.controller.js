@@ -17,6 +17,7 @@
         vm.datePickerOpenStatus = {};
         vm.openCalendar = openCalendar;
         vm.save = save;
+        vm.accAdd = accAdd;
         console.log("5555:"+vm.userCost.sal);
         
         if(entity && entity.userId){
@@ -40,7 +41,7 @@
         }
         
         if(entity && entity.id){
-        	vm.userCost.externalCost = entity.sal + entity.socialSecurity + entity.fund;
+        	vm.userCost.externalCost = entity.sal + entity.socialSecurityFund + entity.otherExpense;
         }
         
 
@@ -55,10 +56,10 @@
             userCost.externalCost = vm.userCost.externalCost;
 //            userCost.status = vm.userCost.status && vm.userCost.status.key ? vm.userCost.status.key:"";
             userCost.sal = vm.userCost.sal;
-            userCost.socialSecurity = vm.userCost.socialSecurity;
-            userCost.fund = vm.userCost.fund;
+            userCost.socialSecurityFund = vm.userCost.socialSecurityFund;
+            userCost.otherExpense = vm.userCost.otherExpense;
             if(!userCost.userId ||!userCost.userName || !userCost.costMonth || 
-            		!userCost.sal || !userCost.socialSecurity || !userCost.fund){
+            		!userCost.sal || !userCost.socialSecurityFund || !userCost.otherExpense){
             	AlertService.error("cpmApp.userCost.save.requriedError");
             	return;
             }
@@ -68,7 +69,7 @@
         function onSaveSuccess (data,headers) {
             vm.isSaving = false;
             if(headers("X-cpmApp-alert") == 'cpmApp.userCost.updated'){
-    			$state.go(vm.previousState);
+    			$state.go(vm.previousState,{},{reload:true});
     		}
         }
 
@@ -96,68 +97,49 @@
         
         $scope.getExternalCost = function(){
         	var sal = 0;
-        	var socialSecurity = 0;
-        	var fund = 0;
+        	var socialSecurityFund = 0;
+        	var otherExpense = 0;
         	if(isNaN(vm.userCost.sal) || vm.userCost.sal == undefined){
         		sal = 0;
         	}else{
         		sal = vm.userCost.sal;
         	}
-        	if(isNaN(vm.userCost.socialSecurity) || vm.userCost.socialSecurity == undefined){
-        		socialSecurity = 0;
+        	if(isNaN(vm.userCost.socialSecurityFund) || vm.userCost.socialSecurityFund == undefined){
+        		socialSecurityFund = 0;
         	}else{
-        		socialSecurity = vm.userCost.socialSecurity;
+        		socialSecurityFund = vm.userCost.socialSecurityFund;
         	}
-        	if(isNaN(vm.userCost.fund) || vm.userCost.fund == undefined){
-        		fund = 0;
+        	if(isNaN(vm.userCost.otherExpense) || vm.userCost.otherExpense == undefined){
+        		otherExpense = 0;
         	}else{
-        		fund = vm.userCost.fund;
+        		otherExpense = vm.userCost.otherExpense;
         	}
-        	return sal + socialSecurity + fund;
+        	var sum = accAdd(sal,socialSecurityFund);
+        	sum = accAdd(sum,otherExpense);
+        	return sum;
+//        	return sal + socialSecurityFund + otherExpense;
         }
         
         $scope.$watch($scope.getExternalCost,function(newVal,oldVal){
         	console.log("newVal---:"+newVal);
         	vm.userCost.externalCost = newVal;
         });
-//        $scope.$watch("vm.userCost.sal",function(newVal,oldVal){
-//        	console.log(newVal);
-//        	if(newVal === oldVal){return;}
-//        	if(newVal == undefined){
-//        		newVal = 0;
-////        		vm.userCost.sal = 0;
-//        	}
-//        	if(oldVal == undefined){
-//        		oldVal = 0;
-//        	}
-//        	var tmp = vm.userCost.externalCost;
-//        	vm.userCost.externalCost = tmp+(newVal-oldVal);
-//        });
-//        $scope.$watch("vm.userCost.socialSecurity",function(newVal,oldVal){
-//        	console.log(newVal);
-//        	if(newVal === oldVal){return;}
-//        	if(newVal == undefined){
-//        		newVal = 0;
-////        		vm.userCost.socialSecurity = 0;
-//        	}
-//        	if(oldVal == undefined){
-//        		oldVal = 0;
-//        	}
-//        	var tmp = vm.userCost.externalCost;
-//        	vm.userCost.externalCost = tmp+(newVal-oldVal);
-//        });
-//        $scope.$watch("vm.userCost.fund",function(newVal,oldVal){
-//        	console.log(newVal);
-//        	if(newVal === oldVal){return;}
-//        	if(newVal == undefined){
-//        		newVal = 0;
-////        		vm.userCost.fund = 0;
-//        	}
-//        	if(oldVal == undefined){
-//        		oldVal = 0;
-//        	}
-//        	var tmp = vm.userCost.externalCost;
-//        	vm.userCost.externalCost = tmp+(newVal-oldVal);
-//        });
+        
+        // 两个浮点数求和  
+        function accAdd(num1,num2){  
+           var r1,r2,m;  
+           try{  
+               r1 = num1.toString().split('.')[1].length;  
+           }catch(e){  
+               r1 = 0;  
+           }  
+           try{  
+               r2=num2.toString().split(".")[1].length;  
+           }catch(e){  
+               r2=0;  
+           }  
+           m=Math.pow(10,Math.max(r1,r2));  
+           return Math.round(num1*m+num2*m)/m;  
+        }
     }
 })();

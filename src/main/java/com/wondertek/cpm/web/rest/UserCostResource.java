@@ -101,7 +101,7 @@ public class UserCostResource {
         log.debug("REST request to update UserCost : {}", userCost);
         Boolean isNew = null;
         if(userCost == null || userCost.getUserId() == null || userCost.getCostMonth() == null || 
-        		userCost.getUserName() == null || userCost.getSal() == null || userCost.getSocialSecurity() == null || userCost.getFund() == null){
+        		userCost.getUserName() == null || userCost.getSal() == null || userCost.getSocialSecurityFund() == null || userCost.getOtherExpense() == null){
     		return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.userCost.save.requriedError", "")).body(null);
     	}
         //获取当前用户
@@ -122,6 +122,7 @@ public class UserCostResource {
         	findUserCost.setCostMonth(userCost.getCostMonth());
         	findUserCost.setCreateTime(updateTime);
         	findUserCost.setCreator(updator);
+        	findUserCost.setStatus(CpmConstants.STATUS_VALID);	//设置默认状态 1
         }else{//编辑
         	findUserCost = userCostService.findByUserIdAndCostMonth(userCost.getUserId(),userCost.getCostMonth());
         	if(findUserCost == null){
@@ -136,9 +137,9 @@ public class UserCostResource {
         }
 //        findUserCost.setStatus(userCost.getStatus());
         findUserCost.setSal(userCost.getSal());
-        findUserCost.setSocialSecurity(userCost.getSocialSecurity());
-        findUserCost.setFund(userCost.getFund());
-        findUserCost.setExternalCost(userCost.getSal()+userCost.getSocialSecurity()+userCost.getFund());//
+        findUserCost.setSocialSecurityFund(userCost.getSocialSecurityFund());
+        findUserCost.setOtherExpense(userCost.getOtherExpense());
+        findUserCost.setExternalCost(userCost.getSal()+userCost.getSocialSecurityFund()+userCost.getOtherExpense());//
     	findUserCost.setInternalCost(userCost.getInternalCost());
     	findUserCost.setUpdateTime(updateTime);
     	findUserCost.setUpdator(updator);
@@ -301,7 +302,11 @@ public class UserCostResource {
 						if(!StringUtil.isNumeric(ls.get(i))){
 							continue;
 						}
-						userCost.setId(Long.valueOf(ls.get(i)));
+						userCost = userCostService.findOne(Long.valueOf(ls.get(i)));
+//						userCost.setId(Long.valueOf(ls.get(i)));
+						if(userCost == null){
+							continue;
+						}
 						userCost.setUpdator(updator);
 						userCost.setUpdateTime(updateTime);
 					} else {
@@ -379,24 +384,24 @@ public class UserCostResource {
 						userCost.setSal(CpmConstants.DEFAULT_UPLOAD_EXCEL_USER_COST);
 					}
 					i++;
-					if (!StringUtil.isNull(ls.get(i)) && !ls.get(i).isEmpty()) {//员工社保
+					if (!StringUtil.isNull(ls.get(i)) && !ls.get(i).isEmpty()) {//员工社保公积金
 						if (StringUtil.isDouble(ls.get(i))) {
 							Double dou = Double.valueOf(ls.get(i));
-							userCost.setSocialSecurity(dou>=0?dou:CpmConstants.DEFAULT_UPLOAD_EXCEL_USER_COST);
+							userCost.setSocialSecurityFund(dou>=0?dou:CpmConstants.DEFAULT_UPLOAD_EXCEL_USER_COST);
 						}
 					}else{
-						userCost.setSocialSecurity(CpmConstants.DEFAULT_UPLOAD_EXCEL_USER_COST);
+						userCost.setSocialSecurityFund(CpmConstants.DEFAULT_UPLOAD_EXCEL_USER_COST);
 					}
 					i++;
-					if (!StringUtil.isNull(ls.get(i)) && !ls.get(i).isEmpty()) {//员工公积金
+					if (!StringUtil.isNull(ls.get(i)) && !ls.get(i).isEmpty()) {//其它费用
 						if (StringUtil.isDouble(ls.get(i))) {
 							Double dou = Double.valueOf(ls.get(i));
-							userCost.setFund(dou>=0?dou:CpmConstants.DEFAULT_UPLOAD_EXCEL_USER_COST);
+							userCost.setOtherExpense(dou>=0?dou:CpmConstants.DEFAULT_UPLOAD_EXCEL_USER_COST);
 						}
 					}else{
-						userCost.setFund(CpmConstants.DEFAULT_UPLOAD_EXCEL_USER_COST);
+						userCost.setOtherExpense(CpmConstants.DEFAULT_UPLOAD_EXCEL_USER_COST);
 					}
-					userCost.setExternalCost(userCost.getSal()+userCost.getSocialSecurity()+userCost.getFund());//外部成本
+					userCost.setExternalCost(userCost.getSal()+userCost.getSocialSecurityFund()+userCost.getOtherExpense());//外部成本
 
 					log.debug(userCost.toString());
 					userCosts.add(userCost);

@@ -16,8 +16,8 @@ public class UserCostVo {
     private String updator;
     private ZonedDateTime updateTime;
     private Double sal;
-    private Double socialSecurity;
-    private Double fund;
+    private Double socialSecurityFund;
+    private Double otherExpense;
     private String serialNum;
     
 	public Long getId() {
@@ -92,17 +92,17 @@ public class UserCostVo {
 	public void setSal(Double sal) {
 		this.sal = sal;
 	}
-	public Double getSocialSecurity() {
-		return socialSecurity;
+	public Double getSocialSecurityFund() {
+		return socialSecurityFund;
 	}
-	public void setSocialSecurity(Double socialSecurity) {
-		this.socialSecurity = socialSecurity;
+	public void setSocialSecurityFund(Double socialSecurityFund) {
+		this.socialSecurityFund = socialSecurityFund;
 	}
-	public Double getFund() {
-		return fund;
+	public Double getOtherExpense() {
+		return otherExpense;
 	}
-	public void setFund(Double fund) {
-		this.fund = fund;
+	public void setOtherExpense(Double otherExpense) {
+		this.otherExpense = otherExpense;
 	}
 	public String getSerialNum() {
 		return serialNum;

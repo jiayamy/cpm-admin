@@ -631,3 +631,8 @@ CREATE
 	--20170125
 	ALTER TABLE w_purchase_item ADD (product_price_id BIGINT);
 	
+	--20170207
+	ALTER TABLE w_user_cost ADD sal_ DOUBLE(15,2) COMMENT '工资';
+	ALTER TABLE w_user_cost ADD social_security_fund DOUBLE(15,2) COMMENT '社保公积金';
+	ALTER TABLE w_user_cost ADD other_expense DOUBLE(15,2) COMMENT '其它费用';
+	
