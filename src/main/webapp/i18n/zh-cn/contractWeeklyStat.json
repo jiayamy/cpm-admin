@@ -11,13 +11,13 @@
             "echarts":{
             	"fromDate" : "起始日期",
             	"toDate" : "结束日期",
-            	"title": "合同周报统计表格",
+            	"title": "合同周报统计图表",
             	"transDetail" : "转变详情"
             },
             "fromDate" : "创建日期开始",
             "toDate" : "创建日期结束",
             "statDate" : "统计周",
-            "transChart": "表格",
+            "transChart": "图表",
             "transDetail" : "详情",
             "contractSerialNum" : "合同编号",
             "contractId": "合同主键",

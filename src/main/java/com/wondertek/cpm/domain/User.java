@@ -119,7 +119,7 @@ public class User extends AbstractAuditingEntity implements Serializable {
      * 级别
      */
     @Column(name = "grade_")
-    private String grade;
+    private Integer grade;
     /**
      * 性别(1男/2女)
      */
@@ -305,11 +305,11 @@ public class User extends AbstractAuditingEntity implements Serializable {
 		this.duty = duty;
 	}
 
-	public String getGrade() {
+	public Integer getGrade() {
 		return grade;
 	}
 
-	public void setGrade(String grade) {
+	public void setGrade(Integer grade) {
 		this.grade = grade;
 	}
 
