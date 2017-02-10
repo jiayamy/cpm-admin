@@ -34,7 +34,7 @@ public class ManagedUserVM extends UserDTO {
     private String dept;
     private Boolean isManager;
     private String duty;
-    private String grade;
+    private Integer grade;
     private Integer gender;
     private String birthYear;
     private String birthDay;
@@ -163,11 +163,12 @@ public class ManagedUserVM extends UserDTO {
 		this.duty = duty;
 	}
 
-	public String getGrade() {
+
+	public Integer getGrade() {
 		return grade;
 	}
 
-	public void setGrade(String grade) {
+	public void setGrade(Integer grade) {
 		this.grade = grade;
 	}
 
