@@ -9,8 +9,6 @@
 
     function ChoseProjectsController ($scope, $state, PurchaseItem, ParseLinks, AlertService, paginationConstants, entity,$uibModalInstance,$stateParams) {
         var vm = this;
-        vm.loadPage = loadPage;
-        vm.transition = transition;
         vm.itemsPerPage = paginationConstants.itemsPerPage;
         vm.close = close;
         vm.chose = chose;
@@ -19,47 +17,30 @@
         vm.searchPP = {};
         
         //搜索中的参数
-        vm.searchPP.selectName = entity.selectName;
-        console.log(entity.selectName);
-        if (!vm.searchPP.selectName) {
-			vm.haveSearch = null;
-		}else {
-			vm.haveSearch = true;
-		}
-        
+        vm.haveSearch = null;
+        vm.page = 1;
         //加载列表数据
-        loadAll();
-        function loadAll () {
-        	if(!entity.selectName){
-        		entity.selectName = "";
-        	}
-        	PurchaseItem.queryProductPrice({
-        		selectName: entity.selectName,
-                page: entity.page - 1,
-                size: vm.itemsPerPage
-            }, onSuccess, onError);
-            
-            function onSuccess(data, headers) {
-            	vm.links = ParseLinks.parse(headers('link'));
-                vm.totalItems = headers('X-Total-Count');
-                vm.queryCount = vm.totalItems;
-                vm.productPrices = handleData(data);
-                vm.page = entity.page;
-            }
-            function onError(error) {
-                AlertService.error(error.data.message);
-            }
+        find();
+        
+        function onSuccess(data, headers) {
+        	vm.links = ParseLinks.parse(headers('link'));
+        	vm.totalItems = headers('X-Total-Count');
+        	vm.queryCount = vm.totalItems;
+        	vm.productPrices = handleData(data);
+        }
+        function onError(error) {
+        	AlertService.error(error.data.message);
         }
         
         function handleData(data){
         	if(data.length > 0){
         		for(var i = 0; i< data.length ; i++){
-        			if(data[i].type == 0){
+        			if(data[i].type == 1){
         				data[i].typeName = "硬件";
-        			}else if(data[i].type == 1){
+        			}else if(data[i].type == 2){
         				data[i].typeName = "软件";
         			}
-        			if(data[i].source == 0){
+        			if(data[i].source == 2){
         				data[i].sourceName = "外部";
         			}else if(data[i].source == 1){
         				data[i].sourceName = "内部";
@@ -69,19 +50,8 @@
         	return data;
         }
         
-        function loadPage(page) {
-            vm.page = page;
-            vm.transition();
-        }
-
-        function transition() {
-            $state.transitionTo($state.$current, {
-                page: vm.page,
-                selectName: vm.searchPP.selectName
-            });
-        }
-        
         function find() {
+<<<<<<< HEAD
         	console.log(vm.searchPP.selectName);
             if (!vm.searchPP.selectName){
                 return vm.clear();
@@ -89,27 +59,35 @@
             PurchaseItem.queryProductPrice({
         		selectName: entity.selectName,
                 page: entity.page - 1,
+=======
+        	if(vm.searchPP.selectName == undefined){
+        		vm.haveSearch = null;
+        	}else{
+        		vm.haveSearch = true;
+        	}
+        	PurchaseItem.queryProductPrice({
+        		type:entity.type,
+        		selectName: vm.searchPP.selectName,
+                page: vm.page-1,
+>>>>>>> 8817ed4caa94086bea503690b1faccfa9a0b16b5
                 size: vm.itemsPerPage
             }, onSuccess, onError);
         }
         
         function clear() {
-            vm.links = null;
             vm.page = 1;
             vm.searchPP = {};
-            vm.haveSearch = null;
-            vm.transition();
+            find();
         }
 
         function close () {
             $uibModalInstance.dismiss('cancel');
         }
         
-        
         function chose(productPrice){
         	vm.isSaving = true;
         	$scope.$emit('cpmApp:choseProject',productPrice);
-            $uibModalInstance.close(productPrice);
+            $uibModalInstance.dismiss('cancel');
             vm.isSaving = false;
             return;
         }

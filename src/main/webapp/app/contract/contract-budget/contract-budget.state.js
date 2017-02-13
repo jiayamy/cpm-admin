@@ -402,6 +402,7 @@
             resolve: {
            	 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                     $translatePartialLoader.addPart('purchaseItem');
+                    $translatePartialLoader.addPart('productPrice');
                     return $translate.refresh();
                 }],
                 entity: function () {
@@ -432,6 +433,7 @@
                 }],
                 previousState: ["$state", function ($state) {
                     var currentStateData = {
+                    	choseProject:'contract-budget.createPurchaseItem.choseProject',
                         name: $state.current.name || 'contract-budget',
                         params: $state.params,
                         url: $state.href($state.current.name, $state.params)
@@ -439,6 +441,36 @@
                     return currentStateData;
                 }]
             }
+        })
+        .state('contract-budget.createPurchaseItem.choseProject', {
+            parent: 'contract-budget.createPurchaseItem',
+            url: '/queryProductPrice?type',
+            data: {
+                pageTitle: 'cpmApp.projectInfo.home.title'
+            },
+            onEnter: ['$stateParams','$state','$uibModal',function($stateParams,$state,$uibModal){
+            	$uibModal.open({
+            		templateUrl: 'app/contract/purchase-item/purchase-item-choseProject.html',
+            		controller: 'ChoseProjectsController',
+            		controllerAs: 'vm',
+            		backdrop: 'static',
+            		size: 'lg',
+            		params: {
+            			type:null
+            		},
+            		resolve: {
+            			entity:function () {
+            				return {
+            					type : $stateParams.type,
+            				}
+            			}
+            		}
+            	}).result.then(function() {
+                    $state.go('^', {}, { reload: false });
+                }, function() {
+                    $state.go('^');
+                });
+            }]
         })
     }
 })();

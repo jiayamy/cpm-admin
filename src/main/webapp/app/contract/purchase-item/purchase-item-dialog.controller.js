@@ -13,13 +13,14 @@
         vm.choseProject = previousState.choseProject;
 
         vm.purchaseItem = entity;
-        console.log(entity);
         vm.contractInfoDisable = vm.purchaseItem.id;
         if (budgetEntity != null && budgetEntity.purchaseType != 3 && entity.id == null) {
         	entity.contractId = budgetEntity.contractId;
         	entity.budgetId = budgetEntity.id;
+        	entity.type = budgetEntity.purchaseType;
         	vm.contractInfoDisable = true;
 		}
+        vm.purchaseItem = entity;
         
         vm.productPriceDisable = vm.purchaseItem.productPriceId;
         if (entity.productPriceId != null){
@@ -174,13 +175,23 @@
         }
         
         var unsubscribe = $rootScope.$on('cpmApp:choseProject', function(event, result) {
-        	vm.purchaseItem.name = result.name;
-        	vm.purchaseItem.productPriceId = result.id;
-        	vm.purchaseItem.type.val = result.typeName;
-        	vm.purchaseItem.source.val = result.sourceName;
-        	vm.purchaseItem.units = result.units;
-        	vm.purchaseItem.price = result.price;
-        	vm.purchaseItem.totalAmount = result.price * vm.purchaseItem.quantity;
+        	if(vm.purchaseItem.type && vm.purchaseItem.type.key == result.type){
+        		vm.purchaseItem.name = result.name;
+        		vm.purchaseItem.productPriceId = result.id;
+        		vm.purchaseItem.type = {};
+        		vm.purchaseItem.type.key = result.type;
+        		vm.purchaseItem.type.val = result.typeName;
+        		vm.purchaseItem.source = {};
+        		vm.purchaseItem.source.key = result.source;
+        		vm.purchaseItem.source.val = result.sourceName;
+        		vm.purchaseItem.units = result.units;
+        		vm.purchaseItem.price = result.price;
+        		if(vm.purchaseItem.quantity == undefined){
+        			vm.purchaseItem.quantity = 1;
+        		}
+        		vm.purchaseItem.totalAmount = result.price * vm.purchaseItem.quantity;
+        		vm.productPriceDisable = true;
+        	}
         });
         $scope.$on('$destroy', unsubscribe);
         
