@@ -268,7 +268,8 @@ public class ContractStateTask {
 									findByDateAndObjIdAndType(StringUtil.nullToLong(dates[6]), projectInfo.getId(), UserTimesheet.TYPE_PROJECT);
 							if(userTimesheets3 != null && userTimesheets3.size() > 0){
 								for(UserTimesheet userTimesheet : userTimesheets3){
-									UserCost userCost = userCostRepository.findMaxByCostMonthAndUserId(StringUtil.nullToLong(dates[6]), userTimesheet.getUserId());
+									Long costMonth = StringUtil.nullToLong(DateUtil.formatDate("yyyyMM", DateUtil.lastSundayEnd()).toString());
+									UserCost userCost = userCostRepository.findMaxByCostMonthAndUserId(costMonth, userTimesheet.getUserId());
 									if(userCost != null){
 										if(contractInfo.getType() == ContractInfo.TYPE_INTERNAL){
 											projectHumanCost += userTimesheet.getRealInput() * (userCost.getInternalCost()/22.5/8);
@@ -518,7 +519,7 @@ public class ContractStateTask {
 									findByDateAndObjIdAndType( StringUtil.nullToLong(lDay), projectInfo.getId(), UserTimesheet.TYPE_PROJECT);
 							if(userTimesheets3 != null && userTimesheets3.size() > 0){
 								for(UserTimesheet userTimesheet : userTimesheets3){
-									UserCost userCost = userCostRepository.findMaxByCostMonthAndUserId(StringUtil.nullToLong(lDay), userTimesheet.getUserId());
+									UserCost userCost = userCostRepository.findMaxByCostMonthAndUserId(StringUtil.nullToLong(lMonth), userTimesheet.getUserId());
 									if(contractInfo.getType() == ContractInfo.TYPE_INTERNAL){
 										projectHumanCost += userTimesheet.getRealInput() * (userCost.getInternalCost()/22.5/8);
 									}else if(contractInfo.getType() == ContractInfo.TYPE_EXTERNAL){

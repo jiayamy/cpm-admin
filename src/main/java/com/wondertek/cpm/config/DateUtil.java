@@ -1016,4 +1016,11 @@ public class DateUtil {
 		}
 		return null;
 	}
+	
+	public static Date convertZonedDateTime(ZonedDateTime zonedDateTime){
+		if(zonedDateTime == null){
+			return null;
+		}
+		return Date.from(zonedDateTime.toInstant());
+	}
 }

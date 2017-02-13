@@ -101,6 +101,12 @@ public class ContractInfo implements Serializable {
     private String consultantsDept;
     
     /**
+     * 咨询分润比率
+     */
+    @Column(name = "consultants_share_rate")
+    private String consultantsShareRate;
+    
+    /**
      * 开始日期,页面格式20161227
      */
     @Column(name = "start_day")
@@ -676,5 +682,14 @@ public class ContractInfo implements Serializable {
 	public void setConsultantsDept(String consultantsDept) {
 		this.consultantsDept = consultantsDept;
 	}
+
+	public String getConsultantsShareRate() {
+		return consultantsShareRate;
+	}
+
+	public void setConsultantsShareRate(String consultantsShareRate) {
+		this.consultantsShareRate = consultantsShareRate;
+	}
+	
 }
 
