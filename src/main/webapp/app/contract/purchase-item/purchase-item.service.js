@@ -43,6 +43,11 @@
             	url:'api/purchase-item/queryUserContract',
             	method:'GET',
             	isArray:true
+            },
+            'queryProductPrice':{
+            	url:'api/purchase-item/queryProductPrice',
+            	method:'GET',
+            	isArray:true
             }
         });
     }

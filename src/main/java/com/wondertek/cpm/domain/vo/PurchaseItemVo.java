@@ -31,6 +31,10 @@ public class PurchaseItemVo  {
      */
     private String budgetName;
     /**
+     * 产品定价单主键 
+     */
+    private Long productPriceId;
+	/**
      * 采购项目----采购的是什么？用户填写后，可以点击“参考价”显示该采购项目的产品定价单
      */
     private String name;
@@ -83,6 +87,7 @@ public class PurchaseItemVo  {
     	this.id = item.getId();
     	this.contractId = item.getContractId();
     	this.budgetId = item.getBudgetId();
+    	this.productPriceId = item.getProductPriceId();
     	this.name = item.getName();
     	this.quantity = item.getQuantity();
     	this.price = item.getPrice();
@@ -327,5 +332,10 @@ public class PurchaseItemVo  {
 	public void setContractNum(String contractNum) {
 		this.contractNum = contractNum;
 	}
-	
+	public Long getProductPriceId() {
+		return productPriceId;
+	}
+	public void setProductPriceId(Long productPriceId) {
+		this.productPriceId = productPriceId;
+	}
 }

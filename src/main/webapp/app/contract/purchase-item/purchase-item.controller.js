@@ -33,6 +33,7 @@
         }
         vm.searchQuery.contractId = pagingParams.contractId;
         vm.searchQuery.name = pagingParams.name;
+        console.log(pagingParams.name);
         
         if (!vm.searchQuery.name && !vm.searchQuery.contractId
         		&& !vm.searchQuery.source && !vm.searchQuery.type) {

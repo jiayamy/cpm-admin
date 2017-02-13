@@ -9,6 +9,7 @@ import com.wondertek.cpm.domain.DeptInfo;
 import com.wondertek.cpm.domain.PurchaseItem;
 import com.wondertek.cpm.domain.User;
 import com.wondertek.cpm.domain.vo.LongValue;
+import com.wondertek.cpm.domain.vo.ProductPriceVo;
 import com.wondertek.cpm.domain.vo.PurchaseItemVo;
 
 public interface PurchaseItemDao extends GenericDao<PurchaseItem, Long> {
@@ -18,5 +19,7 @@ public interface PurchaseItemDao extends GenericDao<PurchaseItem, Long> {
 	PurchaseItemVo findPurchaseItemById(Long id,User user,DeptInfo deptInfo);
 
 	List<LongValue> queryUserContract(User user,DeptInfo deptInfo);
+
+	Page<ProductPriceVo> getPricePage(String selectName, Pageable pageable);
 
 }

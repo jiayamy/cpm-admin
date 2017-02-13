@@ -18,6 +18,7 @@ import com.wondertek.cpm.domain.DeptInfo;
 import com.wondertek.cpm.domain.PurchaseItem;
 import com.wondertek.cpm.domain.User;
 import com.wondertek.cpm.domain.vo.LongValue;
+import com.wondertek.cpm.domain.vo.ProductPriceVo;
 import com.wondertek.cpm.domain.vo.PurchaseItemVo;
 import com.wondertek.cpm.repository.PurchaseItemDao;
 import com.wondertek.cpm.repository.PurchaseItemRepository;
@@ -156,5 +157,11 @@ public class PurchaseItemService {
 			returnList = purchaseItemDao.queryUserContract(user,deptInfo);
 		}
 		return returnList;
+	}
+
+	public Page<ProductPriceVo> searchPricePage(String selectName,
+			Pageable pageable) {
+		Page<ProductPriceVo> page = purchaseItemDao.getPricePage(selectName,pageable);
+		return page;
 	}
 }

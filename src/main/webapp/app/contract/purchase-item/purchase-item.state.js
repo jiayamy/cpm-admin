@@ -31,7 +31,11 @@
                 sort: {
                     value: 'wpi.id,desc',
                     squash: true
-                }
+                },
+                name: null,
+                contractId: null,
+                source: null,
+                type: null
             },
             resolve: {
                 pagingParams: ['$stateParams', 'PaginationUtil', function ($stateParams, PaginationUtil) {
@@ -135,18 +139,20 @@
             resolve: {
            	 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                     $translatePartialLoader.addPart('purchaseItem');
+                    $translatePartialLoader.addPart('productPrice');
                     return $translate.refresh();
                 }],
                 entity: function () {
                     return {
                         contractId: null,
                         budgetId: null,
+                        productPriceId: null,
                         name: null,
                         quantity: null,
                         price: null,
                         units: null,
-                        type: null,
-                        source: null,
+                        type: 1,
+                        source: 1,
                         purchaser: null,
                         totalAmount: null,
                         status: null,
@@ -165,6 +171,7 @@
                 },
                 previousState: ["$state", function ($state) {
                     var currentStateData = {
+                    	choseProject:'purchase-item.new.choseProject',
                         name: $state.current.name || 'purchase-item',
                         params: $state.params,
                         url: $state.href($state.current.name, $state.params)
@@ -172,6 +179,41 @@
                     return currentStateData;
                 }]
             }
+        })
+        .state('purchase-item.new.choseProject', {
+            parent: 'purchase-item.new',
+            url: '/queryProductPrice?selectName',
+            data: {
+                pageTitle: 'cpmApp.projectInfo.home.title'
+            },
+            onEnter: ['$stateParams','$state','$uibModal',function($stateParams,$state,$uibModal){
+            	$uibModal.open({
+            		templateUrl: 'app/contract/purchase-item/purchase-item-choseProject.html',
+            		controller: 'ChoseProjectsController',
+            		controllerAs: 'vm',
+            		backdrop: 'static',
+            		size: 'lg',
+            		params: {
+            			page: {
+            				value: '1',
+            				squash: true
+            			},
+            			selectName: null
+            		},
+            		resolve: {
+            			entity: ['$stateParams', 'PaginationUtil', function ($stateParams, PaginationUtil) {
+            				return {
+            					page: PaginationUtil.parsePage($stateParams.page),
+            					selectName: $stateParams.selectName
+            				}
+            			}]
+            		}
+            	}).result.then(function() {
+            		$state.go('^', {}, { reload: false });
+                }, function() {
+                    $state.go('^');
+                });
+            }]
         })
         .state('purchase-item.edit', {
             parent: 'purchase-item',
@@ -189,7 +231,8 @@
             },
             resolve: {
             	translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
-                    $translatePartialLoader.addPart('purchaseItem');
+            		$translatePartialLoader.addPart('purchaseItem');
+            		$translatePartialLoader.addPart('productPrice');
                     return $translate.refresh();
                 }],
                 entity: ['PurchaseItem','$stateParams', function(PurchaseItem,$stateParams) {
@@ -200,6 +243,7 @@
                 },
                 previousState: ["$state", function ($state) {
                     var currentStateData = {
+                    	choseProject: 'purchase-item.choseProject',
                         name: $state.current.name || 'purchase-item',
                         params: $state.params,
                         url: $state.href($state.current.name, $state.params)
@@ -207,6 +251,41 @@
                     return currentStateData;
                 }]
             }
+        })
+        .state('purchase-item.choseProject', {
+            parent: 'purchase-item.edit',
+            url: '/queryProductPrice?selectName',
+            data: {
+                pageTitle: 'cpmApp.projectInfo.home.title'
+            },
+            onEnter: ['$stateParams','$state','$uibModal',function($stateParams,$state,$uibModal){
+            	$uibModal.open({
+            		templateUrl: 'app/contract/purchase-item/purchase-item-choseProject.html',
+            		controller: 'ChoseProjectsController',
+            		controllerAs: 'vm',
+            		backdrop: 'static',
+            		size: 'lg',
+            		params: {
+            			page: {
+            				value: '1',
+            				squash: true
+            			},
+            			selectName: null
+            		},
+            		resolve: {
+            			entity: ['$stateParams', 'PaginationUtil', function ($stateParams, PaginationUtil) {
+            				return {
+            					page: PaginationUtil.parsePage($stateParams.page),
+            					selectName: $stateParams.selectName
+            				}
+            			}]
+            		}
+            	}).result.then(function() {
+                    $state.go('^', {}, { reload: false });
+                }, function() {
+                    $state.go('^');
+                });
+            }]
         })
         .state('purchase-item.delete', {
             parent: 'purchase-item',
@@ -231,7 +310,6 @@
                     $state.go('^');
                 });
             }]
-        });
+        })
     }
-
 })();

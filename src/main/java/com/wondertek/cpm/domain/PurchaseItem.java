@@ -39,6 +39,11 @@ public class PurchaseItem implements Serializable {
     @Column(name = "budget_id")
     private Long budgetId;
     /**
+     * 产品定价单主键
+     */
+    @Column(name = "product_price_id")
+    private Long productPriceId;
+    /**
      * 采购项目----采购的是什么？用户填写后，可以点击“参考价”显示该采购项目的产品定价单
      */
     @Column(name = "name_")
@@ -129,7 +134,19 @@ public class PurchaseItem implements Serializable {
     public void setBudgetId(Long budgetId) {
         this.budgetId = budgetId;
     }
+    
+    public Long getProductPriceId() {
+		return productPriceId;
+	}
+    public PurchaseItem productPriceId(Long productPriceId) {
+        this.productPriceId = productPriceId;
+        return this;
+    }
 
+	public void setProductPriceId(Long productPriceId) {
+		this.productPriceId = productPriceId;
+	}
+	
     public String getName() {
         return name;
     }
@@ -325,6 +342,7 @@ public class PurchaseItem implements Serializable {
             "id=" + id +
             ", contractId='" + contractId + "'" +
             ", budgetId='" + budgetId + "'" +
+            ", productPriceId='" + productPriceId + "'" +
             ", name='" + name + "'" +
             ", quantity='" + quantity + "'" +
             ", price='" + price + "'" +

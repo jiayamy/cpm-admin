@@ -37,6 +37,7 @@
         vm.searchQuery.source= source;
         vm.searchQuery.type = type;
         vm.searchQuery.name = pagingParams.name;
+        console.log(pagingParams.name);
         vm.currentSearch = {};
         vm.currentSearch.source = source;
         vm.currentSearch.type = type;

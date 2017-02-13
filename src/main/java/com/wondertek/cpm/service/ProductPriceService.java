@@ -37,8 +37,6 @@ public class ProductPriceService {
     @Inject
     private ProductPriceDao productPriceDao;
     
-    @Inject
-    private UserRepository userRepository;
     /**
      * Save a productPrice.
      *

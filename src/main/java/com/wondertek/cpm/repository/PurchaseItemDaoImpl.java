@@ -16,10 +16,12 @@ import com.wondertek.cpm.CpmConstants;
 import com.wondertek.cpm.config.StringUtil;
 import com.wondertek.cpm.domain.ContractInfo;
 import com.wondertek.cpm.domain.DeptInfo;
+import com.wondertek.cpm.domain.ProductPrice;
 import com.wondertek.cpm.domain.PurchaseItem;
 import com.wondertek.cpm.domain.User;
 import com.wondertek.cpm.domain.vo.ContractInfoVo;
 import com.wondertek.cpm.domain.vo.LongValue;
+import com.wondertek.cpm.domain.vo.ProductPriceVo;
 import com.wondertek.cpm.domain.vo.PurchaseItemVo;
 
 @Repository("purchaseItemDao")
@@ -186,6 +188,41 @@ public class PurchaseItemDaoImpl extends GenericDaoImpl<PurchaseItem, Long> impl
 			}
 		}
 		return resultList;
+	}
+
+	@Override
+	public Page<ProductPriceVo> getPricePage(String selectName,
+			Pageable pageable) {
+		StringBuffer queryHql = new StringBuffer();
+		StringBuffer whereHql = new StringBuffer();
+		
+		StringBuffer countHql = new StringBuffer();
+		List<Object> params = new ArrayList<Object>();
+		
+		queryHql.append(" select wpp");
+		countHql.append("select count(wpp.id)");
+		
+		whereHql.append(" from ProductPrice as wpp");
+		whereHql.append(" where 1=1");
+		
+		//页面查询条件
+		if (!StringUtil.isNullStr(selectName)) {
+			whereHql.append(" and wpp.name like ?");
+			params.add("%"+ selectName +"%");
+		}
+		queryHql.append(whereHql.toString());
+		countHql.append(whereHql.toString());
+		whereHql.setLength(0);
+		whereHql = null;
+		
+		Page<ProductPrice> page = this.queryHqlPage(queryHql.toString(), countHql.toString(), params.toArray(), pageable);
+		List<ProductPriceVo> returnList = new ArrayList<ProductPriceVo>();
+		if (page.getContent() != null) {
+			for (ProductPrice o : page.getContent()) {
+					returnList.add(new ProductPriceVo(o,null));
+			}
+		}
+		return new PageImpl(returnList, pageable, page.getTotalElements());
 	}
 
 

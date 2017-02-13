@@ -29,8 +29,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.codahale.metrics.annotation.Timed;
 import com.wondertek.cpm.config.StringUtil;
+import com.wondertek.cpm.domain.ProductPrice;
 import com.wondertek.cpm.domain.PurchaseItem;
 import com.wondertek.cpm.domain.vo.LongValue;
+import com.wondertek.cpm.domain.vo.ProductPriceVo;
 import com.wondertek.cpm.domain.vo.PurchaseItemVo;
 import com.wondertek.cpm.security.AuthoritiesConstants;
 import com.wondertek.cpm.security.SecurityUtils;
@@ -101,6 +103,9 @@ public class PurchaseItemResource {
         		return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.purchaseItem.save.idNone", "")).body(null);
 			}else if (oldPurchaseItem.getStatus() == PurchaseItem.STATUS_DELETED) {
         		return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.purchaseItem.save.statue2Error", "")).body(null);
+			}
+			if (oldPurchaseItem.getProductPriceId() != null || oldPurchaseItem.getProductPriceId() != purchaseItem.getProductPriceId()) {
+				return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.purchaseItem.save.changeNameError", "")).body(null);
 			}
 			purchaseItem.setCreateTime(oldPurchaseItem.getCreateTime());
 			purchaseItem.setCreator(oldPurchaseItem.getCreator());
@@ -199,10 +204,10 @@ public class PurchaseItemResource {
     @GetMapping("/purchase-items")
     @Timed
     @Secured(AuthoritiesConstants.ROLE_CONTRACT_PURCHASE)
-    public ResponseEntity<List<PurchaseItemVo>> searchPurchaseItems(@RequestParam String name, 
-    		@RequestParam String contractId,
-    		@RequestParam String source,
-    		@RequestParam String type,
+    public ResponseEntity<List<PurchaseItemVo>> searchPurchaseItems(@RequestParam(value = "name",required=false) String name, 
+    		@RequestParam(value = "contractId",required=false) String contractId,
+    		@RequestParam(value = "source",required=false) String source,
+    		@RequestParam(value = "type",required=false) String type,
     		@ApiParam Pageable pageable)
         throws URISyntaxException {
         log.debug("REST request to search for a page of PurchaseItems");
@@ -232,5 +237,17 @@ public class PurchaseItemResource {
     	 List<LongValue> list = purchaseItemService.queryUserContract();
     	 return new ResponseEntity<>(list, null, HttpStatus.OK);
     }
-
+    
+    @GetMapping("/purchase-item/queryProductPrice")
+    @Timed
+    @Secured(AuthoritiesConstants.ROLE_CONTRACT_PRODUCTPRICE)
+    public ResponseEntity<List<ProductPriceVo>> getAllProductPrices(
+    		@RequestParam(value = "selectName",required=false) String selectName,
+    		@ApiParam Pageable pageable)
+    	throws URISyntaxException{
+    	log.debug("REST request to get a page of ProductPrice");
+    	 Page<ProductPriceVo> page = purchaseItemService.searchPricePage(selectName, pageable);
+         HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(selectName,page, "/api/product-prices");
+         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+    }
 }

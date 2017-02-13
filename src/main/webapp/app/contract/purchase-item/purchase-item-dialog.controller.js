@@ -5,19 +5,26 @@
         .module('cpmApp')
         .controller('PurchaseItemDialogController', PurchaseItemDialogController);
 
-    PurchaseItemDialogController.$inject = ['$timeout','$scope', 'entity', 'PurchaseItem','ContractBudget','previousState','$state','budgetEntity','AlertService'];
+    PurchaseItemDialogController.$inject = ['$timeout','$scope', 'entity', 'PurchaseItem','ContractBudget','previousState','$state','budgetEntity','AlertService','$rootScope'];
 
-    function PurchaseItemDialogController ($timeout, $scope, entity, PurchaseItem,ContractBudget,previousState,$state,budgetEntity,AlertService) {
+    function PurchaseItemDialogController ($timeout, $scope, entity, PurchaseItem,ContractBudget,previousState,$state,budgetEntity,AlertService,$rootScope) {
         var vm = this;
+        
+        vm.choseProject = previousState.choseProject;
 
         vm.purchaseItem = entity;
-        
+        console.log(entity);
         vm.contractInfoDisable = vm.purchaseItem.id;
         if (budgetEntity != null && budgetEntity.purchaseType != 3 && entity.id == null) {
         	entity.contractId = budgetEntity.contractId;
         	entity.budgetId = budgetEntity.id;
         	vm.contractInfoDisable = true;
 		}
+        
+        vm.productPriceDisable = vm.purchaseItem.productPriceId;
+        if (entity.productPriceId != null){
+        	vm.productPriceDisable = true;
+        }
         vm.contractChanged = contractChanged;
         vm.budgetChanged = budgetChanged;
         
@@ -118,12 +125,14 @@
             
             purchaseItem.contractId = vm.purchaseItem.contractId;
             
+            purchaseItem.productPriceId = vm.purchaseItem.productPriceId;
             purchaseItem.budgetId = vm.purchaseItem.budgetId;
             purchaseItem.name = vm.purchaseItem.name;
             purchaseItem.quantity = vm.purchaseItem.quantity;
             purchaseItem.price = vm.purchaseItem.price;
             purchaseItem.units = vm.purchaseItem.units;
             purchaseItem.source = vm.purchaseItem.source;
+            console.log(purchaseItem.source);
             purchaseItem.purchaser = vm.purchaseItem.purchaser;
             purchaseItem.totalAmount = vm.purchaseItem.totalAmount;
             purchaseItem.type = vm.purchaseItem.type;
@@ -163,6 +172,17 @@
         function onSaveError (result) {
             vm.isSaving = false;
         }
+        
+        var unsubscribe = $rootScope.$on('cpmApp:choseProject', function(event, result) {
+        	vm.purchaseItem.name = result.name;
+        	vm.purchaseItem.productPriceId = result.id;
+        	vm.purchaseItem.type.val = result.typeName;
+        	vm.purchaseItem.source.val = result.sourceName;
+        	vm.purchaseItem.units = result.units;
+        	vm.purchaseItem.price = result.price;
+        	vm.purchaseItem.totalAmount = result.price * vm.purchaseItem.quantity;
+        });
+        $scope.$on('$destroy', unsubscribe);
         
         vm.priceChanged = priceChanged;
         vm.quantityChanged = quantityChanged;
