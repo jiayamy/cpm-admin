@@ -51,15 +51,6 @@
         }
         
         function find() {
-<<<<<<< HEAD
-        	console.log(vm.searchPP.selectName);
-            if (!vm.searchPP.selectName){
-                return vm.clear();
-            }
-            PurchaseItem.queryProductPrice({
-        		selectName: entity.selectName,
-                page: entity.page - 1,
-=======
         	if(vm.searchPP.selectName == undefined){
         		vm.haveSearch = null;
         	}else{
@@ -69,7 +60,6 @@
         		type:entity.type,
         		selectName: vm.searchPP.selectName,
                 page: vm.page-1,
->>>>>>> 8817ed4caa94086bea503690b1faccfa9a0b16b5
                 size: vm.itemsPerPage
             }, onSuccess, onError);
         }
