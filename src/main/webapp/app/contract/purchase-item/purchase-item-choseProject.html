@@ -1,0 +1,75 @@
+<form name="choseProjectForm" role="form" novalidate ng-submit="vm.save()" show-validation>
+	<div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+                ng-click="vm.close()">&times;</button>
+        <h4 class="modal-title" id="myDeptTypeLabel" data-translate="cpmApp.purchaseItem.home.productPrice">Product Price</h4>
+        <hr>
+        <div class="from-group">
+       		<div class="col-sm-4">
+            	<label class="col-sm-4 control-label" data-translate="cpmApp.productPrice.name">Name</label>
+                   <div class="col-sm-8" >
+                   	<input type="text" class="form-control" ng-model="vm.searchPP.selectName">
+                   </div>
+            </div>
+        </div>
+        <div class="form-group">
+        		<div class="col-sm-4 pull-right input-group">
+		        	<div class="col-sm-4">
+		        		&nbsp;
+		        	</div>
+		        	<div class="col-sm-8" >
+		         		<span  class="width-min" >
+		                	<button class="btn btn-info" ng-click="vm.find()">
+		                       <span class="glyphicon glyphicon-search"></span>
+		                       <span class="hidden-xs hidden-sm" data-translate="entity.action.search"></span>
+		                   </button>   
+		                </span>
+		                <span class="width-min" ng-if="vm.haveSearch">
+		                    <button class="btn btn-info" ng-click="vm.clear()">
+		                        <span class="glyphicon glyphicon-trash"></span>
+		                        <span class="hidden-xs hidden-sm" data-translate="entity.action.clear"></span>
+		                    </button>
+		                </span>
+		        	</div>
+	        	</div>
+        	</div>
+    </div>
+    <div class="modal-body">
+	    <jhi-alert></jhi-alert>
+    	<div class="table-responsive">
+	        <table class="jh-table table table-striped">
+	            <thead>
+	                <tr jh-sort="" ascending="" callback="vm.transition()">
+	                    <th><span data-translate="cpmApp.productPrice.name">Name</span></th>
+	                    <th><span data-translate="cpmApp.productPrice.type">Type</span></th>
+	                    <th><span data-translate="cpmApp.productPrice.units">Units</span></th>
+	                    <th><span data-translate="cpmApp.productPrice.price">Price</span></th>
+	                    <th><span data-translate="cpmApp.productPrice.source">Source</span></th>
+	                    <th><span data-translate="cpmApp.productPrice.chose">Chose</span></th>
+	                    <th></th>
+	                </tr>
+	            </thead>
+	            <tbody>
+	                <tr ng-repeat="productPrice in vm.productPrices track by productPrice.id">
+	                    <td><a ui-sref="product-price-detail({id:productPrice.id})">{{productPrice.name}}</a></td>
+	                    <td>{{productPrice.typeName}}</td>
+	                    <td>{{productPrice.units}}</td>
+	                    <td>{{productPrice.price}}</td>
+	                    <td>{{productPrice.sourceName}}</td>
+	                    <td><i class="glyphicon glyphicon-ok"  ng-disabled="vm.isSaving" ng-click="vm.chose(productPrice)"></i></td>
+	                    <td class="text-right">
+	                        <div class="btn-group flex-btn-group-container">
+	                        </div>
+	                    </td>
+	                </tr>
+	            </tbody>
+	        </table>
+    	</div>
+  	</div>
+    <div class="text-center">
+        <jhi-item-count page="vm.page" total="vm.queryCount" items-per-page="vm.itemsPerPage"></jhi-item-count>
+        <uib-pagination class="pagination-sm" total-items="vm.totalItems" items-per-page="vm.itemsPerPage" ng-model="vm.page" ng-change="vm.transition()"></uib-pagination>
+    </div>
+</form>
+    
+    
