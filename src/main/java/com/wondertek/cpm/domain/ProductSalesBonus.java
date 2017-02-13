@@ -63,7 +63,7 @@ public class ProductSalesBonus implements Serializable{
 	 * 计划天数（项目确认交付时间*验收节点）、
 	 */
 	@Column(name = "plan_days")
-	private Integer planDays;
+	private Double planDays;
 	
 	/**
 	 * 实际使用天数（项目结项日期（状态为已结项的更新时间）或统计时间-项目开始日期）、
@@ -171,11 +171,11 @@ public class ProductSalesBonus implements Serializable{
 		this.acceptanceRate = acceptanceRate;
 	}
 
-	public Integer getPlanDays() {
+	public Double getPlanDays() {
 		return planDays;
 	}
 
-	public void setPlanDays(Integer planDays) {
+	public void setPlanDays(Double planDays) {
 		this.planDays = planDays;
 	}
 

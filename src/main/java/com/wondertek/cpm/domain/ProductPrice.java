@@ -17,7 +17,15 @@ import java.util.Objects;
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 @Document(indexName = "productprice")
 public class ProductPrice implements Serializable {
-
+	
+	public static final Integer TYPE_HARDWARE = 0;
+	
+	public static final Integer TYPE_SOFTWARE = 1;
+	
+	public static final Integer SOURCE_INTERNAL = 1;
+	
+	public static final Integer SOURCE_EXTERNAL = 0;
+	
     private static final long serialVersionUID = 1L;
 
     @Id

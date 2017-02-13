@@ -30,6 +30,12 @@ public class ShareInfo implements Serializable{
     private Long id;
 	
 	/**
+	 * 产品定价单主键
+	 */
+	@Column(name = "product_price_id")
+	private Long productPriceId;
+	
+	/**
 	 * 部门主键
 	 */
 	@Column(name = "dept_id")
@@ -39,13 +45,13 @@ public class ShareInfo implements Serializable{
 	 * 部门名称(除了实施部门外，有可能会有咨询的分成)
 	 */
 	@Column(name = "dept_name")
-	private Long deptName;
+	private String deptName;
 	
 	/**
 	 * 分成比例（所有记录之和一定要是100%）
 	 */
 	@Column(name = "share_rate")
-	private Long shareRate;
+	private Double shareRate;
 	
 	@Column(name = "creator_")
     private String creator;
@@ -66,6 +72,14 @@ public class ShareInfo implements Serializable{
 	public void setId(Long id) {
 		this.id = id;
 	}
+	
+	public Long getProductPriceId() {
+		return productPriceId;
+	}
+
+	public void setProductPriceId(Long productPriceId) {
+		this.productPriceId = productPriceId;
+	}
 
 	public Long getDeptId() {
 		return deptId;
@@ -75,19 +89,19 @@ public class ShareInfo implements Serializable{
 		this.deptId = deptId;
 	}
 
-	public Long getDeptName() {
+	public String getDeptName() {
 		return deptName;
 	}
 
-	public void setDeptName(Long deptName) {
+	public void setDeptName(String deptName) {
 		this.deptName = deptName;
 	}
 
-	public Long getShareRate() {
+	public Double getShareRate() {
 		return shareRate;
 	}
 
-	public void setShareRate(Long shareRate) {
+	public void setShareRate(Double shareRate) {
 		this.shareRate = shareRate;
 	}
 
