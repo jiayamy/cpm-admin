@@ -86,10 +86,11 @@
             if (!vm.searchPP.selectName){
                 return vm.clear();
             }
-            vm.links = null;
-            vm.page = 1;
-            vm.haveSearch = true;
-            vm.transition();
+            PurchaseItem.queryProductPrice({
+        		selectName: entity.selectName,
+                page: entity.page - 1,
+                size: vm.itemsPerPage
+            }, onSuccess, onError);
         }
         
         function clear() {

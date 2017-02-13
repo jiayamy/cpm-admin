@@ -27,7 +27,7 @@
             	"noPerm":"无权限操作"
             },
             "button": {
-            	"createProject": "创建项目",
+            	"createProject": "创建服务项目",
             	"createPurchaseItem": "创建采购子项"
             },
             "contractId": "合同ID",
