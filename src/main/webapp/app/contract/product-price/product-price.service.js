@@ -18,14 +18,14 @@
                         data = angular.fromJson(data);
                         data.createTime = DateUtils.convertDateTimeFromServer(data.createTime);
                         data.updateTime = DateUtils.convertDateTimeFromServer(data.updateTime);
-                        if(data.type == 0){
+                        if(data.type == 1){
             				data.typeName = "硬件";
-            			}else if(data.type == 1){
+            			}else if(data.type == 2){
             				data.typeName = "软件";
             			}
-            			if(data.source == 0){
+            			if(data.source == 1){
             				data.sourceName = "内部";
-            			}else if(data.source == 1){
+            			}else if(data.source == 2){
             				data.sourceName = "外部";
             			}
                     }

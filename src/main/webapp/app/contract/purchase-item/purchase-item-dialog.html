@@ -35,7 +35,7 @@
 		                    ng-model="vm.purchaseItem.name" ng-disabled="vm.productPriceDisable"
 		                 />
 	                 	<span class="input-group-btn">
-	                     	<button type="button" class="btn btn-default" ui-sref="{{vm.choseProject}}"><i class="glyphicon glyphicon-list-alt"></i></button>
+	                     	<button type="button" class="btn btn-default" ui-sref="{{vm.choseProject}}({type:{{vm.purchaseItem.type.key}}})"><i class="glyphicon glyphicon-list-alt"></i></button>
 	                 	</span>
         			</div>
 	                <div class="help-block"
@@ -58,8 +58,8 @@
 				<div class="col-sm-6">
 					<label class="control-label" data-translate="cpmApp.purchaseItem.type" for="field_type">Type</label>
 					<select class="form-control" name="type" ng-model="vm.purchaseItem.type" id="field_type"
-		            	ng-options="type.val for type in vm.types track by type.key" ng-disabled="vm.productPriceDisable"
-	            		ng-required="true">
+		            	ng-options="type.val for type in vm.types track by type.key" ng-disabled="true"
+		            	ng-required="true">
 		         	</select>
 	                <div class="help-block"
 	                   ng-hide="vm.purchaseItem.type" data-translate="entity.validation.required" style="color:red">

@@ -64,12 +64,12 @@ public class PurchaseItem implements Serializable {
     @Column(name = "units_")
     private String units;
     /**
-     * 采购类型（硬件/软件）
+     * 采购类型（1硬件/2软件）
      */
     @Column(name = "type_")
     private Integer type;
     /**
-     * 采购来源（内部采购/外部采购）
+     * 采购来源（1内部采购/2外部采购）
      */
     @Column(name = "source_")
     private Integer source;

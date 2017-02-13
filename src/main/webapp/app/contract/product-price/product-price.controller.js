@@ -21,17 +21,17 @@
         var source = pagingParams.source;
         if(source){
         	if(source == 0){
-        		source = { id: 0, name: '外部' };
+        		source = { id: 2, name: '外部' };
         	}else if(source == 1){
         		source = { id: 1, name: '内部' };
         	}
         }
         var type = pagingParams.type;
         if(type){
-        	if(type == 0){
-        		type = { id: 0, name: '硬件' };
-        	}else if(type == 1){
-        		type = { id: 1, name: '软件' };
+        	if(type == 1){
+        		type = { id: 1, name: '硬件' };
+        	}else if(type == 2){
+        		type = { id: 2, name: '软件' };
         	}
         }
         vm.searchQuery.source= source;
@@ -47,8 +47,8 @@
         }else{
         	vm.currentSearch.haveSearch = true;
         }
-        vm.types = [{ id: 0, name: '硬件' }, { id: 1, name: '软件' }];
-        vm.sources = [{ id: 0, name: '外部' }, { id: 1, name: '内部' }];
+        vm.types = [{ id: 1, name: '硬件' }, { id: 2, name: '软件' }];
+        vm.sources = [{ id: 2, name: '外部' }, { id: 1, name: '内部' }];
         
         loadAll();
 
@@ -91,12 +91,12 @@
         function handleData(data){
         	if(data.length > 0){
         		for(var i = 0; i< data.length ; i++){
-        			if(data[i].type == 0){
+        			if(data[i].type == 1){
         				data[i].typeName = "硬件";
-        			}else if(data[i].type == 1){
+        			}else if(data[i].type == 2){
         				data[i].typeName = "软件";
         			}
-        			if(data[i].source == 0){
+        			if(data[i].source == 2){
         				data[i].sourceName = "外部";
         			}else if(data[i].source == 1){
         				data[i].sourceName = "内部";
