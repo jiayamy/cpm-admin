@@ -20,6 +20,6 @@ public interface PurchaseItemDao extends GenericDao<PurchaseItem, Long> {
 
 	List<LongValue> queryUserContract(User user,DeptInfo deptInfo);
 
-	Page<ProductPriceVo> getPricePage(String selectName, Pageable pageable);
+	Page<ProductPriceVo> getPricePage(String selectName,Integer type,Pageable pageable);
 
 }

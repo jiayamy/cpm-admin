@@ -11,7 +11,7 @@
         $stateProvider
         .state('purchase-item', {
             parent: 'contract',
-            url: '/purchase-item?name&contractId&source&type',
+            url: '/purchase-item?name&contractId&source&ppType',
             data: {
                 authorities: ['ROLE_CONTRACT_PURCHASE'],
                 pageTitle: 'cpmApp.purchaseItem.home.title'
@@ -35,7 +35,7 @@
                 name: null,
                 contractId: null,
                 source: null,
-                type: null
+                ppType: null
             },
             resolve: {
                 pagingParams: ['$stateParams', 'PaginationUtil', function ($stateParams, PaginationUtil) {
@@ -47,7 +47,7 @@
                         name: $stateParams.name,
                         contractId: $stateParams.contractId,
                         source: $stateParams.source,
-                        type: $stateParams.type
+                        ppType: $stateParams.ppType
                     };
                 }],
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
@@ -254,7 +254,7 @@
         })
         .state('purchase-item.choseProject', {
             parent: 'purchase-item.edit',
-            url: '/queryProductPrice?selectName',
+            url: '/queryProductPrice?type',
             data: {
                 pageTitle: 'cpmApp.projectInfo.home.title'
             },
@@ -266,19 +266,14 @@
             		backdrop: 'static',
             		size: 'lg',
             		params: {
-            			page: {
-            				value: '1',
-            				squash: true
-            			},
-            			selectName: null
+            			type: null
             		},
             		resolve: {
-            			entity: ['$stateParams', 'PaginationUtil', function ($stateParams, PaginationUtil) {
+            			entity:function () {
             				return {
-            					page: PaginationUtil.parsePage($stateParams.page),
-            					selectName: $stateParams.selectName
+            					type: $stateParams.type
             				}
-            			}]
+            			}
             		}
             	}).result.then(function() {
                     $state.go('^', {}, { reload: false });

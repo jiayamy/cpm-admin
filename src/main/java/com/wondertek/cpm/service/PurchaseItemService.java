@@ -142,8 +142,8 @@ public class PurchaseItemService {
 	}
 
 	public List<PurchaseItem> findOneByParams(String name, Integer source,
-			Integer type) {
-		List<PurchaseItem> list = purchaseItemRepository.findByNameAndSourceAndPurchaseType(name,source,type);
+			Integer type,String purchaser) {
+		List<PurchaseItem> list = purchaseItemRepository.findByNameAndSourceAndPurchaseType(name,source,type,purchaser);
 		return list;
 	}
 
@@ -159,9 +159,9 @@ public class PurchaseItemService {
 		return returnList;
 	}
 
-	public Page<ProductPriceVo> searchPricePage(String selectName,
+	public Page<ProductPriceVo> searchPricePage(String selectName,Integer type,
 			Pageable pageable) {
-		Page<ProductPriceVo> page = purchaseItemDao.getPricePage(selectName,pageable);
+		Page<ProductPriceVo> page = purchaseItemDao.getPricePage(selectName,type,pageable);
 		return page;
 	}
 }

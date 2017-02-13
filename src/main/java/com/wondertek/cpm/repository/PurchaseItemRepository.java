@@ -20,6 +20,6 @@ public interface PurchaseItemRepository extends JpaRepository<PurchaseItem,Long>
 	@Query(" from PurchaseItem where contractId = ?1 and source = ?2 and type = ?3 and status = 1 ")
 	List<PurchaseItem> findByContractIdAndSourceAndType(Long contractId, Integer source, Integer type);
 	
-	@Query(" from PurchaseItem where name = ?1 and source = ?2 and type = ?3 ")
-	List<PurchaseItem> findByNameAndSourceAndPurchaseType(String name, Integer source, Integer type);
+	@Query(" from PurchaseItem where name = ?1 and source = ?2 and type = ?3 and purchaser = ?4 ")
+	List<PurchaseItem> findByNameAndSourceAndPurchaseType(String name, Integer source, Integer type ,String purchaser);
 }

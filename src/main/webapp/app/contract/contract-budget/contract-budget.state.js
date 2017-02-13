@@ -461,7 +461,7 @@
             		resolve: {
             			entity:function () {
             				return {
-            					type : $stateParams.type,
+            					type : $stateParams.type
             				}
             			}
             		}
