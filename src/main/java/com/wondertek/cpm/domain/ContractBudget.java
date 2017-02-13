@@ -70,11 +70,6 @@ public class ContractBudget implements Serializable {
     @Column(name = "dept_")
     private String dept;
     /**
-     * 产品定价单主键
-     */
-    @Column(name = "product_price_id")
-    private Long productPriceId;
-    /**
      * 采购单类型（预算类型为内部采购单时填写，1硬件/2软件/3服务---服务可以创建项目，其他的不可以）
      */
     @Column(name = "purchase_type")
@@ -288,14 +283,6 @@ public class ContractBudget implements Serializable {
         this.updateTime = updateTime;
     }
     
-    public Long getProductPriceId() {
-		return productPriceId;
-	}
-
-	public void setProductPriceId(Long productPriceId) {
-		this.productPriceId = productPriceId;
-	}
-
 	@Override
     public boolean equals(Object o) {
         if (this == o) {
