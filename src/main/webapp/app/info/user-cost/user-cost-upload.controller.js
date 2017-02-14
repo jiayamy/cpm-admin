@@ -16,7 +16,6 @@
         function upload () {
         	vm.isSaving = true;
         	var file = document.querySelector('input[type=file]').files;
-        	console.log(file);
         	if(file == undefined || file.length < 1){
         		AlertService.error("cpmApp.userCost.upload.nonFile");
         	}else if(file.length>1){

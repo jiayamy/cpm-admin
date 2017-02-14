@@ -133,7 +133,6 @@
             purchaseItem.price = vm.purchaseItem.price;
             purchaseItem.units = vm.purchaseItem.units;
             purchaseItem.source = vm.purchaseItem.source;
-            console.log(purchaseItem.source);
             purchaseItem.purchaser = vm.purchaseItem.purchaser;
             purchaseItem.totalAmount = vm.purchaseItem.totalAmount;
             purchaseItem.type = vm.purchaseItem.type;

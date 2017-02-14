@@ -103,9 +103,12 @@ public class PurchaseItemResource {
         		return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.purchaseItem.save.idNone", "")).body(null);
 			}else if (oldPurchaseItem.getStatus() == PurchaseItem.STATUS_DELETED) {
         		return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.purchaseItem.save.statue2Error", "")).body(null);
-			}
-			if (oldPurchaseItem.getProductPriceId() != null && !oldPurchaseItem.getName().equals(purchaseItem.getName())) {
-				return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.purchaseItem.save.changeNameError", "")).body(null);
+			}else if (oldPurchaseItem.getProductPriceId() != null) {
+				if (oldPurchaseItem.getContractId() != purchaseItem.getContractId() || !oldPurchaseItem.getName().equals(purchaseItem.getName())
+						|| oldPurchaseItem.getBudgetId() != purchaseItem.getBudgetId() || oldPurchaseItem.getType() != purchaseItem.getType()
+						|| oldPurchaseItem.getSource() != purchaseItem.getSource() || !oldPurchaseItem.getQuantity().equals(purchaseItem.getQuantity())) {
+					return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.purchaseItem.save.changeNameError", "")).body(null);
+				}
 			}
 			purchaseItem.setCreateTime(oldPurchaseItem.getCreateTime());
 			purchaseItem.setCreator(oldPurchaseItem.getCreator());
@@ -133,23 +136,6 @@ public class PurchaseItemResource {
             			.body(isNew);
             }
     }
-
-    /**
-     * GET  /purchase-items : get all the purchaseItems.
-     *
-     * @param pageable the pagination information
-     * @return the ResponseEntity with status 200 (OK) and the list of purchaseItems in body
-     * @throws URISyntaxException if there is an error to generate the pagination HTTP headers
-     */
-//    @GetMapping("/purchase-items")
-//    @Timed
-//    public ResponseEntity<List<PurchaseItem>> getAllPurchaseItems(@ApiParam Pageable pageable)
-//        throws URISyntaxException {
-//        log.debug("REST request to get a page of PurchaseItems");
-//        Page<PurchaseItem> page = purchaseItemService.findAll(pageable);
-//        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/purchase-items");
-//        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
-//    }
 
     /**
      * GET  /purchase-items/:id : get the "id" purchaseItem.

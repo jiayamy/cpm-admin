@@ -23,7 +23,6 @@
 
         vm.searchQuery ={};
         vm.searchQuery.contractId = pagingParams.contractId;
-        console.log(pagingParams.contractId);
         if (!vm.searchQuery.contractId){
         	vm.haveSearch = null;
         }else{

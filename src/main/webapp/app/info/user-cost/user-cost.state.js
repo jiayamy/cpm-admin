@@ -328,7 +328,6 @@
             	translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                     $translatePartialLoader.addPart('userCost');
 //                    $translatePartialLoader.addPart('deptInfo');
-                    console.log("000000");
                     return $translate.refresh();
                 }],
 //            ,

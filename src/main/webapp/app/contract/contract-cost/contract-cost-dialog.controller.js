@@ -66,7 +66,6 @@
             contractCost.costDesc = vm.contractCost.costDesc;
             contractCost.deptId = vm.contractCost.deptId;
             contractCost.dept = vm.contractCost.dept;
-            console.log(contractCost);
             if(!contractCost.contractId || !contractCost.name || !contractCost.type || !contractCost.costDay || contractCost.total == undefined
             		|| !contractCost.deptId){
             	AlertService.error("cpmApp.contractCost.save.paramNone");

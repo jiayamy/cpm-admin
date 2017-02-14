@@ -37,9 +37,6 @@ public class PurchaseItemService {
     @Inject
     private PurchaseItemRepository purchaseItemRepository;
 
-//    @Inject
-//    private PurchaseItemSearchRepository purchaseItemSearchRepository;
-    
     @Inject
     private PurchaseItemDao purchaseItemDao;
     
@@ -139,12 +136,6 @@ public class PurchaseItemService {
 	public PurchaseItem findOneById(Long id) {
 		PurchaseItem purchaseItem = purchaseItemRepository.findOne(id);
 		return purchaseItem;
-	}
-
-	public List<PurchaseItem> findOneByParams(String name, Integer source,
-			Integer type,String purchaser) {
-		List<PurchaseItem> list = purchaseItemRepository.findByNameAndSourceAndPurchaseType(name,source,type,purchaser);
-		return list;
 	}
 
 	public List<LongValue> queryUserContract() {
