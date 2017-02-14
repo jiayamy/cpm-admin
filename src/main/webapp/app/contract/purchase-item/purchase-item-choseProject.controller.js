@@ -31,7 +31,6 @@
         function onError(error) {
         	AlertService.error(error.data.message);
         }
-        
         function handleData(data){
         	if(data.length > 0){
         		for(var i = 0; i< data.length ; i++){

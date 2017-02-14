@@ -34,7 +34,7 @@ public class ContractBudgetVo {
 		this.budgetTotal = contractBudget.getBudgetTotal();
 		this.contractId = contractBudget.getContractId();
 		this.dept = contractBudget.getDept();
-		this.deptId = contractBudget.getUserId();
+		this.deptId = contractBudget.getDeptId();
 		this.purchaseType = contractBudget.getPurchaseType();
 		this.createTime = contractBudget.getCreateTime();
 		this.userId = contractBudget.getUserId();
@@ -54,7 +54,7 @@ public class ContractBudgetVo {
 		this.budgetTotal = contractBudget.getBudgetTotal();
 		this.contractId = contractBudget.getContractId();
 		this.dept = contractBudget.getDept();
-		this.deptId = contractBudget.getUserId();
+		this.deptId = contractBudget.getDeptId();
 		this.purchaseType = contractBudget.getPurchaseType();
 		this.createTime = contractBudget.getCreateTime();
 		this.userId = contractBudget.getUserId();

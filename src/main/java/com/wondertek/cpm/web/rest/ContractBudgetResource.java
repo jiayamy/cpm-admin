@@ -28,14 +28,11 @@ import org.springframework.web.bind.annotation.RestController;
 import com.codahale.metrics.annotation.Timed;
 import com.wondertek.cpm.config.StringUtil;
 import com.wondertek.cpm.domain.ContractBudget;
-import com.wondertek.cpm.domain.ContractInfo;
 import com.wondertek.cpm.domain.vo.ContractBudgetVo;
 import com.wondertek.cpm.domain.vo.LongValue;
-import com.wondertek.cpm.domain.vo.PurchaseItemVo;
 import com.wondertek.cpm.security.AuthoritiesConstants;
 import com.wondertek.cpm.security.SecurityUtils;
 import com.wondertek.cpm.service.ContractBudgetService;
-import com.wondertek.cpm.service.ContractInfoService;
 import com.wondertek.cpm.web.rest.util.HeaderUtil;
 import com.wondertek.cpm.web.rest.util.PaginationUtil;
 
@@ -57,8 +54,6 @@ public class ContractBudgetResource {
         
     @Inject
     private ContractBudgetService contractBudgetService;
-    @Inject
-    private ContractInfoService contractInfoService;
     
     /**
      * PUT  /contract-budgets : Updates an existing contractBudget.

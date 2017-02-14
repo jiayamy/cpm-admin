@@ -120,7 +120,6 @@ public class ContractBudgetDaoImpl extends GenericDaoImpl<ContractBudget, Long> 
 		Page<Object[]> page = this.queryHqlPage(queryHql.toString(), countHql.toString(), params.toArray(), pageable);
 		List<ContractBudgetVo> returnList = new ArrayList<ContractBudgetVo>();
 		if (page.getContent() != null) {
-			System.out.println(page.getContent().size());
 			for (Object[] o : page.getContent()) {
 				returnList.add(transContractBudgetVo(o,user.getId(),user.getLogin(),deptInfo.getId(),deptInfo.getIdPath() + deptInfo.getId() + "/"));
 			}
@@ -136,14 +135,14 @@ public class ContractBudgetDaoImpl extends GenericDaoImpl<ContractBudget, Long> 
 
 	@Override
 	public Boolean checkBudgetExit(ContractBudget contractBudget) {
-		StringBuffer querySql = new StringBuffer();
+		StringBuffer queryHql = new StringBuffer();
 		List<Object> params = new ArrayList<Object>();
 		
-		querySql.append("select wcb.contract_id,wpi.id from w_contract_budget wcb left join w_project_info wpi on wpi.budget_id = wcb.id");
-		querySql.append(" and wcb.id = ?");
+		queryHql.append(" select wpi from ProjectInfo wpi left join ContractBudget wcb on wpi.budgetId = wcb.id");
+		queryHql.append(" where wcb.id = ?");
 		params.add(contractBudget.getId());
 		
-		List<Object[]> list = this.queryAllSql(querySql.toString(), params.toArray());
+		List<Object[]> list = this.queryAllHql(queryHql.toString(), params.toArray());
 		if (list == null || list.isEmpty()) {
 			return false;
 		}

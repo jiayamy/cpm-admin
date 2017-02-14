@@ -106,7 +106,7 @@ public class PurchaseItemResource {
 			}else if (oldPurchaseItem.getProductPriceId() != null) {
 				if (oldPurchaseItem.getContractId() != purchaseItem.getContractId() || !oldPurchaseItem.getName().equals(purchaseItem.getName())
 						|| oldPurchaseItem.getBudgetId() != purchaseItem.getBudgetId() || oldPurchaseItem.getType() != purchaseItem.getType()
-						|| oldPurchaseItem.getSource() != purchaseItem.getSource() || !oldPurchaseItem.getQuantity().equals(purchaseItem.getQuantity())) {
+						|| oldPurchaseItem.getSource() != purchaseItem.getSource() || !oldPurchaseItem.getUnits().equals(purchaseItem.getUnits())) {
 					return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.purchaseItem.save.changeNameError", "")).body(null);
 				}
 			}
