@@ -191,7 +191,7 @@ public class PurchaseItemDaoImpl extends GenericDaoImpl<PurchaseItem, Long> impl
 	}
 
 	@Override
-	public Page<ProductPriceVo> getPricePage(String selectName,
+	public Page<ProductPriceVo> getPricePage(String selectName,Integer type,
 			Pageable pageable) {
 		StringBuffer queryHql = new StringBuffer();
 		StringBuffer whereHql = new StringBuffer();
@@ -209,6 +209,10 @@ public class PurchaseItemDaoImpl extends GenericDaoImpl<PurchaseItem, Long> impl
 		if (!StringUtil.isNullStr(selectName)) {
 			whereHql.append(" and wpp.name like ?");
 			params.add("%"+ selectName +"%");
+		}
+		if (!StringUtil.isNullStr(type)) {
+			whereHql.append(" and wpp.type = ?");
+			params.add(type);
 		}
 		queryHql.append(whereHql.toString());
 		countHql.append(whereHql.toString());

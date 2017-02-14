@@ -103,18 +103,21 @@ public class PurchaseItemResource {
         		return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.purchaseItem.save.idNone", "")).body(null);
 			}else if (oldPurchaseItem.getStatus() == PurchaseItem.STATUS_DELETED) {
         		return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.purchaseItem.save.statue2Error", "")).body(null);
-			}
-			if (oldPurchaseItem.getProductPriceId() != null || oldPurchaseItem.getProductPriceId() != purchaseItem.getProductPriceId()) {
-				return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.purchaseItem.save.changeNameError", "")).body(null);
+			}else if (oldPurchaseItem.getProductPriceId() != null) {
+				if (oldPurchaseItem.getContractId() != purchaseItem.getContractId() || !oldPurchaseItem.getName().equals(purchaseItem.getName())
+						|| oldPurchaseItem.getBudgetId() != purchaseItem.getBudgetId() || oldPurchaseItem.getType() != purchaseItem.getType()
+						|| oldPurchaseItem.getSource() != purchaseItem.getSource() || !oldPurchaseItem.getQuantity().equals(purchaseItem.getQuantity())) {
+					return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.purchaseItem.save.changeNameError", "")).body(null);
+				}
 			}
 			purchaseItem.setCreateTime(oldPurchaseItem.getCreateTime());
 			purchaseItem.setCreator(oldPurchaseItem.getCreator());
 			purchaseItem.setStatus(oldPurchaseItem.getStatus());
 		}else {
-			List<PurchaseItem> list = this.purchaseItemService.findOneByParams(purchaseItem.getName(),purchaseItem.getSource(),purchaseItem.getType());
-			if (list != null && !list.isEmpty()) {
-				return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.purchaseItem.save.purchaseItemHaveExit", "")).body(null);
-			}			
+//			List<PurchaseItem> list = this.purchaseItemService.findOneByParams(purchaseItem.getName(),purchaseItem.getSource(),purchaseItem.getType(),purchaseItem.getPurchaser());
+//			if (list != null && !list.isEmpty()) {
+//				return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.purchaseItem.save.purchaseItemHaveExit", "")).body(null);
+//			}			
 			purchaseItem.setCreateTime(updateTime);
 			purchaseItem.setCreator(updator);
 			purchaseItem.setStatus(PurchaseItem.STATUS_VALIBLE);
@@ -133,23 +136,6 @@ public class PurchaseItemResource {
             			.body(isNew);
             }
     }
-
-    /**
-     * GET  /purchase-items : get all the purchaseItems.
-     *
-     * @param pageable the pagination information
-     * @return the ResponseEntity with status 200 (OK) and the list of purchaseItems in body
-     * @throws URISyntaxException if there is an error to generate the pagination HTTP headers
-     */
-//    @GetMapping("/purchase-items")
-//    @Timed
-//    public ResponseEntity<List<PurchaseItem>> getAllPurchaseItems(@ApiParam Pageable pageable)
-//        throws URISyntaxException {
-//        log.debug("REST request to get a page of PurchaseItems");
-//        Page<PurchaseItem> page = purchaseItemService.findAll(pageable);
-//        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/purchase-items");
-//        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
-//    }
 
     /**
      * GET  /purchase-items/:id : get the "id" purchaseItem.
@@ -207,7 +193,7 @@ public class PurchaseItemResource {
     public ResponseEntity<List<PurchaseItemVo>> searchPurchaseItems(@RequestParam(value = "name",required=false) String name, 
     		@RequestParam(value = "contractId",required=false) String contractId,
     		@RequestParam(value = "source",required=false) String source,
-    		@RequestParam(value = "type",required=false) String type,
+    		@RequestParam(value = "ppType",required=false) String ppType,
     		@ApiParam Pageable pageable)
         throws URISyntaxException {
         log.debug("REST request to search for a page of PurchaseItems");
@@ -221,8 +207,8 @@ public class PurchaseItemResource {
         if (!StringUtil.isNullStr(source)) {
 			purchaseItem.setSource(StringUtil.nullToInteger(source));
 		}
-        if (!StringUtil.isNullStr(type)) {
-			purchaseItem.setType(StringUtil.nullToInteger(type));
+        if (!StringUtil.isNullStr(ppType)) {
+			purchaseItem.setType(StringUtil.nullToInteger(ppType));
 		}
         Page<PurchaseItemVo> page = purchaseItemService.getPurchasePage(purchaseItem, pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/purchase-items");
@@ -243,10 +229,11 @@ public class PurchaseItemResource {
     @Secured(AuthoritiesConstants.ROLE_CONTRACT_PRODUCTPRICE)
     public ResponseEntity<List<ProductPriceVo>> getAllProductPrices(
     		@RequestParam(value = "selectName",required=false) String selectName,
+    		@RequestParam(value = "type",required=false) Integer type,
     		@ApiParam Pageable pageable)
     	throws URISyntaxException{
     	log.debug("REST request to get a page of ProductPrice");
-    	 Page<ProductPriceVo> page = purchaseItemService.searchPricePage(selectName, pageable);
+    	 Page<ProductPriceVo> page = purchaseItemService.searchPricePage(selectName,type,pageable);
          HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(selectName,page, "/api/product-prices");
          return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }

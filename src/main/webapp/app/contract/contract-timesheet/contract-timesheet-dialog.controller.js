@@ -9,7 +9,6 @@
 
     function ContractTimesheetDialogController ($timeout,$state,AlertService,DateUtils, $scope, $stateParams,previousState, entity, ContractTimesheet) {
     	var vm = this;
-    	console.log(entity);
         vm.previousState = previousState.name;
         vm.userTimesheet = entity;
         vm.save = save;
@@ -30,7 +29,6 @@
         	if(vm.searchQuery.workDay){
         		workDay = DateUtils.convertLocalDateToFormat(vm.searchQuery.workDay,"yyyyMMdd");
         	}
-        	console.log(workDay);
         	ContractTimesheet.getEditUserTimesheets({
             	workDay: workDay,
             	id:entity.id,
@@ -104,7 +102,6 @@
             if(vm.userTimesheets && vm.userTimesheets.length > 0){
             	for(var i = 0; i< vm.userTimesheets.length ; i++){
             		tmp = vm.userTimesheets[i];
-            		console.log(tmp);
             		//校验是否为空
             		if(!tmp.check1 || !tmp.check2 || !tmp.check3 || !tmp.check4 
             				|| !tmp.check5|| !tmp.check6|| !tmp.check7){

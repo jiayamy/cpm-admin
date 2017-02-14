@@ -60,7 +60,7 @@ public class ProjectOverall implements Serializable{
 	private Double taxRate;
 	
 	/**
-	 * 可确认收入（合同金额*（1-税率））、
+	 * 可确认收入（合同金额/(1+税率)）、
 	 */
 	@Column(name = "identifiable_income")
 	private Double identifiableIncome;

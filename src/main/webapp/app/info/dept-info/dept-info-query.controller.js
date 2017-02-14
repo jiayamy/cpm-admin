@@ -53,7 +53,6 @@
         function selectNode(node){
         	vm.isSaving = true;
         	$scope.$emit('cpmApp:deptInfoSelected', node,entity.dataType);
-        	console.log(entity.dataType);
             $uibModalInstance.close(node);
             vm.isSaving = false;
             return;

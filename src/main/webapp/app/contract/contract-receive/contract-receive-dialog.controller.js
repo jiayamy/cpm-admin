@@ -20,7 +20,6 @@
         
         //处理costDay
         vm.contractReceive.receiveDay = DateUtils.convertYYYYMMDDDayToDate(vm.contractReceive.receiveDay);
-        console.log(vm.contractReceive);
         loadContractInfos();
         //加载合同信息
         function loadContractInfos(){

@@ -18,7 +18,6 @@
         vm.openCalendar = openCalendar;
         vm.save = save;
         vm.accAdd = accAdd;
-        console.log("5555:"+vm.userCost.sal);
         
         if(entity && entity.userId){
         	UserCost.getSerialNumByuserId({id:entity.userId},function(data){
@@ -121,7 +120,6 @@
         }
         
         $scope.$watch($scope.getExternalCost,function(newVal,oldVal){
-        	console.log("newVal---:"+newVal);
         	vm.userCost.externalCost = newVal;
         });
         

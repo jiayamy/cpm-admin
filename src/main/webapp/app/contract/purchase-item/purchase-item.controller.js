@@ -27,13 +27,12 @@
 		}
         vm.types = [{id: 1, name: "硬件"},{id: 2, name: "软件"}];
         for (var i = 0; i < vm.types.length; i++){
-        	if (pagingParams.type == vm.types[i].id) {
+        	if (pagingParams.ppType == vm.types[i].id) {
         		vm.searchQuery.type = vm.types[i];
 			}
         }
         vm.searchQuery.contractId = pagingParams.contractId;
         vm.searchQuery.name = pagingParams.name;
-        console.log(pagingParams.name);
         
         if (!vm.searchQuery.name && !vm.searchQuery.contractId
         		&& !vm.searchQuery.source && !vm.searchQuery.type) {
@@ -73,14 +72,14 @@
         	if (pagingParams.source == undefined) {
         		pagingParams.source = "";
 			}
-        	if (pagingParams.type == undefined) {
-        		pagingParams.type = "";
+        	if (pagingParams.ppType == undefined) {
+        		pagingParams.ppType = "";
 			}
             PurchaseItem.query({
             	name:pagingParams.name,
             	contractId:pagingParams.contractId,
             	source:pagingParams.source,
-            	type:pagingParams.type,
+            	ppType:pagingParams.ppType,
                 page: pagingParams.page - 1,
                 size: vm.itemsPerPage,
                 sort: sort()
@@ -138,7 +137,7 @@
                 name: vm.searchQuery.name,
                 contractId: vm.searchQuery.contractId ? vm.searchQuery.contractId.key: "",
                 source: vm.searchQuery.source ? vm.searchQuery.source.id : "",
-                type: vm.searchQuery.type ? vm.searchQuery.type.id : ""
+                ppType: vm.searchQuery.type ? vm.searchQuery.type.id : ""
             });
         }
 

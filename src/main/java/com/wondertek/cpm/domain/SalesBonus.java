@@ -72,7 +72,7 @@ public class SalesBonus implements Serializable{
 	private Double receiveTotal;
 	
 	/**
-	 * 税收(合同金额*税率 )、
+	 * 税收(收款金额*税率/（1+税率）)、
 	 */
 	@Column(name = "taxes_")
 	private Double taxes;
@@ -90,13 +90,7 @@ public class SalesBonus implements Serializable{
 	private Double thirdPartyPurchase;
 	
 	/**
-	 * 内部采购总额（2.8的记录之和）、
-	 */
-	@Column(name = "internal_purchase")
-	private Double internalPurchase;
-	
-	/**
-	 * 奖金基数（收款金额-税收-公摊成本-第三方采购-内部采购总额）、
+	 * 奖金基数（收款金额-税收-公摊成本-第三方采购）、
 	 */
 	@Column(name = "bonus_basis")
 	private Double bonusBasis;
@@ -221,14 +215,6 @@ public class SalesBonus implements Serializable{
 
 	public void setThirdPartyPurchase(Double thirdPartyPurchase) {
 		this.thirdPartyPurchase = thirdPartyPurchase;
-	}
-
-	public Double getInternalPurchase() {
-		return internalPurchase;
-	}
-
-	public void setInternalPurchase(Double internalPurchase) {
-		this.internalPurchase = internalPurchase;
 	}
 
 	public Double getBonusBasis() {

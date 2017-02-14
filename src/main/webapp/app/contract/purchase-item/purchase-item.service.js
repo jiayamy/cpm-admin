@@ -27,7 +27,7 @@
                         if (data.source == 1) {
 							data.sourceName = "内部";
 						}else if (data.source == 2) {
-							data.sourceName == "外部";
+							data.sourceName = "外部";
 						}
                         if (data.type == 1) {
 							data.typeName = "硬件";

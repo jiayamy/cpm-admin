@@ -37,9 +37,6 @@ public class PurchaseItemService {
     @Inject
     private PurchaseItemRepository purchaseItemRepository;
 
-//    @Inject
-//    private PurchaseItemSearchRepository purchaseItemSearchRepository;
-    
     @Inject
     private PurchaseItemDao purchaseItemDao;
     
@@ -141,12 +138,6 @@ public class PurchaseItemService {
 		return purchaseItem;
 	}
 
-	public List<PurchaseItem> findOneByParams(String name, Integer source,
-			Integer type) {
-		List<PurchaseItem> list = purchaseItemRepository.findByNameAndSourceAndPurchaseType(name,source,type);
-		return list;
-	}
-
 	public List<LongValue> queryUserContract() {
 		List<Object[]> objs = this.userRepository.findUserInfoByLogin(SecurityUtils.getCurrentUserLogin());
 		List<LongValue> returnList = new ArrayList<LongValue>();
@@ -159,9 +150,9 @@ public class PurchaseItemService {
 		return returnList;
 	}
 
-	public Page<ProductPriceVo> searchPricePage(String selectName,
+	public Page<ProductPriceVo> searchPricePage(String selectName,Integer type,
 			Pageable pageable) {
-		Page<ProductPriceVo> page = purchaseItemDao.getPricePage(selectName,pageable);
+		Page<ProductPriceVo> page = purchaseItemDao.getPricePage(selectName,type,pageable);
 		return page;
 	}
 }
