@@ -29,7 +29,8 @@
             	"existSerialNum":"合同编号已存在",
             	"noPerm":"无权限操作",
             	"statusError":"已删除或已完成的合同不可更改",
-            	"isPreparedError":"正式合同不可在转为预立合同"
+            	"isPreparedError":"正式合同不可在转为预立合同",
+            	"consultantsRateError":"有咨询合同的咨询分润比例不可为空，且必须在0-100之间"
             },
             "required":{
             	"salesmanAndconsultants":"销售和咨询必填一个"
@@ -44,11 +45,12 @@
            	"dept":"销售部门",
            	"consultants":"咨询",
            	"consultantsDept":"咨询部门",
+           	"consultantsShareRate":"咨询分润比例(%)",
             "startDay": "开始日期",
             "endDay": "结束日期",
             "taxRate": "税率(%)",
             "taxes": "税费(元)",
-            "shareRate": "公摊税率(%)",
+            "shareRate": "公摊比率(%)",
             "shareCost": "公摊成本(元)",
             "paymentWay": "付款方式",
             "contractor": "合同方公司",

@@ -18,7 +18,8 @@
         
         vm.previousState = previousState.name;
         vm.queryDept = previousState.queryDept;
-        vm.types = [{ key: 1, val: '产品' }, { key: 2, val: '外包' },{ key: 3, val: '硬件' },{ key: 4, val: '公共成本' }];
+        vm.types = [{ key: 1, val: '产品' }, { key: 2, val: '外包' },{ key: 3, val: '硬件' },{ key: 4, val: '公共成本' }
+        ,{ key: 5, val: '项目' },{ key: 6, val: '推广' },{ key: 7, val: '其他' }];
 
         for(var j = 0; j < vm.types.length; j++){
         	if(vm.contractInfo.type == vm.types[j].key){
@@ -47,6 +48,7 @@
         	contractInfo.consultants = vm.contractInfo.consultants;
         	contractInfo.consultantsDeptId = vm.contractInfo.consultantsDeptId;
         	contractInfo.consultantsDept = vm.contractInfo.consultantsDept;
+        	contractInfo.consultantsShareRate = vm.contractInfo.consultantsShareRate;
         	
         	contractInfo.startDay = vm.contractInfo.startDay;
         	contractInfo.endDay = vm.contractInfo.endDay;

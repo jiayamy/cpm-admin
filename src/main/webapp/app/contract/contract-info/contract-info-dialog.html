@@ -109,6 +109,24 @@
 	                   	/>
         		</div>
         	</div>
+        	<div class="form-group" ng-show="vm.contractInfo.consultants">
+				<div class="col-sm-6">
+					<label class="control-label" data-translate="cpmApp.contractInfo.consultantsShareRate" for="field_consultantsShareRate">Consultants Rate</label>
+		            <input type="number" class="form-control" name="consultantsShareRate" id="field_consultantsShareRate" ng-required="vm.contractInfo.consultants" 
+		                    ng-model="vm.contractInfo.consultantsShareRate" step="0.01" min="0" max="100"
+		                     />
+		            <div ng-show="myForm.consultantsShareRate.$dirty&&myForm.consultantsShareRate.$error.number" class="alert alert-danger help-block"> 
+		            	必须为数字
+		            </div>
+		            <div class="help-block"
+	                   ng-show="myForm.consultantsShareRate.$error.required" data-translate="entity.validation.required" style="color:red">
+	                    This field is required.
+	                </div>
+				</div>
+        		<div class="col-sm-6">
+        			&nbsp;
+        		</div>
+        	</div>
         	<div class="form-group">
 				<div class="col-sm-6">
 					<label class="control-label" data-translate="cpmApp.contractInfo.startDay" for="field_startDay">Start Day</label>
@@ -132,11 +150,18 @@
         			<label class="control-label" data-translate="cpmApp.contractInfo.endDay" for="field_endDay">End Day</label>
 	                <div class="input-group">
 	                    <input id="field_endDay" type="text" class="form-control" name="endDay" ng-model="vm.contractInfo.endDay" is-open="vm.datePickerOpenStatus.endDay"
-	                      datetime-picker="yyyy-MM-dd" enable-time="false" readonly
+	                      datetime-picker="yyyy-MM-dd" enable-time="false" readonly ng-required="true" ng-minlength="10"
 	                      />
 	                    <span class="input-group-btn">
 	                        <button type="button" class="btn btn-default" ng-click="vm.openCalendar('endDay')"><i class="glyphicon glyphicon-calendar"></i></button>
 	                    </span>
+	                </div>
+	                <div ng-show="myForm.endDay.$dirty&&myForm.endDay.$error.minlength" class="alert alert-danger help-block"> 
+	                	结束日期必填
+	            	</div>
+	            	<div class="help-block"
+	                   ng-show="myForm.endDay.$error.required" data-translate="entity.validation.required" style="color:red">
+	                    This field is required.
 	                </div>
         		</div>
         	</div>
@@ -168,7 +193,7 @@
 				<div class="col-sm-6">
 					<label class="control-label" data-translate="cpmApp.contractInfo.taxRate" for="field_taxRate">Tax Rate</label>
 		            <input type="number" class="form-control" name="taxRate" id="field_taxRate" ng-required="true" 
-		                    ng-model="vm.contractInfo.taxRate" step="0.01" min="0" ng-change="vm.taxRateChanged()"
+		                    ng-model="vm.contractInfo.taxRate" step="0.01" min="0" max="100" ng-change="vm.taxRateChanged()"
 		                     />
 		            <div ng-show="myForm.taxRate.$dirty&&myForm.taxRate.$error.number" class="alert alert-danger help-block"> 
 		            	必须为数字
@@ -196,7 +221,7 @@
 				<div class="col-sm-6">
 					<label class="control-label" data-translate="cpmApp.contractInfo.shareRate" for="field_shareRate">Share Rate</label>
 	            	<input type="number" class="form-control" name="shareRate" id="field_shareRate" ng-required="true" 
-	                    ng-model="vm.contractInfo.shareRate" step="0.01" min="0" ng-change="vm.shareRateChanged()"
+	                    ng-model="vm.contractInfo.shareRate" step="0.01" min="0" max="100" ng-change="vm.shareRateChanged()"
 	                     />
 	             	<div ng-show="myForm.shareRate.$dirty&&myForm.shareRate.$error.number" class="alert alert-danger help-block"> 
 	               		必须为数字

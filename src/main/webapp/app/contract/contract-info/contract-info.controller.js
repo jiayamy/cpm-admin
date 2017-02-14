@@ -21,8 +21,10 @@
         vm.searchQuery = {};
         vm.searchQuery.serialNum=pagingParams.serialNum;
         vm.searchQuery.name=pagingParams.name;
+
+        vm.types = [{ key: 1, val: '产品' }, { key: 2, val: '外包' },{ key: 3, val: '硬件' },{ key: 4, val: '公共成本' }
+        ,{ key: 5, val: '项目' },{ key: 6, val: '推广' },{ key: 7, val: '其他' }];
         
-        vm.types = [{ key: 1, val: '产品' }, { key: 2, val: '外包' },{ key: 3, val: '硬件' },{ key: 4, val: '公共成本' }];
         vm.isPrepareds = [{ key: 'false', val: '正式合同'}, { key: 'true', val: '预立合同'}];
         vm.isEpibolics = [{ key: 'true', val: '外部合同'}, { key: 'false', val: '内部合同'}];
         vm.statuss = [{ key: 1, val: '进行中'}, { key: 2, val: '已完成'}, { key: 3, val: '已删除'}];

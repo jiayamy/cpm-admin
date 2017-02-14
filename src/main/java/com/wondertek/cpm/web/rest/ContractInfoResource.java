@@ -66,20 +66,29 @@ public class ContractInfoResource {
         //基本校验
         if(contractInfo.getSalesmanId() == null && contractInfo.getConsultantsId() == null){
         	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.contractInfo.save.manallnone", "")).body(null);
-        }else if(contractInfo.getSalesmanId() != null){
+        }
+        if(contractInfo.getSalesmanId() != null){//销售不为空
         	if(StringUtil.isNullStr(contractInfo.getSalesman())
             		|| contractInfo.getDeptId() == null || StringUtil.isNullStr(contractInfo.getDept())){
         		return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.contractInfo.save.requiedError", "")).body(null);
         	}
-        }else if(contractInfo.getConsultantsId() != null){
+        }
+        if(contractInfo.getConsultantsId() != null){//咨询不为空
         	if(StringUtil.isNullStr(contractInfo.getConsultants())
             		|| contractInfo.getConsultantsDeptId() == null || StringUtil.isNullStr(contractInfo.getConsultantsDept())){
         		return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.contractInfo.save.requiedError", "")).body(null);
         	}
+        	if(contractInfo.getConsultantsShareRate() == null){//咨询分润比例
+        		return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.contractInfo.save.consultantsRateError", "")).body(null);
+        	}else if(contractInfo.getConsultantsShareRate() < 0d || contractInfo.getConsultantsShareRate() > 100d){
+        		return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.contractInfo.save.consultantsRateError", "")).body(null);
+        	}
+        }else{//咨询分润比例，没咨询不需要咨询分润比例
+        	contractInfo.setConsultantsShareRate(null);
         }
         if (StringUtil.isNullStr(contractInfo.getSerialNum()) || StringUtil.isNullStr(contractInfo.getName())
         		|| contractInfo.getAmount() == null || contractInfo.getType() == null
-        		|| contractInfo.getStartDay() == null
+        		|| contractInfo.getStartDay() == null || contractInfo.getEndDay() == null
         		|| contractInfo.getTaxRate() == null || contractInfo.getTaxes() == null 
         		|| contractInfo.getShareRate() == null || contractInfo.getShareCost() == null) {
         	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.contractInfo.save.requiedError", "")).body(null);

@@ -26,6 +26,7 @@ public class ContractInfoVo implements Serializable {
     private String consultants;
     private Long consultantsDeptId;
     private String consultantsDept;
+    private Double consultantsShareRate;
     
     private ZonedDateTime startDay;
     private ZonedDateTime endDay;
@@ -75,6 +76,7 @@ public class ContractInfoVo implements Serializable {
 		this.consultantsId = contractInfo.getConsultantsId();
 		this.consultantsDept = contractInfo.getConsultantsDept();
 		this.consultantsDeptId = contractInfo.getConsultantsDeptId();
+		this.consultantsShareRate = contractInfo.getConsultantsShareRate();
 		this.startDay = contractInfo.getStartDay();
 		this.endDay = contractInfo.getEndDay();
 		this.taxRate = contractInfo.getTaxRate();
@@ -114,6 +116,7 @@ public class ContractInfoVo implements Serializable {
 //		this.consultantsId = contractInfo.getConsultantsId();
 //		this.consultantsDept = contractInfo.getConsultantsDept();
 //		this.consultantsDeptId = contractInfo.getConsultantsDeptId();
+		this.consultantsShareRate = contractInfo.getConsultantsShareRate();
 		this.startDay = contractInfo.getStartDay();
 		this.endDay = contractInfo.getEndDay();
 //		this.taxRate = contractInfo.getTaxRate();
@@ -423,6 +426,12 @@ public class ContractInfoVo implements Serializable {
 
 	public void setUpdateTime(ZonedDateTime updateTime) {
 		this.updateTime = updateTime;
+	}
+	public Double getConsultantsShareRate() {
+		return consultantsShareRate;
+	}
+	public void setConsultantsShareRate(Double consultantsShareRate) {
+		this.consultantsShareRate = consultantsShareRate;
 	}
 
 }
