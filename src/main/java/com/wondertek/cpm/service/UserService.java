@@ -2,9 +2,10 @@ package com.wondertek.cpm.service;
 
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
@@ -22,7 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.wondertek.cpm.config.StringUtil;
 import com.wondertek.cpm.domain.Authority;
 import com.wondertek.cpm.domain.User;
-import com.wondertek.cpm.domain.WorkArea;
+import com.wondertek.cpm.domain.vo.UserBaseVo;
 import com.wondertek.cpm.repository.AuthorityRepository;
 import com.wondertek.cpm.repository.PersistentTokenRepository;
 import com.wondertek.cpm.repository.UserDao;
@@ -310,5 +311,16 @@ public class UserService {
 	public List<Authority> queryAllAuthorities() {
 		List<Authority> list = authorityRepository.findAll();
 		return list;
+	}
+
+	public Map<String, UserBaseVo> getAllUser() {
+		List<User> list = userRepository.findAll();
+		Map<String, UserBaseVo> returnMap = new HashMap<String, UserBaseVo>();
+		if(list != null){
+			for(User user : list){
+				returnMap.put(user.getSerialNum(), new UserBaseVo(user));
+			}
+		}
+		return returnMap;
 	}
 }

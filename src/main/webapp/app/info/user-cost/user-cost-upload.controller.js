@@ -28,8 +28,35 @@
             		data:{"file":file[0]},
             		headers: {'Content-Type':undefined},
             		transformRequest: angular.identity
-            	}).success(function(data){
-            		$state.go(vm.previousState);
+            	}).success(function(data,a,b,c){
+            		if(data.msgKey && !data.success){
+            			var param = {};
+            			if(data.msgParam){
+            				var obj = data.msgParam.split(",");
+            				param.sheetNum = obj[0];
+            				param.rowNum = obj[1];
+            				param.columnNum = obj[2];
+            			}
+            			AlertService.error(data.msgKey,param);
+            		}else if(data.msgKey){
+            			AlertService.success(data.msgKey);
+            			$state.go(vm.previousState);
+            		}
+            	}).error(function(data){
+            		if(data.msgKey && !data.success){
+            			var param = {};
+            			if(data.msgParam){
+            				var obj = data.msgParam.split(",");
+            				param.sheetNum = obj[0];
+            				param.rowNum = obj[1];
+            				param.columnNum = obj[2];
+            			}
+            			console.log(param);
+            			AlertService.error(data.msgKey,param);
+            		}else if(data.msgKey){
+            			AlertService.success(data.msgKey);
+            			$state.go(vm.previousState);
+            		}
             	});
         	}
         	

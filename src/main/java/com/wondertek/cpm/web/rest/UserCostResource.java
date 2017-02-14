@@ -3,12 +3,12 @@ package com.wondertek.cpm.web.rest;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import javax.inject.Inject;
@@ -34,16 +34,22 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.codahale.metrics.annotation.Timed;
 import com.wondertek.cpm.CpmConstants;
+import com.wondertek.cpm.ExcelUtil;
+import com.wondertek.cpm.ExcelValue;
+import com.wondertek.cpm.config.DateUtil;
 import com.wondertek.cpm.config.StringUtil;
+import com.wondertek.cpm.domain.ExternalQuotation;
 import com.wondertek.cpm.domain.User;
 import com.wondertek.cpm.domain.UserCost;
+import com.wondertek.cpm.domain.vo.UserBaseVo;
 import com.wondertek.cpm.domain.vo.UserCostVo;
 import com.wondertek.cpm.repository.UserRepository;
 import com.wondertek.cpm.security.AuthoritiesConstants;
 import com.wondertek.cpm.security.SecurityUtils;
+import com.wondertek.cpm.service.ExternalQuotationService;
 import com.wondertek.cpm.service.UserCostService;
-import com.wondertek.cpm.web.rest.util.ExcelRead;
-import com.wondertek.cpm.web.rest.util.ExcelUtil;
+import com.wondertek.cpm.service.UserService;
+import com.wondertek.cpm.web.rest.errors.CpmResponse;
 import com.wondertek.cpm.web.rest.util.HeaderUtil;
 import com.wondertek.cpm.web.rest.util.PaginationUtil;
 
@@ -63,6 +69,12 @@ public class UserCostResource {
     
     @Inject
     private UserRepository userRepository;
+    
+    @Inject
+    private UserService userService;
+    
+    @Inject
+    private ExternalQuotationService externalQuotationService;
 
     /**
      * POST  /user-costs : Create a new userCost.
@@ -277,139 +289,165 @@ public class UserCostResource {
 	@PostMapping("/user-costs/uploadExcel")
     @Timed
     @Secured(AuthoritiesConstants.ROLE_INFO_USERCOST)
-    public ResponseEntity<List<UserCost>> uploadExcel(@RequestParam(value="file",required=false) MultipartFile file)
+    public ResponseEntity<CpmResponse> uploadExcel(@RequestParam(value="file",required=false) MultipartFile file)
             throws URISyntaxException {
-            log.debug("REST request to upload UserCosts Excel for fileName {}",file.getOriginalFilename());
-            List<UserCost> result = null;
-            try {
-				List<UserCost> userCosts = null;
-				List<ArrayList<String>> lists = new ExcelRead().readExcel(file);
-				if(lists == null || lists.isEmpty()){
-					return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.userCost.upload.requiredError", "")).body(null);
-				}
-				log.debug("***************:"+lists.size());
-				SimpleDateFormat sdf = ExcelUtil.sdf;	//日期转换格式
-				userCosts = new ArrayList<UserCost>();
-				for (List<String> ls : lists) {
-					if (ls == null || ls.isEmpty()) {
-						continue;
-					}
-					String updator = SecurityUtils.getCurrentUserLogin();
-					ZonedDateTime updateTime = ZonedDateTime.now();
-					int i = 0;
-					UserCost userCost = new UserCost();
-					if (!StringUtil.isNull(ls.get(i)) && !ls.get(i).isEmpty()) {//员工成本 UserCost Id
-						if(!StringUtil.isNumeric(ls.get(i))){
-							continue;
-						}
-						userCost = userCostService.findOne(Long.valueOf(ls.get(i)));
-//						userCost.setId(Long.valueOf(ls.get(i)));
-						if(userCost == null){
-							continue;
-						}
-						userCost.setUpdator(updator);
-						userCost.setUpdateTime(updateTime);
-					} else {
-						userCost.setCreator(updator);
-						userCost.setCreateTime(updateTime);
-						userCost.setUpdator(updator);
-						userCost.setUpdateTime(updateTime);
-					}
-					i++;
-					Optional<User> user = null;
-					if (!StringUtil.isNull(ls.get(i)) && !ls.get(i).isEmpty()) {//员工 userId
-						user = userRepository.findOneBySerialNum(ls.get(i));
-						if(!user.isPresent()){
-							continue;
-						}
-						userCost.setUserId(user.get().getId());
-					}else{
-						continue;
-					}
-					i++;
-					if (!StringUtil.isNull(ls.get(i)) && !ls.get(i).isEmpty()) {//员工姓名
-						if(!user.get().getLastName().equals(ls.get(i))){
-							continue;
-						}
-						userCost.setUserName(ls.get(i));
-					}else{
-						userCost.setUserName(user.get().getLastName());
-					}
-					i++;
-					if (!StringUtil.isNull(ls.get(i)) && !ls.get(i).isEmpty()) {//所属年月
-						try {
-							Date date = sdf.parse(ls.get(i));
-							SimpleDateFormat sdfCost = new SimpleDateFormat(CpmConstants.DEFAULT_USER_COST_COSTMONTH_FROMAT);
-							userCost.setCostMonth(Long.valueOf(sdfCost.format(date)));
-//							userCost.setCostMonth(Long.valueOf(ls.get(i).substring(0, 4) + ls.get(i).substring(5, 7)));
-						} catch (ParseException e) {
-							log.error("Date parse exception:", e);
-							continue;
-						}
-					}
-					i++;
-					if (!StringUtil.isNull(ls.get(i)) && !ls.get(i).isEmpty()) {//内部成本
-						if(StringUtil.isDouble(ls.get(i))){
-							Double dou = Double.valueOf(ls.get(i));
-							userCost.setInternalCost(dou>=0?dou:CpmConstants.DEFAULT_UPLOAD_EXCEL_USER_COST);
-						}
-					}else{
-						userCost.setInternalCost(CpmConstants.DEFAULT_UPLOAD_EXCEL_USER_COST);
-					}
-//					i++;
-//					if (!StringUtil.isNull(ls.get(i)) && !ls.get(i).isEmpty()) {//外部成本
-//						if (StringUtil.isDouble(ls.get(i))) {
-//							Double dou = Double.valueOf(ls.get(i));
-//							userCost.setExternalCost(dou>=0?dou:CpmConstants.DEFAULT_UPLOAD_EXCEL_USER_COST);
-//						}
-//					}else{
-//						userCost.setExternalCost(CpmConstants.DEFAULT_UPLOAD_EXCEL_USER_COST);
-//					}
-					i++;
-					if (!StringUtil.isNull(ls.get(i)) && !ls.get(i).isEmpty()) {//状态
-						if(StringUtil.isInteger(ls.get(i))){
-							Integer sta = Integer.valueOf(ls.get(i));
-							userCost.setStatus(sta==CpmConstants.STATUS_VALID || sta == CpmConstants.STATUS_DELETED?sta:CpmConstants.STATUS_VALID);
-						}
-					}else{
-						userCost.setStatus(CpmConstants.STATUS_VALID);
-					}
-					i++;
-					if (!StringUtil.isNull(ls.get(i)) && !ls.get(i).isEmpty()) {//员工工资
-						if (StringUtil.isDouble(ls.get(i))) {
-							Double dou = Double.valueOf(ls.get(i));
-							userCost.setSal(dou>=0?dou:CpmConstants.DEFAULT_UPLOAD_EXCEL_USER_COST);
-						}
-					}else{
-						userCost.setSal(CpmConstants.DEFAULT_UPLOAD_EXCEL_USER_COST);
-					}
-					i++;
-					if (!StringUtil.isNull(ls.get(i)) && !ls.get(i).isEmpty()) {//员工社保公积金
-						if (StringUtil.isDouble(ls.get(i))) {
-							Double dou = Double.valueOf(ls.get(i));
-							userCost.setSocialSecurityFund(dou>=0?dou:CpmConstants.DEFAULT_UPLOAD_EXCEL_USER_COST);
-						}
-					}else{
-						userCost.setSocialSecurityFund(CpmConstants.DEFAULT_UPLOAD_EXCEL_USER_COST);
-					}
-					i++;
-					if (!StringUtil.isNull(ls.get(i)) && !ls.get(i).isEmpty()) {//其它费用
-						if (StringUtil.isDouble(ls.get(i))) {
-							Double dou = Double.valueOf(ls.get(i));
-							userCost.setOtherExpense(dou>=0?dou:CpmConstants.DEFAULT_UPLOAD_EXCEL_USER_COST);
-						}
-					}else{
-						userCost.setOtherExpense(CpmConstants.DEFAULT_UPLOAD_EXCEL_USER_COST);
-					}
-					userCost.setExternalCost(userCost.getSal()+userCost.getSocialSecurityFund()+userCost.getOtherExpense());//外部成本
-
-					log.debug(userCost.toString());
-					userCosts.add(userCost);
-				} 
-				result = userCostService.save(userCosts);
-			} catch (IOException e2) {
-				e2.printStackTrace();
+        log.debug("REST request to upload UserCosts Excel for fileName {}",file.getOriginalFilename());
+        List<UserCost> userCosts = null;
+        CpmResponse cpmResponse = new CpmResponse();
+        try {
+			//从第一行读取，最多读取10个sheet，最多读取6列
+        	int startNum = 1;
+			List<ExcelValue> lists = ExcelUtil.readExcel(file,startNum,10,6);
+			if(lists == null || lists.isEmpty()){
+				return ResponseEntity.ok()
+						.body(cpmResponse
+								.setSuccess(Boolean.FALSE)
+								.setMsgKey("cpmApp.userCost.upload.requiredError"));
 			}
-            return ResponseEntity.ok().headers(HeaderUtil.createEntityUploadAlert("userCost", null)).body(result);
-        }
+			//初始化员工信息
+			Map<String,UserBaseVo> userMap = userService.getAllUser();
+			//初始化
+			Map<Integer,ExternalQuotation> externalQuotationMap = externalQuotationService.getAllInfo();
+			//其他信息
+			userCosts = new ArrayList<UserCost>();
+			String updator = SecurityUtils.getCurrentUserLogin();
+			int columnNum = 0;
+			int rowNum = 0;
+			Object val = null;
+			ExternalQuotation externalQuotation = null;
+			Map<String,Integer> existMap = new HashMap<String,Integer>();
+			for (ExcelValue excelValue : lists) {
+				if (excelValue.getVals() == null || excelValue.getVals().isEmpty()) {//每个sheet也可能没有数据，空sheet
+					continue;
+				}
+				rowNum = 1;//都是从第一行读取的
+				for(List<Object> ls : excelValue.getVals()){
+					rowNum ++;
+					if(ls == null){//每个sheet里面也可能有空行
+						continue;
+					}
+					try {
+						UserCost userCost = new UserCost();
+						userCost.setStatus(CpmConstants.STATUS_VALID);
+						userCost.setCreator(updator);
+						userCost.setUpdator(updator);
+						//校验第一列 员工工号
+						columnNum = 0;
+						val = ls.get(columnNum);
+						if(val == null || StringUtil.isNullStr(val)){
+							return ResponseEntity.ok().body(cpmResponse
+											.setSuccess(Boolean.FALSE)
+											.setMsgKey("cpmApp.userCost.upload.dataError")
+											.setMsgParam(excelValue.getSheet() + "," + rowNum +","+(columnNum+1)));
+						}
+						UserBaseVo vo = userMap.get(val.toString());
+						if(vo == null){
+							return ResponseEntity.ok().body(cpmResponse
+									.setSuccess(Boolean.FALSE)
+									.setMsgKey("cpmApp.userCost.upload.serialNumError")
+									.setMsgParam(excelValue.getSheet() + "," + rowNum +","+(columnNum+1)));
+						}
+						userCost.setUserId(vo.getId());
+						
+						//校验第二列 员工姓名，可以不需要
+						columnNum++;
+						userCost.setUserName(vo.getLastName());
+						
+						//校验第三列 所属年月
+						columnNum++;
+						val = ls.get(columnNum);
+						if(val == null){
+							return ResponseEntity.ok().body(cpmResponse
+									.setSuccess(Boolean.FALSE)
+									.setMsgKey("cpmApp.userCost.upload.dataError")
+									.setMsgParam(excelValue.getSheet() + "," + rowNum +","+(columnNum+1)));
+						}else if(val instanceof Date){//date
+							userCost.setCostMonth(StringUtil.nullToLong(DateUtil.formatDate(CpmConstants.DEFAULT_USER_COST_COSTMONTH_FROMAT, (Date)val)));
+						}else if(val instanceof Double){//double
+							userCost.setCostMonth(((Double)val).longValue());
+						}else{//String
+							userCost.setCostMonth(StringUtil.nullToLong(val));
+						}
+						if(userCost.getCostMonth() == 0){
+							return ResponseEntity.ok().body(cpmResponse
+									.setSuccess(Boolean.FALSE)
+									.setMsgKey("cpmApp.userCost.upload.dataError")
+									.setMsgParam(excelValue.getSheet() + "," + rowNum +","+(columnNum+1)));
+						}
+						//校验记录是否存在
+						String key = userCost.getId() + "_" + userCost.getCostMonth();
+						if(existMap.containsKey(key)){
+							return ResponseEntity.ok().body(cpmResponse
+									.setSuccess(Boolean.FALSE)
+									.setMsgKey("cpmApp.userCost.upload.recordExistError")
+									.setMsgParam(excelValue.getSheet() + "," + rowNum +","+(columnNum+1)));
+						}
+						existMap.put(key, 1);
+						
+						//校验第四列 员工工资
+						columnNum++;
+						val = ls.get(columnNum);
+						if(val == null){
+							return ResponseEntity.ok().body(cpmResponse
+									.setSuccess(Boolean.FALSE)
+									.setMsgKey("cpmApp.userCost.upload.dataError")
+									.setMsgParam(excelValue.getSheet() + "," + rowNum +","+(columnNum+1)));
+						}else if(val instanceof Double){//double
+							userCost.setSal((Double)val);
+						}else{//String
+							userCost.setSal(StringUtil.nullToDouble(val));
+						}
+						//校验第四列 员工社保公积金
+						columnNum++;
+						val = ls.get(columnNum);
+						if(val == null){
+							return ResponseEntity.ok().body(cpmResponse
+									.setSuccess(Boolean.FALSE)
+									.setMsgKey("cpmApp.userCost.upload.dataError")
+									.setMsgParam(excelValue.getSheet() + "," + rowNum +","+(columnNum+1)));
+						}else if(val instanceof Double){//double
+							userCost.setSocialSecurityFund((Double)val);
+						}else{//String
+							userCost.setSocialSecurityFund(StringUtil.nullToDouble(val));
+						}
+						//校验第五轮 其他费用
+						columnNum++;
+						val = ls.get(columnNum);
+						if(val == null){
+							return ResponseEntity.ok().body(cpmResponse
+									.setSuccess(Boolean.FALSE)
+									.setMsgKey("cpmApp.userCost.upload.dataError")
+									.setMsgParam(excelValue.getSheet() + "," + rowNum +","+(columnNum+1)));
+						}else if(val instanceof Double){//double
+							userCost.setOtherExpense((Double)val);
+						}else{//String
+							userCost.setOtherExpense(StringUtil.nullToDouble(val));
+						}
+						//内部成本
+						userCost.setInternalCost(userCost.getSal()+userCost.getSocialSecurityFund()+userCost.getOtherExpense());//内部成本
+						//外部成本
+						externalQuotation = externalQuotationMap.get(vo.getGrade());
+						userCost.setExternalCost(externalQuotation == null ? userCost.getInternalCost() : externalQuotation.getCostBasis());
+						userCosts.add(userCost);
+					} catch (Exception e) {
+						log.error("校验excel数据出错，msg:"+e.getMessage(),e);
+						return ResponseEntity.ok().body(cpmResponse
+									.setSuccess(Boolean.FALSE)
+									.setMsgKey("cpmApp.userCost.upload.dataError")
+									.setMsgParam(excelValue.getSheet() + "," + rowNum +","+(columnNum+1)));
+					}
+				}
+			}
+			//校验完成后，入库处理
+			userCostService.saveOrUpdateUploadRecord(userCosts);
+			return ResponseEntity.ok().body(cpmResponse
+						.setSuccess(Boolean.TRUE)
+						.setMsgKey("cpmApp.userCost.upload.handleSucc"));
+		} catch (IOException e) {
+			log.error("msg:" + e.getMessage(),e);
+			return ResponseEntity.ok().body(cpmResponse
+						.setSuccess(Boolean.FALSE)
+						.setMsgKey("cpmApp.userCost.upload.handleError"));
+		}
+    }
 }

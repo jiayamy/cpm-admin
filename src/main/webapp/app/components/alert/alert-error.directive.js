@@ -51,7 +51,10 @@
                 var headers = Object.keys(httpResponse.headers()).filter(function (header) {
                     return header.endsWith('app-error') || header.endsWith('app-params')
                 }).sort();
-                var errorHeader = httpResponse.headers(headers[0]);
+                var errorHeader = "";
+                if(headers[0] != undefined){
+                	errorHeader = httpResponse.headers(headers[0]);
+                }
                 var entityKey = "";
                 if(headers[1] != undefined){
                 	entityKey = httpResponse.headers(headers[1]);
@@ -69,8 +72,10 @@
                     }
                 } else if (httpResponse.data && httpResponse.data.message) {
                     addErrorAlert(httpResponse.data.message, httpResponse.data.message, httpResponse.data);
+                } else if(httpResponse.data && httpResponse.data.msgKey) {
+                    
                 } else {
-                    addErrorAlert(httpResponse.data);
+                	addErrorAlert(httpResponse.data);
                 }
                 break;
 

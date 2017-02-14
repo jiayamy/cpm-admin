@@ -1,7 +1,6 @@
 package com.wondertek.cpm.service;
 
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -123,8 +122,6 @@ public class UserCostService {
     
     /**
      * 根据用户Id和所属年月查找员工成本信息
-     * @param userId
-     * @param costMonth
      * @return
      */
     public UserCost findByUserIdAndCostMonth(Long userId,Long costMonth){
@@ -132,58 +129,22 @@ public class UserCostService {
     	UserCost userCost = userCostRepository.findByUserIdAndCostMonth(userId,costMonth);
     	return userCost;
     }
-    /**
-     * 根据UserCost中的id和costMonth 保存多个员工成本信息
-     * @param userCosts
-     * @return
-     */
-    public List<UserCost> save(List<UserCost> userCosts){
-    	log.debug("Request to save UserCost : {}", userCosts);
-    	List<UserCost> result = null;
-    	List<UserCost> removedUserCost = new ArrayList<UserCost>();
-    	if(userCosts != null && !userCosts.isEmpty()){
-    		for(UserCost uc:userCosts){
-    			if(uc == null){
-    				continue;
-    			}
-    			if(uc.getId() != null){
-    				UserCost old = userCostRepository.findOne(uc.getId());
-    				if (old != null) {
-						if (!old.getUserId().equals(uc.getUserId()) || !old.getCostMonth().equals(uc.getCostMonth())) {
-							removedUserCost.add(uc);
-							continue;
-						}
-						old.setExternalCost(uc.getExternalCost());
-	    				old.setInternalCost(uc.getInternalCost());
-	    				old.setStatus(uc.getStatus());
-	    				old.setUpdateTime(uc.getUpdateTime());
-	    				old.setUpdator(uc.getUpdator());
-					}else{
-						removedUserCost.add(uc);
-					}
-//					old.setExternalCost(uc.getExternalCost());
-//    				old.setInternalCost(uc.getInternalCost());
-//    				old.setStatus(uc.getStatus());
-//    				old.setUpdateTime(uc.getUpdateTime());
-//    				old.setUpdator(uc.getUpdator());
-    			}else{
-    				if(uc.getUserId() == null || uc.getCostMonth() == null){
-    					removedUserCost.add(uc);
-    					continue;
-    				}
-    				UserCost old =  userCostRepository.findByUserIdAndCostMonth(uc.getUserId(), uc.getCostMonth());
-    				if(old != null){
-    					removedUserCost.add(uc);
-    				}
-    			}
-    		}
-    		if(!removedUserCost.isEmpty()){
-    			userCosts.removeAll(removedUserCost);
-    		}
-    		if(!userCosts.isEmpty()){
-    			result = userCostRepository.save(userCosts);
-    		}
-    	}
-    	return result;
-    }
+
+    public void saveOrUpdateUploadRecord(List<UserCost> userCosts) {
+		if(userCosts != null){
+			//记录中只有createTime和updateTime没填充
+			for(UserCost uc: userCosts){
+				UserCost old =  userCostRepository.findByUserIdAndCostMonth(uc.getUserId(), uc.getCostMonth());
+				if(old != null){
+					uc.setId(old.getId());
+					uc.setCreateTime(old.getCreateTime());
+					uc.setCreator(old.getCreator());
+				}else{
+					uc.setCreateTime(ZonedDateTime.now());
+				}
+				uc.setUpdateTime(ZonedDateTime.now());
+			}
+			userCostRepository.save(userCosts);
+		}
+	}
 }

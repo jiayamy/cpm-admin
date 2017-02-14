@@ -44,7 +44,7 @@ public class ContractInfo implements Serializable {
     @Column(name = "amount_")
     private Double amount;
     /**
-     * 合同类型（1产品/2外包/3硬件/4公共成本）
+     * 合同类型（1产品/2外包/3硬件/4公共成本/5项目/6推广/7其他）
      */
     @Column(name = "type_")
     private Integer type;

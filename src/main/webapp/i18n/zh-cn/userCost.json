@@ -29,10 +29,15 @@
             },
             "upload":{
             	"requiredError":"上传文件数据有误，请重新核对",
+            	"dataError":"第{{sheetNum}}个sheet的第{{rowNum}}行第{{columnNum}}列数据存在问题",
+            	"serialNumError":"第{{sheetNum}}个sheet的第{{rowNum}}行第{{columnNum}}列员工不存在，请添加",
+            	"recordExistError":"第{{sheetNum}}个sheet的第{{rowNum}}行第{{columnNum}}列员工对应年月记录已存在，请勿重复添加",
             	"up": "上传",
             	"upError": "上传失败",
             	"nonFile":"文件不能为空！",
-            	"numFile":"选择的文件数量不能大于1！"
+            	"numFile":"选择的文件数量不能大于1！",
+            	"handleError":"处理出错",
+            	"handleSucc":"处理成功"
             },
             "get":{
             	"userIdNon":"员工Id参数为空",
