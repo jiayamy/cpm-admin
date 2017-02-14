@@ -17,7 +17,7 @@
         vm.datePickerOpenStatus = {};
         vm.openCalendar = openCalendar;
         vm.save = save;
-        vm.accAdd = accAdd;
+//        vm.accAdd = accAdd;
         
         if(entity && entity.userId){
         	UserCost.getSerialNumByuserId({id:entity.userId},function(data){
@@ -39,10 +39,9 @@
         	vm.userCost.costMonth = new Date(vm.sdf.substring(0,4),vm.sdf.substring(4,6)-1);
         }
         
-        if(entity && entity.id){
-        	vm.userCost.externalCost = entity.sal + entity.socialSecurityFund + entity.otherExpense;
-        }
-        
+//        if(entity && entity.id){
+//        	vm.userCost.externalCost = entity.sal + entity.socialSecurityFund + entity.otherExpense;
+//        }
 
         function save () {
             vm.isSaving = true;
@@ -51,8 +50,8 @@
             userCost.userId = vm.userCost.userId;
             userCost.userName = vm.userCost.userName;
             userCost.costMonth = DateUtils.convertLocalDateToFormat(vm.userCost.costMonth,"yyyyMM");
-            userCost.internalCost = vm.userCost.internalCost;
-            userCost.externalCost = vm.userCost.externalCost;
+//            userCost.internalCost = vm.userCost.internalCost;
+//            userCost.externalCost = vm.userCost.externalCost;
 //            userCost.status = vm.userCost.status && vm.userCost.status.key ? vm.userCost.status.key:"";
             userCost.sal = vm.userCost.sal;
             userCost.socialSecurityFund = vm.userCost.socialSecurityFund;
@@ -94,50 +93,50 @@
         			function(data){vm.serialNum = data.serialNum},null);
         }
         
-        $scope.getExternalCost = function(){
-        	var sal = 0;
-        	var socialSecurityFund = 0;
-        	var otherExpense = 0;
-        	if(isNaN(vm.userCost.sal) || vm.userCost.sal == undefined){
-        		sal = 0;
-        	}else{
-        		sal = vm.userCost.sal;
-        	}
-        	if(isNaN(vm.userCost.socialSecurityFund) || vm.userCost.socialSecurityFund == undefined){
-        		socialSecurityFund = 0;
-        	}else{
-        		socialSecurityFund = vm.userCost.socialSecurityFund;
-        	}
-        	if(isNaN(vm.userCost.otherExpense) || vm.userCost.otherExpense == undefined){
-        		otherExpense = 0;
-        	}else{
-        		otherExpense = vm.userCost.otherExpense;
-        	}
-        	var sum = accAdd(sal,socialSecurityFund);
-        	sum = accAdd(sum,otherExpense);
-        	return sum;
-//        	return sal + socialSecurityFund + otherExpense;
-        }
+//        $scope.getExternalCost = function(){
+//        	var sal = 0;
+//        	var socialSecurityFund = 0;
+//        	var otherExpense = 0;
+//        	if(isNaN(vm.userCost.sal) || vm.userCost.sal == undefined){
+//        		sal = 0;
+//        	}else{
+//        		sal = vm.userCost.sal;
+//        	}
+//        	if(isNaN(vm.userCost.socialSecurityFund) || vm.userCost.socialSecurityFund == undefined){
+//        		socialSecurityFund = 0;
+//        	}else{
+//        		socialSecurityFund = vm.userCost.socialSecurityFund;
+//        	}
+//        	if(isNaN(vm.userCost.otherExpense) || vm.userCost.otherExpense == undefined){
+//        		otherExpense = 0;
+//        	}else{
+//        		otherExpense = vm.userCost.otherExpense;
+//        	}
+//        	var sum = accAdd(sal,socialSecurityFund);
+//        	sum = accAdd(sum,otherExpense);
+//        	return sum;
+////        	return sal + socialSecurityFund + otherExpense;
+//        }
         
-        $scope.$watch($scope.getExternalCost,function(newVal,oldVal){
-        	vm.userCost.externalCost = newVal;
-        });
+//        $scope.$watch($scope.getExternalCost,function(newVal,oldVal){
+//        	vm.userCost.externalCost = newVal;
+//        });
         
         // 两个浮点数求和  
-        function accAdd(num1,num2){  
-           var r1,r2,m;  
-           try{  
-               r1 = num1.toString().split('.')[1].length;  
-           }catch(e){  
-               r1 = 0;  
-           }  
-           try{  
-               r2=num2.toString().split(".")[1].length;  
-           }catch(e){  
-               r2=0;  
-           }  
-           m=Math.pow(10,Math.max(r1,r2));  
-           return Math.round(num1*m+num2*m)/m;  
-        }
+//        function accAdd(num1,num2){  
+//           var r1,r2,m;  
+//           try{  
+//               r1 = num1.toString().split('.')[1].length;  
+//           }catch(e){  
+//               r1 = 0;  
+//           }  
+//           try{  
+//               r2=num2.toString().split(".")[1].length;  
+//           }catch(e){  
+//               r2=0;  
+//           }  
+//           m=Math.pow(10,Math.max(r1,r2));  
+//           return Math.round(num1*m+num2*m)/m;  
+//        }
     }
 })();

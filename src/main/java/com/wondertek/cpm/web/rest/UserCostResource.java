@@ -151,8 +151,8 @@ public class UserCostResource {
         findUserCost.setSal(userCost.getSal());
         findUserCost.setSocialSecurityFund(userCost.getSocialSecurityFund());
         findUserCost.setOtherExpense(userCost.getOtherExpense());
-        findUserCost.setExternalCost(userCost.getSal()+userCost.getSocialSecurityFund()+userCost.getOtherExpense());//
-    	findUserCost.setInternalCost(userCost.getInternalCost());
+    	findUserCost.setInternalCost(userCost.getSal()+userCost.getSocialSecurityFund()+userCost.getOtherExpense());
+    	findUserCost.setExternalCost(findUserCost.getInternalCost());	//外部成本
     	findUserCost.setUpdateTime(updateTime);
     	findUserCost.setUpdator(updator);
     	
