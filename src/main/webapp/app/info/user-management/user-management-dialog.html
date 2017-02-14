@@ -163,16 +163,10 @@
 		   		</div>
 		   		<div class="col-sm-6">
 	        		<label class="control-label" for="field_grade" data-translate="userManagement.grade">Grade</label>
-	        		<input type="text" class="form-control" name="grade" id="field_grade"
-	            		ng-model="vm.user.grade"
-	                	/>
-		           	<div ng-show="myForm.grade.$invalid">
-		               	<p class="help-block"
-		                  		ng-show="myForm.grade.$dirty&&myForm.grade.$error.maxlength" data-translate="entity.validation.maxlength"
-		                  		translate-value-max="20">
-		                   	This field cannot be longer than 20 characters.
-		               	</p>
-		           	</div>
+	                <select class="form-control" name="grade" ng-model="vm.user.grade" id="field_grade"
+	            		ng-required="false"
+		            	ng-options="grade for grade in vm.grades track by grade">
+		         	</select>
 		   		</div>
 		   	</div>
 		   	<div class="form-group">
