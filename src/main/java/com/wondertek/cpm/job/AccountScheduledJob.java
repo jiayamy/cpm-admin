@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 
 import com.wondertek.cpm.config.DateUtil;
 import com.wondertek.cpm.config.StringUtil;
+import com.wondertek.cpm.domain.Bonus;
 import com.wondertek.cpm.domain.BonusRate;
 import com.wondertek.cpm.domain.ConsultantsBonus;
 import com.wondertek.cpm.domain.ContractInfo;
@@ -34,6 +35,7 @@ import com.wondertek.cpm.domain.User;
 import com.wondertek.cpm.domain.UserCost;
 import com.wondertek.cpm.domain.UserTimesheet;
 import com.wondertek.cpm.repository.BonusRateRepository;
+import com.wondertek.cpm.repository.BonusRepository;
 import com.wondertek.cpm.repository.ConsultantsBonusRepository;
 import com.wondertek.cpm.repository.ContractBudgetRepository;
 import com.wondertek.cpm.repository.ContractInfoRepository;
@@ -61,6 +63,9 @@ import com.wondertek.cpm.repository.UserTimesheetRepository;
 public class AccountScheduledJob {
 	
 	private Logger log = LoggerFactory.getLogger(AccountScheduledJob.class);
+	
+	@Inject
+	private BonusRepository bonusRepository;
 	
 	@Inject
 	private BonusRateRepository bonusRateRepository;
@@ -332,10 +337,6 @@ public class AccountScheduledJob {
 				}
 				log.info("====end generate Product Sales Bonus to Contract : "+contractInfo.getSerialNum()+"======");
 				
-				
-				
-				
-				
 				log.info("====begin generate Sales Bonus belong to Contract : "+contractInfo.getSerialNum()+"========");
 				//收款金额
 				Double sbReceiveTotal = 0D;
@@ -387,7 +388,7 @@ public class AccountScheduledJob {
 					salesBonus.setTaxes(sbTaxes);
 					salesBonus.setShareCost(sbShareCost);
 					salesBonus.setThirdPartyPurchase(sbThirdPartyPurchase);
-					salesBonus.setInternalPurchase(sbInternalPurchase);
+//					salesBonus.setInternalPurchase(sbInternalPurchase);
 					//奖金基数
 					Double sbBonusBasis = sbReceiveTotal - sbTaxes - sbShareCost - sbThirdPartyPurchase - sbInternalPurchase;
 					salesBonus.setBonusBasis(sbBonusBasis);
@@ -476,8 +477,35 @@ public class AccountScheduledJob {
 				Double poInternalPurchase = sbInternalPurchase;
 				projectOverall.setInternalPurchase(poInternalPurchase);
 				//奖金
-				Double poBonus = 0D;
-				
+				Double poSalesBonus = 0D;
+				List<SalesBonus> salesBonuses = salesBonusRespository.findByContractIdAndStatWeek(contractId, statWeek);
+				if(salesBonuses != null && salesBonuses.size() > 0){
+					for(SalesBonus salesBonus : salesBonuses){
+						poSalesBonus += salesBonus.getCurrentBonus();
+					}
+				}
+				Double poConsultantsBonus = 0D;
+				List<ConsultantsBonus> consultantsBonuses = consultantsBonusRepository.findByContractIdAndStatWeek(contractId, statWeek);
+				if(consultantsBonuses != null && consultantsBonuses.size() > 0){
+					for(ConsultantsBonus consultantsBonus : consultantsBonuses){
+						poConsultantsBonus += consultantsBonus.getCurrentBonus();
+					}
+				}
+				Double poProjectSupportBonus = 0D;
+				List<ProjectSupportBonus> projectSupportBonuses = projectSupportBonusRepository.findByContractIdAndStatWeek(contractId, statWeek);
+				if(projectSupportBonuses != null && projectSupportBonuses.size() > 0){
+					for(ProjectSupportBonus projectSupportBonus : projectSupportBonuses){
+						poProjectSupportBonus += projectSupportBonus.getCurrentBonus();
+					}
+				}
+				Double poProductSalesBonus = 0D;
+				List<ProductSalesBonus> productSalesBonuses2 = productSalesBonusRepository.findByContractIdAndStatWeek(contractId, statWeek);
+				if(productSalesBonuses2 != null && productSalesBonuses2.size() > 0){
+					for(ProductSalesBonus productSalesBonus : productSalesBonuses2){
+						poProductSalesBonus += productSalesBonus.getCurrentBonus();
+					}
+				}
+				Double poBonus = poSalesBonus + poConsultantsBonus + poProjectSupportBonus + poProductSalesBonus;
 				projectOverall.setBonus(poBonus);
 				//毛利
 				Double poGrossProfit = poIdentifiableIncome*poContractFinishRate - poShareCost - poThirdPartyPurchase - poInternalPurchase - poBonus;
@@ -488,14 +516,35 @@ public class AccountScheduledJob {
 				projectOverall.setCreator("admin");
 				projectOverall.setCreateTime(ZonedDateTime.now());
 				projectOverallRepository.save(projectOverall);
-				log.info("====begin generate Project Overall to Contract : "+contractInfo.getSerialNum()+"=======");
+				log.info("====end generate Project Overall to Contract : "+contractInfo.getSerialNum()+"=======");
+				
+				log.info("====begin generate Bonus to Contract : "+contractInfo.getSerialNum()+"=======");
+				Bonus bonus = new Bonus();
+				bonus.setStatWeek(statWeek);
+				bonus.setContractId(contractId);
+				bonus.setContractAmount(contractInfo.getAmount());
+				bonus.setSalesBonus(poSalesBonus);
+				bonus.setProjectBonus(poProjectSupportBonus + poProductSalesBonus);
+				bonus.setConsultantsBonus(poConsultantsBonus);
+				bonus.setBonusTotal(poBonus);
+				bonus.setCreator("admin");
+				bonus.setCreateTime(ZonedDateTime.now());
+				bonusRepository.save(bonus);
+				log.info("====end generate Bonus to Contract : "+contractInfo.getSerialNum()+"=======");
 				
 				log.info("====begin generate Contract Internal Purchase to Contract : "+contractInfo.getSerialNum()+"=====");
 				ContractInternalPurchase contractInternalPurchase = new ContractInternalPurchase();
 				contractInternalPurchase.setStatWeek(statWeek);
-				contractInternalPurchase.setProjectOverallId(0L);
+				//项目总体控制表主键
+				ProjectOverall projectOverall2 = projectOverallRepository.findByContractIdAndStatWeek(contractId, statWeek);
+				contractInternalPurchase.setProjectOverallId(projectOverall2.getId());
 				contractInternalPurchase.setContractId(contractId);
+				//部门类型主键?
 				
+				//总金额
+				Double cipTotalAmount = 0D;
+				
+				contractInternalPurchase.setTotalAmount(cipTotalAmount);
 				contractInternalPurchaseRepository.save(contractInternalPurchase);
 				log.info("====end generate Contract Internal Purchase to Contract : "+contractInfo.getSerialNum()+"=====");
 				

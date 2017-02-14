@@ -41,6 +41,12 @@ public class BonusRate implements Serializable{
 	@Column(name = "rate_")
 	private Double rate;
 	
+	/**
+	 * 合同类型
+	 */
+	@Column(name = "contract_type")
+	private Integer contractType;
+	
 	@Column(name = "creator_")
     private String creator;
 
@@ -108,4 +114,13 @@ public class BonusRate implements Serializable{
 	public void setRate(Double rate) {
 		this.rate = rate;
 	}
+
+	public Integer getContractType() {
+		return contractType;
+	}
+
+	public void setContractType(Integer contractType) {
+		this.contractType = contractType;
+	}
+	
 }

@@ -25,6 +25,10 @@ public class ContractInfo implements Serializable {
 	public static final Integer TYPE_INTERNAL = 1;
 	public static final Integer TYPE_EXTERNAL = 2;
 	public static final Integer TYPE_PUBLIC = 4;
+	public static final Integer TYPE_PROJECT = 5;
+	public static final Integer TYPE_EXTEND = 6;
+	public static final Integer TYPE_OTHER = 7;
+	
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
