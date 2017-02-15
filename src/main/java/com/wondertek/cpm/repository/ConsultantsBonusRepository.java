@@ -11,4 +11,7 @@ public interface ConsultantsBonusRepository extends JpaRepository<ConsultantsBon
 	
 	@Query(" from ConsultantsBonus where contractId = ?1 and statWeek = ?2")
 	List<ConsultantsBonus> findByContractIdAndStatWeek(Long contractId, Long statWeek);
+	
+	@Query("select sum(currentBonus) from ConsultantsBonus where contractId = ?1 and statWeek = ?2")
+	Double findSumCurrentBonusByContractIdAndStatWeek(Long contractId, Long statWeek);
 }
