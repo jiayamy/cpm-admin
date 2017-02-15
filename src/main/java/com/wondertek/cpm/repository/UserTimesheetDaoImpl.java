@@ -235,7 +235,7 @@ public class UserTimesheetDaoImpl extends GenericDaoImpl<UserTimesheet, Long> im
 		}
 		if(updateList != null && !updateList.isEmpty()){
 			for(UserTimesheet userTimesheet : updateList){
-				this.excuteHql("update UserTimesheet set realInput = ?,status = ?,workArea = ?,updator = ?,updateTime = ? where (realInput != ? or workArea != ?) id = ?",
+				this.excuteHql("update UserTimesheet set realInput = ?,status = ?,workArea = ?,updator = ?,updateTime = ? where (realInput != ? or workArea != ?) and id = ?",
 						new Object[]{userTimesheet.getRealInput(),userTimesheet.getStatus(),userTimesheet.getWorkArea(),
 								userTimesheet.getUpdator(),userTimesheet.getUpdateTime(),
 								userTimesheet.getRealInput(),userTimesheet.getWorkArea(),
@@ -306,5 +306,19 @@ public class UserTimesheetDaoImpl extends GenericDaoImpl<UserTimesheet, Long> im
 	public List<UserTimesheet> getByWorkDayAndObjType(Long startDay, Long endDay, Long objId, Integer type){
 		return this.queryAllHql("from UserTimesheet where workDay >= ? and workDay <= ? and status = ? and objId = ? and type = ? order by workDay asc,id asc",
 				new Object[]{startDay,endDay,CpmConstants.STATUS_VALID,objId,type});
+	}
+
+	@Override
+	public void updateAcceptInput(List<UserTimesheet> updateList) {
+		if(updateList != null && !updateList.isEmpty()){
+			for(UserTimesheet userTimesheet : updateList){
+				this.excuteHql("update UserTimesheet set acceptInput = ?,updator = ?,updateTime = ? where acceptInput != ? and userId = ? and objId = ? and type = ? and id = ?",
+						new Object[]{userTimesheet.getAcceptInput(),
+								userTimesheet.getUpdator(),userTimesheet.getUpdateTime(),
+								userTimesheet.getAcceptInput(),
+								userTimesheet.getUserId(),userTimesheet.getObjId(),userTimesheet.getType(),
+								userTimesheet.getId()});
+			}
+		}
 	}
 }

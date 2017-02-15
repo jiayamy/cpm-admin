@@ -31,7 +31,6 @@ import com.wondertek.cpm.config.DateUtil;
 import com.wondertek.cpm.config.StringUtil;
 import com.wondertek.cpm.domain.UserTimesheet;
 import com.wondertek.cpm.domain.vo.UserTimesheetForOther;
-import com.wondertek.cpm.domain.vo.UserTimesheetForUser;
 import com.wondertek.cpm.domain.vo.UserTimesheetVo;
 import com.wondertek.cpm.security.AuthoritiesConstants;
 import com.wondertek.cpm.service.UserTimesheetService;
@@ -44,19 +43,19 @@ import io.swagger.annotations.ApiParam;
  */
 @RestController
 @RequestMapping("/api")
-public class ContractTimesheetResource {
+public class ProjectTimesheetResource {
 
-    private final Logger log = LoggerFactory.getLogger(ContractTimesheetResource.class);
+    private final Logger log = LoggerFactory.getLogger(ProjectTimesheetResource.class);
         
     @Inject
     private UserTimesheetService userTimesheetService;
 
-    @GetMapping("/contract-timesheets")
+    @GetMapping("/project-timesheets")
     @Timed
     @Secured(AuthoritiesConstants.ROLE_CONTRACT_TIMESHEET)
     public ResponseEntity<List<UserTimesheetVo>> getAllUserTimesheets(
     		@RequestParam(value = "workDay",required=false) Long workDay,
-    		@RequestParam(value = "contractId",required=false) Long contractId,
+    		@RequestParam(value = "projectId",required=false) Long projectId,
     		@RequestParam(value = "userId",required=false) Long userId,
     		@ApiParam Pageable pageable)
         throws URISyntaxException {
@@ -64,10 +63,10 @@ public class ContractTimesheetResource {
         UserTimesheet userTimesheet = new UserTimesheet();
         userTimesheet.setWorkDay(workDay);
         userTimesheet.setType(UserTimesheet.TYPE_CONTRACT);
-        userTimesheet.setObjId(contractId);
+        userTimesheet.setObjId(projectId);
         userTimesheet.setUserId(userId);
         
-        Page<UserTimesheet> page = userTimesheetService.getContractPage(userTimesheet, pageable);
+        Page<UserTimesheet> page = userTimesheetService.getProjectPage(userTimesheet, pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/user-timesheets");
         List<UserTimesheetVo> returnList = new ArrayList<UserTimesheetVo>();
         if(page.getContent() != null){
@@ -78,12 +77,12 @@ public class ContractTimesheetResource {
         return new ResponseEntity<>(returnList, headers, HttpStatus.OK);
     }
     
-    @GetMapping("/contract-timesheets/{id}")
+    @GetMapping("/project-timesheets/{id}")
     @Timed
     @Secured(AuthoritiesConstants.ROLE_CONTRACT_TIMESHEET)
     public ResponseEntity<UserTimesheetVo> getUserTimesheet(@PathVariable Long id) {
         log.debug("REST request to get UserTimesheet : {}", id);
-        UserTimesheet userTimesheet = userTimesheetService.getUserTimesheetForContract(id);
+        UserTimesheet userTimesheet = userTimesheetService.getUserTimesheetForProject(id);
         UserTimesheetVo vo = null;
         if(userTimesheet != null){
         	vo = new UserTimesheetVo(userTimesheet);
@@ -95,7 +94,7 @@ public class ContractTimesheetResource {
             .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
     
-    @GetMapping("/contract-timesheets/queryEdit")
+    @GetMapping("/project-timesheets/queryEdit")
     @Timed
     @Secured(AuthoritiesConstants.ROLE_CONTRACT_TIMESHEET)
     public ResponseEntity<List<UserTimesheetForOther>> getEditUserTimesheets(
@@ -107,11 +106,11 @@ public class ContractTimesheetResource {
         if(!StringUtil.isNullStr(workDay)){
         	workDayDate = DateUtil.parseDate(DateUtil.DATE_YYYYMMDD_PATTERN, workDay);
         }
-        List<UserTimesheetForOther> list = userTimesheetService.queryEditByOther(id,UserTimesheet.TYPE_CONTRACT,workDayDate);
+        List<UserTimesheetForOther> list = userTimesheetService.queryEditByOther(id,UserTimesheet.TYPE_PROJECT,workDayDate);
         return new ResponseEntity<>(list, null, HttpStatus.OK);
     }
     
-    @PutMapping("/contract-timesheets")
+    @PutMapping("/project-timesheets")
     @Timed
     @Secured(AuthoritiesConstants.ROLE_CONTRACT_TIMESHEET)
     public ResponseEntity<Map<String, Object>> getEditUserTimesheets(@RequestBody List<UserTimesheetForOther> userTimesheetForOthers) {
@@ -123,7 +122,7 @@ public class ContractTimesheetResource {
         	return new ResponseEntity<>(resultMap, null, HttpStatus.OK);
         }
         //日期，工作地点，日报
-        String[] messages = userTimesheetService.updateEditByOther(userTimesheetForOthers,UserTimesheet.TYPE_CONTRACT).split("#");
+        String[] messages = userTimesheetService.updateEditByOther(userTimesheetForOthers,UserTimesheet.TYPE_PROJECT).split("#");
         resultMap.put("message", messages[0]);
         resultMap.put("success", messages[0].equals("cpmApp.contractTimesheet.save.success"));
         if(messages.length > 1){

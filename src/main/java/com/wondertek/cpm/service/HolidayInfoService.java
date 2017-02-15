@@ -1,6 +1,7 @@
 package com.wondertek.cpm.service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -142,8 +143,6 @@ public class HolidayInfoService {
     
     /**
      * 查看满足搜索条件的节日信息列表
-     * @param searchCondition
-     * @param pageable
      * @return
      */
     @Transactional(readOnly = true)
@@ -151,4 +150,18 @@ public class HolidayInfoService {
     	Page<HolidayInfo> page = holidayInfoDao.getHolidayInfoPage(searchCondition, pageable);
     	return page;
     }
+    /**
+     * 查看哪一天是假日
+     * @return
+     */
+	public Map<Long, Long> findHolidayByCurrDay(List<Long> currDays) {
+		List<HolidayInfo> holidayInfos = holidayInfoRepository.findHolidayByCurrDay(currDays);
+		Map<Long,Long> returnMap = new HashMap<Long,Long>();
+		if(holidayInfos != null){
+			for(HolidayInfo holidayInfo : holidayInfos){
+				returnMap.put(holidayInfo.getCurrDay(),holidayInfo.getCurrDay());
+			}
+		}
+		return returnMap;
+	}
 }

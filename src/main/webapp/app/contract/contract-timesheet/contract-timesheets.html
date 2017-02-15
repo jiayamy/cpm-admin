@@ -5,12 +5,6 @@
         <div class="row form-horizontal">
         	<div class="form-group">
 	            <div class="col-xs-4">
-	                <button class="btn btn-primary" ui-sref="contract-timesheet.new" >
-	                    <span class="glyphicon glyphicon-plus"></span>
-	                    <span class=""  data-translate="cpmApp.contractTimesheet.home.createLabel">
-	                        Create new Contract Timesheet
-	                    </span>
-	                </button>
 	            </div>
 	            <div class="col-xs-8 no-padding-right">
 	            </div>
@@ -91,6 +85,7 @@
                     <th jh-sort-by="wut.realInput"><span data-translate="cpmApp.contractTimesheet.realInput">Real Input</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="wut.acceptInput"><span data-translate="cpmApp.contractTimesheet.acceptInput">Accept Input</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="wut.updator"><span data-translate="cpmApp.contractTimesheet.updator">Updator</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="wut.updateTime" class="hidden-xs"><span data-translate="cpmApp.contractTimesheet.updateTime">Update Time</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th></th>
                 </tr>
             </thead>
@@ -100,8 +95,9 @@
                     <td>{{contractTimesheet.userName}}</td>
                     <td>{{contractTimesheet.objName}}</td>
                     <td>{{contractTimesheet.realInput}}</td>
-                    <td>{{contractTimesheet.acceptInput}}</td>
+                    <td ng-class="{'btn-info':(contractTimesheet.realInput != contractTimesheet.acceptInput)}">{{contractTimesheet.acceptInput}}</td>
                     <td>{{contractTimesheet.updator}}</td>
+                    <td class="hidden-xs">{{contractTimesheet.updateTime | date:'medium'}}</td>
                     <td class="text-right">
                         <div class="btn-group flex-btn-group-container">
                             <button type="submit"

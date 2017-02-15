@@ -41,4 +41,8 @@ public interface UserTimesheetDao extends GenericDao<UserTimesheet, Long> {
 	 * 获取某个类型的对象在某个时间段内的所有日报
 	 */
 	public List<UserTimesheet> getByWorkDayAndObjType(Long long1, Long long2, Long objId, Integer type);
+	/**
+	 * 更新认可工时
+	 */
+	public void updateAcceptInput(List<UserTimesheet> updateList);
 }

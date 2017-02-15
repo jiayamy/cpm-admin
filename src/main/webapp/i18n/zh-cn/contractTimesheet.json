@@ -3,14 +3,7 @@
         "contractTimesheet" : {
             "home": {
                 "title": "合同日报",
-                "createLabel": "新增",
                 "createOrEditLabel": "合同日报信息"
-            },
-            "created": "创建成功",
-            "updated": "更新成功",
-            "deleted": "删除成功",
-            "delete": {
-                "question": "确定删除所选日报?"
             },
             "detail": {
                 "title": "合同日报信息"

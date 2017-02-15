@@ -1,94 +1,87 @@
-
-<form name="editForm" role="form" novalidate ng-submit="vm.save()">
-
-    <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
-                ng-click="vm.clear()">&times;</button>
-        <h4 class="modal-title" id="myProjectTimesheetLabel" data-translate="cpmApp.projectTimesheet.home.createOrEditLabel">Create or edit a Project Timesheet</h4>
+<div>
+    <h2 data-translate="cpmApp.projectTimesheet.home.createOrEditLabel">User Timesheets</h2>
+    <div class="container-fluid">
+        <div class="row">
+        	<div class="col-sm-8">
+        	</div>
+            <div class="col-sm-4">
+                <p class="input-group">
+                    <input type="text" class="form-control" name="workDay" datetime-picker="yyyyMMdd" ng-change="vm.search(vm.searchQuery)"
+	           		 		enable-time="false" ng-model="vm.searchQuery.workDay" is-open="vm.datePickerOpenStatus.workDay"/>
+	          		<span class="input-group-btn">
+	           			<button type="button" class="btn btn-default" ng-click="vm.openCalendar('workDay')"><i class="glyphicon glyphicon-calendar"></i></button>
+	            	</span>
+                </p>
+            </div>
+        </div>
     </div>
-    <div class="modal-body">
-        <jhi-alert-error></jhi-alert-error>
-        <div class="form-group" ng-show="vm.projectTimesheet.id">
-            <label for="id" data-translate="global.field.id">ID</label>
-            <input type="text" class="form-control" id="id" name="id"
-                    ng-model="vm.projectTimesheet.id" readonly />
-        </div>
-        <div class="form-group">
-            <label class="control-label" data-translate="cpmApp.projectTimesheet.projectId" for="field_projectId">Project Id</label>
-            <input type="number" class="form-control" name="projectId" id="field_projectId"
-                    ng-model="vm.projectTimesheet.projectId"
-                     />
-        </div>
-        <div class="form-group">
-            <label class="control-label" data-translate="cpmApp.projectTimesheet.userId" for="field_userId">User Id</label>
-            <input type="number" class="form-control" name="userId" id="field_userId"
-                    ng-model="vm.projectTimesheet.userId"
-                     />
-        </div>
-        <div class="form-group">
-            <label class="control-label" data-translate="cpmApp.projectTimesheet.realInput" for="field_realInput">Real Input</label>
-            <input type="number" class="form-control" name="realInput" id="field_realInput"
-                    ng-model="vm.projectTimesheet.realInput"
-                     />
-        </div>
-        <div class="form-group">
-            <label class="control-label" data-translate="cpmApp.projectTimesheet.acceptInput" for="field_acceptInput">Accept Input</label>
-            <input type="number" class="form-control" name="acceptInput" id="field_acceptInput"
-                    ng-model="vm.projectTimesheet.acceptInput"
-                     />
-        </div>
-        <div class="form-group">
-            <label class="control-label" data-translate="cpmApp.projectTimesheet.workDay" for="field_workDay">Work Day</label>
-            <input type="text" class="form-control" name="workDay" id="field_workDay"
-                    ng-model="vm.projectTimesheet.workDay"
-                     />
-        </div>
-        <div class="form-group">
-            <label class="control-label" data-translate="cpmApp.projectTimesheet.status" for="field_status">Status</label>
-            <input type="number" class="form-control" name="status" id="field_status"
-                    ng-model="vm.projectTimesheet.status"
-                     />
-        </div>
-        <div class="form-group">
-            <label class="control-label" data-translate="cpmApp.projectTimesheet.creator" for="field_creator">Creator</label>
-            <input type="text" class="form-control" name="creator" id="field_creator"
-                    ng-model="vm.projectTimesheet.creator"
-                     />
-        </div>
-        <div class="form-group">
-            <label class="control-label" data-translate="cpmApp.projectTimesheet.createTime" for="field_createTime">Create Time</label>
-                <div class="input-group">
-                    <input id="field_createTime" type="text" class="form-control" name="createTime" datetime-picker="{{dateformat}}" ng-model="vm.projectTimesheet.createTime" is-open="vm.datePickerOpenStatus.createTime"
-                      />
-                    <span class="input-group-btn">
-                        <button type="button" class="btn btn-default" ng-click="vm.openCalendar('createTime')"><i class="glyphicon glyphicon-calendar"></i></button>
-                    </span>
-                </div>
-        </div>
-        <div class="form-group">
-            <label class="control-label" data-translate="cpmApp.projectTimesheet.updator" for="field_updator">Updator</label>
-            <input type="text" class="form-control" name="updator" id="field_updator"
-                    ng-model="vm.projectTimesheet.updator"
-                     />
-        </div>
-        <div class="form-group">
-            <label class="control-label" data-translate="cpmApp.projectTimesheet.updateTime" for="field_updateTime">Update Time</label>
-                <div class="input-group">
-                    <input id="field_updateTime" type="text" class="form-control" name="updateTime" datetime-picker="{{dateformat}}" ng-model="vm.projectTimesheet.updateTime" is-open="vm.datePickerOpenStatus.updateTime"
-                      />
-                    <span class="input-group-btn">
-                        <button type="button" class="btn btn-default" ng-click="vm.openCalendar('updateTime')"><i class="glyphicon glyphicon-calendar"></i></button>
-                    </span>
-                </div>
-        </div>
-
-    </div>
-    <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="vm.clear()">
-            <span class="glyphicon glyphicon-ban-circle"></span>&nbsp;<span data-translate="entity.action.cancel">Cancel</span>
-        </button>
-        <button type="submit" ng-disabled="editForm.$invalid || vm.isSaving" class="btn btn-primary">
-            <span class="glyphicon glyphicon-save"></span>&nbsp;<span data-translate="entity.action.save">Save</span>
-        </button>
-    </div>
-</form>
+	<form name="editForm" role="form" novalidate ng-submit="vm.save()">
+	    <div class="table-responsive">
+	        <table class="jh-table table table-striped">
+	            <thead>
+	                <tr>
+	                    <th><span data-translate="cpmApp.projectTimesheet.userName">User Name</span></th>
+	                    <th><span data-translate="cpmApp.projectTimesheet.monday">Monday</span></th>
+	                    <th><span data-translate="cpmApp.projectTimesheet.tuesday">Tuesday</span></th>
+	                    <th><span data-translate="cpmApp.projectTimesheet.wednesday">Wednesday</span></th>
+	                    <th><span data-translate="cpmApp.projectTimesheet.thursday">Thursday</span></th>
+	                    <th><span data-translate="cpmApp.projectTimesheet.friday">Friday</span></th>
+	                    <th><span data-translate="cpmApp.projectTimesheet.saturday">Saturday</span></th>
+	                    <th><span data-translate="cpmApp.projectTimesheet.sunday">Sunday</span></th>
+	                </tr>
+	            </thead>
+	            <tbody>
+	            	<tr ng-repeat="userTimesheet in vm.days">
+	                    <td>{{userTimesheet.userName}}</td>
+	                    <td>{{userTimesheet.data1}}</td>
+	                    <td>{{userTimesheet.data2}}</td>
+	                    <td>{{userTimesheet.data3}}</td>
+	                    <td>{{userTimesheet.data4}}</td>
+	                    <td>{{userTimesheet.data5}}</td>
+	                    <td>{{userTimesheet.data6}}</td>
+	                    <td>{{userTimesheet.data7}}</td>
+	                </tr>
+	                <tr ng-repeat="userTimesheet in vm.userTimesheets">
+	                    <td>{{userTimesheet.userName}}</td>
+	                    <td>
+	                    	<input type="text" ng-model="userTimesheet.data1" ng-disabled="true" style="width:40px;" />
+	                    	<input type="text" ng-model="userTimesheet.check1" required ng-minlength="1" style="width:40px;" />
+	                    </td>
+	                    <td>
+	                    	<input type="text" ng-model="userTimesheet.data2" ng-disabled="true" style="width:40px;" />
+	                    	<input type="text" ng-model="userTimesheet.check2" required ng-minlength="1" style="width:40px;" />
+	                    </td>
+	                    <td>
+	                    	<input type="text" ng-model="userTimesheet.data3" ng-disabled="true" style="width:40px;" />
+	                    	<input type="text" ng-model="userTimesheet.check3" required ng-minlength="1" style="width:40px;" />
+	                    </td>
+	                    <td>
+	                    	<input type="text" ng-model="userTimesheet.data4" ng-disabled="true" style="width:40px;" />
+	                    	<input type="text" ng-model="userTimesheet.check4" required ng-minlength="1" style="width:40px;" />
+	                    </td>
+	                    <td>
+	                    	<input type="text" ng-model="userTimesheet.data5" ng-disabled="true" style="width:40px;" />
+	                    	<input type="text" ng-model="userTimesheet.check5" required ng-minlength="1" style="width:40px;" />
+	                    </td>
+	                    <td>
+	                    	<input type="text" ng-model="userTimesheet.data6" ng-disabled="true" style="width:40px;" />
+	                    	<input type="text" ng-model="userTimesheet.check6" required ng-minlength="1" style="width:40px;" />
+	                    </td>
+	                    <td>
+	                    	<input type="text" ng-model="userTimesheet.data7" ng-disabled="true" style="width:40px;" />
+	                    	<input type="text" ng-model="userTimesheet.check7" required ng-minlength="1" style="width:40px;" />
+	                    </td>
+	                </tr>
+	            </tbody>
+	        </table>
+	    </div>
+	    <jhi-alert></jhi-alert>
+	    <button id="go_back" type="button" ui-sref="{{vm.previousState}}" class="btn btn-info">
+	        <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span data-translate="entity.action.back"> Back</span>
+	    </button>
+	    <button type="submit" class="btn btn-primary" ng-disabled="vm.noData || vm.isSaving">
+	        <span class="glyphicon glyphicon-pencil"></span>
+	        <span class="hidden-xs hidden-sm" data-translate="entity.action.save"> Save</span>
+	    </button>
+	</form>
+</div>

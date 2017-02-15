@@ -3,22 +3,42 @@
         "projectTimesheet" : {
             "home": {
                 "title": "项目日报",
-                "createOrEditLabel": "日报详情"
+                "createOrEditLabel": "项目日报详情"
             },
-            "updated": "更新成功",
             "detail": {
-                "title": "日报详情"
+                "title": "项目日报详情"
+            },
+            "save":{
+            	"success":"保存成功",
+            	"paramError":"必填参数为空",
+            	"noPermit":"无权操作",
+            	"dataNull":"工时不可为空",
+            	"dataError":"工时只能为0到8之间的小数，且最多精切到小数点后1位",
+            	"dayDataMax":"每天的工时不可大于8",
+            	"dataChanged":"数据已变更，请重新打开后在执行保存操作",
+            	"holiday":"假期[{{ param }}]的工时只能为0",
+            	"overDay":"明天及以后的工时只能为0",
+            	"overInput":"认可工时不可大于工时投入",
+            	"inputZeroCheck":"工时投入为0，认可工时也只能为0"
             },
             "projectId": "项目编号",
-            "userId": "用户名",
-            "realInput": "实际投入",
-            "acceptInput": "认可投入",
+            "userName": "员工",
+            "realInput": "工时投入",
+            "acceptInput": "认可工时",
+            "objName":"合同信息",
             "workDay": "日期",
             "status": "状态",
             "creator": "创建者",
             "createTime": "创建时间",
             "updator": "更新者",
-            "updateTime": "更新时间"
+            "updateTime": "更新时间",
+            "monday":"星期一",
+            "tuesday":"星期二",
+            "wednesday":"星期三",
+            "thursday":"星期四",
+            "friday":"星期五",
+            "saturday":"星期六",
+            "sunday":"星期日"
         }
     }
 }
