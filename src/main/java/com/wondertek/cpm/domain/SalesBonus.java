@@ -54,6 +54,12 @@ public class SalesBonus implements Serializable{
 	private Long contractId;
 	
 	/**
+	 * 所属年份
+	 */
+	@Column(name = "origin_year")
+	private Long originYear;
+	
+	/**
 	 * 合同金额、
 	 */
 	@Column(name = "contract_amount")
@@ -167,6 +173,14 @@ public class SalesBonus implements Serializable{
 
 	public void setContractId(Long contractId) {
 		this.contractId = contractId;
+	}
+	
+	public Long getOriginYear() {
+		return originYear;
+	}
+
+	public void setOriginYear(Long originYear) {
+		this.originYear = originYear;
 	}
 
 	public Double getContractAmount() {

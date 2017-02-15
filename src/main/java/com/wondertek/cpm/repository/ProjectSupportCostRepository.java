@@ -9,9 +9,12 @@ import com.wondertek.cpm.domain.ProjectSupportCost;
 
 public interface ProjectSupportCostRepository extends JpaRepository<ProjectSupportCost,Long>{
 	
-	@Query(" from ProjectSupportCost where deptType = ?1 and statWeek = ?2")
-	List<ProjectSupportCost> findByDeptTypeAndStatWeek(Long deptType, Long statWeek);
+	@Query("select sum(productCost) from ProjectSupportCost where deptType = ?1 and statWeek = ?2")
+	Double findSumProductCostByDeptTypeAndStatWeek(Long deptType, Long statWeek);
 	
 	@Query(" from ProjectSupportCost where contractId = ?1 and statWeek = ?2")
 	List<ProjectSupportCost> findByContractIdAndStatWeek(Long contractId, Long statWeek);
+	
+	@Query(" from ProjectSupportCost where contractId = ?1 and deptType = ?2 and statWeek = ?3")
+	List<ProjectSupportCost> findByContractIdAndDeptTypeAndStatWeek(Long contractId, Long deptType, Long statWeek);
 }
