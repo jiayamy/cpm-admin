@@ -11,4 +11,13 @@ public interface ProjectSupportBonusRepository extends JpaRepository<ProjectSupp
 	
 	@Query(" from ProjectSupportBonus where contractId = ?1 and statWeek = ?2")
 	List<ProjectSupportBonus> findByContractIdAndStatWeek(Long contractId, Long statWeek);
+	
+	@Query(" from ProjectSupportBonus where contractId = ?1 and deptType = ?2 and statWeek = ?3")
+	List<ProjectSupportBonus> findByContractIdAndDeptTypeAndStatWeek(Long contractId,Long deptType, Long statWeek);
+	
+	@Query("select sum(currentBonus) from ProjectSupportBonus where contractId = ?1 and deptType = ?2 and statWeek = ?3")
+	Double findSumCurrentBonusByContractIdAndDeptTypeAndStatWeek(Long contractId,Long deptType, Long statWeek);
+	
+	@Query("select sum(currentBonus) from ProjectSupportBonus where contractId = ?1 and statWeek = ?2")
+	Double findSumCurrentBonusByContractIdAndStatWeek(Long contractId, Long statWeek);
 }
