@@ -233,11 +233,11 @@ public class ProjectSupportCost implements Serializable{
 		this.projectHourCost = projectHourCost;
 	}
 
-	public Double getInternalBdgetCost() {
+	public Double getInternalBudgetCost() {
 		return internalBudgetCost;
 	}
 
-	public void setInternalBdgetCost(Double internalBudgetCost) {
+	public void setInternalBudgetCost(Double internalBudgetCost) {
 		this.internalBudgetCost = internalBudgetCost;
 	}
 
