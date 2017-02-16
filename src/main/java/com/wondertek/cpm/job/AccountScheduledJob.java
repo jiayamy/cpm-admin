@@ -56,7 +56,7 @@ import com.wondertek.cpm.repository.ProjectSupportBonusRepository;
 import com.wondertek.cpm.repository.ProjectSupportCostRepository;
 import com.wondertek.cpm.repository.ProjectUserRepository;
 import com.wondertek.cpm.repository.PurchaseItemRepository;
-import com.wondertek.cpm.repository.SalesBonusRespository;
+import com.wondertek.cpm.repository.SalesBonusRepository;
 import com.wondertek.cpm.repository.ShareInfoRepository;
 import com.wondertek.cpm.repository.UserCostRepository;
 import com.wondertek.cpm.repository.UserRepository;
@@ -123,7 +123,7 @@ public class AccountScheduledJob {
 	private ProductSalesBonusRepository productSalesBonusRepository;
 	
 	@Inject
-	private SalesBonusRespository salesBonusRespository;
+	private SalesBonusRepository salesBonusRepository;
 	
 	@Inject
 	private ShareInfoRepository shareInfoRepository;
@@ -164,9 +164,9 @@ public class AccountScheduledJob {
 		if(contractInternalPurchases != null){
 			contractInternalPurchaseRepository.delete(contractInternalPurchases);
 		}
-		List<SalesBonus> salesBonuses = salesBonusRespository.findByStatWeek(statWeek);
+		List<SalesBonus> salesBonuses = salesBonusRepository.findByStatWeek(statWeek);
 		if(salesBonuses != null){
-			salesBonusRespository.delete(salesBonuses);
+			salesBonusRepository.delete(salesBonuses);
 		}
 		List<ConsultantsBonus> consultantsBonuses = consultantsBonusRepository.findByStatWeek(statWeek);
 		if(consultantsBonuses != null){
@@ -530,7 +530,7 @@ public class AccountScheduledJob {
 					salesBonus.setCurrentBonus(sbCurrentBonus);
 					salesBonus.setCreator(creator);
 					salesBonus.setCreateTime(ZonedDateTime.now());
-					salesBonusRespository.save(salesBonus);
+					salesBonusRepository.save(salesBonus);
 				}else{
 					log.info("No Sales Founded belong to contract : " + contractInfo.getSerialNum());
 				}
@@ -612,7 +612,7 @@ public class AccountScheduledJob {
 				projectOverall.setInternalPurchase(poInternalPurchase);
 				//当期销售奖金
 				Double poSalesBonus = 0D;
-				poSalesBonus += StringUtil.nullToDouble(salesBonusRespository.findSumCurrentBonusByContractIdAndStatWeek(contractId, statWeek));
+				poSalesBonus += StringUtil.nullToDouble(salesBonusRepository.findSumCurrentBonusByContractIdAndStatWeek(contractId, statWeek));
 				//当期业务咨询奖金
 				Double poConsultantsBonus = 0D;
 				poConsultantsBonus += StringUtil.nullToDouble(consultantsBonusRepository.findSumCurrentBonusByContractIdAndStatWeek(contractId, statWeek));
