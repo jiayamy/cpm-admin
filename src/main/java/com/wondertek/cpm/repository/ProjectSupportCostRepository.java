@@ -23,4 +23,10 @@ public interface ProjectSupportCostRepository extends JpaRepository<ProjectSuppo
 	
 	@Query("select sum(grossProfit) from ProjectSupportCost where contractId = ?1 and deptType = ?2 and statWeek = ?3")
 	Double findSumGrossProfitByContractIdAndDeptTypeAndStatWeek(Long contractId, Long deptType, Long statWeek);
+	
+	@Query(" from ProjectSupportCost where statWeek = ?1")
+	List<ProjectSupportCost> findByStatWeek(Long statWeek);
+	
+	@Query(" from ProjectSupportCost where contractId = ?1 and deptType = ?2 and userId = ?3 and statWeek = ?4")
+	ProjectSupportCost findByContractIdAndDeptTypeAndUserIdAndStatWeek(Long contractId, Long deptType, Long userId, Long statWeek);
 }

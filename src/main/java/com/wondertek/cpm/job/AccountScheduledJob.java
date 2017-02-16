@@ -3,7 +3,9 @@ package com.wondertek.cpm.job;
 import java.time.ZonedDateTime;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -23,6 +25,7 @@ import com.wondertek.cpm.domain.ContractProjectBonus;
 import com.wondertek.cpm.domain.ContractReceive;
 import com.wondertek.cpm.domain.DeptInfo;
 import com.wondertek.cpm.domain.DeptType;
+import com.wondertek.cpm.domain.ExternalQuotation;
 import com.wondertek.cpm.domain.ProductSalesBonus;
 import com.wondertek.cpm.domain.ProjectInfo;
 import com.wondertek.cpm.domain.ProjectOverall;
@@ -139,9 +142,48 @@ public class AccountScheduledJob {
 		String [] dates = DateUtil.getWholeWeekByDate(DateUtil.lastSaturday());
 		ZonedDateTime beginTime = DateUtil.getZonedDateTime(DateUtil.lastMonday().getTime());
 		ZonedDateTime endTime = DateUtil.getZonedDateTime(DateUtil.lastSundayEnd().getTime());
+		Long lastStatWeek = StringUtil.nullToLong(DateUtil.getWholeWeekByDate(DateUtil.addDayNum(-7, DateUtil.lastSundayEnd()))[6]);
+		Long fDay = StringUtil.nullToLong(dates[0]);
 		Long statWeek = StringUtil.nullToLong(dates[6]);
 		Long costMonth = StringUtil.nullToLong(DateUtil.formatDate("yyyyMM", DateUtil.lastSundayEnd()).toString());
 		String creator = "admin";
+		//初始化
+		List<ProjectSupportCost> projectSupportCosts = projectSupportCostRepository.findByStatWeek(statWeek);
+		if(projectSupportCosts != null){
+			projectSupportCostRepository.delete(projectSupportCosts);
+		}
+		List<ProjectSupportBonus> projectSupportBonuses = projectSupportBonusRepository.findByStatWeek(statWeek);
+		if(projectSupportBonuses != null){
+			projectSupportBonusRepository.delete(projectSupportBonuses);
+		}
+		List<ProductSalesBonus> productSalesBonuses = productSalesBonusRepository.findByStatWeek(statWeek);
+		if(productSalesBonuses != null){
+			productSalesBonusRepository.delete(productSalesBonuses);
+		}
+		List<ContractInternalPurchase> contractInternalPurchases = contractInternalPurchaseRepository.findByStatWeek(statWeek);
+		if(contractInternalPurchases != null){
+			contractInternalPurchaseRepository.delete(contractInternalPurchases);
+		}
+		List<SalesBonus> salesBonuses = salesBonusRespository.findByStatWeek(statWeek);
+		if(salesBonuses != null){
+			salesBonusRespository.delete(salesBonuses);
+		}
+		List<ConsultantsBonus> consultantsBonuses = consultantsBonusRepository.findByStatWeek(statWeek);
+		if(consultantsBonuses != null){
+			consultantsBonusRepository.delete(consultantsBonuses);
+		}
+		List<ContractProjectBonus> contractProjectBonuses = contractProjectBonusRepository.findByStatWeek(statWeek);
+		if(contractProjectBonuses != null){
+			contractProjectBonusRepository.delete(contractProjectBonuses);
+		}
+		List<Bonus> bonuses = bonusRepository.findByStatWeek(statWeek);
+		if(bonuses != null){
+			bonusRepository.delete(bonuses);
+		}
+		List<ProjectOverall> projectOveralls = projectOverallRepository.findByStatWeek(statWeek);
+		if(projectOveralls != null){
+			projectOverallRepository.delete(projectOveralls);
+		}
 		List<ContractInfo> contractInfos = contractInfoRepository.findByStatusOrUpdateTime(ContractInfo.STATUS_VALIDABLE, beginTime, endTime);
 		if(contractInfos != null && contractInfos.size() > 0){
 			for(ContractInfo contractInfo : contractInfos){
@@ -151,9 +193,17 @@ public class AccountScheduledJob {
 				if(projectInfos != null && projectInfos.size() > 0){
 					for(ProjectInfo projectInfo : projectInfos){
 						log.info("====begin generate Project Support Cost "+projectInfo.getSerialNum()+"===");
-						List<ProjectUser> projectUsers = projectUserRepository.findByProjectIdAndWorkDay(projectInfo.getId(), statWeek);
 						Long projectId = projectInfo.getId();
 						DeptInfo projectDept = deptInfoRepository.findOne(projectInfo.getDeptId());
+						//上周报告
+						Map<Long, Long> lastCostMap = new HashMap<>();
+						List<ProjectSupportCost> projectSupportCosts2 =projectSupportCostRepository.findByContractIdAndDeptTypeAndStatWeek(contractId, projectDept.getType(), lastStatWeek);
+						if(projectSupportCosts2 != null){
+							for(ProjectSupportCost projectSupportCost : projectSupportCosts2){
+								lastCostMap.put(projectSupportCost.getUserId(), 1L);
+							}
+						}
+						List<ProjectUser> projectUsers = projectUserRepository.findByProjectId(projectInfo.getId());
 						if(projectUsers != null && projectUsers.size() > 0){
 							for(ProjectUser projectUser : projectUsers){
 								User user = userRepository.findOne(projectUser.getUserId());
@@ -169,49 +219,102 @@ public class AccountScheduledJob {
 								projectSupportCost.setUserName(projectUser.getUserName());
 								projectSupportCost.setGrade(user.getGender());
 								//结算成本
-								Double settlementCost = StringUtil.nullToDouble(externalQuotationRepository.findByGrade(user.getGender()).getHourCost());
+								Double settlementCost = 0D;
+								ExternalQuotation externalQuotation = externalQuotationRepository.findByGrade(user.getGender());
+								if(externalQuotation != null){
+									settlementCost = StringUtil.nullToDouble(externalQuotation.getHourCost());
+								}
 								projectSupportCost.setSettlementCost(settlementCost);
-								//项目工时
-								Double projectHourCost = 0D;
-								List<UserTimesheet> userTimesheets = userTimesheetRepository.findByUserIdAndTypeAndObjIdAndWorkDay(user.getId(), UserTimesheet.TYPE_PROJECT, projectId, statWeek);
-								if(userTimesheets != null && userTimesheets.size() > 0){
-									for(UserTimesheet userTimesheet : userTimesheets){
-										projectHourCost += userTimesheet.getRealInput();
+								if(lastCostMap.containsKey(user.getId())){
+									//上周统计
+									ProjectSupportCost projectSupportCost2 = projectSupportCostRepository.findByContractIdAndDeptTypeAndUserIdAndStatWeek(contractId, projectDept.getType(), user.getId(), lastStatWeek);
+									//项目工时
+									Double thisProjectHourCost = 0D;
+									List<UserTimesheet> userTimesheets = userTimesheetRepository.findByUserIdAndTypeAndObjIdAndTime(user.getId(), UserTimesheet.TYPE_PROJECT, projectId, fDay, statWeek);
+									if(userTimesheets != null && userTimesheets.size() > 0){
+										for(UserTimesheet userTimesheet : userTimesheets){
+											thisProjectHourCost += userTimesheet.getRealInput();
+										}
+									}else{
+										log.info("No UserTimesheet founded belong to User: " + user.getLastName() + " Project : " + projectInfo.getSerialNum());
 									}
+									Double projectHourCost = StringUtil.nullToDouble(projectSupportCost2.getProjectHourCost()) + thisProjectHourCost;
+									projectSupportCost.setProjectHourCost(projectHourCost);
+									//内部采购成本
+									Double thisInternalBudgetCost = thisProjectHourCost*settlementCost;
+									Double internalBudgetCost = thisInternalBudgetCost + StringUtil.nullToDouble(projectSupportCost2.getInternalBudgetCost());
+									projectSupportCost.setInternalBudgetCost(internalBudgetCost);
+									//工资,社保公积金,其他费用
+									Double sal = 0D;
+									Double socialSecurityFund = 0D;
+									Double otherExpense = 0D;
+									UserCost userCost = userCostRepository.findMaxByCostMonthAndUserId(costMonth, user.getId());
+									if(userCost != null){
+										sal = StringUtil.nullToDouble(userCost.getSal());
+										socialSecurityFund = StringUtil.nullToDouble(userCost.getSocialSecurityFund());
+										otherExpense = StringUtil.nullToDouble(userCost.getOtherExpense());
+									}else{
+										log.info("No UserCost founded belong to " + user.getLastName());
+									}
+									projectSupportCost.setSal(sal);
+									projectSupportCost.setSocialSecurityFund(socialSecurityFund);
+									projectSupportCost.setOtherExpense(otherExpense);
+									//单人月成本小计
+									Double userMonthCost = sal + socialSecurityFund + otherExpense;
+									projectSupportCost.setUserMonthCost(userMonthCost);
+									//工时成本
+									Double userHourCost = userMonthCost/168;
+									projectSupportCost.setUserHourCost(userHourCost);
+									//生产成本合计
+									Double thisProductCost = userHourCost*thisProjectHourCost;
+									Double productCost = StringUtil.nullToDouble(projectSupportCost2.getProductCost()) + thisProductCost;
+									projectSupportCost.setProductCost(productCost);
+									//生产毛利
+									Double grossProfit = internalBudgetCost - productCost;
+									projectSupportCost.setGrossProfit(grossProfit);
 								}else{
-									log.info("No UserTimesheet founded belong to User: " + user.getLastName() + " Project : " + projectInfo.getSerialNum());
+									//项目工时
+									Double projectHourCost = 0D;
+									List<UserTimesheet> userTimesheets = userTimesheetRepository.findByUserIdAndTypeAndObjIdAndWorkDay(user.getId(), UserTimesheet.TYPE_PROJECT, projectId, statWeek);
+									if(userTimesheets != null && userTimesheets.size() > 0){
+										for(UserTimesheet userTimesheet : userTimesheets){
+											projectHourCost += userTimesheet.getRealInput();
+										}
+									}else{
+										log.info("No UserTimesheet founded belong to User: " + user.getLastName() + " Project : " + projectInfo.getSerialNum());
+									}
+									projectSupportCost.setProjectHourCost(projectHourCost);
+									//内部采购成本
+									Double internalBudgetCost = projectHourCost*settlementCost;
+									projectSupportCost.setInternalBudgetCost(internalBudgetCost);
+									//工资,社保公积金,其他费用
+									Double sal = 0D;
+									Double socialSecurityFund = 0D;
+									Double otherExpense = 0D;
+									UserCost userCost = userCostRepository.findMaxByCostMonthAndUserId(costMonth, user.getId());
+									if(userCost != null){
+										sal = StringUtil.nullToDouble(userCost.getSal());
+										socialSecurityFund = StringUtil.nullToDouble(userCost.getSocialSecurityFund());
+										otherExpense = StringUtil.nullToDouble(userCost.getOtherExpense());
+									}else{
+										log.info("No UserCost founded belong to " + user.getLastName());
+									}
+									projectSupportCost.setSal(sal);
+									projectSupportCost.setSocialSecurityFund(socialSecurityFund);
+									projectSupportCost.setOtherExpense(otherExpense);
+									//单人月成本小计
+									Double userMonthCost = sal + socialSecurityFund + otherExpense;
+									projectSupportCost.setUserMonthCost(userMonthCost);
+									//工时成本
+									Double userHourCost = userMonthCost/168;
+									projectSupportCost.setUserHourCost(userHourCost);
+									//生产成本合计
+									Double productCost = userHourCost*projectHourCost;
+									projectSupportCost.setProductCost(productCost);
+									//生产毛利
+									Double grossProfit = internalBudgetCost - productCost;
+									projectSupportCost.setGrossProfit(grossProfit);
 								}
-								projectSupportCost.setProjectHourCost(projectHourCost);
-								//内部采购成本
-								Double internalBudgetCost = projectHourCost*settlementCost;
-								projectSupportCost.setInternalBdgetCost(internalBudgetCost);
-								//工资,社保公积金,其他费用
-								Double sal = 0D;
-								Double socialSecurityFund = 0D;
-								Double otherExpense = 0D;
-								UserCost userCost = userCostRepository.findMaxByCostMonthAndUserId(costMonth, user.getId());
-								if(userCost != null){
-									sal = StringUtil.nullToDouble(userCost.getSal());
-									socialSecurityFund = StringUtil.nullToDouble(userCost.getSocialSecurityFund());
-									otherExpense = StringUtil.nullToDouble(userCost.getOtherExpense());
-								}else{
-									log.info("No UserCost founded belong to " + user.getLastName());
-								}
-								projectSupportCost.setSal(sal);
-								projectSupportCost.setSocialSecurityFund(socialSecurityFund);
-								projectSupportCost.setOtherExpense(otherExpense);
-								//单人月成本小计
-								Double userMonthCost = sal + socialSecurityFund + otherExpense;
-								projectSupportCost.setUserMonthCost(userMonthCost);
-								//工时成本
-								Double userHourCost = userMonthCost/168;
-								projectSupportCost.setUserHourCost(userHourCost);
-								//生产成本合计
-								Double productCost = userHourCost*projectHourCost;
-								projectSupportCost.setProductCost(productCost);
-								//生产毛利
-								Double grossProfit = internalBudgetCost - productCost;
-								projectSupportCost.setGrossProfit(grossProfit);
 								projectSupportCost.setCreator(creator);
 								projectSupportCost.setCreateTime(ZonedDateTime.now());
 								projectSupportCostRepository.save(projectSupportCost);
@@ -241,13 +344,18 @@ public class AccountScheduledJob {
 						//实际使用天数
 						int realDays = 0;
 						if(projectInfo.getStatus() == ProjectInfo.STATUS_ADD){
-							realDays = DateUtil.getIntervalDaysOfExitDate2(Date.from(projectInfo.getStartDay().toInstant()), Date.from(projectInfo.getEndDay().toInstant())) + 1;
+							realDays = DateUtil.getIntervalDaysOfExitDate2(Date.from(projectInfo.getStartDay().toInstant()), DateUtil.lastSundayEnd()) + 1;
 						}else{
 							realDays = DateUtil.getIntervalDaysOfExitDate2(Date.from(projectInfo.getStartDay().toInstant()), Date.from(projectInfo.getUpdateTime().toInstant())) + 1;
 						}
 						projectSupportBonus.setRealDays(realDays);
 						//奖金调节比率
-						Double bonusAdjustRate = planDays/(realDays-1);
+						Double bonusAdjustRate = 0D;
+						if(realDays != 1){
+							bonusAdjustRate = StringUtil.nullToDouble(planDays/(realDays-1));
+						}else{
+							bonusAdjustRate = -1D;
+						}
 						projectSupportBonus.setBonusAdjustRate(bonusAdjustRate);
 						//奖金比率
 						Double bonusRate = 0D; 
@@ -313,7 +421,7 @@ public class AccountScheduledJob {
 						//实际使用天数
 						Integer psbRealDays = 0;
 						if(contractInfo.getStatus() == ContractInfo.STATUS_VALIDABLE){
-							psbRealDays = DateUtil.getIntervalDaysOfExitDate2(Date.from(contractInfo.getStartDay().toInstant()), Date.from(contractInfo.getEndDay().toInstant())) + 1;
+							psbRealDays = DateUtil.getIntervalDaysOfExitDate2(Date.from(contractInfo.getStartDay().toInstant()), DateUtil.lastSundayEnd()) + 1;
 						}else{
 							psbRealDays = DateUtil.getIntervalDaysOfExitDate2(Date.from(contractInfo.getStartDay().toInstant()), Date.from(contractInfo.getUpdateTime().toInstant())) + 1;
 						}
@@ -322,7 +430,13 @@ public class AccountScheduledJob {
 						Double psbBonusAdjustRate = psbPlanDays/(psbRealDays-1);
 						productSalesBonus.setBonusAdjustRate(psbBonusAdjustRate);
 						//奖金比率
-						Double psbBonusRate = StringUtil.nullToDouble(bonusRateRepository.findByDeptTypeAndContractType(deptType.getId(),contractType).getRate());
+						Double psbBonusRate = 0D;
+						BonusRate br = bonusRateRepository.findByDeptTypeAndContractType(deptType.getId(),contractType);
+						if(br != null){
+							psbBonusRate = br.getRate();
+						}else{
+							log.info("No BonusRate Founded belong to DeptType " + deptType.getId());
+						}
 						productSalesBonus.setBonusRate(psbBonusRate);
 						//奖金确认比例
 						Double psbBonusAcceptanceRate = psbBonusRate*(1+psbBonusAdjustRate)*psbAcceptanceRate;
@@ -333,6 +447,9 @@ public class AccountScheduledJob {
 						if(purchaseItems != null && purchaseItems.size() > 0){
 							for(PurchaseItem purchaseItem : purchaseItems){
 								ShareInfo shareInfo = shareInfoRepository.findByProductPriceIdAndDeptId(purchaseItem.getProductPriceId(), contractBudgetRepository.findOne(purchaseItem.getBudgetId()).getDeptId());
+								if(shareInfo == null){
+									continue;
+								}
 								psbBonusBasis += purchaseItem.getTotalAmount()*StringUtil.nullToDouble(shareInfo.getShareRate());
 							}
 						}else{
@@ -402,7 +519,11 @@ public class AccountScheduledJob {
 					Double sbBonusBasis = sbReceiveTotal - sbTaxes - sbShareCost - sbThirdPartyPurchase;
 					salesBonus.setBonusBasis(sbBonusBasis);
 					//奖金比例
-					Double sbBonusRate = StringUtil.nullToDouble(bonusRateRepository.findByDeptIdAndContractType(contractInfo.getDeptId(),contractType).getRate());
+					Double sbBonusRate = 0D;
+					BonusRate br = bonusRateRepository.findByDeptIdAndContractType(contractInfo.getDeptId(),contractType);
+					if(br != null){
+						sbBonusRate = br.getRate();
+					}
 					salesBonus.setBonusRate(sbBonusRate);
 					//本期奖金
 					Double sbCurrentBonus = sbBonusBasis*sbBonusRate;
@@ -427,7 +548,11 @@ public class AccountScheduledJob {
 					Double cbBonusBasis =  sbReceiveTotal - sbTaxes - sbShareCost - sbThirdPartyPurchase;
 					consultantsBonus.setBonusBasis(cbBonusBasis);
 					//奖金比例
-					Double cbBonusRate = StringUtil.nullToDouble(bonusRateRepository.findByDeptIdAndContractType(contractInfo.getConsultantsDeptId(),contractType).getRate());
+					Double cbBonusRate = 0D;
+					BonusRate br = bonusRateRepository.findByDeptIdAndContractType(contractInfo.getConsultantsDeptId(),contractType);
+					if(br != null){
+						cbBonusRate = br.getRate();
+					}
 					consultantsBonus.setBonusRate(cbBonusRate);
 					//项目分润比例
 					Double cbConsultantsShareRate = contractInfo.getConsultantsShareRate();
@@ -503,7 +628,10 @@ public class AccountScheduledJob {
 				Double poGrossProfit = poIdentifiableIncome*poContractFinishRate - poShareCost - poThirdPartyPurchase - poInternalPurchase - poBonus;
 				projectOverall.setGrossProfit(poGrossProfit);
 				//毛利率
-				Double poGrossProfitRate = poGrossProfit/(poIdentifiableIncome*poContractFinishRate);
+				Double poGrossProfitRate = 0D;
+				if(poIdentifiableIncome*poContractFinishRate != 0){
+					poGrossProfitRate = poGrossProfit/(poIdentifiableIncome*poContractFinishRate);
+				}
 				projectOverall.setGrossProfitRate(poGrossProfitRate);
 				projectOverall.setCreator(creator);
 				projectOverall.setCreateTime(ZonedDateTime.now());
@@ -541,6 +669,8 @@ public class AccountScheduledJob {
 					cipTotalAmount += StringUtil.nullToDouble(projectSupportCostRepository.findSumGrossProfitByContractIdAndDeptTypeAndStatWeek(contractId, deptType.getId(), statWeek));
 					cipTotalAmount += StringUtil.nullToDouble(productSalesBonusRepository.findSumBonusBasisByContractIdAndDeptTypeAndStatWeek(contractId, deptType.getId(), statWeek));
 					contractInternalPurchase.setTotalAmount(cipTotalAmount);
+					contractInternalPurchase.setCreator(creator);
+					contractInternalPurchase.setCreateTime(ZonedDateTime.now());
 					contractInternalPurchaseRepository.save(contractInternalPurchase);
 					
 					ContractProjectBonus contractProjectBonus = new ContractProjectBonus();

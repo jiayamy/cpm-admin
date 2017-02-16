@@ -14,7 +14,7 @@ public interface ProjectUserRepository extends JpaRepository<ProjectUser,Long> {
 	@Query("from ProjectUser pu where pu.userId = ?1 and pu.projectId = ?2")
 	List<ProjectUser> findByUserId(Long userId, Long projectId);
 	
-	@Query("from ProjectUser where projectId = ?1 and joinDay <= workDay and leaveDay >= workDay")
-	List<ProjectUser> findByProjectIdAndWorkDay(Long projectId, Long workDay);
+	@Query("from ProjectUser where projectId = ?1")
+	List<ProjectUser> findByProjectId(Long projectId);
 	
 }

@@ -14,4 +14,7 @@ public interface SalesBonusRespository extends JpaRepository<SalesBonus,Long>{
 	
 	@Query("select sum(currentBonus) from SalesBonus where contractId = ?1 and statWeek = ?2")
 	Double findSumCurrentBonusByContractIdAndStatWeek(Long contractId, Long statWeek);
+	
+	@Query(" from SalesBonus where statWeek = ?1")
+	List<SalesBonus> findByStatWeek(Long statWeek);
 }
