@@ -128,12 +128,6 @@
                                 <span data-translate="global.menu.project.projectTimesheet">Project Timesheet</span>
                             </a>
                         </li>
-                        <li ui-sref-active="active" has-authority="">
-                            <a ui-sref="project-overall-controller" ng-click="vm.collapseNavbar()">
-                                <span class="glyphicon glyphicon-copyright-mark"></span>&nbsp;
-                                <span data-translate="global.menu.project.projectOverAllController">Project OverAll Controller</span>
-                            </a>
-                        </li>
                     </ul>
                 </li>
                 <li ng-class="{active: vm.$state.includes('timesheet')}" has-authority="ROLE_TIMESHEET" ng-switch-when="true" uib-dropdown class="dropdown pointer">
@@ -194,6 +188,12 @@
                             <a ui-sref="sales-bonus" ng-click="vm.collapseNavbar()">
                                 <span class=" glyphicon glyphicon-info-sign"></span>&nbsp;
                                 <span data-translate="global.menu.stat.salesBonus">Sales Bonus</span>
+                            </a>
+                        </li>
+                        <li ui-sref-active="active" has-authority="">
+                            <a ui-sref="project-overall-controller" ng-click="vm.collapseNavbar()">
+                                <span class=" glyphicon glyphicon-info-sign"></span>&nbsp;
+                                <span data-translate="global.menu.project.projectOverAllController">Project OverAll Controller</span>
                             </a>
                         </li>
                     </ul>
