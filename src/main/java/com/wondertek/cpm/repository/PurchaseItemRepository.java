@@ -19,4 +19,7 @@ public interface PurchaseItemRepository extends JpaRepository<PurchaseItem,Long>
 	
 	@Query(" from PurchaseItem where contractId = ?1 and source = ?2 and type = ?3 and status = 1 ")
 	List<PurchaseItem> findByContractIdAndSourceAndType(Long contractId, Integer source, Integer type);
+	
+	@Query("select wpi from PurchaseItem wpi, ContractBudget wcb, DeptInfo wdi where wpi.budgetId = wcb.id and wcb.deptId = wdi.id and wpi.contractId = ?1 and wdi.type = ?2 and wpi.source = ?3 and wpi.type = ?4 and wpi.status = 1")
+	List<PurchaseItem> findByContractIdAndDeptTypeAndSourceAndType(Long contractId, Long deptType, Integer source, Integer type);
 }

@@ -1,0 +1,121 @@
+<div>
+    <h2 data-translate="cpmApp.consultantBonus.contractRecord.title">Consultant Record</h2>
+    <jhi-alert></jhi-alert>
+    <!-- <div class="container-fluid">
+        <div class="row">
+            <form name="searchForm" class="form-horizontal">
+	           <div class="form-group">
+	              	<div class="col-sm-4">
+		          		<label class="col-sm-4 control-label" data-translate="cpmApp.consultantBonus.contractSerialNum">Contract serialnum</label>
+			            <div class="col-sm-8">
+			            	<select class="form-control" ng-model="vm.searchQuery.contractId" name="contractId"
+				            	ng-options="contractInfo.val for contractInfo in vm.contractInfos track by contractInfo.key">
+				            	<option value="">--合同编号--</option>
+				            </select>
+			            </div>
+		            </div>
+		            <div class="col-sm-4">
+       					<label class="col-sm-4 control-label" data-translate="cpmApp.consultantBonus.fromDate">From Date</label>
+		            	<div class="col-sm-8">
+	                   		<div class="input-group">
+			                    <input id="search_fromDate" type="text" class="form-control" name="fromDate" datetime-picker="yyyyMMdd"
+			                    	enable-time="false" readonly
+			                     	ng-model="vm.searchQuery.fromDate" is-open="vm.datePickerOpenStatus.fromDate"
+			                      />
+			                    <span class="input-group-btn">
+			                        <button type="button" class="btn btn-default" ng-click="vm.openCalendar('fromDate')"><i class="glyphicon glyphicon-calendar"></i></button>
+			                    </span>
+		                	</div>
+	            		</div>
+       				</div>
+       				<div class="col-sm-4">
+       					<label class="col-sm-4 control-label" data-translate="cpmApp.consultantBonus.toDate">To Date</label>
+		            	<div class="col-sm-8">
+	                   		<div class="input-group">
+			                    <input id="search_toDate" type="text" class="form-control" name="toDate" datetime-picker="yyyyMMdd"
+			                    	enable-time="false" readonly
+			                     	ng-model="vm.searchQuery.toDate" is-open="vm.datePickerOpenStatus.toDate"
+			                      />
+			                    <span class="input-group-btn">
+			                        <button type="button" class="btn btn-default" ng-click="vm.openCalendar('toDate')"><i class="glyphicon glyphicon-calendar"></i></button>
+			                    </span>
+		                	</div>
+	            		</div>
+       				</div>
+				</div>
+				<div class="form-group">
+		            	<div class="col-sm-4">
+		            		&nbsp;
+		            	</div>
+		            	<div class="col-sm-4">
+		            		&nbsp;
+		            	</div>
+			            <div class="col-sm-4 input-group pull-right">
+			            	<div class="col-sm-4">
+			            		&nbsp;
+			            	</div>
+			            	<div class="col-sm-8">
+			            		 <span  class="width-min input-group-btn" >
+			                        <button class="btn btn-info" ng-click="vm.search()">
+			                            <span class="glyphicon glyphicon-search"></span>
+			                            <span class="hidden-xs hidden-sm" data-translate="entity.action.search"></span>
+			                        </button>
+			                    </span>
+			                    <span class="width-min input-group-btn" ng-if="vm.haveSearch">
+			                        <button class="btn btn-info" ng-click="vm.clear()">
+			                            <span class="glyphicon glyphicon-trash"></span>
+			                            <span class="hidden-xs hidden-sm" data-translate="entity.action.clear"></span>
+			                        </button>
+			                    </span>
+			            	</div>
+			            </div>
+			    	</div>
+           </form>
+        </div>
+    </div> -->
+    <br/>
+    <div class="table-responsive">
+        <table class="jh-table table table-striped">
+            <thead>
+                <tr jh-sort="vm.predicate" ascending="vm.reverse" callback="vm.transition()">
+                    <th jh-sort-by="m.id"><span data-translate="global.field.id">ID</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="i.serialNum"><span data-translate="cpmApp.consultantBonus.serialNum">Contract serialNum</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="i.amount"><span data-translate="cpmApp.consultantBonus.amount">Contract amount</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="m.consultantsSerialNum"><span data-translate="cpmApp.consultantBonus.consultantsSerialNum">Consultants SerialNum</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="m.consultants"><span data-translate="cpmApp.consultantBonus.consultantsName">Consultants Name</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="m.bonusBasis"><span data-translate="cpmApp.consultantBonus.bonusBasis">Bonus Basis</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="m.bonusRate"><span data-translate="cpmApp.consultantBonus.bonusRate">Bonus Rate</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="m.consultantsShareRate"><span data-translate="cpmApp.consultantBonus.consultantsShareRate">Consultants Share Rate</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="m.currentBonus"><span data-translate="cpmApp.consultantBonus.currentBonus">Current Bonus</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="m.statWeek"><span data-translate="cpmApp.consultantBonus.statWeek">Stat Time</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="consultantBonus in vm.consultantBonuss track by consultantBonus.id">
+                    <!-- <td><a ui-sref="consultant-bonus-detail({id:consultantBonus.id})">{{consultantBonus.id}}</a></td> -->
+                    <td>{{consultantBonus.id}}</a></td>
+                    <td>{{consultantBonus.serialNum}}</td>
+                    <td>{{consultantBonus.contractAmount}}</td>
+                    <td>{{consultantBonus.consultantsSerialNum}}</td>
+                    <td>{{consultantBonus.consultantsName}}</td>
+                    <td>{{consultantBonus.bonusBasis}}</td>
+                    <td>{{consultantBonus.bonusRate}}%</td>
+                    <td>{{consultantBonus.consultantsShareRate}}%</td>
+                    <td>{{consultantBonus.currentBonus}}</td>
+                    <td>{{consultantBonus.statWeek}}</td>
+                    <!-- <td>{{consultantBonus.statWeek | date:'medium'}}</td> -->
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="text-center">
+        <jhi-item-count page="vm.page" total="vm.queryCount" items-per-page="vm.itemsPerPage"></jhi-item-count>
+        <uib-pagination class="pagination-sm" total-items="vm.totalItems" items-per-page="vm.itemsPerPage" ng-model="vm.page" ng-change="vm.transition()"></uib-pagination>
+    </div>
+    <button type="submit"
+            ui-sref="{{vm.previousState}}"
+            class="btn btn-info">
+        <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span data-translate="entity.action.back"> Back</span>
+    </button>
+</div>
