@@ -36,10 +36,12 @@
                 "projectUser": "项目人员",
                 "projectCost": "项目报销",
                 "projectCostTimesheet": "工时成本",
-                "projectTimesheet": "项目日报"
+                "projectTimesheet": "项目日报",
+                "projectOverAllController": "项目总体情况控制"
             },
             "stat":{
             	"main":"统计报表",
+            	"consultantBonus": "咨询奖金",
             	"salesBonus":"销售项目信息",
                 "contractWeeklyStat": "合同周统计",
                 "contractMonthlyStat": "合同月统计",

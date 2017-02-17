@@ -1,0 +1,143 @@
+<div>
+    <h2 data-translate="cpmApp.projectOverallController.home.title">Project OverAll Controller</h2>
+    <jhi-alert></jhi-alert>
+    <div class="container-fluid">
+    	<div class="row">
+    		<form name="searchForm" class="form-horizontal">
+				<div class="form-group">
+		            <div class="col-sm-4">
+		          		<label class="col-sm-4 control-label" data-translate="cpmApp.projectOverallController.statWeek">Start Week</label>
+			            <div class="col-sm-8">
+				                <p class="input-group">
+				                    <input id="search_fromDate" type="text" class="form-control" name="fromDate" datetime-picker="yyyyMMdd"
+					           		 		enable-time="false" ng-model="vm.searchQuery.fromDate" is-open="vm.datePickerOpenStatus.fromDate"/>
+					          		<span class="input-group-btn">
+					           			<button type="button" class="btn btn-default" ng-click="vm.openCalendar('fromDate')"><i class="glyphicon glyphicon-calendar"></i></button>
+					            	</span>
+				                </p>
+			            </div>
+		            </div>
+		            <div class="col-sm-4">
+		          		<label class="col-sm-4 control-label" data-translate="cpmApp.projectOverallController.toDate">To Date</label>
+			            <div class="col-sm-8">
+			                <p class="input-group">
+			                    <input id="search_toDate" type="text" class="form-control" name="toDate" datetime-picker="yyyyMMdd"
+				           		 		enable-time="false" ng-model="vm.searchQuery.toDate" is-open="vm.datePickerOpenStatus.toDate"/>
+				          		<span class="input-group-btn">
+				           			<button type="button" class="btn btn-default" ng-click="vm.openCalendar('toDate')"><i class="glyphicon glyphicon-calendar"></i></button>
+				            	</span>
+			                </p>
+			            </div>
+				    </div>
+           		</div>
+           		<div class="form-group">
+           			<div class="col-sm-4">
+           				<label class="col-sm-4 control-label" data-translate="cpmApp.projectOverallController.serialNum">Serial Num</label>
+                  		<div class="col-sm-8">
+	     					<select class="form-control" ng-model="vm.searchQuery.contractId"
+				            	ng-options="contractInfo.val for contractInfo in vm.contractInfos track by contractInfo.key">
+				            	<option value="">--合同编号--</option>
+				            </select>
+     					</div> 
+           			</div>
+           			<div class="col-sm-4">
+		          		<label class="col-sm-4 control-label" data-translate="cpmApp.projectOverallController.contractResponse">User Name</label>
+	                    <div class="col-sm-8" >
+		                   	<div class="input-group">
+				          		<input type="text" class="form-control" name="userName"
+				                  	ng-model="vm.searchQuery.userName" readonly ng-required="true" ng-minlength="1"
+			                   	/>
+			                   	<span class="input-group-btn">
+			                     	<button type="button" class="btn btn-default" ui-sref="project-overall-controller.queryDept({selectType:3,showChild:true})"><i class="glyphicon glyphicon-user"></i></button>
+			                 	</span>
+			            	</div>
+	                    </div>
+	            	</div>
+           		</div>
+           		<div class="form-group">
+           			<div class="col-sm-6 pull-right input-group">
+		            	<div class="col-sm-4">
+		            		&nbsp;
+		            	</div>
+		            	<div class="col-sm-8" >
+			            	<span  class="width-min" >
+		                        <button class="btn btn-info" ng-click="vm.search()">
+		                            <span class="glyphicon glyphicon-search"></span>
+		                            <span class="hidden-xs hidden-sm" data-translate="entity.action.search"></span>
+		                        </button>
+		                    </span>
+		                    <span class="width-min" ng-if="vm.haveSearch">
+		                        <button class="btn btn-info" ng-click="vm.clear()">
+		                            <span class="glyphicon glyphicon-trash"></span>
+		                            <span class="hidden-xs hidden-sm" data-translate="entity.action.clear"></span>
+		                        </button>
+		                    </span>
+		            	</div>
+		            </div>
+           		</div>	
+	            </div>
+			</form>
+    	</div>
+    </div>
+    <br/>
+    <div class="table-responsive">
+        <table class="jh-table table table-striped" style="table-layout: fixed; ">
+            <thead>
+                <tr jh-sort="vm.predicate" ascending="vm.reverse" callback="vm.transition()">
+                    <th style="width:80px;" jh-sort-by="wpo.contract_response"><span data-translate="cpmApp.projectOverallController.contractResponse">Serial Num</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th style="width:110px;" jh-sort-by="wpo.contract_id"><span data-translate="cpmApp.projectOverallController.contractId">Name</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th style="width:130px;" jh-sort-by="wpo.contract_amount"><span data-translate="cpmApp.projectOverallController.contractAmount">Contract Id</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th style="width:80px;" jh-sort-by="wpo.tax_rate"><span data-translate="cpmApp.projectOverallController.taxRate">Pm</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th style="width:110px;" jh-sort-by="wpo.identifiable_income"><span data-translate="cpmApp.projectOverallController.identifiableIncome">Start Day</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th style="width:60px;" jh-sort-by="wpo.contract_finish_rate"><span data-translate="cpmApp.projectOverallController.contractFinishRate">End Day</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th style="width:110px;" jh-sort-by="wpo.acceptance_income"><span data-translate="cpmApp.projectOverallController.acceptanceIncome">Finish Rate</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th style="width:110px;" jh-sort-by="wpo.receive_total"><span data-translate="cpmApp.projectOverallController.receiveTotal">Status</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th style="width:110px;" jh-sort-by="wpo.receivable_account"><span data-translate="cpmApp.projectOverallController.receivableAccount">Update Time</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th style="width:110px;" jh-sort-by="wpo.share_cost"><span data-translate="cpmApp.projectOverallController.shareCost">Update Time</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th style="width:110px;" jh-sort-by="wpo.third_party_purchase"><span data-translate="cpmApp.projectOverallController.thirdPartyPurchase">Update Time</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th style="width:60px;" jh-sort-by="wpo.internal_purchase"><span data-translate="cpmApp.projectOverallController.internalPurchase">Update Time</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th style="width:110px;" jh-sort-by="wpo.bonus_"><span data-translate="cpmApp.projectOverallController.bonus">Update Time</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th style="width:110px;" jh-sort-by="wpo.gross_profit"><span data-translate="cpmApp.projectOverallController.grossProfit">Update Time</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th style="width:110px;" jh-sort-by="wpo.gross_profitRate"><span data-translate="cpmApp.projectOverallController.grossProfitRate">Update Time</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th style="width:60px;">&nbsp;</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="projectOverAll in vm.projectOverAlls track by projectOverAll.id">
+                    <td><a ui-sref="project-info-detail({id:projectOverAll.id})">{{projectOverAll.salesman}}</a></td>
+                    <td>{{projectOverAll.serialNum}}</td>
+                    <td>{{projectOverAll.contractAmount}}</td>
+                    <td>{{projectOverAll.taxRate}}</td>
+                    <td>{{projectOverAll.identifiableIncome}}</td>
+                    <td>{{projectOverAll.contractFinishRate}}</td>
+                    <td>{{projectOverAll.acceptanceIncome}}</td>
+                    <td>{{projectOverAll.receiveTotal}}</td>
+                    <td>{{projectOverAll.receivableAccount}}</td>
+                    <td>{{projectOverAll.shareCost}}</td>
+                    <td>{{projectOverAll.thirdPartyPurchase}}</td>
+                    <td>{{projectOverAll.internalPurchase}}</td>
+                    <td>{{projectOverAll.bonus}}</td>
+                    <td>{{projectOverAll.grossProfit}}</td>
+                    <td>{{projectOverAll.grossProfitRate}}</td>
+                    <td class="text-right">
+                        <div class="btn-group flex-btn-group-container">
+                            <button type="submit"
+                                    ui-sref="project-overall-controller-detail({id:projectOverAll.id})"
+                                    class="btn btn-info btn-sm">
+                                <span class="glyphicon glyphicon-eye-open"></span>
+                            </button>
+                            <button type="button" class="btn btn-primary" ui-sref="user-cost.upload">
+		           			 	<span class="glyphicon glyphicon-import"></span>
+	                			<span class=""  data-translate="cpmApp.projectOverallController.home.export">Import Excel</span>
+                			</button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="text-center">
+        <jhi-item-count page="vm.page" total="vm.queryCount" items-per-page="vm.itemsPerPage"></jhi-item-count>
+        <uib-pagination class="pagination-sm" total-items="vm.totalItems" items-per-page="vm.itemsPerPage" ng-model="vm.page" ng-change="vm.transition()"></uib-pagination>
+    </div>
+</div>
