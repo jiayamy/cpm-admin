@@ -11,4 +11,7 @@ public interface ContractInternalPurchaseRepository extends JpaRepository<Contra
 	
 	@Query(" from ContractInternalPurchase where contractId = ?1")
 	List<ContractInternalPurchase> findByContractId(Long contractId);
+	
+	@Query(" from ContractInternalPurchase where statWeek  = ?1")
+	List<ContractInternalPurchase> findByStatWeek(Long statWeek);
 }

@@ -51,6 +51,9 @@ public interface UserTimesheetRepository extends JpaRepository<UserTimesheet,Lon
 	@Query(" from UserTimesheet where workDay = ?1 and type = ?2 and status = 1")
 	public List<UserTimesheet> findByWorkDayAndType(Long workDay, Integer type);
 	
-	@Query(" from UserTimesheet where userId = ?1 and type = ?2 and objId = ?3 and status = 1")
-	public List<UserTimesheet> findByUserIdAndTypeAndObjId(Long userId, Integer type, Long objId);
+	@Query(" from UserTimesheet where userId = ?1 and type = ?2 and objId = ?3 and workDay <= ?4 and status = 1")
+	public List<UserTimesheet> findByUserIdAndTypeAndObjIdAndWorkDay(Long userId, Integer type, Long objId, Long workDay);
+	
+	@Query(" from UserTimesheet where userId = ?1 and type = ?2 and objId = ?3 and wordDay >= ?4 and workDay <= ?5 and status = 1")
+	public List<UserTimesheet> findByUserIdAndTypeAndObjIdAndTime(Long userId, Integer type, Long objId, Long startDay, Long endDay);
 }

@@ -26,7 +26,9 @@ import com.wondertek.cpm.domain.DeptInfo;
 import com.wondertek.cpm.domain.HolidayInfo;
 import com.wondertek.cpm.domain.User;
 import com.wondertek.cpm.domain.UserTimesheet;
+import com.wondertek.cpm.domain.vo.ContractInfoVo;
 import com.wondertek.cpm.domain.vo.LongValue;
+import com.wondertek.cpm.domain.vo.ProjectInfoVo;
 import com.wondertek.cpm.domain.vo.UserTimesheetForOther;
 import com.wondertek.cpm.domain.vo.UserTimesheetForUser;
 import com.wondertek.cpm.repository.ContractUserDao;
@@ -58,6 +60,12 @@ public class UserTimesheetService {
     private UserRepository userRepository;
     @Inject
     private HolidayInfoRepository holidayInfoRepository;
+    @Inject
+    private HolidayInfoService holidayInfoService;
+    @Inject
+    private ProjectInfoService projectInfoService;
+    @Inject
+    private ContractInfoService contractInfoService;
     
     @Autowired
     private ProjectUserDao projectUserDao;
@@ -496,6 +504,9 @@ public class UserTimesheetService {
     		if(lds[0] == 0 || lds[1] == 0 || lds[2] == 0 || lds[3] == 0 || lds[4] == 0 || lds[5] == 0 || lds[6] == 0){
     			return "cpmApp.userTimesheet.save.paramError";
     		}
+    		if(dayTimesheet.getType() != UserTimesheet.TYPE_DAY){//类型不是日期
+    			return "cpmApp.userTimesheet.save.paramError";
+    		}
     		//地区
     		UserTimesheetForUser areaTimesheet = userTimesheetForUsers.get(1);
     		String[] areas = new String[7];
@@ -506,6 +517,9 @@ public class UserTimesheetService {
     		areas[4] = StringUtil.null2Str(areaTimesheet.getData5());
     		areas[5] = StringUtil.null2Str(areaTimesheet.getData6());
     		areas[6] = StringUtil.null2Str(areaTimesheet.getData7());
+    		if(areaTimesheet.getType() != UserTimesheet.TYPE_AREA){//类型不是地区
+    			return "cpmApp.userTimesheet.save.paramError";
+    		}
     		//判定日报
     		Double td1 = 0d;
     		Double td2 = 0d;
@@ -531,6 +545,10 @@ public class UserTimesheetService {
     			UserTimesheetForUser userTimesheetForUser = userTimesheetForUsers.get(i);
     			if(userTimesheetForUser.getUserId() == null || userTimesheetForUser.getUserId() != userId.longValue()){
     				return "cpmApp.userTimesheet.save.noPermit";
+    			}
+    			if(!(userTimesheetForUser.getType() == UserTimesheet.TYPE_CONTRACT || userTimesheetForUser.getType() == UserTimesheet.TYPE_PROJECT
+    					|| userTimesheetForUser.getType() == UserTimesheet.TYPE_PUBLIC)){//类型不是合同、项目、公共成本的
+    				return "cpmApp.userTimesheet.save.paramError";
     			}
     			d1 = StringUtil.nullToDouble(userTimesheetForUser.getData1());
     			d2 = StringUtil.nullToDouble(userTimesheetForUser.getData2());
@@ -558,57 +576,57 @@ public class UserTimesheetService {
         		if(userTimesheetForUser.getId1() != null || d1 != 0){
         			if(userTimesheetForUser.getId1() != null){
         				ids.add(userTimesheetForUser.getId1());
-        				updateList.add(createUserTimesheet(userTimesheetForUser,userName,updator,userTimesheetForUser.getId1(),d1,lds[0],areas[0]));
+        				updateList.add(createUserTimesheetForUser(userTimesheetForUser,userName,updator,userTimesheetForUser.getId1(),d1,lds[0],areas[0]));
         			}else{
-        				saveList.add(createUserTimesheet(userTimesheetForUser,userName,updator,userTimesheetForUser.getId1(),d1,lds[0],areas[0]));
+        				saveList.add(createUserTimesheetForUser(userTimesheetForUser,userName,updator,userTimesheetForUser.getId1(),d1,lds[0],areas[0]));
         			}
         		}
         		if(userTimesheetForUser.getId2() != null || d2 != 0){
         			if(userTimesheetForUser.getId2() != null){
         				ids.add(userTimesheetForUser.getId2());
-        				updateList.add(createUserTimesheet(userTimesheetForUser,userName,updator,userTimesheetForUser.getId2(),d2,lds[1],areas[1]));
+        				updateList.add(createUserTimesheetForUser(userTimesheetForUser,userName,updator,userTimesheetForUser.getId2(),d2,lds[1],areas[1]));
         			}else{
-        				saveList.add(createUserTimesheet(userTimesheetForUser,userName,updator,userTimesheetForUser.getId2(),d2,lds[1],areas[1]));
+        				saveList.add(createUserTimesheetForUser(userTimesheetForUser,userName,updator,userTimesheetForUser.getId2(),d2,lds[1],areas[1]));
         			}
         		}
         		if(userTimesheetForUser.getId3() != null || d3 != 0){
         			if(userTimesheetForUser.getId3() != null){
         				ids.add(userTimesheetForUser.getId3());
-        				updateList.add(createUserTimesheet(userTimesheetForUser,userName,updator,userTimesheetForUser.getId3(),d3,lds[2],areas[2]));
+        				updateList.add(createUserTimesheetForUser(userTimesheetForUser,userName,updator,userTimesheetForUser.getId3(),d3,lds[2],areas[2]));
         			}else{
-        				saveList.add(createUserTimesheet(userTimesheetForUser,userName,updator,userTimesheetForUser.getId3(),d3,lds[2],areas[2]));
+        				saveList.add(createUserTimesheetForUser(userTimesheetForUser,userName,updator,userTimesheetForUser.getId3(),d3,lds[2],areas[2]));
         			}
         		}
         		if(userTimesheetForUser.getId4() != null || d4 != 0){
         			if(userTimesheetForUser.getId4() != null){
         				ids.add(userTimesheetForUser.getId4());
-        				updateList.add(createUserTimesheet(userTimesheetForUser,userName,updator,userTimesheetForUser.getId4(),d4,lds[3],areas[3]));
+        				updateList.add(createUserTimesheetForUser(userTimesheetForUser,userName,updator,userTimesheetForUser.getId4(),d4,lds[3],areas[3]));
         			}else{
-        				saveList.add(createUserTimesheet(userTimesheetForUser,userName,updator,userTimesheetForUser.getId4(),d4,lds[3],areas[3]));
+        				saveList.add(createUserTimesheetForUser(userTimesheetForUser,userName,updator,userTimesheetForUser.getId4(),d4,lds[3],areas[3]));
         			}
         		}
         		if(userTimesheetForUser.getId5() != null || d5 != 0){
         			if(userTimesheetForUser.getId5() != null){
         				ids.add(userTimesheetForUser.getId5());
-        				updateList.add(createUserTimesheet(userTimesheetForUser,userName,updator,userTimesheetForUser.getId5(),d5,lds[4],areas[4]));
+        				updateList.add(createUserTimesheetForUser(userTimesheetForUser,userName,updator,userTimesheetForUser.getId5(),d5,lds[4],areas[4]));
         			}else{
-        				saveList.add(createUserTimesheet(userTimesheetForUser,userName,updator,userTimesheetForUser.getId5(),d5,lds[4],areas[4]));
+        				saveList.add(createUserTimesheetForUser(userTimesheetForUser,userName,updator,userTimesheetForUser.getId5(),d5,lds[4],areas[4]));
         			}
         		}
         		if(userTimesheetForUser.getId6() != null || d6 != 0){
         			if(userTimesheetForUser.getId6() != null){
         				ids.add(userTimesheetForUser.getId6());
-        				updateList.add(createUserTimesheet(userTimesheetForUser,userName,updator,userTimesheetForUser.getId6(),d6,lds[5],areas[5]));
+        				updateList.add(createUserTimesheetForUser(userTimesheetForUser,userName,updator,userTimesheetForUser.getId6(),d6,lds[5],areas[5]));
         			}else{
-        				saveList.add(createUserTimesheet(userTimesheetForUser,userName,updator,userTimesheetForUser.getId6(),d6,lds[5],areas[5]));
+        				saveList.add(createUserTimesheetForUser(userTimesheetForUser,userName,updator,userTimesheetForUser.getId6(),d6,lds[5],areas[5]));
         			}
         		}
         		if(userTimesheetForUser.getId7() != null || d7 != 0){
         			if(userTimesheetForUser.getId7() != null){
         				ids.add(userTimesheetForUser.getId7());
-        				updateList.add(createUserTimesheet(userTimesheetForUser,userName,updator,userTimesheetForUser.getId7(),d7,lds[6],areas[6]));
+        				updateList.add(createUserTimesheetForUser(userTimesheetForUser,userName,updator,userTimesheetForUser.getId7(),d7,lds[6],areas[6]));
         			}else{
-        				saveList.add(createUserTimesheet(userTimesheetForUser,userName,updator,userTimesheetForUser.getId7(),d7,lds[6],areas[6]));
+        				saveList.add(createUserTimesheetForUser(userTimesheetForUser,userName,updator,userTimesheetForUser.getId7(),d7,lds[6],areas[6]));
         			}
         		}
     		}
@@ -709,7 +727,7 @@ public class UserTimesheetService {
     	}
 	}
 
-	private UserTimesheet createUserTimesheet(UserTimesheetForUser userTimesheetForUser,String userName, String updator, Long id, Double realInput,Long workDay,String workArea) {
+	private UserTimesheet createUserTimesheetForUser(UserTimesheetForUser userTimesheetForUser,String userName, String updator, Long id, Double realInput,Long workDay,String workArea) {
 		UserTimesheet userTimesheet = new UserTimesheet();
 		userTimesheet.setAcceptInput(realInput);
 		userTimesheet.setCreateTime(ZonedDateTime.now());
@@ -781,11 +799,6 @@ public class UserTimesheetService {
 		List<UserTimesheetForOther> returnList = new ArrayList<UserTimesheetForOther>();
 		//查询当天的周一至周日
 		String[] ds = DateUtil.getWholeWeekByDate(workDay);
-		//添加第一行日期
-		returnList.add(new UserTimesheetForOther(UserTimesheet.TYPE_DAY,ds[0],ds[1],ds[2],ds[3],ds[4],ds[5],ds[6]));
-		if(userTimesheet == null){//没有权限，直接返回日期列表
-			return returnList;
-		}
 		Long[] lds = new Long[7];
 		lds[0] = StringUtil.nullToLong(ds[0]);
 		lds[1] = StringUtil.nullToLong(ds[1]);
@@ -795,7 +808,18 @@ public class UserTimesheetService {
 		lds[5] = StringUtil.nullToLong(ds[5]);
 		lds[6] = StringUtil.nullToLong(ds[6]);
 		
+		//添加默认日期
+		addDays(returnList,ds,lds);
+		if(userTimesheet == null){//没有权限，直接返回日期列表
+			return returnList;
+		}
+		//日期重新整理
 		Long objId = userTimesheet.getObjId();
+		UserTimesheetForOther dayInfo = returnList.get(0);
+		dayInfo.setObjId(objId);
+		returnList.clear();
+		returnList.add(dayInfo);
+		
 		//查询现有的所有记录
 		List<UserTimesheet> list = userTimesheetDao.getByWorkDayAndObjType(lds[0],lds[6],objId,type);
 		
@@ -811,6 +835,43 @@ public class UserTimesheetService {
 		}
 		return returnList;
 	}
+	/**
+	 * 添加日期
+	 */
+	private void addDays(List<UserTimesheetForOther> returnList, String[] ds, Long[] lds) {
+		Map<Long,Long> holidayMaps = holidayInfoService.findHolidayByCurrDay(StringUtil.longArrayToLongArray(lds));
+		String data1 = ds[0];
+		String data2 = ds[1];
+		String data3 = ds[2];
+		String data4 = ds[3];
+		String data5 = ds[4];
+		String data6 = ds[5];
+		String data7 = ds[6];
+		if(!holidayMaps.containsKey(lds[0])){
+			data1 += "*";
+		}
+		if(!holidayMaps.containsKey(lds[1])){
+			data2 += "*";
+		}
+		if(!holidayMaps.containsKey(lds[2])){
+			data3 += "*";
+		}
+		if(!holidayMaps.containsKey(lds[3])){
+			data4 += "*";
+		}
+		if(!holidayMaps.containsKey(lds[4])){
+			data5 += "*";
+		}
+		if(!holidayMaps.containsKey(lds[5])){
+			data6 += "*";
+		}
+		if(!holidayMaps.containsKey(lds[6])){
+			data7 += "*";
+		}
+		//添加第一行日期
+		returnList.add(new UserTimesheetForOther(UserTimesheet.TYPE_DAY,data1,data2,data3,data4,data5,data6,data7));
+	}
+
 	private UserTimesheetForOther getUserTimesheetForOther(Long userId, Map<Long, UserTimesheet> childs, Long[] lds, Long objId, Integer type) {
 		UserTimesheetForOther userTimesheetForOther = new UserTimesheetForOther();
 		userTimesheetForOther.setObjId(objId);
@@ -902,5 +963,262 @@ public class UserTimesheetService {
 			}
 		}
 		return returnMap;
+	}
+	/**
+	 * 合同或者项目中更新用户的日报
+	 * @return
+	 */
+	public String updateEditByOther(List<UserTimesheetForOther> userTimesheetForOthers, int type) {
+		if (userTimesheetForOthers == null || userTimesheetForOthers.isEmpty() || userTimesheetForOthers.size() < 2) {
+			return "cpmApp.contractTimesheet.save.paramError";
+		}
+		//查看当前用户
+		Optional<User> user = userRepository.findOneByLogin(SecurityUtils.getCurrentUserLogin());
+    	if(user.isPresent()){
+    		User currUser = user.get();
+    		String updator = currUser.getLogin();
+    		//日期
+    		UserTimesheetForOther dayTimesheet = userTimesheetForOthers.get(0);
+    		Long[] lds = new Long[7];
+    		lds[0] = StringUtil.nullToLong(removeAsteriskFromDay(dayTimesheet.getData1()));
+    		lds[1] = StringUtil.nullToLong(removeAsteriskFromDay(dayTimesheet.getData2()));
+    		lds[2] = StringUtil.nullToLong(removeAsteriskFromDay(dayTimesheet.getData3()));
+    		lds[3] = StringUtil.nullToLong(removeAsteriskFromDay(dayTimesheet.getData4()));
+    		lds[4] = StringUtil.nullToLong(removeAsteriskFromDay(dayTimesheet.getData5()));
+    		lds[5] = StringUtil.nullToLong(removeAsteriskFromDay(dayTimesheet.getData6()));
+    		lds[6] = StringUtil.nullToLong(removeAsteriskFromDay(dayTimesheet.getData7()));
+    		if(dayTimesheet.getType() != UserTimesheet.TYPE_DAY){
+    			return "cpmApp.contractTimesheet.save.paramError";
+    		}
+    		Long objId = dayTimesheet.getObjId();
+    		Integer objType = userTimesheetForOthers.get(1).getType();
+    		if(lds[0] == 0 || lds[1] == 0 || lds[2] == 0 || lds[3] == 0 || lds[4] == 0 || lds[5] == 0 || lds[6] == 0 || objId == null || objType == null){
+    			return "cpmApp.contractTimesheet.save.paramError";
+    		}
+    		if(objType != type){
+    			return "cpmApp.contractTimesheet.save.paramError";
+    		}
+    		//查看是否有权限
+    		if(objType == UserTimesheet.TYPE_CONTRACT){//合同
+    			ContractInfoVo vo = contractInfoService.getUserContractInfo(objId);
+    			if(vo == null){
+   	    			return "cpmApp.contractTimesheet.save.noPermit";
+    			}
+    		}else{//项目
+    			ProjectInfoVo vo = projectInfoService.getUserProjectInfo(objId);
+    			if(vo == null){
+    				return "cpmApp.contractTimesheet.save.noPermit";
+    			}
+    		}
+    		//判定日报
+    		//每天的总工时
+    		Double td1 = 0d;
+    		Double td2 = 0d;
+    		Double td3 = 0d;
+    		Double td4 = 0d;
+    		Double td5 = 0d;
+    		Double td6 = 0d;
+    		Double td7 = 0d;
+    		//实际投入工时
+    		Double d1 = 0d;
+    		Double d2 = 0d;
+    		Double d3 = 0d;
+    		Double d4 = 0d;
+    		Double d5 = 0d;
+    		Double d6 = 0d;
+    		Double d7 = 0d;
+    		//认可工时
+    		Double cd1 = 0d;
+    		Double cd2 = 0d;
+    		Double cd3 = 0d;
+    		Double cd4 = 0d;
+    		Double cd5 = 0d;
+    		Double cd6 = 0d;
+    		Double cd7 = 0d;
+    		
+    		List<UserTimesheet> updateList = new ArrayList<UserTimesheet>();
+    		for(int i = 1; i < userTimesheetForOthers.size(); i++){
+    			UserTimesheetForOther userTimesheetForOther = userTimesheetForOthers.get(i);//一条记录是一个用户在某个项目或合同一周的记录
+    			if(userTimesheetForOther.getType() != type){
+        			return "cpmApp.contractTimesheet.save.paramError";
+        		}
+    			//认可投入数据
+    			cd1 = StringUtil.nullToDouble(userTimesheetForOther.getCheck1());
+    			cd2 = StringUtil.nullToDouble(userTimesheetForOther.getCheck2());
+    			cd3 = StringUtil.nullToDouble(userTimesheetForOther.getCheck3());
+    			cd4 = StringUtil.nullToDouble(userTimesheetForOther.getCheck4());
+    			cd5 = StringUtil.nullToDouble(userTimesheetForOther.getCheck5());
+    			cd6 = StringUtil.nullToDouble(userTimesheetForOther.getCheck6());
+    			cd7 = StringUtil.nullToDouble(userTimesheetForOther.getCheck7());
+    			if(cd1 < 0 || cd1 > 8 || cd2 < 0 || cd2 > 8 || cd3 < 0 || cd3 > 8 || cd4 < 0 || cd4 > 8
+       				 || cd5 < 0 || cd5 > 8 || cd6 < 0 || cd6 > 8 || cd7 < 0 || cd7 > 8){
+    				return "cpmApp.contractTimesheet.save.dataError";
+	       		}
+    			td1 += cd1;
+    			td2 += cd2;
+    			td3 += cd3;
+    			td4 += cd4;
+    			td5 += cd5;
+    			td6 += cd6;
+    			td7 += cd7;
+    			//实际投入数据
+    			d1 = StringUtil.nullToDouble(userTimesheetForOther.getData1());
+    			d2 = StringUtil.nullToDouble(userTimesheetForOther.getData2());
+    			d3 = StringUtil.nullToDouble(userTimesheetForOther.getData3());
+    			d4 = StringUtil.nullToDouble(userTimesheetForOther.getData4());
+    			d5 = StringUtil.nullToDouble(userTimesheetForOther.getData5());
+    			d6 = StringUtil.nullToDouble(userTimesheetForOther.getData6());
+    			d7 = StringUtil.nullToDouble(userTimesheetForOther.getData7());
+        		//为空或大于实际投入
+    			if((d1 == 0 && cd1 > 0) || (d2 == 0 && cd2 > 0) || (d3 == 0 && cd3 > 0) || (d4 == 0 && cd4 > 0)
+       				 || (d5 == 0 && cd5 > 0) || (d6 == 0 && cd6 > 0) || (d7 == 0 && cd7 > 0)){
+    				return "cpmApp.contractTimesheet.save.inputZeroCheck";
+    			}
+    			if(cd1 > d1 || cd2 > d2 || cd3 > d3 || cd4 > d4 
+       				|| cd5 > d5 || cd6 > d6 || cd7 > d7){
+    				return "cpmApp.contractTimesheet.save.overInput";
+    			}
+    			//用户为空
+    			if(userTimesheetForOther.getUserId() == null){
+    				return "cpmApp.contractTimesheet.save.paramError";
+    			}
+        		if(userTimesheetForOther.getId1() != null){
+        			updateList.add(createUserTimesheetForOther(userTimesheetForOther,updator,userTimesheetForOther.getId1(),cd1,objType));
+        		}
+        		if(userTimesheetForOther.getId2() != null){
+        			updateList.add(createUserTimesheetForOther(userTimesheetForOther,updator,userTimesheetForOther.getId2(),cd2,objType));
+        		}
+        		if(userTimesheetForOther.getId3() != null){
+        			updateList.add(createUserTimesheetForOther(userTimesheetForOther,updator,userTimesheetForOther.getId3(),cd3,objType));
+        		}
+        		if(userTimesheetForOther.getId4() != null){
+        			updateList.add(createUserTimesheetForOther(userTimesheetForOther,updator,userTimesheetForOther.getId4(),cd4,objType));
+        		}
+        		if(userTimesheetForOther.getId5() != null){
+        			updateList.add(createUserTimesheetForOther(userTimesheetForOther,updator,userTimesheetForOther.getId5(),cd5,objType));
+        		}
+        		if(userTimesheetForOther.getId6() != null){
+        			updateList.add(createUserTimesheetForOther(userTimesheetForOther,updator,userTimesheetForOther.getId6(),cd6,objType));
+        		}
+        		if(userTimesheetForOther.getId7() != null){
+        			updateList.add(createUserTimesheetForOther(userTimesheetForOther,updator,userTimesheetForOther.getId7(),cd7,objType));
+        		}
+    		}
+    		//判定是否超过今天
+    		Long today = StringUtil.nullToLong(DateUtil.formatDate(DateUtil.DATE_YYYYMMDD_PATTERN, new Date())).longValue();
+			if(td1 > 0 && today < lds[0]){
+				return "cpmApp.contractTimesheet.save.overDay";
+			}else if(td2 > 0 && today < lds[1]){
+				return "cpmApp.contractTimesheet.save.overDay";
+			}else if(td3 > 0 && today < lds[2]){
+				return "cpmApp.contractTimesheet.save.overDay";
+			}else if(td4 > 0 && today < lds[3]){
+				return "cpmApp.contractTimesheet.save.overDay";
+			}else if(td5 > 0 && today < lds[4]){
+				return "cpmApp.contractTimesheet.save.overDay";
+			}else if(td6 > 0 && today < lds[5]){
+				return "cpmApp.contractTimesheet.save.overDay";
+			}else if(td7 > 0 && today < lds[6]){
+				return "cpmApp.contractTimesheet.save.overDay";
+			}
+    		//判定是否假期
+    		List<HolidayInfo> list = holidayInfoRepository.findHolidayByCurrDay(StringUtil.longArrayToLongArray(lds));
+    		if(list != null && !list.isEmpty()){
+    			StringBuffer sb = new StringBuffer();
+    			long currDay = 0;
+    			for(HolidayInfo holidayInfo : list){
+    				currDay = holidayInfo.getCurrDay().longValue();
+    				if(currDay == lds[0]){
+    					if(td1 > 0){
+    						if(sb.length() != 0){
+    							sb.append(",");
+    						}
+    						sb.append(currDay);
+    					}
+    				}else if(currDay == lds[1]){
+    					if(td2 > 0){
+    						if(sb.length() != 0){
+    							sb.append(",");
+    						}
+    						sb.append(currDay);
+    					}
+    				}else if(currDay == lds[2]){
+    					if(td3 > 0){
+    						if(sb.length() != 0){
+    							sb.append(",");
+    						}
+    						sb.append(currDay);
+    					}    					
+    				}else if(currDay == lds[3]){
+    					if(td4 > 0){
+    						if(sb.length() != 0){
+    							sb.append(",");
+    						}
+    						sb.append(currDay);
+    					}
+    				}else if(currDay == lds[4]){
+    					if(td5 > 0){
+    						if(sb.length() != 0){
+    							sb.append(",");
+    						}
+    						sb.append(currDay);
+    					}
+    				}else if(currDay == lds[5]){
+    					if(td6 > 0){
+    						if(sb.length() != 0){
+    							sb.append(",");
+    						}
+    						sb.append(currDay);
+    					}
+    				}else if(currDay == lds[6]){
+    					if(td7 > 0){
+    						if(sb.length() != 0){
+    							sb.append(",");
+    						}
+    						sb.append(currDay);
+    					}
+    				}
+    			}
+    			if(sb.length() != 0){
+    				return "cpmApp.contractTimesheet.save.holiday#" + sb.toString();
+    			}
+    		}
+    		//保存记录
+    		userTimesheetDao.updateAcceptInput(updateList);
+    		
+    		return "cpmApp.contractTimesheet.save.success";
+    	}else{
+    		return "cpmApp.contractTimesheet.save.paramError";
+    	}
+	}
+	/**
+	 * 生成需要更新认可投入的model
+	 * @return
+	 */
+	private UserTimesheet createUserTimesheetForOther(UserTimesheetForOther userTimesheetForOther,String updator, Long id, Double acceptInput, Integer type) {
+		UserTimesheet userTimesheet = new UserTimesheet();
+		userTimesheet.setId(id);
+		userTimesheet.setObjId(userTimesheetForOther.getObjId());
+		userTimesheet.setType(type);
+		userTimesheet.setUpdateTime(ZonedDateTime.now());
+		userTimesheet.setUpdator(updator);
+		userTimesheet.setUserId(userTimesheetForOther.getUserId());
+		userTimesheet.setAcceptInput(acceptInput);
+		return userTimesheet;
+	}
+	/**
+	 * 页面上的日期带有星号，需要去除
+	 * @param pageDay
+	 * @return
+	 */
+	private String removeAsteriskFromDay(String pageDay) {
+		if(pageDay != null){
+			pageDay = pageDay.replaceAll("[*]", "");
+			if(pageDay.length() != 8){
+				return null;
+			}
+			return pageDay;
+		}
+		return null;
 	}
 }

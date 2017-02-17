@@ -19,7 +19,11 @@ import java.util.Objects;
 public class DeptType implements Serializable {
 
     private static final long serialVersionUID = 1L;
-
+    
+    public static final Long PRODUCT_DEVELOPMENT = 4L;
+    
+    public static final Long PROJECT_IMPLEMENTATION = 5L;
+    
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;

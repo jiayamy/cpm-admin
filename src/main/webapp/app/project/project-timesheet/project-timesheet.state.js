@@ -11,7 +11,7 @@
         $stateProvider
         .state('project-timesheet', {
             parent: 'project',
-            url: '/project-timesheet?page&sort&search',
+            url: '/project-timesheet?page&sort&workDay&projectId&userId&userName',
             data: {
                 authorities: ['ROLE_PROJECT_TIMESHEET'],
                 pageTitle: 'cpmApp.projectTimesheet.home.title'
@@ -29,10 +29,13 @@
                     squash: true
                 },
                 sort: {
-                    value: 'id,desc',
+                    value: 'wut.workDay,desc',
                     squash: true
                 },
-                search: null
+                workDay: null,
+                projectId: null,
+                userId: null,
+                userName: null
             },
             resolve: {
                 pagingParams: ['$stateParams', 'PaginationUtil', function ($stateParams, PaginationUtil) {
@@ -41,15 +44,47 @@
                         sort: $stateParams.sort,
                         predicate: PaginationUtil.parsePredicate($stateParams.sort),
                         ascending: PaginationUtil.parseAscending($stateParams.sort),
-                        search: $stateParams.search
+                        workDay: $stateParams.workDay,
+                        projectId: $stateParams.projectId,
+                        userId: $stateParams.userId,
+                        userName: $stateParams.userName
                     };
                 }],
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                     $translatePartialLoader.addPart('projectTimesheet');
-                    $translatePartialLoader.addPart('global');
+                    $translatePartialLoader.addPart('contractTimesheet');
+                    $translatePartialLoader.addPart('deptInfo');
                     return $translate.refresh();
                 }]
             }
+        })
+        .state('project-timesheet.queryDept', {
+            parent: 'project-timesheet',
+            url: '/queryDept?selectType&showChild',
+            data: {
+                authorities: ['ROLE_PROJECT_TIMESHEET']
+            },
+            onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
+                $uibModal.open({
+                    templateUrl: 'app/info/dept-info/dept-info-query.html',
+                    controller: 'DeptInfoQueryController',
+                    controllerAs: 'vm',
+                    backdrop: 'static',
+                    size: 'lg',
+                    resolve: {
+                        entity: function() {
+                            return {
+                            	selectType : $stateParams.selectType,
+                            	showChild : $stateParams.showChild
+                            }
+                        }
+                    }
+                }).result.then(function() {
+                    $state.go('^', {}, { reload: false });
+                }, function() {
+                    $state.go('^');
+                });
+            }]
         })
         .state('project-timesheet-detail', {
             parent: 'project-timesheet',
@@ -89,61 +124,33 @@
             data: {
                 authorities: ['ROLE_PROJECT_TIMESHEET']
             },
-            onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
-                $uibModal.open({
+            views: {
+                'content@': {
                     templateUrl: 'app/project/project-timesheet/project-timesheet-dialog.html',
                     controller: 'ProjectTimesheetDialogController',
-                    controllerAs: 'vm',
-                    backdrop: 'static',
-                    size: 'lg',
-                    resolve: {
-                        entity: ['ProjectTimesheet', function(ProjectTimesheet) {
-                            return ProjectTimesheet.get({id : $stateParams.id}).$promise;
-                        }]
-                    }
-                }).result.then(function() {
-                    $state.go('^', {}, { reload: false });
-                }, function() {
-                    $state.go('^');
-                });
-            }]
-        })
-        .state('project-timesheet.new', {
-            parent: 'project-timesheet',
-            url: '/new',
-            data: {
-                authorities: ['ROLE_PROJECT_TIMESHEET']
+                    controllerAs: 'vm'
+                }
             },
-            onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
-                $uibModal.open({
-                    templateUrl: 'app/project/project-timesheet/project-timesheet-dialog.html',
-                    controller: 'ProjectTimesheetDialogController',
-                    controllerAs: 'vm',
-                    backdrop: 'static',
-                    size: 'lg',
-                    resolve: {
-                        entity: function () {
-                            return {
-                                projectId: null,
-                                userId: null,
-                                realInput: null,
-                                acceptInput: null,
-                                workDay: null,
-                                status: null,
-                                creator: null,
-                                createTime: null,
-                                updator: null,
-                                updateTime: null,
-                                id: null
-                            };
-                        }
-                    }
-                }).result.then(function() {
-                    $state.go('project-timesheet', null, { reload: 'project-timesheet' });
-                }, function() {
-                    $state.go('project-timesheet');
-                });
-            }]
+            resolve: {
+                translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
+                    $translatePartialLoader.addPart('projectTimesheet');
+                    $translatePartialLoader.addPart('contractTimesheet');
+                    $translatePartialLoader.addPart('userTimesheet');
+                    
+                    return $translate.refresh();
+                }],
+                entity: ['$stateParams', 'ProjectTimesheet', function($stateParams, ProjectTimesheet) {
+                    return ProjectTimesheet.get({id : $stateParams.id}).$promise;
+                }],
+                previousState: ["$state", function ($state) {
+                    var currentStateData = {
+                        name: $state.current.name || 'project-timesheet-detail',
+                        params: $state.params,
+                        url: $state.href($state.current.name, $state.params)
+                    };
+                    return currentStateData;
+                }]
+            }
         })
         .state('project-timesheet.edit', {
             parent: 'project-timesheet',
@@ -151,48 +158,33 @@
             data: {
                 authorities: ['ROLE_PROJECT_TIMESHEET']
             },
-            onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
-                $uibModal.open({
-                    templateUrl: 'app/project/project-timesheet/project-timesheet-dialog.html',
+            views: {
+                'content@': {
+                	templateUrl: 'app/project/project-timesheet/project-timesheet-dialog.html',
                     controller: 'ProjectTimesheetDialogController',
-                    controllerAs: 'vm',
-                    backdrop: 'static',
-                    size: 'lg',
-                    resolve: {
-                        entity: ['ProjectTimesheet', function(ProjectTimesheet) {
-                            return ProjectTimesheet.get({id : $stateParams.id}).$promise;
-                        }]
-                    }
-                }).result.then(function() {
-                    $state.go('project-timesheet', null, { reload: 'project-timesheet' });
-                }, function() {
-                    $state.go('^');
-                });
-            }]
-        })
-        .state('project-timesheet.delete', {
-            parent: 'project-timesheet',
-            url: '/delete/{id}',
-            data: {
-                authorities: ['ROLE_PROJECT_TIMESHEET']
+                    controllerAs: 'vm'
+                }
             },
-            onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
-                $uibModal.open({
-                    templateUrl: 'app/project/project-timesheet/project-timesheet-delete-dialog.html',
-                    controller: 'ProjectTimesheetDeleteController',
-                    controllerAs: 'vm',
-                    size: 'md',
-                    resolve: {
-                        entity: ['ProjectTimesheet', function(ProjectTimesheet) {
-                            return ProjectTimesheet.get({id : $stateParams.id}).$promise;
-                        }]
-                    }
-                }).result.then(function() {
-                    $state.go('project-timesheet', null, { reload: 'project-timesheet' });
-                }, function() {
-                    $state.go('^');
-                });
-            }]
+            resolve: {
+                translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
+                	$translatePartialLoader.addPart('projectTimesheet');
+                    $translatePartialLoader.addPart('contractTimesheet');
+                    $translatePartialLoader.addPart('userTimesheet');
+                    
+                    return $translate.refresh();
+                }],
+                entity: ['$stateParams', 'ProjectTimesheet', function($stateParams, ProjectTimesheet) {
+                    return ProjectTimesheet.get({id : $stateParams.id}).$promise;
+                }],
+                previousState: ["$state", function ($state) {
+                    var currentStateData = {
+                        name: $state.current.name || 'project-timesheet',
+                        params: $state.params,
+                        url: $state.href($state.current.name, $state.params)
+                    };
+                    return currentStateData;
+                }]
+            }
         });
     }
 

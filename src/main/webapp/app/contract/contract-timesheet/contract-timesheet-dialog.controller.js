@@ -170,7 +170,7 @@
         	}else if(result.message){
         		if(result.message == "cpmApp.contractTimesheet.save.success"){
         			AlertService.success(result.message);
-        			$state.go("user-timesheet", null, { reload: true });
+        			$state.go("contract-timesheet", null, { reload: true });
         		}else if(result.message && result.param){
         			var param = {};
         			param.param = result.param;
