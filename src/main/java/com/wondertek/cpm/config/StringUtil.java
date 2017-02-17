@@ -1,6 +1,7 @@
 package com.wondertek.cpm.config;
 
 import java.io.UnsupportedEncodingException;
+import java.math.BigDecimal;
 import java.text.CharacterIterator;
 import java.text.DecimalFormat;
 import java.text.ParseException;
@@ -122,6 +123,30 @@ public class StringUtil {
 			d = new Double(0);
 		}
 		return d;
+	}
+	
+	public static Double nullToCloneDouble(Object value){
+		Double d = null;
+		try{
+			if(value != null && !StringUtil.isNullStr(value.toString())){
+				d = Double.parseDouble(String.valueOf(value));
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+			d = null;
+		}
+		return d;
+	}
+	/**
+	 * 对double取指定小数点后几位，四舍五入
+	 * @return
+	 */
+	public static Double getScaleDouble(Double value,int scale){
+		if(value == null){
+			return value;
+		}
+		BigDecimal b = new BigDecimal(value);
+		return b.setScale(scale, BigDecimal.ROUND_HALF_UP).doubleValue();
 	}
 	
 	public static Boolean nullToBoolean(Object value){

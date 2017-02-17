@@ -1,0 +1,137 @@
+<div>
+    <h2 data-translate="cpmApp.salesBonus.home.title">Project Infos</h2>
+    <jhi-alert></jhi-alert>
+    <div class="container-fluid">
+        <form name="searchForm" class="form-horizontal">
+			<div class="form-group">
+	            <div class="col-sm-4">
+	          		<label class="col-sm-4 control-label" data-translate="cpmApp.salesBonus.originYear">Year</label>
+		            <div class="col-sm-8">
+		                <p class="input-group">
+		                    <input id="search_originYear" type="text" class="form-control" name="originYear" datetime-picker="yyyy"
+			           		 		enable-time="false" ng-model="vm.searchQuery.originYear" is-open="vm.datePickerOpenStatus.originYear"/>
+			          		<span class="input-group-btn">
+			           			<button type="button" class="btn btn-default" ng-click="vm.openCalendar('originYear')"><i class="glyphicon glyphicon-calendar"></i></button>
+			            	</span>
+		                </p>
+		            </div>
+	            </div>
+	            <div class="col-sm-4">
+	          		<label class="col-sm-4 control-label" data-translate="cpmApp.salesBonus.statWeek">Stat Day</label>
+		            <div class="col-sm-8">
+		                <p class="input-group">
+		                    <input id="search_statWeek" type="text" class="form-control" name="statWeek" datetime-picker="yyyyMMdd"
+			           		 		enable-time="false" ng-model="vm.searchQuery.statWeek" is-open="vm.datePickerOpenStatus.statWeek"/>
+			          		<span class="input-group-btn">
+			           			<button type="button" class="btn btn-default" ng-click="vm.openCalendar('statWeek')"><i class="glyphicon glyphicon-calendar"></i></button>
+			            	</span>
+		                </p>
+		            </div>
+	            </div>
+	            <div class="col-sm-4">
+	            	&nbsp;
+	            </div>
+            </div>
+            <div class="form-group">
+	            <div class="col-sm-4">
+	          		<label class="col-sm-4 control-label" data-translate="cpmApp.salesBonus.contractId">Contract ID</label>
+		            <div class="col-sm-8">
+		            	<select class="form-control" ng-model="vm.searchQuery.contractId"
+			            	ng-options="contractInfo.val for contractInfo in vm.contractInfos track by contractInfo.key">
+			            	<option value="">--合同编号--</option>
+			            </select>
+		            </div>
+	            </div>
+	            <div class="col-sm-4">
+	          		<label class="col-sm-4 control-label" data-translate="cpmApp.salesBonus.salesMan">Sales Man</label>
+                    <div class="col-sm-8" >
+	                   	<div class="input-group">
+			          		<input type="text" class="form-control" name="salesMan"
+			                  	ng-model="vm.searchQuery.salesMan" readonly ng-required="true" ng-minlength="1"
+		                   	/>
+		                   	<span class="input-group-btn">
+		                     	<button type="button" class="btn btn-default" ui-sref="sales-bonus.queryDept({selectType:3,showChild:true})"><i class="glyphicon glyphicon-user"></i></button>
+		                 	</span>
+		            	</div>
+                    </div>
+	            </div>
+	            <div class="col-sm-4 pull-right input-group">
+	            	<div class="col-sm-4">
+	            		&nbsp;
+	            	</div>
+	            	<div class="col-sm-8" >
+		            	<span  class="width-min" >
+	                        <button class="btn btn-info" ng-click="vm.search()">
+	                            <span class="glyphicon glyphicon-search"></span>
+	                            <span class="hidden-xs hidden-sm" data-translate="entity.action.search"></span>
+	                        </button>
+	                    </span>
+	                    <span class="width-min" ng-if="vm.haveSearch">
+	                        <button class="btn btn-info" ng-click="vm.clear()">
+	                            <span class="glyphicon glyphicon-trash"></span>
+	                            <span class="hidden-xs hidden-sm" data-translate="entity.action.clear"></span>
+	                        </button>
+	                    </span>
+	            	</div>
+	            </div>
+            </div>
+		</form>
+    </div>
+    <br/>
+    <div class="table-responsive">
+        <table class="jh-table table table-striped" style="table-layout: fixed; ">
+            <thead>
+                <tr>
+                    <th style="width:80px;"><span data-translate="cpmApp.salesBonus.salesMan">Sales Man</span></th>
+                    <th style="width:110px;"><span data-translate="cpmApp.salesBonus.annualIndex">Annual Index</span></th>
+                    <th style="width:130px;"><span data-translate="cpmApp.salesBonus.finishTotal">finishTotal</span></th>
+                    <th style="width:80px;"><span data-translate="cpmApp.salesBonus.contractNum">contractNum</span></th>
+                    <th style="width:110px;"><span data-translate="cpmApp.salesBonus.contractAmount">contractAmount</span></th>
+                    <th style="width:60px;"><span data-translate="cpmApp.salesBonus.taxRate">taxRate</span></th>
+                    <th style="width:110px;"><span data-translate="cpmApp.salesBonus.receiveTotal">receiveTotal</span></th>
+                    <th style="width:110px;"><span data-translate="cpmApp.salesBonus.taxes">taxes</span></th>
+                    <th style="width:110px;"><span data-translate="cpmApp.salesBonus.shareCost">shareCost</span></th>
+                    <th style="width:110px;"><span data-translate="cpmApp.salesBonus.thirdPartyPurchase">thirdPartyPurchase</span></th>
+                    <th style="width:110px;"><span data-translate="cpmApp.salesBonus.bonusBasis">bonusBasis</span></th>
+                    <th style="width:60px;"><span data-translate="cpmApp.salesBonus.bonusRate">bonusRate</span></th>
+                    <th style="width:110px;"><span data-translate="cpmApp.salesBonus.currentBonus">currentBonus</span></th>
+                    <th style="width:110px;"><span data-translate="cpmApp.salesBonus.totalBonus">totalBonus</span></th>
+                    <th style="width:110px;"><span data-translate="cpmApp.salesBonus.finishRate">finishRate</span></th>
+                    <th style="width:110px;"><span data-translate="cpmApp.salesBonus.payBonus">payBonus</span></th>
+                    <th style="width:150px;"><span data-translate="cpmApp.salesBonus.createTime">createTime</span></th>
+                    <th style="width:60px;">&nbsp;</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="salesBonus in vm.salesBonuss track by salesBonus.id">
+                    <td style="width:80px;">{{salesBonus.salesMan}}</td>
+                    <td>{{salesBonus.annualIndex}}</td>
+                    <td>{{salesBonus.finishTotal}}</td>
+                    <td><a ui-sref="sales-bonus-detail({id:salesBonus.id})">{{salesBonus.contractNum}}</a></td>
+                    <td>{{salesBonus.contractAmount}}</td>
+                    <td>{{salesBonus.taxRate}}<span ng-show="salesBonus.id">%</span></td>
+                    <td>{{salesBonus.receiveTotal}}</td>
+                    <td>{{salesBonus.taxes}}</td>
+                    <td>{{salesBonus.shareCost}}</td>
+                    <td>{{salesBonus.thirdPartyPurchase}}</td>
+                    <td>{{salesBonus.bonusBasis}}</td>
+                    <td>{{salesBonus.bonusRate}}<span ng-show="salesBonus.id">%</span></td>
+                    <td>{{salesBonus.currentBonus}}</td>
+                    <td>{{salesBonus.totalBonus}}</td>
+                    <td>{{salesBonus.finishRate}}<span ng-show="salesBonus.id">%</span></td>
+                    <td>{{salesBonus.payBonus}}</td>
+                    <td>{{salesBonus.createTime | date:'medium'}}</td>
+                    <td>
+                        <div class="btn-group flex-btn-group-container" ng-show="salesBonus.id">
+                            <button type="submit"
+                                    ui-sref="project-info-detail({id:salesBonus.id})"
+                                    class="btn btn-info btn-sm">
+                                <span class="glyphicon glyphicon-eye-open"></span>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

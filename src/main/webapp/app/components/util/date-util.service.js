@@ -15,6 +15,7 @@
             convertLocalDateToServer : convertLocalDateToServer,
             convertLocalDateToFormat : convertLocalDateToFormat,
             convertYYYYMMDDDayToDate : convertYYYYMMDDDayToDate,
+            convertYYYYToDate:convertYYYYToDate,
             convertDayToDate:convertDayToDate,
             dateformat : dateformat
         };
@@ -36,6 +37,15 @@
         		date = date + "";
         		if(date.length == 8){
         			return new Date(date.substring(0,4),parseInt(date.substring(4,6))-1,date.substring(6,8));
+        		}
+        	}
+        	return null;
+        }
+        function convertYYYYToDate (date){
+        	if(date){
+        		date = date + "";
+        		if(date.length == 4){
+        			return new Date(date,2,2);
         		}
         	}
         	return null;

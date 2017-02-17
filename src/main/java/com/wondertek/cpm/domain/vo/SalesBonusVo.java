@@ -2,6 +2,8 @@ package com.wondertek.cpm.domain.vo;
 
 import java.time.ZonedDateTime;
 
+import com.wondertek.cpm.domain.SalesBonus;
+
 /**
  * 销售奖金
  */
@@ -68,7 +70,6 @@ public class SalesBonusVo{
 	 * 第三方采购（外部采购成本之和）、
 	 */
 	private Double thirdPartyPurchase;
-	
 	/**
 	 * 奖金基数（收款金额-税收-公摊成本-第三方采购）、
 	 */
@@ -96,6 +97,32 @@ public class SalesBonusVo{
 	
     private String creator;
     private ZonedDateTime createTime;
+    
+    public SalesBonusVo() {
+		
+	}
+
+	public SalesBonusVo(SalesBonus salesBonus, String contractNum) {
+		this.id = salesBonus.getId();
+		this.statWeek = salesBonus.getStatWeek();
+		this.salesManId = salesBonus.getSalesManId();
+		this.salesMan = salesBonus.getSalesMan();
+		this.originYear = salesBonus.getOriginYear();
+		this.contractId = salesBonus.getContractId();
+		this.contractNum = contractNum;
+		this.contractAmount = salesBonus.getContractAmount();
+		this.taxRate = salesBonus.getTaxRate();
+		this.receiveTotal = salesBonus.getReceiveTotal();
+		this.taxes = salesBonus.getTaxes();
+		this.shareCost = salesBonus.getShareCost();
+		this.thirdPartyPurchase = salesBonus.getThirdPartyPurchase();
+		this.bonusBasis = salesBonus.getBonusBasis();
+		this.bonusRate = salesBonus.getBonusRate();
+		this.currentBonus = salesBonus.getCurrentBonus();
+		this.creator = salesBonus.getCreator();
+		this.createTime = salesBonus.getCreateTime();
+	}
+	
 	public Long getId() {
 		return id;
 	}
