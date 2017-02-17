@@ -12,10 +12,17 @@
         vm.transition = transition;
         vm.search = search;
         vm.clear = clear;
+        vm.exportXls = exportXls;
         
         vm.datePickerOpenStatus = {};
         vm.openCalendar = openCalendar;
-        
+        var today = new Date();
+        if(pagingParams.originYear == undefined){
+        	pagingParams.originYear = today.getFullYear();
+        }
+        if(pagingParams.statWeek == undefined){
+        	pagingParams.statWeek = DateUtils.convertLocalDateToFormat(today,"yyyyMMdd");
+        }
         vm.searchQuery = {};
         //搜索项中的参数
         vm.searchQuery.originYear= DateUtils.convertYYYYToDate(pagingParams.originYear);
@@ -92,9 +99,59 @@
 
         function clear() {
             vm.searchQuery = {};
-            vm.haveSearch = null;
+        	vm.searchQuery.originYear = new Date();
+        	vm.searchQuery.statWeek = new Date();
+            vm.haveSearch = true;
             vm.transition();
         }
+        function exportXls(){//导出Xls
+        	var url = "api/sales-bonus/exportXls";
+        	var c = 0;
+        	var originYear = DateUtils.convertLocalDateToFormat(vm.searchQuery.originYear,"yyyy");
+        	var statWeek = DateUtils.convertLocalDateToFormat(vm.searchQuery.statWeek,"yyyyMMdd");
+        	var contractId = vm.searchQuery.contractId && vm.searchQuery.contractId.key? vm.searchQuery.contractId.key : vm.searchQuery.contractId;
+			var salesManId = vm.searchQuery.salesManId;
+			
+			if(originYear){
+				if(c == 0){
+					c++;
+					url += "?";
+				}else{
+					url += "&";
+				}
+				url += "originYear="+encodeURI(originYear);
+			}
+			if(statWeek){
+				if(c == 0){
+					c++;
+					url += "?";
+				}else{
+					url += "&";
+				}
+				url += "statWeek="+encodeURI(statWeek);
+			}
+			if(contractId){
+				if(c == 0){
+					c++;
+					url += "?";
+				}else{
+					url += "&";
+				}
+				url += "contractId="+encodeURI(contractId);
+			}
+			if(salesManId){
+				if(c == 0){
+					c++;
+					url += "?";
+				}else{
+					url += "&";
+				}
+				url += "salesManId="+encodeURI(salesManId);
+			}
+			
+        	window.open(url);
+        }
+        
         vm.datePickerOpenStatus.originYear = false;
         vm.datePickerOpenStatus.statWeek = false;
         function openCalendar (date) {

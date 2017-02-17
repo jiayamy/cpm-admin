@@ -1,5 +1,5 @@
 <div>
-    <h2 data-translate="cpmApp.salesBonus.home.title">Project Infos</h2>
+    <h2 data-translate="cpmApp.salesBonus.home.title">Sales Bonus</h2>
     <jhi-alert></jhi-alert>
     <div class="container-fluid">
         <form name="searchForm" class="form-horizontal">
@@ -70,6 +70,12 @@
 	                        <button class="btn btn-info" ng-click="vm.clear()">
 	                            <span class="glyphicon glyphicon-trash"></span>
 	                            <span class="hidden-xs hidden-sm" data-translate="entity.action.clear"></span>
+	                        </button>
+	                    </span>
+	                    <span class="width-min">
+	                        <button class="btn btn-info" ng-click="vm.exportXls()">
+	                            <span class="glyphicon glyphicon-save"></span>
+	                            <span class="hidden-xs hidden-sm" data-translate="entity.action.export"></span>
 	                        </button>
 	                    </span>
 	            	</div>
