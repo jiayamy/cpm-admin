@@ -36,7 +36,8 @@
                 "projectUser": "项目人员",
                 "projectCost": "项目报销",
                 "projectCostTimesheet": "工时成本",
-                "projectTimesheet": "项目日报"
+                "projectTimesheet": "项目日报",
+                "projectOverAllController": "项目总体情况控制"
             },
             "stat":{
             	"main":"统计报表",
