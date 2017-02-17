@@ -1023,4 +1023,15 @@ public class DateUtil {
 		}
 		return Date.from(zonedDateTime.toInstant());
 	}
+	/**
+	 * 获取当前日期所在周日，周一为开始
+	 * @return
+	 */
+	public static Date getSundayOfDay(Date day){
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(day);
+		cal.setFirstDayOfWeek(Calendar.MONDAY);
+		cal.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
+		return cal.getTime();
+	}
 }

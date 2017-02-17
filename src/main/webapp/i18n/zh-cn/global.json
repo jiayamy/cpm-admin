@@ -41,6 +41,7 @@
             },
             "stat":{
             	"main":"统计报表",
+            	"salesBonus":"销售项目信息",
                 "contractWeeklyStat": "合同周统计",
                 "contractMonthlyStat": "合同月统计",
                 "projectWeeklyStat": "项目周统计",
