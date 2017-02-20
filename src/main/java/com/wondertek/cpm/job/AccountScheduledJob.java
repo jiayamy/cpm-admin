@@ -31,7 +31,6 @@ import com.wondertek.cpm.domain.ProjectInfo;
 import com.wondertek.cpm.domain.ProjectOverall;
 import com.wondertek.cpm.domain.ProjectSupportBonus;
 import com.wondertek.cpm.domain.ProjectSupportCost;
-import com.wondertek.cpm.domain.ProjectUser;
 import com.wondertek.cpm.domain.PurchaseItem;
 import com.wondertek.cpm.domain.SalesBonus;
 import com.wondertek.cpm.domain.ShareInfo;
@@ -54,7 +53,6 @@ import com.wondertek.cpm.repository.ProjectInfoRepository;
 import com.wondertek.cpm.repository.ProjectOverallRepository;
 import com.wondertek.cpm.repository.ProjectSupportBonusRepository;
 import com.wondertek.cpm.repository.ProjectSupportCostRepository;
-import com.wondertek.cpm.repository.ProjectUserRepository;
 import com.wondertek.cpm.repository.PurchaseItemRepository;
 import com.wondertek.cpm.repository.SalesBonusRepository;
 import com.wondertek.cpm.repository.ShareInfoRepository;
@@ -109,9 +107,6 @@ public class AccountScheduledJob {
 	
 	@Inject
 	private ProjectSupportBonusRepository projectSupportBonusRepository;
-	
-	@Inject
-	private ProjectUserRepository projectUserRepository;
 	
 	@Inject
 	private ProjectOverallRepository projectOverallRepository;
@@ -203,10 +198,10 @@ public class AccountScheduledJob {
 								lastCostMap.put(projectSupportCost.getUserId(), 1L);
 							}
 						}
-						List<ProjectUser> projectUsers = projectUserRepository.findByProjectId(projectInfo.getId());
-						if(projectUsers != null && projectUsers.size() > 0){
-							for(ProjectUser projectUser : projectUsers){
-								User user = userRepository.findOne(projectUser.getUserId());
+						List<UserTimesheet> userTimesheets = userTimesheetRepository.findByTypeAndObjIdAndEndDay(UserTimesheet.TYPE_PROJECT, projectId, statWeek);
+						if(userTimesheets != null && userTimesheets.size() > 0){
+							for(UserTimesheet userTimesheet : userTimesheets){
+								User user = userRepository.findOne(userTimesheet.getUserId());
 								if(user == null){
 									continue;
 								}
@@ -214,9 +209,9 @@ public class AccountScheduledJob {
 								projectSupportCost.setStatWeek(statWeek);
 								projectSupportCost.setContractId(contractId);
 								projectSupportCost.setDeptType(projectDept.getType());
-								projectSupportCost.setUserId(projectUser.getUserId());
+								projectSupportCost.setUserId(userTimesheet.getUserId());
 								projectSupportCost.setSerialNum(user.getSerialNum());
-								projectSupportCost.setUserName(projectUser.getUserName());
+								projectSupportCost.setUserName(userTimesheet.getUserName());
 								projectSupportCost.setGrade(user.getGrade());
 								//结算成本
 								Double settlementCost = 0D;
@@ -230,10 +225,10 @@ public class AccountScheduledJob {
 									ProjectSupportCost projectSupportCost2 = projectSupportCostRepository.findByContractIdAndDeptTypeAndUserIdAndStatWeek(contractId, projectDept.getType(), user.getId(), lastStatWeek);
 									//项目工时
 									Double thisProjectHourCost = 0D;
-									List<UserTimesheet> userTimesheets = userTimesheetRepository.findByUserIdAndTypeAndObjIdAndTime(user.getId(), UserTimesheet.TYPE_PROJECT, projectId, fDay, statWeek);
+									List<UserTimesheet> userTimesheets2 = userTimesheetRepository.findByUserIdAndTypeAndObjIdAndTime(user.getId(), UserTimesheet.TYPE_PROJECT, projectId, fDay, statWeek);
 									if(userTimesheets != null && userTimesheets.size() > 0){
-										for(UserTimesheet userTimesheet : userTimesheets){
-											thisProjectHourCost += userTimesheet.getRealInput();
+										for(UserTimesheet userTimesheet2 : userTimesheets2){
+											thisProjectHourCost += userTimesheet2.getRealInput();
 										}
 									}else{
 										log.info("No UserTimesheet founded belong to User: " + user.getLastName() + " Project : " + projectInfo.getSerialNum());
@@ -275,10 +270,10 @@ public class AccountScheduledJob {
 								}else{
 									//项目工时
 									Double projectHourCost = 0D;
-									List<UserTimesheet> userTimesheets = userTimesheetRepository.findByUserIdAndTypeAndObjIdAndWorkDay(user.getId(), UserTimesheet.TYPE_PROJECT, projectId, statWeek);
+									List<UserTimesheet> userTimesheets2 = userTimesheetRepository.findByUserIdAndTypeAndObjIdAndWorkDay(user.getId(), UserTimesheet.TYPE_PROJECT, projectId, statWeek);
 									if(userTimesheets != null && userTimesheets.size() > 0){
-										for(UserTimesheet userTimesheet : userTimesheets){
-											projectHourCost += userTimesheet.getRealInput();
+										for(UserTimesheet userTimesheet2 : userTimesheets2){
+											projectHourCost += userTimesheet2.getRealInput();
 										}
 									}else{
 										log.info("No UserTimesheet founded belong to User: " + user.getLastName() + " Project : " + projectInfo.getSerialNum());
@@ -320,7 +315,7 @@ public class AccountScheduledJob {
 								projectSupportCostRepository.save(projectSupportCost);
 							}
 						}else{
-							log.info("No ProjectUser Founded Belong to : " + projectInfo.getSerialNum());
+							log.info("No UserTimeSheet Founded Belong to : " + projectInfo.getSerialNum());
 						}
 						log.info("====end generate Project Support Cost "+projectInfo.getSerialNum()+"===");
 						
