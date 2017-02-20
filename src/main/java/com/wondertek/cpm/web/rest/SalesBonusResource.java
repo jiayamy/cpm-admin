@@ -2,8 +2,6 @@ package com.wondertek.cpm.web.rest;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.text.DecimalFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -12,6 +10,14 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.poi.hssf.usermodel.HSSFCellStyle;
+import org.apache.poi.hssf.usermodel.HSSFDataFormat;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFCellStyle;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
@@ -38,7 +44,6 @@ import com.wondertek.cpm.service.SalesBonusService;
 public class SalesBonusResource {
 
     private final Logger log = LoggerFactory.getLogger(SalesBonusResource.class);
-    private final DecimalFormat doubleFormat = new DecimalFormat("#0.00");
     @Inject
     private SalesBonusService salesBonusService;
     /**
@@ -127,11 +132,6 @@ public class SalesBonusResource {
     			"合同累计完成率",
     			"可发放奖金"
     	};
-    	//数据
-    	List<String[]> rows = new ArrayList<String[]>();
-    	if(page != null){
-    		handleSheetData(rows,page);
-    	}
     	String fileName = "salesBonus_" + salesBonus.getOriginYear() + "_" + salesBonus.getStatWeek() + ".xlsx";
     	//写入sheet
     	ServletOutputStream outputStream = response.getOutputStream();
@@ -140,49 +140,167 @@ public class SalesBonusResource {
     	response.setCharacterEncoding("UTF-8");
 		
     	ExcelWrite excelWrite = new ExcelWrite();
-    	excelWrite.createSheet("销售项目", 1, heads, rows);
+    	//写入标题
+    	excelWrite.createSheetTitle("销售项目", 1, heads);
+    	//写入数据
+    	if(page != null){
+    		handleSheetData(page,2,excelWrite);
+    	}
     	excelWrite.close(outputStream);
     }
     /**
      * 处理sheet数据
      */
-	private void handleSheetData(List<String[]> rows, List<SalesBonusVo> page) {
+	private void handleSheetData(List<SalesBonusVo> page, int startRow, ExcelWrite excelWrite) {
+		//除表头外的其他数据单元格格式
+    	Integer[] cellType = new Integer[]{
+    			Cell.CELL_TYPE_STRING,
+    			Cell.CELL_TYPE_NUMERIC,
+    			Cell.CELL_TYPE_NUMERIC,
+    			Cell.CELL_TYPE_STRING,
+    			Cell.CELL_TYPE_NUMERIC,
+    			Cell.CELL_TYPE_NUMERIC,
+    			Cell.CELL_TYPE_NUMERIC,
+    			Cell.CELL_TYPE_NUMERIC,
+    			Cell.CELL_TYPE_NUMERIC,
+    			Cell.CELL_TYPE_NUMERIC,
+    			Cell.CELL_TYPE_NUMERIC,
+    			Cell.CELL_TYPE_NUMERIC,
+    			Cell.CELL_TYPE_NUMERIC,
+    			Cell.CELL_TYPE_NUMERIC,
+    			Cell.CELL_TYPE_NUMERIC,
+    			Cell.CELL_TYPE_NUMERIC
+    	};
+    	XSSFSheet sheet = excelWrite.getCurrentSheet();
+    	XSSFWorkbook wb = excelWrite.getXSSFWorkbook();
+		XSSFRow row = null;
+		XSSFCell cell = null;
+		int i = -1;
+		int j = 0;
+		//百分比格式
+		XSSFCellStyle cellStyle = wb.createCellStyle();  
+		cellStyle.setDataFormat(HSSFDataFormat.getBuiltinFormat("0.00%")); 
+		//数据
 		for(SalesBonusVo vo : page){
-			String[] data = new String[]{
-					vo.getSalesMan(),
-					handleDouble2String(vo.getAnnualIndex(),null),
-					handleDouble2String(vo.getFinishTotal(),null),
-					vo.getContractNum(),
-					handleDouble2String(vo.getContractAmount(),null),
-					handleDouble2String(vo.getTaxRate(),"%"),
-					handleDouble2String(vo.getReceiveTotal(),null),
-					handleDouble2String(vo.getTaxes(),null),
-					handleDouble2String(vo.getShareCost(),null),
-					handleDouble2String(vo.getThirdPartyPurchase(),null),
-					handleDouble2String(vo.getBonusBasis(),null),
-					handleDouble2String(vo.getBonusRate(),"%"),
-					handleDouble2String(vo.getCurrentBonus(),null),
-					handleDouble2String(vo.getTotalBonus(),null),
-					handleDouble2String(vo.getFinishRate(),"%"),
-					handleDouble2String(vo.getPayBonus(),null)
-			};
-			rows.add(data);
-		}
-	}
-	/**
-	 * 保留2位小数
-	 * @param val
-	 * @param postfix
-	 * @return
-	 */
-	private String handleDouble2String(Double val, String postfix) {
-		if(val == null){
-			return "";
-		}
-		if(postfix != null){
-			return doubleFormat.format(val) + postfix;
-		}else{
-			return doubleFormat.format(val);
+			i++;
+			row = sheet.createRow(i + startRow-1);
+			
+			j = 0;
+			cell = row.createCell(j,cellType[j]);
+			if(vo.getSalesMan() == null){
+				cell.setCellValue("");
+			}else{
+				cell.setCellValue(vo.getSalesMan());
+			}
+			j++;
+			cell = row.createCell(j,cellType[j]);
+			if(vo.getAnnualIndex() == null){
+				cell.setCellValue("");
+			}else{
+				cell.setCellValue(vo.getAnnualIndex());
+			}
+			j++;
+			cell = row.createCell(j,cellType[j]);
+			if(vo.getFinishTotal() == null){
+				cell.setCellValue("");
+			}else{
+				cell.setCellValue(vo.getFinishTotal());
+			}
+			j++;
+			cell = row.createCell(j,cellType[j]);
+			if(vo.getContractNum() == null){
+				cell.setCellValue("");
+			}else{
+				cell.setCellValue(vo.getContractNum());
+			}
+			j++;
+			cell = row.createCell(j,cellType[j]);
+			if(vo.getContractAmount() == null){
+				cell.setCellValue("");
+			}else{
+				cell.setCellValue(vo.getContractAmount());
+			}
+			j++;
+			cell = row.createCell(j,cellType[j]);
+			if(vo.getTaxRate() == null){
+				cell.setCellValue("");
+			}else{
+				cell.setCellValue(vo.getTaxRate() / 100);
+				cell.setCellStyle(cellStyle);
+			}
+			j++;
+			cell = row.createCell(j,cellType[j]);
+			if(vo.getReceiveTotal() == null){
+				cell.setCellValue("");
+			}else{
+				cell.setCellValue(vo.getReceiveTotal());
+			}
+			j++;
+			cell = row.createCell(j,cellType[j]);
+			if(vo.getTaxes() == null){
+				cell.setCellValue("");
+			}else{
+				cell.setCellValue(vo.getTaxes());
+			}
+			j++;
+			cell = row.createCell(j,cellType[j]);
+			if(vo.getShareCost() == null){
+				cell.setCellValue("");
+			}else{
+				cell.setCellValue(vo.getShareCost());
+			}
+			j++;
+			cell = row.createCell(j,cellType[j]);
+			if(vo.getThirdPartyPurchase() == null){
+				cell.setCellValue("");
+			}else{
+				cell.setCellValue(vo.getThirdPartyPurchase());
+			}
+			j++;
+			cell = row.createCell(j,cellType[j]);
+			if(vo.getBonusBasis() == null){
+				cell.setCellValue("");
+			}else{
+				cell.setCellValue(vo.getBonusBasis());
+			}
+			j++;
+			cell = row.createCell(j,cellType[j]);
+			if(vo.getBonusRate() == null){
+				cell.setCellValue("");
+			}else{
+				cell.setCellValue(vo.getBonusRate() / 100);
+				cell.setCellStyle(cellStyle);
+			}
+			j++;
+			cell = row.createCell(j,cellType[j]);
+			if(vo.getCurrentBonus() == null){
+				cell.setCellValue("");
+			}else{
+				cell.setCellValue(vo.getCurrentBonus());
+			}
+			j++;
+			cell = row.createCell(j,cellType[j]);
+			if(vo.getTotalBonus() == null){
+				cell.setCellValue("");
+			}else{
+				cell.setCellValue(vo.getTotalBonus());
+			}
+			j++;
+			cell = row.createCell(j,cellType[j]);
+			if(vo.getFinishRate() == null){
+				cell.setCellValue("");
+			}else{
+				cell.setCellValue(vo.getFinishRate() / 100);
+				cell.setCellStyle(cellStyle);
+			}
+			j++;
+			cell = row.createCell(j,cellType[j]);
+			if(vo.getPayBonus() == null){
+				cell.setCellValue("");
+			}else{
+				cell.setCellValue(vo.getPayBonus());
+			}
+			j++;
 		}
 	}
 }
