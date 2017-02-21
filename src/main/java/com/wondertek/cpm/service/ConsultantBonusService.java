@@ -2,6 +2,7 @@ package com.wondertek.cpm.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -49,13 +50,13 @@ public class ConsultantBonusService {
      * @return
      */
     @Transactional(readOnly = true)
-	public Page<ConsultantBonusVo> getConsultantBonusPage(String contractId,String fromDate,String toDate,Pageable pageable){
+	public Page<ConsultantBonusVo> getConsultantBonusPage(String contractId,String consultantManId,String fromDate,String toDate,Pageable pageable){
     	List<Object[]> objs = userRepository.findUserInfoByLogin(SecurityUtils.getCurrentUserLogin());
     	if (objs != null) {
 			Object[] o = objs.get(0);
 			User user = (User)o[0];
 //			DeptInfo deptInfo = (DeptInfo)o[1];
-    		Page<ConsultantBonusVo> page = consultantBonusDao.getUserPage(contractId,fromDate,toDate,pageable);
+    		Page<ConsultantBonusVo> page = consultantBonusDao.getUserPage(contractId,consultantManId,fromDate,toDate,pageable);
         	return page;
     	}else{
     		return new PageImpl(new ArrayList<ConsultantBonusVo>(), pageable, 0);
@@ -77,13 +78,35 @@ public class ConsultantBonusService {
     public Page<ConsultantBonusVo> getConsultantBonusRecordPage(String contractId,Pageable pageable){
     	List<Object[]> objs = userRepository.findUserInfoByLogin(SecurityUtils.getCurrentUserLogin());
     	if (objs != null) {
-//			Object[] o = objs.get(0);
-//			User user = (User)o[0];
-//			DeptInfo deptInfo = (DeptInfo)o[1];
     		Page<ConsultantBonusVo> page = consultantBonusDao.getConsultantBonusRecordPage(contractId,pageable);
         	return page;
     	}else{
     		return new PageImpl(new ArrayList<ConsultantBonusVo>(), pageable, 0);
     	}
+    }
+    
+    /**
+     * 查询符合条件的最新数据记录
+     * @param toDate 
+     * @param fromDate 
+     * @param consultantManId 
+     * @param contractId 
+     * @return
+     */
+    @Transactional(readOnly = true)
+    public List<ConsultantBonusVo> getConsultantBonusData(Long contractId, Long consultantManId, Long fromDate, Long toDate){
+    	List<ConsultantBonusVo> list = consultantBonusDao.getConsultantBonusData(contractId,consultantManId,fromDate,toDate);
+    	return list;
+    }
+    
+    /**
+     * 查询符合条件的所有数据记录
+     * @param contractId
+     * @return
+     */
+    @Transactional(readOnly = true)
+    public List<ConsultantBonusVo> getConsultantBonusDetailList(Long contractId){
+    	List<ConsultantBonusVo> resultList =  consultantBonusDao.getConsultantBonusDetailList(contractId);
+    	return resultList;
     }
 }

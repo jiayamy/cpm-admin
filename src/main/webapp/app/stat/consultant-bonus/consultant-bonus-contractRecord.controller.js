@@ -5,9 +5,9 @@
         .module('cpmApp')
         .controller('ConsultantBonusContractRecordController', ConsultantBonusContractRecordController);
 
-    ConsultantBonusContractRecordController.$inject = ['ContractInfo','$scope', '$state', 'DateUtils','ConsultantBonus','ParseLinks', 'AlertService', 'paginationConstants', 'pagingParams', 'previousState'];
+    ConsultantBonusContractRecordController.$inject = ['$state','ConsultantBonus','ParseLinks', 'AlertService', 'pagingParams', 'previousState'];
 
-    function ConsultantBonusContractRecordController(ContractInfo,$scope, $state,DateUtils, ConsultantBonus, ParseLinks, AlertService, paginationConstants, pagingParams, previousState){
+    function ConsultantBonusContractRecordController($state, ConsultantBonus, ParseLinks, AlertService, pagingParams, previousState){
     	var vm = this;
 
         vm.loadPage = loadPage;
@@ -16,40 +16,8 @@
         vm.transition = transition;
         vm.itemsPerPage = 10;
         vm.previousState = previousState.name;
-//        vm.clear = clear;
-//        vm.search = search;
         vm.loadAll = loadAll;
-//        vm.searchQuery = {};
-//        vm.searchQuery.contractId= pagingParams.contractId;
-//        vm.searchQuery.fromDate = pagingParams.fromDate;
-//        vm.searchQuery.toDate = pagingParams.toDate;
-//        vm.contractInfos = [];
-        
-//        if (!vm.searchQuery.contractId && !vm.searchQuery.fromDate && !vm.searchQuery.toDate){
-//        	vm.haveSearch = null;
-//        }else{
-//        	vm.haveSearch = true;
-//        }
-        
-//        loadConsultantBonus();
-//        function loadConsultantBonus(){
-//        	ContractInfo.queryContractInfo({
-//        		
-//        	},
-//        	function(data, headers){
-//        		vm.contractInfos = data;
-//        		if(vm.contractInfos && vm.contractInfos.length > 0){
-//        			for(var i = 0; i < vm.contractInfos.length; i++){
-//        				if(pagingParams.contractId == vm.contractInfos[i].key){
-//        					vm.searchQuery.contractId = vm.contractInfos[i];
-//        				}
-//        			}
-//        		}
-//        	},
-//        	function(error){
-//        		AlertService.error(error.data.message);
-//        	});
-//        }
+        vm.exportXls = exportXls;
         
         loadAll();
 
@@ -59,9 +27,6 @@
                 size: vm.itemsPerPage,
                 sort: sort(),
                 contId : pagingParams.contId
-//                ,
-//                fromDate : pagingParams.fromDate,
-//                toDate : pagingParams.toDate
             }, onSuccess, onError);
            
             function sort() {
@@ -76,8 +41,6 @@
                 vm.totalItems = headers('X-Total-Count');
                 vm.queryCount = vm.totalItems;
                 vm.consultantBonuss = data;
-//                console.log(data);
-//                console.log(vm.consultantBonuss[0].name);
                 vm.page = pagingParams.page;
             }
             function onError(error) {
@@ -95,41 +58,24 @@
                 page: vm.page,
                 sort: vm.predicate + ',' + (vm.reverse ? 'asc' : 'desc'),
                 contractId:vm.searchQuery.contractId ? vm.searchQuery.contractId.key : ""
-//                	,
-//                fromDate:vm.searchQuery.fromDate ? DateUtils.convertLocalDateToFormat(vm.searchQuery.fromDate,"yyyyMMdd"):"",
-//                toDate:vm.searchQuery.toDate ? DateUtils.convertLocalDateToFormat(vm.searchQuery.toDate,"yyyyMMdd"):""
             });
         }
-
-//        function search() {
-//        	console.log("---"+vm.searchQuery.fromDate);
-//        	if (!vm.searchQuery.contractId && !vm.searchQuery.fromDate && !vm.searchQuery.toDate){
-//                return vm.clear();
-//            }
-//            vm.links = null;
-//            vm.page = 1;
-//            vm.predicate = 'm.id';
-//            vm.reverse = false;
-//            vm.haveSearch = true;
-//            vm.transition();
-//        }
-//
-//        function clear() {
-//            vm.links = null;
-//            vm.page = 1;
-//            vm.predicate = 'm.id';
-//            vm.reverse = true;
-//            vm.searchQuery = {};
-//            vm.haveSearch = false;
-//            vm.transition();
-//        }
-//        
-//        vm.datePickerOpenStatus = {};
-//        vm.datePickerOpenStatus.fromDate = false;
-//        vm.datePickerOpenStatus.toDate = false;
-//        vm.openCalendar = openCalendar;
-//        function openCalendar(data){
-//        	vm.datePickerOpenStatus[data] = true;
-//        }
+        
+        function exportXls(){
+        	var url = "api/consultant-bonus/contractRecord/exportXls";
+        	var c = 0;
+        	var contractId = pagingParams.contId;
+			
+			if(contractId){
+				if(c == 0){
+					c++;
+					url += "?";
+				}else{
+					url += "&";
+				}
+				url += "contractId="+encodeURI(contractId);
+			}
+        	window.open(url);
+        }
     }
 })();
