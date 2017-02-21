@@ -114,18 +114,6 @@ public class ProjectSupportBonus implements Serializable{
 	private Double taxRate;
 	
 	/**
-	 * 确认收入
-	 */
-	@Column(name = "acceptance_income")
-	private Double acceptanceIncome;
-	
-	/**
-	 * 成本（项目类就是公摊成本，产品类就是实际2.5中的生产成本合计，2个部门的），
-	 */
-	@Column(name = "cost_")
-	private Double cost;
-	
-	/**
 	 * 奖金基数（现在是走可确认收入-成本）、
 	 */
 	@Column(name = "bonus_basis")
@@ -277,22 +265,6 @@ public class ProjectSupportBonus implements Serializable{
 
 	public void setTaxRate(Double taxRate) {
 		this.taxRate = taxRate;
-	}
-
-	public Double getAcceptanceIncome() {
-		return acceptanceIncome;
-	}
-
-	public void setAcceptanceIncome(Double acceptanceIncome) {
-		this.acceptanceIncome = acceptanceIncome;
-	}
-
-	public Double getCost() {
-		return cost;
-	}
-
-	public void setCost(Double cost) {
-		this.cost = cost;
 	}
 
 	public Double getBonusBasis() {

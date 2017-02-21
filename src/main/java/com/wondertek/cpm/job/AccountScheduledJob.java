@@ -33,14 +33,13 @@ import com.wondertek.cpm.domain.ProjectSupportBonus;
 import com.wondertek.cpm.domain.ProjectSupportCost;
 import com.wondertek.cpm.domain.PurchaseItem;
 import com.wondertek.cpm.domain.SalesBonus;
-import com.wondertek.cpm.domain.ShareInfo;
+import com.wondertek.cpm.domain.ShareCostRate;
 import com.wondertek.cpm.domain.User;
 import com.wondertek.cpm.domain.UserCost;
 import com.wondertek.cpm.domain.UserTimesheet;
 import com.wondertek.cpm.repository.BonusRateRepository;
 import com.wondertek.cpm.repository.BonusRepository;
 import com.wondertek.cpm.repository.ConsultantsBonusRepository;
-import com.wondertek.cpm.repository.ContractBudgetRepository;
 import com.wondertek.cpm.repository.ContractInfoRepository;
 import com.wondertek.cpm.repository.ContractInternalPurchaseRepository;
 import com.wondertek.cpm.repository.ContractProjectBonusRepository;
@@ -55,7 +54,7 @@ import com.wondertek.cpm.repository.ProjectSupportBonusRepository;
 import com.wondertek.cpm.repository.ProjectSupportCostRepository;
 import com.wondertek.cpm.repository.PurchaseItemRepository;
 import com.wondertek.cpm.repository.SalesBonusRepository;
-import com.wondertek.cpm.repository.ShareInfoRepository;
+import com.wondertek.cpm.repository.ShareCostRateRepository;
 import com.wondertek.cpm.repository.UserCostRepository;
 import com.wondertek.cpm.repository.UserRepository;
 import com.wondertek.cpm.repository.UserTimesheetRepository;
@@ -65,6 +64,12 @@ import com.wondertek.cpm.repository.UserTimesheetRepository;
 public class AccountScheduledJob {
 	
 	private Logger log = LoggerFactory.getLogger(AccountScheduledJob.class);
+	
+	private Map<String, Double> shareCostRateMap = new HashMap<>();
+	
+	private Map<String, Double> bonusRateMap = new HashMap<>();
+	
+	private Map<Integer, Double> externalQuotationMap = new HashMap<>();
 	
 	@Inject
 	private BonusRepository bonusRepository;
@@ -81,8 +86,8 @@ public class AccountScheduledJob {
 	@Inject
 	private ContractReceiveRepository contractReceiveRepository;
 	
-	@Inject
-	private ContractBudgetRepository contractBudgetRepository;
+//	@Inject
+//	private ContractBudgetRepository contractBudgetRepository;
 	
 	@Inject
 	private ContractInternalPurchaseRepository contractInternalPurchaseRepository;
@@ -120,8 +125,11 @@ public class AccountScheduledJob {
 	@Inject
 	private SalesBonusRepository salesBonusRepository;
 	
+//	@Inject
+//	private ShareInfoRepository shareInfoRepository;
+	
 	@Inject
-	private ShareInfoRepository shareInfoRepository;
+	private ShareCostRateRepository shareCostRateRepository;
 	
 	@Inject
 	private UserRepository userRepository;
@@ -132,8 +140,30 @@ public class AccountScheduledJob {
 	@Inject
 	private UserCostRepository userCostRepository;
 	
+	private void init(){
+		List<BonusRate> bonusRates = bonusRateRepository.findAll();
+		if(bonusRates != null && bonusRates.size() > 0){
+			for(BonusRate bonusRate : bonusRates){
+				bonusRateMap.put(bonusRate.getDeptType()+"-"+bonusRate.getContractType(), bonusRate.getRate());
+			}
+		}
+		List<ShareCostRate> shareCostRates = shareCostRateRepository.findAll();
+		if(shareCostRates != null && shareCostRates.size() > 0){
+			for(ShareCostRate shareCostRate : shareCostRates){
+				shareCostRateMap.put(shareCostRate.getDeptType()+"-"+shareCostRate.getContractType(), shareCostRate.getShareRate());
+			}
+		}
+		List<ExternalQuotation> externalQuotations = externalQuotationRepository.findAll();
+		if(externalQuotations != null && externalQuotations.size() > 0){
+			for(ExternalQuotation externalQuotation : externalQuotations){
+				externalQuotationMap.put(externalQuotation.getGrade(), externalQuotation.getHourCost());
+			}
+		}
+	}
+	
 	protected void AccountScheduled(){
 		log.info("=====begin Account Scheduled=====");
+		init();
 		String [] dates = DateUtil.getWholeWeekByDate(DateUtil.lastSaturday());
 		ZonedDateTime beginTime = DateUtil.getZonedDateTime(DateUtil.lastMonday().getTime());
 		ZonedDateTime endTime = DateUtil.getZonedDateTime(DateUtil.lastSundayEnd().getTime());
@@ -179,11 +209,113 @@ public class AccountScheduledJob {
 		if(projectOveralls != null){
 			projectOverallRepository.delete(projectOveralls);
 		}
+		//合同
 		List<ContractInfo> contractInfos = contractInfoRepository.findByStatusOrUpdateTime(ContractInfo.STATUS_VALIDABLE, beginTime, endTime);
 		if(contractInfos != null && contractInfos.size() > 0){
 			for(ContractInfo contractInfo : contractInfos){
 				Long contractId = contractInfo.getId();
 				Integer contractType = contractInfo.getType();
+				
+				log.info("====begin generate Sales Bonus belong to Contract : "+contractInfo.getSerialNum()+"========");
+				//收款金额
+				Double sbReceiveTotal = 0D;
+				List<ContractReceive> contractReceives = contractReceiveRepository.findAllByContractIdAndCreateTimeBefore(contractId, endTime);
+				if(contractReceives != null && contractReceives.size() > 0){
+					for(ContractReceive contractReceive : contractReceives){
+						sbReceiveTotal += contractReceive.getReceiveTotal();
+					}
+				}else{
+					log.info("No ContractRecevie Founded belong to Contract :" + contractInfo.getSerialNum());
+				}
+				//税收
+				Double sbTaxes = sbReceiveTotal*((contractInfo.getTaxRate()/100)/(1+(contractInfo.getTaxRate()/100)));
+				//公摊成本
+				Double sbShareCost = contractInfo.getShareCost();
+				//第三方采购
+				Double sbThirdPartyPurchase = 0D;
+				List<PurchaseItem> purchaseItems = purchaseItemRepository.findByContractIdAndSource(contractId, PurchaseItem.SOURCE_EXTERNAL);
+				if(purchaseItems != null && purchaseItems.size() > 0){
+					for(PurchaseItem purchaseItem : purchaseItems){
+						sbThirdPartyPurchase += purchaseItem.getQuantity()*purchaseItem.getPrice();
+					}
+				}else{
+					log.error("no Purchase item found belong to " + contractInfo.getSerialNum());
+				}
+				//内部采购总额
+				Double sbInternalPurchase = 0D;
+				sbInternalPurchase += StringUtil.nullToDouble(projectSupportCostRepository.findSumGrossProfitByContractIdAndStatWeek(contractId, statWeek));
+				sbInternalPurchase += StringUtil.nullToDouble(productSalesBonusRepository.findSumBonusBasisByContractIdAndStatWeek(contractId, statWeek));
+				if(contractInfo.getSalesmanId() != null && contractInfo.getSalesman() != null){
+					SalesBonus salesBonus = new  SalesBonus();
+					salesBonus.setStatWeek(statWeek);
+					salesBonus.setSalesManId(contractInfo.getSalesmanId());
+					salesBonus.setSalesMan(contractInfo.getSalesman());
+					salesBonus.setContractId(contractId);
+					//所属年份
+					Calendar c = Calendar.getInstance();
+					c.setTime(Date.from(contractInfo.getStartDay().toInstant()));
+					Long sbOriginYear = (long) c.get(Calendar.YEAR);
+					salesBonus.setOriginYear(sbOriginYear);
+					salesBonus.setContractAmount(contractInfo.getAmount());
+					salesBonus.setTaxRate(contractInfo.getTaxRate());
+					salesBonus.setReceiveTotal(sbReceiveTotal);
+					salesBonus.setTaxes(sbTaxes);
+					salesBonus.setShareCost(sbShareCost);
+					salesBonus.setThirdPartyPurchase(sbThirdPartyPurchase);
+					//奖金基数
+					Double sbBonusBasis = sbReceiveTotal - sbTaxes - sbShareCost - sbThirdPartyPurchase;
+					salesBonus.setBonusBasis(sbBonusBasis);
+					//奖金比例
+					Double sbBonusRate = 0D;
+					BonusRate br = bonusRateRepository.findByDeptIdAndContractType(contractInfo.getDeptId(),contractType);
+					if(br != null){
+						sbBonusRate = br.getRate();
+					}
+					salesBonus.setBonusRate(sbBonusRate);
+					//本期奖金
+					Double sbCurrentBonus = sbBonusBasis*sbBonusRate/100;
+					salesBonus.setCurrentBonus(sbCurrentBonus);
+					salesBonus.setCreator(creator);
+					salesBonus.setCreateTime(ZonedDateTime.now());
+					salesBonusRepository.save(salesBonus);
+				}else{
+					log.info("No Sales Founded belong to contract : " + contractInfo.getSerialNum());
+				}
+				log.info("====end generate Sales Bonus belong to Contract : "+contractInfo.getSerialNum()+"========");
+				
+				log.info("====begin generate Consultants Bonus belong to Contract : "+contractInfo.getSerialNum()+"=======");
+				if(contractInfo.getConsultantsId() != null && contractInfo.getConsultants() != null){
+					ConsultantsBonus consultantsBonus = new ConsultantsBonus();
+					consultantsBonus.setStatWeek(statWeek);
+					consultantsBonus.setContractId(contractId);
+					consultantsBonus.setContractAmount(contractInfo.getAmount());
+					consultantsBonus.setConsultantsId(contractInfo.getConsultantsId());
+					consultantsBonus.setConsultants(contractInfo.getConsultants());
+					//奖金基数
+					Double cbBonusBasis =  sbReceiveTotal - sbTaxes - sbShareCost - sbThirdPartyPurchase;
+					consultantsBonus.setBonusBasis(cbBonusBasis);
+					//奖金比例
+					Double cbBonusRate = 0D;
+					BonusRate br = bonusRateRepository.findByDeptIdAndContractType(contractInfo.getConsultantsDeptId(),contractType);
+					if(br != null){
+						cbBonusRate = br.getRate();
+					}
+					consultantsBonus.setBonusRate(cbBonusRate);
+					//项目分润比例
+					Double cbConsultantsShareRate = contractInfo.getConsultantsShareRate();
+					consultantsBonus.setConsultantsShareRate(cbConsultantsShareRate);
+					//本期奖金
+					Double cbCurrentBonus = cbBonusBasis*(cbBonusRate/100)*(cbConsultantsShareRate/100);
+					consultantsBonus.setCurrentBonus(cbCurrentBonus);
+					consultantsBonus.setCreator(creator);
+					consultantsBonus.setCreateTime(ZonedDateTime.now());
+					consultantsBonusRepository.save(consultantsBonus);
+				}else{
+					log.info("No Consultants Founded belong to contract :" + contractInfo.getSerialNum());
+				}
+				log.info("====end generate Consultants Bonus belong to Contract : "+contractInfo.getSerialNum()+"=======");
+				
+				//合同下项目
 				List<ProjectInfo> projectInfos = projectInfoRepository.findByContractIdAndStatusOrUpdateTime(contractId, ProjectInfo.STATUS_ADD, beginTime, endTime);
 				if(projectInfos != null && projectInfos.size() > 0){
 					for(ProjectInfo projectInfo : projectInfos){
@@ -214,11 +346,7 @@ public class AccountScheduledJob {
 								projectSupportCost.setUserName(userTimesheet.getUserName());
 								projectSupportCost.setGrade(user.getGrade());
 								//结算成本
-								Double settlementCost = 0D;
-								ExternalQuotation externalQuotation = externalQuotationRepository.findByGrade(user.getGrade());
-								if(externalQuotation != null){
-									settlementCost = StringUtil.nullToDouble(externalQuotation.getHourCost());
-								}
+								Double settlementCost = StringUtil.nullToDouble(externalQuotationMap.get(user.getGender()));
 								projectSupportCost.setSettlementCost(settlementCost);
 								if(lastCostMap.containsKey(user.getId())){
 									//上周统计
@@ -365,20 +493,13 @@ public class AccountScheduledJob {
 						//税率
 						Double taxRate = contractInfo.getTaxRate();
 						projectSupportBonus.setTaxRate(taxRate);
-						//确认收入
-						Double acceptanceIncome = (contractAmount/(1+(taxRate/100)))*(acceptanceRate/100);
-						projectSupportBonus.setAcceptanceIncome(acceptanceIncome);
-						//成本
-						Double cost = 0D;
-						if(contractType == ContractInfo.TYPE_PROJECT){
-							cost = contractInfo.getShareCost();
-						}else if(contractType == ContractInfo.TYPE_INTERNAL){
-							cost += StringUtil.nullToDouble(projectSupportCostRepository.findSumProductCostByContractIdAndDeptTypeAndStatWeek(contractId,DeptType.PRODUCT_DEVELOPMENT, statWeek));
-							cost += StringUtil.nullToDouble(projectSupportCostRepository.findSumProductCostByContractIdAndDeptTypeAndStatWeek(contractId, DeptType.PROJECT_IMPLEMENTATION, statWeek));
-						}
-						projectSupportBonus.setCost(cost);
+						//公摊成本
+						Double psbShareCost = 0D;
+						String key = deptType+"-"+contractType;
+						Double psbShareCostRate = StringUtil.nullToDouble(shareCostRateMap.get(key));
+						psbShareCost = sbReceiveTotal*psbShareCostRate;
 						//奖金基数
-						Double bonusBasis = acceptanceIncome - cost;
+						Double bonusBasis = sbReceiveTotal - sbTaxes - psbShareCost - sbThirdPartyPurchase;
 						projectSupportBonus.setBonusBasis(bonusBasis);
 						//当期奖金
 						Double currentBonus = (bonusAcceptanceRate/100)*bonusBasis;
@@ -391,172 +512,74 @@ public class AccountScheduledJob {
 				}else{
 					log.info("No ProjectInfo Founded belong to Contract : " + contractInfo.getSerialNum());
 				}
-				log.info("====begin generate Product Sales Bonus to Contract : "+contractInfo.getSerialNum()+"======");
-				List<DeptType> deptTypes = deptTypeRepository.findByContractIdAndContractBudgetAndPurchaseItem(contractId,PurchaseItem.TYPE_SOFTWARE,PurchaseItem.SOURCE_INTERNAL);
-				if(deptTypes != null && deptTypes.size() > 0){
-					for(DeptType deptType : deptTypes){
-						ProductSalesBonus productSalesBonus = new ProductSalesBonus();
-						productSalesBonus.setStatWeek(statWeek);
-						productSalesBonus.setContractId(contractId);
-						productSalesBonus.setDeptType(deptType.getId());
-						//合同确认交付时间
-						Integer psbDeliveryTime = DateUtil.getIntervalDaysOfExitDate2(Date.from(contractInfo.getStartDay().toInstant()), Date.from(contractInfo.getEndDay().toInstant())) + 1;
-						productSalesBonus.setDeliveryTime(psbDeliveryTime);
-						//验收节点
-						Double psbAcceptanceRate = contractInfo.getFinishRate();
-						productSalesBonus.setAcceptanceRate(psbAcceptanceRate);
-						//计划天数
-						Double psbPlanDays = (psbDeliveryTime*psbAcceptanceRate)/100;
-						productSalesBonus.setPlanDays(psbPlanDays);
-						//实际使用天数
-						Integer psbRealDays = 0;
-						if(contractInfo.getStatus() == ContractInfo.STATUS_VALIDABLE){
-							psbRealDays = DateUtil.getIntervalDaysOfExitDate2(Date.from(contractInfo.getStartDay().toInstant()), DateUtil.lastSundayEnd()) + 1;
-						}else{
-							psbRealDays = DateUtil.getIntervalDaysOfExitDate2(Date.from(contractInfo.getStartDay().toInstant()), Date.from(contractInfo.getUpdateTime().toInstant())) + 1;
-						}
-						productSalesBonus.setRealDays(psbRealDays);
-						//奖金调节比率
-						Double psbBonusAdjustRate = ((psbPlanDays/psbRealDays)-1)*100;
-						productSalesBonus.setBonusAdjustRate(psbBonusAdjustRate);
-						//奖金比率
-						Double psbBonusRate = 0D;
-						BonusRate br = bonusRateRepository.findByDeptTypeAndContractType(deptType.getId(),contractType);
-						if(br != null){
-							psbBonusRate = br.getRate();
-						}else{
-							log.info("No BonusRate Founded belong to DeptType " + deptType.getId());
-						}
-						productSalesBonus.setBonusRate(psbBonusRate);
-						//奖金确认比例
-						Double psbBonusAcceptanceRate = (psbBonusRate/100)*(1+(psbBonusAdjustRate/100))*(psbAcceptanceRate/100)*100;
-						productSalesBonus.setBonusAcceptanceRate(psbBonusAcceptanceRate);
-						//奖金基数
-						Double psbBonusBasis = 0D;
-						List<PurchaseItem> purchaseItems = purchaseItemRepository.findByContractIdAndDeptTypeAndSourceAndType(contractId,deptType.getId(), PurchaseItem.SOURCE_INTERNAL, PurchaseItem.TYPE_SOFTWARE);
-						if(purchaseItems != null && purchaseItems.size() > 0){
-							for(PurchaseItem purchaseItem : purchaseItems){
-								ShareInfo shareInfo = shareInfoRepository.findByProductPriceIdAndDeptId(purchaseItem.getProductPriceId(), contractBudgetRepository.findOne(purchaseItem.getBudgetId()).getDeptId());
-								if(shareInfo == null){
-									continue;
-								}
-								psbBonusBasis += purchaseItem.getTotalAmount()*(StringUtil.nullToDouble(shareInfo.getShareRate())/100);
-							}
-						}else{
-							log.info("No Purchase Item founded belong to Contract " + contractInfo.getSerialNum());
-						}
-						productSalesBonus.setBonusBasis(psbBonusBasis);
-						//当期奖金
-						Double psbCurrentBonus = (psbBonusAcceptanceRate/100)*psbBonusBasis;
-						productSalesBonus.setCurrentBonus(psbCurrentBonus);
-						productSalesBonus.setCreator(creator);
-						productSalesBonus.setCreateTime(ZonedDateTime.now());
-						productSalesBonusRepository.save(productSalesBonus);
-						
-					}
-				}else{
-					log.info("No deptType founded");
-				}
-				log.info("====end generate Product Sales Bonus to Contract : "+contractInfo.getSerialNum()+"======");
 				
-				log.info("====begin generate Sales Bonus belong to Contract : "+contractInfo.getSerialNum()+"========");
-				//收款金额
-				Double sbReceiveTotal = 0D;
-				List<ContractReceive> contractReceives = contractReceiveRepository.findAllByContractIdAndCreateTimeBefore(contractId, endTime);
-				if(contractReceives != null && contractReceives.size() > 0){
-					for(ContractReceive contractReceive : contractReceives){
-						sbReceiveTotal += contractReceive.getReceiveTotal();
-					}
-				}else{
-					log.info("No ContractRecevie Founded belong to Contract :" + contractInfo.getSerialNum());
-				}
-				//税收
-				Double sbTaxes = sbReceiveTotal*((contractInfo.getTaxRate()/100)/(1+(contractInfo.getTaxRate()/100)));
-				//公摊成本
-				Double sbShareCost = contractInfo.getShareCost();
-				//第三方采购
-				Double sbThirdPartyPurchase = 0D;
-				List<PurchaseItem> purchaseItems = purchaseItemRepository.findByContractIdAndSource(contractId, PurchaseItem.SOURCE_EXTERNAL);
-				if(purchaseItems != null && purchaseItems.size() > 0){
-					for(PurchaseItem purchaseItem : purchaseItems){
-						sbThirdPartyPurchase += purchaseItem.getQuantity()*purchaseItem.getPrice();
-					}
-				}else{
-					log.error("no Purchase item found belong to " + contractInfo.getSerialNum());
-				}
-				//内部采购总额
-				Double sbInternalPurchase = 0D;
-				sbInternalPurchase += StringUtil.nullToDouble(projectSupportCostRepository.findSumGrossProfitByContractIdAndStatWeek(contractId, statWeek));
-				sbInternalPurchase += StringUtil.nullToDouble(productSalesBonusRepository.findSumBonusBasisByContractIdAndStatWeek(contractId, statWeek));
-				if(contractInfo.getSalesmanId() != null && contractInfo.getSalesman() != null){
-					SalesBonus salesBonus = new  SalesBonus();
-					salesBonus.setStatWeek(statWeek);
-					salesBonus.setSalesManId(contractInfo.getSalesmanId());
-					salesBonus.setSalesMan(contractInfo.getSalesman());
-					salesBonus.setContractId(contractId);
-					//所属年份
-					Calendar c = Calendar.getInstance();
-					c.setTime(Date.from(contractInfo.getStartDay().toInstant()));
-					Long sbOriginYear = (long) c.get(Calendar.YEAR);
-					salesBonus.setOriginYear(sbOriginYear);
-					salesBonus.setContractAmount(contractInfo.getAmount());
-					salesBonus.setTaxRate(contractInfo.getTaxRate());
-					salesBonus.setReceiveTotal(sbReceiveTotal);
-					salesBonus.setTaxes(sbTaxes);
-					salesBonus.setShareCost(sbShareCost);
-					salesBonus.setThirdPartyPurchase(sbThirdPartyPurchase);
-					//奖金基数
-					Double sbBonusBasis = sbReceiveTotal - sbTaxes - sbShareCost - sbThirdPartyPurchase;
-					salesBonus.setBonusBasis(sbBonusBasis);
-					//奖金比例
-					Double sbBonusRate = 0D;
-					BonusRate br = bonusRateRepository.findByDeptIdAndContractType(contractInfo.getDeptId(),contractType);
-					if(br != null){
-						sbBonusRate = br.getRate();
-					}
-					salesBonus.setBonusRate(sbBonusRate);
-					//本期奖金
-					Double sbCurrentBonus = sbBonusBasis*sbBonusRate/100;
-					salesBonus.setCurrentBonus(sbCurrentBonus);
-					salesBonus.setCreator(creator);
-					salesBonus.setCreateTime(ZonedDateTime.now());
-					salesBonusRepository.save(salesBonus);
-				}else{
-					log.info("No Sales Founded belong to contract : " + contractInfo.getSerialNum());
-				}
-				log.info("====end generate Sales Bonus belong to Contract : "+contractInfo.getSerialNum()+"========");
-				
-				log.info("====begin generate Consultants Bonus belong to Contract : "+contractInfo.getSerialNum()+"=======");
-				if(contractInfo.getConsultantsId() != null && contractInfo.getConsultants() != null){
-					ConsultantsBonus consultantsBonus = new ConsultantsBonus();
-					consultantsBonus.setStatWeek(statWeek);
-					consultantsBonus.setContractId(contractId);
-					consultantsBonus.setContractAmount(contractInfo.getAmount());
-					consultantsBonus.setConsultantsId(contractInfo.getConsultantsId());
-					consultantsBonus.setConsultants(contractInfo.getConsultants());
-					//奖金基数
-					Double cbBonusBasis =  sbReceiveTotal - sbTaxes - sbShareCost - sbThirdPartyPurchase;
-					consultantsBonus.setBonusBasis(cbBonusBasis);
-					//奖金比例
-					Double cbBonusRate = 0D;
-					BonusRate br = bonusRateRepository.findByDeptIdAndContractType(contractInfo.getConsultantsDeptId(),contractType);
-					if(br != null){
-						cbBonusRate = br.getRate();
-					}
-					consultantsBonus.setBonusRate(cbBonusRate);
-					//项目分润比例
-					Double cbConsultantsShareRate = contractInfo.getConsultantsShareRate();
-					consultantsBonus.setConsultantsShareRate(cbConsultantsShareRate);
-					//本期奖金
-					Double cbCurrentBonus = cbBonusBasis*(cbBonusRate/100)*(cbConsultantsShareRate/100);
-					consultantsBonus.setCurrentBonus(cbCurrentBonus);
-					consultantsBonus.setCreator(creator);
-					consultantsBonus.setCreateTime(ZonedDateTime.now());
-					consultantsBonusRepository.save(consultantsBonus);
-				}else{
-					log.info("No Consultants Founded belong to contract :" + contractInfo.getSerialNum());
-				}
-				log.info("====end generate Consultants Bonus belong to Contract : "+contractInfo.getSerialNum()+"=======");
+//				log.info("====begin generate Product Sales Bonus to Contract : "+contractInfo.getSerialNum()+"======");
+//				List<DeptType> deptTypes = deptTypeRepository.findByContractIdAndContractBudgetAndPurchaseItem(contractId,PurchaseItem.TYPE_SOFTWARE,PurchaseItem.SOURCE_INTERNAL);
+//				if(deptTypes != null && deptTypes.size() > 0){
+//					for(DeptType deptType : deptTypes){
+//						ProductSalesBonus productSalesBonus = new ProductSalesBonus();
+//						productSalesBonus.setStatWeek(statWeek);
+//						productSalesBonus.setContractId(contractId);
+//						productSalesBonus.setDeptType(deptType.getId());
+//						//合同确认交付时间
+//						Integer psbDeliveryTime = DateUtil.getIntervalDaysOfExitDate2(Date.from(contractInfo.getStartDay().toInstant()), Date.from(contractInfo.getEndDay().toInstant())) + 1;
+//						productSalesBonus.setDeliveryTime(psbDeliveryTime);
+//						//验收节点
+//						Double psbAcceptanceRate = contractInfo.getFinishRate();
+//						productSalesBonus.setAcceptanceRate(psbAcceptanceRate);
+//						//计划天数
+//						Double psbPlanDays = (psbDeliveryTime*psbAcceptanceRate)/100;
+//						productSalesBonus.setPlanDays(psbPlanDays);
+//						//实际使用天数
+//						Integer psbRealDays = 0;
+//						if(contractInfo.getStatus() == ContractInfo.STATUS_VALIDABLE){
+//							psbRealDays = DateUtil.getIntervalDaysOfExitDate2(Date.from(contractInfo.getStartDay().toInstant()), DateUtil.lastSundayEnd()) + 1;
+//						}else{
+//							psbRealDays = DateUtil.getIntervalDaysOfExitDate2(Date.from(contractInfo.getStartDay().toInstant()), Date.from(contractInfo.getUpdateTime().toInstant())) + 1;
+//						}
+//						productSalesBonus.setRealDays(psbRealDays);
+//						//奖金调节比率
+//						Double psbBonusAdjustRate = ((psbPlanDays/psbRealDays)-1)*100;
+//						productSalesBonus.setBonusAdjustRate(psbBonusAdjustRate);
+//						//奖金比率
+//						Double psbBonusRate = 0D;
+//						BonusRate br = bonusRateRepository.findByDeptTypeAndContractType(deptType.getId(),contractType);
+//						if(br != null){
+//							psbBonusRate = br.getRate();
+//						}else{
+//							log.info("No BonusRate Founded belong to DeptType " + deptType.getId());
+//						}
+//						productSalesBonus.setBonusRate(psbBonusRate);
+//						//奖金确认比例
+//						Double psbBonusAcceptanceRate = (psbBonusRate/100)*(1+(psbBonusAdjustRate/100))*(psbAcceptanceRate/100)*100;
+//						productSalesBonus.setBonusAcceptanceRate(psbBonusAcceptanceRate);
+//						//奖金基数
+//						Double psbBonusBasis = 0D;
+//						List<PurchaseItem> purchaseItems2 = purchaseItemRepository.findByContractIdAndDeptTypeAndSourceAndType(contractId,deptType.getId(), PurchaseItem.SOURCE_INTERNAL, PurchaseItem.TYPE_SOFTWARE);
+//						if(purchaseItems != null && purchaseItems2.size() > 0){
+//							for(PurchaseItem purchaseItem : purchaseItems2){
+//								ShareInfo shareInfo = shareInfoRepository.findByProductPriceIdAndDeptId(purchaseItem.getProductPriceId(), contractBudgetRepository.findOne(purchaseItem.getBudgetId()).getDeptId());
+//								if(shareInfo == null){
+//									continue;
+//								}
+//								psbBonusBasis += purchaseItem.getTotalAmount()*(StringUtil.nullToDouble(shareInfo.getShareRate())/100);
+//							}
+//						}else{
+//							log.info("No Purchase Item founded belong to Contract " + contractInfo.getSerialNum());
+//						}
+//						productSalesBonus.setBonusBasis(psbBonusBasis);
+//						//当期奖金
+//						Double psbCurrentBonus = (psbBonusAcceptanceRate/100)*psbBonusBasis;
+//						productSalesBonus.setCurrentBonus(psbCurrentBonus);
+//						productSalesBonus.setCreator(creator);
+//						productSalesBonus.setCreateTime(ZonedDateTime.now());
+//						productSalesBonusRepository.save(productSalesBonus);
+//						
+//					}
+//				}else{
+//					log.info("No deptType founded");
+//				}
+//				log.info("====end generate Product Sales Bonus to Contract : "+contractInfo.getSerialNum()+"======");
 				
 				log.info("====begin generate Project Overall to Contract : "+contractInfo.getSerialNum()+"=======");
 				ProjectOverall projectOverall = new ProjectOverall();
@@ -657,7 +680,7 @@ public class AccountScheduledJob {
 					//总金额
 					Double cipTotalAmount = 0D;
 					cipTotalAmount += StringUtil.nullToDouble(projectSupportCostRepository.findSumGrossProfitByContractIdAndDeptTypeAndStatWeek(contractId, deptType.getId(), statWeek));
-					cipTotalAmount += StringUtil.nullToDouble(productSalesBonusRepository.findSumBonusBasisByContractIdAndDeptTypeAndStatWeek(contractId, deptType.getId(), statWeek));
+//					cipTotalAmount += StringUtil.nullToDouble(productSalesBonusRepository.findSumBonusBasisByContractIdAndDeptTypeAndStatWeek(contractId, deptType.getId(), statWeek));
 					contractInternalPurchase.setTotalAmount(cipTotalAmount);
 					contractInternalPurchase.setCreator(creator);
 					contractInternalPurchase.setCreateTime(ZonedDateTime.now());
