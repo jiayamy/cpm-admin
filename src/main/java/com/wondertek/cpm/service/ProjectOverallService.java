@@ -1,5 +1,7 @@
 package com.wondertek.cpm.service;
 
+import java.util.List;
+
 import javax.inject.Inject;
 
 import org.slf4j.Logger;
@@ -42,6 +44,11 @@ public class ProjectOverallService {
 		log.debug("Request to get ProductPrice : {}", id);
 		ProjectOverall projectOverall = projectOverallRepository.findOne(id);
         return projectOverall;
+	}
+
+	public List<ProjectOverallVo> getProjectOverallList(String fromDate, String toDate, String contractId, String userId) {
+		List<ProjectOverallVo> returnList = projectOverallDao.getProjectOverallList(fromDate,toDate,contractId,userId);
+		return returnList;
 	}
 
 }

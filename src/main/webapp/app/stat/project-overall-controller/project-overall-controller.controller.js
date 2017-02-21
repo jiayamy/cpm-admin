@@ -16,22 +16,21 @@
         vm.clear = clear;
         vm.search = search;
         vm.searchQuery = {};
-        var fromDate = pagingParams.fromDate;
-        var toDate = pagingParams.toDate;
-        if(fromDate && fromDate.length == 8){
-        	fromDate = new Date(fromDate.substring(0,4),parseInt(fromDate.substring(4,6))-1,fromDate.substring(6,8));
-        }
-        if(toDate && toDate.length == 8){
-        	toDate = new Date(toDate.substring(0,4),parseInt(toDate.substring(4,6))-1,toDate.substring(6,8));
-        }
         
-       
+        vm.exportXls = exportXls;
+        vm.datePickerOpenStatus = {};
+        vm.openCalendar = openCalendar;
+        var today = new Date();
+        
+        if (pagingParams.toDate == undefined) {
+			pagingParams.toDate = DateUtils.convertLocalDateToFormat(today,"yyyyMMdd");;
+		}
       //搜索中的参数
-        vm.searchQuery.fromDate= fromDate;
-        vm.searchQuery.toDate = toDate;
+        vm.searchQuery.fromDate = DateUtils.convertDayToDate(pagingParams.fromDate);
+        vm.searchQuery.toDate = DateUtils.convertDayToDate(pagingParams.toDate);
         vm.searchQuery.userId = pagingParams.userId;
         vm.searchQuery.contractId = pagingParams.contractId;
-        
+        vm.searchQuery.userName = pagingParams.userName;
         if (!vm.searchQuery.fromDate && !vm.searchQuery.toDate && !vm.searchQuery.userId && !vm.searchQuery.contractId){
         	vm.haveSearch = null;
         }else{
@@ -68,9 +67,7 @@
         	if (pagingParams.fromDate == undefined) {
         		pagingParams.fromDate = "";
 			}
-        	if (pagingParams.toDate == undefined) {
-				pagingParams.toDate = "";
-			}
+        	
         	if (pagingParams.userId == undefined) {
 				pagingParams.userId = "";
 			}
@@ -128,6 +125,7 @@
                 fromDate: DateUtils.convertLocalDateToFormat(vm.searchQuery.fromDate,"yyyyMMdd"),
                 toDate: DateUtils.convertLocalDateToFormat(vm.searchQuery.toDate,"yyyyMMdd"),
                 userId:vm.searchQuery.userId,
+                userName: vm.searchQuery.userName,
                 contractId: vm.searchQuery.contractId ? vm.searchQuery.contractId.key: ""
             });
         }
@@ -150,12 +148,61 @@
             vm.predicate = 'wpo.id';
             vm.reverse = true;
             vm.searchQuery = {};
-            vm.haveSearch = null;
+            vm.searchQuery.toDate = new Date();
+            vm.haveSearch = true;
             vm.transition();
         }
+        function exportXls(){//导出Xls
+        	var url = "api/project-overall/exportXls";
+        	var c = 0;
+        	var fromDate = DateUtils.convertLocalDateToFormat(vm.searchQuery.fromDate,"yyyyMMdd");
+        	var toDate = DateUtils.convertLocalDateToFormat(vm.searchQuery.toDate,"yyyyMMdd");
+        	if (pagingParams.fromDate == undefined) {
+        		pagingParams.fromDate = "";
+			}
+        	var contractId = vm.searchQuery.contractId && vm.searchQuery.contractId.key? vm.searchQuery.contractId.key : vm.searchQuery.contractId;
+    		var userId = vm.searchQuery.userId;
+    		if(toDate){
+    			if(c == 0){
+    				c++;
+    				url += "?";
+    			}else{
+    				url += "&";
+    			}
+    			url += "toDate="+encodeURI(toDate);
+    		}
+    		if(fromDate){
+    			if(c == 0){
+    				c++;
+    				url += "?";
+    			}else{
+    				url += "&";
+    			}
+    			url += "fromDate="+encodeURI(fromDate);
+    		}
+    		if(contractId){
+    			if(c == 0){
+    				c++;
+    				url += "?";
+    			}else{
+    				url += "&";
+    			}
+    			url += "contractId="+encodeURI(contractId);
+    		}
+    		if(userId){
+    			if(c == 0){
+    				c++;
+    				url += "?";
+    			}else{
+    				url += "&";
+    			}
+    			url += "userId="+encodeURI(userId);
+    		}
+    		
+        	window.open(url);
+        }
         
-        vm.datePickerOpenStatus = {};
-        vm.openCalendar = openCalendar;
+        
         vm.datePickerOpenStatus.fromDate = false;
         vm.datePickerOpenStatus.toDate = false;
         function openCalendar (date) {
@@ -167,5 +214,6 @@
         	vm.searchQuery.userName = result.name;
         });
         $scope.$on('$destroy', unsubscribe);
+        
     }
 })();

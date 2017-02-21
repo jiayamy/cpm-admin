@@ -72,6 +72,12 @@
 		                            <span class="hidden-xs hidden-sm" data-translate="entity.action.clear"></span>
 		                        </button>
 		                    </span>
+		                    <span class="width-min">
+	                        	<button class="btn btn-info" ng-click="vm.exportXls()">
+	                            	<span class="glyphicon glyphicon-save"></span>
+	                            	<span class="hidden-xs hidden-sm" data-translate="entity.action.export"></span>
+	                        	</button>
+	                    	</span>
 		            	</div>
 		            </div>
            		</div>	
@@ -126,10 +132,6 @@
                                     class="btn btn-info btn-sm">
                                 <span class="glyphicon glyphicon-eye-open"></span>
                             </button>
-                            <button type="button" class="btn btn-primary" ui-sref="user-cost.upload">
-		           			 	<span class="glyphicon glyphicon-import"></span>
-	                			<span class=""  data-translate="cpmApp.projectOverallController.home.export">Import Excel</span>
-                			</button>
                         </div>
                     </td>
                 </tr>
