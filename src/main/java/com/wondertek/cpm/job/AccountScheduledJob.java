@@ -345,12 +345,7 @@ public class AccountScheduledJob {
 						}
 						projectSupportBonus.setRealDays(realDays);
 						//奖金调节比率
-						Double bonusAdjustRate = 0D;
-						if(realDays != 1){
-							bonusAdjustRate = StringUtil.nullToDouble(planDays/(realDays-1))*100;
-						}else{
-							bonusAdjustRate = -100D;
-						}
+						Double bonusAdjustRate = ((planDays/realDays)-1)*100;
 						projectSupportBonus.setBonusAdjustRate(bonusAdjustRate);
 						//奖金比率
 						Double bonusRate = 0D; 
@@ -422,7 +417,7 @@ public class AccountScheduledJob {
 						}
 						productSalesBonus.setRealDays(psbRealDays);
 						//奖金调节比率
-						Double psbBonusAdjustRate = (psbPlanDays/(psbRealDays-1))*100;
+						Double psbBonusAdjustRate = ((psbPlanDays/psbRealDays)-1)*100;
 						productSalesBonus.setBonusAdjustRate(psbBonusAdjustRate);
 						//奖金比率
 						Double psbBonusRate = 0D;
