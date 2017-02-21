@@ -27,11 +27,6 @@
             	method:'GET',
             	isArray:true
             }
-//            'queryUserContract':{
-//            	url:'api/consultant-bonus/queryUserContract',
-//            	method:'GET',
-//            	isArray:true
-//            }
         });
     }
 })();

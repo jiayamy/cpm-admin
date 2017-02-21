@@ -20,7 +20,7 @@
         vm.searchQuery = {};
         var source = pagingParams.source;
         if(source){
-        	if(source == 0){
+        	if(source == 2){
         		source = { id: 2, name: '外部' };
         	}else if(source == 1){
         		source = { id: 1, name: '内部' };

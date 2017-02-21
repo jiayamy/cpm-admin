@@ -67,12 +67,13 @@ public class SalesBonusService {
     		User user = (User) o[0];
     		DeptInfo deptInfo = (DeptInfo) o[1];
     		
-    		List<SalesBonusVo> returnList = salesBonusDao.getUserPage(user,deptInfo,salesBonus);
-    		if(returnList != null){
-    			SalesBonusVo totalInfo = getInitSalesBonusTotalInfo();
+    		List<SalesBonusVo> dbList = salesBonusDao.getUserPage(user,deptInfo,salesBonus);
+    		List<SalesBonusVo> returnList = new ArrayList<SalesBonusVo>();
+    		SalesBonusVo totalInfo = getInitSalesBonusTotalInfo("总体合计");
+    		if(dbList != null){
     			//统计销售在该年里面的所有累计完成金额/合同累计完成率
     			Map<Long,Double> salesTotalMap = new HashMap<Long,Double>();
-    			for(SalesBonusVo salesBonusVo : returnList){
+    			for(SalesBonusVo salesBonusVo : dbList){
     				if(salesTotalMap.containsKey(salesBonusVo.getSalesManId())){
     					salesTotalMap.put(salesBonusVo.getSalesManId(), salesTotalMap.get(salesBonusVo.getSalesManId()) + salesBonusVo.getContractAmount());
     				}else{
@@ -81,9 +82,18 @@ public class SalesBonusService {
     			}
     			//填充数据
     			Long currentUser = null;
-    			for(SalesBonusVo salesBonusVo : returnList){
+    			//单人的合计
+    			SalesBonusVo singleTotalInfo = null;
+    			int count = 0; 
+    			for(SalesBonusVo salesBonusVo : dbList){
     				if(currentUser == null || currentUser.longValue() != salesBonusVo.getSalesManId()){
     					currentUser = salesBonusVo.getSalesManId();
+    					if(singleTotalInfo != null && count > 1){//如果这个不为空，说明前面有处理
+    						handleDoubleScale(singleTotalInfo);
+    						returnList.add(singleTotalInfo);
+    					}
+    					count = 0;
+    					singleTotalInfo = getInitSalesBonusTotalInfo(salesBonusVo.getSalesMan()+"-合计");
     					//填充合同年指标
     					if(annualIndexMap.containsKey(salesBonusVo.getSalesManId())){
     						salesBonusVo.setAnnualIndex(StringUtil.getScaleDouble(annualIndexMap.get(salesBonusVo.getSalesManId()),2));
@@ -92,15 +102,16 @@ public class SalesBonusService {
     					}
     					//填充total
     					totalInfo.setAnnualIndex(totalInfo.getAnnualIndex() + salesBonusVo.getAnnualIndex());
-    					
+    					singleTotalInfo.setAnnualIndex(singleTotalInfo.getAnnualIndex() + salesBonusVo.getAnnualIndex());
     					//填充合同累计完成金额
     					if(salesTotalMap.containsKey(salesBonusVo.getSalesManId())){
     						salesBonusVo.setFinishTotal(StringUtil.getScaleDouble(salesTotalMap.get(salesBonusVo.getSalesManId()),2));
     					}else{//一般不会进来,肯定走上面有值的
     						salesBonusVo.setFinishTotal(0d);
     					}
-    					//填充total
+    					//填充合计
     					totalInfo.setFinishTotal(totalInfo.getFinishTotal() + salesBonusVo.getFinishTotal());//合同累计完成金额
+    					singleTotalInfo.setFinishTotal(singleTotalInfo.getFinishTotal() + salesBonusVo.getFinishTotal());//合同累计完成金额
     				}
     				//填充累计已计提奖金
     				salesBonusVo.setTotalBonus(salesBonusVo.getCurrentBonus());//合同年指标
@@ -119,7 +130,7 @@ public class SalesBonusService {
     						salesBonusVo.getCurrentBonus() * salesBonusVo.getFinishRate() / 100,
     						2));
     				
-    				//填充total
+    				//填充总体合计
     				totalInfo.setContractAmount(totalInfo.getContractAmount() + salesBonusVo.getContractAmount());//合同金额
     				totalInfo.setReceiveTotal(totalInfo.getReceiveTotal() + salesBonusVo.getReceiveTotal());//收款金额
     				totalInfo.setTaxes(totalInfo.getTaxes() + salesBonusVo.getTaxes());//税收
@@ -129,13 +140,31 @@ public class SalesBonusService {
     				totalInfo.setCurrentBonus(totalInfo.getCurrentBonus() + salesBonusVo.getCurrentBonus());//本期奖金
     				totalInfo.setTotalBonus(totalInfo.getTotalBonus() + salesBonusVo.getTotalBonus());//累计已计提奖金
     				totalInfo.setPayBonus(totalInfo.getPayBonus() + salesBonusVo.getPayBonus());//可发放奖金
+    				//填充分人合计
+    				singleTotalInfo.setContractAmount(singleTotalInfo.getContractAmount() + salesBonusVo.getContractAmount());//合同金额
+    				singleTotalInfo.setReceiveTotal(singleTotalInfo.getReceiveTotal() + salesBonusVo.getReceiveTotal());//收款金额
+    				singleTotalInfo.setTaxes(singleTotalInfo.getTaxes() + salesBonusVo.getTaxes());//税收
+    				singleTotalInfo.setShareCost(singleTotalInfo.getShareCost() + salesBonusVo.getShareCost());//公摊成本
+    				singleTotalInfo.setThirdPartyPurchase(singleTotalInfo.getThirdPartyPurchase() + salesBonusVo.getThirdPartyPurchase());//第三方采购
+    				singleTotalInfo.setBonusBasis(singleTotalInfo.getBonusBasis() + salesBonusVo.getBonusBasis());//奖金基数
+    				singleTotalInfo.setCurrentBonus(singleTotalInfo.getCurrentBonus() + salesBonusVo.getCurrentBonus());//本期奖金
+    				singleTotalInfo.setTotalBonus(singleTotalInfo.getTotalBonus() + salesBonusVo.getTotalBonus());//累计已计提奖金
+    				singleTotalInfo.setPayBonus(singleTotalInfo.getPayBonus() + salesBonusVo.getPayBonus());//可发放奖金
+    				//添加至返回
+    				returnList.add(salesBonusVo);
+    				//每个用户跑了几次
+    				count++;
     			}
-    			//处理合计的Double值
-    			handleDoubleScale(totalInfo);
-    			//添加合计
-    			returnList.add(totalInfo);
-    			return returnList;
+    			if(singleTotalInfo != null && count > 1){//如果这个不为空，说明前面有处理
+    				handleDoubleScale(singleTotalInfo);
+					returnList.add(singleTotalInfo);
+				}
     		}
+    		//处理合计的Double值
+    		handleDoubleScale(totalInfo);
+    		//添加合计
+    		returnList.add(totalInfo);
+    		return returnList;
     	}
 		return new ArrayList<SalesBonusVo>();
 	}
@@ -160,9 +189,9 @@ public class SalesBonusService {
      * 获取初始的销售合计
      * @return
      */
-	private SalesBonusVo getInitSalesBonusTotalInfo() {
+	private SalesBonusVo getInitSalesBonusTotalInfo(String salesMan) {
 		SalesBonusVo totalInfo = new SalesBonusVo();
-		totalInfo.setSalesMan("合计");
+		totalInfo.setSalesMan(salesMan);
 		totalInfo.setAnnualIndex(0d);//合同年指标
 		totalInfo.setFinishTotal(0d);//合同累计完成金额
 		totalInfo.setContractAmount(0d);//合同金额

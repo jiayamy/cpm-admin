@@ -5,9 +5,9 @@
         .module('cpmApp')
         .controller('ConsultantBonusController', ConsultantBonusController);
 
-    ConsultantBonusController.$inject = ['ContractInfo','$scope', '$state', 'DateUtils','ConsultantBonus','ParseLinks', 'AlertService', 'paginationConstants', 'pagingParams'];
+    ConsultantBonusController.$inject = ['ContractInfo','$rootScope', '$scope', '$state', 'DateUtils','ConsultantBonus','ParseLinks', 'AlertService', 'pagingParams'];
 
-    function ConsultantBonusController (ContractInfo,$scope, $state,DateUtils, ConsultantBonus, ParseLinks, AlertService, paginationConstants, pagingParams) {
+    function ConsultantBonusController (ContractInfo,$rootScope,$scope, $state,DateUtils, ConsultantBonus, ParseLinks, AlertService, pagingParams) {
         var vm = this;
 
         vm.loadPage = loadPage;
@@ -19,12 +19,16 @@
         vm.search = search;
         vm.loadAll = loadAll;
         vm.searchQuery = {};
+        vm.exportXls = exportXls;
+        
         vm.searchQuery.fromDate = DateUtils.convertYYYYMMDDDayToDate(pagingParams.fromDate);
         vm.searchQuery.toDate = DateUtils.convertYYYYMMDDDayToDate(pagingParams.toDate);
         vm.searchQuery.contractId = pagingParams.contractId;
+        vm.searchQuery.consultantMan = pagingParams.consultantMan;
+        vm.searchQuery.consultantManId = pagingParams.consultantManId;
         vm.contractInfos = [];
         
-        if (!vm.searchQuery.contractId && !vm.searchQuery.fromDate && !vm.searchQuery.toDate){
+        if (!vm.searchQuery.contractId && !vm.searchQuery.consultantManId && !vm.searchQuery.fromDate && !vm.searchQuery.toDate){
         	vm.haveSearch = null;
         }else{
         	vm.haveSearch = true;
@@ -57,6 +61,7 @@
                 size: vm.itemsPerPage,
                 sort: sort(),
                 contractId : pagingParams.contractId,
+                consultantManId : pagingParams.consultantManId,
                 fromDate : pagingParams.fromDate,
                 toDate : pagingParams.toDate
             }, onSuccess, onError);
@@ -90,14 +95,15 @@
                 page: vm.page,
                 sort: vm.predicate + ',' + (vm.reverse ? 'asc' : 'desc'),
                 contractId:vm.searchQuery.contractId ? vm.searchQuery.contractId.key : "",
+                consultantManId:vm.searchQuery.consultantManId,
+                consultantMan:vm.searchQuery.consultantMan,
                 fromDate:vm.searchQuery.fromDate ? DateUtils.convertLocalDateToFormat(vm.searchQuery.fromDate,"yyyyMMdd"):"",
                 toDate:vm.searchQuery.toDate ? DateUtils.convertLocalDateToFormat(vm.searchQuery.toDate,"yyyyMMdd"):""
             });
         }
 
         function search() {
-        	console.log("---"+vm.searchQuery.fromDate);
-        	if (!vm.searchQuery.contractId && !vm.searchQuery.fromDate && !vm.searchQuery.toDate){
+        	if (!vm.searchQuery.contractId && !vm.searchQuery.consultantManId && !vm.searchQuery.fromDate && !vm.searchQuery.toDate){
                 return vm.clear();
             }
             vm.links = null;
@@ -118,6 +124,54 @@
             vm.transition();
         }
         
+        function exportXls(){
+        	var url = "api/consultant-bonus/exportXls";
+        	var c = 0;
+        	var fromDate = DateUtils.convertLocalDateToFormat(vm.searchQuery.fromDate,"yyyyMMdd");
+        	var toDate = DateUtils.convertLocalDateToFormat(vm.searchQuery.toDate,"yyyyMMdd");
+        	var contractId = vm.searchQuery.contractId && vm.searchQuery.contractId.key? vm.searchQuery.contractId.key : vm.searchQuery.contractId;
+			var consultantManId = vm.searchQuery.consultantManId;
+			
+			if(fromDate){
+				if(c == 0){
+					c++;
+					url += "?";
+				}else{
+					url += "&";
+				}
+				url += "fromDate="+encodeURI(fromDate);
+			}
+			if(toDate){
+				if(c == 0){
+					c++;
+					url += "?";
+				}else{
+					url += "&";
+				}
+				url += "toDate="+encodeURI(toDate);
+			}
+			if(contractId){
+				if(c == 0){
+					c++;
+					url += "?";
+				}else{
+					url += "&";
+				}
+				url += "contractId="+encodeURI(contractId);
+			}
+			if(consultantManId){
+				if(c == 0){
+					c++;
+					url += "?";
+				}else{
+					url += "&";
+				}
+				url += "consultantManId="+encodeURI(consultantManId);
+			}
+			
+        	window.open(url);
+        }
+        
         vm.datePickerOpenStatus = {};
         vm.datePickerOpenStatus.fromDate = false;
         vm.datePickerOpenStatus.toDate = false;
@@ -125,5 +179,11 @@
         function openCalendar(data){
         	vm.datePickerOpenStatus[data] = true;
         }
+        
+        var unsubscribe = $rootScope.$on('cpmApp:deptInfoSelected', function(event, result) {
+        	vm.searchQuery.consultantManId = result.objId;
+        	vm.searchQuery.consultantMan = result.name;
+        });
+        $scope.$on('$destroy', unsubscribe);
     }
 })();

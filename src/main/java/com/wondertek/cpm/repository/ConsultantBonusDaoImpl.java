@@ -39,53 +39,39 @@ public class ConsultantBonusDaoImpl extends GenericDaoImpl<ConsultantsBonus, Lon
 	}
 
 	@Override
-	public Page<ConsultantBonusVo> getUserPage(String contractId,String fromDate,String toDate,Pageable pageable) {
+	public Page<ConsultantBonusVo> getUserPage(String contractId,String consultantManId,String fromDate,String toDate,Pageable pageable) {
 		StringBuffer sb = new StringBuffer();
 		StringBuffer querysql = new StringBuffer();
 		StringBuffer countsql = new StringBuffer();
 		StringBuffer wheresql = new StringBuffer();
-//		querysql.append(" select m.id, m.contractId, m.contractAmount, m.consultantsId, m.consultants, m.bonusBasis, m.bonusRate,"
-//				+ "m.consultantsShareRate , m.currentBonus ,m.creator ,m.statWeek ,m.createTime , i.serialNum , i.amount,i.name");
-//		countsql.append(" select count(m.id)");
-////		sb.append(" from ConsultantsBonus m");
-//		sb.append(" from (select cb.id, cb.contractId, cb.contractAmount, cb.consultantsId, cb.consultants, cb.bonusBasis, cb.bonusRate,"
-//				+ " cb.consultantsShareRate , cb.currentBonus ,cb.creator ,cb.statWeek ,cb.createTime from ConsultantsBonus cb where "
-//				+ " cb.statWeek = (select max(c.statWeek) from ConsultantsBonus c where c.contractId = cb.contractId)) m");
-//		sb.append(" left join ContractInfo i on m.contractId = i.id");
 		querysql.append(" select m.id, m.contract_id, m.contract_amount, m.consultants_id, m.consultants_, m.bonus_basis, m.bonus_rate,"
 				+ "m.consultants_share_rate , m.current_bonus ,m.creator_ ,m.stat_week ,m.create_time , i.serial_num , i.amount_, i.name_, j.serial_num as user_serial_num");
 		countsql.append(" select count(m.id)");
-//		sb.append(" from ConsultantsBonus m");
 		sb.append(" from (select cb.id, cb.contract_id, cb.contract_amount, cb.consultants_id, cb.consultants_, cb.bonus_basis, cb.bonus_rate,"
 				+ " cb.consultants_share_rate , cb.current_bonus ,cb.creator_ ,cb.stat_week ,cb.create_time from w_consultants_bonus cb"
-				+ " where cb.stat_week = (select max(c.stat_week) from w_consultants_bonus c where c.contract_id = cb.contract_id)) m");
+				+ " where cb.stat_week = (select max(c.stat_week) from w_consultants_bonus c ");
+		sb.append(" where c.contract_id = cb.contract_id");
+		List<Object> params = new ArrayList<Object>();
+		if(!StringUtil.isNullStr(fromDate)){
+    		sb.append(" and c.stat_week >= ?");
+        	params.add(StringUtil.nullToLong(fromDate));
+    	}
+    	if(!StringUtil.isNullStr(toDate)){
+    		sb.append(" and c.stat_week <= ?");
+    		params.add(StringUtil.nullToLong(toDate));
+    	}
+		sb.append(" )) m");
 		sb.append(" left join w_contract_info i on m.contract_id = i.id");
 		sb.append(" left join jhi_user j on m.consultants_id = j.id");
-		List<Object> params = new ArrayList<Object>();
 		wheresql.append(" where 1 = 1");
 		if(!StringUtil.isNullStr(contractId)){
     		wheresql.append(" and m.contract_id = ?");
     		params.add(StringUtil.nullToLong(contractId));
     	}
-    	if(!StringUtil.isNullStr(fromDate)){
-    		wheresql.append(" and m.stat_week >= ?");
-        	params.add(StringUtil.nullToLong(fromDate));
-    	}
-    	if(!StringUtil.isNullStr(toDate)){
-    		wheresql.append(" and m.stat_week <= ?");
-    		params.add(StringUtil.nullToLong(toDate));
-    	}
-//    	if(!StringUtil.isNullStr(contractId)){
-//    		wheresql.append(" and m.contractId = ?");
-//    		params.add(StringUtil.nullToLong(contractId));
-//    	}
-//    	if(!StringUtil.isNullStr(fromDate) && !StringUtil.isNullStr(toDate)){
-//    		wheresql.append(" and m.statWeek >= ? and m.statWeek <= ?");
-//        	params.add(StringUtil.nullToLong(fromDate));
-//        	params.add(StringUtil.nullToLong(toDate));
-//    	}
-    	System.out.println("--------querysql:"+querysql.toString()+sb.toString()+wheresql.toString());
-    	System.out.println("--------countsql:"+countsql.toString()+sb.toString()+wheresql.toString());
+		if(!StringUtil.isNullStr(consultantManId)){
+			wheresql.append(" and m.consultants_id = ?");
+			params.add(StringUtil.nullToLong(consultantManId));
+		}
     	StringBuffer orderHql = new StringBuffer();
     	if(pageable.getSort() != null){//页面都会有个默认排序
     		for (Order order : pageable.getSort()) {
@@ -104,12 +90,6 @@ public class ConsultantBonusDaoImpl extends GenericDaoImpl<ConsultantsBonus, Lon
     			}
     		}
     	}
-//    	Page<Object[]> page = this.queryHqlPage(
-//    			querysql.toString() + sb.toString() + wheresql.toString() + orderHql.toString(), 
-//    			countsql.toString() + sb.toString() + wheresql.toString(), 
-//    			params.toArray(), 
-//    			pageable
-//    		);
     	Page<Object[]> page = this.querySqlPage(
     			querysql.toString() + sb.toString() + wheresql.toString() + orderHql.toString(), 
     			countsql.toString() + sb.toString() + wheresql.toString(), 
@@ -118,22 +98,12 @@ public class ConsultantBonusDaoImpl extends GenericDaoImpl<ConsultantsBonus, Lon
     		);
     	List<ConsultantBonusVo> returnList = new ArrayList<>();
     	if(page.getContent() != null){
-//    		Map<Long,Long> tmp = new HashMap<Long,Long>();
 			for(Object[] o : page.getContent()){
-//				Long key1 = StringUtil.nullToLong(o[1]);
-//				Long val10 = StringUtil.nullToLong(o[10]);
-//				if(tmp.get(key1) == null){
-//					tmp.put(key1, val10);
-//				}else if(tmp.get(key1) < val10){
-//					tmp.put(key1, val10);
-//				}
 				returnList.add(transConsultantBonusVo(o));
 			}
 		}
     	return new PageImpl(returnList, pageable, page.getTotalElements());
 	}
-//	querysql.append(" select m.id, m.contractId, m.contractAmount, m.consultantsId, m.consultantsName, m.bonusBasis, m.bonusRate,"
-//			+ "m.consultantsShareRate , m.currentBonus ,m.creator ,m.statWeek ,m.createTime , i.serialNum , i.name");
 	private ConsultantBonusVo transConsultantBonusVo(Object[] o){
 		ConsultantBonusVo consultantBonusVo = new ConsultantBonusVo();
 		consultantBonusVo.setId(StringUtil.nullToLong(o[0]));
@@ -147,7 +117,6 @@ public class ConsultantBonusDaoImpl extends GenericDaoImpl<ConsultantsBonus, Lon
 		consultantBonusVo.setCurrentBonus(StringUtil.nullToDouble(o[8]));
 		consultantBonusVo.setCreator(StringUtil.null2Str(o[9]));
 		consultantBonusVo.setStatWeek(StringUtil.nullToLong(o[10]));
-//		consultantBonusVo.setCreateTime((ZonedDateTime) (o[11]));
 		consultantBonusVo.setCreateTime(DateUtil.getZonedDateTime((Timestamp) o[11]));
 		consultantBonusVo.setSerialNum(StringUtil.null2Str(o[12]));
 		consultantBonusVo.setAmount(StringUtil.nullToDouble(o[13]));
@@ -223,12 +192,86 @@ public class ConsultantBonusDaoImpl extends GenericDaoImpl<ConsultantsBonus, Lon
 		consultantBonusVo.setCurrentBonus(StringUtil.nullToDouble(o[8]));
 		consultantBonusVo.setCreator(StringUtil.null2Str(o[9]));
 		consultantBonusVo.setStatWeek(StringUtil.nullToLong(o[10]));
-//		consultantBonusVo.setCreateTime((ZonedDateTime) (o[11]));
 		consultantBonusVo.setCreateTime((ZonedDateTime)(o[11]));
 		consultantBonusVo.setSerialNum(StringUtil.null2Str(o[12]));
 		consultantBonusVo.setAmount(StringUtil.nullToDouble(o[13]));
 		consultantBonusVo.setName(StringUtil.null2Str(o[14]));
 		consultantBonusVo.setConsultantsSerialNum(StringUtil.null2Str(o[15]));
 		return consultantBonusVo;
+	}
+
+	@Override
+	public List<ConsultantBonusVo> getConsultantBonusData(Long contractId, Long consultantManId, Long fromDate,Long toDate) {
+		StringBuffer sb = new StringBuffer();
+		StringBuffer querysql = new StringBuffer();
+		StringBuffer wheresql = new StringBuffer();
+		querysql.append(" select m.id, m.contract_id, m.contract_amount, m.consultants_id, m.consultants_, m.bonus_basis, m.bonus_rate,"
+				+ "m.consultants_share_rate , m.current_bonus ,m.creator_ ,m.stat_week ,m.create_time , i.serial_num , i.amount_, i.name_, j.serial_num as user_serial_num");
+		sb.append(" from (select cb.id, cb.contract_id, cb.contract_amount, cb.consultants_id, cb.consultants_, cb.bonus_basis, cb.bonus_rate,"
+				+ " cb.consultants_share_rate , cb.current_bonus ,cb.creator_ ,cb.stat_week ,cb.create_time from w_consultants_bonus cb"
+				+ " where cb.stat_week = (select max(c.stat_week) from w_consultants_bonus c ");
+		sb.append(" where c.contract_id = cb.contract_id");
+		List<Object> params = new ArrayList<Object>();
+		if(fromDate != null){
+    		sb.append(" and c.stat_week >= ?");
+        	params.add(fromDate);
+    	}
+    	if(toDate != null){
+    		sb.append(" and c.stat_week <= ?");
+    		params.add(toDate);
+    	}
+		sb.append(" )) m");
+		sb.append(" left join w_contract_info i on m.contract_id = i.id");
+		sb.append(" left join jhi_user j on m.consultants_id = j.id");
+		wheresql.append(" where 1 = 1");
+		if(contractId != null){
+    		wheresql.append(" and m.contract_id = ?");
+    		params.add(contractId);
+    	}
+		if(consultantManId != null){
+			wheresql.append(" and m.consultants_id = ?");
+			params.add(consultantManId);
+		}
+    	List<Object[]> result = this.queryAllSql(
+    			querysql.toString() + sb.toString() + wheresql.toString(), 
+    			params.toArray());
+    	List<ConsultantBonusVo> returnList = new ArrayList<>();
+    	if(result != null){
+			for(Object[] o : result){
+				returnList.add(transConsultantBonusVo(o));
+			}
+		}
+    	return returnList;
+	}
+
+	@Override
+	public List<ConsultantBonusVo> getConsultantBonusDetailList(Long contractId) {
+		StringBuffer fromHql = new StringBuffer();
+		StringBuffer queryHql = new StringBuffer();
+		StringBuffer whereHql = new StringBuffer();
+		
+		queryHql.append(" select m.id, m.contractId, m.contractAmount, m.consultantsId, m.consultants, m.bonusBasis, m.bonusRate,"
+				+ "m.consultantsShareRate , m.currentBonus ,m.creator ,m.statWeek ,m.createTime , i.serialNum , i.amount,i.name,u.serialNum");
+		fromHql.append(" from ConsultantsBonus m");
+		fromHql.append(" left join ContractInfo i on m.contractId = i.id");
+		fromHql.append(" left join User u on m.consultantsId = u.id");
+		
+		List<Object> params = new ArrayList<Object>();
+		whereHql.append(" where 1 = 1");
+		if(contractId != null){
+    		whereHql.append(" and m.contractId = ?");
+    		params.add(contractId);
+    	}
+		
+    	List<Object[]> resultList = this.queryAllHql(
+    			queryHql.toString() + fromHql.toString() + whereHql.toString(), 
+    			params.toArray());
+    	List<ConsultantBonusVo> returnList = new ArrayList<>();
+    	if(resultList != null){
+			for(Object[] o : resultList){
+				returnList.add(transHqlConsultantBonusVo(o));
+			}
+		}
+    	return returnList;
 	}
 }

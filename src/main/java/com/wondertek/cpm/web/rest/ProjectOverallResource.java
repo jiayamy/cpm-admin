@@ -2,12 +2,26 @@ package com.wondertek.cpm.web.rest;
 
 import io.swagger.annotations.ApiParam;
 
+import java.io.IOException;
 import java.net.URISyntaxException;
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
 import javax.inject.Inject;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
+import org.apache.poi.hssf.usermodel.HSSFDataFormat;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFCellStyle;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -23,6 +37,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.codahale.metrics.annotation.Timed;
+import com.wondertek.cpm.ExcelWrite;
 import com.wondertek.cpm.config.DateUtil;
 import com.wondertek.cpm.config.StringUtil;
 import com.wondertek.cpm.domain.ProductPrice;
@@ -41,7 +56,7 @@ import com.wondertek.cpm.web.rest.util.PaginationUtil;
 public class ProjectOverallResource {
 
     private final Logger log = LoggerFactory.getLogger(ProjectOverallResource.class);
-        
+    private final DecimalFormat doubleFormat = new DecimalFormat("#0.00");   
     @Inject
     private ProjectOverallService projectOverallService;
     
@@ -89,6 +104,222 @@ public class ProjectOverallResource {
                 HttpStatus.OK))
             .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
+    
+    @RequestMapping("/project-overall/exportXls")
+    @Timed
+    public void exportXls(
+    		HttpServletRequest request, HttpServletResponse response,
+    		@RequestParam(value = "fromDate",required=false) String fromDate,
+    		@RequestParam(value = "toDate",required=false) String toDate,
+    		@RequestParam(value = "contractId",required=false) String contractId,
+    		@RequestParam(value = "userId",required=false) String userId,
+    		@ApiParam Pageable pageable)
+		throws URISyntaxException, IOException {
+    	log.debug("REST request to get a page of exportXls");
+    	Date now = new Date();
+    	String currentDay = StringUtil.null2Str(
+    			DateUtil.formatDate(DateUtil.DATE_YYYYMMDD_PATTERN, now));
+    	 if(!StringUtil.isNullStr(fromDate)){//更改为对应日期的周日
+    		 fromDate = DateUtil.getWholeWeekByDate(DateUtil.parseDate("yyyyMMdd", fromDate))[6];
+         }
+    	 
+    	 if(!StringUtil.isNullStr(toDate)){//更改为对应日期的周日
+    		 toDate = DateUtil.getWholeWeekByDate(DateUtil.parseDate("yyyyMMdd", toDate))[6];
+          }else {
+        	  toDate = StringUtil.null2Str(//默认当前天
+          			DateUtil.formatDate(DateUtil.DATE_YYYYMMDD_PATTERN, 
+          					DateUtil.getSundayOfDay(now)));
+		}
+    	 Page<ProjectOverallVo> page = projectOverallService.searchPage(fromDate,toDate,contractId,userId,pageable);
+         List<ProjectOverallVo> list = new ArrayList<ProjectOverallVo>();
+         for (ProjectOverallVo projectOverallVo : page.getContent()) {
+ 			list.add(projectOverallVo);
+ 		}
+//         List<ProjectOverallVo> list = projectOverallService.getProjectOverallList(fromDate,toDate,contractId,userId);
 
+         //拼接sheet数据
+     	//标题
+     	String[] heads = new String[]{
+     			"合同负责人",
+     			"合同编号",
+     			"合同金额",
+     			"税率",
+     			"可确认收入",
+     			"合同完成节点",
+     			"收入确认",
+     			"收款金额",
+     			"应急收账",
+     			"公摊成本",
+     			"第三方采购",
+     			"内部采购总额",
+     			"奖金",
+     			"毛利",
+     			"毛利率"
+     	};
+     	//设置文件名
+     	String fileName = "projectOverall_" + currentDay + ".xlsx";
+     	//写入sheet
+    	ServletOutputStream outputStream = response.getOutputStream();
+    	response.setHeader("Content-Disposition","attachment;filename=" + fileName);
+    	response.setContentType("application/x-msdownload");
+    	response.setCharacterEncoding("UTF-8");
+    	
+    	ExcelWrite excelWrite = new ExcelWrite();
+    	excelWrite.createSheetTitle("项目总体控制", 1, heads);
+    	//写入数据
+    	if(list != null){
+    		handleSheetData(list,2,excelWrite);
+    	}
+    	excelWrite.close(outputStream);
+    }
+    
+	/**
+     * 处理sheet数据
+     */
+    private void handleSheetData(List<ProjectOverallVo> list, int startRow,
+			ExcelWrite excelWrite) {
+    	//除表头外的其他数据单元格格式
+    	Integer[] cellType = new Integer[]{
+    			Cell.CELL_TYPE_STRING,
+    			Cell.CELL_TYPE_STRING,
+    			Cell.CELL_TYPE_NUMERIC,
+    			Cell.CELL_TYPE_NUMERIC,
+    			Cell.CELL_TYPE_NUMERIC,
+    			Cell.CELL_TYPE_NUMERIC,
+    			Cell.CELL_TYPE_NUMERIC,
+    			Cell.CELL_TYPE_NUMERIC,
+    			Cell.CELL_TYPE_NUMERIC,
+    			Cell.CELL_TYPE_NUMERIC,
+    			Cell.CELL_TYPE_NUMERIC,
+    			Cell.CELL_TYPE_NUMERIC,
+    			Cell.CELL_TYPE_NUMERIC,
+    			Cell.CELL_TYPE_NUMERIC,
+    			Cell.CELL_TYPE_NUMERIC
+    	};
+    	XSSFSheet sheet = excelWrite.getCurrentSheet();
+    	XSSFWorkbook wb = excelWrite.getXSSFWorkbook();
+		XSSFRow row = null;
+		XSSFCell cell = null;
+		int i = -1;
+		int j = 0;
+		//百分比格式
+		XSSFCellStyle cellStyle = wb.createCellStyle();  
+		cellStyle.setDataFormat(HSSFDataFormat.getBuiltinFormat("0.00%"));
+		//数据
+		for (ProjectOverallVo vo : list) {
+			i++;
+			row = sheet.createRow(i + startRow-1);
+			
+			j = 0;
+			cell = row.createCell(j,cellType[j]);
+			if (vo.getSalesman() == null && vo.getConsultants() == null) {
+				 cell.setCellValue("");
+			}else {
+				cell.setCellValue(!StringUtil.isNullStr(vo.getSalesman()) ? vo.getSalesman() : vo.getConsultants());
+			}
+			j++;
+			cell = row.createCell(j,cellType[j]);
+			if (vo.getSerialNum() == null) {
+				cell.setCellValue("");
+			}else {
+				cell.setCellValue(vo.getSerialNum());
+			}
+			j++;
+			cell = row.createCell(j,cellType[j]);
+			if (vo.getContractAmount() == null) {
+				cell.setCellValue("");
+			}else {
+				cell.setCellValue(vo.getContractAmount());
+			}
+			j++;
+			cell = row.createCell(j,cellType[j]);
+			if (vo.getTaxRate() == null) {
+				cell.setCellValue("");
+			}else {
+				cell.setCellValue(vo.getTaxRate() / 100);
+				cell.setCellStyle(cellStyle);
+			}
+			j++;
+			cell = row.createCell(j,cellType[j]);
+			if (vo.getIdentifiableIncome() == null) {
+				cell.setCellValue("");
+			}else {
+				cell.setCellValue(vo.getIdentifiableIncome());
+			}
+			j++;
+			cell = row.createCell(j,cellType[j]);
+			if (vo.getContractFinishRate() == null) {
+				cell.setCellValue("");
+			}else {
+				cell.setCellValue(vo.getContractFinishRate() / 100);
+				cell.setCellStyle(cellStyle);
+			}
+			j++;
+			cell = row.createCell(j,cellType[j]);
+			if (vo.getAcceptanceIncome() == null) {
+				cell.setCellValue("");
+			}else {
+				cell.setCellValue(vo.getAcceptanceIncome());
+			}
+			j++;
+			cell = row.createCell(j,cellType[j]);
+			if (vo.getReceiveTotal() == null) {
+				cell.setCellValue("");
+			}else {
+				cell.setCellValue(vo.getReceiveTotal());
+			}
+			j++;
+			cell = row.createCell(j,cellType[j]);
+			if (vo.getReceivableAccount() == null) {
+				cell.setCellValue("");
+			}else {
+				cell.setCellValue(vo.getReceivableAccount());
+			}
+			j++;
+			cell = row.createCell(j,cellType[j]);
+			if (vo.getShareCost() == null) {
+				cell.setCellValue("");
+			}else {
+				cell.setCellValue(vo.getShareCost());
+			}
+			j++;
+			cell = row.createCell(j,cellType[j]);
+			if (vo.getThirdPartyPurchase() == null) {
+				cell.setCellValue("");
+			}else {
+				cell.setCellValue(vo.getThirdPartyPurchase());
+			}
+			j++;
+			cell = row.createCell(j,cellType[j]);
+			if (vo.getInternalPurchase() == null) {
+				cell.setCellValue("");
+			}else {
+				cell.setCellValue(vo.getInternalPurchase());
+			}
+			j++;
+			cell = row.createCell(j,cellType[j]);
+			if (vo.getBonus() == null) {
+				cell.setCellValue("");
+			}else {
+				cell.setCellValue(vo.getBonus());
+			}
+			j++;
+			cell = row.createCell(j,cellType[j]);
+			if (vo.getGrossProfit() == null) {
+				cell.setCellValue("");
+			}else {
+				cell.setCellValue(vo.getGrossProfit());
+			}
+			j++;
+			cell = row.createCell(j,cellType[j]);
+			if (vo.getGrossProfitRate() == null) {
+				cell.setCellValue("");
+			}else {
+				cell.setCellValue(vo.getGrossProfitRate() / 100);
+				cell.setCellStyle(cellStyle);
+			}
+			j++;
+		}
+	}
 
 }
