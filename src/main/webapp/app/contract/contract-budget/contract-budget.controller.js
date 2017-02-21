@@ -29,7 +29,7 @@
         
         vm.searchQuery.contractId = pagingParams.contractId;
         vm.searchQuery.name = pagingParams.name;
-        vm.searchQuery.purchaseType = pagingParams.purchaseType;
+        
         if (!vm.searchQuery.contractId && !vm.searchQuery.name && !vm.searchQuery.purchaseType){
         	vm.haveSearch = null;
         }else{

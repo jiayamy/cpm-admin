@@ -11,7 +11,7 @@
         $stateProvider
         .state('project-overall-controller', {
             parent: 'stat',
-            url: '/project-overall-controller?fromDate&toDate&contractId&userId',
+            url: '/project-overall-controller?fromDate&toDate&contractId&userId&userName',
             data: {
                 pageTitle: 'cpmApp.projectOverallController.home.title'
             },
@@ -34,7 +34,8 @@
                 fromDate: null,
                 toDate: null,
                 contractId: null,
-                userId: null
+                userId: null,
+                userName: null,
             },
             resolve: {
                 pagingParams: ['$stateParams', 'PaginationUtil', function ($stateParams, PaginationUtil) {
@@ -46,7 +47,8 @@
                         fromDate: $stateParams.fromDate,
                         toDate: $stateParams.toDate,
                         contractId: $stateParams.contractId,
-                        userId: $stateParams.userId
+                        userId: $stateParams.userId,
+                        userName: $stateParams.userName
                     };
                 }],
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {

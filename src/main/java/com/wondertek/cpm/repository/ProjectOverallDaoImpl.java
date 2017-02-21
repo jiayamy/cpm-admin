@@ -100,7 +100,6 @@ public class ProjectOverallDaoImpl extends GenericDaoImpl<ProjectOverall, Long> 
 		orderSql = null;
 		
 		Page<Object[]> page = this.querySqlPage(querySql.toString(), countSql.toString(), params.toArray(), pageable);
-		System.out.println(page.getContent());
 		List<ProjectOverallVo> returnList = new ArrayList<ProjectOverallVo>();
 		if(page.getContent() != null){
 			for(Object[] o : page.getContent()){
@@ -168,5 +167,56 @@ public class ProjectOverallDaoImpl extends GenericDaoImpl<ProjectOverall, Long> 
 			}
 		}
 		return new PageImpl(returnList, pageable, page.getTotalElements());
+	}
+
+	@Override
+	public List<ProjectOverallVo> getProjectOverallList(String fromDate,
+			String toDate, String contractId, String userId) {
+		StringBuffer querySql = new StringBuffer();
+		
+		StringBuffer whereSql = new StringBuffer();
+		List<Object> params = new ArrayList<Object>();
+		
+		querySql.append("select wpo.id,wpo.contract_response,wpo.contract_id,wpo.contract_amount,wpo.tax_rate,wpo.identifiable_income,wpo.contract_finish_rate,wpo.acceptance_income,wpo.receive_total,wpo.receivable_account,wpo.share_cost,wpo.third_party_purchase,wpo.internal_purchase,wpo.bonus_,wpo.gross_profit,wpo.gross_profit_rate,wci.serial_num,wci.sales_man,wci.consultants_");
+		
+		whereSql.append(" from w_project_overall wpo");
+		whereSql.append(" inner join ");
+		whereSql.append("(");
+		whereSql.append("select max(wpo1.id) as id,wpo1.contract_id from w_project_overall wpo1 group by wpo1.contract_id");
+		whereSql.append(")");
+		whereSql.append(" b on wpo.id = b.id");
+		whereSql.append(" left join w_contract_info wci on wci.id = wpo.contract_id");
+		whereSql.append(" where 1=1");
+		
+		//查询条件
+		if(!StringUtil.isNullStr(fromDate)){
+			whereSql.append(" and wpo.stat_week >= ?");
+			params.add(StringUtil.nullToLong(fromDate));
+		}
+		if (!StringUtil.isNullStr(toDate)) {
+			whereSql.append(" and wpo.stat_week <= ?");
+			params.add(StringUtil.nullToLong(toDate));
+		}
+		if (!StringUtil.isNullStr(contractId)) {
+			whereSql.append(" and wpo.contract_id = ?");
+			params.add(StringUtil.nullToLong(contractId));
+		}
+		if (!StringUtil.isNullStr(userId)) {
+			whereSql.append(" and wpo.contract_response = ?");
+			params.add(StringUtil.nullToLong(userId));
+		}
+		querySql.append(whereSql.toString());
+		whereSql.setLength(0);
+		whereSql = null;
+		
+		
+		List<Object[]> page = this.queryAllSql(querySql.toString(), params.toArray());
+		List<ProjectOverallVo> returnList = new ArrayList<ProjectOverallVo>();
+		if(page != null){
+			for(Object[] o : page){
+				returnList.add(transProjectOverallVo(o));
+			}
+		}
+		return returnList;
 	}
 }
