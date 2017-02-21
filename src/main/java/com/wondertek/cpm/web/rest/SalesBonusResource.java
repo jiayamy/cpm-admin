@@ -14,6 +14,7 @@ import org.apache.poi.hssf.usermodel.HSSFDataFormat;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
+import org.apache.poi.xssf.usermodel.XSSFDataFormat;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -31,9 +32,13 @@ import com.codahale.metrics.annotation.Timed;
 import com.wondertek.cpm.ExcelWrite;
 import com.wondertek.cpm.config.DateUtil;
 import com.wondertek.cpm.config.StringUtil;
+import com.wondertek.cpm.domain.ContractInfo;
 import com.wondertek.cpm.domain.SalesBonus;
+import com.wondertek.cpm.domain.User;
 import com.wondertek.cpm.domain.vo.SalesBonusVo;
+import com.wondertek.cpm.service.ContractInfoService;
 import com.wondertek.cpm.service.SalesBonusService;
+import com.wondertek.cpm.service.UserService;
 
 /**
  * REST controller for managing SalesBonus.
@@ -45,6 +50,10 @@ public class SalesBonusResource {
     private final Logger log = LoggerFactory.getLogger(SalesBonusResource.class);
     @Inject
     private SalesBonusService salesBonusService;
+    @Inject
+    private ContractInfoService contractInfoService;
+    @Inject
+    private UserService userService;
     /**
      * 列表页
      */
@@ -143,14 +152,15 @@ public class SalesBonusResource {
     	excelWrite.createSheetTitle("销售项目", 1, heads);
     	//写入数据
     	if(page != null){
-    		handleSheetData(page,2,excelWrite);
+    		handleSheetData(page,2,excelWrite,salesBonus);
     	}
     	excelWrite.close(outputStream);
     }
     /**
      * 处理sheet数据
+     * @param salesBonus 
      */
-	private void handleSheetData(List<SalesBonusVo> page, int startRow, ExcelWrite excelWrite) {
+	private void handleSheetData(List<SalesBonusVo> page, int startRow, ExcelWrite excelWrite, SalesBonus salesBonus) {
 		//除表头外的其他数据单元格格式
     	Integer[] cellType = new Integer[]{
     			Cell.CELL_TYPE_STRING,
@@ -301,5 +311,81 @@ public class SalesBonusResource {
 			}
 			j++;
 		}
+		//导出条件
+		i++;
+		createFoot(wb,sheet,i+startRow-1,salesBonus);
+	}
+	/**
+	 * 导出条件
+	 * @param wb 
+	 */
+	private void createFoot(XSSFWorkbook wb, XSSFSheet sheet, int rownum, SalesBonus salesBonus) {
+		//空白行
+		sheet.createRow(rownum);
+		rownum ++;
+		
+		XSSFRow row = sheet.createRow(rownum);
+		rownum ++;
+		XSSFCell cell = row.createCell(0);
+		cell.setCellValue("导出条件");
+				
+		row = sheet.createRow(rownum);
+		rownum ++;
+		cell = row.createCell(1);
+		cell.setCellValue("所属年份:");
+		cell = row.createCell(2);
+		cell.setCellValue(salesBonus.getOriginYear());
+		
+		row = sheet.createRow(rownum);
+		rownum ++;
+		cell = row.createCell(1);
+		cell.setCellValue("截止日期:");
+		cell = row.createCell(2);
+		cell.setCellValue(salesBonus.getStatWeek());
+		
+		row = sheet.createRow(rownum);
+		rownum ++;
+		cell = row.createCell(1);
+		cell.setCellValue("合同信息:");
+		cell = row.createCell(2);
+		if(salesBonus.getContractId() != null){
+			ContractInfo info = contractInfoService.findOne(salesBonus.getContractId());
+			if(info != null){
+				cell.setCellValue(info.getSerialNum());
+			}else{
+				cell.setCellValue("");
+			}
+		}else{
+			cell.setCellValue("");
+		}
+		
+		row = sheet.createRow(rownum);
+		rownum ++;
+		cell = row.createCell(1);
+		cell.setCellValue("销售:");
+		cell = row.createCell(2);
+		if(salesBonus.getSalesManId() != null){
+			User info = userService.getUserWithAuthorities(salesBonus.getSalesManId());
+			if(info != null){
+				cell.setCellValue(info.getLastName());
+			}else{
+				cell.setCellValue("");
+			}
+		}else{
+			cell.setCellValue("");
+		}
+		
+		row = sheet.createRow(rownum);
+		rownum ++;
+		cell = row.createCell(1);
+		cell.setCellValue("导出时间:");
+		cell = row.createCell(2);
+		cell.setCellValue(new Date());
+		//时间格式
+		XSSFCellStyle cellStyle = wb.createCellStyle();  
+		XSSFDataFormat format= wb.createDataFormat();  
+        cellStyle.setDataFormat(format.getFormat("yyyy/m/d h:mm"));
+        cell.setCellStyle(cellStyle);
+        
 	}
 }
