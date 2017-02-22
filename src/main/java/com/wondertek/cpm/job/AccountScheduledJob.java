@@ -225,7 +225,6 @@ public class AccountScheduledJob {
 			for(ContractInfo contractInfo : contractInfos){
 				Long contractId = contractInfo.getId();
 				Integer contractType = contractInfo.getType();
-				List<Long> contractDeptTypes = new ArrayList<>();//合同内部门类型列表
 				//收款金额
 				Double contractReceiveTotal = 0D;
 				List<ContractReceive> contractReceives = contractReceiveRepository.findAllByContractIdAndCreateTimeBefore(contractId, endTime);
@@ -319,28 +318,30 @@ public class AccountScheduledJob {
 					log.info("No Consultants Founded belong to contract :" + contractInfo.getSerialNum());
 				}
 				log.info("====end generate Consultants Bonus belong to Contract : "+contractInfo.getSerialNum()+"=======");
-				
 				//合同下项目
+				List<Long> contractDeptTypes = new ArrayList<>();//合同内部门类型列表
 				List<ProjectInfo> projectInfos = projectInfoRepository.findAllByContractId(contractId);
 				if(projectInfos != null && projectInfos.size() > 0){
+					
+					Map<String, ProjectSupportCost> lastSupportCostMap = new HashMap<>();//截止到上上一周的记录
+					List<ProjectSupportCost> projectSupportCosts2 =projectSupportCostRepository.findByContractIdAndStatWeek(contractId, lastStatWeek);
+					if(projectSupportCosts2 != null && projectSupportCosts2.size() > 0){
+						for(ProjectSupportCost projectSupportCost : projectSupportCosts2){
+							String key = projectSupportCost.getDeptType()+"-"+projectSupportCost.getUserId();
+							lastSupportCostMap.put(key, projectSupportCost);
+						}
+					}
+					Map<String, ProjectSupportCost> thisSupportCostMap = new HashMap<>();//本周统计新增的
 					for(ProjectInfo projectInfo : projectInfos){
 						log.info("====begin generate Project Support Cost "+projectInfo.getSerialNum()+"===");
 						Long projectId = projectInfo.getId();
-						DeptInfo projectDept = deptInfoRepository.findOne(projectInfo.getDeptId());
-						if(!contractDeptTypes.contains(projectDept.getType())){
-							contractDeptTypes.add(projectDept.getType());
+						//部门类型
+						Long deptType = deptIdTypeMap.get(projectInfo.getDeptId());
+						if(deptType != null && !contractDeptTypes.contains(deptType)){
+							contractDeptTypes.add(deptType);
+							
 						}
-						
-						//上周报告
-						Map<String, ProjectSupportCost> lastSupportCostMap = new HashMap<>();
-						Map<String, ProjectSupportCost> thisSupportCostMap = new HashMap<>();
-						List<ProjectSupportCost> projectSupportCosts2 =projectSupportCostRepository.findByContractIdAndStatWeek(contractId, lastStatWeek);
-						if(projectSupportCosts2 != null && projectSupportCosts2.size() > 0){
-							for(ProjectSupportCost projectSupportCost : projectSupportCosts2){
-								String key = projectSupportCost.getContractId()+"-"+projectSupportCost.getUserId();
-								lastSupportCostMap.put(key, projectSupportCost);
-							}
-						}
+						//上一周的（统计都是当前统计上一周的）
 						List<UserTimesheet> userTimesheets = userTimesheetRepository.findByTypeAndObjIdAndEndDay(UserTimesheet.TYPE_PROJECT, projectId, statWeek);
 						if(userTimesheets != null && userTimesheets.size() > 0){
 							for(UserTimesheet userTimesheet : userTimesheets){
@@ -348,10 +349,12 @@ public class AccountScheduledJob {
 								if(user == null){
 									continue;
 								}
+								String key = deptType +"-"+user.getId();
+								
 								ProjectSupportCost projectSupportCost = new ProjectSupportCost();
 								projectSupportCost.setStatWeek(statWeek);
 								projectSupportCost.setContractId(contractId);
-								projectSupportCost.setDeptType(projectDept.getType());
+								projectSupportCost.setDeptType(deptType);
 								projectSupportCost.setUserId(userTimesheet.getUserId());
 								projectSupportCost.setSerialNum(user.getSerialNum());
 								projectSupportCost.setUserName(userTimesheet.getUserName());
@@ -361,7 +364,13 @@ public class AccountScheduledJob {
 								projectSupportCost.setSettlementCost(settlementCost);
 								//项目工时
 								Double thisProjectHourCost = 0D;
-								List<UserTimesheet> userTimesheets2 = userTimesheetRepository.findByUserIdAndTypeAndObjIdAndTime(user.getId(), UserTimesheet.TYPE_PROJECT, projectId, fDay, statWeek);
+								List<UserTimesheet> userTimesheets2 = null;
+								if(lastSupportCostMap.get(key) != null){//上上周有记录，查询上一周
+									userTimesheets2 = userTimesheetRepository.findByUserIdAndTypeAndObjIdAndTime(user.getId(), UserTimesheet.TYPE_PROJECT, projectId, fDay, statWeek);
+								}else{//查询当前用户截止到上一周的所有日报
+									//TODO 
+								}
+								
 								if(userTimesheets != null && userTimesheets.size() > 0){
 									for(UserTimesheet userTimesheet2 : userTimesheets2){
 										thisProjectHourCost += userTimesheet2.getRealInput();
@@ -402,39 +411,25 @@ public class AccountScheduledJob {
 								projectSupportCost.setGrossProfit(grossProfit);
 								projectSupportCost.setCreator(creator);
 								projectSupportCost.setCreateTime(ZonedDateTime.now());
-								String key = contractId +"-"+user.getId();
+								
+								ProjectSupportCost oldProjectSupportCost = thisSupportCostMap.get(key);
+								if(oldProjectSupportCost != null){//将上一个项目中的成本等加到当前项目中去
+									projectSupportCost.setProjectHourCost(projectSupportCost.getProjectHourCost() + oldProjectSupportCost.getProjectHourCost());
+									projectSupportCost.setInternalBudgetCost(projectSupportCost.getInternalBudgetCost() + oldProjectSupportCost.getInternalBudgetCost());
+									projectSupportCost.setProductCost(projectSupportCost.getProductCost() + oldProjectSupportCost.getProductCost());
+									projectSupportCost.setGrossProfit(projectSupportCost.getGrossProfit() + oldProjectSupportCost.getGrossProfit());
+								}
 								thisSupportCostMap.put(key, projectSupportCost);
 							}
 						}else{
 							log.info("No UserTimeSheet Founded Belong to : " + projectInfo.getSerialNum());
 						}
-						for(String key : thisSupportCostMap.keySet()){
-							if(lastSupportCostMap.containsKey(key)){
-								ProjectSupportCost thisSupportCost = thisSupportCostMap.get(key);
-								ProjectSupportCost lastSupportCost = lastSupportCostMap.get(key);
-								//项目工时
-								Double thisProjectHourCost = thisSupportCost.getProjectHourCost() + lastSupportCost.getProjectHourCost();
-								thisSupportCost.setProjectHourCost(thisProjectHourCost);
-								//内部采购成本
-								Double thisInternalBudgetCost = thisSupportCost.getInternalBudgetCost() + lastSupportCost.getInternalBudgetCost();
-								thisSupportCost.setInternalBudgetCost(thisInternalBudgetCost);
-								//生产成本合计
-								Double thisProductCost = thisSupportCost.getProductCost() + lastSupportCost.getProductCost();
-								thisSupportCost.setProductCost(thisProductCost);
-								//生产毛利
-								Double grossProfit = thisInternalBudgetCost - thisProductCost;
-								thisSupportCost.setGrossProfit(grossProfit);
-								thisSupportCostMap.put(key, thisSupportCost);
-							}
-							projectSupportCostRepository.save(thisSupportCostMap.get(key));
-						}
-						log.info("====end generate Project Support Cost "+projectInfo.getSerialNum()+"===");
 						
+						//项目支撑奖金
 						log.info("====begin generate Project Support Bonus "+projectInfo.getSerialNum()+"========");
 						ProjectSupportBonus projectSupportBonus = new ProjectSupportBonus();
 						projectSupportBonus.setStatWeek(statWeek);
 						projectSupportBonus.setContractId(contractId);
-						Long deptType = projectDept.getType();
 						projectSupportBonus.setDeptType(deptType);
 						projectSupportBonus.setPmId(projectInfo.getPmId());
 						projectSupportBonus.setPmName(projectInfo.getPm());
@@ -486,10 +481,40 @@ public class AccountScheduledJob {
 						projectSupportBonusRepository.save(projectSupportBonus);
 						log.info("====end generate Project Support Bonus "+projectInfo.getSerialNum()+"========");
 					}
+					
+					//项目支撑成本
+					List<ProjectSupportCost> saveList = new ArrayList<ProjectSupportCost>();
+					for(String key : thisSupportCostMap.keySet()){//每个部门类型中的每个用户都有一条记录
+						if(lastSupportCostMap.containsKey(key)){
+							ProjectSupportCost thisSupportCost = thisSupportCostMap.get(key);
+							ProjectSupportCost lastSupportCost = lastSupportCostMap.get(key);
+							//项目工时
+							thisSupportCost.setProjectHourCost(thisSupportCost.getProjectHourCost() + lastSupportCost.getProjectHourCost());
+							//内部采购成本
+							thisSupportCost.setInternalBudgetCost(thisSupportCost.getInternalBudgetCost() + lastSupportCost.getInternalBudgetCost());
+							//生产成本合计
+							thisSupportCost.setProductCost(thisSupportCost.getProductCost() + lastSupportCost.getProductCost());
+							//生产毛利
+							thisSupportCost.setGrossProfit(thisSupportCost.getGrossProfit() + lastSupportCost.getGrossProfit());
+							
+							thisSupportCostMap.put(key, thisSupportCost);
+							lastSupportCostMap.remove(key);
+						}
+						saveList.add(thisSupportCostMap.get(key));
+					}
+					//添加上上周有记录的，上周没有记录的
+					for(String key : lastSupportCostMap.keySet()){
+						ProjectSupportCost lastSupportCost = lastSupportCostMap.get(key);
+						lastSupportCost.setId(null);
+						lastSupportCost.setStatWeek(lastStatWeek);
+						saveList.add(lastSupportCost);
+					}
+					projectSupportCostRepository.save(saveList);
+					log.info("====end generate Project Support Cost ");
 				}else{
 					log.info("No ProjectInfo Founded belong to Contract : " + contractInfo.getSerialNum());
 				}
-				
+				//产品销售奖金
 //				log.info("====begin generate Product Sales Bonus to Contract : "+contractInfo.getSerialNum()+"======");
 //				List<DeptType> deptTypes = deptTypeRepository.findByContractIdAndContractBudgetAndPurchaseItem(contractId,PurchaseItem.TYPE_SOFTWARE,PurchaseItem.SOURCE_INTERNAL);
 //				if(deptTypes != null && deptTypes.size() > 0){
@@ -558,6 +583,7 @@ public class AccountScheduledJob {
 //				}
 //				log.info("====end generate Product Sales Bonus to Contract : "+contractInfo.getSerialNum()+"======");
 				
+				//项目总体情况控制表
 				log.info("====begin generate Project Overall to Contract : "+contractInfo.getSerialNum()+"=======");
 				ProjectOverall projectOverall = new ProjectOverall();
 				projectOverall.setStatWeek(statWeek);
@@ -630,6 +656,7 @@ public class AccountScheduledJob {
 				projectOverallRepository.save(projectOverall);
 				log.info("====end generate Project Overall to Contract : "+contractInfo.getSerialNum()+"=======");
 				
+				//奖金总表
 				log.info("====begin generate Bonus to Contract : "+contractInfo.getSerialNum()+"=======");
 				Bonus bonus = new Bonus();
 				bonus.setStatWeek(statWeek);
