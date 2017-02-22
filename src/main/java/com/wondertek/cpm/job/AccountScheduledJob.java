@@ -225,7 +225,7 @@ public class AccountScheduledJob {
 			for(ContractInfo contractInfo : contractInfos){
 				Long contractId = contractInfo.getId();
 				Integer contractType = contractInfo.getType();
-				List<Long> contractDeptTypes = new ArrayList<>();
+				List<Long> contractDeptTypes = new ArrayList<>();//合同内部门类型列表
 				//收款金额
 				Double contractReceiveTotal = 0D;
 				List<ContractReceive> contractReceives = contractReceiveRepository.findAllByContractIdAndCreateTimeBefore(contractId, endTime);
@@ -644,8 +644,9 @@ public class AccountScheduledJob {
 				bonusRepository.save(bonus);
 				log.info("====end generate Bonus to Contract : "+contractInfo.getSerialNum()+"=======");
 				
-				log.info("====begin generate Contract Internal Purchase to Contract : "+contractInfo.getSerialNum()+"=====");
+				log.info("====begin generate Contract Internal Purchase & Contract Project Bonus to Contract : "+contractInfo.getSerialNum()+"=====");
 				ProjectOverall projectOverall2 = projectOverallRepository.findByContractIdAndStatWeek(contractId, statWeek);
+				Bonus bonus2 = bonusRepository.findByContractIdAndStatWeek(contractId, statWeek);
 				for(int i = 0; i < contractDeptTypes.size(); i++){
 					ContractInternalPurchase contractInternalPurchase = new ContractInternalPurchase();
 					contractInternalPurchase.setStatWeek(statWeek);
@@ -661,30 +662,21 @@ public class AccountScheduledJob {
 					contractInternalPurchase.setCreator(creator);
 					contractInternalPurchase.setCreateTime(ZonedDateTime.now());
 					contractInternalPurchaseRepository.save(contractInternalPurchase);
+					
+					ContractProjectBonus contractProjectBonus = new ContractProjectBonus();
+					contractProjectBonus.setStatWeek(statWeek);
+					contractProjectBonus.setBonusId(bonus2.getId());
+					contractProjectBonus.setContractId(contractId);
+					contractProjectBonus.setDeptType(contractDeptTypes.get(i));
+					//奖金合计
+					Double cpbBonus = 0D;
+					cpbBonus += StringUtil.nullToDouble(projectSupportBonusRepository.findSumCurrentBonusByContractIdAndDeptTypeAndStatWeek(contractId, contractDeptTypes.get(i), statWeek));
+					contractProjectBonus.setBonus(cpbBonus);
+					contractProjectBonus.setCreator(creator);
+					contractProjectBonus.setCreateTime(ZonedDateTime.now());
+					contractProjectBonusRepository.save(contractProjectBonus);
 				}
-				log.info("====end generate Contract Internal Purchase to Contract : "+contractInfo.getSerialNum()+"=====");
-				
-				log.info("====begin generate Contract Project Bonus to Contract : "+contractInfo.getSerialNum()+"=====");
-				Bonus bonus2 = bonusRepository.findByContractIdAndStatWeek(contractId, statWeek);
-				if(projectInfos != null && projectInfos.size() > 0){
-					for(ProjectInfo projectInfo : projectInfos){
-						DeptInfo projectDept = deptInfoRepository.findOne(projectInfo.getDeptId());
-						ContractProjectBonus contractProjectBonus = new ContractProjectBonus();
-						contractProjectBonus.setStatWeek(statWeek);
-						contractProjectBonus.setBonusId(bonus2.getId());
-						contractProjectBonus.setContractId(contractId);
-						contractProjectBonus.setDeptType(projectDept.getType());
-						//奖金合计
-						Double cpbBonus = 0D;
-						cpbBonus += StringUtil.nullToDouble(projectSupportBonusRepository.findSumCurrentBonusByContractIdAndDeptTypeAndStatWeek(contractId, projectDept.getType(), statWeek));
-						contractProjectBonus.setBonus(cpbBonus);
-						contractProjectBonus.setCreator(creator);
-						contractProjectBonus.setCreateTime(ZonedDateTime.now());
-						contractProjectBonusRepository.save(contractProjectBonus);
-					}
-				}
-				log.info("====end generate Contract Project Bonus to Contract : "+contractInfo.getSerialNum()+"=====");
-				log.info("=====end generate Contract Project Bonus to Contract : "+contractInfo.getSerialNum()+"======");
+				log.info("====end generate Contract Internal Purchase & Contract Project Bonus to Contract : "+contractInfo.getSerialNum()+"=====");
 			}
 		}else{
 			log.info("No ContractInfo Founded");
