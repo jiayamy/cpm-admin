@@ -1,0 +1,17 @@
+{
+    "cpmApp": {
+        "bonusRate" : {
+            "home": {
+                "title": "奖金提成比例",
+                "createOrEditLabel": "奖金提成比例"
+            },
+            "deptType":"部门类型",
+            "rate": "提成比例(%)",
+            "contractType":"合同类型",
+            "creator": "创建者",
+            "createTime": "创建时间",
+            "updator": "更新者",
+            "updateTime": "更新时间"
+        }
+    }
+}

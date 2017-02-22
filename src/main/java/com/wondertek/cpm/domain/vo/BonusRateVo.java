@@ -36,6 +36,7 @@ public class BonusRateVo{
 		this.deptType = bonusRate.getDeptType();
 		this.dept = dept;
 		this.contractType = bonusRate.getContractType();
+		this.rate = bonusRate.getRate();
 		this.creator = bonusRate.getCreator();
 		this.createTime = bonusRate.getCreateTime();
 		this.updator = bonusRate.getUpdator();

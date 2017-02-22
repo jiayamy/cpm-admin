@@ -2,12 +2,12 @@
     'use strict';
     angular
         .module('cpmApp')
-        .factory('DeptType', DeptType);
+        .factory('BonusRate', BonusRate);
 
-    DeptType.$inject = ['$resource'];
+    BonusRate.$inject = ['$resource'];
 
-    function DeptType ($resource) {
-        var resourceUrl =  'api/dept-types/:id';
+    function BonusRate ($resource) {
+        var resourceUrl =  'api/bonus-rate/:id';
 
         return $resource(resourceUrl, {}, {
             'query': { method: 'GET', isArray: true},
@@ -20,12 +20,7 @@
                     return data;
                 }
             },
-            'update': { method:'PUT' },
-            'getAllForCombox' : {
-            	url:'api/dept-types/forCombox',
-            	method: 'GET', 
-            	isArray: true
-            }
+            'update': { method:'PUT' }
         });
     }
 })();

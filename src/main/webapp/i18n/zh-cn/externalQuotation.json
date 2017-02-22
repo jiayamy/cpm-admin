@@ -1,0 +1,10 @@
+{
+    "cpmApp": {
+        "externalQuotation" : {
+            "home": {
+                "title": "外部报价",
+                "createOrEditLabel": "外部报价"
+            }
+        }
+    }
+}

@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.codahale.metrics.annotation.Timed;
 import com.wondertek.cpm.domain.DeptType;
+import com.wondertek.cpm.domain.vo.LongValue;
 import com.wondertek.cpm.security.AuthoritiesConstants;
 import com.wondertek.cpm.service.DeptTypeService;
 import com.wondertek.cpm.web.rest.util.HeaderUtil;
@@ -163,5 +164,14 @@ public class DeptTypeResource {
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
 
+    @GetMapping("/dept-types/forCombox")
+    @Timed
+    @Secured(AuthoritiesConstants.ROLE_INFO_BASIC)
+    public ResponseEntity<List<LongValue>> getAllForCombox(@ApiParam Pageable pageable)
+        throws URISyntaxException {
+        log.debug("REST request to get a page of getAllForCombox");
+        List<LongValue> list = deptTypeService.getAllForCombox();
+        return new ResponseEntity<>(list, null, HttpStatus.OK);
+    }
 
 }

@@ -1,0 +1,87 @@
+<div>
+    <h2 data-translate="cpmApp.bonusRate.home.title">Bonus Rate</h2>
+    <jhi-alert></jhi-alert>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xs-4" ng-show="false">
+                <button class="btn btn-primary" ui-sref="bonus-rate.new" >
+                    <span class="glyphicon glyphicon-plus"></span>
+                    <span class=""  data-translate="cpmApp.bonusRate.home.createLabel">
+                        Create new Bonus Rate
+                    </span>
+                </button>
+            </div>
+        </div>
+        <form name="searchForm" class="form-horizontal">
+	     	<div class="form-group">
+	        	<div class="col-sm-4">
+	          		<label class="col-sm-4 control-label" data-translate="cpmApp.bonusRate.deptType">Dept</label>
+		            <div class="col-sm-8">
+		                <select class="form-control" name="type" ng-model="vm.searchQuery.deptType"
+			            	ng-options="type.val for type in vm.deptTypes track by type.key">
+			            	<option value="">--选择部门类型--</option>
+			            </select>
+		            </div>
+	       		</div>
+	            <div class="col-sm-4">
+	          		<label class="col-sm-4 control-label" data-translate="cpmApp.bonusRate.contractType">Contract Type</label>
+		            <div class="col-sm-8">
+		                <select class="form-control" name="type" ng-model="vm.searchQuery.contractType"
+			            	ng-options="type.val for type in vm.contractTypes track by type.key">
+			            	<option value="">--选择合同类型--</option>
+			            </select>
+		            </div>
+	       		</div>
+	       		<div class="col-sm-4 pull-right input-group">
+	            	<div class="col-sm-4">
+	            		&nbsp;
+	            	</div>
+	            	<div class="col-sm-8" >
+		            	<span  class="width-min" >
+	                        <button class="btn btn-info" ng-click="vm.search()">
+	                            <span class="glyphicon glyphicon-search"></span>
+	                            <span class="hidden-xs hidden-sm" data-translate="entity.action.search"></span>
+	                        </button>
+	                    </span>
+	                    <span class="width-min" ng-if="vm.haveSearch">
+	                        <button class="btn btn-info" ng-click="vm.clear()">
+	                            <span class="glyphicon glyphicon-trash"></span>
+	                            <span class="hidden-xs hidden-sm" data-translate="entity.action.clear"></span>
+	                        </button>
+	                    </span>
+	            	</div>
+	            </div>
+			</div>
+        </form>
+    </div>
+    <br/>
+    <div class="table-responsive">
+        <table class="jh-table table table-striped">
+            <thead>
+                <tr jh-sort="vm.predicate" ascending="vm.reverse" callback="vm.transition()">
+                	<th jh-sort-by="wbr.id"><span data-translate="global.field.id">ID</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="wbr.deptType"><span data-translate="cpmApp.bonusRate.deptType">Dept</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="wbr.contractType"><span data-translate="cpmApp.bonusRate.contractType">Contract Type</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="wbr.rate"><span data-translate="cpmApp.bonusRate.rate">Rate</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="wbr.updateTime"><span data-translate="cpmApp.bonusRate.updateTime">Update Time</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="bonusRate in vm.bonusRates track by bonusRate.id">
+                	<td><a ui-sref="bonus-rate-detail({id:bonusRate.id})">{{bonusRate.id}}</a></td>
+                    <td>{{bonusRate.dept}}</td>
+                    <td>{{bonusRate.contractTypeName}}</td>
+                    <td>{{bonusRate.rate}}</td>
+                    <td>{{bonusRate.updateTime | date:'medium'}}</td>
+                    <td class="text-right">
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="text-center">
+        <jhi-item-count page="vm.page" total="vm.queryCount" items-per-page="vm.itemsPerPage"></jhi-item-count>
+        <uib-pagination class="pagination-sm" total-items="vm.totalItems" items-per-page="vm.itemsPerPage" ng-model="vm.page" ng-change="vm.transition()"></uib-pagination>
+    </div>
+</div>

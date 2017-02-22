@@ -16,7 +16,11 @@
 	            "userManagement":"用户管理",
                 "userCost": "员工成本",
                 "holidayInfo": "节假日信息",
-                "workArea": "工作地点"
+                "workArea": "工作地点",
+                "bonusRate":"奖金提成比例",
+                "externalQuotation":"外部报价",
+                "salesAunnualIndex":"销售年指标",
+                "shareCostRate":"公摊成本比例"
 	        },
             "contract":{
             	"main":"合同管理",
