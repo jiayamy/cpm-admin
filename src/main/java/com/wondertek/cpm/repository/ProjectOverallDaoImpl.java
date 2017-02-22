@@ -54,7 +54,6 @@ public class ProjectOverallDaoImpl extends GenericDaoImpl<ProjectOverall, Long> 
 		whereSql.append(" from w_project_overall wpo");
 		whereSql.append(" inner join ");
 		whereSql.append("(");
-<<<<<<< HEAD
 		whereSql.append("select max(wpo1.id) as id,wpo1.contract_id from w_project_overall wpo1 where wpo1.stat_week <= ? group by wpo1.contract_id");
 		whereSql.append(")");
 		whereSql.append(" b on wpo.id = b.id");
