@@ -22,16 +22,15 @@
         vm.openCalendar = openCalendar;
         var today = new Date();
         
-        if (pagingParams.toDate == undefined) {
-			pagingParams.toDate = DateUtils.convertLocalDateToFormat(today,"yyyyMMdd");;
+        if (pagingParams.statWeek == undefined) {
+			pagingParams.statWeek = DateUtils.convertLocalDateToFormat(today,"yyyyMMdd");;
 		}
       //搜索中的参数
-        vm.searchQuery.fromDate = DateUtils.convertDayToDate(pagingParams.fromDate);
-        vm.searchQuery.toDate = DateUtils.convertDayToDate(pagingParams.toDate);
+        vm.searchQuery.statWeek = DateUtils.convertDayToDate(pagingParams.statWeek);
         vm.searchQuery.userId = pagingParams.userId;
         vm.searchQuery.contractId = pagingParams.contractId;
         vm.searchQuery.userName = pagingParams.userName;
-        if (!vm.searchQuery.fromDate && !vm.searchQuery.toDate && !vm.searchQuery.userId && !vm.searchQuery.contractId){
+        if (!vm.searchQuery.statWeek && !vm.searchQuery.userId && !vm.searchQuery.contractId){
         	vm.haveSearch = null;
         }else{
         	vm.haveSearch = true;
@@ -64,10 +63,6 @@
         //加载列表信息
         loadAll();
         function loadAll () {
-        	if (pagingParams.fromDate == undefined) {
-        		pagingParams.fromDate = "";
-			}
-        	
         	if (pagingParams.userId == undefined) {
 				pagingParams.userId = "";
 			}
@@ -75,8 +70,7 @@
         		pagingParams.contractId = "";
         	}
         	ProjectOverall.query({
-        		fromDate: pagingParams.fromDate,
-        		toDate: pagingParams.toDate,
+        		statWeek: pagingParams.statWeek,
         		contractId: pagingParams.contractId,
         		userId: pagingParams.userId,
                 page: pagingParams.page - 1,
@@ -122,8 +116,7 @@
             $state.transitionTo($state.$current, {
                 page: vm.page,
                 sort: vm.predicate + ',' + (vm.reverse ? 'asc' : 'desc'),
-                fromDate: DateUtils.convertLocalDateToFormat(vm.searchQuery.fromDate,"yyyyMMdd"),
-                toDate: DateUtils.convertLocalDateToFormat(vm.searchQuery.toDate,"yyyyMMdd"),
+                statWeek: DateUtils.convertLocalDateToFormat(vm.searchQuery.statWeek,"yyyyMMdd"),
                 userId:vm.searchQuery.userId,
                 userName: vm.searchQuery.userName,
                 contractId: vm.searchQuery.contractId ? vm.searchQuery.contractId.key: ""
@@ -131,7 +124,7 @@
         }
         
         function search() {
-            if (!vm.searchQuery.fromDate && !vm.searchQuery.toDate && !vm.searchQuery.userId && !vm.searchQuery.contractId){
+            if (!vm.searchQuery.statWeek && !vm.searchQuery.userId && !vm.searchQuery.contractId){
                 return vm.clear();
             }
             vm.links = null;
@@ -148,37 +141,25 @@
             vm.predicate = 'wpo.id';
             vm.reverse = true;
             vm.searchQuery = {};
-            vm.searchQuery.toDate = new Date();
+            vm.searchQuery.statWeek = new Date();
             vm.haveSearch = true;
             vm.transition();
         }
         function exportXls(){//导出Xls
         	var url = "api/project-overall/exportXls";
         	var c = 0;
-        	var fromDate = DateUtils.convertLocalDateToFormat(vm.searchQuery.fromDate,"yyyyMMdd");
-        	var toDate = DateUtils.convertLocalDateToFormat(vm.searchQuery.toDate,"yyyyMMdd");
-        	if (pagingParams.fromDate == undefined) {
-        		pagingParams.fromDate = "";
-			}
+        	var statWeek = DateUtils.convertLocalDateToFormat(vm.searchQuery.statWeek,"yyyyMMdd");
         	var contractId = vm.searchQuery.contractId && vm.searchQuery.contractId.key? vm.searchQuery.contractId.key : vm.searchQuery.contractId;
     		var userId = vm.searchQuery.userId;
-    		if(toDate){
+    		
+    		if(statWeek){
     			if(c == 0){
     				c++;
     				url += "?";
     			}else{
     				url += "&";
     			}
-    			url += "toDate="+encodeURI(toDate);
-    		}
-    		if(fromDate){
-    			if(c == 0){
-    				c++;
-    				url += "?";
-    			}else{
-    				url += "&";
-    			}
-    			url += "fromDate="+encodeURI(fromDate);
+    			url += "statWeek="+encodeURI(statWeek);
     		}
     		if(contractId){
     			if(c == 0){
@@ -203,8 +184,7 @@
         }
         
         
-        vm.datePickerOpenStatus.fromDate = false;
-        vm.datePickerOpenStatus.toDate = false;
+        vm.datePickerOpenStatus.statWeek = false;
         function openCalendar (date) {
             vm.datePickerOpenStatus[date] = true;
         }

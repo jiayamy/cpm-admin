@@ -6,31 +6,17 @@
     		<form name="searchForm" class="form-horizontal">
 				<div class="form-group">
 		            <div class="col-sm-4">
-		          		<label class="col-sm-4 control-label" data-translate="cpmApp.projectOverallController.statWeek">Start Week</label>
-			            <div class="col-sm-8">
-				                <p class="input-group">
-				                    <input id="search_fromDate" type="text" class="form-control" name="fromDate" datetime-picker="yyyyMMdd"
-					           		 		enable-time="false" ng-model="vm.searchQuery.fromDate" is-open="vm.datePickerOpenStatus.fromDate"/>
-					          		<span class="input-group-btn">
-					           			<button type="button" class="btn btn-default" ng-click="vm.openCalendar('fromDate')"><i class="glyphicon glyphicon-calendar"></i></button>
-					            	</span>
-				                </p>
-			            </div>
-		            </div>
-		            <div class="col-sm-4">
-		          		<label class="col-sm-4 control-label" data-translate="cpmApp.projectOverallController.toDate">To Date</label>
+		          		<label class="col-sm-4 control-label" data-translate="cpmApp.projectOverallController.toDate">Stat Week</label>
 			            <div class="col-sm-8">
 			                <p class="input-group">
-			                    <input id="search_toDate" type="text" class="form-control" name="toDate" datetime-picker="yyyyMMdd"
-				           		 		enable-time="false" ng-model="vm.searchQuery.toDate" is-open="vm.datePickerOpenStatus.toDate"/>
+			                    <input id="search_toDate" type="text" class="form-control" name="statWeek" datetime-picker="yyyyMMdd"
+				           		 		enable-time="false" ng-model="vm.searchQuery.statWeek" is-open="vm.datePickerOpenStatus.statWeek"/>
 				          		<span class="input-group-btn">
-				           			<button type="button" class="btn btn-default" ng-click="vm.openCalendar('toDate')"><i class="glyphicon glyphicon-calendar"></i></button>
+				           			<button type="button" class="btn btn-default" ng-click="vm.openCalendar('statWeek')"><i class="glyphicon glyphicon-calendar"></i></button>
 				            	</span>
 			                </p>
 			            </div>
 				    </div>
-           		</div>
-           		<div class="form-group">
            			<div class="col-sm-4">
            				<label class="col-sm-4 control-label" data-translate="cpmApp.projectOverallController.serialNum">Serial Num</label>
                   		<div class="col-sm-8">
@@ -101,10 +87,12 @@
                     <th style="width:110px;" jh-sort-by="wpo.receivable_account"><span data-translate="cpmApp.projectOverallController.receivableAccount">Update Time</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th style="width:110px;" jh-sort-by="wpo.share_cost"><span data-translate="cpmApp.projectOverallController.shareCost">Update Time</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th style="width:110px;" jh-sort-by="wpo.third_party_purchase"><span data-translate="cpmApp.projectOverallController.thirdPartyPurchase">Update Time</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th style="width:60px;" jh-sort-by="wpo.internal_purchase"><span data-translate="cpmApp.projectOverallController.internalPurchase">Update Time</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th style="width:110px;" jh-sort-by="wpo.internal_purchase"><span data-translate="cpmApp.projectOverallController.internalPurchase">Update Time</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th style="width:110px;" jh-sort-by="c.ta1"><span data-translate="cpmApp.projectOverallController.implementationCost">Implementation  Cost</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th style="width:110px;" jh-sort-by="c.ta2"><span data-translate="cpmApp.projectOverallController.academicCost">Academic Cost</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th style="width:110px;" jh-sort-by="wpo.bonus_"><span data-translate="cpmApp.projectOverallController.bonus">Update Time</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th style="width:110px;" jh-sort-by="wpo.gross_profit"><span data-translate="cpmApp.projectOverallController.grossProfit">Update Time</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th style="width:110px;" jh-sort-by="wpo.gross_profitRate"><span data-translate="cpmApp.projectOverallController.grossProfitRate">Update Time</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th style="width:60px;" jh-sort-by="wpo.gross_profitRate"><span data-translate="cpmApp.projectOverallController.grossProfitRate">Update Time</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th style="width:60px;">&nbsp;</th>
                 </tr>
             </thead>
@@ -122,6 +110,8 @@
                     <td>{{projectOverAll.shareCost}}</td>
                     <td>{{projectOverAll.thirdPartyPurchase}}</td>
                     <td>{{projectOverAll.internalPurchase}}</td>
+                    <td>{{projectOverAll.implementationCost}}</td>
+                    <td>{{projectOverAll.academicCost}}</td>
                     <td>{{projectOverAll.bonus}}</td>
                     <td>{{projectOverAll.grossProfit}}</td>
                     <td>{{projectOverAll.grossProfitRate}}</td>

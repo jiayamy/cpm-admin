@@ -25,7 +25,9 @@
             "grossProfit": "毛利",
             "grossProfitRate": "毛利率",
             "serialNum": "合同编号",
-            "toDate": "截止日期"
+            "toDate": "截止日期",
+            "implementationCost": "实施成本",
+            "academicCost": "中央研究院"
         }
     }
 }

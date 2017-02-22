@@ -5,9 +5,9 @@
         .module('cpmApp')
         .controller('ProjectOverallDetailController', ProjectOverallDetailController);
 
-    ProjectOverallDetailController.$inject = ['$scope', '$rootScope', '$stateParams', 'previousState', 'entity', 'ProjectOverall','ParseLinks','paginationConstants'];
+    ProjectOverallDetailController.$inject = ['$scope', '$rootScope', '$stateParams', 'previousState', 'entity', 'ProjectOverall','ParseLinks','paginationConstants','AlertService'];
 
-    function ProjectOverallDetailController($scope, $rootScope, $stateParams, previousState, entity, ProjectOverall,ParseLinks,paginationConstants) {
+    function ProjectOverallDetailController($scope, $rootScope, $stateParams, previousState, entity, ProjectOverall,ParseLinks,paginationConstants,AlertService) {
         var vm = this;
         vm.itemsPerPage = paginationConstants.itemsPerPage;
         vm.projectOverall = entity;

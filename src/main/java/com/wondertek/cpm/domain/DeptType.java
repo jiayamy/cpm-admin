@@ -1,13 +1,20 @@
 package com.wondertek.cpm.domain;
 
+import java.io.Serializable;
+import java.util.Objects;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.springframework.data.elasticsearch.annotations.Document;
-
-import javax.persistence.*;
-import javax.validation.constraints.*;
-import java.io.Serializable;
-import java.util.Objects;
 
 /**
  * 部门类型
@@ -21,7 +28,6 @@ public class DeptType implements Serializable {
     private static final long serialVersionUID = 1L;
     
     public static final Long PRODUCT_DEVELOPMENT = 4L;
-    
     public static final Long PROJECT_IMPLEMENTATION = 5L;
     
     @Id

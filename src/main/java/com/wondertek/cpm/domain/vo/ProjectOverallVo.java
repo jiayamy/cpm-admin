@@ -104,12 +104,20 @@ public class ProjectOverallVo {
 		 *咨询
 		 */
 	    public String consultants;
+	    /**
+	     * 实施成本
+	     */
+	    public Double implementationCost;
+	    /**
+	     * 研究院
+	     */
+	    public Double academicCost;
 	    
 	    public ProjectOverallVo(){
 	    	
 	    }
 	    
-	    public ProjectOverallVo(ProjectOverall projectOverall,String serialNum){
+	    public ProjectOverallVo(ProjectOverall projectOverall,String serialNum,Double implementationCost,Double academicCost){
 	    	this.id = projectOverall.getId();
 	    	this.statWeek = projectOverall.getStatWeek();
 	    	this.contractResponse = projectOverall.getContractResponse();
@@ -131,6 +139,8 @@ public class ProjectOverallVo {
 	    	this.creator = projectOverall.getCreator();
 	    	
 	    	this.serialNum = serialNum;
+	    	this.implementationCost = implementationCost;
+	    	this.academicCost = academicCost;
 	    }
 
 		public Long getId() {
@@ -295,6 +305,22 @@ public class ProjectOverallVo {
 
 		public String getSalesman() {
 			return salesman;
+		}
+
+		public Double getImplementationCost() {
+			return implementationCost;
+		}
+
+		public void setImplementationCost(Double implementationCost) {
+			this.implementationCost = implementationCost;
+		}
+
+		public Double getAcademicCost() {
+			return academicCost;
+		}
+
+		public void setAcademicCost(Double academicCost) {
+			this.academicCost = academicCost;
 		}
 
 		public void setSalesman(String salesman) {

@@ -11,7 +11,7 @@
         $stateProvider
         .state('project-overall-controller', {
             parent: 'stat',
-            url: '/project-overall-controller?fromDate&toDate&contractId&userId&userName',
+            url: '/project-overall-controller?statWeek&contractId&userId&userName',
             data: {
                 pageTitle: 'cpmApp.projectOverallController.home.title'
             },
@@ -31,11 +31,10 @@
                     value: 'wpo.id,desc',
                     squash: true
                 },
-                fromDate: null,
-                toDate: null,
+                statWeek: null,
                 contractId: null,
                 userId: null,
-                userName: null,
+                userName: null
             },
             resolve: {
                 pagingParams: ['$stateParams', 'PaginationUtil', function ($stateParams, PaginationUtil) {
@@ -44,8 +43,7 @@
                         sort: $stateParams.sort,
                         predicate: PaginationUtil.parsePredicate($stateParams.sort),
                         ascending: PaginationUtil.parseAscending($stateParams.sort),
-                        fromDate: $stateParams.fromDate,
-                        toDate: $stateParams.toDate,
+                        statWeek: $stateParams.statWeek,
                         contractId: $stateParams.contractId,
                         userId: $stateParams.userId,
                         userName: $stateParams.userName

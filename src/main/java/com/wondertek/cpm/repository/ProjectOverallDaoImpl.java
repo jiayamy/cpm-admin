@@ -1,5 +1,6 @@
 package com.wondertek.cpm.repository;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,6 +14,12 @@ import org.springframework.data.domain.Sort.Order;
 import org.springframework.stereotype.Repository;
 
 import com.wondertek.cpm.CpmConstants;
+import com.wondertek.cpm.config.DateUtil;
+import com.wondertek.cpm.config.StringUtil;
+import com.wondertek.cpm.domain.DeptInfo;
+import com.wondertek.cpm.domain.DeptType;
+import com.wondertek.cpm.domain.ProjectOverall;
+import com.wondertek.cpm.domain.User;
 import com.wondertek.cpm.config.StringUtil;
 import com.wondertek.cpm.domain.ProjectOverall;
 import com.wondertek.cpm.domain.vo.ProjectOverallVo;
@@ -33,8 +40,7 @@ public class ProjectOverallDaoImpl extends GenericDaoImpl<ProjectOverall, Long> 
 	}
 
 	@Override
-	public Page<ProjectOverallVo> getPageByParams(String fromDate,String toDate,String contractId,String userId,
-			Pageable pageable) {
+	public Page<ProjectOverallVo> getPageByParams(User user,DeptInfo deptInfo,ProjectOverall projectOverall,Pageable pageable) {
 		StringBuffer querySql = new StringBuffer();
 		StringBuffer countSql = new StringBuffer();
 		
@@ -42,34 +48,51 @@ public class ProjectOverallDaoImpl extends GenericDaoImpl<ProjectOverall, Long> 
 		StringBuffer orderSql = new StringBuffer();
 		List<Object> params = new ArrayList<Object>();
 		
-		querySql.append("select wpo.id,wpo.contract_response,wpo.contract_id,wpo.contract_amount,wpo.tax_rate,wpo.identifiable_income,wpo.contract_finish_rate,wpo.acceptance_income,wpo.receive_total,wpo.receivable_account,wpo.share_cost,wpo.third_party_purchase,wpo.internal_purchase,wpo.bonus_,wpo.gross_profit,wpo.gross_profit_rate,wci.serial_num,wci.sales_man,wci.consultants_");
+		querySql.append("select wpo.id,wpo.contract_response,wpo.contract_id,wpo.contract_amount,wpo.tax_rate,wpo.identifiable_income,wpo.contract_finish_rate,wpo.acceptance_income,wpo.receive_total,wpo.receivable_account,wpo.share_cost,wpo.third_party_purchase,wpo.internal_purchase,wpo.bonus_,wpo.gross_profit,wpo.gross_profit_rate,wci.serial_num,wci.sales_man,wci.consultants_,c.ta1,c.ta2,wpo.stat_week,wpo.create_time");
 		countSql.append("select count(wpo.id)");
 		
 		whereSql.append(" from w_project_overall wpo");
 		whereSql.append(" inner join ");
 		whereSql.append("(");
-		whereSql.append("select max(wpo1.id) as id,wpo1.contract_id from w_project_overall wpo1 group by wpo1.contract_id");
+		whereSql.append("select max(wpo1.id) as id,wpo1.contract_id from w_project_overall wpo1 where wpo1.stat_week <= ? group by wpo1.contract_id");
 		whereSql.append(")");
 		whereSql.append(" b on wpo.id = b.id");
-		whereSql.append(" left join w_contract_info wci on wci.id = wpo.contract_id");
-		whereSql.append(" where 1=1");
+		whereSql.append(" inner join w_contract_info wci on wci.id = wpo.contract_id");
+		whereSql.append(" left join (select a.contract_id,wcip1.total_amount as ta1,wcip2.total_amount as ta2 from");
+		whereSql.append("(select wcip.contract_id,max(case when wcip.dept_type = " + DeptType.PROJECT_IMPLEMENTATION + " then wcip.id end) as dept_type_5,");
+		whereSql.append(" max(case when wcip.dept_type = " +DeptType.PRODUCT_DEVELOPMENT + " then wcip.id end) as dept_type_4 from w_contract_internal_purchase wcip where wcip.stat_week <= ? group by wcip.contract_id) a");
+		whereSql.append(" left join w_contract_internal_purchase wcip1 on wcip1.id = a.dept_type_5");
+		whereSql.append(" left join w_contract_internal_purchase wcip2 on wcip2.id = a.dept_type_4) c");
+		whereSql.append(" on wpo.contract_id = c.contract_id");
+		whereSql.append(" left join w_dept_info wdi on wci.dept_id = wdi.id");
+		whereSql.append(" left join w_dept_info wdi2 on wci.consultants_dept_id = wdi2.id");
+		//
+		params.add(projectOverall.getStatWeek());
+		params.add(projectOverall.getStatWeek());
+		//权限
+		whereSql.append(" where (wci.creator_ = ? or wci.sales_man_id = ? or wci.consultants_id = ?");
+		params.add(user.getLogin());
+		params.add(user.getId());
+		params.add(user.getId());
+		if(user.getIsManager()){
+			whereSql.append(" or wdi.id_path like ? or wdi.id = ?");
+			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
+			params.add(deptInfo.getId());
+			
+			whereSql.append(" or wdi2.id_path like ? or wdi2.id = ?");
+			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
+			params.add(deptInfo.getId());
+		}
+		whereSql.append(")");
 		
 		//查询条件
-		if(!StringUtil.isNullStr(fromDate)){
-			whereSql.append(" and wpo.stat_week >= ?");
-			params.add(StringUtil.nullToLong(fromDate));
-		}
-		if (!StringUtil.isNullStr(toDate)) {
-			whereSql.append(" and wpo.stat_week <= ?");
-			params.add(StringUtil.nullToLong(toDate));
-		}
-		if (!StringUtil.isNullStr(contractId)) {
+		if (projectOverall.getContractId() != null) {
 			whereSql.append(" and wpo.contract_id = ?");
-			params.add(StringUtil.nullToLong(contractId));
+			params.add(projectOverall.getContractId());
 		}
-		if (!StringUtil.isNullStr(userId)) {
+		if (projectOverall.getContractResponse() != null) {
 			whereSql.append(" and wpo.contract_response = ?");
-			params.add(StringUtil.nullToLong(userId));
+			params.add(projectOverall.getContractResponse());
 		}
 		querySql.append(whereSql.toString());
 		countSql.append(whereSql.toString());
@@ -130,12 +153,16 @@ public class ProjectOverallDaoImpl extends GenericDaoImpl<ProjectOverall, Long> 
 		vo.setSerialNum(StringUtil.null2Str(o[16]));
 		vo.setSalesman(StringUtil.null2Str(o[17]));
 		vo.setConsultants(StringUtil.null2Str(o[18]));
+		vo.setImplementationCost(StringUtil.nullToDouble(o[19]));
+		vo.setAcademicCost(StringUtil.nullToDouble(o[20]));
+		vo.setStatWeek(StringUtil.nullToLong(o[21]));
+		vo.setCreateTime(DateUtil.getZonedDateTime((Timestamp)o[22]));
 		
 		return vo;
 	}
 
 	@Override
-	public Page<ProjectOverallVo> getPageDetai(String contractId,
+	public Page<ProjectOverallVo> getPageDetai(Long contractId,
 			Pageable pageable) {
 		StringBuffer querySql = new StringBuffer();
 		StringBuffer countSql = new StringBuffer();
@@ -143,16 +170,20 @@ public class ProjectOverallDaoImpl extends GenericDaoImpl<ProjectOverall, Long> 
 		StringBuffer whereSql = new StringBuffer();
 		List<Object> params = new ArrayList<Object>();
 		
-		querySql.append("select wpo.id,wpo.contract_response,wpo.contract_id,wpo.contract_amount,wpo.tax_rate,wpo.identifiable_income,wpo.contract_finish_rate,wpo.acceptance_income,wpo.receive_total,wpo.receivable_account,wpo.share_cost,wpo.third_party_purchase,wpo.internal_purchase,wpo.bonus_,wpo.gross_profit,wpo.gross_profit_rate,wci.serial_num,wci.sales_man,wci.consultants_");
+		querySql.append("select wpo.id,wpo.contract_response,wpo.contract_id,wpo.contract_amount,wpo.tax_rate,wpo.identifiable_income,wpo.contract_finish_rate,wpo.acceptance_income,wpo.receive_total,wpo.receivable_account,wpo.share_cost,wpo.third_party_purchase,wpo.internal_purchase,wpo.bonus_,wpo.gross_profit,wpo.gross_profit_rate,wci.serial_num,wci.sales_man,wci.consultants_,c.total_amount_5,c.total_amount_4,wpo.stat_week,wpo.create_time");
 		countSql.append("select count(wpo.id)");
 		
 		whereSql.append(" from w_project_overall wpo");
 		whereSql.append(" left join w_contract_info wci on wci.id = wpo.contract_id");
-		whereSql.append(" where 1=1");
+		whereSql.append(" left join (select wcip.project_overall_id,max(case when wcip.dept_type = " + DeptType.PROJECT_IMPLEMENTATION + " then wcip.total_amount end) as total_amount_5,");
+		whereSql.append(" max(case when wcip.dept_type = " + DeptType.PRODUCT_DEVELOPMENT + " then wcip.total_amount end) as total_amount_4");
+		whereSql.append(" from w_contract_internal_purchase wcip where wcip.contract_id = ? group by wcip.project_overall_id) c");
+		whereSql.append(" on c.project_overall_id = wpo.id");
+		params.add(contractId);
 		
-		if (!StringUtil.isNullStr(contractId)) {
-			whereSql.append(" and wpo.contract_id = ?");
-			params.add(StringUtil.nullToLong(contractId));
+		if (contractId != null) {
+			whereSql.append(" where wpo.contract_id = ?");
+			params.add(contractId);
 		}
 		querySql.append(whereSql.toString());
 		countSql.append(whereSql.toString());
@@ -167,56 +198,5 @@ public class ProjectOverallDaoImpl extends GenericDaoImpl<ProjectOverall, Long> 
 			}
 		}
 		return new PageImpl(returnList, pageable, page.getTotalElements());
-	}
-
-	@Override
-	public List<ProjectOverallVo> getProjectOverallList(String fromDate,
-			String toDate, String contractId, String userId) {
-		StringBuffer querySql = new StringBuffer();
-		
-		StringBuffer whereSql = new StringBuffer();
-		List<Object> params = new ArrayList<Object>();
-		
-		querySql.append("select wpo.id,wpo.contract_response,wpo.contract_id,wpo.contract_amount,wpo.tax_rate,wpo.identifiable_income,wpo.contract_finish_rate,wpo.acceptance_income,wpo.receive_total,wpo.receivable_account,wpo.share_cost,wpo.third_party_purchase,wpo.internal_purchase,wpo.bonus_,wpo.gross_profit,wpo.gross_profit_rate,wci.serial_num,wci.sales_man,wci.consultants_");
-		
-		whereSql.append(" from w_project_overall wpo");
-		whereSql.append(" inner join ");
-		whereSql.append("(");
-		whereSql.append("select max(wpo1.id) as id,wpo1.contract_id from w_project_overall wpo1 group by wpo1.contract_id");
-		whereSql.append(")");
-		whereSql.append(" b on wpo.id = b.id");
-		whereSql.append(" left join w_contract_info wci on wci.id = wpo.contract_id");
-		whereSql.append(" where 1=1");
-		
-		//查询条件
-		if(!StringUtil.isNullStr(fromDate)){
-			whereSql.append(" and wpo.stat_week >= ?");
-			params.add(StringUtil.nullToLong(fromDate));
-		}
-		if (!StringUtil.isNullStr(toDate)) {
-			whereSql.append(" and wpo.stat_week <= ?");
-			params.add(StringUtil.nullToLong(toDate));
-		}
-		if (!StringUtil.isNullStr(contractId)) {
-			whereSql.append(" and wpo.contract_id = ?");
-			params.add(StringUtil.nullToLong(contractId));
-		}
-		if (!StringUtil.isNullStr(userId)) {
-			whereSql.append(" and wpo.contract_response = ?");
-			params.add(StringUtil.nullToLong(userId));
-		}
-		querySql.append(whereSql.toString());
-		whereSql.setLength(0);
-		whereSql = null;
-		
-		
-		List<Object[]> page = this.queryAllSql(querySql.toString(), params.toArray());
-		List<ProjectOverallVo> returnList = new ArrayList<ProjectOverallVo>();
-		if(page != null){
-			for(Object[] o : page){
-				returnList.add(transProjectOverallVo(o));
-			}
-		}
-		return returnList;
 	}
 }
