@@ -60,7 +60,7 @@ public class ProjectInfoResource {
         if(projectInfo.getBudgetId() == null || projectInfo.getContractId() == null
         		|| StringUtil.isNullStr(projectInfo.getPm()) || StringUtil.isNullStr(projectInfo.getDept())
         		|| StringUtil.isNullStr(projectInfo.getSerialNum()) || StringUtil.isNullStr(projectInfo.getName())
-        		|| projectInfo.getStartDay() == null || projectInfo.getBudgetTotal() == null){
+        		|| projectInfo.getStartDay() == null || projectInfo.getEndDay() == null || projectInfo.getBudgetTotal() == null){
         	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.projectInfo.save.requriedError", "")).body(null);
         }
         if(isNew){

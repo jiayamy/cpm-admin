@@ -111,11 +111,19 @@
 					<label class="control-label" data-translate="cpmApp.projectInfo.endDay" for="field_endDay">End Day</label>
 	             	<div class="input-group">
 	                 	<input id="field_endDay" type="text" class="form-control" name="endDay" datetime-picker="yyyy-MM-dd" enable-time="false" 
-	                 	ng-model="vm.projectInfo.endDay" is-open="vm.datePickerOpenStatus.endDay" readonly/>
+	                 	ng-model="vm.projectInfo.endDay" is-open="vm.datePickerOpenStatus.endDay" readonly ng-required="true" ng-minlength="10"
+	                 	/>
 	                 	<span class="input-group-btn">
 	                     	<button type="button" class="btn btn-default" ng-click="vm.openCalendar('endDay')"><i class="glyphicon glyphicon-calendar"></i></button>
 	                 	</span>
 	             	</div>
+	             	<div ng-show="myForm.endDay.$dirty&&myForm.endDay.$error.minlength" class="alert alert-danger help-block"> 
+                    	结束日期必填
+                	</div>
+                	<div class="help-block"
+	                   ng-hide="vm.projectInfo.endDay" data-translate="entity.validation.required" style="color:red">
+	                    This field is required.
+	                </div>
 				</div>
 	     	</div>
 	     	<div class="form-group">
