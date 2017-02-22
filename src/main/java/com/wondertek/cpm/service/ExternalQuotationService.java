@@ -8,10 +8,13 @@ import javax.inject.Inject;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.wondertek.cpm.domain.ExternalQuotation;
+import com.wondertek.cpm.repository.ExternalQuotationDao;
 import com.wondertek.cpm.repository.ExternalQuotationRepository;
 
 /**
@@ -25,7 +28,8 @@ public class ExternalQuotationService {
     
     @Inject
     private ExternalQuotationRepository externalQuotationRepository;
-    
+    @Inject
+    private ExternalQuotationDao externalQuotationDao;
     /**
      * Save a ExternalQuotation.
      *
@@ -66,7 +70,14 @@ public class ExternalQuotationService {
 //        	externalQuotationRepository.save(externalQuotation);
 //        }
     }
-
+    /**
+     * 列表页
+     * @return
+     */
+    @Transactional(readOnly = true)
+	public Page<ExternalQuotation> getUserPage(ExternalQuotation externalQuotation, Pageable pageable) {
+    	return externalQuotationDao.getUserPage(externalQuotation, pageable);
+	}
 	public Map<Integer, ExternalQuotation> getAllInfo() {
 		Map<Integer, ExternalQuotation> returnMap = new HashMap<Integer, ExternalQuotation>();
 		List<ExternalQuotation> alls = externalQuotationRepository.findAll();

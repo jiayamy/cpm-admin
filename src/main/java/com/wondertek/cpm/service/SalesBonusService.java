@@ -23,7 +23,7 @@ import com.wondertek.cpm.repository.UserRepository;
 import com.wondertek.cpm.security.SecurityUtils;
 
 /**
- * Service Implementation for managing ProjectInfo.
+ * Service Implementation for managing SalesAnnualIndex.
  */
 @Service
 @Transactional
@@ -41,7 +41,7 @@ public class SalesBonusService {
     private SalesBonusDao salesBonusDao;
     
     public SalesBonus save(SalesBonus salesBonus) {
-        log.debug("Request to save ProjectInfo : {}", salesBonus);
+        log.debug("Request to save SalesAnnualIndex : {}", salesBonus);
         SalesBonus result = salesBonusRepository.save(salesBonus);
         return result;
     }

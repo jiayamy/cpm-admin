@@ -14,6 +14,8 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.springframework.data.elasticsearch.annotations.Document;
 
+import com.wondertek.cpm.config.StringUtil;
+
 /**
  * 奖金公摊成本比例
  */
@@ -45,7 +47,7 @@ public class ShareCostRate implements Serializable{
 	 * 合同类型
 	 */
 	@Column(name = "contract_type")
-	private Long contractType;
+	private Integer contractType;
 	
 	/**
 	 * 公摊比例
@@ -64,6 +66,24 @@ public class ShareCostRate implements Serializable{
 
     @Column(name = "update_time")
     private ZonedDateTime updateTime;
+    
+    public ShareCostRate(){}
+    
+	public ShareCostRate(ShareCostRate shareCostRate, String dept) {
+		this.id = shareCostRate.getId();
+		this.deptType = shareCostRate.getDeptType();
+		if(!StringUtil.isNullStr(dept)){
+			this.dept = dept;
+		}else{
+			this.dept = shareCostRate.getDept();
+		}
+		this.contractType = shareCostRate.getContractType();
+		this.shareRate = shareCostRate.getShareRate();
+		this.creator = shareCostRate.getCreator();
+		this.createTime = shareCostRate.getCreateTime();
+		this.updator = shareCostRate.getUpdator();
+		this.updateTime = shareCostRate.getUpdateTime();
+	}
 
 	public Long getId() {
 		return id;
@@ -89,11 +109,11 @@ public class ShareCostRate implements Serializable{
 		this.dept = dept;
 	}
 
-	public Long getContractType() {
+	public Integer getContractType() {
 		return contractType;
 	}
 
-	public void setContractType(Long contractType) {
+	public void setContractType(Integer contractType) {
 		this.contractType = contractType;
 	}
 
