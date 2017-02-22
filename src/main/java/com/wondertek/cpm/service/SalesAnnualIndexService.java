@@ -8,14 +8,17 @@ import javax.inject.Inject;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.wondertek.cpm.domain.SalesAnnualIndex;
+import com.wondertek.cpm.repository.SalesAnnualIndexDao;
 import com.wondertek.cpm.repository.SalesAnnualIndexRepository;
 
 /**
- * Service Implementation for managing ProjectInfo.
+ * Service Implementation for managing SalesAnnualIndex.
  */
 @Service
 @Transactional
@@ -25,9 +28,11 @@ public class SalesAnnualIndexService {
     
     @Inject
     private SalesAnnualIndexRepository salesAnnualIndexRepository;
+    @Inject
+    private SalesAnnualIndexDao salesAnnualIndexDao;
     
     public SalesAnnualIndex save(SalesAnnualIndex salesAnnualIndex) {
-        log.debug("Request to save ProjectInfo : {}", salesAnnualIndex);
+        log.debug("Request to save SalesAnnualIndex : {}", salesAnnualIndex);
         SalesAnnualIndex result = salesAnnualIndexRepository.save(salesAnnualIndex);
         return result;
     }
@@ -37,6 +42,14 @@ public class SalesAnnualIndexService {
         SalesAnnualIndex salesAnnualIndex = salesAnnualIndexRepository.findOne(id);
         return salesAnnualIndex;
     }
+    /**
+     * 列表页
+     * @return
+     */
+    @Transactional(readOnly = true)
+	public Page<SalesAnnualIndex> getUserPage(SalesAnnualIndex salesAnnualIndex, Pageable pageable) {
+    	return salesAnnualIndexDao.getUserPage(salesAnnualIndex, pageable);
+	}
     /**
      * 获取某年所有销售的年指标
      * @return

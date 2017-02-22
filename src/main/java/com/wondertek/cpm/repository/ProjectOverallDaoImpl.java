@@ -20,6 +20,8 @@ import com.wondertek.cpm.domain.DeptInfo;
 import com.wondertek.cpm.domain.DeptType;
 import com.wondertek.cpm.domain.ProjectOverall;
 import com.wondertek.cpm.domain.User;
+import com.wondertek.cpm.config.StringUtil;
+import com.wondertek.cpm.domain.ProjectOverall;
 import com.wondertek.cpm.domain.vo.ProjectOverallVo;
 @Repository("projectOverallDao")
 public class ProjectOverallDaoImpl extends GenericDaoImpl<ProjectOverall, Long> implements ProjectOverallDao  {
@@ -52,6 +54,7 @@ public class ProjectOverallDaoImpl extends GenericDaoImpl<ProjectOverall, Long> 
 		whereSql.append(" from w_project_overall wpo");
 		whereSql.append(" inner join ");
 		whereSql.append("(");
+<<<<<<< HEAD
 		whereSql.append("select max(wpo1.id) as id,wpo1.contract_id from w_project_overall wpo1 where wpo1.stat_week <= ? group by wpo1.contract_id");
 		whereSql.append(")");
 		whereSql.append(" b on wpo.id = b.id");
@@ -96,6 +99,7 @@ public class ProjectOverallDaoImpl extends GenericDaoImpl<ProjectOverall, Long> 
 		countSql.append(whereSql.toString());
 		whereSql.setLength(0);
 		whereSql = null;
+		
 		//排序
 		if(pageable.getSort() != null){//页面都会有个默认排序
     		for (Order order : pageable.getSort()) {
@@ -154,6 +158,7 @@ public class ProjectOverallDaoImpl extends GenericDaoImpl<ProjectOverall, Long> 
 		vo.setAcademicCost(StringUtil.nullToDouble(o[20]));
 		vo.setStatWeek(StringUtil.nullToLong(o[21]));
 		vo.setCreateTime(DateUtil.getZonedDateTime((Timestamp)o[22]));
+		
 		return vo;
 	}
 
@@ -195,5 +200,4 @@ public class ProjectOverallDaoImpl extends GenericDaoImpl<ProjectOverall, Long> 
 		}
 		return new PageImpl(returnList, pageable, page.getTotalElements());
 	}
-
 }

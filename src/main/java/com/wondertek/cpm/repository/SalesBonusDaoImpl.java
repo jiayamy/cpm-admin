@@ -43,21 +43,15 @@ public class SalesBonusDaoImpl extends GenericDaoImpl<SalesBonus, Long> implemen
 		querySql.append(" inner join (select max(wsb2.id) as id from w_sales_bonus wsb2 where wsb2.stat_week <= ? and wsb2.origin_year = ? group by wsb2.contract_id) wsbc on wsbc.id = wsb.id");
 		querySql.append(" inner join w_contract_info wci on wci.id = wsb.contract_id");
 		querySql.append(" left join w_dept_info wdi on wci.dept_id = wdi.id");
-		querySql.append(" left join w_dept_info wdi2 on wci.consultants_dept_id = wdi2.id");
 		//
 		params.add(salesBonus.getStatWeek());
 		params.add(salesBonus.getOriginYear());
 		//权限
-		querySql.append(" where (wci.creator_ = ? or wci.sales_man_id = ? or wci.consultants_id = ?");
+		querySql.append(" where (wci.creator_ = ? or wci.sales_man_id = ?");
 		params.add(user.getLogin());
-		params.add(user.getId());
 		params.add(user.getId());
 		if(user.getIsManager()){
 			querySql.append(" or wdi.id_path like ? or wdi.id = ?");
-			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
-			params.add(deptInfo.getId());
-			
-			querySql.append(" or wdi2.id_path like ? or wdi2.id = ?");
 			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
 			params.add(deptInfo.getId());
 		}

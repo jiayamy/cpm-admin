@@ -102,15 +102,14 @@
                     <th style="width:110px;"><span data-translate="cpmApp.salesBonus.finishRate">finishRate</span></th>
                     <th style="width:110px;"><span data-translate="cpmApp.salesBonus.payBonus">payBonus</span></th>
                     <th style="width:150px;"><span data-translate="cpmApp.salesBonus.createTime">createTime</span></th>
-                    <th style="width:60px;">&nbsp;</th>
                 </tr>
             </thead>
             <tbody>
-                <tr ng-repeat="salesBonus in vm.salesBonuss track by salesBonus.id">
-                    <td style="width:80px;">{{salesBonus.salesMan}}</td>
+                <tr ng-repeat="salesBonus in vm.salesBonuss">
+                    <td>{{salesBonus.salesMan}}</td>
                     <td>{{salesBonus.annualIndex}}</td>
                     <td>{{salesBonus.finishTotal}}</td>
-                    <td><a ui-sref="sales-bonus-detail({id:salesBonus.id})">{{salesBonus.contractNum}}</a></td>
+                    <td>{{salesBonus.contractNum}}</td>
                     <td>{{salesBonus.contractAmount}}</td>
                     <td>{{salesBonus.taxRate}}<span ng-show="salesBonus.id">%</span></td>
                     <td>{{salesBonus.receiveTotal}}</td>
@@ -124,15 +123,6 @@
                     <td>{{salesBonus.finishRate}}<span ng-show="salesBonus.id">%</span></td>
                     <td>{{salesBonus.payBonus}}</td>
                     <td>{{salesBonus.createTime | date:'medium'}}</td>
-                    <td>
-                        <div class="btn-group flex-btn-group-container" ng-show="salesBonus.id">
-                            <button type="submit"
-                                    ui-sref="project-info-detail({id:salesBonus.id})"
-                                    class="btn btn-info btn-sm">
-                                <span class="glyphicon glyphicon-eye-open"></span>
-                            </button>
-                        </div>
-                    </td>
                 </tr>
             </tbody>
         </table>
