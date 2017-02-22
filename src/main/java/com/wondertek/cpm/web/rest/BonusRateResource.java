@@ -12,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.codahale.metrics.annotation.Timed;
 import com.wondertek.cpm.domain.BonusRate;
 import com.wondertek.cpm.domain.vo.BonusRateVo;
+import com.wondertek.cpm.security.AuthoritiesConstants;
 import com.wondertek.cpm.service.BonusRateService;
 import com.wondertek.cpm.web.rest.util.PaginationUtil;
 
@@ -40,6 +42,7 @@ public class BonusRateResource {
      */
     @GetMapping("/bonus-rate")
     @Timed
+    @Secured(AuthoritiesConstants.ROLE_INFO_BASIC)
     public ResponseEntity<List<BonusRateVo>> getUserPage(
     		@RequestParam(value = "contractType",required=false) Integer contractType, //合同类型
     		@RequestParam(value = "deptType",required=false) Long deptType, 	//部门类型

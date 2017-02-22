@@ -12,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.codahale.metrics.annotation.Timed;
 import com.wondertek.cpm.domain.ShareCostRate;
+import com.wondertek.cpm.security.AuthoritiesConstants;
 import com.wondertek.cpm.service.ShareCostRateService;
 import com.wondertek.cpm.web.rest.util.PaginationUtil;
 
@@ -39,6 +41,7 @@ public class ShareCostRateResource {
      */
     @GetMapping("/share-cost-rate")
     @Timed
+    @Secured(AuthoritiesConstants.ROLE_INFO_BASIC)
     public ResponseEntity<List<ShareCostRate>> getUserPage(
     		@RequestParam(value = "contractType",required=false) Integer contractType, //合同类型
     		@RequestParam(value = "deptType",required=false) Long deptType, 	//部门类型

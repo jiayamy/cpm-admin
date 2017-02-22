@@ -15,7 +15,7 @@ import org.springframework.stereotype.Repository;
 import com.wondertek.cpm.config.StringUtil;
 import com.wondertek.cpm.domain.ShareCostRate;
 
-@Repository("externalQuotationDao")
+@Repository("shareCostRateDao")
 public class ShareCostRateDaoImpl extends GenericDaoImpl<ShareCostRate, Long> implements ShareCostRateDao  {
 	
 	@Autowired
