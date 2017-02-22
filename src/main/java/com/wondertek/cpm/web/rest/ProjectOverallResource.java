@@ -60,36 +60,48 @@ public class ProjectOverallResource {
     @Inject
     private ProjectOverallService projectOverallService;
     
+	/**
+	 * 列表页
+	 * @author sunshine
+	 * @Description :
+	 */
     @GetMapping("/project-overall-controller")
     @Timed
     public ResponseEntity<List<ProjectOverallVo>> getAllProjectOverallByParams(
-    		@RequestParam(value = "fromDate",required=false) String fromDate,
-    		@RequestParam(value = "toDate",required=false) String toDate,
-    		@RequestParam(value = "contractId",required=false) String contractId,
-    		@RequestParam(value = "userId",required=false) String userId,
+    		@RequestParam(value = "statWeek",required=false) Long statWeek,
+    		@RequestParam(value = "contractId",required=false) Long contractId,
+    		@RequestParam(value = "userId",required=false) Long userId,
     		@ApiParam Pageable pageable)
 		throws URISyntaxException {
 		log.debug("REST request to get a page of ProjectOverallVo");
-		if (!StringUtil.isNullStr(fromDate)) {
-			fromDate = DateUtil.getWholeWeekByDate(DateUtil.parseDate("yyyyMMdd", fromDate))[6];
+		Date now = new Date();
+		ProjectOverall projectOverall = new ProjectOverall();
+		projectOverall.setStatWeek(statWeek);
+		projectOverall.setContractId(contractId);
+		projectOverall.setContractResponse(userId);
+		if(projectOverall.getStatWeek() == null){//默认当前天对的的周日
+			projectOverall.setStatWeek(StringUtil.nullToLong(
+        			DateUtil.formatDate(DateUtil.DATE_YYYYMMDD_PATTERN, 
+        					DateUtil.getSundayOfDay(now))));
+         }else {//更改为对应日期的周日
+        	 projectOverall.setStatWeek(StringUtil.nullToLong(
+         			DateUtil.formatDate(DateUtil.DATE_YYYYMMDD_PATTERN, 
+         					DateUtil.getSundayOfDay(DateUtil.parseDate(DateUtil.DATE_YYYYMMDD_PATTERN,""+projectOverall.getStatWeek())))));
 		}
-		if (!StringUtil.isNullStr(toDate)) {
-			toDate = DateUtil.getWholeWeekByDate(DateUtil.parseDate("yyyyMMdd", toDate))[6];
-		}
-		Page<ProjectOverallVo> page = projectOverallService.searchPage(fromDate,toDate,contractId,userId,pageable);
-    	HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(fromDate, page,"/api/project-projectOverall");
+		Page<ProjectOverallVo> page = projectOverallService.searchPage(projectOverall,pageable);
+    	HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(statWeek.toString(), page,"/api/project-projectOverall");
     	return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);    	
     }
 
     @GetMapping("/project-overall-controller/queryDetail")
     @Timed
     public ResponseEntity<List<ProjectOverallVo>> getProjectOverallDetail(
-    		@RequestParam(value = "contractId",required=false) String contractId,
+    		@RequestParam(value = "contractId",required=false) Long contractId,
     		@ApiParam Pageable pageable) 
     	throws URISyntaxException {
         log.debug("REST request to get ProductPrice : {}", contractId);
         Page<ProjectOverallVo> page = projectOverallService.searchPageDetail(contractId,pageable);
-    	HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(contractId, page,"/api/project-projectOverall");
+    	HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(contractId.toString(), page,"/api/project-projectOverall");
     	return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK); 
     }
     
@@ -109,28 +121,30 @@ public class ProjectOverallResource {
     @Timed
     public void exportXls(
     		HttpServletRequest request, HttpServletResponse response,
-    		@RequestParam(value = "fromDate",required=false) String fromDate,
-    		@RequestParam(value = "toDate",required=false) String toDate,
-    		@RequestParam(value = "contractId",required=false) String contractId,
-    		@RequestParam(value = "userId",required=false) String userId,
+    		@RequestParam(value = "statWeek",required=false) Long statWeek,
+    		@RequestParam(value = "contractId",required=false) Long contractId,
+    		@RequestParam(value = "userId",required=false) Long userId,
     		@ApiParam Pageable pageable)
 		throws URISyntaxException, IOException {
     	log.debug("REST request to get a page of exportXls");
     	Date now = new Date();
+    	ProjectOverall projectOverall = new ProjectOverall();
+		projectOverall.setStatWeek(statWeek);
+		projectOverall.setContractId(contractId);
+		projectOverall.setContractResponse(userId);
     	String currentDay = StringUtil.null2Str(
     			DateUtil.formatDate(DateUtil.DATE_YYYYMMDD_PATTERN, now));
-    	 if(!StringUtil.isNullStr(fromDate)){//更改为对应日期的周日
-    		 fromDate = DateUtil.getWholeWeekByDate(DateUtil.parseDate("yyyyMMdd", fromDate))[6];
-         }
     	 
-    	 if(!StringUtil.isNullStr(toDate)){//更改为对应日期的周日
-    		 toDate = DateUtil.getWholeWeekByDate(DateUtil.parseDate("yyyyMMdd", toDate))[6];
-          }else {
-        	  toDate = StringUtil.null2Str(//默认当前天
-          			DateUtil.formatDate(DateUtil.DATE_YYYYMMDD_PATTERN, 
-          					DateUtil.getSundayOfDay(now)));
+    	if(projectOverall.getStatWeek() == null){//默认当前天对的的周日
+			projectOverall.setStatWeek(StringUtil.nullToLong(
+        			DateUtil.formatDate(DateUtil.DATE_YYYYMMDD_PATTERN, 
+        					DateUtil.getSundayOfDay(now))));
+         }else {//更改为对应日期的周日
+        	 projectOverall.setStatWeek(StringUtil.nullToLong(
+         			DateUtil.formatDate(DateUtil.DATE_YYYYMMDD_PATTERN, 
+         					DateUtil.getSundayOfDay(DateUtil.parseDate(DateUtil.DATE_YYYYMMDD_PATTERN,""+projectOverall.getStatWeek())))));
 		}
-    	 Page<ProjectOverallVo> page = projectOverallService.searchPage(fromDate,toDate,contractId,userId,pageable);
+    	 Page<ProjectOverallVo> page = projectOverallService.searchPage(projectOverall,pageable);
          List<ProjectOverallVo> list = new ArrayList<ProjectOverallVo>();
          for (ProjectOverallVo projectOverallVo : page.getContent()) {
  			list.add(projectOverallVo);
@@ -148,10 +162,11 @@ public class ProjectOverallResource {
      			"合同完成节点",
      			"收入确认",
      			"收款金额",
-     			"应急收账",
+     			"应收账款",
      			"公摊成本",
      			"第三方采购",
-     			"内部采购总额",
+     			"实施成本",
+     			"中央研究院",
      			"奖金",
      			"毛利",
      			"毛利率"
@@ -182,6 +197,7 @@ public class ProjectOverallResource {
     	Integer[] cellType = new Integer[]{
     			Cell.CELL_TYPE_STRING,
     			Cell.CELL_TYPE_STRING,
+    			Cell.CELL_TYPE_NUMERIC,
     			Cell.CELL_TYPE_NUMERIC,
     			Cell.CELL_TYPE_NUMERIC,
     			Cell.CELL_TYPE_NUMERIC,
@@ -291,10 +307,17 @@ public class ProjectOverallResource {
 			}
 			j++;
 			cell = row.createCell(j,cellType[j]);
-			if (vo.getInternalPurchase() == null) {
+			if (vo.getImplementationCost() == null) {
 				cell.setCellValue("");
 			}else {
-				cell.setCellValue(vo.getInternalPurchase());
+				cell.setCellValue(vo.getImplementationCost());
+			}
+			j++;
+			cell = row.createCell(j,cellType[j]);
+			if (vo.getAcademicCost() == null) {
+				cell.setCellValue("");
+			}else {
+				cell.setCellValue(vo.getAcademicCost());
 			}
 			j++;
 			cell = row.createCell(j,cellType[j]);

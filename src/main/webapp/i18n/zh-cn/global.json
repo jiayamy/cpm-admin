@@ -46,7 +46,8 @@
                 "contractWeeklyStat": "合同周统计",
                 "contractMonthlyStat": "合同月统计",
                 "projectWeeklyStat": "项目周统计",
-                "projectMonthlyStat": "项目月统计"
+                "projectMonthlyStat": "项目月统计",
+                "bonus": "奖金总览"
             },
             "entities": {
                 "main": "数据",
