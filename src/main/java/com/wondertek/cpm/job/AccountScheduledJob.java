@@ -306,7 +306,7 @@ public class AccountScheduledJob {
 					Double cbBonusRate = StringUtil.nullToDouble(bonusRateMap.get(key));
 					consultantsBonus.setBonusRate(cbBonusRate);
 					//项目分润比例
-					Double cbConsultantsShareRate = contractInfo.getConsultantsShareRate();
+					Double cbConsultantsShareRate = StringUtil.nullToDouble(contractInfo.getConsultantsShareRate());
 					consultantsBonus.setConsultantsShareRate(cbConsultantsShareRate);
 					//本期奖金
 					Double cbCurrentBonus = cbBonusBasis*(cbBonusRate/100)*(cbConsultantsShareRate/100);
@@ -322,7 +322,6 @@ public class AccountScheduledJob {
 				List<Long> contractDeptTypes = new ArrayList<>();//合同内部门类型列表
 				List<ProjectInfo> projectInfos = projectInfoRepository.findAllByContractId(contractId);
 				if(projectInfos != null && projectInfos.size() > 0){
-					
 					Map<String, ProjectSupportCost> lastSupportCostMap = new HashMap<>();//截止到上上一周的记录
 					List<ProjectSupportCost> projectSupportCosts2 =projectSupportCostRepository.findByContractIdAndStatWeek(contractId, lastStatWeek);
 					if(projectSupportCosts2 != null && projectSupportCosts2.size() > 0){
@@ -360,7 +359,7 @@ public class AccountScheduledJob {
 								projectSupportCost.setUserName(userTimesheet.getUserName());
 								projectSupportCost.setGrade(user.getGrade());
 								//结算成本
-								Double settlementCost = StringUtil.nullToDouble(externalQuotationMap.get(user.getGender()));
+								Double settlementCost = StringUtil.nullToDouble(externalQuotationMap.get(user.getGrade()));
 								projectSupportCost.setSettlementCost(settlementCost);
 								//项目工时
 								Double thisProjectHourCost = 0D;
@@ -368,9 +367,8 @@ public class AccountScheduledJob {
 								if(lastSupportCostMap.get(key) != null){//上上周有记录，查询上一周
 									userTimesheets2 = userTimesheetRepository.findByUserIdAndTypeAndObjIdAndTime(user.getId(), UserTimesheet.TYPE_PROJECT, projectId, fDay, statWeek);
 								}else{//查询当前用户截止到上一周的所有日报
-									//TODO 
+									userTimesheets2 = userTimesheetRepository.findByUserIdAndTypeAndObjIdAndWorkDay(user.getId(), UserTimesheet.TYPE_PROJECT, projectId, statWeek);
 								}
-								
 								if(userTimesheets != null && userTimesheets.size() > 0){
 									for(UserTimesheet userTimesheet2 : userTimesheets2){
 										thisProjectHourCost += userTimesheet2.getRealInput();
