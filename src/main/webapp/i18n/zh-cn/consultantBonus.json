@@ -7,24 +7,21 @@
             "contractRecord":{
             	"title":"咨询奖金统计详情"
             },
-            "fromDate" : "开始日期",
-            "toDate" : "截止日期",
+            "statWeek" : "截止日期",
             "bonusRecord": "奖金记录",
             "transDetail" : "详情",
             "contractSerialNum" : "合同编号",
             "contractId": "合同主键",
-            "amount" : "合同金额",
-            "serialNum" : "合同编号",
-            "consultantsSerialNum" : "咨询负责人工号",
-            "consultantsName" : "咨询负责人姓名",
+            "amount" : "金额",
+            "consultantsName" : "项目负责人",
             "bonusBasis": "奖金基数",
             "bonusRate": "奖金比例",
             "consultantsShareRate": "项目分润比率",
             "currentBonus": "本期奖金",
-            "statWeek": "统计日期",
+            "accumulationBonus" : "累计已计提奖金",
+            "statWeek": "截止日期",
             "createTime": "创建时间",
-            "creator": "统计人",
-            "consultantMan": "咨询负责人"
+            "statTime" : "统计日期"
         }
     }
 }

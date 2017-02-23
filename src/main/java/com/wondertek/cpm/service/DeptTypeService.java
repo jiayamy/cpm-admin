@@ -2,6 +2,9 @@ package com.wondertek.cpm.service;
 
 import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.inject.Inject;
 
 import org.slf4j.Logger;
@@ -12,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.wondertek.cpm.domain.DeptType;
+import com.wondertek.cpm.domain.vo.LongValue;
 import com.wondertek.cpm.repository.DeptTypeRepository;
 import com.wondertek.cpm.repository.search.DeptTypeSearchRepository;
 
@@ -92,4 +96,15 @@ public class DeptTypeService {
         Page<DeptType> result = deptTypeSearchRepository.search(queryStringQuery(query), pageable);
         return result;
     }
+    @Transactional(readOnly = true)
+	public List<LongValue> getAllForCombox() {
+		List<DeptType> all = deptTypeRepository.findAll();
+		List<LongValue> returnList = new ArrayList<LongValue>();
+		if(all != null){
+			for(DeptType deptType : all){
+				returnList.add(new LongValue(deptType.getId(),deptType.getName()));
+			}
+		}
+		return returnList;
+	}
 }

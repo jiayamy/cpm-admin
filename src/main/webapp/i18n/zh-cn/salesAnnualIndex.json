@@ -1,0 +1,10 @@
+{
+    "cpmApp": {
+        "salesAnnualIndex" : {
+            "home": {
+                "title": "销售年指标",
+                "createOrEditLabel": "销售年指标"
+            }
+        }
+    }
+}

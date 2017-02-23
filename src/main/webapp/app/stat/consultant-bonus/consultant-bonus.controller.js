@@ -21,14 +21,13 @@
         vm.searchQuery = {};
         vm.exportXls = exportXls;
         
-        vm.searchQuery.fromDate = DateUtils.convertYYYYMMDDDayToDate(pagingParams.fromDate);
-        vm.searchQuery.toDate = DateUtils.convertYYYYMMDDDayToDate(pagingParams.toDate);
+        vm.searchQuery.statWeek = DateUtils.convertYYYYMMDDDayToDate(pagingParams.statWeek);
         vm.searchQuery.contractId = pagingParams.contractId;
-        vm.searchQuery.consultantMan = pagingParams.consultantMan;
-        vm.searchQuery.consultantManId = pagingParams.consultantManId;
+        vm.searchQuery.consultantsName = pagingParams.consultantsName;
+        vm.searchQuery.consultantsNameId = pagingParams.consultantsNameId;
         vm.contractInfos = [];
         
-        if (!vm.searchQuery.contractId && !vm.searchQuery.consultantManId && !vm.searchQuery.fromDate && !vm.searchQuery.toDate){
+        if (!vm.searchQuery.contractId && !vm.searchQuery.consultantManId && !vm.searchQuery.statWeek){
         	vm.haveSearch = null;
         }else{
         	vm.haveSearch = true;
@@ -61,9 +60,8 @@
                 size: vm.itemsPerPage,
                 sort: sort(),
                 contractId : pagingParams.contractId,
-                consultantManId : pagingParams.consultantManId,
-                fromDate : pagingParams.fromDate,
-                toDate : pagingParams.toDate
+                consultantsNameId : pagingParams.consultantsNameId,
+                statWeek : pagingParams.statWeek
             }, onSuccess, onError);
            
             function sort() {
@@ -95,15 +93,14 @@
                 page: vm.page,
                 sort: vm.predicate + ',' + (vm.reverse ? 'asc' : 'desc'),
                 contractId:vm.searchQuery.contractId ? vm.searchQuery.contractId.key : "",
-                consultantManId:vm.searchQuery.consultantManId,
-                consultantMan:vm.searchQuery.consultantMan,
-                fromDate:vm.searchQuery.fromDate ? DateUtils.convertLocalDateToFormat(vm.searchQuery.fromDate,"yyyyMMdd"):"",
-                toDate:vm.searchQuery.toDate ? DateUtils.convertLocalDateToFormat(vm.searchQuery.toDate,"yyyyMMdd"):""
+                consultantsNameId:vm.searchQuery.consultantsNameId,
+                consultantsName:vm.searchQuery.consultantsName,
+                statWeek:vm.searchQuery.statWeek ? DateUtils.convertLocalDateToFormat(vm.searchQuery.statWeek,"yyyyMMdd"):""
             });
         }
 
         function search() {
-        	if (!vm.searchQuery.contractId && !vm.searchQuery.consultantManId && !vm.searchQuery.fromDate && !vm.searchQuery.toDate){
+        	if (!vm.searchQuery.contractId && !vm.searchQuery.consultantsNameId && !vm.searchQuery.statWeek){
                 return vm.clear();
             }
             vm.links = null;
@@ -127,28 +124,18 @@
         function exportXls(){
         	var url = "api/consultant-bonus/exportXls";
         	var c = 0;
-        	var fromDate = DateUtils.convertLocalDateToFormat(vm.searchQuery.fromDate,"yyyyMMdd");
-        	var toDate = DateUtils.convertLocalDateToFormat(vm.searchQuery.toDate,"yyyyMMdd");
+        	var statWeek = DateUtils.convertLocalDateToFormat(vm.searchQuery.statWeek,"yyyyMMdd");
         	var contractId = vm.searchQuery.contractId && vm.searchQuery.contractId.key? vm.searchQuery.contractId.key : vm.searchQuery.contractId;
-			var consultantManId = vm.searchQuery.consultantManId;
+			var consultantsNameId = vm.searchQuery.consultantsNameId;
 			
-			if(fromDate){
+			if(statWeek){
 				if(c == 0){
 					c++;
 					url += "?";
 				}else{
 					url += "&";
 				}
-				url += "fromDate="+encodeURI(fromDate);
-			}
-			if(toDate){
-				if(c == 0){
-					c++;
-					url += "?";
-				}else{
-					url += "&";
-				}
-				url += "toDate="+encodeURI(toDate);
+				url += "statWeek="+encodeURI(statWeek);
 			}
 			if(contractId){
 				if(c == 0){
@@ -159,30 +146,29 @@
 				}
 				url += "contractId="+encodeURI(contractId);
 			}
-			if(consultantManId){
+			if(consultantsNameId){
 				if(c == 0){
 					c++;
 					url += "?";
 				}else{
 					url += "&";
 				}
-				url += "consultantManId="+encodeURI(consultantManId);
+				url += "consultantsNameId="+encodeURI(consultantsNameId);
 			}
 			
         	window.open(url);
         }
         
         vm.datePickerOpenStatus = {};
-        vm.datePickerOpenStatus.fromDate = false;
-        vm.datePickerOpenStatus.toDate = false;
+        vm.datePickerOpenStatus.statWeek = false;
         vm.openCalendar = openCalendar;
         function openCalendar(data){
         	vm.datePickerOpenStatus[data] = true;
         }
         
         var unsubscribe = $rootScope.$on('cpmApp:deptInfoSelected', function(event, result) {
-        	vm.searchQuery.consultantManId = result.objId;
-        	vm.searchQuery.consultantMan = result.name;
+        	vm.searchQuery.consultantsNameId = result.objId;
+        	vm.searchQuery.consultantsName = result.name;
         });
         $scope.$on('$destroy', unsubscribe);
     }

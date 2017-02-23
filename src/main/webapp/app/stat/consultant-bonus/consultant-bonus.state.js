@@ -11,7 +11,7 @@
         $stateProvider
         .state('consultant-bonus', {
             parent: 'stat',
-            url: '/consultant-bonus?page&contractId&consultantManId&fromDate&toDate&consultantMan',
+            url: '/consultant-bonus?page&contractId&consultantsNameId&statWeek&consultantsName',
             data: {
                 authorities: ['ROLE_STAT_PROJECT'],
                 pageTitle: 'cpmApp.consultantBonus.home.title'
@@ -33,10 +33,9 @@
                     squash: true
                 },
                 contractId : null,
-                consultantManId : null,
-                fromDate : null,
-                toDate : null,
-                consultantMan: null
+                consultantsNameId : null,
+                statWeek : null,
+                consultantsName: null
             },
             resolve: {
                 pagingParams: ['$stateParams', 'PaginationUtil', function ($stateParams, PaginationUtil) {
@@ -46,10 +45,9 @@
                         predicate: PaginationUtil.parsePredicate($stateParams.sort),
                         ascending: PaginationUtil.parseAscending($stateParams.sort),
                         contractId: $stateParams.contractId,
-                        consultantMan: $stateParams.consultantMan,
-                        consultantManId: $stateParams.consultantManId,
-                        fromDate : $stateParams.fromDate,
-                        toDate : $stateParams.toDate
+                        consultantsName: $stateParams.consultantsName,
+                        consultantsNameId: $stateParams.consultantsNameId,
+                        statWeek : $stateParams.statWeek
                     };
                 }],
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {

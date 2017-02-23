@@ -2,62 +2,33 @@
     <h2 data-translate="cpmApp.consultantBonus.contractRecord.title">Consultant Record</h2>
     <jhi-alert></jhi-alert>
     <br/>
-    <div class="container-fluid">
-    	<div class="row">
-    		<form name="searchForm" class="form-horizontal">
-				<div class="form-group">
-					<div class="col-sm-4">&nbsp;</div>
-					<div class="col-sm-4">&nbsp;</div>
-					<div class="col-sm-4 input-group pull-right">
-						<div class="col-sm-4">&nbsp;</div>
-						<div class="col-sm-4">&nbsp;</div>
-						<div class="col-sm-4">
-							</span> <span class="width-min">
-								<button class="btn btn-info" ng-click="vm.exportXls()">
-									<span class="glyphicon glyphicon-save"></span> <span
-										class="hidden-xs hidden-sm"
-										data-translate="entity.action.export"></span>
-								</button>
-							</span>
-						</div>
-					</div>
-				</div>
-			</form>
-    	</div>
-    </div>
     <div class="table-responsive">
         <table class="jh-table table table-striped" style="table-layout: fixed; ">
             <thead>
-                <tr jh-sort="vm.predicate" ascending="vm.reverse" callback="vm.transition()">
-                    <th style="width:70px;" jh-sort-by="m.id"><span data-translate="global.field.id">ID</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th style="width:110px;" jh-sort-by="i.serialNum"><span data-translate="cpmApp.consultantBonus.serialNum">Contract serialNum</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th style="width:110px;" jh-sort-by="i.amount"><span data-translate="cpmApp.consultantBonus.amount">Contract amount</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th style="width:80px;" jh-sort-by="m.consultantsSerialNum"><span data-translate="cpmApp.consultantBonus.consultantsSerialNum">Consultants SerialNum</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th style="width:80px;" jh-sort-by="m.consultants"><span data-translate="cpmApp.consultantBonus.consultantsName">Consultants Name</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th style="width:110px;" jh-sort-by="m.bonusBasis"><span data-translate="cpmApp.consultantBonus.bonusBasis">Bonus Basis</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th style="width:80px;" jh-sort-by="m.bonusRate"><span data-translate="cpmApp.consultantBonus.bonusRate">Bonus Rate</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th style="width:80px;" jh-sort-by="m.consultantsShareRate"><span data-translate="cpmApp.consultantBonus.consultantsShareRate">Consultants Share Rate</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th style="width:110px;" jh-sort-by="m.currentBonus"><span data-translate="cpmApp.consultantBonus.currentBonus">Current Bonus</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th style="width:100px;" jh-sort-by="m.statWeek"><span data-translate="cpmApp.consultantBonus.statWeek">Stat Week</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th style="width:80px;" jh-sort-by="m.creator"><span data-translate="cpmApp.consultantBonus.creator">Creator</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th style="width:110px;" jh-sort-by="m.createTime"><span data-translate="cpmApp.consultantBonus.createTime">Create Time</span> <span class="glyphicon glyphicon-sort"></span></th>
+                <tr>
+                    <th style="width:90px;"><span data-translate="cpmApp.consultantBonus.consultantsName">Consultants Name</span></th>
+                	<th style="width:90px;"><span data-translate="cpmApp.consultantBonus.statTime">statWeek</span></th>
+                    <th style="width:110px;"><span data-translate="cpmApp.consultantBonus.contractSerialNum">Contract SerialNum</span></th>
+                    <th style="width:110px;"><span data-translate="cpmApp.consultantBonus.amount">Contract amount</span></th>
+                    <th style="width:110px;"><span data-translate="cpmApp.consultantBonus.bonusBasis">Bonus Basis</span></th>
+                    <th style="width:90px;"><span data-translate="cpmApp.consultantBonus.bonusRate">Bonus Rate</span></th>
+                    <th style="width:90px;"><span data-translate="cpmApp.consultantBonus.consultantsShareRate">Consultants Share Rate</span></th>
+                    <th style="width:110px;"><span data-translate="cpmApp.consultantBonus.currentBonus">Current Bonus</span></th>
+                    <th style="width:110px;"><span data-translate="cpmApp.consultantBonus.accumulationBonus">Accumulation Bonus</span></th>
+                    <th style="width:60px;">&nbsp;</th>
                 </tr>
             </thead>
             <tbody>
                 <tr ng-repeat="consultantBonus in vm.consultantBonuss track by consultantBonus.id">
-                    <!-- <td><a ui-sref="consultant-bonus-detail({id:consultantBonus.id})">{{consultantBonus.id}}</a></td> -->
-                    <td>{{consultantBonus.id}}</a></td>
-                    <td>{{consultantBonus.serialNum}}</td>
-                    <td>{{consultantBonus.contractAmount}}</td>
-                    <td>{{consultantBonus.consultantsSerialNum}}</td>
                     <td>{{consultantBonus.consultantsName}}</td>
+                	<td>{{consultantBonus.statWeek}}</td>
+                    <td>{{consultantBonus.serialNum}}</td>
+                    <td>{{consultantBonus.amount}}</td>
                     <td>{{consultantBonus.bonusBasis}}</td>
-                    <td>{{consultantBonus.bonusRate}}%</td>
-                    <td>{{consultantBonus.consultantsShareRate}}%</td>
+                    <td>{{consultantBonus.bonusRate}}<span ng-show="consultantBonus.id">%</span></td>
+                    <td>{{consultantBonus.consultantsShareRate}}<span ng-show="consultantBonus.id">%</span></td>
                     <td>{{consultantBonus.currentBonus}}</td>
-                    <td>{{consultantBonus.statWeek}}</td>
-                    <td>{{consultantBonus.creator}}</td>
-                    <td>{{consultantBonus.createTime | date:'medium'}}</td>
+                    <td>{{consultantBonus.accumulationBonus}}</td>
                 </tr>
             </tbody>
         </table>

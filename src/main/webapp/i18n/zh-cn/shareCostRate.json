@@ -1,0 +1,10 @@
+{
+    "cpmApp": {
+        "shareCostRate" : {
+            "home": {
+                "title": "公摊成本比例",
+                "createOrEditLabel": "公摊成本比例"
+            }
+        }
+    }
+}

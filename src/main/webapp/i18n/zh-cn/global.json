@@ -16,7 +16,11 @@
 	            "userManagement":"用户管理",
                 "userCost": "员工成本",
                 "holidayInfo": "节假日信息",
-                "workArea": "工作地点"
+                "workArea": "工作地点",
+                "bonusRate":"奖金提成比例",
+                "externalQuotation":"外部报价",
+                "salesAunnualIndex":"销售年指标",
+                "shareCostRate":"公摊成本比例"
 	        },
             "contract":{
             	"main":"合同管理",
@@ -47,7 +51,8 @@
                 "contractMonthlyStat": "合同月统计",
                 "projectWeeklyStat": "项目周统计",
                 "projectMonthlyStat": "项目月统计",
-                "bonus": "奖金总览"
+                "bonus": "奖金总览",
+                "salePurchaseInternalCost": "销售内部采购成本"
             },
             "entities": {
                 "main": "数据",

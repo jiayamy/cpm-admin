@@ -79,19 +79,20 @@ public class ConsultantBonusResource {
     @Secured(AuthoritiesConstants.ROLE_STAT_PROJECT)
     public ResponseEntity<List<ConsultantBonusVo>> getAllConsultantsBonus(
     		@RequestParam(value="contractId",required = false) String contractId,
-    		@RequestParam(value="consultantManId",required = false) String consultantManId,
-    		@RequestParam(value="fromDate",required = false) String fromDate,
-    		@RequestParam(value="toDate",required = false) String toDate,
+    		@RequestParam(value="consultantsNameId",required = false) String consultantManId,
+    		@RequestParam(value="statWeek",required = false) String statWeek,
     		@ApiParam Pageable pageable)
         throws URISyntaxException {
-        log.debug("REST request to get a page of ConsultantsBonus:contractId--"+contractId+",consultantManId--"+consultantManId+",fromDate--"+fromDate+",toDate--"+toDate);
-        if(StringUtil.isNullStr(fromDate) && StringUtil.isNullStr(toDate)){//搜索日期条件为空时，默认截止日期为当前日期的周末
-        	Calendar cal = Calendar.getInstance();
-        	cal.set(Calendar.DAY_OF_WEEK, Calendar.SATURDAY);
-        	cal.add(Calendar.DAY_OF_WEEK, 1);
-        	toDate = DateUtil.formatDate(DateUtil.DATE_YYYYMMDD_PATTERN, new Date());
+        log.debug("REST request to get a page of ConsultantsBonus:contractId--"+contractId+",consultantManId--"+consultantManId+",statWeek--"+statWeek);
+        if(StringUtil.isNullStr(statWeek)){//搜索日期条件为空时，默认截止日期为当前日期的周末
+        	Date date = new Date();
+        	date = DateUtil.getSundayOfDay(date);
+        	statWeek = DateUtil.formatDate(DateUtil.DATE_YYYYMMDD_PATTERN, date);
+        }else{
+        	Date date = DateUtil.getSundayOfDay(DateUtil.parseDate(DateUtil.DATE_YYYYMMDD_PATTERN, statWeek.trim()));
+        	statWeek = DateUtil.formatDate(DateUtil.DATE_YYYYMMDD_PATTERN, date);
         }
-        Page<ConsultantBonusVo> page = consultantBonusService.getConsultantBonusPage(contractId,consultantManId,fromDate,toDate, pageable);
+        Page<ConsultantBonusVo> page = consultantBonusService.getConsultantBonusPage(contractId,consultantManId,statWeek, pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/consultant-bonus");
         return Optional.ofNullable(page.getContent()).map(result -> new ResponseEntity<>(result,headers,HttpStatus.OK))
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
@@ -126,7 +127,11 @@ public class ConsultantBonusResource {
     	if(contractId == null){
     		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     	}
-    	Page<ConsultantBonusVo> page = consultantBonusService.getConsultantBonusRecordPage(contractId, pageable);
+    	//设置statWeek默认值
+    	Date date = new Date();
+    	date = DateUtil.getSundayOfDay(date);
+    	Long statWeek = StringUtil.stringToLong(DateUtil.formatDate(DateUtil.DATE_YYYYMMDD_PATTERN, date));
+    	Page<ConsultantBonusVo> page = consultantBonusService.getConsultantBonusRecordPage(contractId,statWeek, pageable);
     	HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/consultant-bonus/queryConsultantRecord");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
@@ -136,9 +141,8 @@ public class ConsultantBonusResource {
      * @param request
      * @param response
      * @param contractId
-     * @param consultantManId
-     * @param fromDate
-     * @param toDate
+     * @param consultantsNameId
+     * @param statWeek
      * @throws IOException
      */
     @GetMapping("/consultant-bonus/exportXls")
@@ -147,26 +151,30 @@ public class ConsultantBonusResource {
     public void exportXls(
 	    		HttpServletRequest request, HttpServletResponse response,
 	    		@RequestParam(value="contractId",required = false) Long contractId,
-	    		@RequestParam(value="consultantManId",required = false) Long consultantManId,
-	    		@RequestParam(value="fromDate",required = false) Long fromDate,
-	    		@RequestParam(value="toDate",required = false) Long toDate
+	    		@RequestParam(value="consultantsNameId",required = false) Long consultantManId,
+	    		@RequestParam(value="statWeek",required = false) Long statWeek
     		) throws IOException{
     	log.debug("REST request to exportXls");
-    	List<ConsultantBonusVo> page = consultantBonusService.getConsultantBonusData(contractId,consultantManId,fromDate,toDate);
+    	if(statWeek == null){//搜索日期条件为空时，默认截止日期为当前日期的周末
+        	Date date = new Date();
+        	date = DateUtil.getSundayOfDay(date);
+        	statWeek = StringUtil.stringToLong(DateUtil.formatDate(DateUtil.DATE_YYYYMMDD_PATTERN, date));
+        }else{
+        	Date date = DateUtil.getSundayOfDay(DateUtil.parseDate(DateUtil.DATE_YYYYMMDD_PATTERN, statWeek.toString().trim()));
+        	statWeek = StringUtil.stringToLong(DateUtil.formatDate(DateUtil.DATE_YYYYMMDD_PATTERN, date));
+        }
+    	List<ConsultantBonusVo> page = consultantBonusService.getConsultantBonusData(contractId,consultantManId,statWeek);
     	//拼接sheet数据
     	//标题
     	String[] heads = new String[]{
+    			"项目负责人",
     			"合同编号",
-    			"合同金额",
-    			"咨询负责人工号",
-    			"咨询负责人",
+    			"金额",
     			"奖金基数",
     			"奖金比例",
     			"项目分润比率",
     			"本期奖金",
-    			"统计日期",
-    			"创建人",
-    			"创建时间"
+    			"累计已计提奖金"
     	};
     	String fileName = "consultantBonus.xlsx";
     	//写入sheet
@@ -196,21 +204,22 @@ public class ConsultantBonusResource {
 	    		@RequestParam(value="contractId",required = false) Long contractId
     		) throws IOException{
     	log.debug("REST request to exportXls");
-    	List<ConsultantBonusVo> page = consultantBonusService.getConsultantBonusDetailList(contractId);
+    	//设置默认截止日期
+    	Date date = new Date();
+    	date = DateUtil.getSundayOfDay(date);
+    	Long statWeek = StringUtil.stringToLong(DateUtil.formatDate(DateUtil.DATE_YYYYMMDD_PATTERN, date));
+    	List<ConsultantBonusVo> page = consultantBonusService.getConsultantBonusDetailList(contractId,statWeek);
     	//拼接sheet数据
     	//标题
     	String[] heads = new String[]{
+    			"项目负责人",
     			"合同编号",
-    			"合同金额",
-    			"咨询负责人工号",
-    			"咨询负责人",
+    			"金额",
     			"奖金基数",
     			"奖金比例",
     			"项目分润比率",
     			"本期奖金",
-    			"统计日期",
-    			"创建人",
-    			"创建时间"
+    			"累计已计提奖金"
     	};
     	String fileName = "consultantBonus_detail.xlsx";
     	//写入sheet
@@ -263,6 +272,13 @@ public class ConsultantBonusResource {
 			
 			j = 0;
 			cell = row.createCell(j,cellType[j]);
+			if(vo.getConsultantsName() == null){
+				cell.setCellValue("");
+			}else{
+				cell.setCellValue(vo.getConsultantsName());
+			}
+			j++;
+			cell = row.createCell(j,cellType[j]);
 			if(vo.getSerialNum() == null){
 				cell.setCellValue("");
 			}else{
@@ -270,24 +286,10 @@ public class ConsultantBonusResource {
 			}
 			j++;
 			cell = row.createCell(j,cellType[j]);
-			if(vo.getContractAmount() == null){
+			if(vo.getAmount() == null){
 				cell.setCellValue("");
 			}else{
-				cell.setCellValue(vo.getContractAmount());
-			}
-			j++;
-			cell = row.createCell(j,cellType[j]);
-			if(vo.getConsultantsSerialNum() == null){
-				cell.setCellValue("");
-			}else{
-				cell.setCellValue(vo.getConsultantsSerialNum());
-			}
-			j++;
-			cell = row.createCell(j,cellType[j]);
-			if(vo.getConsultantsName() == null){
-				cell.setCellValue("");
-			}else{
-				cell.setCellValue(vo.getConsultantsName());
+				cell.setCellValue(vo.getAmount());
 			}
 			j++;
 			cell = row.createCell(j,cellType[j]);
@@ -310,6 +312,7 @@ public class ConsultantBonusResource {
 				cell.setCellValue("");
 			}else{
 				cell.setCellValue(vo.getConsultantsShareRate() / 100);
+				cell.setCellStyle(cellStyle);
 			}
 			j++;
 			cell = row.createCell(j,cellType[j]);
@@ -320,24 +323,10 @@ public class ConsultantBonusResource {
 			}
 			j++;
 			cell = row.createCell(j,cellType[j]);
-			if(vo.getStatWeek() == null){
+			if(vo.getAccumulationBonus() == null){
 				cell.setCellValue("");
 			}else{
-				cell.setCellValue(vo.getStatWeek());
-			}
-			j++;
-			cell = row.createCell(j,cellType[j]);
-			if(vo.getCreator() == null){
-				cell.setCellValue("");
-			}else{
-				cell.setCellValue(vo.getCreator());
-			}
-			j++;
-			cell = row.createCell(j,cellType[j]);
-			if(vo.getCreateTime() == null){
-				cell.setCellValue("");
-			}else{
-				cell.setCellValue(DateUtil.formatDate(DateUtil.DATE_TIME_INDEX_PLAYBILL_PATTERN,DateUtil.convertZonedDateTime(vo.getCreateTime())));
+				cell.setCellValue(vo.getAccumulationBonus());
 			}
 			j++;
 		}
