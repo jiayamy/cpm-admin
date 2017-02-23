@@ -98,8 +98,8 @@
             </thead>
             <tbody>
                 <tr ng-repeat="projectOverAll in vm.projectOverAlls track by projectOverAll.id">
-                    <td><a ui-sref="project-info-detail({id:projectOverAll.id})">{{projectOverAll.salesman}}</a></td>
-                    <td>{{projectOverAll.serialNum}}</td>
+                    <td>{{projectOverAll.salesman}}</a></td>
+                    <td><a ui-sref="project-overall-controller-detail({id:projectOverAll.id})">{{projectOverAll.serialNum}}</td>
                     <td>{{projectOverAll.contractAmount}}</td>
                     <td>{{projectOverAll.taxRate}}</td>
                     <td>{{projectOverAll.identifiableIncome}}</td>
