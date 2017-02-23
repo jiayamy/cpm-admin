@@ -15,11 +15,11 @@
 			            </div>
 		            </div>
 					<div class="col-sm-4">
-						<label class="col-sm-4 control-label" data-translate="cpmApp.consultantBonus.consultantMan">Consultant Man</label>
+						<label class="col-sm-4 control-label" data-translate="cpmApp.consultantBonus.consultantsName">Consultants Name</label>
 						<div class="col-sm-8">
 							<div class="input-group">
-								<input type="text" class="form-control" name="consultantMan"
-									ng-model="vm.searchQuery.consultantMan" readonly ng-required="true" ng-minlength="1" /> <span class="input-group-btn">
+								<input type="text" class="form-control" name="consultantsName"
+									ng-model="vm.searchQuery.consultantsName" readonly ng-required="true" ng-minlength="1" /> <span class="input-group-btn">
 									<button type="button" class="btn btn-default" ui-sref="consultant-bonus.queryDept({selectType:3,showChild:true})">
 										<i class="glyphicon glyphicon-user"></i>
 									</button>
@@ -27,39 +27,24 @@
 							</div>
 						</div>
 					</div>
-				</div>
-				<div class="form-group">
-		        	<div class="col-sm-4">
-       					<label class="col-sm-4 control-label" data-translate="cpmApp.consultantBonus.fromDate">From Date</label>
-		            	<div class="col-sm-8">
-	                   		<div class="input-group">
-			                    <input id="search_fromDate" type="text" class="form-control" name="fromDate" datetime-picker="yyyyMMdd"
-			                    	enable-time="false" readonly
-			                     	ng-model="vm.searchQuery.fromDate" is-open="vm.datePickerOpenStatus.fromDate"
-			                      />
-			                    <span class="input-group-btn">
-			                        <button type="button" class="btn btn-default" ng-click="vm.openCalendar('fromDate')"><i class="glyphicon glyphicon-calendar"></i></button>
-			                    </span>
-		                	</div>
-	            		</div>
-       				</div>
        				<div class="col-sm-4">
-       					<label class="col-sm-4 control-label" data-translate="cpmApp.consultantBonus.toDate">To Date</label>
+       					<label class="col-sm-4 control-label" data-translate="cpmApp.consultantBonus.statWeek">statWeek</label>
 		            	<div class="col-sm-8">
 	                   		<div class="input-group">
-			                    <input id="search_toDate" type="text" class="form-control" name="toDate" datetime-picker="yyyyMMdd"
+			                    <input id="search_statWeek" type="text" class="form-control" name="statWeek" datetime-picker="yyyyMMdd"
 			                    	enable-time="false" readonly
-			                     	ng-model="vm.searchQuery.toDate" is-open="vm.datePickerOpenStatus.toDate"
+			                     	ng-model="vm.searchQuery.statWeek" is-open="vm.datePickerOpenStatus.statWeek"
 			                      />
 			                    <span class="input-group-btn">
-			                        <button type="button" class="btn btn-default" ng-click="vm.openCalendar('toDate')"><i class="glyphicon glyphicon-calendar"></i></button>
+			                        <button type="button" class="btn btn-default" ng-click="vm.openCalendar('statWeek')"><i class="glyphicon glyphicon-calendar"></i></button>
 			                    </span>
 		                	</div>
 	            		</div>
        				</div>
+       			</div>
+       			<div class="form-group">
 					<div class="col-sm-4 input-group pull-right">
-						<div class="col-sm-4">&nbsp;</div>
-						<div class="col-sm-8">
+						<div class="col-sm-12">
 							<span class="width-min">
 								<button class="btn btn-info" ng-click="vm.search()">
 									<span class="glyphicon glyphicon-search"></span> <span
@@ -89,38 +74,30 @@
     <div class="table-responsive">
         <table class="jh-table table table-striped" style="table-layout: fixed; ">
             <thead>
-                <tr jh-sort="vm.predicate" ascending="vm.reverse" callback="vm.transition()">
-                    <th style="width:80px;" jh-sort-by="m.id"><span data-translate="global.field.id">ID</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th style="width:100px;" jh-sort-by="i.serialNum"><span data-translate="cpmApp.consultantBonus.serialNum">Contract serialNum</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th style="width:110px;" jh-sort-by="i.amount"><span data-translate="cpmApp.consultantBonus.amount">Contract amount</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th style="width:110px;" jh-sort-by="m.consultantsSerialNum"><span data-translate="cpmApp.consultantBonus.consultantsSerialNum">Consultants SerialNum</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th style="width:110px;" jh-sort-by="m.consultants"><span data-translate="cpmApp.consultantBonus.consultantsName">Consultants Name</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th style="width:110px;" jh-sort-by="m.bonusBasis"><span data-translate="cpmApp.consultantBonus.bonusBasis">Bonus Basis</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th style="width:110px;" jh-sort-by="m.bonusRate"><span data-translate="cpmApp.consultantBonus.bonusRate">Bonus Rate</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th style="width:110px;" jh-sort-by="m.consultantsShareRate"><span data-translate="cpmApp.consultantBonus.consultantsShareRate">Consultants Share Rate</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th style="width:110px;" jh-sort-by="m.currentBonus"><span data-translate="cpmApp.consultantBonus.currentBonus">Current Bonus</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th style="width:110px;" jh-sort-by="m.statWeek"><span data-translate="cpmApp.consultantBonus.statWeek">Stat Time</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th style="width:110px;" jh-sort-by="m.creator"><span data-translate="cpmApp.consultantBonus.creator">Creator</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th style="width:110px;" jh-sort-by="m.createTime"><span data-translate="cpmApp.consultantBonus.createTime">Create Time</span> <span class="glyphicon glyphicon-sort"></span></th>
+                <tr>
+                    <th style="width:80px;"><span data-translate="cpmApp.consultantBonus.consultantsName">Consultants Name</span></th>
+                    <th style="width:110px;"><span data-translate="cpmApp.consultantBonus.contractSerialNum">Contract SerialNum</span></th>
+                    <th style="width:110px;"><span data-translate="cpmApp.consultantBonus.amount">Contract amount</span></th>
+                    <th style="width:110px;"><span data-translate="cpmApp.consultantBonus.bonusBasis">Bonus Basis</span></th>
+                    <th style="width:90px;"><span data-translate="cpmApp.consultantBonus.bonusRate">Bonus Rate</span></th>
+                    <th style="width:90px;"><span data-translate="cpmApp.consultantBonus.consultantsShareRate">Consultants Share Rate</span></th>
+                    <th style="width:110px;"><span data-translate="cpmApp.consultantBonus.currentBonus">Current Bonus</span></th>
+                    <th style="width:110px;"><span data-translate="cpmApp.consultantBonus.accumulationBonus">Accumulation Bonus</span></th>
                     <th style="width:60px;">&nbsp;</th>
                 </tr>
             </thead>
             <tbody>
                 <tr ng-repeat="consultantBonus in vm.consultantBonuss track by consultantBonus.id">
-                    <td>{{consultantBonus.id}}</td>
+                    <td>{{consultantBonus.consultantsName}}</td>
                     <td>{{consultantBonus.serialNum}}</td>
                     <td>{{consultantBonus.amount}}</td>
-                    <td>{{consultantBonus.consultantsSerialNum}}</td>
-                    <td>{{consultantBonus.consultantsName}}</td>
                     <td>{{consultantBonus.bonusBasis}}</td>
-                    <td>{{consultantBonus.bonusRate}}%</td>
-                    <td>{{consultantBonus.consultantsShareRate}}%</td>
+                    <td>{{consultantBonus.bonusRate}}<span ng-show="consultantBonus.id">%</span></td>
+                    <td>{{consultantBonus.consultantsShareRate}}<span ng-show="consultantBonus.id">%</span></td>
                     <td>{{consultantBonus.currentBonus}}</td>
-                    <td>{{consultantBonus.statWeek}}</td>
-                    <td>{{consultantBonus.creator}}</td>
-                    <td>{{consultantBonus.createTime | date:'medium'}}</td>
+                    <td>{{consultantBonus.accumulationBonus}}</td>
                     <td class="text-right">
-                        <div class="btn-group flex-btn-group-container">
+                        <div class="btn-group flex-btn-group-container" ng-show="consultantBonus.id">
 						    <button type="button" ui-sref="consultant-bonus-contractRecord({contId:consultantBonus.contractId})" class="btn btn-primary btn-sm">
 						        <span class="glyphicon glyphicon-pencil"></span>
 						        <span class="hidden-xs hidden-sm" data-translate="cpmApp.consultantBonus.transDetail">Detail</span>

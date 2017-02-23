@@ -25,7 +25,14 @@ public class ConsultantBonusVo implements Serializable {
 	private String serialNum;	//合同编号
 	private Double amount;		//合同金额
 	private String name;		//合同名称
+	private Double accumulationBonus;	//累计已计提奖金
 	
+	public Double getAccumulationBonus() {
+		return accumulationBonus;
+	}
+	public void setAccumulationBonus(Double accumulationBonus) {
+		this.accumulationBonus = accumulationBonus;
+	}
 	public Long getId() {
 		return id;
 	}

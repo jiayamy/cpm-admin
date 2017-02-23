@@ -208,6 +208,12 @@
                                 <span data-translate="global.menu.stat.bonus">Consultant Bonus</span>
                             </a>
                         </li>
+                        <li ui-sref-active="active" has-authority="ROLE_STAT_PROJECT">
+                            <a ui-sref="sale-purchase-internalCost" ng-click="vm.collapseNavbar()">
+                                <span class=" glyphicon glyphicon-info-sign"></span>&nbsp;
+                                <span data-translate="global.menu.stat.salePurchaseInternalCost">Sale Purchase InternalCost</span>
+                            </a>
+                        </li>
                     </ul>
                 </li>
                 <li ng-class="{active: vm.$state.includes('info')}" has-authority="ROLE_INFO" ng-switch-when="true" uib-dropdown class="dropdown pointer">
