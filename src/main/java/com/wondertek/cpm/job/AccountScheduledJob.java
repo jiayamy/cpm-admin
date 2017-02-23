@@ -524,7 +524,7 @@ public class AccountScheduledJob {
 					for(String key : lastSupportCostMap.keySet()){
 						ProjectSupportCost lastSupportCost = lastSupportCostMap.get(key);
 						lastSupportCost.setId(null);
-						lastSupportCost.setStatWeek(lastStatWeek);
+						lastSupportCost.setStatWeek(statWeek);
 						saveList.add(lastSupportCost);
 					}
 					projectSupportCostRepository.save(saveList);

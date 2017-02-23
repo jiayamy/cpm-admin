@@ -866,6 +866,7 @@ public class DateUtil {
 		cal.set(Calendar.HOUR_OF_DAY, 0);
 		cal.set(Calendar.MINUTE, 0);
 		cal.set(Calendar.SECOND, 0);
+		cal.set(Calendar.MILLISECOND, 0);
 		Date Saturday = cal.getTime();
 		return Saturday;
 	}
@@ -884,6 +885,7 @@ public class DateUtil {
 		cal.set(Calendar.HOUR_OF_DAY, 0);
 		cal.set(Calendar.MINUTE, 0);
 		cal.set(Calendar.SECOND, 0);
+		cal.set(Calendar.MILLISECOND, 0);
 		Date Monday = cal.getTime();
 		return Monday;
 	}
@@ -899,6 +901,7 @@ public class DateUtil {
 		cal.set(Calendar.HOUR_OF_DAY, 0);
 		cal.set(Calendar.MINUTE, 0);
 		cal.set(Calendar.SECOND, 0);
+		cal.set(Calendar.MILLISECOND, 0);
 		Date Monday = cal.getTime();
 		return Monday;
 	}
@@ -919,6 +922,7 @@ public class DateUtil {
 		cal.set(Calendar.HOUR_OF_DAY, 23);
 		cal.set(Calendar.MINUTE, 59);
 		cal.set(Calendar.SECOND, 59);
+		cal.set(Calendar.MILLISECOND, 999);
 		Date Sunday = cal.getTime();
 		return Sunday;
 	}
@@ -936,6 +940,7 @@ public class DateUtil {
 		cal.set(Calendar.HOUR_OF_DAY, 23);
 		cal.set(Calendar.MINUTE, 59);
 		cal.set(Calendar.SECOND, 59);
+		cal.set(Calendar.MILLISECOND, 999);
 		Date strDateTo = cal.getTime();
 		return strDateTo;
 	}
@@ -953,6 +958,7 @@ public class DateUtil {
 		cal.set(Calendar.HOUR_OF_DAY, 0);
 		cal.set(Calendar.MINUTE, 0);
 		cal.set(Calendar.SECOND, 0);
+		cal.set(Calendar.MILLISECOND, 0);
 		Date strDateTo = cal.getTime();
 		return strDateTo;
 	}
