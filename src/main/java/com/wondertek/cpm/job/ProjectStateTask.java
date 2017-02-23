@@ -81,9 +81,10 @@ public class ProjectStateTask {
 	protected void generateProjectWeeklyState(){
 		log.info("=====begin generate project weekly state=====");
 		init();
-		String [] dates = DateUtil.getWholeWeekByDate(DateUtil.lastSaturday());
-		ZonedDateTime beginTime = DateUtil.getZonedDateTime(DateUtil.lastMonday().getTime());
-		ZonedDateTime endTime = DateUtil.getZonedDateTime(DateUtil.lastSundayEnd().getTime());
+		Date now = new Date();
+		String [] dates = DateUtil.getWholeWeekByDate(DateUtil.lastSaturday(now));
+		ZonedDateTime beginTime = DateUtil.getZonedDateTime(DateUtil.lastMonday(now).getTime());
+		ZonedDateTime endTime = DateUtil.getZonedDateTime(DateUtil.lastSundayEnd(now).getTime());
 		List<ProjectInfo> projectInfos = projectInfoRepository.findByStatusOrUpdateTime(ProjectInfo.STATUS_ADD, beginTime, endTime);
 		if(projectInfos != null && projectInfos.size() > 0){
 			for (ProjectInfo projectInfo : projectInfos) {
@@ -111,9 +112,9 @@ public class ProjectStateTask {
 						ProjectCost projectCost = projectCostRepository.findMaxByProjectIdAndCostDayAndType(projectInfo.getId(), StringUtil.nullToLong(dates[0]), StringUtil.nullToLong(dates[6]), ProjectCost.TYPE_HUMAN_COST);
 						if(projectCost != null){
 							Date initDate = DateUtil.addOneDay(DateUtil.parseDate("yyyyMMdd", projectCost.getCostDay().toString()));
-							initProjectHumanCost(projectInfo, initDate, DateUtil.lastSundayEnd());
+							initProjectHumanCost(projectInfo, initDate, DateUtil.lastSundayEnd(now));
 						}else{
-							initProjectHumanCost(projectInfo, DateUtil.lastMonday(), DateUtil.lastSundayEnd());
+							initProjectHumanCost(projectInfo, DateUtil.lastMonday(now), DateUtil.lastSundayEnd(now));
 						}
 					}else{
 						ProjectCost projectCost = projectCostRepository.findMaxByProjectIdAndCostDayAndType(projectInfo.getId(), StringUtil.nullToLong(dates[0]), StringUtil.nullToLong(dates[6]), ProjectCost.TYPE_HUMAN_COST);
@@ -121,7 +122,7 @@ public class ProjectStateTask {
 							Date initDate = DateUtil.addOneDay(DateUtil.parseDate("yyyyMMdd", projectCost.getCostDay().toString()));
 							initProjectHumanCost(projectInfo, initDate, Date.from(projectInfo.getUpdateTime().toInstant()));
 						}else{
-							initProjectHumanCost(projectInfo, DateUtil.lastMonday(), Date.from(projectInfo.getUpdateTime().toInstant()));
+							initProjectHumanCost(projectInfo, DateUtil.lastMonday(now), Date.from(projectInfo.getUpdateTime().toInstant()));
 						}
 					}
 				} catch (Exception e) {
@@ -185,9 +186,10 @@ public class ProjectStateTask {
 	@Scheduled(cron = "0 0 22 1 * ?")
 	protected void generateProjectMonthlyState(){
 		log.info("=====begin generate project monthly state=====");
+		Date now = new Date();
 		init();
-		ZonedDateTime beginTime = DateUtil.getZonedDateTime(DateUtil.lastMonthBegin().getTime());
-		ZonedDateTime endTime = DateUtil.getZonedDateTime(DateUtil.lastMonthend().getTime());
+		ZonedDateTime beginTime = DateUtil.getZonedDateTime(DateUtil.lastMonthBegin(now).getTime());
+		ZonedDateTime endTime = DateUtil.getZonedDateTime(DateUtil.lastMonthend(now).getTime());
 		String fDay = DateUtil.getFirstDayOfLastMonth("yyyyMMdd");
 		String lDay = DateUtil.getLastDayOfLastMonth("yyyyMMdd");
 		String lMonth = DateUtil.getLastDayOfLastMonth("yyyyMM");
@@ -219,9 +221,9 @@ public class ProjectStateTask {
 						ProjectCost projectCost = projectCostRepository.findMaxByProjectIdAndCostDayAndType(projectInfo.getId(), StringUtil.nullToLong(fDay), StringUtil.nullToLong(lDay), ProjectCost.TYPE_HUMAN_COST);
 						if(projectCost != null){
 							Date initDate = DateUtil.addOneDay(DateUtil.parseDate("yyyyMMdd", projectCost.getCostDay().toString()));
-							initProjectHumanCost(projectInfo, initDate, DateUtil.lastMonthend());
+							initProjectHumanCost(projectInfo, initDate, DateUtil.lastMonthend(now));
 						}else{
-							initProjectHumanCost(projectInfo, DateUtil.lastMonthBegin(), DateUtil.lastMonthend());
+							initProjectHumanCost(projectInfo, DateUtil.lastMonthBegin(now), DateUtil.lastMonthend(now));
 						}
 					}else{
 						ProjectCost projectCost = projectCostRepository.findMaxByProjectIdAndCostDayAndType(projectInfo.getId(), StringUtil.nullToLong(fDay), StringUtil.nullToLong(lDay), ProjectCost.TYPE_HUMAN_COST);
@@ -229,7 +231,7 @@ public class ProjectStateTask {
 							Date initDate = DateUtil.addOneDay(DateUtil.parseDate("yyyyMMdd", projectCost.getCostDay().toString()));
 							initProjectHumanCost(projectInfo, initDate, Date.from(projectInfo.getUpdateTime().toInstant()));
 						}else{
-							initProjectHumanCost(projectInfo, DateUtil.lastMonthBegin(), Date.from(projectInfo.getUpdateTime().toInstant()));
+							initProjectHumanCost(projectInfo, DateUtil.lastMonthBegin(now), Date.from(projectInfo.getUpdateTime().toInstant()));
 						}
 						
 					}

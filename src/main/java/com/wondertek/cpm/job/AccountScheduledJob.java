@@ -13,6 +13,7 @@ import javax.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import com.wondertek.cpm.config.DateUtil;
@@ -137,7 +138,9 @@ public class AccountScheduledJob {
 	
 	@Inject
 	private UserCostRepository userCostRepository;
-	
+	/**
+	 * 数据初始化
+	 */
 	private void init(){
 		List<BonusRate> bonusRates = bonusRateRepository.findAll();
 		if(bonusRates != null && bonusRates.size() > 0){
@@ -164,10 +167,12 @@ public class AccountScheduledJob {
 			}
 		}
 	}
-	
-	private void clear(){
-		String [] dates = DateUtil.getWholeWeekByDate(DateUtil.lastSaturday());
-		Long statWeek = StringUtil.nullToLong(dates[6]);
+	/**
+	 * 删除记录
+	 * @param statWeek
+	 */
+	private void clear(Long statWeek){
+		//后期全部修改为直接使用sql或hql删除、不要查询后删除
 		List<ProjectSupportCost> projectSupportCosts = projectSupportCostRepository.findByStatWeek(statWeek);
 		if(projectSupportCosts != null){
 			projectSupportCostRepository.delete(projectSupportCosts);
@@ -205,20 +210,35 @@ public class AccountScheduledJob {
 			projectOverallRepository.delete(projectOveralls);
 		}
 	}
-	
-	protected void AccountScheduled(){
-		log.info("=====begin Account Scheduled=====");
+	@Scheduled(cron="0 0 22 * * MON")
+	protected void accountScheduled(){
+		//每周一晚上22点开始跑定时任务
+		accountScheduled(new Date());
+	}
+	protected void accountScheduled(Date statTime){
+		log.info("=====begin Account Scheduled=====statTime:" + DateUtil.formatDate(DateUtil.DATE_FORMAT, statTime));
+		//数据初始化
 		init();
-		String [] dates = DateUtil.getWholeWeekByDate(DateUtil.lastSaturday());
-		ZonedDateTime beginTime = DateUtil.getZonedDateTime(DateUtil.lastMonday().getTime());
-		ZonedDateTime endTime = DateUtil.getZonedDateTime(DateUtil.lastSundayEnd().getTime());
-		Long lastStatWeek = StringUtil.nullToLong(DateUtil.getWholeWeekByDate(DateUtil.addDayNum(-7, DateUtil.lastSundayEnd()))[6]);
+		//日期初始化
+		//上周的周一到周日
+		String [] dates = DateUtil.getWholeWeekByDate(DateUtil.lastMonday(statTime));
+		//上周周一
 		Long fDay = StringUtil.nullToLong(dates[0]);
+		//上周周日
 		Long statWeek = StringUtil.nullToLong(dates[6]);
-		Long costMonth = StringUtil.nullToLong(DateUtil.formatDate("yyyyMM", DateUtil.lastSundayEnd()).toString());
+		//上周周一0点0分0秒
+		ZonedDateTime beginTime = DateUtil.getZonedDateTime(DateUtil.lastMonday(statTime).getTime());
+		//上周周日23点59分59秒
+		ZonedDateTime endTime = DateUtil.getZonedDateTime(DateUtil.lastSundayEnd(statTime).getTime());
+		//上上周周日
+		Long lastStatWeek = StringUtil.nullToLong(DateUtil.getWholeWeekByDate(DateUtil.addDayNum(-7, DateUtil.lastSundayEnd(statTime)))[6]);
+		
+		Long costMonth = StringUtil.nullToLong(DateUtil.formatDate("yyyyMM", DateUtil.lastSundayEnd(statTime)).toString());//上周周日所在月
 		String creator = "admin";
-		//初始化
-		clear();
+		
+		//删除历史记录
+		clear(statWeek);
+		
 		//合同
 		List<ContractInfo> contractInfos = contractInfoRepository.findByStatusOrUpdateTime(ContractInfo.STATUS_VALIDABLE, beginTime, endTime);
 		if(contractInfos != null && contractInfos.size() > 0){
@@ -443,7 +463,7 @@ public class AccountScheduledJob {
 						//实际使用天数
 						int realDays = 0;
 						if(projectInfo.getStatus() == ProjectInfo.STATUS_ADD){
-							realDays = DateUtil.getIntervalDaysOfExitDate2(Date.from(projectInfo.getStartDay().toInstant()), DateUtil.lastSundayEnd()) + 1;
+							realDays = DateUtil.getIntervalDaysOfExitDate2(Date.from(projectInfo.getStartDay().toInstant()), DateUtil.lastSundayEnd(statTime)) + 1;
 						}else{
 							realDays = DateUtil.getIntervalDaysOfExitDate2(Date.from(projectInfo.getStartDay().toInstant()), Date.from(projectInfo.getUpdateTime().toInstant())) + 1;
 						}

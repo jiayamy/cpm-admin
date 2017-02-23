@@ -91,9 +91,10 @@ public class ContractStateTask {
 	@Scheduled(cron = "0 0 23 ? * MON")
 	protected void generateContractWeeklyStat(){
 		log.info("=====begin generate Contract Weekly Stat=====");
-		String [] dates = DateUtil.getWholeWeekByDate(DateUtil.lastSaturday());
-		ZonedDateTime beginTime = DateUtil.getZonedDateTime(DateUtil.lastMonday().getTime());
-		ZonedDateTime endTime = DateUtil.getZonedDateTime(DateUtil.lastSundayEnd().getTime());
+		Date now = new Date();
+		String [] dates = DateUtil.getWholeWeekByDate(DateUtil.lastSaturday(now));
+		ZonedDateTime beginTime = DateUtil.getZonedDateTime(DateUtil.lastMonday(now).getTime());
+		ZonedDateTime endTime = DateUtil.getZonedDateTime(DateUtil.lastSundayEnd(now).getTime());
 		List<ContractInfo> contractInfos = contractInfoRepository.findByStatusOrUpdateTime(ContractInfo.STATUS_VALIDABLE, beginTime, endTime);
 		if(contractInfos != null && contractInfos.size() > 0){
 			for(ContractInfo contractInfo : contractInfos){
@@ -120,15 +121,15 @@ public class ContractStateTask {
 					if(contractCost2 != null){
 						Date initDate = DateUtil.addOneDay(DateUtil.parseDate("yyyyMMdd", contractCost2.getCostDay().toString()));
 						if(contractInfo.getStatus() == ContractInfo.STATUS_VALIDABLE){
-							initContractHumanCost(contractInfo, initDate, DateUtil.lastSundayEnd());
+							initContractHumanCost(contractInfo, initDate, DateUtil.lastSundayEnd(now));
 						}else{
 							initContractHumanCost(contractInfo, initDate, Date.from(contractInfo.getUpdateTime().toInstant()));
 						}
 					}else{
 						if(contractInfo.getStatus() == ContractInfo.STATUS_VALIDABLE){
-							initContractHumanCost(contractInfo, DateUtil.lastMonday(), DateUtil.lastSundayEnd());
+							initContractHumanCost(contractInfo, DateUtil.lastMonday(now), DateUtil.lastSundayEnd(now));
 						}else{
-							initContractHumanCost(contractInfo, DateUtil.lastMonday(), Date.from(contractInfo.getUpdateTime().toInstant()));
+							initContractHumanCost(contractInfo, DateUtil.lastMonday(now), Date.from(contractInfo.getUpdateTime().toInstant()));
 						}
 					}
 				} catch (Exception e) {
@@ -268,7 +269,7 @@ public class ContractStateTask {
 									findByDateAndObjIdAndType(StringUtil.nullToLong(dates[6]), projectInfo.getId(), UserTimesheet.TYPE_PROJECT);
 							if(userTimesheets3 != null && userTimesheets3.size() > 0){
 								for(UserTimesheet userTimesheet : userTimesheets3){
-									Long costMonth = StringUtil.nullToLong(DateUtil.formatDate("yyyyMM", DateUtil.lastSundayEnd()).toString());
+									Long costMonth = StringUtil.nullToLong(DateUtil.formatDate("yyyyMM", DateUtil.lastSundayEnd(now)).toString());
 									UserCost userCost = userCostRepository.findMaxByCostMonthAndUserId(costMonth, userTimesheet.getUserId());
 									if(userCost != null){
 										if(contractInfo.getType() == ContractInfo.TYPE_INTERNAL){
@@ -336,8 +337,9 @@ public class ContractStateTask {
 	@Scheduled(cron = "0 0 22 1 * ?")
 	protected void generateContractMonthlyStat(){
 		log.info("=====begin generate Contract Monthly Stat=====");
-		ZonedDateTime beginTime = DateUtil.getZonedDateTime(DateUtil.lastMonthBegin().getTime());
-		ZonedDateTime endTime = DateUtil.getZonedDateTime(DateUtil.lastMonthend().getTime());
+		Date now = new Date();
+		ZonedDateTime beginTime = DateUtil.getZonedDateTime(DateUtil.lastMonthBegin(now).getTime());
+		ZonedDateTime endTime = DateUtil.getZonedDateTime(DateUtil.lastMonthend(now).getTime());
 		String fDay = DateUtil.getFirstDayOfLastMonth("yyyyMMdd");
 		String lDay = DateUtil.getLastDayOfLastMonth("yyyyMMdd");
 		String lMonth = DateUtil.getLastDayOfLastMonth("yyyyMM");
@@ -367,15 +369,15 @@ public class ContractStateTask {
 					if(contractCost2 != null){
 						Date initDate = DateUtil.addOneDay(DateUtil.parseDate("yyyyMMdd", contractCost2.getCostDay().toString()));
 						if(contractInfo.getStatus() == ContractInfo.STATUS_VALIDABLE){
-							initContractHumanCost(contractInfo, initDate, DateUtil.lastMonthend());
+							initContractHumanCost(contractInfo, initDate, DateUtil.lastMonthend(now));
 						}else{
 							initContractHumanCost(contractInfo, initDate, Date.from(contractInfo.getUpdateTime().toInstant()));
 						}
 					}else{
 						if(contractInfo.getStatus() == ContractInfo.STATUS_VALIDABLE){
-							initContractHumanCost(contractInfo, DateUtil.lastMonthBegin(), DateUtil.lastMonthend());
+							initContractHumanCost(contractInfo, DateUtil.lastMonthBegin(now), DateUtil.lastMonthend(now));
 						}else{
-							initContractHumanCost(contractInfo, DateUtil.lastMonthBegin(), Date.from(contractInfo.getUpdateTime().toInstant()));
+							initContractHumanCost(contractInfo, DateUtil.lastMonthBegin(now), Date.from(contractInfo.getUpdateTime().toInstant()));
 						}
 					}
 				} catch (Exception e) {

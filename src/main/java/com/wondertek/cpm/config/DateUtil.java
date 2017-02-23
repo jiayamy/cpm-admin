@@ -850,11 +850,13 @@ public class DateUtil {
 	}
 	
 	/**
-	 * 获取上周周六0点
+	 * 获取指定日期的上周周六0点0分0秒
 	 * @return
 	 */
-	public static Date lastSaturday() {
+	public static Date lastSaturday(Date date) {
 		Calendar cal = Calendar.getInstance();
+		cal.setTime(date);
+		
 		int n = cal.get(Calendar.DAY_OF_WEEK) - 1;
 		if (n == 0) {
 			n = 7;
@@ -867,9 +869,13 @@ public class DateUtil {
 		Date Saturday = cal.getTime();
 		return Saturday;
 	}
-	
-	public static Date lastMonday(){
+	/**
+	 * 获取指定日期的上周周一0点0分0秒
+	 * @return
+	 */
+	public static Date lastMonday(Date date){
 		Calendar cal = Calendar.getInstance();
+		cal.setTime(date);
 		int n = cal.get(Calendar.DAY_OF_WEEK) - 1;
 		if (n == 0) {
 			n = 7;
@@ -881,13 +887,28 @@ public class DateUtil {
 		Date Monday = cal.getTime();
 		return Monday;
 	}
-	
 	/**
-	 * 上周周日晚上23时
+	 * 获取指定日期的周一0点0分0秒
 	 * @return
 	 */
-	public static Date lastSundayEnd(){
+	public static Date getMonday(Date date){
 		Calendar cal = Calendar.getInstance();
+		cal.setTime(date);
+		cal.setFirstDayOfWeek(Calendar.MONDAY);
+		cal.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+		cal.set(Calendar.HOUR_OF_DAY, 0);
+		cal.set(Calendar.MINUTE, 0);
+		cal.set(Calendar.SECOND, 0);
+		Date Monday = cal.getTime();
+		return Monday;
+	}
+	/**
+	 * 获取指定日期的上周周日晚上23时59分59秒
+	 * @return
+	 */
+	public static Date lastSundayEnd(Date date){
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(date);
 		int n = cal.get(Calendar.DAY_OF_WEEK) - 1;
 		if (n == 0) {
 			n = 7;
@@ -906,8 +927,9 @@ public class DateUtil {
 	 * 获取上月最后一天23:59:59
 	 * @return
 	 */
-	public static Date lastMonthend() {
+	public static Date lastMonthend(Date date) {
 		Calendar cal = Calendar.getInstance();
+		cal.setTime(date);
 		int month = cal.get(Calendar.MONTH);
 		cal.set(Calendar.MONTH, month - 1);
 		cal.set(Calendar.DAY_OF_MONTH, cal.getActualMaximum(Calendar.DAY_OF_MONTH));
@@ -922,8 +944,9 @@ public class DateUtil {
 	 * 获取上月第一天 0：0：0
 	 * @return
 	 */
-	public static Date lastMonthBegin(){
+	public static Date lastMonthBegin(Date date){
 		Calendar cal = Calendar.getInstance();
+		cal.setTime(date);
 		int month = cal.get(Calendar.MONTH);
 		cal.set(Calendar.MONTH, month - 1);
 		cal.set(Calendar.DAY_OF_MONTH, cal.getActualMinimum(Calendar.DAY_OF_MONTH));
