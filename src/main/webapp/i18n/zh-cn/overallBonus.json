@@ -1,0 +1,25 @@
+{
+    "cpmApp": {
+        "overallBonus" : {
+            "home": {
+                "title": "奖金总览",
+                "export": "导出"
+            },
+            "detail": {
+                "title": "奖金总览详情"
+            },
+            "statWeek" : "统计日期",
+            "toDate": "截止日期",
+            "serialNum": "合同编号",
+            "contractResponse" : "合同负责人",
+            "contractId" : "合同",
+            "contractAmount": "合同金额",
+            "salesBonus" : "当期销售奖金",
+            "projectBonus" : "当期项目奖金",
+            "implemtationBonus" : "当前项目实施奖金",
+            "academicBonus" : "当前研发奖金",
+            "consultantsBonus": "当期业务咨询奖金",
+            "bonusTotal": "奖金合计"
+        }
+    }
+}

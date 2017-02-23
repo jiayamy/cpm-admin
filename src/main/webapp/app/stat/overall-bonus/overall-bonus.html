@@ -1,0 +1,104 @@
+<div>
+    <h2 data-translate="cpmApp.overallBonus.home.title">OverAll Bonus</h2>
+    <jhi-alert></jhi-alert>
+    <div class="container-fluid">
+    	<div class="row">
+    		<form name="searchForm" class="form-horizontal">
+				<div class="form-group">
+		            <div class="col-sm-4">
+		          		<label class="col-sm-4 control-label" data-translate="cpmApp.overallBonus.toDate">To Date</label>
+			            <div class="col-sm-8">
+			                <p class="input-group">
+			                    <input id="search_toDate" type="text" class="form-control" name="statWeek" datetime-picker="yyyyMMdd"
+				           		 		enable-time="false" ng-model="vm.searchQuery.statWeek" is-open="vm.datePickerOpenStatus.statWeek"/>
+				          		<span class="input-group-btn">
+				           			<button type="button" class="btn btn-default" ng-click="vm.openCalendar('statWeek')"><i class="glyphicon glyphicon-calendar"></i></button>
+				            	</span>
+			                </p>
+			            </div>
+				    </div>
+           			<div class="col-sm-4">
+           				<label class="col-sm-4 control-label" data-translate="cpmApp.overallBonus.serialNum">Serial Num</label>
+                  		<div class="col-sm-8">
+	     					<select class="form-control" ng-model="vm.searchQuery.contractId"
+				            	ng-options="contractInfo.val for contractInfo in vm.contractInfos track by contractInfo.key">
+				            	<option value="">--合同编号--</option>
+				            </select>
+     					</div> 
+           			</div>
+           		</div>
+           		<div class="form-group">
+           			<div class="col-sm-6 pull-right input-group">
+		            	<div class="col-sm-4">
+		            		&nbsp;
+		            	</div>
+		            	<div class="col-sm-8" >
+			            	<span  class="width-min" >
+		                        <button class="btn btn-info" ng-click="vm.search()">
+		                            <span class="glyphicon glyphicon-search"></span>
+		                            <span class="hidden-xs hidden-sm" data-translate="entity.action.search"></span>
+		                        </button>
+		                    </span>
+		                    <span class="width-min" ng-if="vm.haveSearch">
+		                        <button class="btn btn-info" ng-click="vm.clear()">
+		                            <span class="glyphicon glyphicon-trash"></span>
+		                            <span class="hidden-xs hidden-sm" data-translate="entity.action.clear"></span>
+		                        </button>
+		                    </span>
+		                    <span class="width-min">
+	                        	<button class="btn btn-info" ng-click="vm.exportXls()">
+	                            	<span class="glyphicon glyphicon-save"></span>
+	                            	<span class="hidden-xs hidden-sm" data-translate="entity.action.export"></span>
+	                        	</button>
+	                    	</span>
+		            	</div>
+		            </div>
+           		</div>	
+	            </div>
+			</form>
+    	</div>
+    </div>
+    <br/>
+    <div class="table-responsive">
+        <table class="jh-table table table-striped">
+            <thead>
+                <tr jh-sort="vm.predicate" ascending="vm.reverse" callback="vm.transition()">
+                    <th><span data-translate="cpmApp.overallBonus.contractId">Serial Num</span></th>
+                    <th><span data-translate="cpmApp.overallBonus.contractAmount">Contract Amount</span></th>
+                    <th><span data-translate="cpmApp.overallBonus.salesBonus">Sales Bonus</span></th>
+					<th><span data-translate="cpmApp.overallBonus.projectBonus">Project Bonus</span></th>
+					<th><span data-translate="cpmApp.overallBonus.implemtationBonus">Implemtation Bonus</span></th>
+					<th><span data-translate="cpmApp.overallBonus.academicBonus">Academic Bonus</span></th>
+                    <th><span data-translate="cpmApp.overallBonus.consultantsBonus">ConsultantsBonus</span></th>
+                    <th><span data-translate="cpmApp.overallBonus.bonusTotal">Bonus Total</span></th>
+                    <th>&nbsp;</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="overallBonus in vm.overallBonuses track by overallBonus.id">
+                    <td><a ui-sref="project-info-detail({id:projectOverAll.id})">{{overallBonus.serialNum}}</a></td>
+                    <td>{{overallBonus.contractAmount}}</td>
+                    <td>{{overallBonus.salesBonus}}</td>
+                    <td>{{overallBonus.projectBonus}}</td>
+                    <td>{{overallBonus.implemtationBonus}}</td>
+                    <td>{{overallBonus.academicBonus}}</td>
+                    <td>{{overallBonus.consultantsBonus}}</td>
+                    <td>{{overallBonus.bonusTotal}}</td>
+                    <td class="text-right">
+                        <div class="btn-group flex-btn-group-container">
+                            <button type="submit"
+                                    ui-sref="overall-bonus-detail({id:overallBonus.id})"
+                                    class="btn btn-info btn-sm">
+                                <span class="glyphicon glyphicon-eye-open"></span>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="text-center">
+        <jhi-item-count page="vm.page" total="vm.queryCount" items-per-page="vm.itemsPerPage"></jhi-item-count>
+        <uib-pagination class="pagination-sm" total-items="vm.totalItems" items-per-page="vm.itemsPerPage" ng-model="vm.page" ng-change="vm.transition()"></uib-pagination>
+    </div>
+</div>

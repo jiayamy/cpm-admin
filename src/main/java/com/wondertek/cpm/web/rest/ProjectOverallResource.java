@@ -99,7 +99,7 @@ public class ProjectOverallResource {
     		@RequestParam(value = "contractId",required=false) Long contractId,
     		@ApiParam Pageable pageable) 
     	throws URISyntaxException {
-        log.debug("REST request to get ProductPrice : {}", contractId);
+        log.debug("REST request to get ProjectOverall : {}", contractId);
         Page<ProjectOverallVo> page = projectOverallService.searchPageDetail(contractId,pageable);
     	HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(contractId.toString(), page,"/api/project-projectOverall");
     	return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK); 
@@ -108,7 +108,7 @@ public class ProjectOverallResource {
     @GetMapping("/project-overall-controller/{id}")
     @Timed
     public ResponseEntity<ProjectOverall> getProjectOverall(@PathVariable Long id) {
-        log.debug("REST request to get ProductPrice : {}", id);
+        log.debug("REST request to get ProjectOverall : {}", id);
         ProjectOverall projectOverall = projectOverallService.findOne(id);
         return Optional.ofNullable(projectOverall)
             .map(result -> new ResponseEntity<>(
