@@ -59,7 +59,7 @@ public class ProjectOverallService {
 	}
 
 	public ProjectOverall findOne(Long id) {
-		log.debug("Request to get ProductPrice : {}", id);
+		log.debug("Request to get ProjectOverall : {}", id);
 		ProjectOverall projectOverall = projectOverallRepository.findOne(id);
         return projectOverall;
 	}
