@@ -172,10 +172,10 @@ public class ProjectOverallResource {
      			"毛利率"
      	};
      	//设置文件名
-     	String fileName = "projectOverall_" + currentDay + ".xlsx";
+     	String fileName = "项目总体控制" + "_" + currentDay + ".xlsx";
      	//写入sheet
     	ServletOutputStream outputStream = response.getOutputStream();
-    	response.setHeader("Content-Disposition","attachment;filename=" + fileName);
+    	response.setHeader("Content-Disposition","attachment;filename=" + new String(fileName.getBytes("gb2312"),"ISO8859-1"));
     	response.setContentType("application/x-msdownload");
     	response.setCharacterEncoding("UTF-8");
     	

@@ -2,6 +2,13 @@
     <h2 data-translate="cpmApp.overallBonus.detail.title">Overall Bonus</h2>
     <jhi-alert></jhi-alert>
     <br/>
+    <div class="btn-group flex-btn-group-container">
+       <button type="submit"
+	          ui-sref="{{ vm.previousState }}"
+	          class="btn btn-info">
+	       <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span data-translate="entity.action.back"> Back</span>
+	   </button>                	
+    </div>
     <div class="table-responsive">
         <table class="jh-table table table-striped">
             <thead>
@@ -31,13 +38,6 @@
                     <td>{{overallBonus.bonusTotal}}</td>
                     <td class="text-right">
                     </td>
-                    <div class="btn-group flex-btn-group-container">
-                       	<button type="submit"
-					           ui-sref="{{ vm.previousState }}"
-					           class="btn btn-info">
-					       <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span data-translate="entity.action.back"> Back</span>
-					   </button>
-                    </div>
                 </tr>
             </tbody>
         </table>

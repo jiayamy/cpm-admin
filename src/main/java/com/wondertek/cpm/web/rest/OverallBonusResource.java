@@ -155,10 +155,10 @@ public class OverallBonusResource {
 				"奖金合计"
 		};
 		//设置文件名
-		String fileName = "overall_bonus" + currentDay + ".xlsx";
+		String fileName = "总体奖金" + "_" + currentDay + ".xlsx";
 		//写入sheet
 		ServletOutputStream outputStream = response.getOutputStream();
-		response.setHeader("Content-Disposition","attachment;filename=" + fileName);
+		response.setHeader("Content-Disposition","attachment;filename=" + new String(fileName.getBytes("gb2312"),"ISO8859-1"));
     	response.setContentType("application/x-msdownload");
     	response.setCharacterEncoding("UTF-8");
     	

@@ -1,0 +1,56 @@
+<div>
+    <h2 data-translate="cpmApp.projectSupportBonus.detail.title">Overall Bonus</h2>
+    <jhi-alert></jhi-alert>
+    <br/>
+    <div class="btn-group flex-btn-group-container">
+     	<button type="submit"
+          	 ui-sref="{{ vm.previousState }}"
+           	 class="btn btn-info">
+	      	 <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span data-translate="entity.action.back"> Back</span>
+		</button>			                     	
+    </div>
+    <div class="table-responsive">
+        <table class="jh-table table table-striped">
+            <thead>
+                <tr callback="vm.transition()">
+                    <th style="width:80px;"><span data-translate="cpmApp.projectSupportBonus.serialNum">Serial Num</span></th>
+                    <th style="width:80px;"><span data-translate="cpmApp.projectSupportBonus.deptType">Dept Type</span></th>
+                    <th style="width:110px;"><span data-translate="cpmApp.projectSupportBonus.contractAmount">Contract Amount</span></th>
+                    <th style="width:60px;"><span data-translate="cpmApp.projectSupportBonus.taxRate">Tax Rate</span></th>
+					<th style="width:60px;"><span data-translate="cpmApp.projectSupportBonus.acceptanceRate">Acceptance Rate</span></th>
+					<th style="width:110px;"><span data-translate="cpmApp.projectSupportBonus.deliveryTime">Delivery Time</span></th>
+					<th style="width:60px;"><span data-translate="cpmApp.projectSupportBonus.planDays">Plan Days</span></th>
+                    <th style="width:60px;"><span data-translate="cpmApp.projectSupportBonus.realDays">Real Days</span></th>
+                    <th style="width:80px;"><span data-translate="cpmApp.projectSupportBonus.bonusAdjustRate">Bonus Adjust Rate</span></th>
+                    <th style="width:80px;"><span data-translate="cpmApp.projectSupportBonus.bonusRate">Bonus Rate</span></th>
+                    <th style="width:80px;"><span data-translate="cpmApp.projectSupportBonus.bonusAcceptanceRate">Bonus Acceptance Rate</span></th>
+                    <th style="width:110px;"><span data-translate="cpmApp.projectSupportBonus.bonusBasis">Bonus Basis</span></th>
+                    <th style="width:110px;"><span data-translate="cpmApp.projectSupportBonus.currentBonus">Current Bonusl</span></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="projectSupportBonus in vm.projectSupportBonuses track by projectSupportBonus.id">
+                    <td><a ui-sref="project-support-bonus-detail({id:projectSupportBonus.id})">{{projectSupportBonus.serialNum}}</a></td>
+                    <td>{{projectSupportBonus.deptTypeName}}</td>
+                    <td>{{projectSupportBonus.contractAmount}}</td>
+                    <td>{{projectSupportBonus.taxRate}}</td>
+                    <td>{{projectSupportBonus.acceptanceRate}}</td>
+                    <td>{{projectSupportBonus.deliveryTime}}</td>
+                    <td>{{projectSupportBonus.planDays}}</td>
+                    <td>{{projectSupportBonus.realDays}}</td>
+                    <td>{{projectSupportBonus.bonusAdjustRate}}</td>
+                    <td>{{projectSupportBonus.bonusRate}}</td>
+                    <td>{{projectSupportBonus.bonusAcceptanceRate}}</td>
+                    <td>{{projectSupportBonus.bonusBasis}}</td>
+                    <td>{{projectSupportBonus.currentBonus}}</td>
+                    <td class="text-right">
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="text-center">
+        <jhi-item-count page="vm.page" total="vm.queryCount" items-per-page="vm.itemsPerPage"></jhi-item-count>
+        <uib-pagination class="pagination-sm" total-items="vm.totalItems" items-per-page="vm.itemsPerPage" ng-model="vm.page" ng-change="vm.find()"></uib-pagination>
+    </div>
+</div>

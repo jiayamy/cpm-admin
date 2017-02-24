@@ -9,16 +9,16 @@
 
     function stateConfig($stateProvider) {
         $stateProvider
-        .state('overall-bonus', {
+        .state('project-support-bonus', {
             parent: 'stat',
-            url: '/overall-bonus?&statWeek&contractId',
+            url: '/project-support-bonus?&statWeek&contractId&deptType',
             data: {
-                pageTitle: 'cpmApp.overallBonus.home.title'
+                pageTitle: 'cpmApp.projectSupportBonus.home.title'
             },
             views: {
                 'content@': {
-                    templateUrl: 'app/stat/overall-bonus/overall-bonus.html',
-                    controller: 'OverallBonusController',
+                    templateUrl: 'app/stat/project-support-bonus/project-support-bonus.html',
+                    controller: 'ProjectSupportBonusController',
                     controllerAs: 'vm'
                 }
             },
@@ -28,48 +28,50 @@
                     squash: true
                 },
                 statWeek: null,
-                contractId: null
+                contractId: null,
+                deptType: null
             },
             resolve: {
                 pagingParams: ['$stateParams','PaginationUtil',function ($stateParams,PaginationUtil) {
                     return {
                     	page: PaginationUtil.parsePage($stateParams.page),
                         statWeek: $stateParams.statWeek,
-                        contractId: $stateParams.contractId
+                        contractId: $stateParams.contractId,
+                        deptType: $stateParams.deptType
                     };
                 }],
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
-                    $translatePartialLoader.addPart('overallBonus');
+                    $translatePartialLoader.addPart('projectSupportBonus');
                     $translatePartialLoader.addPart('global');
                     return $translate.refresh();
                 }]
             }
         })
-        .state('overall-bonus-detail', {
-            parent: 'overall-bonus',
+        .state('project-support-bonus-detail', {
+            parent: 'project-support-bonus',
             url: '/detail/{id}',
             data: {
                 authorities: ['ROLE_PROJECT_USER'],
-                pageTitle: 'cpmApp.overallBonus.detail.title'
+                pageTitle: 'cpmApp.projectSupportBonus.detail.title'
             },
             views: {
                 'content@': {
-                    templateUrl: 'app/stat/overall-bonus/overall-bonus-detail.html',
-                    controller: 'OverallBonusDetailController',
+                    templateUrl: 'app/stat/project-support-bonus/project-support-bonus-detail.html',
+                    controller: 'ProjectSupportBonusDetailController',
                     controllerAs: 'vm'
                 }
             },
             resolve: {
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
-                    $translatePartialLoader.addPart('overallBonus');
+                    $translatePartialLoader.addPart('projectSupportBonus');
                     return $translate.refresh();
                 }],
-                entity: ['$stateParams', 'OverallBonus', function($stateParams, OverallBonus) {
-                    return OverallBonus.get({id : $stateParams.id}).$promise;
+                entity: ['$stateParams', 'ProjectSupportBonus', function($stateParams, ProjectSupportBonus) {
+                    return ProjectSupportBonus.get({id : $stateParams.id}).$promise;
                 }],
                 previousState: ["$state", function ($state) {
                     var currentStateData = {
-                        name: $state.current.name || 'overall-bonus-controller',
+                        name: $state.current.name || 'project-support-bonus',
                         params: $state.params,
                         url: $state.href($state.current.name, $state.params)
                     };
