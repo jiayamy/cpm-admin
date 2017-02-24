@@ -60,7 +60,7 @@ public class ExternalQuotation implements Serializable{
 	private Double costBasis;
 	
 	/**
-	 * 小时成本
+	 * 标准工时
 	 */
 	@Column(name = "hour_cost")
 	private Double hourCost;

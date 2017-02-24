@@ -3,18 +3,19 @@
 
     angular
         .module('cpmApp')
-        .controller('ConsultantBonusController', ConsultantBonusController);
+        .controller('SalePurchaseInternalCostController', SalePurchaseInternalCostController);
 
-    ConsultantBonusController.$inject = ['ContractInfo','$rootScope', '$scope', '$state', 'DateUtils','ConsultantBonus','ParseLinks', 'AlertService','paginationConstants', 'pagingParams'];
+    SalePurchaseInternalCostController.$inject = ['ContractInfo','DeptType','$rootScope', '$scope', '$state', 'DateUtils','paginationConstants','SalePurchaseInternalCost','ParseLinks', 'AlertService', 'pagingParams'];
 
-    function ConsultantBonusController (ContractInfo,$rootScope,$scope, $state,DateUtils, ConsultantBonus, ParseLinks, AlertService, paginationConstants, pagingParams) {
+    function SalePurchaseInternalCostController (ContractInfo,DeptType,$rootScope,$scope, $state,DateUtils,paginationConstants, SalePurchaseInternalCost, ParseLinks, AlertService, pagingParams) {
         var vm = this;
 
         vm.loadPage = loadPage;
         vm.predicate = pagingParams.predicate;
         vm.reverse = pagingParams.ascending;
-        vm.transition = transition;
         vm.itemsPerPage = paginationConstants.itemsPerPage;
+        vm.transition = transition;
+        vm.loadAll = loadAll;
         vm.clear = clear;
         vm.search = search;
         vm.loadAll = loadAll;
@@ -23,17 +24,41 @@
         
         vm.searchQuery.statWeek = DateUtils.convertYYYYMMDDDayToDate(pagingParams.statWeek);
         vm.searchQuery.contractId = pagingParams.contractId;
-        vm.searchQuery.consultantsName = pagingParams.consultantsName;
-        vm.searchQuery.consultantsNameId = pagingParams.consultantsNameId;
+        vm.searchQuery.userNameId = pagingParams.userNameId;
+        vm.searchQuery.userName = pagingParams.userName;
+        vm.searchQuery.deptType = pagingParams.deptType;
         vm.contractInfos = [];
         
-        if (!vm.searchQuery.contractId && !vm.searchQuery.consultantManId && !vm.searchQuery.statWeek){
+        if (!vm.searchQuery.contractId && !vm.searchQuery.userNameId && !vm.searchQuery.statWeek && !vm.searchQuery.deptType){
         	vm.haveSearch = null;
         }else{
         	vm.haveSearch = true;
         }
-        loadConsultantBonus();
-        function loadConsultantBonus(){
+        
+        //部门类型
+        loadDeptType();
+        function loadDeptType(){
+        	DeptType.getAllForCombox(
+    			{
+        		},
+        		function(data, headers){
+        			vm.deptTypes = data;
+            		if(vm.deptTypes && vm.deptTypes.length > 0){
+            			for(var i = 0; i < vm.deptTypes.length; i++){
+            				if(pagingParams.deptType == vm.deptTypes[i].key){
+            					vm.searchQuery.deptType = vm.deptTypes[i];
+            				}
+            			}
+            		}
+        		},
+        		function(error){
+        			AlertService.error(error.data.message);
+        		}
+        	);
+        }
+        //合同信息
+        loadContractInfo();
+        function loadContractInfo(){
         	ContractInfo.queryContractInfo({
         		
         	},
@@ -55,19 +80,20 @@
         loadAll();
 
         function loadAll () {
-        	ConsultantBonus.query({
+        	SalePurchaseInternalCost.query({
                 page: pagingParams.page - 1,
                 size: vm.itemsPerPage,
                 sort: sort(),
                 contractId : pagingParams.contractId,
-                consultantsNameId : pagingParams.consultantsNameId,
-                statWeek : pagingParams.statWeek
+                userNameId : pagingParams.userNameId,
+                statWeek : pagingParams.statWeek,
+                deptType : pagingParams.deptType
             }, onSuccess, onError);
            
             function sort() {
                 var result = [vm.predicate + ',' + (vm.reverse ? 'asc' : 'desc')];
-                if (vm.predicate !== 'm.id') {
-                    result.push('m.id');
+                if (vm.predicate !== 'p.id') {
+                    result.push('p.id');
                 }
                 return result;
             }
@@ -75,7 +101,7 @@
                 vm.links = ParseLinks.parse(headers('link'));
                 vm.totalItems = headers('X-Total-Count');
                 vm.queryCount = vm.totalItems;
-                vm.consultantBonuss = data;
+                vm.salePurchaseInternalCosts = data;
                 vm.page = pagingParams.page;
             }
             function onError(error) {
@@ -93,19 +119,20 @@
                 page: vm.page,
                 sort: vm.predicate + ',' + (vm.reverse ? 'asc' : 'desc'),
                 contractId:vm.searchQuery.contractId ? vm.searchQuery.contractId.key : "",
-                consultantsNameId:vm.searchQuery.consultantsNameId,
-                consultantsName:vm.searchQuery.consultantsName,
-                statWeek:vm.searchQuery.statWeek ? DateUtils.convertLocalDateToFormat(vm.searchQuery.statWeek,"yyyyMMdd"):""
+                userNameId:vm.searchQuery.userNameId,
+                userName:vm.searchQuery.userName,
+                statWeek:vm.searchQuery.statWeek ? DateUtils.convertLocalDateToFormat(vm.searchQuery.statWeek,"yyyyMMdd"):"",
+                deptType:vm.searchQuery.deptType ? vm.searchQuery.deptType.key : ""
             });
         }
-
+        
         function search() {
-        	if (!vm.searchQuery.contractId && !vm.searchQuery.consultantsNameId && !vm.searchQuery.statWeek){
+        	if (!vm.searchQuery.contractId && !vm.searchQuery.statWeek && !vm.searchQuery.userName && !vm.searchQuery.deptType){
                 return vm.clear();
             }
             vm.links = null;
             vm.page = 1;
-            vm.predicate = 'm.id';
+            vm.predicate = 'p.id';
             vm.reverse = false;
             vm.haveSearch = true;
             vm.transition();
@@ -114,7 +141,7 @@
         function clear() {
             vm.links = null;
             vm.page = 1;
-            vm.predicate = 'm.id';
+            vm.predicate = 'p.id';
             vm.reverse = true;
             vm.searchQuery = {};
             vm.haveSearch = false;
@@ -122,11 +149,12 @@
         }
         
         function exportXls(){
-        	var url = "api/consultant-bonus/exportXls";
+        	var url = "api/sale-purchase-internalCost/exportXls";
         	var c = 0;
         	var statWeek = DateUtils.convertLocalDateToFormat(vm.searchQuery.statWeek,"yyyyMMdd");
         	var contractId = vm.searchQuery.contractId && vm.searchQuery.contractId.key? vm.searchQuery.contractId.key : vm.searchQuery.contractId;
-			var consultantsNameId = vm.searchQuery.consultantsNameId;
+        	var userNameId = vm.searchQuery.userNameId;
+        	var deptType = vm.searchQuery.deptType ? vm.searchQuery.deptType.key : vm.searchQuery.deptType;
 			
 			if(statWeek){
 				if(c == 0){
@@ -146,14 +174,23 @@
 				}
 				url += "contractId="+encodeURI(contractId);
 			}
-			if(consultantsNameId){
+			if(userNameId){
 				if(c == 0){
 					c++;
 					url += "?";
 				}else{
 					url += "&";
 				}
-				url += "consultantsNameId="+encodeURI(consultantsNameId);
+				url += "userNameId="+encodeURI(userNameId);
+			}
+			if(deptType){
+				if(c == 0){
+					c++;
+					url += "?";
+				}else{
+					url += "&";
+				}
+				url += "deptType="+encodeURI(deptType);
 			}
 			
         	window.open(url);
@@ -167,8 +204,8 @@
         }
         
         var unsubscribe = $rootScope.$on('cpmApp:deptInfoSelected', function(event, result) {
-        	vm.searchQuery.consultantsNameId = result.objId;
-        	vm.searchQuery.consultantsName = result.name;
+        	vm.searchQuery.userNameId = result.objId;
+        	vm.searchQuery.userName = result.name;
         });
         $scope.$on('$destroy', unsubscribe);
     }

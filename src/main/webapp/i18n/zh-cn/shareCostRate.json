@@ -4,7 +4,11 @@
             "home": {
                 "title": "公摊成本比例",
                 "createOrEditLabel": "公摊成本比例"
-            }
+            },
+            "deptType":"部门类型",
+            "contractType":"合同类型",
+            "shareRate":"公摊比例(%)",
+            "updateTime":"更新时间"
         }
     }
 }

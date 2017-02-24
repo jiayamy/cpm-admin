@@ -1,28 +1,30 @@
-(function(){
-	'use strict';
+(function() {
+    'use strict';
 
     angular
         .module('cpmApp')
-        .controller('ConsultantBonusContractRecordController', ConsultantBonusContractRecordController);
+        .controller('SalePurchaseInternalCostDetailController', SalePurchaseInternalCostDetailController);
 
-    ConsultantBonusContractRecordController.$inject = ['$state','ConsultantBonus','ParseLinks', 'AlertService','paginationConstants', 'pagingParams', 'previousState'];
+    SalePurchaseInternalCostDetailController.$inject = ['$rootScope', '$scope', '$state', 'DateUtils','SalePurchaseInternalCost','paginationConstants','ParseLinks', 'AlertService', 'pagingParams','previousState'];
 
-    function ConsultantBonusContractRecordController($state, ConsultantBonus, ParseLinks, AlertService, paginationConstants, pagingParams, previousState){
-    	var vm = this;
+    function SalePurchaseInternalCostDetailController ($rootScope,$scope, $state,DateUtils, SalePurchaseInternalCost,paginationConstants, ParseLinks, AlertService, pagingParams,previousState) {
+        var vm = this;
 
         vm.loadPage = loadPage;
         vm.predicate = pagingParams.predicate;
         vm.reverse = pagingParams.ascending;
         vm.transition = transition;
         vm.itemsPerPage = paginationConstants.itemsPerPage;
-        vm.previousState = previousState.name;
+//        vm.itemsPerPage = 3;
         vm.loadAll = loadAll;
-        vm.exportXls = exportXls;
+        
+        vm.previousState = previousState.name;
+        vm.contId = pagingParams.contId;
         
         loadAll();
 
         function loadAll () {
-        	ConsultantBonus.queryConsultantRecord({
+        	SalePurchaseInternalCost.queryDetail({
                 page: pagingParams.page - 1,
                 size: vm.itemsPerPage,
                 sort: sort(),
@@ -31,8 +33,8 @@
            
             function sort() {
                 var result = [vm.predicate + ',' + (vm.reverse ? 'asc' : 'desc')];
-                if (vm.predicate !== 'm.id') {
-                    result.push('m.id');
+                if (vm.predicate !== 'p.id') {
+                    result.push('p.id');
                 }
                 return result;
             }
@@ -40,7 +42,7 @@
                 vm.links = ParseLinks.parse(headers('link'));
                 vm.totalItems = headers('X-Total-Count');
                 vm.queryCount = vm.totalItems;
-                vm.consultantBonuss = data;
+                vm.salePurchaseInternalCosts = data;
                 vm.page = pagingParams.page;
             }
             function onError(error) {
@@ -57,25 +59,8 @@
             $state.transitionTo($state.$current, {
                 page: vm.page,
                 sort: vm.predicate + ',' + (vm.reverse ? 'asc' : 'desc'),
-                contractId:vm.searchQuery.contractId ? vm.searchQuery.contractId.key : ""
+                contractId:vm.contId
             });
-        }
-        
-        function exportXls(){
-        	var url = "api/consultant-bonus/contractRecord/exportXls";
-        	var c = 0;
-        	var contractId = pagingParams.contId;
-			
-			if(contractId){
-				if(c == 0){
-					c++;
-					url += "?";
-				}else{
-					url += "&";
-				}
-				url += "contractId="+encodeURI(contractId);
-			}
-        	window.open(url);
         }
     }
 })();

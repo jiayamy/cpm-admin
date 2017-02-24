@@ -2,6 +2,13 @@
     <h2 data-translate="cpmApp.projectOverallController.detail.title">Project OverAll Controller</h2>
     <jhi-alert></jhi-alert>
     <br/>
+    <div class="btn-group flex-btn-group-container">
+       	<button type="submit"
+	           ui-sref="{{ vm.previousState }}"
+	           class="btn btn-info">
+	       <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span data-translate="entity.action.back"> Back</span>
+	   	</button>
+	</div>
     <div class="table-responsive">
         <table class="jh-table table table-striped">
             <thead>
@@ -24,6 +31,7 @@
                     <th><span data-translate="cpmApp.projectOverallController.bonus">Update Time</span></th>
                     <th><span data-translate="cpmApp.projectOverallController.grossProfit">Update Time</span></th>
                     <th><span data-translate="cpmApp.projectOverallController.grossProfitRate">Update Time</span></th>
+                    <th></th>
                     <th></th>
                 </tr>
             </thead>
@@ -49,13 +57,6 @@
                     <td>{{projectOverAll.grossProfitRate}}</td>
                     <td class="text-right">
                     </td>
-                    <div class="btn-group flex-btn-group-container">
-                       	<button type="submit"
-					           ui-sref="{{ vm.previousState }}"
-					           class="btn btn-info">
-					       <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span data-translate="entity.action.back"> Back</span>
-					   </button>
-                    </div>
                 </tr>
             </tbody>
         </table>

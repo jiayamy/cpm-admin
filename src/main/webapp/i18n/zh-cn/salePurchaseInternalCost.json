@@ -1,0 +1,30 @@
+{
+    "cpmApp": {
+        "salePurchaseInternalCost" : {
+            "home": {
+                "title": "销售内部采购信息"
+            },
+            "contractDetail":{
+            	"title":"销售内部采购信息详情"
+            },
+            "statWeek" : "截止日期",
+            "transDetail" : "详情",
+            "contractSerialNum" : "合同编号",
+            "serialNum" : "员工编号",
+            "userName" : "员工姓名",
+            "grade" : "级别",
+            "settlementCost" : "结算成本",
+            "projectHourCost" : "项目工时",
+            "internalBudgetCost" : "内部采购成本",
+            "sal" : "工资",
+            "socialSecurityFund" : "社保公积金",
+            "otherExpense" : "其它费用",
+            "userMonthCost" : "单人月成本小计",
+            "userHourCost" : "工时成本",
+            "productCost" : "生产成本合计",
+            "grossProfit" : "生产毛利",
+            "contractId": "合同主键",
+            "deptType" : "部门类型"
+        }
+    }
+}

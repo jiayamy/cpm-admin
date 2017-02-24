@@ -1,58 +1,68 @@
 <div>
-    <h2 data-translate="cpmApp.workArea.home.title">Work Areas</h2>
+    <h2 data-translate="cpmApp.shareCostRate.home.title">Bonus Rate</h2>
     <jhi-alert></jhi-alert>
     <div class="container-fluid">
-        <div class="row">
-            <div class="col-xs-4">
-                <button class="btn btn-primary" ui-sref="work-area.new" >
-                    <span class="glyphicon glyphicon-plus"></span>
-                    <span class=""  data-translate="cpmApp.workArea.home.createLabel">
-                        Create new Work Area
-                    </span>
-                </button>
-            </div>
-            <div class="col-xs-8 no-padding-right">
-                <form name="searchForm" class="form-inline">
-                    <div class="input-group pull-right" >
-                        <input type="text" class="form-control" ng-model="vm.searchQuery" id="searchQuery" placeholder="{{ 'cpmApp.workArea.home.search' | translate }}">
-                        <span  class="input-group-btn width-min" >
-                            <button class="btn btn-info" ng-click="vm.search(vm.searchQuery)">
-                                <span class="glyphicon glyphicon-search"></span>
-                            </button>
-                        </span>
-                        <span class="input-group-btn width-min" ng-if="vm.currentSearch">
-                            <button class="btn btn-info" ng-click="vm.clear()">
-                                <span class="glyphicon glyphicon-trash"></span>
-                            </button>
-                        </span>
-                    </div>
-                </form>
-            </div>
-        </div>
+        <form name="searchForm" class="form-horizontal">
+	     	<div class="form-group">
+	            <div class="col-sm-4">
+	          		<label class="col-sm-4 control-label" data-translate="cpmApp.shareCostRate.contractType">Contract Type</label>
+		            <div class="col-sm-8">
+		                <select class="form-control" name="type" ng-model="vm.searchQuery.contractType"
+			            	ng-options="type.val for type in vm.contractTypes track by type.key">
+			            	<option value="">--选择合同类型--</option>
+			            </select>
+		            </div>
+	       		</div>
+	       		<div class="col-sm-4">
+	          		<label class="col-sm-4 control-label" data-translate="cpmApp.shareCostRate.deptType">Dept</label>
+		            <div class="col-sm-8">
+		                <select class="form-control" name="type" ng-model="vm.searchQuery.deptType"
+			            	ng-options="type.val for type in vm.deptTypes track by type.key">
+			            	<option value="">--选择部门类型--</option>
+			            </select>
+		            </div>
+	       		</div>
+	       		<div class="col-sm-4 pull-right input-group">
+	            	<div class="col-sm-4">
+	            		&nbsp;
+	            	</div>
+	            	<div class="col-sm-8" >
+		            	<span  class="width-min" >
+	                        <button class="btn btn-info" ng-click="vm.search()">
+	                            <span class="glyphicon glyphicon-search"></span>
+	                            <span class="hidden-xs hidden-sm" data-translate="entity.action.search"></span>
+	                        </button>
+	                    </span>
+	                    <span class="width-min" ng-if="vm.haveSearch">
+	                        <button class="btn btn-info" ng-click="vm.clear()">
+	                            <span class="glyphicon glyphicon-trash"></span>
+	                            <span class="hidden-xs hidden-sm" data-translate="entity.action.clear"></span>
+	                        </button>
+	                    </span>
+	            	</div>
+	            </div>
+			</div>
+        </form>
     </div>
     <br/>
     <div class="table-responsive">
         <table class="jh-table table table-striped">
             <thead>
                 <tr jh-sort="vm.predicate" ascending="vm.reverse" callback="vm.transition()">
-                    <th jh-sort-by="id"><span data-translate="global.field.id">ID</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="name"><span data-translate="cpmApp.workArea.name">Name</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="wbr.contractType"><span data-translate="cpmApp.shareCostRate.contractType">Contract Type</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="wbr.deptType"><span data-translate="cpmApp.shareCostRate.deptType">Dept</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="wbr.rate"><span data-translate="cpmApp.shareCostRate.shareRate">Rate</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="wbr.updateTime"><span data-translate="cpmApp.shareCostRate.updateTime">Update Time</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th></th>
                 </tr>
             </thead>
             <tbody>
-                <tr ng-repeat="workArea in vm.workAreas track by workArea.id">
-                    <td><a ui-sref="work-area-detail({id:workArea.id})">{{workArea.id}}</a></td>
-                    <td>{{workArea.name}}</td>
+                <tr ng-repeat="shareCostRate in vm.shareCostRates track by shareCostRate.id">
+                    <td>{{shareCostRate.contractTypeName}}</td>
+                    <td>{{shareCostRate.dept}}</td>
+                    <td>{{shareCostRate.shareRate}}</td>
+                    <td>{{shareCostRate.updateTime | date:'medium'}}</td>
                     <td class="text-right">
-                        <div class="btn-group flex-btn-group-container">
-                            <button type="submit"
-                                    ui-sref="work-area-detail({id:workArea.id})"
-                                    class="btn btn-info btn-sm">
-                                <span class="glyphicon glyphicon-eye-open"></span>
-                                <span class="hidden-xs hidden-sm" data-translate="entity.action.view"></span>
-                            </button>
-                        </div>
                     </td>
                 </tr>
             </tbody>

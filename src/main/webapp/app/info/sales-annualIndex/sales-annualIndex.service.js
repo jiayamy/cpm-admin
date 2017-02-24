@@ -2,12 +2,12 @@
     'use strict';
     angular
         .module('cpmApp')
-        .factory('WorkArea', WorkArea);
+        .factory('SalesAnnualIndex', SalesAnnualIndex);
 
-    WorkArea.$inject = ['$resource'];
+    SalesAnnualIndex.$inject = ['$resource'];
 
-    function WorkArea ($resource) {
-        var resourceUrl =  'api/work-areas/:id';
+    function SalesAnnualIndex ($resource) {
+        var resourceUrl =  'api/sales-annualIndex/:id';
 
         return $resource(resourceUrl, {}, {
             'query': { method: 'GET', isArray: true},
@@ -20,12 +20,7 @@
                     return data;
                 }
             },
-            'update': { method:'PUT' },
-            'queryAll':{
-            	method:'GET',
-            	url:'api/work-areas/queryAll',
-            	isArray:true
-            }
+            'update': { method:'PUT' }
         });
     }
 })();

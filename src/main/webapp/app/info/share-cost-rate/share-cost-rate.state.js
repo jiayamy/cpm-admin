@@ -9,17 +9,17 @@
 
     function stateConfig($stateProvider) {
         $stateProvider
-        .state('work-area', {
+        .state('share-cost-rate', {
             parent: 'info',
-            url: '/work-area?page&sort&search',
+            url: '/share-cost-rate?page&sort&deptType&contractType',
             data: {
                 authorities: ['ROLE_INFO_BASIC'],
-                pageTitle: 'cpmApp.workArea.home.title'
+                pageTitle: 'cpmApp.shareCostRate.home.title'
             },
             views: {
                 'content@': {
-                    templateUrl: 'app/info/work-area/work-areas.html',
-                    controller: 'WorkAreaController',
+                    templateUrl: 'app/info/share-cost-rate/share-cost-rates.html',
+                    controller: 'ShareCostRateController',
                     controllerAs: 'vm'
                 }
             },
@@ -29,10 +29,11 @@
                     squash: true
                 },
                 sort: {
-                    value: 'id,desc',
+                    value: 'wscr.contractType,desc',
                     squash: true
                 },
-                search: null
+                deptType: null,
+                contractType: null
             },
             resolve: {
                 pagingParams: ['$stateParams', 'PaginationUtil', function ($stateParams, PaginationUtil) {
@@ -41,99 +42,16 @@
                         sort: $stateParams.sort,
                         predicate: PaginationUtil.parsePredicate($stateParams.sort),
                         ascending: PaginationUtil.parseAscending($stateParams.sort),
-                        search: $stateParams.search
+                        deptType: $stateParams.deptType,
+                        contractType: $stateParams.contractType
                     };
                 }],
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
-                    $translatePartialLoader.addPart('workArea');
+                    $translatePartialLoader.addPart('shareCostRate');
                     $translatePartialLoader.addPart('global');
                     return $translate.refresh();
                 }]
             }
-        })
-        .state('work-area-detail', {
-            parent: 'work-area',
-            url: '/detail/{id}',
-            data: {
-                authorities: ['ROLE_INFO_BASIC'],
-                pageTitle: 'cpmApp.workArea.detail.title'
-            },
-            views: {
-                'content@': {
-                    templateUrl: 'app/info/work-area/work-area-detail.html',
-                    controller: 'WorkAreaDetailController',
-                    controllerAs: 'vm'
-                }
-            },
-            resolve: {
-                translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
-                    $translatePartialLoader.addPart('workArea');
-                    return $translate.refresh();
-                }],
-                entity: ['$stateParams', 'WorkArea', function($stateParams, WorkArea) {
-                    return WorkArea.get({id : $stateParams.id}).$promise;
-                }],
-                previousState: ["$state", function ($state) {
-                    var currentStateData = {
-                        name: $state.current.name || 'work-area',
-                        params: $state.params,
-                        url: $state.href($state.current.name, $state.params)
-                    };
-                    return currentStateData;
-                }]
-            }
-        })
-        .state('work-area.new', {
-            parent: 'work-area',
-            url: '/new',
-            data: {
-                authorities: ['ROLE_INFO_BASIC']
-            },
-            onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
-                $uibModal.open({
-                    templateUrl: 'app/info/work-area/work-area-dialog.html',
-                    controller: 'WorkAreaDialogController',
-                    controllerAs: 'vm',
-                    backdrop: 'static',
-                    size: 'lg',
-                    resolve: {
-                        entity: function () {
-                            return {
-                                name: null,
-                                id: null
-                            };
-                        }
-                    }
-                }).result.then(function() {
-                    $state.go('work-area', null, { reload: 'work-area' });
-                }, function() {
-                    $state.go('work-area');
-                });
-            }]
-        })
-        .state('work-area.delete', {
-            parent: 'work-area',
-            url: '/delete/{id}',
-            data: {
-                authorities: ['ROLE_ADMIN']
-            },
-            onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
-                $uibModal.open({
-                    templateUrl: 'app/info/work-area/work-area-delete-dialog.html',
-                    controller: 'WorkAreaDeleteController',
-                    controllerAs: 'vm',
-                    size: 'md',
-                    resolve: {
-                        entity: ['WorkArea', function(WorkArea) {
-                            return WorkArea.get({id : $stateParams.id}).$promise;
-                        }]
-                    }
-                }).result.then(function() {
-                    $state.go('work-area', null, { reload: 'work-area' });
-                }, function() {
-                    $state.go('^');
-                });
-            }]
         });
     }
 
