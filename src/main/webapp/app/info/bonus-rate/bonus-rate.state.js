@@ -29,7 +29,7 @@
                     squash: true
                 },
                 sort: {
-                    value: 'wbr.id,desc',
+                    value: 'wbr.contractType,desc',
                     squash: true
                 },
                 deptType: null,

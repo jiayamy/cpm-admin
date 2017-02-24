@@ -119,7 +119,7 @@
             }
             vm.links = null;
             vm.page = 1;
-            vm.predicate = 'wbr.id';
+            vm.predicate = 'wbr.contractType';
             vm.reverse = false;
             vm.haveSearch = true;
             vm.transition();
@@ -128,7 +128,7 @@
         function clear() {
             vm.links = null;
             vm.page = 1;
-            vm.predicate = 'wbr.id';
+            vm.predicate = 'wbr.contractType';
             vm.reverse = false;
             vm.searchQuery = {};
             vm.haveSearch = null;
