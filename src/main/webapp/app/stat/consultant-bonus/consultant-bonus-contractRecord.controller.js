@@ -5,16 +5,16 @@
         .module('cpmApp')
         .controller('ConsultantBonusContractRecordController', ConsultantBonusContractRecordController);
 
-    ConsultantBonusContractRecordController.$inject = ['$state','ConsultantBonus','ParseLinks', 'AlertService', 'pagingParams', 'previousState'];
+    ConsultantBonusContractRecordController.$inject = ['$state','ConsultantBonus','ParseLinks', 'AlertService','paginationConstants', 'pagingParams', 'previousState'];
 
-    function ConsultantBonusContractRecordController($state, ConsultantBonus, ParseLinks, AlertService, pagingParams, previousState){
+    function ConsultantBonusContractRecordController($state, ConsultantBonus, ParseLinks, AlertService, paginationConstants, pagingParams, previousState){
     	var vm = this;
 
         vm.loadPage = loadPage;
         vm.predicate = pagingParams.predicate;
         vm.reverse = pagingParams.ascending;
         vm.transition = transition;
-        vm.itemsPerPage = 10;
+        vm.itemsPerPage = paginationConstants.itemsPerPage;
         vm.previousState = previousState.name;
         vm.loadAll = loadAll;
         vm.exportXls = exportXls;
