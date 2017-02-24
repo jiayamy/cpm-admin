@@ -9,6 +9,6 @@
             "itemsPerPage_50":50,
             "itemsPerPage_100":100,
             "itemsPerPage_500":500,
-            "itemsPerPage_1000":1000,
+            "itemsPerPage_1000":1000
         });
 })();
