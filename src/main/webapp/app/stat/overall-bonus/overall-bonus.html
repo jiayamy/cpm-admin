@@ -76,7 +76,7 @@
             </thead>
             <tbody>
                 <tr ng-repeat="overallBonus in vm.overallBonuses track by overallBonus.id">
-                    <td><a ui-sref="project-info-detail({id:projectOverAll.id})">{{overallBonus.serialNum}}</a></td>
+                    <td><a ui-sref="overall-bonus-detail({id:overallBonus.id})">{{overallBonus.serialNum}}</a></td>
                     <td>{{overallBonus.contractAmount}}</td>
                     <td>{{overallBonus.salesBonus}}</td>
                     <td>{{overallBonus.projectBonus}}</td>
