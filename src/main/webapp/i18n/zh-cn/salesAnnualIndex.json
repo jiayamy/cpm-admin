@@ -4,7 +4,11 @@
             "home": {
                 "title": "销售年指标",
                 "createOrEditLabel": "销售年指标"
-            }
+            },
+            "statYear":"所属年份",
+            "userName":"销售",
+            "annualIndex":"年指标",
+            "updateTime":"更新时间"
         }
     }
 }

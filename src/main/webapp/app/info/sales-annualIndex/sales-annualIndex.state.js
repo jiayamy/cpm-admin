@@ -9,17 +9,17 @@
 
     function stateConfig($stateProvider) {
         $stateProvider
-        .state('work-area', {
+        .state('sales-annualIndex', {
             parent: 'info',
-            url: '/work-area?page&sort&search',
+            url: '/sales-annualIndex?page&sort&statYear&userId&userName',
             data: {
                 authorities: ['ROLE_INFO_BASIC'],
-                pageTitle: 'cpmApp.workArea.home.title'
+                pageTitle: 'cpmApp.salesAnnualIndex.home.title'
             },
             views: {
                 'content@': {
-                    templateUrl: 'app/info/work-area/work-areas.html',
-                    controller: 'WorkAreaController',
+                    templateUrl: 'app/info/sales-annualIndex/sales-annualIndexs.html',
+                    controller: 'SalesAnnualIndexController',
                     controllerAs: 'vm'
                 }
             },
@@ -29,10 +29,12 @@
                     squash: true
                 },
                 sort: {
-                    value: 'id,desc',
+                    value: 'wsai.statYear,desc',
                     squash: true
                 },
-                search: null
+                statYear: null,
+                userId: null,
+                userName: null
             },
             resolve: {
                 pagingParams: ['$stateParams', 'PaginationUtil', function ($stateParams, PaginationUtil) {
@@ -41,95 +43,43 @@
                         sort: $stateParams.sort,
                         predicate: PaginationUtil.parsePredicate($stateParams.sort),
                         ascending: PaginationUtil.parseAscending($stateParams.sort),
-                        search: $stateParams.search
+                        statYear: $stateParams.statYear,
+                        userId: $stateParams.userId,
+                        userName: $stateParams.userName
                     };
                 }],
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
-                    $translatePartialLoader.addPart('workArea');
+                    $translatePartialLoader.addPart('salesAnnualIndex');
                     $translatePartialLoader.addPart('global');
+                    $translatePartialLoader.addPart('deptInfo');
                     return $translate.refresh();
                 }]
             }
         })
-        .state('work-area-detail', {
-            parent: 'work-area',
-            url: '/detail/{id}',
-            data: {
-                authorities: ['ROLE_INFO_BASIC'],
-                pageTitle: 'cpmApp.workArea.detail.title'
-            },
-            views: {
-                'content@': {
-                    templateUrl: 'app/info/work-area/work-area-detail.html',
-                    controller: 'WorkAreaDetailController',
-                    controllerAs: 'vm'
-                }
-            },
-            resolve: {
-                translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
-                    $translatePartialLoader.addPart('workArea');
-                    return $translate.refresh();
-                }],
-                entity: ['$stateParams', 'WorkArea', function($stateParams, WorkArea) {
-                    return WorkArea.get({id : $stateParams.id}).$promise;
-                }],
-                previousState: ["$state", function ($state) {
-                    var currentStateData = {
-                        name: $state.current.name || 'work-area',
-                        params: $state.params,
-                        url: $state.href($state.current.name, $state.params)
-                    };
-                    return currentStateData;
-                }]
-            }
-        })
-        .state('work-area.new', {
-            parent: 'work-area',
-            url: '/new',
+        .state('sales-annualIndex.queryDept', {
+            parent: 'sales-annualIndex',
+            url: '/queryDept?selectType&showChild&showUser',
             data: {
                 authorities: ['ROLE_INFO_BASIC']
             },
             onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
                 $uibModal.open({
-                    templateUrl: 'app/info/work-area/work-area-dialog.html',
-                    controller: 'WorkAreaDialogController',
+                    templateUrl: 'app/info/dept-info/dept-info-query.html',
+                    controller: 'DeptInfoQueryController',
                     controllerAs: 'vm',
                     backdrop: 'static',
                     size: 'lg',
                     resolve: {
-                        entity: function () {
+                        entity: function() {
                             return {
-                                name: null,
-                                id: null
-                            };
+                            	selectType : $stateParams.selectType,
+                            	showChild : $stateParams.showChild,
+                            	showUser : $stateParams.showUser
+                            }
                         }
                     }
                 }).result.then(function() {
-                    $state.go('work-area', null, { reload: 'work-area' });
-                }, function() {
-                    $state.go('work-area');
-                });
-            }]
-        })
-        .state('work-area.delete', {
-            parent: 'work-area',
-            url: '/delete/{id}',
-            data: {
-                authorities: ['ROLE_ADMIN']
-            },
-            onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
-                $uibModal.open({
-                    templateUrl: 'app/info/work-area/work-area-delete-dialog.html',
-                    controller: 'WorkAreaDeleteController',
-                    controllerAs: 'vm',
-                    size: 'md',
-                    resolve: {
-                        entity: ['WorkArea', function(WorkArea) {
-                            return WorkArea.get({id : $stateParams.id}).$promise;
-                        }]
-                    }
-                }).result.then(function() {
-                    $state.go('work-area', null, { reload: 'work-area' });
+                    $state.go('^', {}, { reload: false });
                 }, function() {
                     $state.go('^');
                 });

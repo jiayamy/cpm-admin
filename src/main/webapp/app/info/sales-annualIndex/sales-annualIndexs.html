@@ -1,59 +1,73 @@
 <div>
-    <h2 data-translate="cpmApp.workArea.home.title">Work Areas</h2>
+    <h2 data-translate="cpmApp.salesAnnualIndex.home.title">Sales Annual Index</h2>
     <jhi-alert></jhi-alert>
     <div class="container-fluid">
-        <div class="row">
-            <div class="col-xs-4">
-                <button class="btn btn-primary" ui-sref="work-area.new" >
-                    <span class="glyphicon glyphicon-plus"></span>
-                    <span class=""  data-translate="cpmApp.workArea.home.createLabel">
-                        Create new Work Area
-                    </span>
-                </button>
-            </div>
-            <div class="col-xs-8 no-padding-right">
-                <form name="searchForm" class="form-inline">
-                    <div class="input-group pull-right" >
-                        <input type="text" class="form-control" ng-model="vm.searchQuery" id="searchQuery" placeholder="{{ 'cpmApp.workArea.home.search' | translate }}">
-                        <span  class="input-group-btn width-min" >
-                            <button class="btn btn-info" ng-click="vm.search(vm.searchQuery)">
-                                <span class="glyphicon glyphicon-search"></span>
-                            </button>
-                        </span>
-                        <span class="input-group-btn width-min" ng-if="vm.currentSearch">
-                            <button class="btn btn-info" ng-click="vm.clear()">
-                                <span class="glyphicon glyphicon-trash"></span>
-                            </button>
-                        </span>
+        <form name="searchForm" class="form-horizontal">
+	     	<div class="form-group">
+	        	<div class="col-sm-4">
+	          		<label class="col-sm-4 control-label" data-translate="cpmApp.salesAnnualIndex.statYear">Year</label>
+		            <div class="col-sm-8">
+		                <p class="input-group">
+		                    <input type="text" class="form-control" name="statYear" datetime-picker="yyyy"
+			           		 		enable-time="false" ng-model="vm.searchQuery.statYear" is-open="vm.datePickerOpenStatus.statYear"/>
+			          		<span class="input-group-btn">
+			           			<button type="button" class="btn btn-default" ng-click="vm.openCalendar('statYear')"><i class="glyphicon glyphicon-calendar"></i></button>
+			            	</span>
+		                </p>
+		            </div>
+	            </div>
+	            <div class="col-sm-4">
+	            	<label class="col-sm-4 control-label" data-translate="cpmApp.salesAnnualIndex.userName">Sales Man</label>
+                    <div class="col-sm-8" >
+	                   	<div class="input-group">
+			          		<input type="text" class="form-control" name="userName"
+			                  	ng-model="vm.searchQuery.userName" readonly ng-required="true" ng-minlength="1"
+		                   	/>
+		                   	<span class="input-group-btn">
+		                     	<button type="button" class="btn btn-default" ui-sref="sales-annualIndex.queryDept({selectType:3,showChild:true})"><i class="glyphicon glyphicon-user"></i></button>
+		                 	</span>
+		            	</div>
                     </div>
-                </form>
-            </div>
-        </div>
+	       		</div>
+	       		<div class="col-sm-4 pull-right input-group">
+	            	<div class="col-sm-4">
+	            		&nbsp;
+	            	</div>
+	            	<div class="col-sm-8" >
+		            	<span  class="width-min" >
+	                        <button class="btn btn-info" ng-click="vm.search()">
+	                            <span class="glyphicon glyphicon-search"></span>
+	                            <span class="hidden-xs hidden-sm" data-translate="entity.action.search"></span>
+	                        </button>
+	                    </span>
+	                    <span class="width-min" ng-if="vm.haveSearch">
+	                        <button class="btn btn-info" ng-click="vm.clear()">
+	                            <span class="glyphicon glyphicon-trash"></span>
+	                            <span class="hidden-xs hidden-sm" data-translate="entity.action.clear"></span>
+	                        </button>
+	                    </span>
+	            	</div>
+	            </div>
+			</div>
+        </form>
     </div>
     <br/>
     <div class="table-responsive">
         <table class="jh-table table table-striped">
             <thead>
                 <tr jh-sort="vm.predicate" ascending="vm.reverse" callback="vm.transition()">
-                    <th jh-sort-by="id"><span data-translate="global.field.id">ID</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="name"><span data-translate="cpmApp.workArea.name">Name</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th></th>
+                	<th jh-sort-by="wsai.statYear"><span data-translate="cpmApp.salesAnnualIndex.statYear">Year</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="wsai.userName"><span data-translate="cpmApp.salesAnnualIndex.userName">Sales Man</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="wsai.annualIndex"><span data-translate="cpmApp.salesAnnualIndex.annualIndex">Annual Index</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="wsai.updateTime"><span data-translate="cpmApp.salesAnnualIndex.updateTime">Update Time</span> <span class="glyphicon glyphicon-sort"></span></th>
                 </tr>
             </thead>
             <tbody>
-                <tr ng-repeat="workArea in vm.workAreas track by workArea.id">
-                    <td><a ui-sref="work-area-detail({id:workArea.id})">{{workArea.id}}</a></td>
-                    <td>{{workArea.name}}</td>
-                    <td class="text-right">
-                        <div class="btn-group flex-btn-group-container">
-                            <button type="submit"
-                                    ui-sref="work-area-detail({id:workArea.id})"
-                                    class="btn btn-info btn-sm">
-                                <span class="glyphicon glyphicon-eye-open"></span>
-                                <span class="hidden-xs hidden-sm" data-translate="entity.action.view"></span>
-                            </button>
-                        </div>
-                    </td>
+                <tr ng-repeat="salesAnnualIndex in vm.salesAnnualIndexs track by salesAnnualIndex.id">
+                	<td>{{salesAnnualIndex.statYear}}</td>
+                    <td>{{salesAnnualIndex.userName}}</td>
+                    <td>{{salesAnnualIndex.annualIndex}}</td>
+                    <td>{{salesAnnualIndex.updateTime | date:'medium'}}</td>
                 </tr>
             </tbody>
         </table>
