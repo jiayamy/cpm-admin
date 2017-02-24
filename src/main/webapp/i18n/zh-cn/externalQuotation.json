@@ -4,7 +4,14 @@
             "home": {
                 "title": "外部报价",
                 "createOrEditLabel": "外部报价"
-            }
+            },
+            "grade":"级别",
+            "externalQuotation":"对外报价",
+            "socialSecurityFund":"社保公积金",
+            "otherExpense":"其他费用",
+            "costBasis":"成本依据",
+            "hourCost":"标准工时",
+            "updateTime":"更新时间"
         }
     }
 }
