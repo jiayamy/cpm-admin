@@ -31,6 +31,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.codahale.metrics.annotation.Timed;
+import com.wondertek.cpm.ExcelUtil;
 import com.wondertek.cpm.ExcelWrite;
 import com.wondertek.cpm.config.DateUtil;
 import com.wondertek.cpm.config.StringUtil;
@@ -135,10 +136,10 @@ public class SalePurchaseInternalCostResource {
     			"生产成本合计",
     			"生产毛利"
     	};
-    	String fileName = "salePurchaseInternalCost.xlsx";
+    	String fileName = "销售内部采购成本.xlsx";
     	//写入sheet
     	ServletOutputStream outputStream = response.getOutputStream();
-    	response.setHeader("Content-Disposition","attachment;filename=" + fileName);
+    	response.setHeader("Content-Disposition","attachment;filename=" + ExcelUtil.getExportName(request, fileName));
     	response.setContentType("application/x-msdownload");
     	response.setCharacterEncoding("UTF-8");
     	

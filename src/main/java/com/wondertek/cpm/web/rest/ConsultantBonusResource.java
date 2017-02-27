@@ -39,6 +39,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.codahale.metrics.annotation.Timed;
+import com.wondertek.cpm.ExcelUtil;
 import com.wondertek.cpm.ExcelWrite;
 import com.wondertek.cpm.config.DateUtil;
 import com.wondertek.cpm.config.StringUtil;
@@ -176,16 +177,16 @@ public class ConsultantBonusResource {
     			"本期奖金",
     			"累计已计提奖金"
     	};
-    	String fileName = "consultantBonus.xlsx";
+    	String fileName = "咨询.xlsx";
     	//写入sheet
     	ServletOutputStream outputStream = response.getOutputStream();
-    	response.setHeader("Content-Disposition","attachment;filename=" + fileName);
+    	response.setHeader("Content-Disposition","attachment;filename=" + ExcelUtil.getExportName(request, fileName));
     	response.setContentType("application/x-msdownload");
     	response.setCharacterEncoding("UTF-8");
     	
     	ExcelWrite excelWrite = new ExcelWrite();
     	//写入标题
-    	excelWrite.createSheetTitle("咨询奖金", 1, heads);
+    	excelWrite.createSheetTitle("咨询", 1, heads);
     	//写入数据
     	if(page != null){
     		handleSheetData(page,2,excelWrite);

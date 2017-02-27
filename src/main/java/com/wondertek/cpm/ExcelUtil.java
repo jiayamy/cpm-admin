@@ -2,8 +2,11 @@ package com.wondertek.cpm;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFDateUtil;
@@ -265,5 +268,28 @@ public class ExcelUtil {
         list.clear();
     	list = null;
         return null;
+    }
+    /**
+     * 获取导出的文件名
+     * @return
+     */
+    public static String getExportName(HttpServletRequest request, String name){
+    	try {
+//			String ua = request.getHeader("User-Agent");
+//			boolean isIE = false;
+//			if(ua != null && !ua.toLowerCase().contains("opera") && ua.toLowerCase().contains(" msie ")){
+//				isIE = true;
+//			}
+//			System.out.println(isIE);
+//			if(isIE){//中文IE需要转
+//				return URLEncoder.encode(name, "UTF-8");
+//			}else{
+//				return new String(name.getBytes(), "ISO8859-1");
+//			}
+			return new String(name.getBytes("gb2312"),"ISO8859-1");
+		} catch (UnsupportedEncodingException e) {
+			log.error(e.getMessage(),e);
+		}
+    	return name;
     }
 }
