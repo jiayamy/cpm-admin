@@ -9,16 +9,16 @@
 
     function stateConfig($stateProvider) {
         $stateProvider
-        .state('overall-bonus', {
+        .state('bonus', {
             parent: 'stat',
-            url: '/overall-bonus?&statWeek&contractId',
+            url: '/bonus?&statWeek&contractId',
             data: {
-                pageTitle: 'cpmApp.overallBonus.home.title'
+                pageTitle: 'cpmApp.bonus.home.title'
             },
             views: {
                 'content@': {
-                    templateUrl: 'app/stat/overall-bonus/overall-bonus.html',
-                    controller: 'OverallBonusController',
+                    templateUrl: 'app/stat/bonus/bonus.html',
+                    controller: 'BonusController',
                     controllerAs: 'vm'
                 }
             },
@@ -39,37 +39,37 @@
                     };
                 }],
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
-                    $translatePartialLoader.addPart('overallBonus');
+                    $translatePartialLoader.addPart('bonus');
                     $translatePartialLoader.addPart('global');
                     return $translate.refresh();
                 }]
             }
         })
-        .state('overall-bonus-detail', {
-            parent: 'overall-bonus',
+        .state('bonus-detail', {
+            parent: 'bonus',
             url: '/detail/{id}',
             data: {
                 authorities: ['ROLE_PROJECT_USER'],
-                pageTitle: 'cpmApp.overallBonus.detail.title'
+                pageTitle: 'cpmApp.bonus.detail.title'
             },
             views: {
                 'content@': {
-                    templateUrl: 'app/stat/overall-bonus/overall-bonus-detail.html',
-                    controller: 'OverallBonusDetailController',
+                    templateUrl: 'app/stat/bonus/bonus-detail.html',
+                    controller: 'BonusDetailController',
                     controllerAs: 'vm'
                 }
             },
             resolve: {
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
-                    $translatePartialLoader.addPart('overallBonus');
+                    $translatePartialLoader.addPart('bonus');
                     return $translate.refresh();
                 }],
-                entity: ['$stateParams', 'OverallBonus', function($stateParams, OverallBonus) {
-                    return OverallBonus.get({id : $stateParams.id}).$promise;
+                entity: ['$stateParams', 'Bonus', function($stateParams, Bonus) {
+                    return Bonus.get({id : $stateParams.id}).$promise;
                 }],
                 previousState: ["$state", function ($state) {
                     var currentStateData = {
-                        name: $state.current.name || 'overall-bonus-controller',
+                        name: $state.current.name || 'bonus',
                         params: $state.params,
                         url: $state.href($state.current.name, $state.params)
                     };

@@ -1,12 +1,12 @@
 <div>
-    <h2 data-translate="cpmApp.overallBonus.home.title">OverAll Bonus</h2>
+    <h2 data-translate="cpmApp.bonus.home.title">Bonus</h2>
     <jhi-alert></jhi-alert>
     <div class="container-fluid">
     	<div class="row">
     		<form name="searchForm" class="form-horizontal">
 				<div class="form-group">
 		            <div class="col-sm-4">
-		          		<label class="col-sm-4 control-label" data-translate="cpmApp.overallBonus.toDate">To Date</label>
+		          		<label class="col-sm-4 control-label" data-translate="cpmApp.bonus.toDate">To Date</label>
 			            <div class="col-sm-8">
 			                <p class="input-group">
 			                    <input id="search_toDate" type="text" class="form-control" name="statWeek" datetime-picker="yyyyMMdd"
@@ -18,7 +18,7 @@
 			            </div>
 				    </div>
            			<div class="col-sm-4">
-           				<label class="col-sm-4 control-label" data-translate="cpmApp.overallBonus.serialNum">Serial Num</label>
+           				<label class="col-sm-4 control-label" data-translate="cpmApp.bonus.serialNum">Serial Num</label>
                   		<div class="col-sm-8">
 	     					<select class="form-control" ng-model="vm.searchQuery.contractId"
 				            	ng-options="contractInfo.val for contractInfo in vm.contractInfos track by contractInfo.key">
@@ -63,31 +63,31 @@
         <table class="jh-table table table-striped">
             <thead>
                 <tr jh-sort="vm.predicate" ascending="vm.reverse" callback="vm.transition()">
-                    <th><span data-translate="cpmApp.overallBonus.contractId">Serial Num</span></th>
-                    <th><span data-translate="cpmApp.overallBonus.contractAmount">Contract Amount</span></th>
-                    <th><span data-translate="cpmApp.overallBonus.salesBonus">Sales Bonus</span></th>
-					<th><span data-translate="cpmApp.overallBonus.projectBonus">Project Bonus</span></th>
-					<th><span data-translate="cpmApp.overallBonus.implemtationBonus">Implemtation Bonus</span></th>
-					<th><span data-translate="cpmApp.overallBonus.academicBonus">Academic Bonus</span></th>
-                    <th><span data-translate="cpmApp.overallBonus.consultantsBonus">ConsultantsBonus</span></th>
-                    <th><span data-translate="cpmApp.overallBonus.bonusTotal">Bonus Total</span></th>
+                    <th><span data-translate="cpmApp.bonus.contractId">Serial Num</span></th>
+                    <th><span data-translate="cpmApp.bonus.contractAmount">Contract Amount</span></th>
+                    <th><span data-translate="cpmApp.bonus.salesBonus">Sales Bonus</span></th>
+					<th><span data-translate="cpmApp.bonus.projectBonus">Project Bonus</span></th>
+					<th><span data-translate="cpmApp.bonus.implemtationBonus">Implemtation Bonus</span></th>
+					<th><span data-translate="cpmApp.bonus.academicBonus">Academic Bonus</span></th>
+                    <th><span data-translate="cpmApp.bonus.consultantsBonus">ConsultantsBonus</span></th>
+                    <th><span data-translate="cpmApp.bonus.bonusTotal">Bonus Total</span></th>
                     <th>&nbsp;</th>
                 </tr>
             </thead>
             <tbody>
-                <tr ng-repeat="overallBonus in vm.overallBonuses track by overallBonus.id">
-                    <td><a ui-sref="overall-bonus-detail({id:overallBonus.id})">{{overallBonus.serialNum}}</a></td>
-                    <td>{{overallBonus.contractAmount}}</td>
-                    <td>{{overallBonus.salesBonus}}</td>
-                    <td>{{overallBonus.projectBonus}}</td>
-                    <td>{{overallBonus.implemtationBonus}}</td>
-                    <td>{{overallBonus.academicBonus}}</td>
-                    <td>{{overallBonus.consultantsBonus}}</td>
-                    <td>{{overallBonus.bonusTotal}}</td>
+                <tr ng-repeat="bonus in vm.bonuses track by bonus.id">
+                    <td><a ui-sref="bonus-detail({id:bonus.id})">{{bonus.serialNum}}</a></td>
+                    <td>{{bonus.contractAmount}}</td>
+                    <td>{{bonus.salesBonus}}</td>
+                    <td>{{bonus.projectBonus}}</td>
+                    <td>{{bonus.implemtationBonus}}</td>
+                    <td>{{bonus.academicBonus}}</td>
+                    <td>{{bonus.consultantsBonus}}</td>
+                    <td>{{bonus.bonusTotal}}</td>
                     <td class="text-right">
                         <div class="btn-group flex-btn-group-container">
                             <button type="submit"
-                                    ui-sref="overall-bonus-detail({id:overallBonus.id})"
+                                    ui-sref="bonus-detail({id:bonus.id})"
                                     class="btn btn-info btn-sm">
                                 <span class="glyphicon glyphicon-eye-open"></span>
                             </button>

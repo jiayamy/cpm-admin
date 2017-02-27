@@ -1,0 +1,49 @@
+<div>
+    <h2 data-translate="cpmApp.bonus.detail.title">Bonus</h2>
+    <jhi-alert></jhi-alert>
+    <br/>
+    <div class="btn-group flex-btn-group-container">
+       <button type="submit"
+	          ui-sref="{{ vm.previousState }}"
+	          class="btn btn-info">
+	       <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span data-translate="entity.action.back"> Back</span>
+	   </button>                	
+    </div>
+    <div class="table-responsive">
+        <table class="jh-table table table-striped">
+            <thead>
+                <tr jh-sort="vm.predicate" ascending="vm.reverse" callback="vm.transition()">
+                    <th><span data-translate="cpmApp.bonus.serialNum">Serial Num</span></th>
+                    <th><span data-translate="cpmApp.bonus.statWeek">Stat Week</span></th>
+                    <th><span data-translate="cpmApp.bonus.contractAmount">Contract Amount</span></th>
+                    <th><span data-translate="cpmApp.bonus.salesBonus">Sales Bonus</span></th>
+                    <th><span data-translate="cpmApp.bonus.projectBonus">Project Bonus</span></th>
+                    <th><span data-translate="cpmApp.bonus.implemtationBonus">Implemtation Bonus</span></th>
+                    <th><span data-translate="cpmApp.bonus.academicBonus">Academic Bonus</span></th>
+                    <th><span data-translate="cpmApp.bonus.consultantsBonus">Consultants Bonus</span></th>
+                    <th><span data-translate="cpmApp.bonus.bonusTotal">Bobus Total</span></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="bonus in vm.bonuses track by bonus.id">
+                    <td>{{bonus.serialNum}}</a></td>
+                    <td>{{bonus.statWeek}}</td>
+                    <td>{{bonus.contractAmount}}</td>
+                    <td>{{bonus.salesBonus}}</td>
+                    <td>{{bonus.projectBonus}}</td>
+                    <td>{{bonus.implemtationBonus}}</td>
+                    <td>{{bonus.academicBonus}}</td>
+                    <td>{{bonus.consultantsBonus}}</td>
+                    <td>{{bonus.bonusTotal}}</td>
+                    <td class="text-right">
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="text-center">
+        <jhi-item-count page="vm.page" total="vm.queryCount" items-per-page="vm.itemsPerPage"></jhi-item-count>
+        <uib-pagination class="pagination-sm" total-items="vm.totalItems" items-per-page="vm.itemsPerPage" ng-model="vm.page" ng-change="vm.find()"></uib-pagination>
+    </div>
+</div>
