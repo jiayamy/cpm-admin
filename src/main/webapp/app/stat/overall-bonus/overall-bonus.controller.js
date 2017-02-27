@@ -113,7 +113,7 @@
             vm.transition();
         }
         function exportXls(){//导出Xls
-        	var url = "api/overall-bonus/exportXls";
+        	var url = "api/bonus/exportXls";
         	var c = 0;
         	var statWeek = DateUtils.convertLocalDateToFormat(vm.searchQuery.statWeek,"yyyyMMdd");
         	var contractId = vm.searchQuery.contractId && vm.searchQuery.contractId.key? vm.searchQuery.contractId.key : vm.searchQuery.contractId;
