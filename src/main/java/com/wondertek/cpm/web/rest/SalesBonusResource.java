@@ -23,6 +23,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -37,6 +38,7 @@ import com.wondertek.cpm.domain.ContractInfo;
 import com.wondertek.cpm.domain.SalesBonus;
 import com.wondertek.cpm.domain.User;
 import com.wondertek.cpm.domain.vo.SalesBonusVo;
+import com.wondertek.cpm.security.AuthoritiesConstants;
 import com.wondertek.cpm.service.ContractInfoService;
 import com.wondertek.cpm.service.SalesBonusService;
 import com.wondertek.cpm.service.UserService;
@@ -60,6 +62,7 @@ public class SalesBonusResource {
      */
     @GetMapping("/sales-bonus")
     @Timed
+    @Secured(AuthoritiesConstants.ROLE_STAT_SALES_BONUS)
     public ResponseEntity<List<SalesBonusVo>> getSalesBonusPage(
     		@RequestParam(value = "originYear",required=false) Long originYear, //年份，默认当前年份
     		@RequestParam(value = "statWeek",required=false) Long statWeek, 	//统计日期，默认当前
@@ -94,6 +97,7 @@ public class SalesBonusResource {
     
     @RequestMapping("/sales-bonus/exportXls")
     @Timed
+    @Secured(AuthoritiesConstants.ROLE_STAT_SALES_BONUS)
     public void exportXls(
     		HttpServletRequest request, HttpServletResponse response,
     		@RequestParam(value = "originYear",required=false) Long originYear, //年份，默认当前年份

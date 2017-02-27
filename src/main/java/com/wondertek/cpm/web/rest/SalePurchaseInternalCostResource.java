@@ -64,7 +64,7 @@ public class SalePurchaseInternalCostResource {
      */
 	@RequestMapping("/sale-purchase-internalCost")
 	@Timed
-    @Secured(AuthoritiesConstants.ROLE_STAT_PROJECT)
+    @Secured(AuthoritiesConstants.ROLE_STAT_INTERNAL_COST)
 	public ResponseEntity<List<ProjectSupportCostVo>> getAllSalePurchaseInternalCost(
 				@RequestParam(name="contractId",required=false) Long contractId,
 				@RequestParam(name="userNameId",required=false) Long userId,
@@ -87,7 +87,7 @@ public class SalePurchaseInternalCostResource {
 	
 	@RequestMapping("/sale-purchase-internalCost/queryInternalCostDetail")
 	@Timed
-    @Secured(AuthoritiesConstants.ROLE_STAT_PROJECT)
+    @Secured(AuthoritiesConstants.ROLE_STAT_INTERNAL_COST)
 	public ResponseEntity<List<ProjectSupportCostVo>> queryInternalCostDetail(
 			@RequestParam(name="contId",required=false) Long contractId,
 			@ApiParam Pageable pageable) throws URISyntaxException{
@@ -101,7 +101,7 @@ public class SalePurchaseInternalCostResource {
 	
 	@RequestMapping("/sale-purchase-internalCost/exportXls")
 	@Timed
-    @Secured(AuthoritiesConstants.ROLE_STAT_PROJECT)
+    @Secured(AuthoritiesConstants.ROLE_STAT_INTERNAL_COST)
 	public void exportXls(
 			HttpServletRequest request,HttpServletResponse response,
 			@RequestParam(name="contractId",required=false) Long contractId,

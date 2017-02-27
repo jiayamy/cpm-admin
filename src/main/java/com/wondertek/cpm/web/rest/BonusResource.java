@@ -24,6 +24,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -37,6 +38,7 @@ import com.wondertek.cpm.config.DateUtil;
 import com.wondertek.cpm.config.StringUtil;
 import com.wondertek.cpm.domain.Bonus;
 import com.wondertek.cpm.domain.vo.BonusVo;
+import com.wondertek.cpm.security.AuthoritiesConstants;
 import com.wondertek.cpm.service.BonusService;
 import com.wondertek.cpm.web.rest.util.PaginationUtil;
 
@@ -60,6 +62,7 @@ public class BonusResource {
 	 */
     @GetMapping("/bonus")
     @Timed
+    @Secured(AuthoritiesConstants.ROLE_STAT_BONUS)
     public ResponseEntity<List<BonusVo>> getAllBonusByParams(
     		@RequestParam(value = "statWeek",required=false) Long statWeek,
     		@RequestParam(value = "contractId",required=false) Long contractId,
@@ -86,6 +89,7 @@ public class BonusResource {
     
     @GetMapping("/bonus/queryDetail")
     @Timed
+    @Secured(AuthoritiesConstants.ROLE_STAT_BONUS)
     public ResponseEntity<List<BonusVo>> getBonusVoDetail(
     		@RequestParam(value = "contractId",required=false) Long contractId,
     		@ApiParam Pageable pageable) 
@@ -98,6 +102,7 @@ public class BonusResource {
     
     @GetMapping("/bonus/{id}")
     @Timed
+    @Secured(AuthoritiesConstants.ROLE_STAT_BONUS)
     public ResponseEntity<Bonus> getBonus(@PathVariable Long id) {
         log.debug("REST request to get Bonus : {}", id);
         Bonus bonus = bonusService.findOne(id);
@@ -110,6 +115,7 @@ public class BonusResource {
     
     @RequestMapping("/bonus/exportXls")
     @Timed
+    @Secured(AuthoritiesConstants.ROLE_STAT_BONUS)
     public void exportXls(
     		HttpServletRequest request,HttpServletResponse response,
     		@RequestParam(value = "statWeek",required=false) Long statWeek,

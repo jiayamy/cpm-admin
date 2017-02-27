@@ -13,7 +13,7 @@
             parent: 'stat',
             url: '/sales-bonus?originYear&statWeek&contractId&salesManId&salesMan',
             data: {
-                authorities: ['ROLE_PROJECT_INFO'],
+                authorities: ['ROLE_STAT_SALES_BONUS'],
                 pageTitle: 'cpmApp.salesBonus.home.title'
             },
             views: {
@@ -47,7 +47,7 @@
             parent: 'sales-bonus',
             url: '/queryDept?selectType&showChild',
             data: {
-                authorities: ['ROLE_PROJECT_INFO']
+                authorities: ['ROLE_STAT_SALES_BONUS']
             },
             onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
                 $uibModal.open({

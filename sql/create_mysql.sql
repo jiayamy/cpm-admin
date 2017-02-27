@@ -635,4 +635,10 @@ CREATE
 	ALTER TABLE w_user_cost ADD sal_ DOUBLE(15,2) COMMENT '工资';
 	ALTER TABLE w_user_cost ADD social_security_fund DOUBLE(15,2) COMMENT '社保公积金';
 	ALTER TABLE w_user_cost ADD other_expense DOUBLE(15,2) COMMENT '其它费用';
-	
+	--20170227
+	insert into jhi_authority (name, detail_) values ('ROLE_STAT_CONSULTANT_BONUS', '统计报表-咨询项目信息');
+	insert into jhi_authority (name, detail_) values ('ROLE_STAT_BONUS', '统计报表-奖金总表');
+	insert into jhi_authority (name, detail_) values ('ROLE_STAT_INTERNAL_COST', '统计报表-销售内部采购成本');
+	insert into jhi_authority (name, detail_) values ('ROLE_STAT_SALES_BONUS', '统计报表-销售项目信息');
+	insert into jhi_authority (name, detail_) values ('ROLE_STAT_PROJECT_OVERALL', '统计报表-项目总体情况控制');
+	insert into jhi_authority (name, detail_) values ('ROLE_STAT_SUPPORT_BONUS', '统计报表-项目支撑奖金');

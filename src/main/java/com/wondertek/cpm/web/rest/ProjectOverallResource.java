@@ -1,10 +1,7 @@
 package com.wondertek.cpm.web.rest;
 
-import io.swagger.annotations.ApiParam;
-
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -41,13 +38,13 @@ import com.wondertek.cpm.ExcelUtil;
 import com.wondertek.cpm.ExcelWrite;
 import com.wondertek.cpm.config.DateUtil;
 import com.wondertek.cpm.config.StringUtil;
-import com.wondertek.cpm.domain.ProductPrice;
 import com.wondertek.cpm.domain.ProjectOverall;
-import com.wondertek.cpm.domain.vo.ContractBudgetVo;
 import com.wondertek.cpm.domain.vo.ProjectOverallVo;
 import com.wondertek.cpm.security.AuthoritiesConstants;
 import com.wondertek.cpm.service.ProjectOverallService;
 import com.wondertek.cpm.web.rest.util.PaginationUtil;
+
+import io.swagger.annotations.ApiParam;
 
 /**
  * REST controller for managing ProductPrice.
@@ -57,7 +54,6 @@ import com.wondertek.cpm.web.rest.util.PaginationUtil;
 public class ProjectOverallResource {
 
     private final Logger log = LoggerFactory.getLogger(ProjectOverallResource.class);
-    private final DecimalFormat doubleFormat = new DecimalFormat("#0.00");   
     @Inject
     private ProjectOverallService projectOverallService;
     
@@ -68,6 +64,7 @@ public class ProjectOverallResource {
 	 */
     @GetMapping("/project-overall-controller")
     @Timed
+    @Secured(AuthoritiesConstants.ROLE_STAT_PROJECT_OVERALL)
     public ResponseEntity<List<ProjectOverallVo>> getAllProjectOverallByParams(
     		@RequestParam(value = "statWeek",required=false) Long statWeek,
     		@RequestParam(value = "contractId",required=false) Long contractId,
@@ -96,6 +93,7 @@ public class ProjectOverallResource {
 
     @GetMapping("/project-overall-controller/queryDetail")
     @Timed
+    @Secured(AuthoritiesConstants.ROLE_STAT_PROJECT_OVERALL)
     public ResponseEntity<List<ProjectOverallVo>> getProjectOverallDetail(
     		@RequestParam(value = "contractId",required=false) Long contractId,
     		@ApiParam Pageable pageable) 
@@ -108,6 +106,7 @@ public class ProjectOverallResource {
     
     @GetMapping("/project-overall-controller/{id}")
     @Timed
+    @Secured(AuthoritiesConstants.ROLE_STAT_PROJECT_OVERALL)
     public ResponseEntity<ProjectOverall> getProjectOverall(@PathVariable Long id) {
         log.debug("REST request to get ProjectOverall : {}", id);
         ProjectOverall projectOverall = projectOverallService.findOne(id);
@@ -120,6 +119,7 @@ public class ProjectOverallResource {
     
     @RequestMapping("/project-overall/exportXls")
     @Timed
+    @Secured(AuthoritiesConstants.ROLE_STAT_PROJECT_OVERALL)
     public void exportXls(
     		HttpServletRequest request, HttpServletResponse response,
     		@RequestParam(value = "statWeek",required=false) Long statWeek,

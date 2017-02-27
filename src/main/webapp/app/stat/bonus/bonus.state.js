@@ -13,6 +13,7 @@
             parent: 'stat',
             url: '/bonus?&statWeek&contractId',
             data: {
+            	authorities: ['ROLE_STAT_BONUS'],
                 pageTitle: 'cpmApp.bonus.home.title'
             },
             views: {
@@ -49,7 +50,7 @@
             parent: 'bonus',
             url: '/detail/{id}',
             data: {
-                authorities: ['ROLE_PROJECT_USER'],
+                authorities: ['ROLE_STAT_BONUS'],
                 pageTitle: 'cpmApp.bonus.detail.title'
             },
             views: {

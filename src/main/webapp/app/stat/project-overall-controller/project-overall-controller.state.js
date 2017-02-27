@@ -13,6 +13,7 @@
             parent: 'stat',
             url: '/project-overall-controller?statWeek&contractId&userId&userName',
             data: {
+            	authorities: ['ROLE_STAT_PROJECT_OVERALL'],
                 pageTitle: 'cpmApp.projectOverallController.home.title'
             },
             views: {
@@ -61,7 +62,7 @@
             parent: 'project-overall-controller',
             url: '/queryDept?selectType&showChild',
             data: {
-                authorities: ['ROLE_PROJECT_USER']
+                authorities: ['ROLE_STAT_PROJECT_OVERALL']
             },
             onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
                 $uibModal.open({
@@ -89,7 +90,7 @@
             parent: 'project-overall-controller',
             url: '/detail/{id}',
             data: {
-                authorities: ['ROLE_PROJECT_USER'],
+                authorities: ['ROLE_STAT_PROJECT_OVERALL'],
                 pageTitle: 'cpmApp.projectUser.detail.title'
             },
             views: {
