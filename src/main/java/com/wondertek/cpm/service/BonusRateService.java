@@ -47,4 +47,11 @@ public class BonusRateService {
 	public Page<BonusRateVo> getUserPage(BonusRate bonusRate,Pageable pageable) {
     	return bonusRateDao.getUserPage(bonusRate, pageable);
 	}
+	public BonusRate getBonusRate(Long id) {
+		return bonusRateRepository.findOne(id);
+	}
+	public void delete(Long id) {
+		log.debug("Request to delete BonusRate : {}", id);
+        bonusRateRepository.delete(id);
+	}
 }
