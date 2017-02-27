@@ -5,6 +5,12 @@
                 "title": "外部报价",
                 "createOrEditLabel": "外部报价"
             },
+            "save":{
+            	"requriedError":"必填参数为空",
+            	"noPerm":"无权限操作",
+            	"changeError":"级别不可更改",
+            	"existError":"级别对应记录已存在"
+            },
             "grade":"级别",
             "externalQuotation":"对外报价",
             "socialSecurityFund":"社保公积金",

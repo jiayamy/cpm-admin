@@ -63,12 +63,7 @@ public class ExternalQuotationService {
      */
     public void delete(Long id) {
         log.debug("Request to delete ExternalQuotation : {}", id);
-//        ExternalQuotation externalQuotation = externalQuotationRepository.findOne(id);
-//        if(externalQuotation != null){
-//        	externalQuotation.setUpdateTime(ZonedDateTime.now());
-//        	externalQuotation.setUpdator(SecurityUtils.getCurrentUserLogin());
-//        	externalQuotationRepository.save(externalQuotation);
-//        }
+        externalQuotationRepository.delete(id);
     }
     /**
      * 列表页
@@ -87,6 +82,10 @@ public class ExternalQuotationService {
 			}
 		}
 		return returnMap;
+	}
+
+	public ExternalQuotation findOneByGrade(Integer grade) {
+		return externalQuotationRepository.findByGrade(grade);
 	}
     
     
