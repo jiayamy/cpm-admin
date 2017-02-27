@@ -71,7 +71,6 @@
                 vm.queryCount = vm.totalItems;
                 vm.overallBonuses = handleData(data);
                 vm.page = pagingParams.page;
-                console.log(data);
             }
         	function onError(error) {
                 AlertService.error(error.data.message);
@@ -80,7 +79,6 @@
         
         function handleData(data){
         	return data;
-        	console.log(data);
         }
         
         function loadPage(page) {

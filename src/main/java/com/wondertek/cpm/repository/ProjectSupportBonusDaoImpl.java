@@ -90,7 +90,6 @@ public class ProjectSupportBonusDaoImpl extends GenericDaoImpl<ProjectSupportBon
 		countSql.append(whereSql.toString());
 		whereSql.setLength(0);
 		whereSql = null;
-		System.out.println("=================------------------=================" + querySql.toString());
 		Page<Object[]> page = this.querySqlPage(querySql.toString(), countSql.toString(), params.toArray(), pageable);
 		List<ProjectSupportBonusVo> returnList = new ArrayList<ProjectSupportBonusVo>();
 		if(page.getContent() != null){
@@ -120,7 +119,7 @@ public class ProjectSupportBonusDaoImpl extends GenericDaoImpl<ProjectSupportBon
 		vo.setContractAmount(StringUtil.nullToDouble(o[15]));
 		vo.setTaxRate(StringUtil.nullToDouble(o[16]));
 		vo.setBonusBasis(StringUtil.nullToDouble(o[17]));
-		vo.setCurrentBonus(StringUtil.nullToDouble(o[18]));
+		vo.setCurrentBonus(StringUtil.getScaleDouble(StringUtil.nullToDouble(o[18]), 2));
 		vo.setCreator(StringUtil.null2Str(o[19]));
 		vo.setCreateTime(DateUtil.getZonedDateTime((Timestamp) o[20]));
 		
