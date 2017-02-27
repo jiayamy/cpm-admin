@@ -1,10 +1,7 @@
 package com.wondertek.cpm.web.rest;
 
-import io.swagger.annotations.ApiParam;
-
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -17,7 +14,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.xssf.usermodel.XSSFCell;
-import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -44,6 +40,8 @@ import com.wondertek.cpm.domain.vo.BonusVo;
 import com.wondertek.cpm.service.BonusService;
 import com.wondertek.cpm.web.rest.util.PaginationUtil;
 
+import io.swagger.annotations.ApiParam;
+
 /**
  * REST controller for managing ProductPrice.
  */
@@ -52,7 +50,6 @@ import com.wondertek.cpm.web.rest.util.PaginationUtil;
 public class BonusResource {
 
     private final Logger log = LoggerFactory.getLogger(BonusResource.class);
-    private final DecimalFormat doubleFormat = new DecimalFormat("#0.00");   
     @Inject
     private BonusService bonusService;
     
@@ -61,7 +58,7 @@ public class BonusResource {
 	 * @author sunshine
 	 * @Description :
 	 */
-    @GetMapping("/overall-bonus")
+    @GetMapping("/bonus")
     @Timed
     public ResponseEntity<List<BonusVo>> getAllBonusByParams(
     		@RequestParam(value = "statWeek",required=false) Long statWeek,
@@ -83,11 +80,11 @@ public class BonusResource {
          					DateUtil.getSundayOfDay(DateUtil.parseDate(DateUtil.DATE_YYYYMMDD_PATTERN,""+bonus.getStatWeek())))));
 		}
 		Page<BonusVo> page = bonusService.searchPage(bonus,pageable);
-    	HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(statWeek.toString(), page,"/api/overall-bonus");
+    	HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(statWeek.toString(), page,"/api/bonus");
     	return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);    	
     }
     
-    @GetMapping("/overall-bonus/queryDetail")
+    @GetMapping("/bonus/queryDetail")
     @Timed
     public ResponseEntity<List<BonusVo>> getBonusVoDetail(
     		@RequestParam(value = "contractId",required=false) Long contractId,
@@ -95,11 +92,11 @@ public class BonusResource {
     	throws URISyntaxException {
         log.debug("REST request to get Bonus : {}", contractId);
         Page<BonusVo> page = bonusService.searchPageDetail(contractId,pageable);
-    	HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(contractId.toString(), page,"/api/overall-bonus");
+    	HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(contractId.toString(), page,"/api/bonus");
     	return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK); 
     }
     
-    @GetMapping("/overall-bonus/{id}")
+    @GetMapping("/bonus/{id}")
     @Timed
     public ResponseEntity<Bonus> getBonus(@PathVariable Long id) {
         log.debug("REST request to get Bonus : {}", id);
@@ -111,7 +108,7 @@ public class BonusResource {
             .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
     
-    @RequestMapping("/overall-bonus/exportXls")
+    @RequestMapping("/bonus/exportXls")
     @Timed
     public void exportXls(
     		HttpServletRequest request,HttpServletResponse response,

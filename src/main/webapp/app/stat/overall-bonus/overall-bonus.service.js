@@ -7,7 +7,7 @@
     OverallBonus.$inject = ['$resource', 'DateUtils'];
 
     function OverallBonus ($resource, DateUtils) {
-        var resourceUrl =  'api/overall-bonus/:id';
+        var resourceUrl =  'api/bonus/:id';
 
         return $resource(resourceUrl, {}, {
             'query': { method: 'GET', isArray: true},
@@ -23,7 +23,7 @@
                 }
             },
             'queryDetail':{
-            	url:'api/overall-bonus/queryDetail',
+            	url:'api/bonus/queryDetail',
             	method:'GET',
             	isArray:true
             }
