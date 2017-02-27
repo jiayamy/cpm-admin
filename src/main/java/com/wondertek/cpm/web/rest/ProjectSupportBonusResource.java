@@ -4,6 +4,7 @@ import io.swagger.annotations.ApiParam;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.net.URLEncoder;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -42,10 +43,13 @@ import com.wondertek.cpm.config.DateUtil;
 import com.wondertek.cpm.config.StringUtil;
 import com.wondertek.cpm.domain.ProductPrice;
 import com.wondertek.cpm.domain.ProjectOverall;
+import com.wondertek.cpm.domain.ProjectSupportBonus;
 import com.wondertek.cpm.domain.vo.ContractBudgetVo;
 import com.wondertek.cpm.domain.vo.ProjectOverallVo;
+import com.wondertek.cpm.domain.vo.ProjectSupportBonusVo;
 import com.wondertek.cpm.security.AuthoritiesConstants;
 import com.wondertek.cpm.service.ProjectOverallService;
+import com.wondertek.cpm.service.ProjectSupportBonusService;
 import com.wondertek.cpm.web.rest.util.PaginationUtil;
 
 /**
@@ -53,126 +57,122 @@ import com.wondertek.cpm.web.rest.util.PaginationUtil;
  */
 @RestController
 @RequestMapping("/api")
-public class ProjectOverallResource {
+public class ProjectSupportBonusResource {
 
-    private final Logger log = LoggerFactory.getLogger(ProjectOverallResource.class);
+    private final Logger log = LoggerFactory.getLogger(ProjectSupportBonusResource.class);
     private final DecimalFormat doubleFormat = new DecimalFormat("#0.00");   
     @Inject
-    private ProjectOverallService projectOverallService;
+    private ProjectSupportBonusService projectSupportBonusService;
     
 	/**
 	 * 列表页
 	 * @author sunshine
 	 * @Description :
 	 */
-    @GetMapping("/project-overall-controller")
+    @GetMapping("/project-support-bonus")
     @Timed
-    public ResponseEntity<List<ProjectOverallVo>> getAllProjectOverallByParams(
+    public ResponseEntity<List<ProjectSupportBonusVo>> getAllProjectSupportBonusByParams(
     		@RequestParam(value = "statWeek",required=false) Long statWeek,
     		@RequestParam(value = "contractId",required=false) Long contractId,
-    		@RequestParam(value = "userId",required=false) Long userId,
+    		@RequestParam(value = "deptType",required=false) Long deptType,
     		@ApiParam Pageable pageable)
 		throws URISyntaxException {
-		log.debug("REST request to get a page of ProjectOverallVo");
+		log.debug("REST request to get a page of ProjectSupportBonus");
 		Date now = new Date();
-		ProjectOverall projectOverall = new ProjectOverall();
-		projectOverall.setStatWeek(statWeek);
-		projectOverall.setContractId(contractId);
-		projectOverall.setContractResponse(userId);
-		if(projectOverall.getStatWeek() == null){//默认当前天对的的周日
-			projectOverall.setStatWeek(StringUtil.nullToLong(
+		ProjectSupportBonus projectSupportBonus = new ProjectSupportBonus();
+		projectSupportBonus.setStatWeek(statWeek);
+		projectSupportBonus.setContractId(contractId);
+		projectSupportBonus.setDeptType(deptType);
+		if(projectSupportBonus.getStatWeek() == null){//默认当前天对的的周日
+			projectSupportBonus.setStatWeek(StringUtil.nullToLong(
         			DateUtil.formatDate(DateUtil.DATE_YYYYMMDD_PATTERN, 
         					DateUtil.getSundayOfDay(now))));
          }else {//更改为对应日期的周日
-        	 projectOverall.setStatWeek(StringUtil.nullToLong(
+        	 projectSupportBonus.setStatWeek(StringUtil.nullToLong(
          			DateUtil.formatDate(DateUtil.DATE_YYYYMMDD_PATTERN, 
-         					DateUtil.getSundayOfDay(DateUtil.parseDate(DateUtil.DATE_YYYYMMDD_PATTERN,""+projectOverall.getStatWeek())))));
+         					DateUtil.getSundayOfDay(DateUtil.parseDate(DateUtil.DATE_YYYYMMDD_PATTERN,""+projectSupportBonus.getStatWeek())))));
 		}
-		Page<ProjectOverallVo> page = projectOverallService.searchPage(projectOverall,pageable);
-    	HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(statWeek.toString(), page,"/api/project-projectOverall");
+		Page<ProjectSupportBonusVo> page = projectSupportBonusService.searchPage(projectSupportBonus,pageable);
+    	HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(statWeek.toString(), page,"/api/project-support-bonus");
     	return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);    	
     }
 
-    @GetMapping("/project-overall-controller/queryDetail")
+    @GetMapping("/project-support-bonus/queryDetail")
     @Timed
-    public ResponseEntity<List<ProjectOverallVo>> getProjectOverallDetail(
+    public ResponseEntity<List<ProjectSupportBonusVo>> getProjectSupportBonusDetail(
     		@RequestParam(value = "contractId",required=false) Long contractId,
     		@ApiParam Pageable pageable) 
     	throws URISyntaxException {
         log.debug("REST request to get ProjectOverall : {}", contractId);
-        Page<ProjectOverallVo> page = projectOverallService.searchPageDetail(contractId,pageable);
+        Page<ProjectSupportBonusVo> page = projectSupportBonusService.searchPageDetail(contractId,pageable);
     	HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(contractId.toString(), page,"/api/project-projectOverall");
     	return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK); 
     }
     
-    @GetMapping("/project-overall-controller/{id}")
+    @GetMapping("/project-support-bonus/{id}")
     @Timed
-    public ResponseEntity<ProjectOverall> getProjectOverall(@PathVariable Long id) {
-        log.debug("REST request to get ProjectOverall : {}", id);
-        ProjectOverall projectOverall = projectOverallService.findOne(id);
-        return Optional.ofNullable(projectOverall)
+    public ResponseEntity<ProjectSupportBonus> getProjectSupportBonusById(@PathVariable Long id) {
+        log.debug("REST request to get ProjectSupportBonus : {}", id);
+        ProjectSupportBonus projectSupportBonus = projectSupportBonusService.findOne(id);
+        return Optional.ofNullable(projectSupportBonus)
             .map(result -> new ResponseEntity<>(
                 result,
                 HttpStatus.OK))
             .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
     
-    @RequestMapping("/project-overall/exportXls")
+    @RequestMapping("/project-support-bonus/exportXls")
     @Timed
     public void exportXls(
     		HttpServletRequest request, HttpServletResponse response,
     		@RequestParam(value = "statWeek",required=false) Long statWeek,
     		@RequestParam(value = "contractId",required=false) Long contractId,
-    		@RequestParam(value = "userId",required=false) Long userId,
+    		@RequestParam(value = "deptType",required=false) Long deptType,
     		@ApiParam Pageable pageable)
 		throws URISyntaxException, IOException {
     	log.debug("REST request to get a page of exportXls");
     	Date now = new Date();
-    	ProjectOverall projectOverall = new ProjectOverall();
-		projectOverall.setStatWeek(statWeek);
-		projectOverall.setContractId(contractId);
-		projectOverall.setContractResponse(userId);
+    	ProjectSupportBonus projectSupportBonus = new ProjectSupportBonus();
+    	projectSupportBonus.setStatWeek(statWeek);
+    	projectSupportBonus.setContractId(contractId);
+    	projectSupportBonus.setDeptType(deptType);
     	String currentDay = StringUtil.null2Str(
     			DateUtil.formatDate(DateUtil.DATE_YYYYMMDD_PATTERN, now));
     	 
-    	if(projectOverall.getStatWeek() == null){//默认当前天对的的周日
-			projectOverall.setStatWeek(StringUtil.nullToLong(
+    	if(projectSupportBonus.getStatWeek() == null){//默认当前天对的的周日
+    		projectSupportBonus.setStatWeek(StringUtil.nullToLong(
         			DateUtil.formatDate(DateUtil.DATE_YYYYMMDD_PATTERN, 
         					DateUtil.getSundayOfDay(now))));
          }else {//更改为对应日期的周日
-        	 projectOverall.setStatWeek(StringUtil.nullToLong(
+        	 projectSupportBonus.setStatWeek(StringUtil.nullToLong(
          			DateUtil.formatDate(DateUtil.DATE_YYYYMMDD_PATTERN, 
-         					DateUtil.getSundayOfDay(DateUtil.parseDate(DateUtil.DATE_YYYYMMDD_PATTERN,""+projectOverall.getStatWeek())))));
+         					DateUtil.getSundayOfDay(DateUtil.parseDate(DateUtil.DATE_YYYYMMDD_PATTERN,""+projectSupportBonus.getStatWeek())))));
 		}
-    	 Page<ProjectOverallVo> page = projectOverallService.searchPage(projectOverall,pageable);
-         List<ProjectOverallVo> list = new ArrayList<ProjectOverallVo>();
-         for (ProjectOverallVo projectOverallVo : page.getContent()) {
- 			list.add(projectOverallVo);
+    	 Page<ProjectSupportBonusVo> page = projectSupportBonusService.searchPage(projectSupportBonus,pageable);
+         List<ProjectSupportBonusVo> list = new ArrayList<ProjectSupportBonusVo>();
+         for (ProjectSupportBonusVo projectSupportBonusVo : page.getContent()) {
+ 			list.add(projectSupportBonusVo);
  		}
-//         List<ProjectOverallVo> list = projectOverallService.getProjectOverallList(fromDate,toDate,contractId,userId);
 
          //拼接sheet数据
      	//标题
      	String[] heads = new String[]{
-     			"合同负责人",
      			"合同编号",
+     			"部门类型",
      			"合同金额",
      			"税率",
-     			"可确认收入",
-     			"合同完成节点",
-     			"收入确认",
-     			"收款金额",
-     			"应收账款",
-     			"公摊成本",
-     			"第三方采购",
-     			"实施成本",
-     			"中央研究院",
-     			"奖金",
-     			"毛利",
-     			"毛利率"
+     			"验收节点",
+     			"合同确认交付时间",
+     			"计划天数",
+     			"实际使用天数",
+     			"奖金调节率",
+     			"奖金比率",
+     			"奖金确认比例",
+     			"奖金基数",
+     			"当期奖金"
      	};
      	//设置文件名
-     	String fileName = "项目总体控制" + "_" + currentDay + ".xlsx";
+     	String fileName = "项目支撑奖金" +"_" + currentDay + ".xlsx";
      	//写入sheet
     	ServletOutputStream outputStream = response.getOutputStream();
     	response.setHeader("Content-Disposition","attachment;filename=" + new String(fileName.getBytes("gb2312"),"ISO8859-1"));
@@ -191,15 +191,12 @@ public class ProjectOverallResource {
 	/**
      * 处理sheet数据
      */
-    private void handleSheetData(List<ProjectOverallVo> list, int startRow,
+    private void handleSheetData(List<ProjectSupportBonusVo> list, int startRow,
 			ExcelWrite excelWrite) {
     	//除表头外的其他数据单元格格式
     	Integer[] cellType = new Integer[]{
     			Cell.CELL_TYPE_STRING,
     			Cell.CELL_TYPE_STRING,
-    			Cell.CELL_TYPE_NUMERIC,
-    			Cell.CELL_TYPE_NUMERIC,
-    			Cell.CELL_TYPE_NUMERIC,
     			Cell.CELL_TYPE_NUMERIC,
     			Cell.CELL_TYPE_NUMERIC,
     			Cell.CELL_TYPE_NUMERIC,
@@ -222,23 +219,23 @@ public class ProjectOverallResource {
 		XSSFCellStyle cellStyle = wb.createCellStyle();  
 		cellStyle.setDataFormat(HSSFDataFormat.getBuiltinFormat("0.00%"));
 		//数据
-		for (ProjectOverallVo vo : list) {
+		for (ProjectSupportBonusVo vo : list) {
 			i++;
 			row = sheet.createRow(i + startRow-1);
 			
 			j = 0;
 			cell = row.createCell(j,cellType[j]);
-			if (vo.getSalesman() == null && vo.getConsultants() == null) {
-				 cell.setCellValue("");
-			}else {
-				cell.setCellValue(!StringUtil.isNullStr(vo.getSalesman()) ? vo.getSalesman() : vo.getConsultants());
-			}
-			j++;
-			cell = row.createCell(j,cellType[j]);
 			if (vo.getSerialNum() == null) {
 				cell.setCellValue("");
 			}else {
 				cell.setCellValue(vo.getSerialNum());
+			}
+			j++;
+			cell = row.createCell(j,cellType[j]);
+			if (vo.getDeptTypeName() == null) {
+				cell.setCellValue("");
+			}else {
+				cell.setCellValue(vo.getDeptTypeName());
 			}
 			j++;
 			cell = row.createCell(j,cellType[j]);
@@ -257,89 +254,68 @@ public class ProjectOverallResource {
 			}
 			j++;
 			cell = row.createCell(j,cellType[j]);
-			if (vo.getIdentifiableIncome() == null) {
+			if (vo.getAcceptanceRate() == null) {
 				cell.setCellValue("");
 			}else {
-				cell.setCellValue(vo.getIdentifiableIncome());
+				cell.setCellValue(vo.getAcceptanceRate() / 100);
 			}
 			j++;
 			cell = row.createCell(j,cellType[j]);
-			if (vo.getContractFinishRate() == null) {
+			if (vo.getDeliveryTime() == null) {
 				cell.setCellValue("");
 			}else {
-				cell.setCellValue(vo.getContractFinishRate() / 100);
+				cell.setCellValue(vo.getDeliveryTime());
 				cell.setCellStyle(cellStyle);
 			}
 			j++;
 			cell = row.createCell(j,cellType[j]);
-			if (vo.getAcceptanceIncome() == null) {
+			if (vo.getPlanDays() == null) {
 				cell.setCellValue("");
 			}else {
-				cell.setCellValue(vo.getAcceptanceIncome());
+				cell.setCellValue(vo.getPlanDays());
+			}
+			j++;
+			
+			cell = row.createCell(j,cellType[j]);
+			if (vo.getRealDays() == null) {
+				cell.setCellValue("");
+			}else {
+				cell.setCellValue(vo.getRealDays());
 			}
 			j++;
 			cell = row.createCell(j,cellType[j]);
-			if (vo.getReceiveTotal() == null) {
+			if (vo.getBonusAdjustRate() == null) {
 				cell.setCellValue("");
 			}else {
-				cell.setCellValue(vo.getReceiveTotal());
+				cell.setCellValue(vo.getBonusAdjustRate() / 100);
 			}
 			j++;
 			cell = row.createCell(j,cellType[j]);
-			if (vo.getReceivableAccount() == null) {
+			if (vo.getBonusRate() == null) {
 				cell.setCellValue("");
 			}else {
-				cell.setCellValue(vo.getReceivableAccount());
+				cell.setCellValue(vo.getBonusRate() / 100);
 			}
 			j++;
 			cell = row.createCell(j,cellType[j]);
-			if (vo.getShareCost() == null) {
+			if (vo.getBonusAcceptanceRate() == null) {
 				cell.setCellValue("");
 			}else {
-				cell.setCellValue(vo.getShareCost());
+				cell.setCellValue(vo.getBonusAcceptanceRate() / 100);
 			}
 			j++;
 			cell = row.createCell(j,cellType[j]);
-			if (vo.getThirdPartyPurchase() == null) {
+			if (vo.getBonusBasis() == null) {
 				cell.setCellValue("");
 			}else {
-				cell.setCellValue(vo.getThirdPartyPurchase());
+				cell.setCellValue(vo.getBonusBasis());
 			}
 			j++;
 			cell = row.createCell(j,cellType[j]);
-			if (vo.getImplementationCost() == null) {
+			if (vo.getCurrentBonus() == null) {
 				cell.setCellValue("");
 			}else {
-				cell.setCellValue(vo.getImplementationCost());
-			}
-			j++;
-			cell = row.createCell(j,cellType[j]);
-			if (vo.getAcademicCost() == null) {
-				cell.setCellValue("");
-			}else {
-				cell.setCellValue(vo.getAcademicCost());
-			}
-			j++;
-			cell = row.createCell(j,cellType[j]);
-			if (vo.getBonus() == null) {
-				cell.setCellValue("");
-			}else {
-				cell.setCellValue(vo.getBonus());
-			}
-			j++;
-			cell = row.createCell(j,cellType[j]);
-			if (vo.getGrossProfit() == null) {
-				cell.setCellValue("");
-			}else {
-				cell.setCellValue(vo.getGrossProfit());
-			}
-			j++;
-			cell = row.createCell(j,cellType[j]);
-			if (vo.getGrossProfitRate() == null) {
-				cell.setCellValue("");
-			}else {
-				cell.setCellValue(vo.getGrossProfitRate() / 100);
-				cell.setCellStyle(cellStyle);
+				cell.setCellValue(vo.getCurrentBonus());
 			}
 			j++;
 		}

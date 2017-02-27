@@ -1,0 +1,122 @@
+<div>
+    <h2 data-translate="cpmApp.projectSupportBonus.home.title">Project Support Bonus</h2>
+    <jhi-alert></jhi-alert>
+    <div class="container-fluid">
+    	<div class="row">
+    		<form name="searchForm" class="form-horizontal">
+				<div class="form-group">
+		            <div class="col-sm-4">
+		          		<label class="col-sm-4 control-label" data-translate="cpmApp.projectSupportBonus.toDate">To Date</label>
+			            <div class="col-sm-8">
+			                <p class="input-group">
+			                    <input id="search_toDate" type="text" class="form-control" name="statWeek" datetime-picker="yyyyMMdd"
+				           		 		enable-time="false" ng-model="vm.searchQuery.statWeek" is-open="vm.datePickerOpenStatus.statWeek"/>
+				          		<span class="input-group-btn">
+				           			<button type="button" class="btn btn-default" ng-click="vm.openCalendar('statWeek')"><i class="glyphicon glyphicon-calendar"></i></button>
+				            	</span>
+			                </p>
+			            </div>
+				    </div>
+           			<div class="col-sm-4">
+           				<label class="col-sm-4 control-label" data-translate="cpmApp.projectSupportBonus.serialNum">Serial Num</label>
+                  		<div class="col-sm-8">
+	     					<select class="form-control" ng-model="vm.searchQuery.contractId"
+				            	ng-options="contractInfo.val for contractInfo in vm.contractInfos track by contractInfo.key">
+				            	<option value="">--合同编号--</option>
+				            </select>
+     					</div> 
+           			</div>
+           			<div class="col-sm-4">
+		          		<label class="col-sm-4 control-label" data-translate="cpmApp.projectSupportBonus.dept">Dept</label>
+			            <div class="col-sm-8">
+			                <select class="form-control" name="type" ng-model="vm.searchQuery.deptType"
+				            	ng-options="type.val for type in vm.deptTypes track by type.key">
+				            	<option value="">--选择部门类型--</option>
+				            </select>
+			            </div>
+	       			</div>
+           		</div>
+           		<div class="form-group">
+           			<div class="col-sm-6 pull-right input-group">
+		            	<div class="col-sm-4">
+		            		&nbsp;
+		            	</div>
+		            	<div class="col-sm-8" >
+			            	<span  class="width-min" >
+		                        <button class="btn btn-info" ng-click="vm.search()">
+		                            <span class="glyphicon glyphicon-search"></span>
+		                            <span class="hidden-xs hidden-sm" data-translate="entity.action.search"></span>
+		                        </button>
+		                    </span>
+		                    <span class="width-min" ng-if="vm.haveSearch">
+		                        <button class="btn btn-info" ng-click="vm.clear()">
+		                            <span class="glyphicon glyphicon-trash"></span>
+		                            <span class="hidden-xs hidden-sm" data-translate="entity.action.clear"></span>
+		                        </button>
+		                    </span>
+		                    <span class="width-min">
+	                        	<button class="btn btn-info" ng-click="vm.exportXls()">
+	                            	<span class="glyphicon glyphicon-save"></span>
+	                            	<span class="hidden-xs hidden-sm" data-translate="entity.action.export"></span>
+	                        	</button>
+	                    	</span>
+		            	</div>
+		            </div>
+           		</div>	
+	            </div>
+			</form>
+    	</div>
+    </div>
+    <br/>
+    <div class="table-responsive">
+        <table class="jh-table table table-striped" style="table-layout: fixed; ">
+            <thead>
+                <tr jh-sort="vm.predicate" ascending="vm.reverse" callback="vm.transition()">
+                    <th style="width:80px;"><span data-translate="cpmApp.projectSupportBonus.serialNum">Serial Num</span></th>
+                    <th style="width:80px;"><span data-translate="cpmApp.projectSupportBonus.deptType">Dept Type</span></th>
+                    <th style="width:110px;"><span data-translate="cpmApp.projectSupportBonus.contractAmount">Contract Amount</span></th>
+                    <th style="width:60px;"><span data-translate="cpmApp.projectSupportBonus.taxRate">Tax Rate</span></th>
+					<th style="width:60px;"><span data-translate="cpmApp.projectSupportBonus.acceptanceRate">Acceptance Rate</span></th>
+					<th style="width:110px;"><span data-translate="cpmApp.projectSupportBonus.deliveryTime">Delivery Time</span></th>
+					<th style="width:60px;"><span data-translate="cpmApp.projectSupportBonus.planDays">Plan Days</span></th>
+                    <th style="width:60px;"><span data-translate="cpmApp.projectSupportBonus.realDays">Real Days</span></th>
+                    <th style="width:80px;"><span data-translate="cpmApp.projectSupportBonus.bonusAdjustRate">Bonus Adjust Rate</span></th>
+                    <th style="width:80px;"><span data-translate="cpmApp.projectSupportBonus.bonusRate">Bonus Rate</span></th>
+                    <th style="width:80px;"><span data-translate="cpmApp.projectSupportBonus.bonusAcceptanceRate">Bonus Acceptance Rate</span></th>
+                    <th style="width:110px;"><span data-translate="cpmApp.projectSupportBonus.bonusBasis">Bonus Basis</span></th>
+                    <th style="width:110px;"><span data-translate="cpmApp.projectSupportBonus.currentBonus">Current Bonusl</span></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="projectSupportBonus in vm.projectSupportBonuses track by projectSupportBonus.id">
+                    <td><a ui-sref="project-support-bonus-detail({id:projectSupportBonus.id})">{{projectSupportBonus.serialNum}}</a></td>
+                    <td>{{projectSupportBonus.deptTypeName}}</td>
+                    <td>{{projectSupportBonus.contractAmount}}</td>
+                    <td>{{projectSupportBonus.taxRate}}</td>
+                    <td>{{projectSupportBonus.acceptanceRate}}</td>
+                    <td>{{projectSupportBonus.deliveryTime}}</td>
+                    <td>{{projectSupportBonus.planDays}}</td>
+                    <td>{{projectSupportBonus.realDays}}</td>
+                    <td>{{projectSupportBonus.bonusAdjustRate}}</td>
+                    <td>{{projectSupportBonus.bonusRate}}</td>
+                    <td>{{projectSupportBonus.bonusAcceptanceRate}}</td>
+                    <td>{{projectSupportBonus.bonusBasis}}</td>
+                    <td>{{projectSupportBonus.currentBonus}}</td>
+                    <td class="text-right">
+                        <div class="btn-group flex-btn-group-container">
+                            <button type="submit"
+                                    ui-sref="project-support-bonus-detail({id:projectSupportBonus.id})"
+                                    class="btn btn-info btn-sm">
+                                <span class="glyphicon glyphicon-eye-open"></span>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="text-center">
+        <jhi-item-count page="vm.page" total="vm.queryCount" items-per-page="vm.itemsPerPage"></jhi-item-count>
+        <uib-pagination class="pagination-sm" total-items="vm.totalItems" items-per-page="vm.itemsPerPage" ng-model="vm.page" ng-change="vm.transition()"></uib-pagination>
+    </div>
+</div>
