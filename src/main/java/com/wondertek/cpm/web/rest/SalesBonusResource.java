@@ -23,12 +23,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.codahale.metrics.annotation.Timed;
+import com.wondertek.cpm.ExcelUtil;
 import com.wondertek.cpm.ExcelWrite;
 import com.wondertek.cpm.config.DateUtil;
 import com.wondertek.cpm.config.StringUtil;
@@ -36,6 +38,7 @@ import com.wondertek.cpm.domain.ContractInfo;
 import com.wondertek.cpm.domain.SalesBonus;
 import com.wondertek.cpm.domain.User;
 import com.wondertek.cpm.domain.vo.SalesBonusVo;
+import com.wondertek.cpm.security.AuthoritiesConstants;
 import com.wondertek.cpm.service.ContractInfoService;
 import com.wondertek.cpm.service.SalesBonusService;
 import com.wondertek.cpm.service.UserService;
@@ -59,6 +62,7 @@ public class SalesBonusResource {
      */
     @GetMapping("/sales-bonus")
     @Timed
+    @Secured(AuthoritiesConstants.ROLE_STAT_SALES_BONUS)
     public ResponseEntity<List<SalesBonusVo>> getSalesBonusPage(
     		@RequestParam(value = "originYear",required=false) Long originYear, //年份，默认当前年份
     		@RequestParam(value = "statWeek",required=false) Long statWeek, 	//统计日期，默认当前
@@ -93,6 +97,7 @@ public class SalesBonusResource {
     
     @RequestMapping("/sales-bonus/exportXls")
     @Timed
+    @Secured(AuthoritiesConstants.ROLE_STAT_SALES_BONUS)
     public void exportXls(
     		HttpServletRequest request, HttpServletResponse response,
     		@RequestParam(value = "originYear",required=false) Long originYear, //年份，默认当前年份
@@ -140,16 +145,16 @@ public class SalesBonusResource {
     			"合同累计完成率",
     			"可发放奖金"
     	};
-    	String fileName = "salesBonus_" + salesBonus.getOriginYear() + "_" + salesBonus.getStatWeek() + ".xlsx";
+    	String fileName = "销售_" + salesBonus.getOriginYear() + "_" + salesBonus.getStatWeek() + ".xlsx";
     	//写入sheet
     	ServletOutputStream outputStream = response.getOutputStream();
-    	response.setHeader("Content-Disposition","attachment;filename=" + fileName);
+    	response.setHeader("Content-Disposition","attachment;filename=" + ExcelUtil.getExportName(request, fileName));
     	response.setContentType("application/x-msdownload");
     	response.setCharacterEncoding("UTF-8");
 		
     	ExcelWrite excelWrite = new ExcelWrite();
     	//写入标题
-    	excelWrite.createSheetTitle("销售项目", 1, heads);
+    	excelWrite.createSheetTitle("销售", 1, heads);
     	//写入数据
     	if(page != null){
     		handleSheetData(page,2,excelWrite,salesBonus);

@@ -3,11 +3,11 @@
 
     angular
         .module('cpmApp')
-        .controller('OverallBonusController', OverallBonusController);
+        .controller('BonusController', BonusController);
 
-    OverallBonusController.$inject = ['$scope','$rootScope', '$state', 'OverallBonus','ContractInfo', 'ParseLinks', 'AlertService', 'paginationConstants', 'pagingParams','DateUtils'];
+    BonusController.$inject = ['$scope','$rootScope', '$state', 'Bonus','ContractInfo', 'ParseLinks', 'AlertService', 'paginationConstants', 'pagingParams','DateUtils'];
 
-    function OverallBonusController ($scope,$rootScope, $state, OverallBonus,ContractInfo, ParseLinks, AlertService, paginationConstants, pagingParams,DateUtils) {
+    function BonusController ($scope,$rootScope, $state, Bonus,ContractInfo, ParseLinks, AlertService, paginationConstants, pagingParams,DateUtils) {
     	var vm = this;
         vm.itemsPerPage = paginationConstants.itemsPerPage;
         vm.transition = transition;
@@ -59,7 +59,7 @@
         //加载列表信息
         loadAll();
         function loadAll () {
-        	OverallBonus.query({
+        	Bonus.query({
         		statWeek: pagingParams.statWeek,
         		contractId: pagingParams.contractId,
         		page: pagingParams.page - 1,
@@ -69,7 +69,7 @@
                 vm.links = ParseLinks.parse(headers('link'));
                 vm.totalItems = headers('X-Total-Count');
                 vm.queryCount = vm.totalItems;
-                vm.overallBonuses = handleData(data);
+                vm.bonuses = handleData(data);
                 vm.page = pagingParams.page;
             }
         	function onError(error) {

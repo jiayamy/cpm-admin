@@ -13,7 +13,7 @@
             parent: 'stat',
             url: '/consultant-bonus?page&contractId&consultantsNameId&statWeek&consultantsName',
             data: {
-                authorities: ['ROLE_STAT_PROJECT'],
+                authorities: ['ROLE_STAT_CONSULTANT_BONUS'],
                 pageTitle: 'cpmApp.consultantBonus.home.title'
             },
             views: {
@@ -62,7 +62,7 @@
             parent: 'consultant-bonus',
             url: '/queryDept?selectType&showChild',
             data: {
-                authorities: ['ROLE_STAT_PROJECT']
+                authorities: ['ROLE_STAT_CONSULTANT_BONUS']
             },
             onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
                 $uibModal.open({
@@ -90,7 +90,7 @@
         	parent: 'consultant-bonus',
         	url: '/contractRecord?page&contId',
         	data:{
-        		authorities: ['ROLE_STAT_PROJECT'],
+        		authorities: ['ROLE_STAT_CONSULTANT_BONUS'],
         		pageTitle: 'cpmApp.consultantBonus.contractRecord.title'
         	},
         	views:{

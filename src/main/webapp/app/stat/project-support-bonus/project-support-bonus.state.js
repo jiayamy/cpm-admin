@@ -13,6 +13,7 @@
             parent: 'stat',
             url: '/project-support-bonus?&statWeek&contractId&deptType',
             data: {
+            	authorities: ['ROLE_STAT_SUPPORT_BONUS'],
                 pageTitle: 'cpmApp.projectSupportBonus.home.title'
             },
             views: {
@@ -51,7 +52,7 @@
             parent: 'project-support-bonus',
             url: '/detail/{id}',
             data: {
-                authorities: ['ROLE_PROJECT_USER'],
+                authorities: ['ROLE_STAT_SUPPORT_BONUS'],
                 pageTitle: 'cpmApp.projectSupportBonus.detail.title'
             },
             views: {

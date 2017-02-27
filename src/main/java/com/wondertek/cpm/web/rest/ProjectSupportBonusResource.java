@@ -1,11 +1,7 @@
 package com.wondertek.cpm.web.rest;
 
-import io.swagger.annotations.ApiParam;
-
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.net.URLEncoder;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -38,19 +34,17 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.codahale.metrics.annotation.Timed;
+import com.wondertek.cpm.ExcelUtil;
 import com.wondertek.cpm.ExcelWrite;
 import com.wondertek.cpm.config.DateUtil;
 import com.wondertek.cpm.config.StringUtil;
-import com.wondertek.cpm.domain.ProductPrice;
-import com.wondertek.cpm.domain.ProjectOverall;
 import com.wondertek.cpm.domain.ProjectSupportBonus;
-import com.wondertek.cpm.domain.vo.ContractBudgetVo;
-import com.wondertek.cpm.domain.vo.ProjectOverallVo;
 import com.wondertek.cpm.domain.vo.ProjectSupportBonusVo;
 import com.wondertek.cpm.security.AuthoritiesConstants;
-import com.wondertek.cpm.service.ProjectOverallService;
 import com.wondertek.cpm.service.ProjectSupportBonusService;
 import com.wondertek.cpm.web.rest.util.PaginationUtil;
+
+import io.swagger.annotations.ApiParam;
 
 /**
  * REST controller for managing ProductPrice.
@@ -60,7 +54,6 @@ import com.wondertek.cpm.web.rest.util.PaginationUtil;
 public class ProjectSupportBonusResource {
 
     private final Logger log = LoggerFactory.getLogger(ProjectSupportBonusResource.class);
-    private final DecimalFormat doubleFormat = new DecimalFormat("#0.00");   
     @Inject
     private ProjectSupportBonusService projectSupportBonusService;
     
@@ -71,6 +64,7 @@ public class ProjectSupportBonusResource {
 	 */
     @GetMapping("/project-support-bonus")
     @Timed
+    @Secured(AuthoritiesConstants.ROLE_STAT_SUPPORT_BONUS)
     public ResponseEntity<List<ProjectSupportBonusVo>> getAllProjectSupportBonusByParams(
     		@RequestParam(value = "statWeek",required=false) Long statWeek,
     		@RequestParam(value = "contractId",required=false) Long contractId,
@@ -99,6 +93,7 @@ public class ProjectSupportBonusResource {
 
     @GetMapping("/project-support-bonus/queryDetail")
     @Timed
+    @Secured(AuthoritiesConstants.ROLE_STAT_SUPPORT_BONUS)
     public ResponseEntity<List<ProjectSupportBonusVo>> getProjectSupportBonusDetail(
     		@RequestParam(value = "contractId",required=false) Long contractId,
     		@ApiParam Pageable pageable) 
@@ -111,6 +106,7 @@ public class ProjectSupportBonusResource {
     
     @GetMapping("/project-support-bonus/{id}")
     @Timed
+    @Secured(AuthoritiesConstants.ROLE_STAT_SUPPORT_BONUS)
     public ResponseEntity<ProjectSupportBonus> getProjectSupportBonusById(@PathVariable Long id) {
         log.debug("REST request to get ProjectSupportBonus : {}", id);
         ProjectSupportBonus projectSupportBonus = projectSupportBonusService.findOne(id);
@@ -123,6 +119,7 @@ public class ProjectSupportBonusResource {
     
     @RequestMapping("/project-support-bonus/exportXls")
     @Timed
+    @Secured(AuthoritiesConstants.ROLE_STAT_SUPPORT_BONUS)
     public void exportXls(
     		HttpServletRequest request, HttpServletResponse response,
     		@RequestParam(value = "statWeek",required=false) Long statWeek,
@@ -175,7 +172,7 @@ public class ProjectSupportBonusResource {
      	String fileName = "项目支撑奖金" +"_" + currentDay + ".xlsx";
      	//写入sheet
     	ServletOutputStream outputStream = response.getOutputStream();
-    	response.setHeader("Content-Disposition","attachment;filename=" + new String(fileName.getBytes("gb2312"),"ISO8859-1"));
+    	response.setHeader("Content-Disposition","attachment;filename=" + ExcelUtil.getExportName(request, fileName));
     	response.setContentType("application/x-msdownload");
     	response.setCharacterEncoding("UTF-8");
     	

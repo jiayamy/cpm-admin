@@ -2,13 +2,12 @@
     "cpmApp": {
         "consultantBonus" : {
             "home": {
-                "title": "咨询奖金信息"
+                "title": "咨询项目信息"
             },
             "contractRecord":{
-            	"title":"咨询奖金统计详情"
+            	"title":"咨询项目信息详情"
             },
             "statWeek" : "截止日期",
-            "bonusRecord": "奖金记录",
             "transDetail" : "详情",
             "contractSerialNum" : "合同编号",
             "contractId": "合同主键",
@@ -19,7 +18,6 @@
             "consultantsShareRate": "项目分润比率",
             "currentBonus": "本期奖金",
             "accumulationBonus" : "累计已计提奖金",
-            "statWeek": "截止日期",
             "createTime": "创建时间",
             "statTime" : "统计日期"
         }

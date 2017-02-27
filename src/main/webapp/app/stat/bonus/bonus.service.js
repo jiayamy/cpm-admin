@@ -2,11 +2,11 @@
     'use strict';
     angular
         .module('cpmApp')
-        .factory('OverallBonus', OverallBonus);
+        .factory('Bonus', Bonus);
 
-    OverallBonus.$inject = ['$resource', 'DateUtils'];
+    Bonus.$inject = ['$resource', 'DateUtils'];
 
-    function OverallBonus ($resource, DateUtils) {
+    function Bonus ($resource, DateUtils) {
         var resourceUrl =  'api/bonus/:id';
 
         return $resource(resourceUrl, {}, {

@@ -40,6 +40,11 @@
 
         var cleanHttpErrorListener = $rootScope.$on('cpmApp.httpError', function (event, httpResponse) {
             var i;
+            if (!String.prototype.endsWith) {
+    			String.prototype.endsWith = function(suffix) {
+    				return this.indexOf(suffix, this.length - suffix.length) !== -1;
+    			};
+    		}
             event.stopPropagation();
             switch (httpResponse.status) {
             // connection refused, server not reachable

@@ -2,14 +2,8 @@ package com.wondertek.cpm.web.rest;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import javax.inject.Inject;
@@ -39,17 +33,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.codahale.metrics.annotation.Timed;
+import com.wondertek.cpm.ExcelUtil;
 import com.wondertek.cpm.ExcelWrite;
 import com.wondertek.cpm.config.DateUtil;
 import com.wondertek.cpm.config.StringUtil;
 import com.wondertek.cpm.domain.ConsultantsBonus;
-import com.wondertek.cpm.domain.vo.ChartReportVo;
 import com.wondertek.cpm.domain.vo.ConsultantBonusVo;
-import com.wondertek.cpm.domain.vo.SalesBonusVo;
 import com.wondertek.cpm.security.AuthoritiesConstants;
 import com.wondertek.cpm.service.ConsultantBonusService;
-import com.wondertek.cpm.web.rest.errors.CpmResponse;
-import com.wondertek.cpm.web.rest.util.HeaderUtil;
 import com.wondertek.cpm.web.rest.util.PaginationUtil;
 
 import io.swagger.annotations.ApiParam;
@@ -62,7 +53,6 @@ import io.swagger.annotations.ApiParam;
 public class ConsultantBonusResource {
 
 	private final Logger log = LoggerFactory.getLogger(ConsultantBonusResource.class);
-	private final DecimalFormat doubleFormat = new DecimalFormat("#0.00");
 	
 	@Inject
 	private ConsultantBonusService consultantBonusService;
@@ -76,7 +66,7 @@ public class ConsultantBonusResource {
      */
     @GetMapping("/consultant-bonus")
     @Timed
-    @Secured(AuthoritiesConstants.ROLE_STAT_PROJECT)
+    @Secured(AuthoritiesConstants.ROLE_STAT_CONSULTANT_BONUS)
     public ResponseEntity<List<ConsultantBonusVo>> getAllConsultantsBonus(
     		@RequestParam(value="contractId",required = false) String contractId,
     		@RequestParam(value="consultantsNameId",required = false) String consultantManId,
@@ -106,7 +96,7 @@ public class ConsultantBonusResource {
      */
     @GetMapping("/consultant-bonus/{id}")
     @Timed
-    @Secured(AuthoritiesConstants.ROLE_STAT_PROJECT)
+    @Secured(AuthoritiesConstants.ROLE_STAT_CONSULTANT_BONUS)
     public ResponseEntity<ConsultantsBonus> getConsultantBonus(@PathVariable Long id) {
         log.debug("REST request to get ConsultantBonus : {}", id);
         ConsultantsBonus consultantsBonus = consultantBonusService.findOne(id);
@@ -119,7 +109,7 @@ public class ConsultantBonusResource {
     
     @GetMapping("/consultant-bonus/queryConsultantRecord")
     @Timed
-    @Secured(AuthoritiesConstants.ROLE_STAT_PROJECT)
+    @Secured(AuthoritiesConstants.ROLE_STAT_CONSULTANT_BONUS)
     public ResponseEntity<List<ConsultantBonusVo>> queryConsultantRecord(
     			@RequestParam(value="contId",required = false) String contractId,
     			@ApiParam Pageable pageable) throws URISyntaxException{
@@ -147,7 +137,7 @@ public class ConsultantBonusResource {
      */
     @GetMapping("/consultant-bonus/exportXls")
     @Timed
-    @Secured(AuthoritiesConstants.ROLE_STAT_PROJECT)
+    @Secured(AuthoritiesConstants.ROLE_STAT_CONSULTANT_BONUS)
     public void exportXls(
 	    		HttpServletRequest request, HttpServletResponse response,
 	    		@RequestParam(value="contractId",required = false) Long contractId,
@@ -176,16 +166,16 @@ public class ConsultantBonusResource {
     			"本期奖金",
     			"累计已计提奖金"
     	};
-    	String fileName = "consultantBonus.xlsx";
+    	String fileName = "咨询.xlsx";
     	//写入sheet
     	ServletOutputStream outputStream = response.getOutputStream();
-    	response.setHeader("Content-Disposition","attachment;filename=" + fileName);
+    	response.setHeader("Content-Disposition","attachment;filename=" + ExcelUtil.getExportName(request, fileName));
     	response.setContentType("application/x-msdownload");
     	response.setCharacterEncoding("UTF-8");
     	
     	ExcelWrite excelWrite = new ExcelWrite();
     	//写入标题
-    	excelWrite.createSheetTitle("咨询奖金", 1, heads);
+    	excelWrite.createSheetTitle("咨询", 1, heads);
     	//写入数据
     	if(page != null){
     		handleSheetData(page,2,excelWrite);
@@ -198,7 +188,7 @@ public class ConsultantBonusResource {
      */
     @GetMapping("/consultant-bonus/contractRecord/exportXls")
     @Timed
-    @Secured(AuthoritiesConstants.ROLE_STAT_PROJECT)
+    @Secured(AuthoritiesConstants.ROLE_STAT_CONSULTANT_BONUS)
     public void exportRecordDetailXls(
 	    		HttpServletRequest request, HttpServletResponse response,
 	    		@RequestParam(value="contractId",required = false) Long contractId

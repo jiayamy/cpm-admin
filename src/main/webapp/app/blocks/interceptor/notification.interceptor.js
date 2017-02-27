@@ -8,12 +8,17 @@
     notificationInterceptor.$inject = ['$q', 'AlertService'];
 
     function notificationInterceptor ($q, AlertService) {
+    	if (!String.prototype.endsWith) {
+			String.prototype.endsWith = function(suffix) {
+				return this.indexOf(suffix, this.length - suffix.length) !== -1;
+			};
+		}
         var service = {
             response: response
         };
 
         return service;
-
+        
         function response (response) {
             var headers = Object.keys(response.headers()).filter(function (header) {
                 return header.endsWith('app-alert') || header.endsWith('app-params')

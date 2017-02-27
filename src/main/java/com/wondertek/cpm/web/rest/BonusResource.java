@@ -15,11 +15,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.xssf.usermodel.XSSFCell;
-import org.apache.poi.xssf.usermodel.XSSFCellStyle;
-import org.apache.poi.xssf.usermodel.XSSFRow;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -27,6 +22,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -34,11 +30,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.codahale.metrics.annotation.Timed;
+import com.wondertek.cpm.ExcelUtil;
 import com.wondertek.cpm.ExcelWrite;
 import com.wondertek.cpm.config.DateUtil;
 import com.wondertek.cpm.config.StringUtil;
 import com.wondertek.cpm.domain.Bonus;
 import com.wondertek.cpm.domain.vo.BonusVo;
+import com.wondertek.cpm.security.AuthoritiesConstants;
 import com.wondertek.cpm.service.BonusService;
 import com.wondertek.cpm.web.rest.util.PaginationUtil;
 
@@ -60,6 +58,7 @@ public class BonusResource {
 	 */
     @GetMapping("/bonus")
     @Timed
+    @Secured(AuthoritiesConstants.ROLE_STAT_BONUS)
     public ResponseEntity<List<BonusVo>> getAllBonusByParams(
     		@RequestParam(value = "statWeek",required=false) Long statWeek,
     		@RequestParam(value = "contractId",required=false) Long contractId,
@@ -86,6 +85,7 @@ public class BonusResource {
     
     @GetMapping("/bonus/queryDetail")
     @Timed
+    @Secured(AuthoritiesConstants.ROLE_STAT_BONUS)
     public ResponseEntity<List<BonusVo>> getBonusVoDetail(
     		@RequestParam(value = "contractId",required=false) Long contractId,
     		@ApiParam Pageable pageable) 
@@ -98,6 +98,7 @@ public class BonusResource {
     
     @GetMapping("/bonus/{id}")
     @Timed
+    @Secured(AuthoritiesConstants.ROLE_STAT_BONUS)
     public ResponseEntity<Bonus> getBonus(@PathVariable Long id) {
         log.debug("REST request to get Bonus : {}", id);
         Bonus bonus = bonusService.findOne(id);
@@ -110,6 +111,7 @@ public class BonusResource {
     
     @RequestMapping("/bonus/exportXls")
     @Timed
+    @Secured(AuthoritiesConstants.ROLE_STAT_BONUS)
     public void exportXls(
     		HttpServletRequest request,HttpServletResponse response,
     		@RequestParam(value = "statWeek",required=false) Long statWeek,
@@ -151,15 +153,15 @@ public class BonusResource {
 				"奖金合计"
 		};
 		//设置文件名
-		String fileName = "总体奖金" + "_" + currentDay + ".xlsx";
+		String fileName = "奖金总表" + "_" + currentDay + ".xlsx";
 		//写入sheet
 		ServletOutputStream outputStream = response.getOutputStream();
-		response.setHeader("Content-Disposition","attachment;filename=" + new String(fileName.getBytes("gb2312"),"ISO8859-1"));
+		response.setHeader("Content-Disposition","attachment;filename=" + ExcelUtil.getExportName(request, fileName));
     	response.setContentType("application/x-msdownload");
     	response.setCharacterEncoding("UTF-8");
     	
     	ExcelWrite excelWrite = new ExcelWrite();
-    	excelWrite.createSheetTitle("奖金总览", 1, heads);
+    	excelWrite.createSheetTitle("奖金总表", 1, heads);
     	//写入数据
     	if (list != null) {
     		handleSheetData(list,2,excelWrite);

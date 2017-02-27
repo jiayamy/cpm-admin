@@ -100,6 +100,30 @@ public final class AuthoritiesConstants {
 	 * 项目报表权限
 	 */
     public static final String ROLE_STAT_PROJECT = "ROLE_STAT_PROJECT";
+    /**
+	 * 奖金总表权限
+	 */
+    public static final String ROLE_STAT_BONUS = "ROLE_STAT_BONUS";
+    /**
+	 * 咨询项目信息权限
+	 */
+    public static final String ROLE_STAT_CONSULTANT_BONUS = "ROLE_STAT_CONSULTANT_BONUS";
+    /**
+	 * 项目总体情况控制
+	 */
+    public static final String ROLE_STAT_PROJECT_OVERALL = "ROLE_STAT_PROJECT_OVERALL";
+    /**
+	 * 项目支撑奖金
+	 */
+    public static final String ROLE_STAT_SUPPORT_BONUS = "ROLE_STAT_SUPPORT_BONUS";
+    /**
+	 * 销售内部采购成本权限
+	 */
+    public static final String ROLE_STAT_INTERNAL_COST = "ROLE_STAT_INTERNAL_COST";
+    /**
+	 * 销售项目信息权限
+	 */
+    public static final String ROLE_STAT_SALES_BONUS = "ROLE_STAT_SALES_BONUS";
     
     private AuthoritiesConstants() {
     }

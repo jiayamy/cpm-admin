@@ -1,10 +1,7 @@
 package com.wondertek.cpm.web.rest;
 
-import io.swagger.annotations.ApiParam;
-
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -37,16 +34,17 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.codahale.metrics.annotation.Timed;
+import com.wondertek.cpm.ExcelUtil;
 import com.wondertek.cpm.ExcelWrite;
 import com.wondertek.cpm.config.DateUtil;
 import com.wondertek.cpm.config.StringUtil;
-import com.wondertek.cpm.domain.ProductPrice;
 import com.wondertek.cpm.domain.ProjectOverall;
-import com.wondertek.cpm.domain.vo.ContractBudgetVo;
 import com.wondertek.cpm.domain.vo.ProjectOverallVo;
 import com.wondertek.cpm.security.AuthoritiesConstants;
 import com.wondertek.cpm.service.ProjectOverallService;
 import com.wondertek.cpm.web.rest.util.PaginationUtil;
+
+import io.swagger.annotations.ApiParam;
 
 /**
  * REST controller for managing ProductPrice.
@@ -56,7 +54,6 @@ import com.wondertek.cpm.web.rest.util.PaginationUtil;
 public class ProjectOverallResource {
 
     private final Logger log = LoggerFactory.getLogger(ProjectOverallResource.class);
-    private final DecimalFormat doubleFormat = new DecimalFormat("#0.00");   
     @Inject
     private ProjectOverallService projectOverallService;
     
@@ -67,6 +64,7 @@ public class ProjectOverallResource {
 	 */
     @GetMapping("/project-overall-controller")
     @Timed
+    @Secured(AuthoritiesConstants.ROLE_STAT_PROJECT_OVERALL)
     public ResponseEntity<List<ProjectOverallVo>> getAllProjectOverallByParams(
     		@RequestParam(value = "statWeek",required=false) Long statWeek,
     		@RequestParam(value = "contractId",required=false) Long contractId,
@@ -95,6 +93,7 @@ public class ProjectOverallResource {
 
     @GetMapping("/project-overall-controller/queryDetail")
     @Timed
+    @Secured(AuthoritiesConstants.ROLE_STAT_PROJECT_OVERALL)
     public ResponseEntity<List<ProjectOverallVo>> getProjectOverallDetail(
     		@RequestParam(value = "contractId",required=false) Long contractId,
     		@ApiParam Pageable pageable) 
@@ -107,6 +106,7 @@ public class ProjectOverallResource {
     
     @GetMapping("/project-overall-controller/{id}")
     @Timed
+    @Secured(AuthoritiesConstants.ROLE_STAT_PROJECT_OVERALL)
     public ResponseEntity<ProjectOverall> getProjectOverall(@PathVariable Long id) {
         log.debug("REST request to get ProjectOverall : {}", id);
         ProjectOverall projectOverall = projectOverallService.findOne(id);
@@ -119,6 +119,7 @@ public class ProjectOverallResource {
     
     @RequestMapping("/project-overall/exportXls")
     @Timed
+    @Secured(AuthoritiesConstants.ROLE_STAT_PROJECT_OVERALL)
     public void exportXls(
     		HttpServletRequest request, HttpServletResponse response,
     		@RequestParam(value = "statWeek",required=false) Long statWeek,
@@ -172,15 +173,15 @@ public class ProjectOverallResource {
      			"毛利率"
      	};
      	//设置文件名
-     	String fileName = "项目总体控制" + "_" + currentDay + ".xlsx";
+     	String fileName = "项目总体情况控制表" + "_" + currentDay + ".xlsx";
      	//写入sheet
     	ServletOutputStream outputStream = response.getOutputStream();
-    	response.setHeader("Content-Disposition","attachment;filename=" + new String(fileName.getBytes("gb2312"),"ISO8859-1"));
+    	response.setHeader("Content-Disposition","attachment;filename=" + ExcelUtil.getExportName(request, fileName));
     	response.setContentType("application/x-msdownload");
     	response.setCharacterEncoding("UTF-8");
     	
     	ExcelWrite excelWrite = new ExcelWrite();
-    	excelWrite.createSheetTitle("项目总体控制", 1, heads);
+    	excelWrite.createSheetTitle("项目总体情况控制表", 1, heads);
     	//写入数据
     	if(list != null){
     		handleSheetData(list,2,excelWrite);

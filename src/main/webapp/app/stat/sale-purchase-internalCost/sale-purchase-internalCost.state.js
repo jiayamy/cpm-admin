@@ -13,7 +13,7 @@
             parent: 'stat',
             url: '/sale-purchase-internalCost?page&contractId&userNameId&statWeek&deptType&userName',
             data: {
-                authorities: ['ROLE_STAT_PROJECT'],
+                authorities: ['ROLE_STAT_INTERNAL_COST'],
                 pageTitle: 'cpmApp.salePurchaseInternalCost.home.title'
             },
             views: {
@@ -63,7 +63,7 @@
             parent: 'sale-purchase-internalCost',
             url: '/queryDept?selectType&showChild',
             data: {
-                authorities: ['ROLE_STAT_PROJECT']
+                authorities: ['ROLE_STAT_INTERNAL_COST']
             },
             onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
                 $uibModal.open({
@@ -91,7 +91,7 @@
         	parent: 'sale-purchase-internalCost',
         	url: '/detail?page&contId',
         	data:{
-        		authorities: ['ROLE_STAT_PROJECT'],
+        		authorities: ['ROLE_STAT_INTERNAL_COST'],
         		pageTitle: 'cpmApp.consultantBonus.contractRecord.title'
         	},
         	views:{

@@ -3,14 +3,14 @@
 
     angular
         .module('cpmApp')
-        .controller('OverallBonusDetailController', OverallBonusDetailController);
+        .controller('BonusDetailController', BonusDetailController);
 
-    OverallBonusDetailController.$inject = ['$scope', '$rootScope', '$stateParams', 'previousState', 'entity', 'OverallBonus','ParseLinks','paginationConstants','AlertService'];
+    BonusDetailController.$inject = ['$scope', '$rootScope', '$stateParams', 'previousState', 'entity', 'Bonus','ParseLinks','paginationConstants','AlertService'];
 
-    function OverallBonusDetailController($scope, $rootScope, $stateParams, previousState, entity, OverallBonus,ParseLinks,paginationConstants,AlertService) {
+    function BonusDetailController($scope, $rootScope, $stateParams, previousState, entity, Bonus,ParseLinks,paginationConstants,AlertService) {
         var vm = this;
         vm.itemsPerPage = paginationConstants.itemsPerPage;
-        vm.overallBonus = entity;
+        vm.bonus = entity;
         vm.previousState = previousState.name;
         vm.find = find;
         vm.page= 1;
@@ -21,7 +21,7 @@
         	if(entity.contractId == undefined){
         		entity.contractId = "";
         	}
-        	OverallBonus.queryDetail({
+        	Bonus.queryDetail({
         		contractId: entity.contractId,
         		page: vm.page-1,
                 size: vm.itemsPerPage,
@@ -32,7 +32,7 @@
             vm.links = ParseLinks.parse(headers('link'));
             vm.totalItems = headers('X-Total-Count');
             vm.queryCount = vm.totalItems;
-            vm.overallBonuses = handleData(data);
+            vm.bonuses = handleData(data);
         }
     	
     	function onError(error) {

@@ -1,18 +1,18 @@
 {
     "cpmApp": {
-        "overallBonus" : {
+        "bonus" : {
             "home": {
-                "title": "奖金总览",
+                "title": "奖金总表",
                 "export": "导出"
             },
             "detail": {
-                "title": "奖金总览详情"
+                "title": "奖金总表详情"
             },
             "statWeek" : "统计日期",
             "toDate": "截止日期",
             "serialNum": "合同编号",
             "contractResponse" : "合同负责人",
-            "contractId" : "合同",
+            "contractId" : "合同编号",
             "contractAmount": "合同金额",
             "salesBonus" : "当期销售奖金",
             "projectBonus" : "当期项目奖金",

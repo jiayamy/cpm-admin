@@ -45,13 +45,13 @@
             },
             "stat":{
             	"main":"统计报表",
-            	"consultantBonus": "咨询奖金",
+            	"consultantBonus": "咨询项目信息",
             	"salesBonus":"销售项目信息",
                 "contractWeeklyStat": "合同周统计",
                 "contractMonthlyStat": "合同月统计",
                 "projectWeeklyStat": "项目周统计",
                 "projectMonthlyStat": "项目月统计",
-                "bonus": "奖金总览",
+                "bonus": "奖金总表",
                 "salePurchaseInternalCost": "销售内部采购成本",
                 "projectSupporBonus": "项目支撑奖金"
             },
