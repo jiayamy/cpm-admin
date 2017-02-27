@@ -15,6 +15,7 @@
                 <tr callback="vm.transition()">
                     <th style="width:80px;"><span data-translate="cpmApp.projectSupportBonus.serialNum">Serial Num</span></th>
                     <th style="width:80px;"><span data-translate="cpmApp.projectSupportBonus.deptType">Dept Type</span></th>
+                    <th style="width:80px;"><span data-translate="cpmApp.projectSupportBonus.statWeek">Stat Week</span></th>
                     <th style="width:110px;"><span data-translate="cpmApp.projectSupportBonus.contractAmount">Contract Amount</span></th>
                     <th style="width:60px;"><span data-translate="cpmApp.projectSupportBonus.taxRate">Tax Rate</span></th>
 					<th style="width:60px;"><span data-translate="cpmApp.projectSupportBonus.acceptanceRate">Acceptance Rate</span></th>
@@ -32,6 +33,7 @@
                 <tr ng-repeat="projectSupportBonus in vm.projectSupportBonuses track by projectSupportBonus.id">
                     <td><a ui-sref="project-support-bonus-detail({id:projectSupportBonus.id})">{{projectSupportBonus.serialNum}}</a></td>
                     <td>{{projectSupportBonus.deptTypeName}}</td>
+                    <td>{{projectSupportBonus.statWeek}}</td>
                     <td>{{projectSupportBonus.contractAmount}}</td>
                     <td>{{projectSupportBonus.taxRate}}</td>
                     <td>{{projectSupportBonus.acceptanceRate}}</td>

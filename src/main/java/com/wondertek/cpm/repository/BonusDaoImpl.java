@@ -87,6 +87,7 @@ public class BonusDaoImpl extends GenericDaoImpl<Bonus, Long> implements BonusDa
 			whereSql.append(" and wbs.contract_id = ?");
 			params.add(bonus.getContractId());
 		}
+		whereSql.append(" order by wbs.stat_week desc");
 		querySql.append(whereSql.toString());
 		countSql.append(whereSql.toString());
 		whereSql.setLength(0);
@@ -144,6 +145,7 @@ public class BonusDaoImpl extends GenericDaoImpl<Bonus, Long> implements BonusDa
 			whereSql.append(" where wbs.contract_id = ?");
 			params.add(contractId);
 		}
+		whereSql.append(" order by wbs.stat_week desc");
 		querySql.append(whereSql.toString());
 		countSql.append(whereSql.toString());
 		whereSql.setLength(0);
