@@ -38,9 +38,14 @@ public class SalesAnnualIndexService {
     }
     @Transactional(readOnly = true) 
     public SalesAnnualIndex findOne(Long id) {
-        log.debug("Request to get SalesBonus : {}", id);
+        log.debug("Request to get SalesAnnualIndex : {}", id);
         SalesAnnualIndex salesAnnualIndex = salesAnnualIndexRepository.findOne(id);
         return salesAnnualIndex;
+    }
+    
+    public void delete(Long id) {
+        log.debug("Request to delete SalesAnnualIndex : {}", id);
+        salesAnnualIndexRepository.delete(id);
     }
     /**
      * 列表页
@@ -66,4 +71,11 @@ public class SalesAnnualIndexService {
     	}
     	return returnMap;
     }
+    /**
+     * 获取用户对应年份记录
+     * @return
+     */
+	public SalesAnnualIndex findByStatYearAndUserId(Long statYear, Long userId) {
+		return salesAnnualIndexRepository.findByStatYearAndUserId(statYear,userId);
+	}
 }
