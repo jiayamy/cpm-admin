@@ -367,7 +367,7 @@
             parent: 'contract-budget.createProject',
             url: '/queryDept?selectType&showChild',
             data: {
-                authorities: ['ROLE_CONTRACT_BUDGET']
+                authorities: ['ROLE_PROJECT_INFO']
             },
             onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
                 $uibModal.open({
