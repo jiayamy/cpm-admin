@@ -247,7 +247,7 @@ public class AccountScheduledJob {
 				Integer contractType = contractInfo.getType();
 				//收款金额
 				Double contractReceiveTotal = 0D;
-				List<ContractReceive> contractReceives = contractReceiveRepository.findAllByContractIdAndCreateTimeBefore(contractId, endTime);
+				List<ContractReceive> contractReceives = contractReceiveRepository.findAllByContractIdAndReceiveDayBefore(contractId, statWeek);
 				if(contractReceives != null && contractReceives.size() > 0){
 					for(ContractReceive contractReceive : contractReceives){
 						contractReceiveTotal += contractReceive.getReceiveTotal();
@@ -377,7 +377,7 @@ public class AccountScheduledJob {
 								projectSupportCost.setUserId(userTimesheet.getUserId());
 								projectSupportCost.setSerialNum(user.getSerialNum());
 								projectSupportCost.setUserName(userTimesheet.getUserName());
-								projectSupportCost.setGrade(user.getGrade());
+								projectSupportCost.setGrade(user.getGrade() == null ? 1 : user.getGrade());
 								//结算成本
 								Double settlementCost = StringUtil.nullToDouble(externalQuotationMap.get(user.getGrade()));
 								projectSupportCost.setSettlementCost(settlementCost);
@@ -726,6 +726,6 @@ public class AccountScheduledJob {
 		}else{
 			log.info("No ContractInfo Founded");
 		}
-		log.info("=====end Account Scheduled=====");
+		log.info("=====end Account Scheduled=====statTime:" + DateUtil.formatDate(DateUtil.DATE_FORMAT, statTime));
 	}
 }
