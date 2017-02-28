@@ -380,6 +380,7 @@ public class ProjectInfoDaoImpl extends GenericDaoImpl<ProjectInfo, Long> implem
 			params.add(deptInfo.getId());
 		}
 		querySql.append(")");
+		querySql.append(" order by wpi.id desc");
 		
 		List<Object[]> list = this.queryAllSql(querySql.toString(), params.toArray());
 		

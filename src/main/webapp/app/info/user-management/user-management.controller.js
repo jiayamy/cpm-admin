@@ -34,9 +34,10 @@
         vm.searchQuery.deptId = pagingParams.deptId;
         vm.searchQuery.deptName = pagingParams.deptName;
         vm.searchQuery.workArea = pagingParams.workArea;
+        vm.searchQuery.grade = pagingParams.grade;
         if (vm.searchQuery.serialNum == undefined&& vm.searchQuery.lastName == undefined
         		&& vm.searchQuery.loginName == undefined && vm.searchQuery.deptId == undefined
-        		&& vm.searchQuery.workArea == undefined){
+        		&& vm.searchQuery.workArea == undefined && vm.searchQuery.grade == undefined){
         	vm.haveSearch = null;
         }else{
         	vm.haveSearch = true;
@@ -65,7 +66,9 @@
                 vm.clearUser();
             });
         }
-
+        User.queryAllGrade({},function onSuccess(data, headers) {
+        	vm.grades = data;
+    	});
         function loadAll () {
             User.query({
             	loginName:pagingParams.loginName,
@@ -73,6 +76,7 @@
             	serialNum:pagingParams.serialNum,
             	deptId:pagingParams.deptId,
             	workArea:pagingParams.workArea,
+            	grade:pagingParams.grade,
                 page: pagingParams.page - 1,
                 size: vm.itemsPerPage,
                 sort: sort()
@@ -129,13 +133,14 @@
                 loginName:vm.searchQuery.loginName,
                 deptId:vm.searchQuery.deptId,
                 deptName:vm.searchQuery.deptName,
-                workArea:vm.searchQuery.workArea
+                workArea:vm.searchQuery.workArea,
+                grade:vm.searchQuery.grade
             });
         }
         function search() {
         	if (vm.searchQuery.serialNum == undefined&& vm.searchQuery.lastName == undefined
             		&& vm.searchQuery.loginName == undefined&& vm.searchQuery.deptId == undefined
-            		&& vm.searchQuery.workArea == undefined){
+            		&& vm.searchQuery.workArea == undefined && vm.searchQuery.grade == undefined){
                 return vm.clear();
             }
             vm.links = null;

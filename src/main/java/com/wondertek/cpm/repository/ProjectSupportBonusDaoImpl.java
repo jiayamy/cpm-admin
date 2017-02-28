@@ -86,11 +86,11 @@ public class ProjectSupportBonusDaoImpl extends GenericDaoImpl<ProjectSupportBon
 			whereSql.append(" and wpsb.dept_type = ?");
 			params.add(projectSupportBonus.getDeptType());
 		}
-		whereSql.append(" order by wpsb.stat_week desc");
 		querySql.append(whereSql.toString());
 		countSql.append(whereSql.toString());
 		whereSql.setLength(0);
 		whereSql = null;
+		querySql.append(" order by wpsb.stat_week desc");
 		Page<Object[]> page = this.querySqlPage(querySql.toString(), countSql.toString(), params.toArray(), pageable);
 		List<ProjectSupportBonusVo> returnList = new ArrayList<ProjectSupportBonusVo>();
 		if(page.getContent() != null){
@@ -147,11 +147,11 @@ public class ProjectSupportBonusDaoImpl extends GenericDaoImpl<ProjectSupportBon
 			whereSql.append(" where wpsb.contract_id = ?");
 			params.add(contractId);
 		}
-		whereSql.append(" order by wpsb.stat_week desc");
 		querySql.append(whereSql.toString());
 		countSql.append(whereSql.toString());
 		whereSql.setLength(0);
 		whereSql = null;
+		querySql.append(" order by wpsb.stat_week desc");
 		
 		Page<Object[]> page = this.querySqlPage(querySql.toString(), countSql.toString(), params.toArray(), pageable);
 		List<ProjectSupportBonusVo> returList = new ArrayList<ProjectSupportBonusVo>();

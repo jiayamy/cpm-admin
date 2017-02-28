@@ -35,6 +35,7 @@ import com.wondertek.cpm.domain.Authority;
 import com.wondertek.cpm.domain.DeptInfo;
 import com.wondertek.cpm.domain.User;
 import com.wondertek.cpm.repository.DeptInfoRepository;
+import com.wondertek.cpm.repository.ExternalQuotationRepository;
 import com.wondertek.cpm.repository.UserRepository;
 import com.wondertek.cpm.repository.search.UserSearchRepository;
 import com.wondertek.cpm.security.AuthoritiesConstants;
@@ -90,6 +91,8 @@ public class UserResource {
 
     @Inject
     private UserSearchRepository userSearchRepository;
+    @Inject
+    private ExternalQuotationRepository externalQuotationRepository;
 
     /**
      * POST  /users  : Creates a new user.
@@ -187,6 +190,7 @@ public class UserResource {
     		@RequestParam(value = "lastName",required=false) String lastName, 
     		@RequestParam(value = "deptId",required=false) Long deptId, 
     		@RequestParam(value = "workArea",required=false) String workArea, 
+    		@RequestParam(value = "grade",required=false) Integer grade,
     		@ApiParam Pageable pageable)
         throws URISyntaxException {
     	User user = new User();
@@ -195,6 +199,7 @@ public class UserResource {
     	user.setLastName(lastName);
     	user.setDeptId(deptId);
     	user.setWorkArea(workArea);
+    	user.setGrade(grade);
     	
 //        Page<User> page = userRepository.findAllWithAuthorities(pageable);
         Page<User> page = userService.getUserPage(user,pageable);
@@ -272,4 +277,11 @@ public class UserResource {
         return new ResponseEntity<>(page, null, HttpStatus.OK);
     }
     
+    @GetMapping("/_usersGrade/users/queryAll")
+    @Timed
+    @Secured(AuthoritiesConstants.ROLE_INFO_BASIC)
+    public ResponseEntity<List<Integer>> queryAllGrade() {
+    	List<Integer> all = externalQuotationRepository.findGradeOrderByGrade();
+        return new ResponseEntity<>(all, null, HttpStatus.OK);
+    }
 }
