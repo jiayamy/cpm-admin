@@ -72,6 +72,7 @@
             resolve: {
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                     $translatePartialLoader.addPart('productPrice');
+                    $translatePartialLoader.addPart('global');
                     return $translate.refresh();
                 }],
                 entity: ['$stateParams', 'ProductPrice', function($stateParams, ProductPrice) {
@@ -103,6 +104,7 @@
             resolve: {
             	translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                     $translatePartialLoader.addPart('productPrice');
+                    $translatePartialLoader.addPart('global');
                     return $translate.refresh();
                 }],
                 entity: ['ProductPrice','$stateParams', function(ProductPrice,$stateParams) {
@@ -134,6 +136,7 @@
             resolve: {
             	translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                     $translatePartialLoader.addPart('productPrice');
+                    $translatePartialLoader.addPart('global');
                     return $translate.refresh();
                 }],
                 entity: function () {
@@ -176,6 +179,7 @@
             resolve: {
             	translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
             		$translatePartialLoader.addPart('productPrice');
+            		$translatePartialLoader.addPart('global');
 	                return $translate.refresh();
             	}],
                 entity: ['ProductPrice','$stateParams', function(ProductPrice,$stateParams) {

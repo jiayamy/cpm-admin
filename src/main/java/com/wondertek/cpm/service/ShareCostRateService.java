@@ -47,8 +47,11 @@ public class ShareCostRateService {
     	return shareCostRateDao.getUserPage(shareCostRate, pageable);
 	}
 	public void delete(Long id) {
-		log.debug("Request to delete BonusRate : {}", id);
+		log.debug("Request to delete ShareCostRate : {}", id);
 		shareCostRateRepository.delete(id);
 		
+	}
+	public ShareCostRate findByParams(Integer contractType, Long deptType) {
+		return shareCostRateRepository.findByContactTypeAndDeptType(contractType,deptType);
 	}
 }

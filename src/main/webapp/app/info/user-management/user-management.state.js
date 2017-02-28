@@ -11,7 +11,7 @@
         $stateProvider
         .state('user-management', {
             parent: 'info',
-            url: '/user-management?page&sort&loginName&serialNum&lastName&workArea&deptId&deptName',
+            url: '/user-management?page&sort&loginName&serialNum&lastName&workArea&deptId&deptName&grade',
             data: {
                 authorities: ['ROLE_INFO_BASIC'],
                 pageTitle: 'userManagement.home.title'
@@ -37,7 +37,8 @@
                 lastName:null,
                 deptId:null,
                 deptName:null,
-                workArea:null
+                workArea:null,
+                grade:null
             },
             resolve: {
                 pagingParams: ['$stateParams', 'PaginationUtil', function ($stateParams, PaginationUtil) {
@@ -51,12 +52,14 @@
                         lastName: $stateParams.lastName,
                         deptId: $stateParams.deptId,
                         deptName: $stateParams.deptName,
-                        workArea: $stateParams.workArea
+                        workArea: $stateParams.workArea,
+                        grade: $stateParams.grade
                     };
                 }],
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                     $translatePartialLoader.addPart('user-management');
                     $translatePartialLoader.addPart('deptInfo');
+                    $translatePartialLoader.addPart('global');
                     return $translate.refresh();
                 }]
 
@@ -107,6 +110,7 @@
             resolve: {
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                     $translatePartialLoader.addPart('user-management');
+                    $translatePartialLoader.addPart('global');
                     return $translate.refresh();
                 }]
             }
@@ -128,6 +132,7 @@
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                     $translatePartialLoader.addPart('user-management');
                     $translatePartialLoader.addPart('deptInfo');
+                    $translatePartialLoader.addPart('global');
                     return $translate.refresh();
                 }],
                 entity: function () {
@@ -195,6 +200,7 @@
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                     $translatePartialLoader.addPart('user-management');
                     $translatePartialLoader.addPart('deptInfo');
+                    $translatePartialLoader.addPart('global');
                     return $translate.refresh();
                 }],
                 entity: ['$stateParams','User', function($stateParams,User) {

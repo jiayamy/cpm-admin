@@ -186,6 +186,7 @@ public class ProjectOverallDaoImpl extends GenericDaoImpl<ProjectOverall, Long> 
 			params.add(contractId);
 		}
 		querySql.append(whereSql.toString());
+		querySql.append(" order by wpo.stat_week desc");
 		countSql.append(whereSql.toString());
 		whereSql.setLength(0);
 		whereSql = null;

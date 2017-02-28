@@ -182,6 +182,8 @@ public class ContractBudgetDaoImpl extends GenericDaoImpl<ContractBudget, Long> 
 		}
 		
 		queryHql.append(")");
+		queryHql.append(" order by wci.id desc");
+		
 		List<Object[]> list = this.queryAllHql(queryHql.toString(), params.toArray());
 		List<LongValue> resultList = new ArrayList<LongValue>();
 		if (list != null) {

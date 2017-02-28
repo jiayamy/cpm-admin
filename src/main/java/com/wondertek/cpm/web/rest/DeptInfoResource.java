@@ -159,7 +159,9 @@ public class DeptInfoResource {
         }
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert("deptInfo", id.toString())).build();
     }
-
+    /**
+     * 获取部门或部门上的用户列表
+     */
     @GetMapping("/dept-infos/getDeptAndUserTree")
     @Timed
     @Secured(AuthoritiesConstants.USER)
@@ -181,7 +183,9 @@ public class DeptInfoResource {
         List<DeptTree> list = deptInfoService.getDeptAndUserTree(selectType,showChild,showUser);
         return new ResponseEntity<>(list, null, HttpStatus.OK);
     }
-    
+    /**
+     * 获取所有的部门列表树结构
+     */
     @GetMapping("/dept-infos/getDeptTree")
     @Timed
     @Secured(AuthoritiesConstants.USER)

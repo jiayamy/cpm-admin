@@ -54,6 +54,7 @@
                     $translatePartialLoader.addPart('projectTimesheet');
                     $translatePartialLoader.addPart('contractTimesheet');
                     $translatePartialLoader.addPart('deptInfo');
+                    $translatePartialLoader.addPart('global');
                     return $translate.refresh();
                 }]
             }
@@ -103,6 +104,7 @@
             resolve: {
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                     $translatePartialLoader.addPart('projectTimesheet');
+                    $translatePartialLoader.addPart('global');
                     return $translate.refresh();
                 }],
                 entity: ['$stateParams', 'ProjectTimesheet', function($stateParams, ProjectTimesheet) {
@@ -136,6 +138,7 @@
                     $translatePartialLoader.addPart('projectTimesheet');
                     $translatePartialLoader.addPart('contractTimesheet');
                     $translatePartialLoader.addPart('userTimesheet');
+                    $translatePartialLoader.addPart('global');
                     
                     return $translate.refresh();
                 }],
@@ -170,7 +173,7 @@
                 	$translatePartialLoader.addPart('projectTimesheet');
                     $translatePartialLoader.addPart('contractTimesheet');
                     $translatePartialLoader.addPart('userTimesheet');
-                    
+                    $translatePartialLoader.addPart('global');
                     return $translate.refresh();
                 }],
                 entity: ['$stateParams', 'ProjectTimesheet', function($stateParams, ProjectTimesheet) {

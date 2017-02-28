@@ -101,6 +101,7 @@
             resolve: {
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                     $translatePartialLoader.addPart('contractUser');
+                    $translatePartialLoader.addPart('global');
                     return $translate.refresh();
                 }],
                 entity: ['$stateParams', 'ContractUser', function($stateParams, ContractUser) {
@@ -134,6 +135,7 @@
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                 	$translatePartialLoader.addPart('contractUser');
                     $translatePartialLoader.addPart('deptInfo');
+                    $translatePartialLoader.addPart('global');
                     return $translate.refresh();
                 }],
                 entity: ['ContractUser','$stateParams', function(ContractUser,$stateParams) {
@@ -196,6 +198,7 @@
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                 	$translatePartialLoader.addPart('contractUser');
                     $translatePartialLoader.addPart('deptInfo');
+                    $translatePartialLoader.addPart('global');
                     return $translate.refresh();
                 }],
                 entity: function () {
@@ -270,6 +273,7 @@
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                 	$translatePartialLoader.addPart('contractUser');
                     $translatePartialLoader.addPart('deptInfo');
+                    $translatePartialLoader.addPart('global');
                     return $translate.refresh();
                 }],
                 entity: ['ContractUser','$stateParams', function(ContractUser,$stateParams) {

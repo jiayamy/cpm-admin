@@ -77,6 +77,7 @@
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                     $translatePartialLoader.addPart('userCost');
                     $translatePartialLoader.addPart('deptInfo');
+                    $translatePartialLoader.addPart('global');
                     return $translate.refresh();
                 }],
                 entity: ['$stateParams', 'UserCost', function($stateParams, UserCost) {
@@ -109,6 +110,7 @@
 	            translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
 	                $translatePartialLoader.addPart('userCost');
 	                $translatePartialLoader.addPart('deptInfo');
+	                $translatePartialLoader.addPart('global');
 	                return $translate.refresh();
 	            }],
 	            entity: ['$stateParams', 'UserCost', function($stateParams, UserCost) {
@@ -129,7 +131,7 @@
             parent: 'user-cost-detail.edit',
             url: '/queryDept?selectType&showChild',
             data: {
-                authorities: ['ROLE_PROJECT_INFO']
+                authorities: ['ROLE_INFO_USERCOST']
             },
             onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
                 $uibModal.open({
@@ -171,6 +173,7 @@
             	translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                     $translatePartialLoader.addPart('userCost');
                     $translatePartialLoader.addPart('deptInfo');
+                    $translatePartialLoader.addPart('global');
                     return $translate.refresh();
                 }],
                 entity: function () {
@@ -202,7 +205,7 @@
             parent: 'user-cost.new',
             url: '/queryDept?selectType&showChild',
             data: {
-                authorities: ['ROLE_PROJECT_INFO']
+                authorities: ['ROLE_INFO_USERCOST']
             },
             onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
                 $uibModal.open({
@@ -243,6 +246,7 @@
             	translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                     $translatePartialLoader.addPart('userCost');
                     $translatePartialLoader.addPart('deptInfo');
+                    $translatePartialLoader.addPart('global');
                     return $translate.refresh();
                 }],
                 entity: ['$stateParams','UserCost', function($stateParams,UserCost) {
@@ -263,7 +267,7 @@
             parent: 'user-cost.edit',
             url: '/queryDept?selectType&showChild',
             data: {
-                authorities: ['ROLE_PROJECT_INFO']
+                authorities: ['ROLE_INFO_USERCOST']
             },
             onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
                 $uibModal.open({
@@ -328,6 +332,7 @@
             	translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                     $translatePartialLoader.addPart('userCost');
 //                    $translatePartialLoader.addPart('deptInfo');
+                    $translatePartialLoader.addPart('global');
                     return $translate.refresh();
                 }],
 //            ,

@@ -163,10 +163,12 @@ public class DeptTypeResource {
         HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/dept-types");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
-
+    /**
+     * 获取所有的部门类型列表
+     */
     @GetMapping("/dept-types/forCombox")
     @Timed
-    @Secured(AuthoritiesConstants.ROLE_INFO_BASIC)
+    @Secured(AuthoritiesConstants.USER)
     public ResponseEntity<List<LongValue>> getAllForCombox(@ApiParam Pageable pageable)
         throws URISyntaxException {
         log.debug("REST request to get a page of getAllForCombox");

@@ -2,6 +2,18 @@
     <h2 data-translate="cpmApp.salesAnnualIndex.home.title">Sales Annual Index</h2>
     <jhi-alert></jhi-alert>
     <div class="container-fluid">
+    	<div class="row form-horizontal">
+        	<div class="form-group">
+	            <div class="col-xs-4">
+	                <button class="btn btn-primary" ui-sref="sales-annualIndex.new" >
+	                    <span class="glyphicon glyphicon-plus"></span>
+	                    <span class=""  data-translate="cpmApp.salesAnnualIndex.home.createLabel">
+	                        Create new Sales Annual Index
+	                    </span>
+	                </button>
+	            </div>
+			</div>
+        </div>
         <form name="searchForm" class="form-horizontal">
 	     	<div class="form-group">
 	        	<div class="col-sm-4">
@@ -60,6 +72,7 @@
                     <th jh-sort-by="wsai.userName"><span data-translate="cpmApp.salesAnnualIndex.userName">Sales Man</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="wsai.annualIndex"><span data-translate="cpmApp.salesAnnualIndex.annualIndex">Annual Index</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="wsai.updateTime"><span data-translate="cpmApp.salesAnnualIndex.updateTime">Update Time</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th></th>
                 </tr>
             </thead>
             <tbody>
@@ -68,6 +81,15 @@
                     <td>{{salesAnnualIndex.userName}}</td>
                     <td>{{salesAnnualIndex.annualIndex}}</td>
                     <td>{{salesAnnualIndex.updateTime | date:'medium'}}</td>
+                    <td class="text-right">
+                    	<div class="btn-group flex-btn-group-container">
+                            <button type="submit"
+                                    ui-sref="sales-annualIndex.edit({id:salesAnnualIndex.id})"
+                                    class="btn btn-primary btn-sm">
+                                <span class="glyphicon glyphicon-pencil"></span>
+                            </button>
+                        </div>
+                    </td>
                 </tr>
             </tbody>
         </table>

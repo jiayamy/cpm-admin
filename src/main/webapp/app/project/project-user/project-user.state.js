@@ -101,6 +101,7 @@
             resolve: {
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                     $translatePartialLoader.addPart('projectUser');
+                    $translatePartialLoader.addPart('global');
                     return $translate.refresh();
                 }],
                 entity: ['$stateParams', 'ProjectUser', function($stateParams, ProjectUser) {
@@ -134,6 +135,7 @@
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                     $translatePartialLoader.addPart('projectUser');
                     $translatePartialLoader.addPart('deptInfo');
+                    $translatePartialLoader.addPart('global');
                     return $translate.refresh();
                 }],
                 entity: ['$stateParams', 'ProjectUser', function($stateParams, ProjectUser) {
@@ -196,6 +198,7 @@
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                     $translatePartialLoader.addPart('projectUser');
                     $translatePartialLoader.addPart('deptInfo');
+                    $translatePartialLoader.addPart('global');
                     return $translate.refresh();
                 }],
                 entity: function () {
@@ -270,6 +273,7 @@
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                     $translatePartialLoader.addPart('projectUser');
                     $translatePartialLoader.addPart('deptInfo');
+                    $translatePartialLoader.addPart('global');
                     return $translate.refresh();
                 }],
                 entity: ['ProjectUser','$stateParams', function(ProjectUser,$stateParams) {

@@ -74,6 +74,7 @@
             resolve: {
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                     $translatePartialLoader.addPart('purchaseItem');
+                    $translatePartialLoader.addPart('global');
                     return $translate.refresh();
                 }],
                 entity: ['$stateParams', 'PurchaseItem', function($stateParams, PurchaseItem) {
@@ -105,6 +106,7 @@
             resolve: {
             	translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                     $translatePartialLoader.addPart('purchaseItem');
+                    $translatePartialLoader.addPart('global');
                     return $translate.refresh();
                 }],
                 entity: ['PurchaseItem','$stateParams', function(PurchaseItem,$stateParams) {
@@ -140,6 +142,7 @@
            	 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                     $translatePartialLoader.addPart('purchaseItem');
                     $translatePartialLoader.addPart('productPrice');
+                    $translatePartialLoader.addPart('global');
                     return $translate.refresh();
                 }],
                 entity: function () {
@@ -184,6 +187,7 @@
             parent: 'purchase-item.new',
             url: '/queryProductPrice?selectName',
             data: {
+            	authorities: ['ROLE_CONTRACT_PURCHASE'],
                 pageTitle: 'cpmApp.projectInfo.home.title'
             },
             onEnter: ['$stateParams','$state','$uibModal',function($stateParams,$state,$uibModal){
@@ -233,6 +237,7 @@
             	translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
             		$translatePartialLoader.addPart('purchaseItem');
             		$translatePartialLoader.addPart('productPrice');
+            		$translatePartialLoader.addPart('global');
                     return $translate.refresh();
                 }],
                 entity: ['PurchaseItem','$stateParams', function(PurchaseItem,$stateParams) {
@@ -256,6 +261,7 @@
             parent: 'purchase-item.edit',
             url: '/queryProductPrice?type',
             data: {
+            	authorities: ['ROLE_CONTRACT_PURCHASE'],
                 pageTitle: 'cpmApp.projectInfo.home.title'
             },
             onEnter: ['$stateParams','$state','$uibModal',function($stateParams,$state,$uibModal){

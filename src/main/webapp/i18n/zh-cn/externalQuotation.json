@@ -3,8 +3,12 @@
         "externalQuotation" : {
             "home": {
                 "title": "外部报价",
-                "createOrEditLabel": "外部报价"
+                "createOrEditLabel": "外部报价",
+                "createLabel":"新增"
             },
+            "created": "新建成功",
+            "updated": "修改成功",
+            "deleted": "删除成功",
             "save":{
             	"requriedError":"必填参数为空",
             	"noPerm":"无权限操作",

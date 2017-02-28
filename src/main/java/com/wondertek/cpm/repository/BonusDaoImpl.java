@@ -87,9 +87,9 @@ public class BonusDaoImpl extends GenericDaoImpl<Bonus, Long> implements BonusDa
 			whereSql.append(" and wbs.contract_id = ?");
 			params.add(bonus.getContractId());
 		}
-		whereSql.append(" order by wbs.stat_week desc");
-		querySql.append(whereSql.toString());
 		countSql.append(whereSql.toString());
+		querySql.append(whereSql.toString());
+		querySql.append(" order by wbs.stat_week desc");
 		whereSql.setLength(0);
 		whereSql = null;
 		Page<Object[]> page = this.querySqlPage(querySql.toString(), countSql.toString(), params.toArray(), pageable);
@@ -145,11 +145,11 @@ public class BonusDaoImpl extends GenericDaoImpl<Bonus, Long> implements BonusDa
 			whereSql.append(" where wbs.contract_id = ?");
 			params.add(contractId);
 		}
-		whereSql.append(" order by wbs.stat_week desc");
 		querySql.append(whereSql.toString());
 		countSql.append(whereSql.toString());
 		whereSql.setLength(0);
 		whereSql = null;
+		querySql.append(" order by wbs.stat_week desc");
 		
 		Page<Object[]> page = this.querySqlPage(querySql.toString(), countSql.toString(), params.toArray(), pageable);
 		List<BonusVo> returList = new ArrayList<BonusVo>();

@@ -26,6 +26,7 @@
         vm.transition = transition;
         vm.search = search;
         vm.clear = clear;
+        vm.setAllChecked = setAllChecked;
         
         vm.searchQuery = {};
         vm.searchQuery.serialNum = pagingParams.serialNum;
@@ -34,9 +35,10 @@
         vm.searchQuery.deptId = pagingParams.deptId;
         vm.searchQuery.deptName = pagingParams.deptName;
         vm.searchQuery.workArea = pagingParams.workArea;
+        vm.searchQuery.grade = pagingParams.grade;
         if (vm.searchQuery.serialNum == undefined&& vm.searchQuery.lastName == undefined
         		&& vm.searchQuery.loginName == undefined && vm.searchQuery.deptId == undefined
-        		&& vm.searchQuery.workArea == undefined){
+        		&& vm.searchQuery.workArea == undefined && vm.searchQuery.grade == undefined){
         	vm.haveSearch = null;
         }else{
         	vm.haveSearch = true;
@@ -65,14 +67,25 @@
                 vm.clearUser();
             });
         }
-
+        function setAllChecked(){
+        	if(vm.users && vm.users.length > 0){
+        		for(var i = 0; i < vm.users.length ; i++){
+        			vm.users[i].isChecked = vm.allChecked;
+        		}
+        	}
+        }
+        User.queryAllGrade({},function onSuccess(data, headers) {
+        	vm.grades = data;
+    	});
         function loadAll () {
+        	vm.allChecked = false;
             User.query({
             	loginName:pagingParams.loginName,
             	lastName:pagingParams.lastName,
             	serialNum:pagingParams.serialNum,
             	deptId:pagingParams.deptId,
             	workArea:pagingParams.workArea,
+            	grade:pagingParams.grade,
                 page: pagingParams.page - 1,
                 size: vm.itemsPerPage,
                 sort: sort()
@@ -129,13 +142,14 @@
                 loginName:vm.searchQuery.loginName,
                 deptId:vm.searchQuery.deptId,
                 deptName:vm.searchQuery.deptName,
-                workArea:vm.searchQuery.workArea
+                workArea:vm.searchQuery.workArea,
+                grade:vm.searchQuery.grade
             });
         }
         function search() {
         	if (vm.searchQuery.serialNum == undefined&& vm.searchQuery.lastName == undefined
             		&& vm.searchQuery.loginName == undefined&& vm.searchQuery.deptId == undefined
-            		&& vm.searchQuery.workArea == undefined){
+            		&& vm.searchQuery.workArea == undefined && vm.searchQuery.grade == undefined){
                 return vm.clear();
             }
             vm.links = null;

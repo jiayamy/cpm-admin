@@ -68,6 +68,7 @@
             resolve: {
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                     $translatePartialLoader.addPart('contractReceive');
+                    $translatePartialLoader.addPart('global');
                     return $translate.refresh();
                 }],
                 entity: ['$stateParams', 'ContractReceive', function($stateParams, ContractReceive) {
@@ -101,6 +102,7 @@
             	translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                      $translatePartialLoader.addPart('contractReceive');
                      $translatePartialLoader.addPart('deptInfo');
+                     $translatePartialLoader.addPart('global');
                      return $translate.refresh();
                  }],
                  entity: ['$stateParams', 'ContractReceive', function($stateParams, ContractReceive) {
@@ -121,7 +123,7 @@
             parent: 'contract-receive-detail.edit',
             url: '/queryDept?selectType&showChild&dataType',
             data: {
-                authorities: ['ROLE_USER']
+                authorities: ['ROLE_CONTRACT_RECEIVE']
             },
             onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
                 $uibModal.open({
@@ -163,6 +165,7 @@
 	    		 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
 	                 $translatePartialLoader.addPart('contractReceive');
 	                 $translatePartialLoader.addPart('deptInfo');
+	                 $translatePartialLoader.addPart('global');
 	                 return $translate.refresh();
 	             }],
 	             entity: function () {
@@ -195,7 +198,7 @@
             parent: 'contract-receive.new',
             url: '/queryDept?selectType&showChild&dataType',
             data: {
-                authorities: ['ROLE_USER']
+                authorities: ['ROLE_CONTRACT_RECEIVE']
             },
             onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
                 $uibModal.open({
@@ -237,6 +240,7 @@
             resolve:{
             	translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                     $translatePartialLoader.addPart('contractReceive');
+                    $translatePartialLoader.addPart('global');
                     return $translate.refresh();
                 }],
                 entity: ['$stateParams', 'ContractReceive', function($stateParams, ContractReceive) {

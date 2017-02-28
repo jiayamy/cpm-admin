@@ -29,7 +29,7 @@
                     squash: true
                 },
                 sort: {
-                    value: 'wpc.id,desc',
+                    value: 'wpc.costDay,desc',
                     squash: true
                 },
                 projectId: null,
@@ -78,7 +78,7 @@
                     squash: true
                 },
                 sort: {
-                    value: 'wpc.id,desc',
+                    value: 'wpc.costDay,desc',
                     squash: true
                 },
                 projectId: null,
@@ -124,6 +124,7 @@
             resolve: {
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                     $translatePartialLoader.addPart('projectCost');
+                    $translatePartialLoader.addPart('global');
                     return $translate.refresh();
                 }],
                 entity: ['$stateParams', 'ProjectCost', function($stateParams, ProjectCost) {
@@ -159,6 +160,7 @@
             resolve: {
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                     $translatePartialLoader.addPart('projectCost');
+                    $translatePartialLoader.addPart('global');
                     return $translate.refresh();
                 }],
                 entity: ['$stateParams', 'ProjectCost', function($stateParams, ProjectCost) {
@@ -194,6 +196,7 @@
             resolve: {
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                     $translatePartialLoader.addPart('projectCost');
+                    $translatePartialLoader.addPart('global');
                     return $translate.refresh();
                 }],
                 entity: ['$stateParams', 'ProjectCost', function($stateParams, ProjectCost) {
@@ -226,6 +229,7 @@
             resolve: {
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                     $translatePartialLoader.addPart('projectCost');
+                    $translatePartialLoader.addPart('global');
                     return $translate.refresh();
                 }],
                 entity: function () {
@@ -271,6 +275,7 @@
             resolve: {
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                     $translatePartialLoader.addPart('projectCost');
+                    $translatePartialLoader.addPart('global');
                     return $translate.refresh();
                 }],
                 entity: ['$stateParams', 'ProjectCost', function($stateParams, ProjectCost) {

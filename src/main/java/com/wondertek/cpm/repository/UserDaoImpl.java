@@ -78,7 +78,10 @@ public class UserDaoImpl extends GenericDaoImpl<User, Long> implements UserDao  
 				params.add(user.getDeptId());
 			}
 		}
-		
+		if(user.getGrade() != null){
+			whereSql.append(" and user.grade = ?");
+			params.add(user.getGrade());
+		}
 		querySql.append(whereSql.toString());
 		countSql.append(whereSql.toString());
 		whereSql.setLength(0);

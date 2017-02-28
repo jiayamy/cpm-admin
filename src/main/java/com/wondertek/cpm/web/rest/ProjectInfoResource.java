@@ -210,7 +210,10 @@ public class ProjectInfoResource {
         projectInfoService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert("projectInfo", id.toString())).build();
     }
-
+    /**
+     * 获取项目经理能看到的合同列表
+     * @return
+     */
     @GetMapping("/project-infos/queryUserContract")
     @Timed
     @Secured(AuthoritiesConstants.USER)
@@ -219,7 +222,9 @@ public class ProjectInfoResource {
         List<LongValue> list = projectInfoService.queryUserContract();
         return new ResponseEntity<>(list, null, HttpStatus.OK);
     }
-    
+    /**
+     * 获取项目经理能看到的合同上的内部采购单列表
+     */
     @GetMapping("/project-infos/queryUserContractBudget")
     @Timed
     @Secured(AuthoritiesConstants.USER)
@@ -283,7 +288,9 @@ public class ProjectInfoResource {
     			.headers(HeaderUtil.createAlert("cpmApp.projectInfo.finish.success", projectInfo.getId().toString()))
     			.body(null);
     }
-    
+    /**
+     * 获取项目经理能看到的项目列表
+     */
     @GetMapping("/project-infos/queryUserProject")
     @Timed
     @Secured(AuthoritiesConstants.USER)

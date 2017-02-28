@@ -147,7 +147,7 @@
             }
             vm.links = null;
             vm.page = 1;
-            vm.predicate = 'wpc.id';
+            vm.predicate = 'wpc.costDay';
             vm.reverse = false;
             vm.haveSearch = true;
             vm.transition();
@@ -156,7 +156,7 @@
         function clear() {
             vm.links = null;
             vm.page = 1;
-            vm.predicate = 'wpc.id';
+            vm.predicate = 'wpc.costDay';
             vm.reverse = false;
             vm.searchQuery = {};
             vm.haveSearch = null;

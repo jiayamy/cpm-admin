@@ -5,7 +5,7 @@
     	<div class="row form-horizontal">
     		<div class="form-group">
     			<div class="col-sm-6">
-		        		<label class="control-label" for="field_serialNum">工号</label>
+		        		<label class="control-label" for="field_serialNum" data-translate="userManagement.serialNum">Serial Num</label>
 		        		<input type="text" class="form-control" name="serialNum" id="field_serialNum"
 		            		ng-model="vm.user.serialNum" ng-required="true" ng-minlength="1" ng-maxlength="50"
 		                	/>
@@ -107,8 +107,8 @@
         			&nbsp;
         			</div>
         			<div class="col-sm-6">
-			         	<label class="control-label" for="field_isManager">
-			 				是否管理人员 </label>
+			         	<label class="control-label" for="field_isManager" data-translate="userManagement.isManager">
+			 				Is Manager </label>
 			 			<input type="checkbox" name="isManager" id="field_isManager"
 		 							ng-model="vm.user.isManager"/>
 		 			</div>
@@ -164,9 +164,15 @@
 		   		<div class="col-sm-6">
 	        		<label class="control-label" for="field_grade" data-translate="userManagement.grade">Grade</label>
 	                <select class="form-control" name="grade" ng-model="vm.user.grade" id="field_grade"
-	            		ng-required="false"
+	            		ng-required="true"
 		            	ng-options="grade for grade in vm.grades track by grade">
 		         	</select>
+		         	<div ng-show="myForm.grade.$invalid">
+		               	<p class="help-block"
+                  			ng-show="myForm.grade.$error.required" data-translate="entity.validation.required" style="color:red">
+	                   		This field is required.
+			        	</p>
+		           	</div>
 		   		</div>
 		   	</div>
 		   	<div class="form-group">

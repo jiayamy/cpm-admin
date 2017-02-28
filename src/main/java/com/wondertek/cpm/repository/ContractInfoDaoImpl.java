@@ -178,7 +178,6 @@ public class ContractInfoDaoImpl extends GenericDaoImpl<ContractInfo, Long> impl
 	}
 
 	@Override
-
 	public List<LongValue> queryUserContract(User user, DeptInfo deptInfo) {
 		StringBuffer queryHql = new StringBuffer();
 		List<Object> params = new ArrayList<Object>();
@@ -201,6 +200,7 @@ public class ContractInfoDaoImpl extends GenericDaoImpl<ContractInfo, Long> impl
 			params.add(deptInfo.getId());
 		}
 		queryHql.append(")");
+		queryHql.append(" order by wci.id desc");
 		
 		List<Object[]> list = this.queryAllHql(queryHql.toString(), params.toArray());
 		List<LongValue> returnList = new ArrayList<LongValue>();

@@ -180,6 +180,8 @@ public class PurchaseItemDaoImpl extends GenericDaoImpl<PurchaseItem, Long> impl
 		}
 		
 		queryHql.append(")");
+		queryHql.append(" order by wci.id desc");
+		
 		List<Object[]> list = this.queryAllHql(queryHql.toString(), params.toArray());
 		List<LongValue> resultList = new ArrayList<LongValue>();
 		if (list != null && !list.isEmpty()) {

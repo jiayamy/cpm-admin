@@ -131,8 +131,9 @@
 	    		function(data, headers){
             		vm.isSaving = false;
 //            		AlertService.error(error.data.message);
-
-            		if(headers("X-cpmApp-alert") == 'cpmApp.projectInfo.updated'){
+            		if(vm.previousState == 'contract-budget'){
+            			$state.go(vm.previousState);
+            		}else if(headers("X-cpmApp-alert") == 'cpmApp.projectInfo.updated'){
             			$state.go(vm.previousState);
             		}
 	        	},

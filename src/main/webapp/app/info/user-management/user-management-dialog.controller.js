@@ -18,7 +18,6 @@
         vm.user = entity;
         
         vm.genders = [{key:1,val:"男"},{key:2,val:"女"}];
-        vm.grades = ['1','2','3','4','5','6','7','8','9']
         for(var j = 0; j < vm.genders.length ; j++){
     		if(entity.gender == vm.genders[j].key){
 				vm.user.gender = vm.genders[j];
@@ -36,6 +35,9 @@
         		}
         	});
         }
+        User.queryAllGrade({},function onSuccess(data, headers) {
+        	vm.grades = data;
+    	});
         User.queryAllAuthorities({},function onSuccess(data, headers) {
         	vm.authorities = data;
     		if(data && data.length > 0){

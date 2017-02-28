@@ -165,7 +165,7 @@
             PurchaseItem.update(purchaseItem, onSaveSuccess,onSaveError);
         }
         function onSaveSuccess (result) {
-            	$state.go('purchase-item');
+            	$state.go(vm.previousState);
             	vm.isSaving = false;
         	}
         
