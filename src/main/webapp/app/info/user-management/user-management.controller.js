@@ -26,6 +26,7 @@
         vm.transition = transition;
         vm.search = search;
         vm.clear = clear;
+        vm.setAllChecked = setAllChecked;
         
         vm.searchQuery = {};
         vm.searchQuery.serialNum = pagingParams.serialNum;
@@ -66,10 +67,18 @@
                 vm.clearUser();
             });
         }
+        function setAllChecked(){
+        	if(vm.users && vm.users.length > 0){
+        		for(var i = 0; i < vm.users.length ; i++){
+        			vm.users[i].isChecked = vm.allChecked;
+        		}
+        	}
+        }
         User.queryAllGrade({},function onSuccess(data, headers) {
         	vm.grades = data;
     	});
         function loadAll () {
+        	vm.allChecked = false;
             User.query({
             	loginName:pagingParams.loginName,
             	lastName:pagingParams.lastName,

@@ -100,6 +100,9 @@
         <table class="table table-striped">
             <thead>
             <tr jh-sort="vm.predicate" ascending="vm.reverse" callback="vm.transition()">
+            	<th>
+            		<!-- <input type="checkbox" ng-model="vm.allChecked" ng-click="vm.setAllChecked()" /> -->
+            	</th>
                 <th jh-sort-by="user.login"><span data-translate="userManagement.login">Login</span> <span class="glyphicon glyphicon-sort"></span></th>
                 <th></th>
                 <th jh-sort-by="user.serialNum"><span data-translate="userManagement.serialNum">Serial Num</span> <span class="glyphicon glyphicon-sort"></span></th>
@@ -113,6 +116,9 @@
             </thead>
             <tbody>
             <tr ng-repeat="user in vm.users track by user.id">
+            	<td>
+            		<!-- <input type="checkbox" ng-model="user.isChecked"/> -->
+            	</td>
                 <td><a ui-sref="user-management-detail({login:user.login})">{{user.login}}</a></td>
                 <td>
                     <span class="label label-danger" ng-click="vm.setActive(user, true)" ng-show="!user.activated"
@@ -120,7 +126,7 @@
                     <span class="label label-success" ng-click="vm.setActive(user, false)" ng-show="user.activated"
                           data-translate="userManagement.activated" style="cursor: pointer;">Activated</span>
                 </td>
-                <td>{{user.serialNum}}</td>
+                <td><a ui-sref="user-management.edit({login:user.login})">{{user.serialNum}}</a></td>
                 <td>{{user.lastName}}</td>
                 <td>{{user.dept}}</td>
                 <td>{{user.grade}}</td>
