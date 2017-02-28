@@ -312,7 +312,7 @@
             parent: 'contract-budget',
             url: '/createProject/{id}',
             data: {
-                authorities: ['ROLE_CONTRACT_BUDGET'],
+                authorities: ['ROLE_PROJECT_INFO'],
                 pageTitle: 'cpmApp.projectInfo.detail.title'
             },
             views: {
@@ -452,6 +452,7 @@
             parent: 'contract-budget.createPurchaseItem',
             url: '/queryProductPrice?type',
             data: {
+            	authorities: ['ROLE_CONTRACT_PURCHASE'],
                 pageTitle: 'cpmApp.projectInfo.home.title'
             },
             onEnter: ['$stateParams','$state','$uibModal',function($stateParams,$state,$uibModal){

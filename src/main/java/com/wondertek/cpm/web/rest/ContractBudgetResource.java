@@ -218,7 +218,9 @@ public class ContractBudgetResource {
     	HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(name, page,"/api/contract-budgets");
     	return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
-    
+    /**
+     * 获取用户能查看的合同列表
+     */
     @GetMapping("/contract-budgets/queryUserContract")
     @Timed
     @Secured(AuthoritiesConstants.USER)
@@ -228,6 +230,9 @@ public class ContractBudgetResource {
         return new ResponseEntity<>(list, null, HttpStatus.OK);
     	
     }
+    /**
+     * 获取用户能查看的合同上的内部采购单
+     */
     @GetMapping("/contract-budgets/queryUserContractBudget")
     @Timed
     @Secured(AuthoritiesConstants.USER)

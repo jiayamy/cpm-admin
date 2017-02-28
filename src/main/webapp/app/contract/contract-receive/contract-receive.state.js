@@ -123,7 +123,7 @@
             parent: 'contract-receive-detail.edit',
             url: '/queryDept?selectType&showChild&dataType',
             data: {
-                authorities: ['ROLE_USER']
+                authorities: ['ROLE_CONTRACT_RECEIVE']
             },
             onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
                 $uibModal.open({
@@ -198,7 +198,7 @@
             parent: 'contract-receive.new',
             url: '/queryDept?selectType&showChild&dataType',
             data: {
-                authorities: ['ROLE_USER']
+                authorities: ['ROLE_CONTRACT_RECEIVE']
             },
             onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
                 $uibModal.open({

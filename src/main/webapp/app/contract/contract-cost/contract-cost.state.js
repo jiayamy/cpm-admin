@@ -219,7 +219,7 @@
             parent: 'contract-cost-detail.edit',
             url: '/queryDept?selectType&showChild&showUser',
             data: {
-                authorities: ['ROLE_INFO_BASIC']
+                authorities: ['ROLE_CONTRACT_COST']
             },
             onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
                 $uibModal.open({
@@ -298,7 +298,7 @@
             parent: 'contract-cost.new',
             url: '/queryDept?selectType&showChild&showUser',
             data: {
-                authorities: ['ROLE_INFO_BASIC']
+                authorities: ['ROLE_CONTRACT_COST']
             },
             onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
                 $uibModal.open({
@@ -361,7 +361,7 @@
             parent: 'contract-cost.edit',
             url: '/queryDept?selectType&showChild&showUser',
             data: {
-                authorities: ['ROLE_INFO_BASIC']
+                authorities: ['ROLE_CONTRACT_COST']
             },
             onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
                 $uibModal.open({

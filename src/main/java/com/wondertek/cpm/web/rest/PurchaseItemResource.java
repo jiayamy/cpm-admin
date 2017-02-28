@@ -214,7 +214,9 @@ public class PurchaseItemResource {
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/purchase-items");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
-
+    /**
+     * 获取采购子项中已经有的合同列表
+     */
     @GetMapping("/purchase-item/queryUserContract")
     @Timed
     @Secured(AuthoritiesConstants.USER)
@@ -226,7 +228,7 @@ public class PurchaseItemResource {
     
     @GetMapping("/purchase-item/queryProductPrice")
     @Timed
-    @Secured(AuthoritiesConstants.ROLE_CONTRACT_PRODUCTPRICE)
+    @Secured(AuthoritiesConstants.ROLE_CONTRACT_PURCHASE)
     public ResponseEntity<List<ProductPriceVo>> getAllProductPrices(
     		@RequestParam(value = "selectName",required=false) String selectName,
     		@RequestParam(value = "type",required=false) Integer type,
