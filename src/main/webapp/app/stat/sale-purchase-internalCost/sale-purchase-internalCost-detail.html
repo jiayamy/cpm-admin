@@ -4,7 +4,7 @@
     <br/>
     <div class="btn-group flex-btn-group-container">
        	<button type="submit"
-	           ui-sref="{{ vm.previousState }}"
+	           ng-click="vm.back()"
 	           class="btn btn-info">
 	       <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span data-translate="entity.action.back"> Back</span>
 	   	</button>
@@ -13,11 +13,12 @@
         <table class="jh-table table table-striped" style="table-layout: fixed; ">
             <thead>
                 <tr>
-                    <th style="width:120px;"><span data-translate="cpmApp.salePurchaseInternalCost.contractSerialNum">Contract serialNum</span></th>
+                	<th style="width:90px;"><span data-translate="cpmApp.salePurchaseInternalCost.statTime">statWeek</span></th>
+                    <th style="width:90px;"><span data-translate="cpmApp.salePurchaseInternalCost.contractSerialNum">Contract serialNum</span></th>
+                    <th style="width:90px;"><span data-translate="cpmApp.salePurchaseInternalCost.deptType">dept Type</span></th>
                     <th style="width:110px;"><span data-translate="cpmApp.salePurchaseInternalCost.serialNum">SerialNum</span></th>
                     <th style="width:90px;"><span data-translate="cpmApp.salePurchaseInternalCost.userName">User Name</span></th>
                     <th style="width:60px;"><span data-translate="cpmApp.salePurchaseInternalCost.grade">User Grade</span></th>
-                    <th style="width:90px;"><span data-translate="cpmApp.salePurchaseInternalCost.deptType">dept Type</span></th>
                     <th style="width:110px;"><span data-translate="cpmApp.salePurchaseInternalCost.settlementCost">Settlement Cost</span></th>
                     <th style="width:110px;"><span data-translate="cpmApp.salePurchaseInternalCost.projectHourCost">project Hour Cost</span></th>
                     <th style="width:110px;"><span data-translate="cpmApp.salePurchaseInternalCost.internalBudgetCost">Internal Budget Cost</span></th>
@@ -32,11 +33,12 @@
             </thead>
             <tbody>
                 <tr ng-repeat="salePurchaseInternalCost in vm.salePurchaseInternalCosts track by salePurchaseInternalCost.id">
+                	<td>{{salePurchaseInternalCost.statWeek}}</td>
                     <td>{{salePurchaseInternalCost.contractSerialNum}}</td>
+                    <td>{{salePurchaseInternalCost.deptName}}</td>
                     <td>{{salePurchaseInternalCost.serialNum}}</td>
                     <td>{{salePurchaseInternalCost.userName}}</td>
                     <td>{{salePurchaseInternalCost.grade}}</td>
-                    <td>{{salePurchaseInternalCost.deptName}}</td>
                     <td>{{salePurchaseInternalCost.settlementCost}}</td>
                     <td>{{salePurchaseInternalCost.projectHourCost}}</td>
                     <td>{{salePurchaseInternalCost.internalBudgetCost}}</td>

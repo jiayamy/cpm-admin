@@ -29,7 +29,7 @@
                     squash: true
                 },
                 sort: {
-                    value: 'wcc.id,desc',
+                    value: 'wcc.costDay,desc',
                     squash: true
                 },
                 contractId: null,
@@ -79,7 +79,7 @@
                     squash: true
                 },
                 sort: {
-                    value: 'wcc.id,desc',
+                    value: 'wcc.costDay,desc',
                     squash: true
                 },
                 contractId: null,
@@ -126,6 +126,7 @@
             resolve: {
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                     $translatePartialLoader.addPart('contractCost');
+                    $translatePartialLoader.addPart('global');
                     return $translate.refresh();
                 }],
                 entity: ['$stateParams', 'ContractCost', function($stateParams, ContractCost) {
@@ -161,6 +162,7 @@
             resolve: {
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                     $translatePartialLoader.addPart('contractCost');
+                    $translatePartialLoader.addPart('global');
                     return $translate.refresh();
                 }],
                 entity: ['$stateParams', 'ContractCost', function($stateParams, ContractCost) {
@@ -196,6 +198,7 @@
             	translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                     $translatePartialLoader.addPart('contractCost');
                     $translatePartialLoader.addPart('deptInfo');
+                    $translatePartialLoader.addPart('global');
                     return $translate.refresh();
                 }],
                 entity: ['$stateParams', 'ContractCost', function($stateParams, ContractCost) {
@@ -216,7 +219,7 @@
             parent: 'contract-cost-detail.edit',
             url: '/queryDept?selectType&showChild&showUser',
             data: {
-                authorities: ['ROLE_INFO_BASIC']
+                authorities: ['ROLE_CONTRACT_COST']
             },
             onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
                 $uibModal.open({
@@ -258,6 +261,7 @@
         		 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                      $translatePartialLoader.addPart('contractCost');
                      $translatePartialLoader.addPart('deptInfo');
+                     $translatePartialLoader.addPart('global');
                      return $translate.refresh();
                  }],
                  entity: function () {
@@ -294,7 +298,7 @@
             parent: 'contract-cost.new',
             url: '/queryDept?selectType&showChild&showUser',
             data: {
-                authorities: ['ROLE_INFO_BASIC']
+                authorities: ['ROLE_CONTRACT_COST']
             },
             onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
                 $uibModal.open({
@@ -336,6 +340,7 @@
             	translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                     $translatePartialLoader.addPart('contractCost');
                     $translatePartialLoader.addPart('deptInfo');
+                    $translatePartialLoader.addPart('global');
                     return $translate.refresh();
                 }],
                 entity: ['$stateParams', 'ContractCost', function($stateParams, ContractCost) {
@@ -356,7 +361,7 @@
             parent: 'contract-cost.edit',
             url: '/queryDept?selectType&showChild&showUser',
             data: {
-                authorities: ['ROLE_INFO_BASIC']
+                authorities: ['ROLE_CONTRACT_COST']
             },
             onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
                 $uibModal.open({

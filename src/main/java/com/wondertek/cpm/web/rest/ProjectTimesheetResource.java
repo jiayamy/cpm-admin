@@ -52,7 +52,7 @@ public class ProjectTimesheetResource {
 
     @GetMapping("/project-timesheets")
     @Timed
-    @Secured(AuthoritiesConstants.ROLE_CONTRACT_TIMESHEET)
+    @Secured(AuthoritiesConstants.ROLE_PROJECT_TIMESHEET)
     public ResponseEntity<List<UserTimesheetVo>> getAllUserTimesheets(
     		@RequestParam(value = "workDay",required=false) Long workDay,
     		@RequestParam(value = "projectId",required=false) Long projectId,
@@ -79,7 +79,7 @@ public class ProjectTimesheetResource {
     
     @GetMapping("/project-timesheets/{id}")
     @Timed
-    @Secured(AuthoritiesConstants.ROLE_CONTRACT_TIMESHEET)
+    @Secured(AuthoritiesConstants.ROLE_PROJECT_TIMESHEET)
     public ResponseEntity<UserTimesheetVo> getUserTimesheet(@PathVariable Long id) {
         log.debug("REST request to get UserTimesheet : {}", id);
         UserTimesheet userTimesheet = userTimesheetService.getUserTimesheetForProject(id);
@@ -96,7 +96,7 @@ public class ProjectTimesheetResource {
     
     @GetMapping("/project-timesheets/queryEdit")
     @Timed
-    @Secured(AuthoritiesConstants.ROLE_CONTRACT_TIMESHEET)
+    @Secured(AuthoritiesConstants.ROLE_PROJECT_TIMESHEET)
     public ResponseEntity<List<UserTimesheetForOther>> getEditUserTimesheets(
     		@RequestParam(value = "workDay") String workDay,
     		@RequestParam(value = "id") Long id
@@ -112,7 +112,7 @@ public class ProjectTimesheetResource {
     
     @PutMapping("/project-timesheets")
     @Timed
-    @Secured(AuthoritiesConstants.ROLE_CONTRACT_TIMESHEET)
+    @Secured(AuthoritiesConstants.ROLE_PROJECT_TIMESHEET)
     public ResponseEntity<Map<String, Object>> getEditUserTimesheets(@RequestBody List<UserTimesheetForOther> userTimesheetForOthers) {
         log.debug("REST request to update UserTimesheet : {}", userTimesheetForOthers);
         Map<String,Object> resultMap = new HashMap<String,Object>(); 

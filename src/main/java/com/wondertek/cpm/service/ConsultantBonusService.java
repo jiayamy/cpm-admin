@@ -2,7 +2,6 @@ package com.wondertek.cpm.service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -20,7 +19,7 @@ import com.wondertek.cpm.domain.DeptInfo;
 import com.wondertek.cpm.domain.User;
 import com.wondertek.cpm.domain.vo.ConsultantBonusVo;
 import com.wondertek.cpm.repository.ConsultantBonusDao;
-import com.wondertek.cpm.repository.ConsultantBonusRepository;
+import com.wondertek.cpm.repository.ConsultantsBonusRepository;
 import com.wondertek.cpm.repository.UserRepository;
 import com.wondertek.cpm.security.SecurityUtils;
 
@@ -34,7 +33,7 @@ public class ConsultantBonusService {
 	private final Logger log = LoggerFactory.getLogger(ContractWeeklyStatService.class);
 	
 	@Inject
-	private ConsultantBonusRepository consultantBonusRepository;
+	private ConsultantsBonusRepository consultantsBonusRepository;
 	
 	@Inject
 	private ConsultantBonusDao consultantBonusDao;
@@ -93,7 +92,7 @@ public class ConsultantBonusService {
     
     @Transactional(readOnly = true)
     public ConsultantsBonus findOne(Long id){
-    	return consultantBonusRepository.findOne(id);
+    	return consultantsBonusRepository.findOne(id);
     }
     
     /**

@@ -205,7 +205,9 @@ public class ContractInfoResource {
 				"/api/_search/contract-infos");
 		return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
 	}
-	
+	/**
+	 * 获取销售或咨询能看到的合同列表
+	 */
 	@GetMapping("/contract-infos/queryUserContract")
 	@Secured(AuthoritiesConstants.USER)
 	public ResponseEntity<List<LongValue>> queryUserContract() {

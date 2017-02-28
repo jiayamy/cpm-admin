@@ -116,7 +116,7 @@
             }
             vm.links = null;
             vm.page = 1;
-            vm.predicate = 'wut.id';
+            vm.predicate = 'wut.workDay';
             vm.reverse = false;
             vm.transition();
         }
@@ -124,7 +124,7 @@
         function clear() {
             vm.links = null;
             vm.page = 1;
-            vm.predicate = 'wut.id';
+            vm.predicate = 'wut.workDay';
             vm.reverse = false;
             vm.searchQuery = {};
             vm.transition();

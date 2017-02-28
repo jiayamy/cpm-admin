@@ -178,7 +178,6 @@ public class ContractInfoDaoImpl extends GenericDaoImpl<ContractInfo, Long> impl
 	}
 
 	@Override
-
 	public List<LongValue> queryUserContract(User user, DeptInfo deptInfo) {
 		StringBuffer queryHql = new StringBuffer();
 		List<Object> params = new ArrayList<Object>();

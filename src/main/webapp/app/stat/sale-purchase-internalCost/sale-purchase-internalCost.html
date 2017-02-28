@@ -84,11 +84,11 @@
         <table class="jh-table table table-striped" style="table-layout: fixed; ">
             <thead>
                 <tr>
-                    <th style="width:120px;"><span data-translate="cpmApp.salePurchaseInternalCost.contractSerialNum">Contract serialNum</span></th>
+                    <th style="width:90px;"><span data-translate="cpmApp.salePurchaseInternalCost.contractSerialNum">Contract serialNum</span></th>
+                    <th style="width:100px;"><span data-translate="cpmApp.salePurchaseInternalCost.deptType">dept Type</span></th>
                     <th style="width:110px;"><span data-translate="cpmApp.salePurchaseInternalCost.serialNum">SerialNum</span></th>
                     <th style="width:90px;"><span data-translate="cpmApp.salePurchaseInternalCost.userName">User Name</span></th>
                     <th style="width:60px;"><span data-translate="cpmApp.salePurchaseInternalCost.grade">User Grade</span></th>
-                    <th style="width:90px;"><span data-translate="cpmApp.salePurchaseInternalCost.deptType">dept Type</span></th>
                     <th style="width:110px;"><span data-translate="cpmApp.salePurchaseInternalCost.settlementCost">Settlement Cost</span></th>
                     <th style="width:110px;"><span data-translate="cpmApp.salePurchaseInternalCost.projectHourCost">project Hour Cost</span></th>
                     <th style="width:110px;"><span data-translate="cpmApp.salePurchaseInternalCost.internalBudgetCost">Internal Budget Cost</span></th>
@@ -105,10 +105,10 @@
             <tbody>
                 <tr ng-repeat="salePurchaseInternalCost in vm.salePurchaseInternalCosts track by salePurchaseInternalCost.id">
                     <td>{{salePurchaseInternalCost.contractSerialNum}}</td>
-                    <td>{{salePurchaseInternalCost.serialNum}}</td>
+                    <td>{{salePurchaseInternalCost.deptName}}</td>
+                    <td><a ui-sref="sale-purchase-internalCost.Detail({userId:salePurchaseInternalCost.userId})">{{salePurchaseInternalCost.serialNum}}</a></td>
                     <td>{{salePurchaseInternalCost.userName}}</td>
                     <td>{{salePurchaseInternalCost.grade}}</td>
-                    <td>{{salePurchaseInternalCost.deptName}}</td>
                     <td>{{salePurchaseInternalCost.settlementCost}}</td>
                     <td>{{salePurchaseInternalCost.projectHourCost}}</td>
                     <td>{{salePurchaseInternalCost.internalBudgetCost}}</td>
@@ -120,8 +120,8 @@
                     <td>{{salePurchaseInternalCost.productCost}}</td>
                     <td>{{salePurchaseInternalCost.grossProfit}}</td>
                     <td class="text-right">
-                        <div class="btn-group flex-btn-group-container" ng-show="salePurchaseInternalCost.userName">
-						    <button type="button" ui-sref="sale-purchase-internalCost.Detail({contId:salePurchaseInternalCost.contractId})" class="btn btn-primary btn-sm">
+                        <div class="btn-group flex-btn-group-container" ng-show="salePurchaseInternalCost.serialNum">
+						    <button type="button" ui-sref="sale-purchase-internalCost.Detail({userId:salePurchaseInternalCost.userId})" class="btn btn-primary btn-sm">
 						        <span class="glyphicon glyphicon-eye-open"></span>
 						    </button>
                         </div>
@@ -130,8 +130,8 @@
             </tbody>
         </table>
     </div>
-    <div class="text-center">
+    <!-- <div class="text-center">
         <jhi-item-count page="vm.page" total="vm.queryCount" items-per-page="vm.itemsPerPage"></jhi-item-count>
         <uib-pagination class="pagination-sm" total-items="vm.totalItems" items-per-page="vm.itemsPerPage" ng-model="vm.page" ng-change="vm.transition()"></uib-pagination>
-    </div>
+    </div> -->
 </div>

@@ -10,9 +10,9 @@ import com.wondertek.cpm.domain.vo.ProjectSupportCostVo;
 
 public interface ProjectSupportCostDao extends GenericDao<ProjectSupportCost, Long> {
 
-	public Page<ProjectSupportCostVo> getAllSalePurchaseInternalPage(Long contractId,Long userId,Long statWeek,Long deptType,Pageable pageable);
+	public List<ProjectSupportCostVo> getAllSalePurchaseInternalPage(Long contractId,Long userId,Long statWeek,Long deptType);
 	
 	public List<ProjectSupportCostVo> getAllSalePurchaseInternalList(Long contractId,Long userId,Long statWeek,Long deptType);
 	
-	public Page<ProjectSupportCostVo> getAllSalePurchaseInternalDetailPage(Long contractId,Long statWeek,Pageable pageable);
+	public Page<ProjectSupportCostVo> getAllSalePurchaseInternalDetailPage(Long userId,Long statWeek,Pageable pageable);
 }

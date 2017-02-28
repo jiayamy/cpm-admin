@@ -73,6 +73,7 @@
             resolve: {
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                     $translatePartialLoader.addPart('contractBudget');
+                    $translatePartialLoader.addPart('global');
                     return $translate.refresh();
                 }],
                 entity: ['$stateParams', 'ContractBudget', function($stateParams, ContractBudget) {
@@ -105,6 +106,7 @@
             	translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                     $translatePartialLoader.addPart('contractBudget');
                     $translatePartialLoader.addPart('deptInfo');
+                    $translatePartialLoader.addPart('global');
                     return $translate.refresh();
                 }],
             	entity: ['ContractBudget','$stateParams', function(ContractBudget,$stateParams) {
@@ -166,6 +168,7 @@
            		translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                     $translatePartialLoader.addPart('contractBudget');
                     $translatePartialLoader.addPart('deptInfo');
+                    $translatePartialLoader.addPart('global');
                     return $translate.refresh();
                 }],
                 entity: function () {
@@ -236,6 +239,7 @@
             	translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
 	                $translatePartialLoader.addPart('contractBudget');
 	                $translatePartialLoader.addPart('deptInfo');
+	                $translatePartialLoader.addPart('global');
 	                return $translate.refresh();
                 }],
                 entity: ['$stateParams','ContractBudget', function($stateParams,ContractBudget) {
@@ -308,7 +312,7 @@
             parent: 'contract-budget',
             url: '/createProject/{id}',
             data: {
-                authorities: ['ROLE_CONTRACT_BUDGET'],
+                authorities: ['ROLE_PROJECT_INFO'],
                 pageTitle: 'cpmApp.projectInfo.detail.title'
             },
             views: {
@@ -322,6 +326,7 @@
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                     $translatePartialLoader.addPart('projectInfo');
                     $translatePartialLoader.addPart('deptInfo');
+                    $translatePartialLoader.addPart('global');
                     return $translate.refresh();
                 }],
                 entity: function () {
@@ -362,7 +367,7 @@
             parent: 'contract-budget.createProject',
             url: '/queryDept?selectType&showChild',
             data: {
-                authorities: ['ROLE_CONTRACT_BUDGET']
+                authorities: ['ROLE_PROJECT_INFO']
             },
             onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
                 $uibModal.open({
@@ -403,6 +408,7 @@
            	 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                     $translatePartialLoader.addPart('purchaseItem');
                     $translatePartialLoader.addPart('productPrice');
+                    $translatePartialLoader.addPart('global');
                     return $translate.refresh();
                 }],
                 entity: function () {
@@ -446,6 +452,7 @@
             parent: 'contract-budget.createPurchaseItem',
             url: '/queryProductPrice?type',
             data: {
+            	authorities: ['ROLE_CONTRACT_PURCHASE'],
                 pageTitle: 'cpmApp.projectInfo.home.title'
             },
             onEnter: ['$stateParams','$state','$uibModal',function($stateParams,$state,$uibModal){

@@ -72,6 +72,7 @@
             resolve: {
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                     $translatePartialLoader.addPart('userTimesheet');
+                    $translatePartialLoader.addPart('global');
                     return $translate.refresh();
                 }],
                 entity: ['$stateParams', 'UserTimesheet', function($stateParams, UserTimesheet) {
@@ -103,6 +104,7 @@
             resolve: {
 	            translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
 	                $translatePartialLoader.addPart('userTimesheet');
+	                $translatePartialLoader.addPart('global');
 	                return $translate.refresh();
 	            }],
 	            entity: ['$stateParams', 'UserTimesheet', function($stateParams, UserTimesheet) {
@@ -134,6 +136,7 @@
             resolve: {
 	            translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
 	                $translatePartialLoader.addPart('userTimesheet');
+	                $translatePartialLoader.addPart('global');
 	                return $translate.refresh();
 	            }],
 	            entity: ['$stateParams', 'UserTimesheet', function($stateParams, UserTimesheet) {
@@ -179,6 +182,7 @@
             resolve: {
 	            translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
 	                $translatePartialLoader.addPart('userTimesheet');
+	                $translatePartialLoader.addPart('global');
 	                return $translate.refresh();
 	            }],
 	            entity: ['$stateParams', 'UserTimesheet', function($stateParams, UserTimesheet) {

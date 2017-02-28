@@ -118,13 +118,13 @@
                                 <span class="glyphicon glyphicon-remove-circle"></span>
                                 <span class="hidden-xs hidden-sm" data-translate="entity.action.delete"></span>
                             </button>
-                            <button type="submit" ng-if="contractBudget.haveCreateProject"
+                            <button type="submit" ng-if="contractBudget.haveCreateProject" has-authority="ROLE_PROJECT_INFO"
                                     ui-sref="contract-budget.createProject({id:contractBudget.id})"
                                     class="btn btn-warning btn-sm">
                                 <span class="glyphicon glyphicon-plus"></span>
                                 <span class="hidden-xs hidden-sm" data-translate="cpmApp.contractBudget.button.createProject"></span>
                             </button>
-                            <button type="submit" ng-if="contractBudget.haveCreateItem"
+                            <button type="submit" ng-if="contractBudget.haveCreateItem" has-authority="ROLE_CONTRACT_PURCHASE"
                                     ui-sref="contract-budget.createPurchaseItem({id:contractBudget.id})"
                                     class="btn btn-success btn-sm">
                                 <span class="glyphicon glyphicon-plus"></span>

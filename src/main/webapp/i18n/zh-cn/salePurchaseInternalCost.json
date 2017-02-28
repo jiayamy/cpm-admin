@@ -7,7 +7,11 @@
             "contractDetail":{
             	"title":"销售内部采购信息详情"
             },
+            "error" : {
+            	"contractSerialNumNon" : "请选择合同编号！"
+            },
             "statWeek" : "截止日期",
+            "statTime" : "统计日期",
             "transDetail" : "详情",
             "contractSerialNum" : "合同编号",
             "serialNum" : "员工编号",
