@@ -11,7 +11,7 @@
         $stateProvider
         .state('sale-purchase-internalCost', {
             parent: 'stat',
-            url: '/sale-purchase-internalCost?page&contractId&userNameId&statWeek&deptType&userName',
+            url: '/sale-purchase-internalCost?contractId&userNameId&statWeek&deptType&userName',
             data: {
                 authorities: ['ROLE_STAT_INTERNAL_COST'],
                 pageTitle: 'cpmApp.salePurchaseInternalCost.home.title'
@@ -24,14 +24,14 @@
                 }
             },
             params: {
-                page: {
-                    value: '1',
-                    squash: true
-                },
-                sort: {
-                    value: 'p.id,desc',
-                    squash: true
-                },
+//                page: {
+//                    value: '1',
+//                    squash: true
+//                },
+//                sort: {
+//                    value: 'p.id,desc',
+//                    squash: true
+//                },
                 contractId : null,
                 userNameId : null,
                 userName : null,
@@ -41,10 +41,10 @@
             resolve: {
                 pagingParams: ['$stateParams', 'PaginationUtil', function ($stateParams, PaginationUtil) {
                     return {
-                        page: PaginationUtil.parsePage($stateParams.page),
-                        sort: $stateParams.sort,
-                        predicate: PaginationUtil.parsePredicate($stateParams.sort),
-                        ascending: PaginationUtil.parseAscending($stateParams.sort),
+//                        page: PaginationUtil.parsePage($stateParams.page),
+//                        sort: $stateParams.sort,
+//                        predicate: PaginationUtil.parsePredicate($stateParams.sort),
+//                        ascending: PaginationUtil.parseAscending($stateParams.sort),
                         contractId: $stateParams.contractId,
                         userNameId: $stateParams.userNameId,
                         userName: $stateParams.userName,
@@ -89,7 +89,7 @@
         })
         .state('sale-purchase-internalCost.Detail',{
         	parent: 'sale-purchase-internalCost',
-        	url: '/detail?page&contId',
+        	url: '/detail?page&userId',
         	data:{
         		authorities: ['ROLE_STAT_INTERNAL_COST'],
         		pageTitle: 'cpmApp.consultantBonus.contractRecord.title'
@@ -110,7 +110,12 @@
                     value: 'p.id,desc',
                     squash: true
                 },
-                contId: null
+                userId: null,
+                contractId : null,
+                userNameId : null,
+                userName : null,
+                statWeek : null,
+                deptType : null
             },
             resolve: {
                 pagingParams: ['$stateParams', 'PaginationUtil', function ($stateParams, PaginationUtil) {
@@ -119,7 +124,12 @@
                         sort: $stateParams.sort,
                         predicate: PaginationUtil.parsePredicate($stateParams.sort),
                         ascending: PaginationUtil.parseAscending($stateParams.sort),
-                        contId: $stateParams.contId
+                        userId: $stateParams.userId,
+                        contractId: $stateParams.contractId,
+                        userNameId: $stateParams.userNameId,
+                        userName: $stateParams.userName,
+                        statWeek : $stateParams.statWeek,
+                        deptType : $stateParams.deptType
                     };
                 }],
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {

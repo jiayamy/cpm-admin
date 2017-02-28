@@ -2,6 +2,7 @@ package com.wondertek.cpm.web.rest;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -11,13 +12,10 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.poi.hssf.usermodel.HSSFDataFormat;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.xssf.usermodel.XSSFCell;
-import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -35,7 +33,6 @@ import com.wondertek.cpm.ExcelUtil;
 import com.wondertek.cpm.ExcelWrite;
 import com.wondertek.cpm.config.DateUtil;
 import com.wondertek.cpm.config.StringUtil;
-import com.wondertek.cpm.domain.vo.ConsultantBonusVo;
 import com.wondertek.cpm.domain.vo.ProjectSupportCostVo;
 import com.wondertek.cpm.security.AuthoritiesConstants;
 import com.wondertek.cpm.service.SalePurchaseInternalCostService;
@@ -69,9 +66,12 @@ public class SalePurchaseInternalCostResource {
 				@RequestParam(name="contractId",required=false) Long contractId,
 				@RequestParam(name="userNameId",required=false) Long userId,
 				@RequestParam(name="statWeek",required=false) Long statWeek,
-				@RequestParam(name="deptType",required=false) Long deptType,
-				@ApiParam Pageable pageable) throws URISyntaxException{
+				@RequestParam(name="deptType",required=false) Long deptType
+				) throws URISyntaxException{
 		log.debug("REST request to get a page of SalePurchaseInternalCost:contractId--"+contractId+",userId--"+userId+",statWeek--"+statWeek+",deptType--"+deptType);
+		if(contractId == null){
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
 		if(statWeek != null){		//转换截止日期至周末
 			statWeek = StringUtil.stringToLong(DateUtil.formatDate(DateUtil.DATE_YYYYMMDD_PATTERN,
 					DateUtil.getSundayOfDay(DateUtil.parseDate(DateUtil.DATE_YYYYMMDD_PATTERN, statWeek.toString().trim()))));
@@ -79,21 +79,23 @@ public class SalePurchaseInternalCostResource {
 			Date now = new Date();	//截止日期默认值
 			statWeek = StringUtil.stringToLong(DateUtil.formatDate(DateUtil.DATE_YYYYMMDD_PATTERN, DateUtil.getSundayOfDay(now)));
 		}
-		Page<ProjectSupportCostVo> page = salePurchaseInternalCostService.getAllSalePurchaseInternalPage(contractId, userId, statWeek, deptType, pageable);
-		HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/sale-purchase-internalCost");
-		return Optional.ofNullable(page.getContent()).map(result -> new ResponseEntity<>(result,headers,HttpStatus.OK))
-				.orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+		List<ProjectSupportCostVo> page = salePurchaseInternalCostService.getAllSalePurchaseInternalPage(contractId, userId, statWeek, deptType);
+		return new ResponseEntity<>(page,new HttpHeaders(),HttpStatus.OK);
+//		HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/sale-purchase-internalCost");
+//		return Optional.ofNullable(page.getContent()).map(result -> new ResponseEntity<>(result,headers,HttpStatus.OK))
+//				.orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
 	}
 	
 	@RequestMapping("/sale-purchase-internalCost/queryInternalCostDetail")
 	@Timed
     @Secured(AuthoritiesConstants.ROLE_STAT_INTERNAL_COST)
 	public ResponseEntity<List<ProjectSupportCostVo>> queryInternalCostDetail(
-			@RequestParam(name="contId",required=false) Long contractId,
-			@ApiParam Pageable pageable) throws URISyntaxException{
+			@RequestParam(name="userId",required=false) Long userId,
+			@ApiParam Pageable pageable
+			) throws URISyntaxException{
 		Date now = new Date();	//截止日期默认值
 		Long statWeek = StringUtil.stringToLong(DateUtil.formatDate(DateUtil.DATE_YYYYMMDD_PATTERN, DateUtil.getSundayOfDay(now)));
-		Page<ProjectSupportCostVo> page = salePurchaseInternalCostService.getAllSalePurchaseInternalDetailPage(contractId,statWeek,pageable);
+		Page<ProjectSupportCostVo> page = salePurchaseInternalCostService.getAllSalePurchaseInternalDetailPage(userId,statWeek,pageable);
 		HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/sale-purchase-internalCost/queryInternalCostDetail");
 		return Optional.ofNullable(page.getContent()).map(result -> new ResponseEntity<>(result,headers,HttpStatus.OK))
 				.orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
@@ -116,15 +118,21 @@ public class SalePurchaseInternalCostResource {
 			Date now = new Date();	//截止日期默认值
 			statWeek = StringUtil.stringToLong(DateUtil.formatDate(DateUtil.DATE_YYYYMMDD_PATTERN, DateUtil.getSundayOfDay(now)));
 		}
-		List<ProjectSupportCostVo> pageList = salePurchaseInternalCostService.getAllSalePurchaseInternalList(contractId, userId, statWeek, deptType);
+		List<ProjectSupportCostVo> pageList;
+		if (contractId != null) {
+			pageList = salePurchaseInternalCostService.getAllSalePurchaseInternalList(contractId, userId, statWeek,
+					deptType);
+		}else{
+			pageList = new ArrayList<ProjectSupportCostVo>();
+		}
 		//拼接sheet数据
     	//标题
     	String[] heads = new String[]{
     			"合同编号",
+    			"部门类型",
     			"员工编号",
     			"员工姓名",
     			"级别",
-    			"部门类型",
     			"结算成本",
     			"项目工时",
     			"内部采购成本",
@@ -194,6 +202,13 @@ public class SalePurchaseInternalCostResource {
 			}
 			j++;
 			cell = row.createCell(j,cellType[j]);
+			if(vo.getDeptName() == null){
+				cell.setCellValue("");
+			}else{
+				cell.setCellValue(vo.getDeptName());
+			}
+			j++;
+			cell = row.createCell(j,cellType[j]);
 			if(vo.getSerialNum() == null){
 				cell.setCellValue("");
 			}else{
@@ -212,13 +227,6 @@ public class SalePurchaseInternalCostResource {
 				cell.setCellValue("");
 			}else{
 				cell.setCellValue(vo.getGrade());
-			}
-			j++;
-			cell = row.createCell(j,cellType[j]);
-			if(vo.getDeptName() == null){
-				cell.setCellValue("");
-			}else{
-				cell.setCellValue(vo.getDeptName());
 			}
 			j++;
 			cell = row.createCell(j,cellType[j]);

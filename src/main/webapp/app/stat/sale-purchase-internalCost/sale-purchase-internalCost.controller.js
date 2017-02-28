@@ -11,9 +11,6 @@
         var vm = this;
 
         vm.loadPage = loadPage;
-        vm.predicate = pagingParams.predicate;
-        vm.reverse = pagingParams.ascending;
-        vm.itemsPerPage = paginationConstants.itemsPerPage;
         vm.transition = transition;
         vm.loadAll = loadAll;
         vm.clear = clear;
@@ -30,10 +27,10 @@
         vm.contractInfos = [];
         
         if (!vm.searchQuery.contractId && !vm.searchQuery.userNameId && !vm.searchQuery.statWeek && !vm.searchQuery.deptType){
-        	vm.haveSearch = null;
-        }else{
-        	vm.haveSearch = true;
-        }
+			vm.haveSearch = null;
+		}else{
+			vm.haveSearch = true;
+		}
         
         //部门类型
         loadDeptType();
@@ -70,6 +67,11 @@
         					vm.searchQuery.contractId = vm.contractInfos[i];
         				}
         			}
+        			if(!pagingParams.contractId){
+        				pagingParams.contractId = vm.contractInfos[0].key;
+        				vm.searchQuery.contractId = vm.contractInfos[0];
+        			}
+        			loadAll();
         		}
         	},
         	function(error){
@@ -77,32 +79,28 @@
         	});
         }
         
-        loadAll();
+//        if(vm.searchQuery.contractId){
+//        	loadAll();
+//		}
 
         function loadAll () {
         	SalePurchaseInternalCost.query({
-                page: pagingParams.page - 1,
-                size: vm.itemsPerPage,
-                sort: sort(),
                 contractId : pagingParams.contractId,
                 userNameId : pagingParams.userNameId,
                 statWeek : pagingParams.statWeek,
                 deptType : pagingParams.deptType
             }, onSuccess, onError);
            
-            function sort() {
-                var result = [vm.predicate + ',' + (vm.reverse ? 'asc' : 'desc')];
-                if (vm.predicate !== 'p.id') {
-                    result.push('p.id');
-                }
-                return result;
-            }
             function onSuccess(data, headers) {
-                vm.links = ParseLinks.parse(headers('link'));
-                vm.totalItems = headers('X-Total-Count');
-                vm.queryCount = vm.totalItems;
                 vm.salePurchaseInternalCosts = data;
-                vm.page = pagingParams.page;
+//            	$rootScope.backDetail = {	//为详情页提供返回参数
+//            			contractId : pagingParams.contractId,
+//                        userNameId : pagingParams.userNameId,
+//                        userName : pagingParams.userName,
+//                        statWeek : pagingParams.statWeek,
+//                        deptType : pagingParams.deptType
+//            	};
+//            	console.log($rootScope.backDetail);
             }
             function onError(error) {
                 AlertService.error(error.data.message);
@@ -116,8 +114,6 @@
 
         function transition() {
             $state.transitionTo($state.$current, {
-                page: vm.page,
-                sort: vm.predicate + ',' + (vm.reverse ? 'asc' : 'desc'),
                 contractId:vm.searchQuery.contractId ? vm.searchQuery.contractId.key : "",
                 userNameId:vm.searchQuery.userNameId,
                 userName:vm.searchQuery.userName,
@@ -127,22 +123,17 @@
         }
         
         function search() {
+        	if(!vm.searchQuery.contractId){
+        		AlertService.error("cpmApp.salePurchaseInternalCost.error.contractSerialNumNon");
+        	}
         	if (!vm.searchQuery.contractId && !vm.searchQuery.statWeek && !vm.searchQuery.userName && !vm.searchQuery.deptType){
                 return vm.clear();
             }
-            vm.links = null;
-            vm.page = 1;
-            vm.predicate = 'p.id';
-            vm.reverse = false;
             vm.haveSearch = true;
             vm.transition();
         }
 
         function clear() {
-            vm.links = null;
-            vm.page = 1;
-            vm.predicate = 'p.id';
-            vm.reverse = true;
             vm.searchQuery = {};
             vm.haveSearch = false;
             vm.transition();
@@ -156,6 +147,11 @@
         	var userNameId = vm.searchQuery.userNameId;
         	var deptType = vm.searchQuery.deptType ? vm.searchQuery.deptType.key : vm.searchQuery.deptType;
 			
+        	if(!vm.searchQuery.contractId){
+        		AlertService.error("cpmApp.salePurchaseInternalCost.error.contractSerialNumNon");
+        		return ;
+        	}
+        	
 			if(statWeek){
 				if(c == 0){
 					c++;

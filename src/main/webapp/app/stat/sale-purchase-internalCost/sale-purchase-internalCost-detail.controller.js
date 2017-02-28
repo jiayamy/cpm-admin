@@ -15,11 +15,19 @@
         vm.reverse = pagingParams.ascending;
         vm.transition = transition;
         vm.itemsPerPage = paginationConstants.itemsPerPage;
-//        vm.itemsPerPage = 3;
+//        vm.itemsPerPage = 4;
         vm.loadAll = loadAll;
+        vm.back = back;
         
         vm.previousState = previousState.name;
-        vm.contId = pagingParams.contId;
+        vm.userId = pagingParams.userId;
+        
+        vm.backParams = {};	//返回时所需参数
+        vm.backParams.contractId = pagingParams.contractId;
+        vm.backParams.userNameId = pagingParams.userNameId;
+        vm.backParams.userName = pagingParams.userName;
+        vm.backParams.statWeek = pagingParams.statWeek;
+        vm.backParams.deptType = pagingParams.deptType;
         
         loadAll();
 
@@ -28,7 +36,7 @@
                 page: pagingParams.page - 1,
                 size: vm.itemsPerPage,
                 sort: sort(),
-                contId : pagingParams.contId
+                userId : pagingParams.userId
             }, onSuccess, onError);
            
             function sort() {
@@ -59,8 +67,19 @@
             $state.transitionTo($state.$current, {
                 page: vm.page,
                 sort: vm.predicate + ',' + (vm.reverse ? 'asc' : 'desc'),
-                contractId:vm.contId
+                userId:vm.userId,
+                contractId : pagingParams.contractId,
+	            userNameId : pagingParams.userNameId,
+	            userName : pagingParams.userName,
+	            statWeek : pagingParams.statWeek,
+	            deptType : pagingParams.deptType
             });
         }
+        function back(){
+        	$state.go('sale-purchase-internalCost',vm.backParams,null);
+        }
+//        function back(){
+//        	$state.go('sale-purchase-internalCost',$rootScope.backDetail,null);
+//        }
     }
 })();

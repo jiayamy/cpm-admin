@@ -37,7 +37,7 @@ public class ProjectSupportCostDaoImpl extends GenericDaoImpl<ProjectSupportCost
 	}
 
 	@Override
-	public Page<ProjectSupportCostVo> getAllSalePurchaseInternalPage(Long contractId, Long userId, Long statWeek, Long deptType, Pageable pageable) {
+	public List<ProjectSupportCostVo> getAllSalePurchaseInternalPage(Long contractId, Long userId, Long statWeek, Long deptType) {
 		StringBuffer querySql = new StringBuffer();
 		StringBuffer whereSql = new StringBuffer();
 		StringBuffer countSql = new StringBuffer();
@@ -67,43 +67,17 @@ public class ProjectSupportCostDaoImpl extends GenericDaoImpl<ProjectSupportCost
 			whereSql.append(" and p.dept_type = ?");
 			params.add(deptType);
 		}
-//		whereSql.append(" group by p.contract_id,p.dept_type");
 		StringBuffer orderSql = new StringBuffer();
-    	if(pageable.getSort() != null){//页面都会有个默认排序
-    		for (Order order : pageable.getSort()) {
-    			if(CpmConstants.ORDER_IGNORE_SCORE.equalsIgnoreCase(order.getProperty())){
-    				continue;
-    			}
-//    			if(orderSql.length() != 0){
-//    				orderSql.append(",");
-//    			}else{
-//    				orderSql.append(" order by ");
-//    			}
-//    			if(order.isAscending()){
-//    				orderSql.append(order.getProperty()).append(" asc");
-//    			}else{
-//    				orderSql.append(order.getProperty()).append(" desc");
-//    			}
-    			orderSql.append(" order by p.contract_id,p.dept_type");
-    		}
-    	}
-    	Page<Object[]> page = this.querySqlPage(
-    			querySql.toString() + whereSql.toString() + orderSql.toString(), 
-    			countSql.toString() + whereSql.toString(), 
-    			params.toArray(), 
-    			pageable
-    		);
+		orderSql.append(" order by p.dept_type asc,p.id desc");
+    	List<Object[]> page = this.queryAllSql(querySql.toString() + whereSql.toString() + orderSql.toString(), params.toArray());
     	List<ProjectSupportCostVo> returnList = new ArrayList<>();
-    	if(page.getContent() != null){
-			for(Object[] o : page.getContent()){
+    	if(page != null){
+			for(Object[] o : page){
 				returnList.add(transProjectSupportCostVo(o));
 			}
 		}
-    	return new PageImpl(returnList, pageable, page.getTotalElements());
+    	return returnList;
 	}
-//	"select p.id, p.stat_week, p.contract_id, p.dept_type, p.user_id, p.serial_num, p.user_name, p.grade_, p.settlement_cost,"
-//	+ " p.project_hour_cost, p.internal_budget_cost, p.sal_, p.social_security_fund, p.other_expense, p.user_month_cost, p.user_hour_cost,"
-//	+ " p.product_cost, p.gross_profit, p.creator_, p.create_time, c.serial_num as contract_serial_num"
 	private ProjectSupportCostVo transProjectSupportCostVo(Object[] o){
 		ProjectSupportCostVo projectSupportCostVo = new ProjectSupportCostVo();
 		projectSupportCostVo.setId(StringUtil.nullToLong(o[0]));
@@ -149,10 +123,11 @@ public class ProjectSupportCostDaoImpl extends GenericDaoImpl<ProjectSupportCost
 		List<Object> params = new ArrayList<Object>();
 		params.add(statWeek);
 		whereSql.append(" where p.stat_week = wpsc.max_stat_week");
-		if(contractId != null){
-			whereSql.append(" and p.contract_id = ?");
-			params.add(contractId);
+		if(contractId == null){
+			return new ArrayList<ProjectSupportCostVo>();
 		}
+		whereSql.append(" and p.contract_id = ?");
+		params.add(contractId);
 		if(userId != null){
 			whereSql.append(" and p.user_id = ?");
 			params.add(userId);
@@ -162,7 +137,7 @@ public class ProjectSupportCostDaoImpl extends GenericDaoImpl<ProjectSupportCost
 			params.add(deptType);
 		}
 		StringBuffer orderSql = new StringBuffer();
-    	orderSql.append(" order by p.contract_id,p.dept_type");
+    	orderSql.append(" order by p.dept_type asc,p.id desc");
     	List<Object[]> resultList = this.queryAllSql(querySql.toString() + whereSql.toString() + orderSql.toString(), params.toArray());
     	List<ProjectSupportCostVo> returnList = new ArrayList<>();
     	if(resultList != null){
@@ -174,7 +149,7 @@ public class ProjectSupportCostDaoImpl extends GenericDaoImpl<ProjectSupportCost
 	}
 
 	@Override
-	public Page<ProjectSupportCostVo> getAllSalePurchaseInternalDetailPage(Long contractId,Long statWeek, Pageable pageable) {
+	public Page<ProjectSupportCostVo> getAllSalePurchaseInternalDetailPage(Long userId,Long statWeek, Pageable pageable) {
 		StringBuffer querySql = new StringBuffer();
 		StringBuffer whereSql = new StringBuffer();
 		StringBuffer countSql = new StringBuffer();
@@ -191,12 +166,16 @@ public class ProjectSupportCostDaoImpl extends GenericDaoImpl<ProjectSupportCost
 		List<Object> params = new ArrayList<Object>();
 		whereSql.append(" where p.stat_week <= ?");
 		params.add(statWeek);
-		if(contractId != null){
-			whereSql.append(" and p.contract_id = ?");
-			params.add(contractId);
+//		if(contractId != null){
+//			whereSql.append(" and p.contract_id = ?");
+//			params.add(contractId);
+//		}
+		if(userId != null){
+			whereSql.append(" and p.user_id = ?");
+			params.add(userId);
 		}
 		StringBuffer orderSql = new StringBuffer();
-		orderSql.append(" order by p.contract_id,p.dept_type");
+		orderSql.append(" order by p.contract_id desc,p.id desc");
     	Page<Object[]> page = this.querySqlPage(
     			querySql.toString() + whereSql.toString() + orderSql.toString(), 
     			countSql.toString() + whereSql.toString(), 
