@@ -187,11 +187,7 @@
             parent: 'purchase-item.new',
             url: '/queryProductPrice?selectName',
             data: {
-<<<<<<< HEAD
             	authorities: ['ROLE_PROJECT_INFO'],
-=======
-            	authorities: ['ROLE_CONTRACT_PURCHASE'],
->>>>>>> 09dadaaa534064bc0730b671db2dc0ec91e799a4
                 pageTitle: 'cpmApp.projectInfo.home.title'
             },
             onEnter: ['$stateParams','$state','$uibModal',function($stateParams,$state,$uibModal){
