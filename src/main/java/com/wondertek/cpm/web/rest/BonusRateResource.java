@@ -1,5 +1,7 @@
 package com.wondertek.cpm.web.rest;
 
+import io.swagger.annotations.ApiParam;
+
 import java.net.URISyntaxException;
 import java.time.ZonedDateTime;
 import java.util.List;
@@ -27,14 +29,11 @@ import org.springframework.web.bind.annotation.RestController;
 import com.codahale.metrics.annotation.Timed;
 import com.wondertek.cpm.domain.BonusRate;
 import com.wondertek.cpm.domain.vo.BonusRateVo;
-import com.wondertek.cpm.domain.vo.ContractBudgetVo;
 import com.wondertek.cpm.security.AuthoritiesConstants;
 import com.wondertek.cpm.security.SecurityUtils;
 import com.wondertek.cpm.service.BonusRateService;
 import com.wondertek.cpm.web.rest.util.HeaderUtil;
 import com.wondertek.cpm.web.rest.util.PaginationUtil;
-
-import io.swagger.annotations.ApiParam;
 
 /**
  * REST controller for managing BonusRate.
@@ -90,13 +89,15 @@ public class BonusRateResource {
 			if (oldBonusRate == null) {
         		return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.bonusRate.save.idNone", "")).body(null);
 			}else if (oldBonusRate.getDeptType() != bonusRate.getDeptType().longValue() || oldBonusRate.getContractType() != bonusRate.getContractType().longValue()) {
-				System.out.println(oldBonusRate.getDeptType() + "======" + bonusRate.getDeptType());
-				System.out.println(oldBonusRate.getContractType() + "=======" + bonusRate.getContractType());
 				return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.bonusRate.save.fieldNoChange", "")).body(null);
 			}
 			bonusRate.setCreateTime(oldBonusRate.getCreateTime());
 			bonusRate.setCreator(oldBonusRate.getCreator());
 		}else {
+			BonusRate hasBonusRate = bonusRateService.findByParams(bonusRate.getContractType(),bonusRate.getDeptType());
+			if (hasBonusRate != null) {
+				return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.bonusRate.save.hasExist", "")).body(null);
+			}
 			bonusRate.setCreateTime(updateTime);
 			bonusRate.setCreator(updator);
 		}

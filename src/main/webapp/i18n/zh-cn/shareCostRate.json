@@ -9,7 +9,8 @@
             "save": {
             	"requiedError": "缺少必须参数",
             	"idNone": "id不存在",
-            	"fieldNoChange": "合同类型和部门类型不可修改"
+            	"fieldNoChange": "合同类型和部门类型不可修改",
+            	"hasExist": "对应的合同类型和部门类型已经存在"
             },
             "created": "添加成功",
             "updated": "修改成功!",
