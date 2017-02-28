@@ -68,6 +68,7 @@
             resolve: {
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                 	$translatePartialLoader.addPart('externalQuotation');
+                	$translatePartialLoader.addPart('global');
                     return $translate.refresh();
                 }],
                 entity: function () {
@@ -108,6 +109,7 @@
             resolve: {
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                 	$translatePartialLoader.addPart('externalQuotation');
+                	$translatePartialLoader.addPart('global');
                     return $translate.refresh();
                 }],
                 entity: ['ExternalQuotation','$stateParams', function(ExternalQuotation,$stateParams) {

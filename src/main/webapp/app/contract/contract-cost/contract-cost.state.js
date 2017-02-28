@@ -29,7 +29,7 @@
                     squash: true
                 },
                 sort: {
-                    value: 'wcc.id,desc',
+                    value: 'wcc.costDay,desc',
                     squash: true
                 },
                 contractId: null,
@@ -79,7 +79,7 @@
                     squash: true
                 },
                 sort: {
-                    value: 'wcc.id,desc',
+                    value: 'wcc.costDay,desc',
                     squash: true
                 },
                 contractId: null,
@@ -126,6 +126,7 @@
             resolve: {
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                     $translatePartialLoader.addPart('contractCost');
+                    $translatePartialLoader.addPart('global');
                     return $translate.refresh();
                 }],
                 entity: ['$stateParams', 'ContractCost', function($stateParams, ContractCost) {
@@ -161,6 +162,7 @@
             resolve: {
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                     $translatePartialLoader.addPart('contractCost');
+                    $translatePartialLoader.addPart('global');
                     return $translate.refresh();
                 }],
                 entity: ['$stateParams', 'ContractCost', function($stateParams, ContractCost) {
@@ -196,6 +198,7 @@
             	translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                     $translatePartialLoader.addPart('contractCost');
                     $translatePartialLoader.addPart('deptInfo');
+                    $translatePartialLoader.addPart('global');
                     return $translate.refresh();
                 }],
                 entity: ['$stateParams', 'ContractCost', function($stateParams, ContractCost) {
@@ -258,6 +261,7 @@
         		 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                      $translatePartialLoader.addPart('contractCost');
                      $translatePartialLoader.addPart('deptInfo');
+                     $translatePartialLoader.addPart('global');
                      return $translate.refresh();
                  }],
                  entity: function () {
@@ -336,6 +340,7 @@
             	translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                     $translatePartialLoader.addPart('contractCost');
                     $translatePartialLoader.addPart('deptInfo');
+                    $translatePartialLoader.addPart('global');
                     return $translate.refresh();
                 }],
                 entity: ['$stateParams', 'ContractCost', function($stateParams, ContractCost) {

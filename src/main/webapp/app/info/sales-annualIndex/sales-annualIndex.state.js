@@ -103,6 +103,7 @@
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                 	$translatePartialLoader.addPart('salesAnnualIndex');
                 	$translatePartialLoader.addPart('deptInfo');
+                	$translatePartialLoader.addPart('global');
                     return $translate.refresh();
                 }],
                 entity: function () {
@@ -173,6 +174,8 @@
             resolve: {
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                 	$translatePartialLoader.addPart('salesAnnualIndex');
+                	$translatePartialLoader.addPart('deptInfo');
+                	$translatePartialLoader.addPart('global');
                     return $translate.refresh();
                 }],
                 entity: ['SalesAnnualIndex','$stateParams', function(SalesAnnualIndex,$stateParams) {

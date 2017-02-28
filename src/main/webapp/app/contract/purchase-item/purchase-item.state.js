@@ -74,6 +74,7 @@
             resolve: {
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                     $translatePartialLoader.addPart('purchaseItem');
+                    $translatePartialLoader.addPart('global');
                     return $translate.refresh();
                 }],
                 entity: ['$stateParams', 'PurchaseItem', function($stateParams, PurchaseItem) {
@@ -105,6 +106,7 @@
             resolve: {
             	translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                     $translatePartialLoader.addPart('purchaseItem');
+                    $translatePartialLoader.addPart('global');
                     return $translate.refresh();
                 }],
                 entity: ['PurchaseItem','$stateParams', function(PurchaseItem,$stateParams) {
@@ -140,6 +142,7 @@
            	 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                     $translatePartialLoader.addPart('purchaseItem');
                     $translatePartialLoader.addPart('productPrice');
+                    $translatePartialLoader.addPart('global');
                     return $translate.refresh();
                 }],
                 entity: function () {
@@ -233,6 +236,7 @@
             	translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
             		$translatePartialLoader.addPart('purchaseItem');
             		$translatePartialLoader.addPart('productPrice');
+            		$translatePartialLoader.addPart('global');
                     return $translate.refresh();
                 }],
                 entity: ['PurchaseItem','$stateParams', function(PurchaseItem,$stateParams) {
