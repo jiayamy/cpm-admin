@@ -21,6 +21,7 @@ import com.wondertek.cpm.config.StringUtil;
 import com.wondertek.cpm.domain.Bonus;
 import com.wondertek.cpm.domain.BonusRate;
 import com.wondertek.cpm.domain.ConsultantsBonus;
+import com.wondertek.cpm.domain.ContractFinishInfo;
 import com.wondertek.cpm.domain.ContractInfo;
 import com.wondertek.cpm.domain.ContractInternalPurchase;
 import com.wondertek.cpm.domain.ContractProjectBonus;
@@ -41,6 +42,7 @@ import com.wondertek.cpm.domain.UserTimesheet;
 import com.wondertek.cpm.repository.BonusRateRepository;
 import com.wondertek.cpm.repository.BonusRepository;
 import com.wondertek.cpm.repository.ConsultantsBonusRepository;
+import com.wondertek.cpm.repository.ContractFinishInfoRepository;
 import com.wondertek.cpm.repository.ContractInfoRepository;
 import com.wondertek.cpm.repository.ContractInternalPurchaseRepository;
 import com.wondertek.cpm.repository.ContractProjectBonusRepository;
@@ -96,6 +98,9 @@ public class AccountScheduledJob {
 	
 	@Inject
 	private ContractProjectBonusRepository contractProjectBonusRepository;
+	
+	@Inject
+	private ContractFinishInfoRepository contractFinishInfoRepository;
 	
 	@Inject
 	private DeptInfoRepository deptInfoRepository;
@@ -240,7 +245,7 @@ public class AccountScheduledJob {
 		clear(statWeek);
 		
 		//合同
-		List<ContractInfo> contractInfos = contractInfoRepository.findByStatusOrUpdateTime(ContractInfo.STATUS_VALIDABLE, beginTime, endTime);
+		List<ContractInfo> contractInfos = contractInfoRepository.findByStartDayAndStatusOrUpdateTime(ContractInfo.STATUS_VALIDABLE, beginTime, endTime);
 		if(contractInfos != null && contractInfos.size() > 0){
 			for(ContractInfo contractInfo : contractInfos){
 				Long contractId = contractInfo.getId();
@@ -259,13 +264,19 @@ public class AccountScheduledJob {
 				Double contractTaxes = contractReceiveTotal*((contractInfo.getTaxRate()/100)/(1+(contractInfo.getTaxRate()/100)));
 				//第三方采购
 				Double contractThirdPartyPurchase = 0D;
-				List<PurchaseItem> purchaseItems = purchaseItemRepository.findByContractIdAndSource(contractId, PurchaseItem.SOURCE_EXTERNAL);
+				List<PurchaseItem> purchaseItems = purchaseItemRepository.findByContractIdAndSourceAndUpdateBefore(contractId, PurchaseItem.SOURCE_EXTERNAL, endTime);
 				if(purchaseItems != null && purchaseItems.size() > 0){
 					for(PurchaseItem purchaseItem : purchaseItems){
 						contractThirdPartyPurchase += purchaseItem.getQuantity()*purchaseItem.getPrice();
 					}
 				}else{
 					log.error("no Purchase item found belong to " + contractInfo.getSerialNum());
+				}
+				//合同完成率
+				Double contractFinishRate = 0D;
+				ContractFinishInfo contractFinishInfo = contractFinishInfoRepository.findMaxByContractIdAndCreateTimeBefore(contractId, endTime);
+				if(contractFinishInfo != null){
+					contractFinishRate = StringUtil.nullToDouble(contractFinishInfo.getFinishRate());
 				}
 				
 				log.info("====begin generate Sales Bonus belong to Contract : "+contractInfo.getSerialNum()+"========");
@@ -455,7 +466,7 @@ public class AccountScheduledJob {
 						int deliveryTime = DateUtil.getIntervalDaysOfExitDate2(Date.from(projectInfo.getStartDay().toInstant()), Date.from(projectInfo.getEndDay().toInstant())) + 1;
 						projectSupportBonus.setDeliveryTime(deliveryTime);
 						//验收节点
-						Double acceptanceRate = contractInfo.getFinishRate();
+						Double acceptanceRate = contractFinishRate;
 						projectSupportBonus.setAcceptanceRate(acceptanceRate);
 						//计划天数
 						Double planDays = (deliveryTime*acceptanceRate)/100;
@@ -545,7 +556,7 @@ public class AccountScheduledJob {
 //						Integer psbDeliveryTime = DateUtil.getIntervalDaysOfExitDate2(Date.from(contractInfo.getStartDay().toInstant()), Date.from(contractInfo.getEndDay().toInstant())) + 1;
 //						productSalesBonus.setDeliveryTime(psbDeliveryTime);
 //						//验收节点
-//						Double psbAcceptanceRate = contractInfo.getFinishRate();
+//						Double psbAcceptanceRate = contractFinishRate;
 //						productSalesBonus.setAcceptanceRate(psbAcceptanceRate);
 //						//计划天数
 //						Double psbPlanDays = (psbDeliveryTime*psbAcceptanceRate)/100;
@@ -624,7 +635,7 @@ public class AccountScheduledJob {
 				Double poIdentifiableIncome = poContractAmount/(1+(poTaxRate/100));
 				projectOverall.setIdentifiableIncome(poIdentifiableIncome);
 				//合同完成节点
-				Double poContractFinishRate = contractInfo.getFinishRate();
+				Double poContractFinishRate = contractFinishRate;
 				projectOverall.setContractFinishRate(poContractFinishRate);
 				//收入确认
 				Double poAcceptanceIncome = poIdentifiableIncome*(poContractFinishRate/100);
