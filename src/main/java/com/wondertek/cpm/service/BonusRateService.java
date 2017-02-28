@@ -51,9 +51,11 @@ public class BonusRateService {
 	public BonusRate getBonusRate(Long id) {
 		return bonusRateRepository.findOne(id);
 	}
-    @Transactional(readOnly = true)
 	public void delete(Long id) {
 		log.debug("Request to delete BonusRate : {}", id);
         bonusRateRepository.delete(id);
+	}
+	public BonusRate findByParams(Integer contractType, Long deptType) {
+		return bonusRateRepository.findByDeptTypeAndContractType(deptType, contractType);
 	}
 }

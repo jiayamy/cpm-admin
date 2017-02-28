@@ -94,6 +94,10 @@ public class ShareCostRateResource {
 			shareCostRate.setCreateTime(oldShareCostRate.getCreateTime());
 			shareCostRate.setCreator(oldShareCostRate.getCreator());
 		}else {
+			ShareCostRate hasShareCostRate = shareCostRateService.findByParams(shareCostRate.getContractType(),shareCostRate.getDeptType());
+			if (hasShareCostRate != null) {
+				return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.shareCostRate.save.hasExist", "")).body(null);
+			}
 			shareCostRate.setCreateTime(updateTime);
 			shareCostRate.setCreator(updator);
 		}

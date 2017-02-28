@@ -46,10 +46,12 @@ public class ShareCostRateService {
 	public Page<ShareCostRate> getUserPage(ShareCostRate shareCostRate, Pageable pageable) {
     	return shareCostRateDao.getUserPage(shareCostRate, pageable);
 	}
-    @Transactional(readOnly = true)
 	public void delete(Long id) {
 		log.debug("Request to delete ShareCostRate : {}", id);
 		shareCostRateRepository.delete(id);
 		
+	}
+	public ShareCostRate findByParams(Integer contractType, Long deptType) {
+		return shareCostRateRepository.findByContactTypeAndDeptType(contractType,deptType);
 	}
 }
