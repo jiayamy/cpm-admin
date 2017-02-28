@@ -89,8 +89,10 @@ public class BonusRateResource {
 			BonusRate oldBonusRate = bonusRateService.findOne(bonusRate.getId());
 			if (oldBonusRate == null) {
         		return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.bonusRate.save.idNone", "")).body(null);
-			}else if (oldBonusRate.getDeptType() != bonusRate.getDeptType() || oldBonusRate.getContractType() != bonusRate.getContractType()) {
-				return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.bonusRate.update.fieldNoChange", "")).body(null);
+			}else if (oldBonusRate.getDeptType() != bonusRate.getDeptType().longValue() || oldBonusRate.getContractType() != bonusRate.getContractType().longValue()) {
+				System.out.println(oldBonusRate.getDeptType() + "======" + bonusRate.getDeptType());
+				System.out.println(oldBonusRate.getContractType() + "=======" + bonusRate.getContractType());
+				return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.bonusRate.save.fieldNoChange", "")).body(null);
 			}
 			bonusRate.setCreateTime(oldBonusRate.getCreateTime());
 			bonusRate.setCreator(oldBonusRate.getCreator());

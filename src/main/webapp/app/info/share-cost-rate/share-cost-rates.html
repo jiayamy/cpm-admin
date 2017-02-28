@@ -2,6 +2,20 @@
     <h2 data-translate="cpmApp.shareCostRate.home.title">Bonus Rate</h2>
     <jhi-alert></jhi-alert>
     <div class="container-fluid">
+    	<div class="row form-horizontal">
+        	<div class="form-group">
+           	 	<div class="col-xs-4">
+                	<button class="btn btn-primary" ui-sref="share-cost-rate.new">
+                    	<span class="glyphicon glyphicon-plus"></span>
+                    	<span class=""  data-translate="cpmApp.shareCostRate.home.createLabel">
+                        	Create new Share Cost Rate
+                   		 </span>
+                	</button>
+            	</div>
+            	<div class="col-xs-8 no-padding-right">
+            	</div>
+            </div>
+        </div>
         <form name="searchForm" class="form-horizontal">
 	     	<div class="form-group">
 	            <div class="col-sm-4">
@@ -63,6 +77,20 @@
                     <td>{{shareCostRate.shareRate}}</td>
                     <td>{{shareCostRate.updateTime | date:'medium'}}</td>
                     <td class="text-right">
+                    	<div class="btn-group flex-btn-group-container">
+                            <button type="submit" 
+                                    ui-sref="share-cost-rate.edit({id:shareCostRate.id})"
+                                    class="btn btn-primary btn-sm">
+                                <span class="glyphicon glyphicon-pencil"></span>
+                                <span class="hidden-xs hidden-sm" data-translate="entity.action.edit"></span>
+                            </button>
+                            <button type="submit"
+                                    ui-sref="share-cost-rate.delete({id:shareCostRate.id})"
+                                    class="btn btn-danger btn-sm">
+                                <span class="glyphicon glyphicon-remove-circle"></span>
+                                <span class="hidden-xs hidden-sm" data-translate="entity.action.delete"></span>
+                            </button>
+                        </div>
                     </td>
                 </tr>
             </tbody>

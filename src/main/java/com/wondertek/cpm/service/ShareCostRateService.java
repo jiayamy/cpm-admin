@@ -46,8 +46,9 @@ public class ShareCostRateService {
 	public Page<ShareCostRate> getUserPage(ShareCostRate shareCostRate, Pageable pageable) {
     	return shareCostRateDao.getUserPage(shareCostRate, pageable);
 	}
+    @Transactional(readOnly = true)
 	public void delete(Long id) {
-		log.debug("Request to delete BonusRate : {}", id);
+		log.debug("Request to delete ShareCostRate : {}", id);
 		shareCostRateRepository.delete(id);
 		
 	}

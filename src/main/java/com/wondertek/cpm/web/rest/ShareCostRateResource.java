@@ -1,5 +1,7 @@
 package com.wondertek.cpm.web.rest;
 
+import io.swagger.annotations.ApiParam;
+
 import java.net.URISyntaxException;
 import java.time.ZonedDateTime;
 import java.util.List;
@@ -25,15 +27,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.codahale.metrics.annotation.Timed;
-import com.wondertek.cpm.domain.BonusRate;
 import com.wondertek.cpm.domain.ShareCostRate;
 import com.wondertek.cpm.security.AuthoritiesConstants;
 import com.wondertek.cpm.security.SecurityUtils;
 import com.wondertek.cpm.service.ShareCostRateService;
 import com.wondertek.cpm.web.rest.util.HeaderUtil;
 import com.wondertek.cpm.web.rest.util.PaginationUtil;
-
-import io.swagger.annotations.ApiParam;
 
 /**
  * REST controller for managing ShareCostRate.
@@ -89,7 +88,7 @@ public class ShareCostRateResource {
 			ShareCostRate oldShareCostRate = shareCostRateService.findOne(shareCostRate.getId());
 			if (oldShareCostRate == null) {
         		return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.shareCostRate.save.idNone", "")).body(null);
-			}else if (oldShareCostRate.getContractType() != shareCostRate.getContractType() || oldShareCostRate.getDeptType() != shareCostRate.getDeptType()) {
+			}else if (oldShareCostRate.getContractType() != shareCostRate.getContractType().longValue() || oldShareCostRate.getDeptType() != shareCostRate.getDeptType().longValue()) {
 				return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.shareCostRate.update.fieldNoChange", "")).body(null);
 			}
 			shareCostRate.setCreateTime(oldShareCostRate.getCreateTime());
@@ -120,7 +119,7 @@ public class ShareCostRateResource {
     @GetMapping("/share-cost-rate/{id}")
     @Timed
     @Secured(AuthoritiesConstants.ROLE_INFO_BASIC)
-    public ResponseEntity<ShareCostRate> getBonusRate(@PathVariable Long id){
+    public ResponseEntity<ShareCostRate> getShareCostRate(@PathVariable Long id){
         log.debug("REST request to get ShareCostRate : {}", id);
         ShareCostRate shareCostRate = shareCostRateService.findOne(id);
         return Optional.ofNullable(shareCostRate)
@@ -132,15 +131,15 @@ public class ShareCostRateResource {
     }
     /**
      * @author sunshine
-     * @Description : /bonus-rate/:id : delete the "id" bonusRate.
+     * @Description : /bonus-rate/:id : delete the "id" shareCostRate.
      * 
      */
     @DeleteMapping("/share-cost-rate/{id}")
     @Timed
     @Secured(AuthoritiesConstants.ROLE_INFO_BASIC)
-    public ResponseEntity<Void> deleteBonusRate(@PathVariable Long id) {
-        log.debug("REST request to delete BonusRate : {}", id);
+    public ResponseEntity<Void> deleteShareCostRate(@PathVariable Long id) {
+        log.debug("REST request to delete ShareCostRate : {}", id);
         shareCostRateService.delete(id);
-        return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert("bonusRate", id.toString())).build();
+        return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert("shareCostRate", id.toString())).build();
     }
 }
