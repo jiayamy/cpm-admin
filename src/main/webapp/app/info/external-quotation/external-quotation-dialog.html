@@ -1,0 +1,82 @@
+<h2><span data-translate="cpmApp.externalQuotation.home.createOrEditLabel">Create or edit a External Quotation</span></h2>
+<hr>
+<form name="myForm" role="form" ng-submit="vm.save()">
+	<div class="container-fluid">
+		<div class="row form-horizontal">
+	     	<div class="form-group">
+				<div class="col-sm-6">
+					<label class="control-label" data-translate="cpmApp.externalQuotation.grade" for="field_grade">Grade</label>
+	            	<input type="number" class="form-control" name="grade" ng-model="vm.externalQuotation.grade" id="field_grade"
+	            		ng-disabled="vm.gradeDisable" step="1" min="1"  ng-required="true" />
+		            <div class="help-block"
+	                   ng-show="myForm.grade.$error.required" data-translate="entity.validation.required" style="color:red">
+	                    This field is required.
+	                </div>
+	                <div ng-show="myForm.grade.$dirty&&myForm.grade.$error.min" class="alert alert-danger help-block"> 
+		                   	最小为1
+		           	</div>
+				</div>
+				<div class="col-sm-6">
+	          		<label class="control-label" data-translate="cpmApp.externalQuotation.externalQuotation" for="field_externalQuotation">External Quotation</label>
+	              	<input type="number" class="form-control" name="externalQuotation" ng-model="vm.externalQuotation.externalQuotation" id="field_externalQuotation"
+	            		step="0.01" min="0" ng-required="true" ng-change="vm.externalQuotationChanged()" />
+		            <div class="help-block"
+	                   ng-show="myForm.externalQuotation.$error.required" data-translate="entity.validation.required" style="color:red">
+	                    This field is required.
+	                </div>
+				</div>
+	     	</div>
+	     	<div class="form-group">
+	     		<div class="col-sm-6">
+	          		<label class="control-label" data-translate="cpmApp.externalQuotation.socialSecurityFund" for="field_socialSecurityFund">Social Security Fund</label>
+	              	<input type="number" class="form-control" name="socialSecurityFund" ng-model="vm.externalQuotation.socialSecurityFund" id="field_socialSecurityFund"
+	            		step="0.01" min="0" ng-required="true" ng-change="vm.socialSecurityFundChanged()" />
+		            <div class="help-block"
+	                   ng-show="myForm.socialSecurityFund.$error.required" data-translate="entity.validation.required" style="color:red">
+	                    This field is required.
+	                </div>
+				</div>
+				<div class="col-sm-6">
+	          		<label class="control-label" data-translate="cpmApp.externalQuotation.otherExpense" for="field_otherExpense">Other Expense</label>
+	              	<input type="number" class="form-control" name="otherExpense" ng-model="vm.externalQuotation.otherExpense" id="field_otherExpense"
+	            		step="0.01" min="0" ng-required="true" ng-change="vm.otherExpenseChanged()" />
+		            <div class="help-block"
+	                   ng-show="myForm.externalQuotation.$error.required" data-translate="entity.validation.required" style="color:red">
+	                    This field is required.
+	                </div>
+				</div>
+	     	</div>
+	     	<div class="form-group">
+	     		<div class="col-sm-6">
+	          		<label class="control-label" data-translate="cpmApp.externalQuotation.costBasis" for="field_costBasis">Cost Basis</label>
+	              	<input type="number" class="form-control" name="costBasis" ng-model="vm.externalQuotation.costBasis" id="field_costBasis"
+	            		step="0.01" min="0" ng-required="true" ng-disabled="true" />
+		            <div class="help-block"
+	                   ng-show="myForm.costBasis.$error.required" data-translate="entity.validation.required" style="color:red">
+	                    This field is required.
+	                </div>
+				</div>
+	     		<div class="col-sm-6">
+	          		<label class="control-label" data-translate="cpmApp.externalQuotation.hourCost" for="field_hourCost">Hour Cost</label>
+	              	<input type="number" class="form-control" name="hourCost" ng-model="vm.externalQuotation.hourCost" id="field_hourCost"
+	            		step="0.01" min="0" ng-required="true" ng-disabled="true" />
+		            <div class="help-block"
+	                   ng-show="myForm.hourCost.$error.required" data-translate="entity.validation.required" style="color:red">
+	                    This field is required.
+	                </div>
+				</div>
+	     	</div>
+		</div>
+	</div>
+	<hr>
+	<jhi-alert></jhi-alert>
+	<jhi-alert-error></jhi-alert-error>
+	<button type="submit"
+        ui-sref="{{ vm.previousState }}"
+        class="btn btn-info">
+        <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span data-translate="entity.action.back"> Back</span>
+    </button>
+    <button type="submit" ng-disabled="!myForm.$valid || vm.isSaving" class="btn btn-primary">
+        <span class="glyphicon glyphicon-save"></span>&nbsp;<span data-translate="entity.action.save">Save</span>
+    </button>
+</form>

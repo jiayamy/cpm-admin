@@ -22,13 +22,12 @@
         vm.loadAll = loadAll;
         vm.searchQuery = {};
         vm.searchQuery.grade = pagingParams.grade;
-        if (!vm.searchQuery.grade){
+        if (vm.searchQuery.grade == undefined){
         	vm.haveSearch = null;
         }else{
+        	vm.searchQuery.grade = Math.round(vm.searchQuery.grade);
         	vm.haveSearch = true;
         }
-        //合同类型
-        vm.grades = [1,2,3,4,5,6,7,8,9];
         //加载列表
         loadAll();
         function loadAll () {
@@ -74,9 +73,11 @@
         }
 
         function search() {
-            if (!vm.searchQuery.grade){
+            if (vm.searchQuery.grade == undefined){
                 return vm.clear();
             }
+            vm.searchQuery.grade = Math.round(vm.searchQuery.grade);
+            
             vm.links = null;
             vm.page = 1;
             vm.predicate = 'weq.grade';

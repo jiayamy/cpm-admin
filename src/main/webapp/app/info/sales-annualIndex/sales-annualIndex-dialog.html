@@ -1,0 +1,71 @@
+<h2><span data-translate="cpmApp.salesAnnualIndex.home.createOrEditLabel">Create or edit a Sales Annual Index</span></h2>
+<hr>
+<form name="myForm" role="form" ng-submit="vm.save()">
+	<div class="container-fluid">
+		<div class="row form-horizontal">
+	     	<div class="form-group">
+	     		<div class="col-sm-6">
+	        	 	<label class="control-label" data-translate="cpmApp.salesAnnualIndex.statYear" for="field_statYear">Start Day</label>
+	             	<div class="input-group">
+	                 	<input id="field_statYear" ng-disabled="vm.infoDisable" type="text" class="form-control" name="statYear" datetime-picker="yyyy" enable-time="false"
+	                 	 ng-model="vm.salesAnnualIndex.statYear" is-open="vm.datePickerOpenStatus.statYear" ng-required="true" ng-minlength="4"
+	                   	/>
+	                 	<span class="input-group-btn">
+	                     	<button type="button" ng-disabled="vm.infoDisable" class="btn btn-default" ng-click="vm.openCalendar('statYear')"><i class="glyphicon glyphicon-calendar"></i></button>
+	                 	</span>
+	             	</div>
+	             	<div ng-show="myForm.statYear.$dirty&&myForm.statYear.$error.minlength" class="alert alert-danger help-block"> 
+                    	所属年份必填
+                	</div>
+                	<div class="help-block"
+	                   ng-hide="vm.salesAnnualIndex.statYear" data-translate="entity.validation.required" style="color:red">
+	                    This field is required.
+	                </div>
+	         	</div>
+				<div class="col-sm-6">
+	          		<label class="control-label" data-translate="cpmApp.salesAnnualIndex.userName" for="field_userName">userName</label>
+	          		<div class="input-group" ng-disabled="vm.infoDisable">
+		          		<input type="text" ng-disabled="vm.infoDisable" class="form-control" name="userName" id="field_userName"
+		                  	ng-model="vm.salesAnnualIndex.userName" readonly ng-required="true"
+	                   	/>
+	                   	<span class="input-group-btn">
+	                     	<button type="button" ng-disabled="vm.infoDisable" class="btn btn-default" ui-sref="{{vm.queryDept}}({selectType:3,showChild:true})"><i class="glyphicon glyphicon-user"></i></button>
+	                 	</span>
+	            	</div>
+	            	<div class="help-block"
+	                   ng-hide="vm.salesAnnualIndex.userName" data-translate="entity.validation.required" style="color:red">
+	                    This field is required.
+	                </div>
+	      		</div>
+	     	</div>
+	     	<div class="form-group">
+	     		<div class="col-sm-6">
+	          		<label class="control-label" data-translate="cpmApp.salesAnnualIndex.annualIndex" for="field_annualIndex">Social Security Fund</label>
+	              	<input type="number" class="form-control" name="annualIndex" ng-model="vm.salesAnnualIndex.annualIndex" id="field_annualIndex"
+	            		step="0.01" min="0" ng-required="true" />
+		            <div class="help-block"
+	                   ng-show="myForm.annualIndex.$error.required" data-translate="entity.validation.required" style="color:red">
+	                    This field is required.
+	                </div>
+	                <div ng-show="myForm.annualIndex.$dirty&&myForm.annualIndex.$error.min" class="alert alert-danger help-block"> 
+		                   	最小为0
+		           	</div>
+				</div>
+				<div class="col-sm-6">
+	          		&nbsp;
+				</div>
+	     	</div>
+		</div>
+	</div>
+	<hr>
+	<jhi-alert></jhi-alert>
+	<jhi-alert-error></jhi-alert-error>
+	<button type="submit"
+        ui-sref="{{ vm.previousState }}"
+        class="btn btn-info">
+        <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span data-translate="entity.action.back"> Back</span>
+    </button>
+    <button type="submit" ng-disabled="!myForm.$valid || vm.isSaving" class="btn btn-primary">
+        <span class="glyphicon glyphicon-save"></span>&nbsp;<span data-translate="entity.action.save">Save</span>
+    </button>
+</form>

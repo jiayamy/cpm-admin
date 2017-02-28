@@ -2,15 +2,24 @@
     <h2 data-translate="cpmApp.externalQuotation.home.title">External Quotation</h2>
     <jhi-alert></jhi-alert>
     <div class="container-fluid">
-        <form name="searchForm" class="form-horizontal">
+    	<div class="row form-horizontal">
+        	<div class="form-group">
+	            <div class="col-xs-4">
+	                <button class="btn btn-primary" ui-sref="external-quotation.new" >
+	                    <span class="glyphicon glyphicon-plus"></span>
+	                    <span class=""  data-translate="cpmApp.externalQuotation.home.createLabel">
+	                        Create new External Quotation
+	                    </span>
+	                </button>
+	            </div>
+			</div>
+        </div>
+        <form name="searchForm" novalidate class="form-horizontal">
 	     	<div class="form-group">
 	        	<div class="col-sm-4">
 	          		<label class="col-sm-4 control-label" data-translate="cpmApp.externalQuotation.grade">Grade</label>
 		            <div class="col-sm-8">
-		                <select class="form-control" name="grade" ng-model="vm.searchQuery.grade"
-			            	ng-options="grade for grade in vm.grades track by grade">
-			            	<option value="">--选择级别--</option>
-			            </select>
+			            <input type="number" class="form-control" name="grade" ng-model="vm.searchQuery.grade"/>
 		            </div>
 	       		</div>
 	            <div class="col-sm-4">
@@ -62,6 +71,13 @@
                     <td>{{externalQuotation.hourCost}}</td>
                     <td>{{externalQuotation.updateTime | date:'medium'}}</td>
                     <td class="text-right">
+                    	<div class="btn-group flex-btn-group-container">
+                            <button type="submit"
+                                    ui-sref="external-quotation.edit({id:externalQuotation.id})"
+                                    class="btn btn-primary btn-sm">
+                                <span class="glyphicon glyphicon-pencil"></span>
+                            </button>
+                        </div>
                     </td>
                 </tr>
             </tbody>
