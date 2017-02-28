@@ -84,6 +84,110 @@
                     $state.go('^');
                 });
             }]
+        })
+        .state('sales-annualIndex.new', {
+            parent: 'sales-annualIndex',
+            url: '/new',
+            data: {
+                authorities: ['ROLE_INFO_BASIC'],
+                pageTitle: 'cpmApp.salesAnnualIndex.home.createOrEditLabel'
+            },
+            views: {
+                'content@': {
+                    templateUrl: 'app/info/sales-annualIndex/sales-annualIndex-dialog.html',
+                    controller: 'SalesAnnualIndexDialogController',
+                    controllerAs: 'vm'
+                }
+            },
+            resolve: {
+                translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
+                	$translatePartialLoader.addPart('salesAnnualIndex');
+                	$translatePartialLoader.addPart('deptInfo');
+                    return $translate.refresh();
+                }],
+                entity: function () {
+                    return {
+                        id: null,
+                        grade: null,
+                        SalesAnnualIndex: 0,
+                        socialSecurityFund: 0,
+                        otherExpense: 0,
+                        costBasis: 0,
+                        hourCost: 0
+                    };
+                },
+                previousState: ["$state", function ($state) {
+                    var currentStateData = {
+                    	queryDept:'sales-annualIndex.new.queryDept',
+                        name: $state.current.name || 'sales-annualIndex',
+                        params: $state.params,
+                        url: $state.href($state.current.name, $state.params)
+                    };
+                    return currentStateData;
+                }]
+            }
+        })
+        .state('sales-annualIndex.new.queryDept', {
+            parent: 'sales-annualIndex.new',
+            url: '/queryDept?selectType&showChild&showUser',
+            data: {
+                authorities: ['ROLE_INFO_BASIC']
+            },
+            onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
+                $uibModal.open({
+                    templateUrl: 'app/info/dept-info/dept-info-query.html',
+                    controller: 'DeptInfoQueryController',
+                    controllerAs: 'vm',
+                    backdrop: 'static',
+                    size: 'lg',
+                    resolve: {
+                        entity: function() {
+                            return {
+                            	selectType : $stateParams.selectType,
+                            	showChild : $stateParams.showChild,
+                            	showUser : $stateParams.showUser
+                            }
+                        }
+                    }
+                }).result.then(function() {
+                    $state.go('^', {}, { reload: false });
+                }, function() {
+                    $state.go('^');
+                });
+            }]
+        })
+        .state('sales-annualIndex.edit', {
+            parent: 'sales-annualIndex',
+            url: '/edit/{id}',
+            data: {
+                authorities: ['ROLE_INFO_BASIC'],
+                pageTitle: 'cpmApp.salesAnnualIndex.home.createOrEditLabel'
+            },
+            views: {
+                'content@': {
+                    templateUrl: 'app/info/sales-annualIndex/sales-annualIndex-dialog.html',
+                    controller: 'SalesAnnualIndexDialogController',
+                    controllerAs: 'vm'
+                }
+            },
+            resolve: {
+                translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
+                	$translatePartialLoader.addPart('salesAnnualIndex');
+                    return $translate.refresh();
+                }],
+                entity: ['SalesAnnualIndex','$stateParams', function(SalesAnnualIndex,$stateParams) {
+                    return SalesAnnualIndex.get({id : $stateParams.id}).$promise;
+                }],
+                previousState: ["$state", function ($state) {
+                    var currentStateData = {
+                    	queryDept:'sales-annualIndex.edit.queryDept',
+                        name: $state.current.name || 'sales-annualIndex',
+                        params: $state.params,
+                        url: $state.href($state.current.name, $state.params)
+                    };
+                    return currentStateData;
+                }]
+            }
         });
     }
 

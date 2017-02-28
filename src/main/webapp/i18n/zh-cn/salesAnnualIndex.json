@@ -3,8 +3,12 @@
         "salesAnnualIndex" : {
             "home": {
                 "title": "销售年指标",
-                "createOrEditLabel": "销售年指标"
+                "createOrEditLabel": "销售年指标",
+                "createLabel":"新增"
             },
+            "created": "新建成功",
+            "updated": "修改成功",
+            "deleted": "删除成功",
             "save":{
             	"requriedError":"必填参数为空",
             	"noPerm":"无权限操作",
