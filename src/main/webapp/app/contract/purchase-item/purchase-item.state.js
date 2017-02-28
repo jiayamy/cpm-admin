@@ -184,6 +184,7 @@
             parent: 'purchase-item.new',
             url: '/queryProductPrice?selectName',
             data: {
+            	authorities: ['ROLE_PROJECT_INFO'],
                 pageTitle: 'cpmApp.projectInfo.home.title'
             },
             onEnter: ['$stateParams','$state','$uibModal',function($stateParams,$state,$uibModal){

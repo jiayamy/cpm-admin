@@ -41,9 +41,9 @@
                     <td>{{projectOverAll.serialNum}}</td>
                     <td>{{projectOverAll.statWeek}}</td>
                     <td>{{projectOverAll.contractAmount}}</td>
-                    <td>{{projectOverAll.taxRate}}</td>
+                    <td>{{projectOverAll.taxRate}}<span ng-show="projectOverAll.id">%</span></td>
                     <td>{{projectOverAll.identifiableIncome}}</td>
-                    <td>{{projectOverAll.contractFinishRate}}</td>
+                    <td>{{projectOverAll.contractFinishRate}}<span ng-show="projectOverAll.id">%</span></td>
                     <td>{{projectOverAll.acceptanceIncome}}</td>
                     <td>{{projectOverAll.receiveTotal}}</td>
                     <td>{{projectOverAll.receivableAccount}}</td>
@@ -54,7 +54,7 @@
                     <td>{{projectOverAll.academicCost}}</td>
                     <td>{{projectOverAll.bonus}}</td>
                     <td>{{projectOverAll.grossProfit}}</td>
-                    <td>{{projectOverAll.grossProfitRate}}</td>
+                    <td>{{projectOverAll.grossProfitRate}}<span ng-show="projectOverAll.id">%</span></td>
                     <td class="text-right">
                     </td>
                 </tr>

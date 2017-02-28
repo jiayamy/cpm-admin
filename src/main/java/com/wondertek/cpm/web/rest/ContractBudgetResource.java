@@ -66,6 +66,7 @@ public class ContractBudgetResource {
      */
     @PutMapping("/contract-budgets")
     @Timed
+    @Secured(AuthoritiesConstants.ROLE_CONTRACT_BUDGET)
     public ResponseEntity<Boolean> updateContractBudget(@RequestBody ContractBudget contractBudget) throws URISyntaxException {
         log.debug("REST request to update ContractBudget : {}", contractBudget);
         Boolean isNew = contractBudget.getId() == null;

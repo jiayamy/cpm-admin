@@ -76,13 +76,13 @@
                     <th style="width:80px;"><span data-translate="cpmApp.projectSupportBonus.deptType">Dept Type</span></th>
                     <th style="width:110px;"><span data-translate="cpmApp.projectSupportBonus.contractAmount">Contract Amount</span></th>
                     <th style="width:60px;"><span data-translate="cpmApp.projectSupportBonus.taxRate">Tax Rate</span></th>
-					<th style="width:60px;"><span data-translate="cpmApp.projectSupportBonus.acceptanceRate">Acceptance Rate</span></th>
-					<th style="width:110px;"><span data-translate="cpmApp.projectSupportBonus.deliveryTime">Delivery Time</span></th>
-					<th style="width:60px;"><span data-translate="cpmApp.projectSupportBonus.planDays">Plan Days</span></th>
-                    <th style="width:60px;"><span data-translate="cpmApp.projectSupportBonus.realDays">Real Days</span></th>
-                    <th style="width:80px;"><span data-translate="cpmApp.projectSupportBonus.bonusAdjustRate">Bonus Adjust Rate</span></th>
-                    <th style="width:80px;"><span data-translate="cpmApp.projectSupportBonus.bonusRate">Bonus Rate</span></th>
-                    <th style="width:80px;"><span data-translate="cpmApp.projectSupportBonus.bonusAcceptanceRate">Bonus Acceptance Rate</span></th>
+					<th style="width:90px;"><span data-translate="cpmApp.projectSupportBonus.acceptanceRate">Acceptance Rate</span></th>
+					<th style="width:130px;"><span data-translate="cpmApp.projectSupportBonus.deliveryTime">Delivery Time</span></th>
+					<th style="width:100px;"><span data-translate="cpmApp.projectSupportBonus.planDays">Plan Days</span></th>
+                    <th style="width:130px;"><span data-translate="cpmApp.projectSupportBonus.realDays">Real Days</span></th>
+                    <th style="width:130px;"><span data-translate="cpmApp.projectSupportBonus.bonusAdjustRate">Bonus Adjust Rate</span></th>
+                    <th style="width:110px;"><span data-translate="cpmApp.projectSupportBonus.bonusRate">Bonus Rate</span></th>
+                    <th style="width:110px;"><span data-translate="cpmApp.projectSupportBonus.bonusAcceptanceRate">Bonus Acceptance Rate</span></th>
                     <th style="width:110px;"><span data-translate="cpmApp.projectSupportBonus.bonusBasis">Bonus Basis</span></th>
                     <th style="width:110px;"><span data-translate="cpmApp.projectSupportBonus.currentBonus">Current Bonusl</span></th>
                 </tr>
@@ -92,14 +92,14 @@
                     <td><a ui-sref="project-support-bonus-detail({id:projectSupportBonus.id})">{{projectSupportBonus.serialNum}}</a></td>
                     <td>{{projectSupportBonus.deptTypeName}}</td>
                     <td>{{projectSupportBonus.contractAmount}}</td>
-                    <td>{{projectSupportBonus.taxRate}}</td>
-                    <td>{{projectSupportBonus.acceptanceRate}}</td>
+                    <td>{{projectSupportBonus.taxRate}}<span ng-show="projectSupportBonus.id">%</span></td>
+                    <td>{{projectSupportBonus.acceptanceRate}}<span ng-show="projectSupportBonus.id">%</span></td>
                     <td>{{projectSupportBonus.deliveryTime}}</td>
                     <td>{{projectSupportBonus.planDays}}</td>
                     <td>{{projectSupportBonus.realDays}}</td>
-                    <td>{{projectSupportBonus.bonusAdjustRate}}</td>
-                    <td>{{projectSupportBonus.bonusRate}}</td>
-                    <td>{{projectSupportBonus.bonusAcceptanceRate}}</td>
+                    <td>{{projectSupportBonus.bonusAdjustRate}}<span ng-show="projectSupportBonus.id">%</span></td>
+                    <td>{{projectSupportBonus.bonusRate}}<span ng-show="projectSupportBonus.id">%</span></td>
+                    <td>{{projectSupportBonus.bonusAcceptanceRate}}<span ng-show="projectSupportBonus.id">%</span></td>
                     <td>{{projectSupportBonus.bonusBasis}}</td>
                     <td>{{projectSupportBonus.currentBonus}}</td>
                     <td class="text-right">

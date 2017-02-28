@@ -150,8 +150,6 @@ public class ProjectOverallResource {
          for (ProjectOverallVo projectOverallVo : page.getContent()) {
  			list.add(projectOverallVo);
  		}
-//         List<ProjectOverallVo> list = projectOverallService.getProjectOverallList(fromDate,toDate,contractId,userId);
-
          //拼接sheet数据
      	//标题
      	String[] heads = new String[]{

@@ -255,6 +255,7 @@ public class ProjectSupportBonusResource {
 				cell.setCellValue("");
 			}else {
 				cell.setCellValue(vo.getAcceptanceRate() / 100);
+				cell.setCellStyle(cellStyle);
 			}
 			j++;
 			cell = row.createCell(j,cellType[j]);
@@ -262,7 +263,6 @@ public class ProjectSupportBonusResource {
 				cell.setCellValue("");
 			}else {
 				cell.setCellValue(vo.getDeliveryTime());
-				cell.setCellStyle(cellStyle);
 			}
 			j++;
 			cell = row.createCell(j,cellType[j]);
@@ -285,6 +285,7 @@ public class ProjectSupportBonusResource {
 				cell.setCellValue("");
 			}else {
 				cell.setCellValue(vo.getBonusAdjustRate() / 100);
+				cell.setCellStyle(cellStyle);
 			}
 			j++;
 			cell = row.createCell(j,cellType[j]);
@@ -292,6 +293,7 @@ public class ProjectSupportBonusResource {
 				cell.setCellValue("");
 			}else {
 				cell.setCellValue(vo.getBonusRate() / 100);
+				cell.setCellStyle(cellStyle);
 			}
 			j++;
 			cell = row.createCell(j,cellType[j]);
@@ -299,6 +301,7 @@ public class ProjectSupportBonusResource {
 				cell.setCellValue("");
 			}else {
 				cell.setCellValue(vo.getBonusAcceptanceRate() / 100);
+				cell.setCellStyle(cellStyle);
 			}
 			j++;
 			cell = row.createCell(j,cellType[j]);

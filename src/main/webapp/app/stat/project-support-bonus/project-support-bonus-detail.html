@@ -10,7 +10,7 @@
 		</button>			                     	
     </div>
     <div class="table-responsive">
-        <table class="jh-table table table-striped">
+        <table class="jh-table table table-striped" style="table-layout: fixed; ">
             <thead>
                 <tr callback="vm.transition()">
                     <th style="width:80px;"><span data-translate="cpmApp.projectSupportBonus.serialNum">Serial Num</span></th>
@@ -18,13 +18,13 @@
                     <th style="width:80px;"><span data-translate="cpmApp.projectSupportBonus.statWeek">Stat Week</span></th>
                     <th style="width:110px;"><span data-translate="cpmApp.projectSupportBonus.contractAmount">Contract Amount</span></th>
                     <th style="width:60px;"><span data-translate="cpmApp.projectSupportBonus.taxRate">Tax Rate</span></th>
-					<th style="width:60px;"><span data-translate="cpmApp.projectSupportBonus.acceptanceRate">Acceptance Rate</span></th>
-					<th style="width:110px;"><span data-translate="cpmApp.projectSupportBonus.deliveryTime">Delivery Time</span></th>
-					<th style="width:60px;"><span data-translate="cpmApp.projectSupportBonus.planDays">Plan Days</span></th>
-                    <th style="width:60px;"><span data-translate="cpmApp.projectSupportBonus.realDays">Real Days</span></th>
-                    <th style="width:80px;"><span data-translate="cpmApp.projectSupportBonus.bonusAdjustRate">Bonus Adjust Rate</span></th>
-                    <th style="width:80px;"><span data-translate="cpmApp.projectSupportBonus.bonusRate">Bonus Rate</span></th>
-                    <th style="width:80px;"><span data-translate="cpmApp.projectSupportBonus.bonusAcceptanceRate">Bonus Acceptance Rate</span></th>
+					<th style="width:110px;"><span data-translate="cpmApp.projectSupportBonus.acceptanceRate">Acceptance Rate</span></th>
+					<th style="width:130px;"><span data-translate="cpmApp.projectSupportBonus.deliveryTime">Delivery Time</span></th>
+					<th style="width:100px;"><span data-translate="cpmApp.projectSupportBonus.planDays">Plan Days</span></th>
+                    <th style="width:130px;"><span data-translate="cpmApp.projectSupportBonus.realDays">Real Days</span></th>
+                    <th style="width:130px;"><span data-translate="cpmApp.projectSupportBonus.bonusAdjustRate">Bonus Adjust Rate</span></th>
+                    <th style="width:110px;"><span data-translate="cpmApp.projectSupportBonus.bonusRate">Bonus Rate</span></th>
+                    <th style="width:110px;"><span data-translate="cpmApp.projectSupportBonus.bonusAcceptanceRate">Bonus Acceptance Rate</span></th>
                     <th style="width:110px;"><span data-translate="cpmApp.projectSupportBonus.bonusBasis">Bonus Basis</span></th>
                     <th style="width:110px;"><span data-translate="cpmApp.projectSupportBonus.currentBonus">Current Bonus</span></th>
                 </tr>
@@ -35,14 +35,14 @@
                     <td>{{projectSupportBonus.deptTypeName}}</td>
                     <td>{{projectSupportBonus.statWeek}}</td>
                     <td>{{projectSupportBonus.contractAmount}}</td>
-                    <td>{{projectSupportBonus.taxRate}}</td>
-                    <td>{{projectSupportBonus.acceptanceRate}}</td>
+                    <td>{{projectSupportBonus.taxRate}}<span ng-show="projectSupportBonus.id">%</span></td>
+                    <td>{{projectSupportBonus.acceptanceRate}}<span ng-show="projectSupportBonus.id">%</span></td>
                     <td>{{projectSupportBonus.deliveryTime}}</td>
                     <td>{{projectSupportBonus.planDays}}</td>
                     <td>{{projectSupportBonus.realDays}}</td>
-                    <td>{{projectSupportBonus.bonusAdjustRate}}</td>
-                    <td>{{projectSupportBonus.bonusRate}}</td>
-                    <td>{{projectSupportBonus.bonusAcceptanceRate}}</td>
+                    <td>{{projectSupportBonus.bonusAdjustRate}}<span ng-show="projectSupportBonus.id">%</span></td>
+                    <td>{{projectSupportBonus.bonusRate}}<span ng-show="projectSupportBonus.id">%</span></td>
+                    <td>{{projectSupportBonus.bonusAcceptanceRate}}<span ng-show="projectSupportBonus.id">%</span></td>
                     <td>{{projectSupportBonus.bonusBasis}}</td>
                     <td>{{projectSupportBonus.currentBonus}}</td>
                     <td class="text-right">
