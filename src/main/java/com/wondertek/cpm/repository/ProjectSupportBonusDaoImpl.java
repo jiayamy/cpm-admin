@@ -17,8 +17,6 @@ import com.wondertek.cpm.config.StringUtil;
 import com.wondertek.cpm.domain.DeptInfo;
 import com.wondertek.cpm.domain.ProjectSupportBonus;
 import com.wondertek.cpm.domain.User;
-import com.wondertek.cpm.domain.vo.BonusVo;
-import com.wondertek.cpm.domain.vo.ProjectOverallVo;
 import com.wondertek.cpm.domain.vo.ProjectSupportBonusVo;
 
 @Repository("projectSupportBonusDao")
@@ -91,6 +89,7 @@ public class ProjectSupportBonusDaoImpl extends GenericDaoImpl<ProjectSupportBon
 		whereSql.setLength(0);
 		whereSql = null;
 		querySql.append(" order by wpsb.stat_week desc");
+
 		Page<Object[]> page = this.querySqlPage(querySql.toString(), countSql.toString(), params.toArray(), pageable);
 		List<ProjectSupportBonusVo> returnList = new ArrayList<ProjectSupportBonusVo>();
 		if(page.getContent() != null){

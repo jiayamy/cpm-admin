@@ -151,7 +151,6 @@ public class BonusDaoImpl extends GenericDaoImpl<Bonus, Long> implements BonusDa
 		whereSql = null;
 		querySql.append(" order by wbs.stat_week desc");
 		
-		
 		Page<Object[]> page = this.querySqlPage(querySql.toString(), countSql.toString(), params.toArray(), pageable);
 		List<BonusVo> returList = new ArrayList<BonusVo>();
 		if (page.getContent() != null) {

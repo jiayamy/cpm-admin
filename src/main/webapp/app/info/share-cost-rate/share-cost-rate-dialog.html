@@ -1,0 +1,63 @@
+<h2><span data-translate="cpmApp.shareCostRate.home.createOrEditLabel">Create or edit a Share Cost Rate</span></h2>
+<hr>
+<form name="myForm" role="form" ng-submit="vm.save()">
+	<div class="container-fluid">
+		<div class="row form-horizontal">
+	     	<div class="form-group">
+				<div class="col-sm-6">
+					<label class="control-label" data-translate="cpmApp.shareCostRate.contractType" for="field_contractType">Contract Type</label>
+	            	<select class="form-control" name="type" ng-model="vm.shareCostRate.contractType"
+            			ng-required="true" ng-disabled="vm.shareCostRateDisable"
+		            	ng-options="type.val for type in vm.contractTypes track by type.key">
+		            </select>
+		            <div class="help-block"
+	                   ng-hide="vm.shareCostRate.contractType" data-translate="entity.validation.required" style="color:red">
+	                    This field is required.
+	                </div>
+				</div>
+				<div class="col-sm-6">
+	          		<label class="control-label" data-translate="cpmApp.shareCostRate.deptType" for="field_deptType">Dept Type</label>
+	              	<select class="form-control" name="type" ng-model="vm.shareCostRate.deptType"
+              			ng-required="true" ng-disabled="vm.shareCostRateDisable"
+		            	ng-options="type.val for type in vm.deptTypes track by type.key">
+			        </select>
+		            <div class="help-block"
+	                   ng-hide="vm.shareCostRate.deptType" data-translate="entity.validation.required" style="color:red">
+	                    This field is required.
+	                </div>
+				</div>
+	     	</div>
+	     	<div class="form-group">
+	     		<div class="col-sm-6">
+	          		<label class="control-label" data-translate="cpmApp.shareCostRate.shareRate" for="field_shareRate">Share Rate</label>
+	          		<input type="number" class="form-control" name="shareRate" id="field_shareRate"
+	              		ng-model="vm.shareCostRate.shareRate" step="0.01" max="100"  ng-required="true"
+	                  	/>
+	                <div ng-show="myForm.shareRate.$dirty&&myForm.shareRate.$error.number" class="alert alert-danger help-block"> 
+                    	必须为数字
+                	</div>
+                	<div ng-show="myForm.shareRate.$dirty&&myForm.shareRate.$error.max" class="alert alert-danger help-block"> 
+                		项目预算最大值为100
+           			</div>
+                	<div class="help-block"
+	                   ng-show="myForm.shareRate.$error.required" data-translate="entity.validation.required" style="color:red">
+	                    This field is required.
+	                </div>
+	   			</div>
+	     		<div class="col-sm-6">
+	     		</div>
+	     	</div>
+		</div>
+	</div>
+	<hr>
+	<jhi-alert></jhi-alert>
+	<jhi-alert-error></jhi-alert-error>
+	<button type="submit"
+        ui-sref="{{ vm.previousState }}"
+        class="btn btn-info">
+        <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span data-translate="entity.action.back"> Back</span>
+    </button>
+    <button type="submit" ng-disabled="!myForm.$valid || vm.isSaving" class="btn btn-primary">
+        <span class="glyphicon glyphicon-save"></span>&nbsp;<span data-translate="entity.action.save">Save</span>
+    </button>
+</form>

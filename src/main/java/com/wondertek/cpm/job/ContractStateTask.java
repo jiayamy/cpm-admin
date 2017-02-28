@@ -95,6 +95,8 @@ public class ContractStateTask {
 		String [] dates = DateUtil.getWholeWeekByDate(DateUtil.lastSaturday(now));
 		ZonedDateTime beginTime = DateUtil.getZonedDateTime(DateUtil.lastMonday(now).getTime());
 		ZonedDateTime endTime = DateUtil.getZonedDateTime(DateUtil.lastSundayEnd(now).getTime());
+		Long fDay = StringUtil.nullToLong(dates[0]);
+		Long statWeek = StringUtil.nullToLong(dates[6]);
 		List<ContractInfo> contractInfos = contractInfoRepository.findByStatusOrUpdateTime(ContractInfo.STATUS_VALIDABLE, beginTime, endTime);
 		if(contractInfos != null && contractInfos.size() > 0){
 			for(ContractInfo contractInfo : contractInfos){
@@ -117,7 +119,7 @@ public class ContractStateTask {
 							break;
 						}
 					}
-					ContractCost contractCost2 = contractCostRepository.findMaxByContractIdAndCostDayAndType(contractInfo.getId(), StringUtil.nullToLong(dates[0]), StringUtil.nullToLong(dates[6]), ContractCost.TYPE_HUMAN_COST);
+					ContractCost contractCost2 = contractCostRepository.findMaxByContractIdAndCostDayAndType(contractInfo.getId(), fDay, statWeek, ContractCost.TYPE_HUMAN_COST);
 					if(contractCost2 != null){
 						Date initDate = DateUtil.addOneDay(DateUtil.parseDate("yyyyMMdd", contractCost2.getCostDay().toString()));
 						if(contractInfo.getStatus() == ContractInfo.STATUS_VALIDABLE){
@@ -138,11 +140,9 @@ public class ContractStateTask {
 					overIdentify(contractInfo);
 				}
 				//初始上周stat
-				List<ContractWeeklyStat> contractWeeklyStats = contractWeeklyStatRepository.findByStatWeekAndContractId(StringUtil.nullToLong(dates[6]), contractInfo.getId());
+				List<ContractWeeklyStat> contractWeeklyStats = contractWeeklyStatRepository.findByStatWeekAndContractId(statWeek, contractInfo.getId());
 				if(contractWeeklyStats != null){
-					for(ContractWeeklyStat contractWeeklyStat : contractWeeklyStats){
-						contractWeeklyStatRepository.delete(contractWeeklyStat);
-					}
+					contractWeeklyStatRepository.delete(contractWeeklyStats);
 				}
 				ContractWeeklyStat contractWeeklyStat = new ContractWeeklyStat();
 				Long id = contractInfo.getId();
@@ -158,7 +158,7 @@ public class ContractStateTask {
 					contractWeeklyStat.setFinishRate(0D);
 				}
 				//合同回款总额
-				List<ContractReceive> contractReceives = contractReceiveRepository.findAllByContractIdAndCreateTimeBefore(id, endTime);
+				List<ContractReceive> contractReceives = contractReceiveRepository.findAllByContractIdAndReceiveDayBefore(id, statWeek);
 				Double receiveTotal = 0D;
 				if(contractReceives != null && contractReceives.size() > 0){
 					for(ContractReceive contractReceive : contractReceives){
@@ -266,7 +266,7 @@ public class ContractStateTask {
 						for(ProjectInfo projectInfo : projectInfos){
 							//人工成本
 							List<UserTimesheet> userTimesheets3 = userTimesheetRepository.
-									findByDateAndObjIdAndType(StringUtil.nullToLong(dates[6]), projectInfo.getId(), UserTimesheet.TYPE_PROJECT);
+									findByDateAndObjIdAndType(statWeek, projectInfo.getId(), UserTimesheet.TYPE_PROJECT);
 							if(userTimesheets3 != null && userTimesheets3.size() > 0){
 								for(UserTimesheet userTimesheet : userTimesheets3){
 									Long costMonth = StringUtil.nullToLong(DateUtil.formatDate("yyyyMM", DateUtil.lastSundayEnd(now)).toString());
@@ -407,7 +407,7 @@ public class ContractStateTask {
 					contractMonthlyStat.setFinishRate(0D);
 				}
 				//合同回款总额
-				List<ContractReceive> contractReceives = contractReceiveRepository.findAllByContractIdAndCreateTimeBefore(id, endTime);
+				List<ContractReceive> contractReceives = contractReceiveRepository.findAllByContractIdAndReceiveDayBefore(id, StringUtil.nullToLong(lDay));
 				Double receiveTotal = 0D;
 				if(contractReceives != null && contractReceives.size() > 0){
 					for(ContractReceive contractReceive : contractReceives){
