@@ -3,7 +3,9 @@ package com.wondertek.cpm.job;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -22,10 +24,12 @@ import com.wondertek.cpm.domain.ContractMonthlyStat;
 import com.wondertek.cpm.domain.ContractReceive;
 import com.wondertek.cpm.domain.ContractWeeklyStat;
 import com.wondertek.cpm.domain.DeptInfo;
+import com.wondertek.cpm.domain.ExternalQuotation;
 import com.wondertek.cpm.domain.ProjectCost;
 import com.wondertek.cpm.domain.ProjectInfo;
 import com.wondertek.cpm.domain.PurchaseItem;
 import com.wondertek.cpm.domain.StatIdentify;
+import com.wondertek.cpm.domain.User;
 import com.wondertek.cpm.domain.UserCost;
 import com.wondertek.cpm.domain.UserTimesheet;
 import com.wondertek.cpm.repository.ContractCostRepository;
@@ -35,11 +39,13 @@ import com.wondertek.cpm.repository.ContractMonthlyStatRepository;
 import com.wondertek.cpm.repository.ContractReceiveRepository;
 import com.wondertek.cpm.repository.ContractWeeklyStatRepository;
 import com.wondertek.cpm.repository.DeptInfoRepository;
+import com.wondertek.cpm.repository.ExternalQuotationRepository;
 import com.wondertek.cpm.repository.ProjectCostRepository;
 import com.wondertek.cpm.repository.ProjectInfoRepository;
 import com.wondertek.cpm.repository.PurchaseItemRepository;
 import com.wondertek.cpm.repository.StatIdentifyRepository;
 import com.wondertek.cpm.repository.UserCostRepository;
+import com.wondertek.cpm.repository.UserRepository;
 import com.wondertek.cpm.repository.UserTimesheetRepository;
 
 @Component
@@ -47,6 +53,10 @@ import com.wondertek.cpm.repository.UserTimesheetRepository;
 public class ContractStateTask {
 
 	private Logger log = LoggerFactory.getLogger(ContractStateTask.class);
+	
+	private Map<Long, Integer> userIdGradeMap = new HashMap<>();
+	
+	private Map<Integer, Double> externalQuotationMap = new HashMap<>();
 	
 	@Inject
 	private ContractInfoRepository contractInfoRepository;
@@ -85,12 +95,33 @@ public class ContractStateTask {
 	private UserCostRepository userCostRepository;
 
 	@Inject
+	private UserRepository userRepository;
+	
+	@Inject
 	private StatIdentifyRepository statIdentifyRepository;
 	
+	@Inject
+	private ExternalQuotationRepository externalQuotationRepository;
+	
+	private void init(){
+		List<ExternalQuotation> externalQuotations = externalQuotationRepository.findAll();
+		if(externalQuotations != null && externalQuotations.size() > 0){
+			for(ExternalQuotation externalQuotation : externalQuotations){
+				externalQuotationMap.put(externalQuotation.getGrade(), externalQuotation.getHourCost());
+			}
+		}
+		List<User> users = userRepository.findAll();
+		if(users != null && users.size() > 0){
+			for(User user : users){
+				userIdGradeMap.put(user.getId(), user.getGrade());
+			}
+		}
+	}
 	
 	@Scheduled(cron = "0 0 23 ? * MON")
 	protected void generateContractWeeklyStat(){
 		log.info("=====begin generate Contract Weekly Stat=====");
+		init();
 		Date now = new Date();
 		String [] dates = DateUtil.getWholeWeekByDate(DateUtil.lastSaturday(now));
 		ZonedDateTime beginTime = DateUtil.getZonedDateTime(DateUtil.lastMonday(now).getTime());
@@ -275,7 +306,7 @@ public class ContractStateTask {
 										if(contractInfo.getType() == ContractInfo.TYPE_INTERNAL){
 											projectHumanCost += userTimesheet.getRealInput() * (userCost.getInternalCost()/22.5/8);
 										}else if(contractInfo.getType() == ContractInfo.TYPE_EXTERNAL){
-											projectHumanCost += userTimesheet.getRealInput() * (userCost.getExternalCost()/22.5/8);
+											projectHumanCost += userTimesheet.getRealInput() * StringUtil.nullToDouble((externalQuotationMap.get(userIdGradeMap.get(userTimesheet.getUserId()))));
 										}else{
 											log.error(" no contractType found belong to UserTimesheet : " + userTimesheet.getId());
 										}
@@ -337,6 +368,7 @@ public class ContractStateTask {
 	@Scheduled(cron = "0 0 22 1 * ?")
 	protected void generateContractMonthlyStat(){
 		log.info("=====begin generate Contract Monthly Stat=====");
+		init();
 		Date now = new Date();
 		ZonedDateTime beginTime = DateUtil.getZonedDateTime(DateUtil.lastMonthBegin(now).getTime());
 		ZonedDateTime endTime = DateUtil.getZonedDateTime(DateUtil.lastMonthend(now).getTime());
@@ -525,7 +557,7 @@ public class ContractStateTask {
 									if(contractInfo.getType() == ContractInfo.TYPE_INTERNAL){
 										projectHumanCost += userTimesheet.getRealInput() * (userCost.getInternalCost()/22.5/8);
 									}else if(contractInfo.getType() == ContractInfo.TYPE_EXTERNAL){
-										projectHumanCost += userTimesheet.getRealInput() * (userCost.getExternalCost()/22.5/8);
+										projectHumanCost += userTimesheet.getRealInput() * StringUtil.nullToDouble((externalQuotationMap.get(userIdGradeMap.get(userTimesheet.getUserId()))));
 									}else{
 										log.error(" no contractType found belong to UserTimesheet : " + userTimesheet.getId());
 									}
@@ -615,7 +647,7 @@ public class ContractStateTask {
 							if(contractType == ContractInfo.TYPE_INTERNAL){
 								total += userTimesheet.getRealInput() * (userCost.getInternalCost()/22.5/8);
 							}else if(contractType == ContractInfo.TYPE_EXTERNAL){
-								total += userTimesheet.getRealInput() * (userCost.getExternalCost()/22.5/8);
+								total += userTimesheet.getRealInput() * userTimesheet.getRealInput() * StringUtil.nullToDouble((externalQuotationMap.get(userIdGradeMap.get(userTimesheet.getUserId()))));
 							}else{
 								log.info(" no contractType found belong to UserTimesheet : " + userTimesheet.getId());
 							}
@@ -645,7 +677,7 @@ public class ContractStateTask {
 							if(contractType == ContractInfo.TYPE_INTERNAL){
 								total2 += userTimesheet.getRealInput() * (userCost.getInternalCost()/22.5/8);
 							}else if(contractType == ContractInfo.TYPE_EXTERNAL){
-								total2 += userTimesheet.getRealInput() * (userCost.getExternalCost()/22.5/8);
+								total2 += userTimesheet.getRealInput() * userTimesheet.getRealInput() * StringUtil.nullToDouble((externalQuotationMap.get(userIdGradeMap.get(userTimesheet.getUserId()))));
 							}else{
 								log.info(" no contractType found belong to UserTimesheet : " + userTimesheet.getId());
 							}
@@ -696,10 +728,10 @@ public class ContractStateTask {
 							if(contractType == ContractInfo.TYPE_INTERNAL){
 								total += userTimesheet.getRealInput() * (userCost.getInternalCost()/22.5/8);
 							}else if(contractType == ContractInfo.TYPE_EXTERNAL){
-								total += userTimesheet.getRealInput() * (userCost.getExternalCost()/22.5/8);
+								total += userTimesheet.getRealInput() * StringUtil.nullToDouble((externalQuotationMap.get(userIdGradeMap.get(userTimesheet.getUserId()))));
 							}else if (contractType == ContractInfo.TYPE_PUBLIC) {
 								if(contractInfo.getIsEpibolic()){
-									total += userTimesheet.getRealInput() * (userCost.getExternalCost()/22.5/8);
+									total += userTimesheet.getRealInput() * StringUtil.nullToDouble((externalQuotationMap.get(userIdGradeMap.get(userTimesheet.getUserId()))));
 								}else{
 									total += userTimesheet.getRealInput() * (userCost.getInternalCost()/22.5/8);
 								}

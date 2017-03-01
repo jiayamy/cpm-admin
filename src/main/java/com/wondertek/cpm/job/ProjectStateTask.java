@@ -17,15 +17,18 @@ import org.springframework.stereotype.Component;
 import com.wondertek.cpm.config.DateUtil;
 import com.wondertek.cpm.config.StringUtil;
 import com.wondertek.cpm.domain.ContractInfo;
+import com.wondertek.cpm.domain.ExternalQuotation;
 import com.wondertek.cpm.domain.ProjectCost;
 import com.wondertek.cpm.domain.ProjectFinishInfo;
 import com.wondertek.cpm.domain.ProjectInfo;
 import com.wondertek.cpm.domain.ProjectMonthlyStat;
 import com.wondertek.cpm.domain.ProjectWeeklyStat;
 import com.wondertek.cpm.domain.StatIdentify;
+import com.wondertek.cpm.domain.User;
 import com.wondertek.cpm.domain.UserCost;
 import com.wondertek.cpm.domain.UserTimesheet;
 import com.wondertek.cpm.repository.ContractInfoRepository;
+import com.wondertek.cpm.repository.ExternalQuotationRepository;
 import com.wondertek.cpm.repository.ProjectCostRepository;
 import com.wondertek.cpm.repository.ProjectFinishInfoRepository;
 import com.wondertek.cpm.repository.ProjectInfoRepository;
@@ -33,6 +36,7 @@ import com.wondertek.cpm.repository.ProjectMonthlyStatRepository;
 import com.wondertek.cpm.repository.ProjectWeeklyStatRepository;
 import com.wondertek.cpm.repository.StatIdentifyRepository;
 import com.wondertek.cpm.repository.UserCostRepository;
+import com.wondertek.cpm.repository.UserRepository;
 import com.wondertek.cpm.repository.UserTimesheetRepository;
 
 @Component
@@ -42,6 +46,10 @@ public class ProjectStateTask {
 	private Logger log = LoggerFactory.getLogger(ProjectStateTask.class);
 	
 	private Map<Long, Integer> contractTypeMap = new HashMap<>();
+	
+	private Map<Long, Integer> userIdGradeMap = new HashMap<>();
+	
+	private Map<Integer, Double> externalQuotationMap = new HashMap<>();
 	
 	@Inject
 	private ProjectInfoRepository projectInfoRepository;
@@ -62,6 +70,9 @@ public class ProjectStateTask {
 	private UserCostRepository userCostRepository;
 	
 	@Inject
+	private UserRepository userRepository;
+	
+	@Inject
 	private UserTimesheetRepository userTimesheetRepository;
 	
 	@Inject
@@ -70,11 +81,26 @@ public class ProjectStateTask {
 	@Inject
 	private StatIdentifyRepository statIdentifyRepository;
 	
+	@Inject
+	private ExternalQuotationRepository externalQuotationRepository;
+	
 	private void init(){
 		List<ContractInfo> contractInfos = contractInfoRepository.findAll();
 		for(ContractInfo contractInfo : contractInfos){
 			contractTypeMap.put(contractInfo.getId(), contractInfo.getType());
 //			deptIdContractMap.put(contractInfo.getDeptId(), contractInfo);
+		}
+		List<ExternalQuotation> externalQuotations = externalQuotationRepository.findAll();
+		if(externalQuotations != null && externalQuotations.size() > 0){
+			for(ExternalQuotation externalQuotation : externalQuotations){
+				externalQuotationMap.put(externalQuotation.getGrade(), externalQuotation.getHourCost());
+			}
+		}
+		List<User> users = userRepository.findAll();
+		if(users != null && users.size() > 0){
+			for(User user : users){
+				userIdGradeMap.put(user.getId(), user.getGrade());
+			}
 		}
 	}
 	@Scheduled(cron = "0 0 22 ? * MON")
@@ -314,7 +340,7 @@ public class ProjectStateTask {
 					if(contractType == ContractInfo.TYPE_INTERNAL){
 						total += userTimesheet.getRealInput() * (userCost.getInternalCost()/22.5/8);
 					}else if(contractType == ContractInfo.TYPE_EXTERNAL){
-						total += userTimesheet.getRealInput() * (userCost.getExternalCost()/22.5/8);
+						total += userTimesheet.getRealInput() * StringUtil.nullToDouble((externalQuotationMap.get(userIdGradeMap.get(userTimesheet.getUserId()))));
 					}else{
 						log.info(" no contractType found belong to UserTimesheet : " + userTimesheet.getId());
 					}
