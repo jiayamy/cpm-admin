@@ -55,14 +55,29 @@ public class ProjectSupportBonusService {
 
 	public Page<ProjectSupportBonusVo> searchPageDetail(Long contractId,
 			Pageable pageable) {
-		Page<ProjectSupportBonusVo> page = projectSupportBonusDao.getPageDetail(contractId,pageable);
-		return page;
+		List<Object[]> objs = userRepository.findUserInfoByLogin(SecurityUtils.getCurrentUserLogin());
+		if(objs != null && !objs.isEmpty()){
+			Object[] o = objs.get(0);
+    		User user = (User) o[0];
+    		DeptInfo deptInfo = (DeptInfo) o[1];
+    		
+    		Page<ProjectSupportBonusVo> page = projectSupportBonusDao.getPageDetail(contractId,user,deptInfo,pageable);
+    		return page;
+		}else {
+			return new PageImpl<ProjectSupportBonusVo>(new ArrayList<ProjectSupportBonusVo>(),pageable,0);
+		}
 	}
 
-	public ProjectSupportBonus findOne(Long id) {
-		ProjectSupportBonus projectSupportBonus = new ProjectSupportBonus();
-		projectSupportBonus = this.projectSupportBonusRepository.findOne(id);
-		return projectSupportBonus;
+	public ProjectSupportBonusVo getUserSupportBonus(Long id) {
+		List<Object[]> objs = userRepository.findUserInfoByLogin(SecurityUtils.getCurrentUserLogin());
+		if(objs != null && !objs.isEmpty()){
+			Object[] o = objs.get(0);
+    		User user = (User) o[0];
+    		DeptInfo deptInfo = (DeptInfo) o[1];
+    		
+    		return projectSupportBonusDao.getUserSupportBonus(id,user,deptInfo);
+		}
+		return null;
 	}
 
 }

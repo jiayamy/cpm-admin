@@ -42,6 +42,7 @@ import com.wondertek.cpm.domain.Bonus;
 import com.wondertek.cpm.domain.vo.BonusVo;
 import com.wondertek.cpm.security.AuthoritiesConstants;
 import com.wondertek.cpm.service.BonusService;
+import com.wondertek.cpm.web.rest.util.HeaderUtil;
 import com.wondertek.cpm.web.rest.util.PaginationUtil;
 
 /**
@@ -103,9 +104,12 @@ public class BonusResource {
     @GetMapping("/bonus/{id}")
     @Timed
     @Secured(AuthoritiesConstants.ROLE_STAT_BONUS)
-    public ResponseEntity<Bonus> getBonus(@PathVariable Long id) {
+    public ResponseEntity<BonusVo> getBonus(@PathVariable Long id) {
         log.debug("REST request to get Bonus : {}", id);
-        Bonus bonus = bonusService.findOne(id);
+        BonusVo bonus = bonusService.getUserBonus(id);
+        if (bonus == null) {
+        	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.bonus.noPerm", "")).body(null);
+		}
         return Optional.ofNullable(bonus)
             .map(result -> new ResponseEntity<>(
                 result,

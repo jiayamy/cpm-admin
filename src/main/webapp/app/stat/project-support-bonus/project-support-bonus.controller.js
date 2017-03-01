@@ -5,9 +5,9 @@
         .module('cpmApp')
         .controller('ProjectSupportBonusController', ProjectSupportBonusController);
 
-    ProjectSupportBonusController.$inject = ['$scope','$rootScope', '$state', 'ProjectSupportBonus','ContractInfo','DeptType', 'ParseLinks', 'AlertService', 'paginationConstants', 'pagingParams','DateUtils'];
+    ProjectSupportBonusController.$inject = ['$scope','$rootScope', '$state', 'ProjectSupportBonus','ProjectInfo','DeptType', 'ParseLinks', 'AlertService', 'paginationConstants', 'pagingParams','DateUtils'];
 
-    function ProjectSupportBonusController ($scope,$rootScope, $state, ProjectSupportBonus,ContractInfo,DeptType, ParseLinks, AlertService, paginationConstants, pagingParams,DateUtils) {
+    function ProjectSupportBonusController ($scope,$rootScope, $state, ProjectSupportBonus,ProjectInfo,DeptType, ParseLinks, AlertService, paginationConstants, pagingParams,DateUtils) {
     	var vm = this;
         vm.itemsPerPage = paginationConstants.itemsPerPage;
         vm.transition = transition;
@@ -37,7 +37,7 @@
         loadContractInfos();
         
         function loadContractInfos(){
-        	ContractInfo.queryContractInfo(
+        	ProjectInfo.queryUserContract(
         		{
         			
         		},

@@ -19,7 +19,8 @@
             "implemtationBonus" : "当前项目实施奖金",
             "academicBonus" : "当前研发奖金",
             "consultantsBonus": "当期业务咨询奖金",
-            "bonusTotal": "奖金合计"
+            "bonusTotal": "奖金合计",
+            "noPerm": "没有权限访问"
         }
     }
 }

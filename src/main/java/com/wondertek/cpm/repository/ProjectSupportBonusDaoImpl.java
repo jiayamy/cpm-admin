@@ -14,9 +14,11 @@ import org.springframework.stereotype.Repository;
 
 import com.wondertek.cpm.config.DateUtil;
 import com.wondertek.cpm.config.StringUtil;
+import com.wondertek.cpm.domain.ContractBudget;
 import com.wondertek.cpm.domain.DeptInfo;
 import com.wondertek.cpm.domain.ProjectSupportBonus;
 import com.wondertek.cpm.domain.User;
+import com.wondertek.cpm.domain.vo.ContractBudgetVo;
 import com.wondertek.cpm.domain.vo.ProjectSupportBonusVo;
 
 @Repository("projectSupportBonusDao")
@@ -51,25 +53,20 @@ public class ProjectSupportBonusDaoImpl extends GenericDaoImpl<ProjectSupportBon
 		whereSql.append(" from w_project_support_bonus wpsb");
 		whereSql.append(" inner join");
 		whereSql.append("(");
-		whereSql.append("select max(wpsb1.id) as id,wpsb1.contract_id from w_project_support_bonus wpsb1 where wpsb1.stat_week <= ? group by wpsb1.contract_id)");
+		whereSql.append("select max(wpsb1.id) as id,wpsb1.contract_id,wpsb1.dept_type from w_project_support_bonus wpsb1 where wpsb1.stat_week <= ? group by wpsb1.contract_id,wpsb1.dept_type)");
 		whereSql.append(" b on wpsb.id = b.id");
 		whereSql.append(" inner join w_contract_info wci on wci.id = wpsb.contract_id");
 		whereSql.append(" inner join w_dept_type wdt on wdt.id = wpsb.dept_type");
-		whereSql.append(" left join w_dept_info wdi on wci.dept_id = wdi.id");
-		whereSql.append(" left join w_dept_info wdi2 on wci.consultants_dept_id = wdi2.id");
+		whereSql.append(" inner join w_project_info wpi on wpi.id = wpsb.project_id");
+		whereSql.append(" left join w_dept_info wdi on wpi.dept_id = wdi.id");
 		//
 		params.add(projectSupportBonus.getStatWeek());
 		//权限
-		whereSql.append(" where (wci.creator_ = ? or wci.sales_man_id = ? or wci.consultants_id = ?");
+		whereSql.append(" where (wpi.pm_id = ? or wpi.creator_ = ?");
+		params.add(user.getId());
 		params.add(user.getLogin());
-		params.add(user.getId());
-		params.add(user.getId());
 		if(user.getIsManager()){
 			whereSql.append(" or wdi.id_path like ? or wdi.id = ?");
-			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
-			params.add(deptInfo.getId());
-			
-			whereSql.append(" or wdi2.id_path like ? or wdi2.id = ?");
 			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
 			params.add(deptInfo.getId());
 		}
@@ -127,7 +124,7 @@ public class ProjectSupportBonusDaoImpl extends GenericDaoImpl<ProjectSupportBon
 	}
 
 	@Override
-	public Page<ProjectSupportBonusVo> getPageDetail(Long contractId,
+	public Page<ProjectSupportBonusVo> getPageDetail(Long contractId,User user,DeptInfo deptInfo,
 			Pageable pageable) {
 		StringBuffer querySql = new StringBuffer();
 		StringBuffer countSql = new StringBuffer();
@@ -141,9 +138,22 @@ public class ProjectSupportBonusDaoImpl extends GenericDaoImpl<ProjectSupportBon
 		whereSql.append(" from w_project_support_bonus wpsb");
 		whereSql.append(" inner join w_contract_info wci on wci.id = wpsb.contract_id");
 		whereSql.append(" inner join w_dept_type wdt on wdt.id = wpsb.dept_type");
+		whereSql.append(" inner join w_project_info wpi on wpi.id = wpsb.project_id");
+		whereSql.append(" left join w_dept_info wdi on wpi.dept_id = wdi.id");
+		
+		//权限
+		whereSql.append(" where (wpi.pm_id = ? or wpi.creator_ = ?");
+		params.add(user.getId());
+		params.add(user.getLogin());
+		if(user.getIsManager()){
+			whereSql.append(" or wdi.id_path like ? or wdi.id = ?");
+			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
+			params.add(deptInfo.getId());
+		}
+		whereSql.append(")");
 		
 		if (contractId != null) {
-			whereSql.append(" where wpsb.contract_id = ?");
+			whereSql.append(" and wpsb.contract_id = ?");
 			params.add(contractId);
 		}
 		querySql.append(whereSql.toString());
@@ -160,6 +170,51 @@ public class ProjectSupportBonusDaoImpl extends GenericDaoImpl<ProjectSupportBon
 			}
 		}
 		return new PageImpl<ProjectSupportBonusVo>(returList, pageable, page.getTotalElements());
+	}
+
+	@Override
+	public ProjectSupportBonusVo getUserSupportBonus(Long id, User user,
+			DeptInfo deptInfo) {
+		StringBuffer querySql = new StringBuffer();
+		StringBuffer countSql = new StringBuffer();
+		
+		StringBuffer whereSql = new StringBuffer();
+		List<Object> params = new ArrayList<Object>();
+		
+		querySql.append("select wci.serial_num,wpsb.id,wpsb.stat_week,wpsb.contract_id,wpsb.dept_type,wdt.name_,wpsb.pm_id,pm_name,wpsb.delivery_time,wpsb.acceptance_rate,wpsb.plan_days,wpsb.real_days,wpsb.bonus_adjust_rate,wpsb.bonus_rate,wpsb.bonus_acceptance_rate,wpsb.contract_amount,wpsb.tax_rate,wpsb.bonus_basis,wpsb.current_bonus,wpsb.creator_,wpsb.create_time");
+		whereSql.append(" from w_project_support_bonus wpsb");
+		
+		whereSql.append(" inner join w_contract_info wci on wci.id = wpsb.contract_id");
+		whereSql.append(" inner join w_dept_type wdt on wdt.id = wpsb.dept_type");
+		whereSql.append(" inner join w_project_info wpi on wpi.id = wpsb.project_id");
+		whereSql.append(" left join w_dept_info wdi on wpi.dept_id = wdi.id");
+		
+		//权限
+		whereSql.append(" where (wpi.pm_id = ? or wpi.creator_ = ?");
+		params.add(user.getId());
+		params.add(user.getLogin());
+		if(user.getIsManager()){
+			whereSql.append(" or wdi.id_path like ? or wdi.id = ?");
+			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
+			params.add(deptInfo.getId());
+		}
+		whereSql.append(")");
+		
+		//搜索条件
+		if (id != null) {
+			whereSql.append(" and wpsb.id = ?");
+			params.add(id);
+		}
+		querySql.append(whereSql.toString());
+		countSql.append(whereSql.toString());
+		whereSql.setLength(0);
+		whereSql = null;
+		List<Object[]> list = this.queryAllSql(querySql.toString(), params.toArray());
+		
+		if (list != null) {
+			return transProjectSupportBonus(list.get(0));
+		}
+		return null;
 	}
 
 }

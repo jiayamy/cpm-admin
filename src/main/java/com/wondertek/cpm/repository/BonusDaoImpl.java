@@ -17,8 +17,10 @@ import com.wondertek.cpm.config.StringUtil;
 import com.wondertek.cpm.domain.Bonus;
 import com.wondertek.cpm.domain.DeptInfo;
 import com.wondertek.cpm.domain.DeptType;
+import com.wondertek.cpm.domain.ProjectOverall;
 import com.wondertek.cpm.domain.User;
 import com.wondertek.cpm.domain.vo.BonusVo;
+import com.wondertek.cpm.domain.vo.ProjectOverallVo;
 @Repository("bonusDao")
 public class BonusDaoImpl extends GenericDaoImpl<Bonus, Long> implements BonusDao  {
 	
@@ -121,7 +123,7 @@ public class BonusDaoImpl extends GenericDaoImpl<Bonus, Long> implements BonusDa
 	}
 
 	@Override
-	public Page<BonusVo> getPageDetail(Long contractId, Pageable pageable) {
+	public Page<BonusVo> getPageDetail(Long contractId,User user,DeptInfo deptInfo,Pageable pageable) {
 		StringBuffer querySql = new StringBuffer();
 		StringBuffer countSql = new StringBuffer();
 		
@@ -141,8 +143,25 @@ public class BonusDaoImpl extends GenericDaoImpl<Bonus, Long> implements BonusDa
 		params.add(DeptType.PRODUCT_DEVELOPMENT);
 		params.add(contractId);
 		
+		whereSql.append(" left join w_dept_info wdi on wci.dept_id = wdi.id");
+		whereSql.append(" left join w_dept_info wdi2 on wci.consultants_dept_id = wdi2.id");
+		//权限
+		whereSql.append(" where (wci.creator_ = ? or wci.sales_man_id = ? or wci.consultants_id = ?");
+		params.add(user.getLogin());
+		params.add(user.getId());
+		params.add(user.getId());
+		if(user.getIsManager()){
+			whereSql.append(" or wdi.id_path like ? or wdi.id = ?");
+			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
+			params.add(deptInfo.getId());
+			
+			whereSql.append(" or wdi2.id_path like ? or wdi2.id = ?");
+			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
+			params.add(deptInfo.getId());
+		}
+		whereSql.append(")");
 		if (contractId != null) {
-			whereSql.append(" where wbs.contract_id = ?");
+			whereSql.append(" and wbs.contract_id = ?");
 			params.add(contractId);
 		}
 		querySql.append(whereSql.toString());
@@ -159,6 +178,49 @@ public class BonusDaoImpl extends GenericDaoImpl<Bonus, Long> implements BonusDa
 			}
 		}
 		return new PageImpl<BonusVo>(returList, pageable, page.getTotalElements());
+	}
+
+	@Override
+	public BonusVo getUserBonus(Long id, User user, DeptInfo deptInfo) {
+		StringBuffer querySql = new StringBuffer();
+		
+		StringBuffer whereSql = new StringBuffer();
+		List<Object> params = new ArrayList<Object>();
+		
+		querySql.append("select wbs");
+		whereSql.append(" from Bonus wbs");
+		whereSql.append(" inner join ContractInfo wci on wci.id = wbs.contractId");
+		whereSql.append(" left join DeptInfo wdi on wci.deptId = wdi.id");
+		whereSql.append(" left join DeptInfo wdi2 on wci.consultantsDeptId = wdi2.id");
+		//权限
+		whereSql.append(" where (wci.creator = ? or wci.salesmanId = ? or wci.consultantsId = ?");
+		params.add(user.getLogin());
+		params.add(user.getId());
+		params.add(user.getId());
+		if(user.getIsManager()){
+			whereSql.append(" or wdi.idPath like ? or wdi.id = ?");
+			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
+			params.add(deptInfo.getId());
+			
+			whereSql.append(" or wdi2.idPath like ? or wdi2.id = ?");
+			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
+			params.add(deptInfo.getId());
+		}
+		whereSql.append(")");
+		
+		//搜索条件
+		if (id != null) {
+			whereSql.append(" and wbs.id = ?");
+			params.add(id);
+		}
+		querySql.append(whereSql.toString());
+		whereSql.setLength(0);
+		whereSql = null;
+		List<Bonus> list = this.queryAllHql(querySql.toString(), params.toArray());
+		if (list != null && !list.isEmpty()) {
+			return new BonusVo(list.get(0));
+		}
+		return null;
 	}
 
 }

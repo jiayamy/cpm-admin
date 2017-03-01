@@ -52,15 +52,29 @@ public class BonusService {
 			
 	}
 
-	public Bonus findOne(Long id) {
+	public BonusVo getUserBonus(Long id) {
 		log.debug("Request to get Bonus : {}", id);
-		Bonus bonus = bonusRepository.findOne(id);
-        return bonus;
+		List<Object[]> objs = userRepository.findUserInfoByLogin(SecurityUtils.getCurrentUserLogin());
+		if(objs != null && !objs.isEmpty()){
+			Object[] o = objs.get(0);
+    		User user = (User) o[0];
+    		DeptInfo deptInfo = (DeptInfo) o[1];
+    		BonusVo bonus = bonusDao.getUserBonus(id,user,deptInfo);
+    		return bonus;
+		}
+		return null;
 	}
 
 	public Page<BonusVo> searchPageDetail(Long contractId, Pageable pageable) {
-		Page<BonusVo> page = bonusDao.getPageDetail(contractId,pageable);
-		return page;
+		List<Object[]> objs = userRepository.findUserInfoByLogin(SecurityUtils.getCurrentUserLogin());
+		if(objs != null && !objs.isEmpty()){
+			Object[] o = objs.get(0);
+    		User user = (User) o[0];
+    		DeptInfo deptInfo = (DeptInfo) o[1];
+    		Page<BonusVo> page = bonusDao.getPageDetail(contractId,user,deptInfo,pageable);
+			return page;
+		}else {
+			return new PageImpl<BonusVo>(new ArrayList<BonusVo>(),pageable,0);
+		}
 	}
-
 }

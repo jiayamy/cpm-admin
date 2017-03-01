@@ -117,7 +117,7 @@ public class ProjectOverallVo {
 	    	
 	    }
 	    
-	    public ProjectOverallVo(ProjectOverall projectOverall,String serialNum,Double implementationCost,Double academicCost){
+	    public ProjectOverallVo(ProjectOverall projectOverall){
 	    	this.id = projectOverall.getId();
 	    	this.statWeek = projectOverall.getStatWeek();
 	    	this.contractResponse = projectOverall.getContractResponse();
@@ -137,10 +137,6 @@ public class ProjectOverallVo {
 	    	this.grossProfitRate = projectOverall.getGrossProfitRate();
 	    	this.createTime = projectOverall.getCreateTime();
 	    	this.creator = projectOverall.getCreator();
-	    	
-	    	this.serialNum = serialNum;
-	    	this.implementationCost = implementationCost;
-	    	this.academicCost = academicCost;
 	    }
 
 		public Long getId() {

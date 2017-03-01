@@ -42,6 +42,7 @@ import com.wondertek.cpm.domain.ProjectSupportBonus;
 import com.wondertek.cpm.domain.vo.ProjectSupportBonusVo;
 import com.wondertek.cpm.security.AuthoritiesConstants;
 import com.wondertek.cpm.service.ProjectSupportBonusService;
+import com.wondertek.cpm.web.rest.util.HeaderUtil;
 import com.wondertek.cpm.web.rest.util.PaginationUtil;
 
 import io.swagger.annotations.ApiParam;
@@ -107,9 +108,12 @@ public class ProjectSupportBonusResource {
     @GetMapping("/project-support-bonus/{id}")
     @Timed
     @Secured(AuthoritiesConstants.ROLE_STAT_SUPPORT_BONUS)
-    public ResponseEntity<ProjectSupportBonus> getProjectSupportBonusById(@PathVariable Long id) {
+    public ResponseEntity<ProjectSupportBonusVo> getProjectSupportBonusById(@PathVariable Long id) {
         log.debug("REST request to get ProjectSupportBonus : {}", id);
-        ProjectSupportBonus projectSupportBonus = projectSupportBonusService.findOne(id);
+        ProjectSupportBonusVo projectSupportBonus = projectSupportBonusService.getUserSupportBonus(id);
+        if (projectSupportBonus == null) {
+        	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.projectSupportBonus.save.noPerm", "")).body(null);
+		}
         return Optional.ofNullable(projectSupportBonus)
             .map(result -> new ResponseEntity<>(
                 result,

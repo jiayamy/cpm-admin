@@ -14,6 +14,9 @@ public interface ProjectSupportBonusDao extends GenericDao<ProjectSupportBonus,L
 	Page<ProjectSupportBonusVo> getPageByParams(User user, DeptInfo deptInfo,
 			ProjectSupportBonus projectSupportBonus, Pageable pageable);
 
-	Page<ProjectSupportBonusVo> getPageDetail(Long contractId, Pageable pageable);
+	Page<ProjectSupportBonusVo> getPageDetail(Long contractId, User user, DeptInfo deptInfo, Pageable pageable);
+
+	ProjectSupportBonusVo getUserSupportBonus(Long id, User user,
+			DeptInfo deptInfo);
 
 }

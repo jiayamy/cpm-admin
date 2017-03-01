@@ -2,6 +2,8 @@ package com.wondertek.cpm.domain.vo;
 
 import java.time.ZonedDateTime;
 
+import com.wondertek.cpm.domain.Bonus;
+
 /**
  * 奖金总表
  */
@@ -59,7 +61,24 @@ public class BonusVo {
     private String creator;
 
     private ZonedDateTime createTime;
-
+    
+    public BonusVo(){
+    	
+    }
+    
+    public BonusVo(Bonus bonus){
+    	this.id = bonus.getId();
+    	this.statWeek = bonus.getStatWeek();
+    	this.contractId = bonus.getContractId();
+    	this.contractAmount = bonus.getContractAmount();
+    	this.salesBonus = bonus.getSalesBonus();
+    	this.projectBonus = bonus.getProjectBonus();
+    	this.consultantsBonus = bonus.getConsultantsBonus();
+    	this.bonusTotal = bonus.getBonusTotal();
+    	this.createTime = bonus.getCreateTime();
+    	this.creator = bonus.getCreator();
+    	
+    }
 	public Long getId() {
 		return id;
 	}

@@ -17,6 +17,7 @@ import com.wondertek.cpm.domain.DeptInfo;
 import com.wondertek.cpm.domain.ProjectOverall;
 import com.wondertek.cpm.domain.User;
 import com.wondertek.cpm.domain.vo.ProjectOverallVo;
+import com.wondertek.cpm.domain.vo.ProjectSupportBonusVo;
 import com.wondertek.cpm.repository.ProjectOverallDao;
 import com.wondertek.cpm.repository.ProjectOverallRepository;
 import com.wondertek.cpm.repository.UserRepository;
@@ -54,14 +55,30 @@ public class ProjectOverallService {
 
 	public Page<ProjectOverallVo> searchPageDetail(Long contractId,
 			Pageable pageable) {
-		Page<ProjectOverallVo> page = projectOverallDao.getPageDetai(contractId,pageable);
-		return page;
+		List<Object[]> objs = userRepository.findUserInfoByLogin(SecurityUtils.getCurrentUserLogin());
+		if(objs != null && !objs.isEmpty()){
+			Object[] o = objs.get(0);
+    		User user = (User) o[0];
+    		DeptInfo deptInfo = (DeptInfo) o[1];
+    		
+    		Page<ProjectOverallVo> page = projectOverallDao.getPageDetail(contractId,user,deptInfo,pageable);
+    		return page;
+		}else {
+			return new PageImpl<ProjectOverallVo>(new ArrayList<ProjectOverallVo>(),pageable,0);
+		}
 	}
 
-	public ProjectOverall findOne(Long id) {
+	public ProjectOverallVo getUserProjectOverall(Long id) {
 		log.debug("Request to get ProjectOverall : {}", id);
-		ProjectOverall projectOverall = projectOverallRepository.findOne(id);
-        return projectOverall;
+		List<Object[]> objs = userRepository.findUserInfoByLogin(SecurityUtils.getCurrentUserLogin());
+		if(objs != null && !objs.isEmpty()){
+			Object[] o = objs.get(0);
+    		User user = (User) o[0];
+    		DeptInfo deptInfo = (DeptInfo) o[1];
+    		ProjectOverallVo projectOverall = projectOverallDao.getUserProjectOverall(id,user,deptInfo);
+    		return projectOverall;
+		}
+		return null;
 	}
 
 }

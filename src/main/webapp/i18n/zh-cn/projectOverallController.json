@@ -27,7 +27,8 @@
             "serialNum": "合同编号",
             "toDate": "截止日期",
             "implementationCost": "实施成本",
-            "academicCost": "中央研究院"
+            "academicCost": "中央研究院",
+            "noPerm": "没有权限访问"
         }
     }
 }

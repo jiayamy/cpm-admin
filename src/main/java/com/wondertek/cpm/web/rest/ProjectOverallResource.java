@@ -42,6 +42,7 @@ import com.wondertek.cpm.domain.ProjectOverall;
 import com.wondertek.cpm.domain.vo.ProjectOverallVo;
 import com.wondertek.cpm.security.AuthoritiesConstants;
 import com.wondertek.cpm.service.ProjectOverallService;
+import com.wondertek.cpm.web.rest.util.HeaderUtil;
 import com.wondertek.cpm.web.rest.util.PaginationUtil;
 
 import io.swagger.annotations.ApiParam;
@@ -107,9 +108,12 @@ public class ProjectOverallResource {
     @GetMapping("/project-overall-controller/{id}")
     @Timed
     @Secured(AuthoritiesConstants.ROLE_STAT_PROJECT_OVERALL)
-    public ResponseEntity<ProjectOverall> getProjectOverall(@PathVariable Long id) {
+    public ResponseEntity<ProjectOverallVo> getProjectOverall(@PathVariable Long id) {
         log.debug("REST request to get ProjectOverall : {}", id);
-        ProjectOverall projectOverall = projectOverallService.findOne(id);
+        ProjectOverallVo projectOverall = projectOverallService.getUserProjectOverall(id);
+        if (projectOverall == null) {
+        	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.projectOverallController.noPerm", "")).body(null);
+		}
         return Optional.ofNullable(projectOverall)
             .map(result -> new ResponseEntity<>(
                 result,

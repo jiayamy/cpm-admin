@@ -12,7 +12,10 @@ public interface ProjectOverallDao extends GenericDao<ProjectOverall, Long> {
 
 	public Page<ProjectOverallVo> getPageByParams(User user,DeptInfo deptInfo,ProjectOverall projectInfo,Pageable pageable);
 
-	public Page<ProjectOverallVo> getPageDetai(Long contractId,
+	public Page<ProjectOverallVo> getPageDetail(Long contractId,User user,DeptInfo deptInfo,
 			Pageable pageable);
+
+	public ProjectOverallVo getUserProjectOverall(Long id, User user,
+			DeptInfo deptInfo);
 
 }

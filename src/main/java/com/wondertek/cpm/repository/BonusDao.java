@@ -12,6 +12,8 @@ public interface BonusDao extends GenericDao<Bonus, Long> {
 
 	public Page<BonusVo> getPageByParams(User user,DeptInfo deptInfo,Bonus bonus,Pageable pageable);
 
-	public Page<BonusVo> getPageDetail(Long contractId, Pageable pageable);
+	public Page<BonusVo> getPageDetail(Long contractId,User user,DeptInfo deptInfo,Pageable pageable);
+
+	public BonusVo getUserBonus(Long id, User user, DeptInfo deptInfo);
 
 }
