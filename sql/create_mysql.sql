@@ -124,7 +124,7 @@ CREATE
         dept_id bigint NOT NULL,
         is_manager bit NOT NULL,
         duty_ VARCHAR(100) COLLATE utf8_bin,
-        grade_ VARCHAR(100) COLLATE utf8_bin,
+        grade_ int(11) COLLATE utf8_bin,
         gender_ INT,
         birth_year VARCHAR(4) COLLATE utf8_bin,
         birth_day VARCHAR(10) COLLATE utf8_bin,
@@ -184,6 +184,7 @@ CREATE
         consultants_ VARCHAR(100) COLLATE utf8_bin,
         consultants_dept_id bigint COMMENT '咨询所属部门ID',
         consultants_dept VARCHAR(200) COMMENT '咨询所属部门',
+        consultants_share_rate DOUBLE(15,2) COMMENT '咨询分润比率',
         start_day TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '开始日期,页面格式20161227',
         end_day TIMESTAMP NULL COMMENT '结束日期',
         tax_rate DOUBLE(15,2) COMMENT '率,精确小数点后2位',
@@ -528,7 +529,10 @@ CREATE
     	CREATE_time TIMESTAMP NULL,
         updator_ VARCHAR(100) COLLATE utf8_bin,
         update_time TIMESTAMP NULL,
-        PRIMARY KEY (id)
+        product_price_id bigint(20) DEFAULT NULL,
+        PRIMARY KEY (id),
+        KEY `fw_pi_pp_product_price_id_idx` (`product_price_id`),
+		CONSTRAINT `fw_pi_pp_product_price_id` FOREIGN KEY (`product_price_id`) REFERENCES `w_project_cost` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
     )
     ENGINE=InnoDB DEFAULT CHARSET=utf8;
     
@@ -582,7 +586,265 @@ CREATE
         PRIMARY KEY (id)
     )
     ENGINE=InnoDB DEFAULT CHARSET=utf8;
-    
+ 
+CREATE 
+	TABLE `w_bonus` (
+	  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键、',
+	  `stat_week` bigint(20) NOT NULL COMMENT '统计日期、',
+	  `contract_id` bigint(20) DEFAULT NULL COMMENT '合同主键、',
+	  `contract_amount` double(15,2) DEFAULT NULL COMMENT '合同金额、',
+	  `sales_bonus` double(15,2) DEFAULT NULL COMMENT '当期销售奖金(2.10的本期奖金)、',
+	  `project_bonus` double(15,2) DEFAULT NULL COMMENT '当期项目奖金（2.12之和）、',
+	  `consultants_bonus` double(15,2) DEFAULT NULL COMMENT '当期业务咨询奖金(2.11的本期奖金)、',
+	  `bonus_total` double(15,2) DEFAULT NULL COMMENT '奖金合计（销售+项目+咨询奖金）',
+	  `creator_` varchar(100) COLLATE utf8_bin DEFAULT NULL,
+	  `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+	  PRIMARY KEY (`id`)
+	) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='奖金总表';
+
+CREATE 
+	TABLE `w_bonus_rate` (
+	  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键',
+	  `dept_type` bigint(20) NOT NULL COMMENT '部门类型',
+	  `contract_type` int(11) NOT NULL COMMENT '合同类型',
+	  `rate_` double(15,2) NOT NULL COMMENT '提成比率',
+	  `creator_` varchar(100) CHARACTER SET utf8 DEFAULT NULL,
+	  `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+	  `updator_` varchar(100) CHARACTER SET utf8 DEFAULT NULL,
+	  `update_time` timestamp NULL DEFAULT '0000-00-00 00:00:00',
+	  PRIMARY KEY (`id`)
+	) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='奖金提成比率';
+	
+CREATE 
+	TABLE `w_consultants_bonus` (
+	  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键、',
+	  `stat_week` bigint(20) NOT NULL COMMENT '统计日期、',
+	  `contract_id` bigint(20) DEFAULT NULL COMMENT '合同主键、',
+	  `contract_amount` double(15,2) DEFAULT NULL COMMENT '合同金额、',
+	  `consultants_id` bigint(20) DEFAULT NULL COMMENT '咨询负责人主键、',
+	  `consultants_` varchar(100) CHARACTER SET utf8 DEFAULT NULL COMMENT '咨询负责人名称、',
+	  `bonus_basis` double(15,2) DEFAULT NULL COMMENT '奖金基数（同销售奖金中的奖金基数）、',
+	  `bonus_rate` double(15,2) DEFAULT NULL COMMENT '奖金比例（2.3中的咨询）、',
+	  `consultants_share_rate` double(15,2) DEFAULT NULL COMMENT '项目分润比率（合同上的字段）、',
+	  `current_bonus` double(15,2) DEFAULT NULL COMMENT '本期奖金（奖金基数*奖金比例*分润比例）',
+	  `creator_` varchar(100) CHARACTER SET utf8 DEFAULT NULL,
+	  `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+	  PRIMARY KEY (`id`)
+	) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='咨询奖金';
+
+CREATE 
+	TABLE `w_project_advance_schedule_bonus` (
+	  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键',
+	  `min_schedule` double(15,2) NOT NULL COMMENT '进度最小值',
+	  `bonus_rate` double(15,2) NOT NULL COMMENT '奖金加成比率',
+	  `creator_` varchar(100) CHARACTER SET utf8 DEFAULT NULL,
+	  `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+	  `updator_` varchar(100) CHARACTER SET utf8 DEFAULT NULL,
+	  `update_time` timestamp NULL DEFAULT '0000-00-00 00:00:00',
+	  PRIMARY KEY (`id`)
+	) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='项目提前进度奖金加成信息';
+
+CREATE 
+	TABLE `w_external_quotation` (
+	  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键',
+	  `grade_` int(11) NOT NULL COMMENT '级别',
+	  `external_quotation` double(15,2) NOT NULL COMMENT '对外报价',
+	  `social_security_fund` double(15,2) NOT NULL COMMENT '社保公积金',
+	  `other_expense` double(15,2) NOT NULL COMMENT '其他费用',
+	  `cost_basis` double(15,2) NOT NULL COMMENT '成本依据',
+	  `hour_cost` double(15,2) NOT NULL COMMENT '小时成本',
+	  `creator_` varchar(100) CHARACTER SET utf8 DEFAULT NULL,
+	  `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+	  `updator_` varchar(100) CHARACTER SET utf8 DEFAULT NULL,
+	  `update_time` timestamp NULL DEFAULT '0000-00-00 00:00:00',
+	  PRIMARY KEY (`id`)
+	) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='外部报价';
+
+CREATE 
+	TABLE `w_project_support_cost` (
+	  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键',
+	  `stat_week` bigint(20) NOT NULL COMMENT '统计日期、',
+	  `contract_id` bigint(20) NOT NULL COMMENT '合同主键、',
+	  `project_id` bigint(20) DEFAULT NULL,
+	  `dept_type` bigint(20) NOT NULL COMMENT '部门类型主键（走项目所属部门的部门类型）、',
+	  `user_id` bigint(20) NOT NULL COMMENT '员工主键、',
+	  `serial_num` varchar(10) CHARACTER SET utf8 DEFAULT NULL COMMENT '员工编号、',
+	  `user_name` varchar(50) CHARACTER SET utf8 DEFAULT NULL COMMENT '员工姓名、',
+	  `grade_` int(11) DEFAULT NULL COMMENT '级别（员工信息中有）、',
+	  `settlement_cost` double(15,2) DEFAULT NULL COMMENT '结算成本（2.2中的小时成本）、',
+	  `project_hour_cost` double(15,2) DEFAULT NULL COMMENT '项目工时（统计之前的员工所有小时成本之和，从员工日报中获取）、',
+	  `internal_budget_cost` double(15,2) DEFAULT NULL COMMENT '内部采购成本（结算成本*项目工时）、',
+	  `sal_` double(15,2) DEFAULT NULL COMMENT '工资（从员工成本中获取统计日期时的员工工资）、',
+	  `social_security_fund` double(15,2) DEFAULT NULL COMMENT '社保公积金（从员工成本中获取统计日期时的社保公积金）、、',
+	  `other_expense` double(15,2) DEFAULT NULL COMMENT '其他费用（从员工成本中获取统计日期时的其他费用）、、',
+	  `user_month_cost` double(15,2) DEFAULT NULL COMMENT '单人月成本小计（工资+社保公积金+其他费用）、',
+	  `user_hour_cost` double(15,2) DEFAULT NULL COMMENT '工时成本（当人月成本小计/168）、',
+	  `product_cost` double(15,2) DEFAULT NULL COMMENT '生产成本合计（工时成本*项目工时）、',
+	  `gross_profit` double(15,2) DEFAULT NULL COMMENT '生产毛利（内部采购成本-生成成本合计）',
+	  `creator_` varchar(100) CHARACTER SET utf8 DEFAULT NULL,
+	  `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+	  PRIMARY KEY (`id`)
+	) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='项目支撑成本信息';	
+
+CREATE 
+	TABLE `w_project_support_bonus` (
+	  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键、',
+	  `stat_week` bigint(20) NOT NULL COMMENT '统计日期、',
+	  `contract_id` bigint(20) NOT NULL COMMENT '合同主键、',
+	  `project_id` bigint(20) DEFAULT NULL,
+	  `dept_type` bigint(20) NOT NULL COMMENT '部门类型主键、',
+	  `pm_id` bigint(20) NOT NULL COMMENT '项目经理主键（项目上的）、',
+	  `pm_name` varchar(50) CHARACTER SET utf8 DEFAULT NULL COMMENT '项目经理姓名、',
+	  `delivery_time` int(11) DEFAULT NULL COMMENT '项目确认交付时间（项目的结束到开始日期）、',
+	  `acceptance_rate` double(15,2) DEFAULT NULL COMMENT '验收节点（走合同的完成率）、',
+	  `plan_days` double(15,2) DEFAULT NULL COMMENT '计划天数（项目确认交付时间*验收节点）、',
+	  `real_days` int(11) DEFAULT NULL COMMENT '实际使用天数（项目结项日期（状态为已结项的更新时间）或统计时间-项目开始日期）、',
+	  `bonus_adjust_rate` double(15,2) DEFAULT NULL COMMENT '奖金调节比率（计划天数/实际使用天数-1）、',
+	  `bonus_rate` double(15,2) DEFAULT NULL COMMENT '奖金比率（2.3中对应部门类型的提成比率）、',
+	  `bonus_acceptance_rate` double(15,2) DEFAULT NULL COMMENT '奖金确认比例（奖金比例*(1+奖金调节比例)*验收节点）、',
+	  `contract_amount` double(15,2) DEFAULT NULL COMMENT '合同金额',
+	  `tax_rate` double(15,2) DEFAULT NULL COMMENT '税率',
+	  `bonus_basis` double(15,2) DEFAULT NULL COMMENT '奖金基数（走2.4里面的生产毛利）、',
+	  `current_bonus` double(15,2) DEFAULT NULL COMMENT '当期奖金（奖金确认比例*奖金基数）',
+	  `creator_` varchar(100) CHARACTER SET utf8 DEFAULT NULL,
+	  `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+	  PRIMARY KEY (`id`)
+	) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='项目支撑奖金';	
+	
+CREATE 
+	TABLE `w_product_sales_bonus` (
+	  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键、',
+	  `stat_week` bigint(20) NOT NULL COMMENT '统计日期、',
+	  `contract_id` bigint(20) NOT NULL COMMENT '合同主键、',
+	  `dept_type` bigint(20) NOT NULL COMMENT '部门类型主键、',
+	  `delivery_time` int(11) DEFAULT NULL COMMENT '合同确认交付时间（合同结束日期-开始日期的天数）、',
+	  `acceptance_rate` double(15,2) DEFAULT NULL COMMENT '验收节点（合同的完成率）、',
+	  `plan_days` double(15,2) DEFAULT NULL COMMENT '计划天数（合同确认交付时间*验收节点）、',
+	  `real_days` int(11) DEFAULT NULL COMMENT '实际使用天数（合同结项日期（状态为已结项的更新时间）或统计日期-合同开始日期）、',
+	  `bonus_adjust_rate` double(15,2) DEFAULT NULL COMMENT '奖金调节比率（计划天数/实际使用天数-1）、',
+	  `bonus_rate` double(15,2) DEFAULT NULL COMMENT '奖金比率（2.3中对应部门类型的提成比率）、',
+	  `bonus_acceptance_rate` double(15,2) DEFAULT NULL COMMENT '奖金确认比例（奖金比例*(1+奖金调节比例)*验收节点）、',
+	  `bonus_basis` double(15,2) DEFAULT NULL COMMENT '奖金基数（走内部采购单中的来源部门类型的所有（采购成本*部门类型分成比率） 合计）、',
+	  `current_bonus` double(15,2) DEFAULT NULL COMMENT '当期奖金（奖金确认比例*奖金基数）',
+	  `creator_` varchar(100) CHARACTER SET utf8 DEFAULT NULL,
+	  `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+	  PRIMARY KEY (`id`)
+	) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='产品销售奖金';	
+
+CREATE 
+	TABLE `w_contract_internal_purchase` (
+	  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键、',
+	  `stat_week` bigint(20) NOT NULL COMMENT '统计日期、',
+	  `project_overall_id` bigint(20) NOT NULL COMMENT '项目总体控制表主键（2.14）、',
+	  `contract_id` bigint(20) NOT NULL COMMENT '合同主键、',
+	  `dept_type` bigint(20) DEFAULT NULL COMMENT '部门类型主键、',
+	  `total_amount` double(15,2) DEFAULT NULL COMMENT '总金额',
+	  `creator_` varchar(100) COLLATE utf8_bin DEFAULT NULL,
+	  `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+	  PRIMARY KEY (`id`)
+	) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='合同内部采购信息';	
+
+CREATE 
+	TABLE `w_sales_annual_index` (
+	  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键、',
+	  `user_id` bigint(20) NOT NULL COMMENT '员工主键、',
+	  `user_name` varchar(50) CHARACTER SET utf8 DEFAULT NULL COMMENT '员工姓名、',
+	  `stat_year` bigint(20) DEFAULT NULL COMMENT '所属年份、',
+	  `annual_index` double(15,2) DEFAULT NULL COMMENT '年指标',
+	  `creator_` varchar(100) CHARACTER SET utf8 DEFAULT NULL,
+	  `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+	  `updator_` varchar(100) CHARACTER SET utf8 DEFAULT NULL,
+	  `update_time` timestamp NULL DEFAULT '0000-00-00 00:00:00',
+	  PRIMARY KEY (`id`)
+	) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='销售年指标信息';	
+	
+CREATE 
+	TABLE `w_sales_bonus` (
+	  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键、',
+	  `stat_week` bigint(20) NOT NULL COMMENT '统计日期、',
+	  `sales_man_id` bigint(20) NOT NULL COMMENT '销售主键、',
+	  `sales_man` varchar(100) CHARACTER SET utf8 DEFAULT NULL COMMENT '销售姓名、',
+	  `contract_id` bigint(20) DEFAULT NULL COMMENT '合同主键、',
+	  `origin_year` bigint(20) DEFAULT NULL COMMENT '所属年份',
+	  `contract_amount` double(15,2) DEFAULT NULL COMMENT '合同金额、',
+	  `tax_rate` double(15,2) DEFAULT NULL COMMENT '税率（合同上的）、',
+	  `receive_total` double(15,2) DEFAULT NULL COMMENT '收款金额(收款记录相加总额)、',
+	  `taxes_` double(15,2) DEFAULT NULL COMMENT '税收(合同金额*税率 )、',
+	  `share_cost` double(15,2) DEFAULT NULL COMMENT '公摊成本（合同金额*公摊比例）、',
+	  `third_party_purchase` double(15,2) DEFAULT NULL COMMENT '第三方采购（外部采购成本之和）、',
+	  `bonus_basis` double(15,2) DEFAULT NULL COMMENT '奖金基数（收款金额-税收-公摊成本-第三方采购-内部采购总额）、',
+	  `bonus_rate` double(15,2) DEFAULT NULL COMMENT '奖金比例（2.3中销售提成比率）、',
+	  `current_bonus` double(15,2) DEFAULT NULL COMMENT '本期奖金（奖金基数*奖金比例）、',
+	  `creator_` varchar(100) CHARACTER SET utf8 DEFAULT NULL,
+	  `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+	  PRIMARY KEY (`id`)
+	) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='销售奖金';	
+
+CREATE 
+	TABLE `w_contract_project_bonus` (
+	  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键、',
+	  `stat_week` bigint(20) NOT NULL COMMENT '统计日期、',
+	  `bonus_id` bigint(20) NOT NULL COMMENT '奖金总表主键(2.14)、',
+	  `contract_id` bigint(20) NOT NULL COMMENT '合同主键、',
+	  `dept_type` bigint(20) NOT NULL COMMENT '部门类型主键、',
+	  `bonus_` double(15,2) DEFAULT NULL COMMENT '奖金合计（2.6+2.7之和）',
+	  `creator_` varchar(100) COLLATE utf8_bin DEFAULT NULL,
+	  `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+	  PRIMARY KEY (`id`)
+	) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='合同的项目奖金信息';	
+	
+CREATE 
+	TABLE `w_project_overall` (
+	  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键、',
+	  `stat_week` bigint(20) NOT NULL COMMENT '统计日期、',
+	  `contract_response` bigint(20) NOT NULL COMMENT '合同负责人（有销售就是销售，没销售就是咨询）、',
+	  `contract_id` bigint(20) NOT NULL COMMENT '合同主键、',
+	  `contract_amount` double(15,2) DEFAULT NULL COMMENT '合同金额、',
+	  `tax_rate` double(15,2) DEFAULT NULL COMMENT '税率（合同上的）、',
+	  `identifiable_income` double(15,2) DEFAULT NULL COMMENT '可确认收入（合同金额*（1-税率））、',
+	  `contract_finish_rate` double(15,2) DEFAULT NULL COMMENT '合同完成节点（合同上的完成率）、',
+	  `acceptance_income` double(15,2) DEFAULT NULL COMMENT '收入确认（可确认收入*合同完成节点）、',
+	  `receive_total` double(15,2) DEFAULT NULL COMMENT '收款金额(收款记录相加总额，同2.10)、',
+	  `receivable_account` double(15,2) DEFAULT NULL COMMENT '应收账款（合同金额*合同完成节点-收款金额）、',
+	  `share_cost` double(15,2) DEFAULT NULL COMMENT '公摊成本（收款金额*合同上的公摊比例）、',
+	  `third_party_purchase` double(15,2) DEFAULT NULL COMMENT '第三方采购（外部采购记录之和、同2.10）、',
+	  `internal_purchase` double(15,2) DEFAULT NULL COMMENT '内部采购总额（2.8的记录之和、同2.10）、',
+	  `bonus_` double(15,2) DEFAULT NULL COMMENT '奖金(2.13奖金合计)、',
+	  `gross_profit` double(15,2) DEFAULT NULL COMMENT '毛利（可确认收入*合同完成节点-公摊成本-第三方采购-内部采购总额-奖金）、',
+	  `gross_profit_rate` double(15,2) DEFAULT NULL COMMENT '毛利率（毛利/（可确认收入*合同完成节点））',
+	  `creator_` varchar(100) COLLATE utf8_bin DEFAULT NULL,
+	  `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+	  PRIMARY KEY (`id`)
+	) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='项目总体情况控制表';
+	
+CREATE 
+	TABLE `w_share_info` (
+	  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键',
+	  `product_price_id` bigint(20) NOT NULL COMMENT '产品定价单主键',
+	  `dept_id` bigint(20) NOT NULL COMMENT '部门主键',
+	  `dept_name` varchar(100) CHARACTER SET utf8 DEFAULT NULL COMMENT '部门名称(除了实施部门外，有可能会有咨询的分成)',
+	  `share_rate` double(15,2) DEFAULT NULL COMMENT '分成比例（所有记录之和一定要是100%）',
+	  `creator_` varchar(100) COLLATE utf8_bin DEFAULT NULL,
+	  `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+	  `updator_` varchar(100) COLLATE utf8_bin DEFAULT NULL,
+	  `update_time` timestamp NULL DEFAULT '0000-00-00 00:00:00',
+	  PRIMARY KEY (`id`)
+	) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='分成对象信息表';	
+	
+CREATE 
+	TABLE `w_share_cost_rate` (
+	  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键',
+	  `dept_type` bigint(20) DEFAULT NULL COMMENT '部门类型ID',
+	  `dept_` varchar(100) CHARACTER SET utf8 DEFAULT NULL COMMENT '部门类型名称',
+	  `contract_type` int(11) DEFAULT NULL COMMENT '合同类型',
+	  `share_rate` double(15,2) DEFAULT NULL COMMENT '公摊比例',
+	  `creator_` varchar(100) CHARACTER SET utf8 DEFAULT NULL,
+	  `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+	  `updator_` varchar(100) CHARACTER SET utf8 DEFAULT NULL,
+	  `update_time` timestamp NULL DEFAULT '0000-00-00 00:00:00',
+	  PRIMARY KEY (`id`)
+	) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='奖金公摊成本比例';
+	
     insert into jhi_authority (name, detail_) values ('ROLE_ADMIN', '管理');
 	insert into jhi_authority (name, detail_) values ('ROLE_CONTRACT', '合同管理');
 	insert into jhi_authority (name, detail_) values ('ROLE_CONTRACT_BUDGET', '合同管理-内部采购单');
