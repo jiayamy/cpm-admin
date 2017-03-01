@@ -45,6 +45,7 @@ public class UserCost implements Serializable {
     private Double internalCost;
     /**
      * 外部成本，单位元
+     * @deprecated
      */
     @Column(name = "external_cost")
     private Double externalCost;
@@ -168,16 +169,22 @@ public class UserCost implements Serializable {
     public void setInternalCost(Double internalCost) {
         this.internalCost = internalCost;
     }
-
+    /**
+     * @deprecated
+     */
     public Double getExternalCost() {
         return externalCost;
     }
-
+    /**
+     * @deprecated
+     */
     public UserCost externalCost(Double externalCost) {
         this.externalCost = externalCost;
         return this;
     }
-
+    /**
+     * @deprecated
+     */
     public void setExternalCost(Double externalCost) {
         this.externalCost = externalCost;
     }
