@@ -124,7 +124,7 @@ CREATE
         dept_id bigint NOT NULL,
         is_manager bit NOT NULL,
         duty_ VARCHAR(100) COLLATE utf8_bin,
-        grade_ int(11) COLLATE utf8_bin,
+        grade_ VARCHAR(100) COLLATE utf8_bin,
         gender_ INT,
         birth_year VARCHAR(4) COLLATE utf8_bin,
         birth_day VARCHAR(10) COLLATE utf8_bin,
@@ -184,7 +184,6 @@ CREATE
         consultants_ VARCHAR(100) COLLATE utf8_bin,
         consultants_dept_id bigint COMMENT '咨询所属部门ID',
         consultants_dept VARCHAR(200) COMMENT '咨询所属部门',
-        consultants_share_rate DOUBLE(15,2) COMMENT '咨询分润比率',
         start_day TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '开始日期,页面格式20161227',
         end_day TIMESTAMP NULL COMMENT '结束日期',
         tax_rate DOUBLE(15,2) COMMENT '率,精确小数点后2位',
@@ -529,10 +528,7 @@ CREATE
     	CREATE_time TIMESTAMP NULL,
         updator_ VARCHAR(100) COLLATE utf8_bin,
         update_time TIMESTAMP NULL,
-        product_price_id bigint(20) DEFAULT NULL,
         PRIMARY KEY (id),
-        KEY `fw_pi_pp_product_price_id_idx` (`product_price_id`),
-		CONSTRAINT `fw_pi_pp_product_price_id` FOREIGN KEY (`product_price_id`) REFERENCES `w_project_cost` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
     )
     ENGINE=InnoDB DEFAULT CHARSET=utf8;
     
@@ -904,3 +900,9 @@ CREATE
 	insert into jhi_authority (name, detail_) values ('ROLE_STAT_SALES_BONUS', '统计报表-销售项目信息');
 	insert into jhi_authority (name, detail_) values ('ROLE_STAT_PROJECT_OVERALL', '统计报表-项目总体情况控制');
 	insert into jhi_authority (name, detail_) values ('ROLE_STAT_SUPPORT_BONUS', '统计报表-项目支撑奖金');
+	
+	--20170301
+	ALTER TABLE jhi_user CHANGE COLUMN `grade_ ` `grade_ ` int(11) DEFAULT NULL COMMENT '级别';
+	ALTER TABLE w_contract_info ADD COLUMN `consultants_share_rate` double(15,2) DEFAULT NULL COMMENT '咨询分润比率';
+
+
