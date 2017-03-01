@@ -10,16 +10,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort.Order;
 import org.springframework.stereotype.Repository;
 
-import com.wondertek.cpm.CpmConstants;
 import com.wondertek.cpm.config.DateUtil;
 import com.wondertek.cpm.config.StringUtil;
 import com.wondertek.cpm.domain.DeptInfo;
 import com.wondertek.cpm.domain.ProjectSupportCost;
 import com.wondertek.cpm.domain.User;
-import com.wondertek.cpm.domain.vo.ConsultantBonusVo;
 import com.wondertek.cpm.domain.vo.ProjectSupportCostVo;
 
 @Repository("projectSupportCostDao")
@@ -39,52 +36,51 @@ public class ProjectSupportCostDaoImpl extends GenericDaoImpl<ProjectSupportCost
 	}
 
 	@Override
-	public List<ProjectSupportCostVo> getAllSalePurchaseInternalPage(User user,DeptInfo deptInfo,Long contractId, Long userId, Long statWeek, Long deptType) {
+	public List<ProjectSupportCostVo> getAllSalePurchaseInternalPage(User user,DeptInfo deptInfo,ProjectSupportCost projectSupportCost) {
 		StringBuffer querySql = new StringBuffer();
-		StringBuffer whereSql = new StringBuffer();
-		StringBuffer countSql = new StringBuffer();
-		
-		querySql.append("select distinct p.id, p.stat_week, p.contract_id, p.dept_type, p.user_id, p.serial_num, p.user_name, p.grade_, p.settlement_cost,"
-				+ " p.project_hour_cost, p.internal_budget_cost, p.sal_, p.social_security_fund, p.other_expense, p.user_month_cost, p.user_hour_cost,"
-				+ " p.product_cost, p.gross_profit, p.creator_, p.create_time, c.serial_num as contract_serial_num, wdt.name_");
-//		countSql.append(" select count(distinct p.id)");
-		whereSql.append(" from w_project_support_cost p");
-		whereSql.append(" inner join (select max(wps.stat_week) as max_stat_week,wps.contract_id as contract_id from w_project_support_cost wps where wps.stat_week <= ? group by wps.contract_id) wpsc on wpsc.contract_id = p.contract_id");
-		whereSql.append(" left join w_contract_info c on p.contract_id = c.id");
-		whereSql.append(" left join w_dept_type wdt on p.dept_type = wdt.id");
-		whereSql.append(" left join w_dept_info wdi on wdi.type_ = wdt.id");
-		whereSql.append(" left join w_project_info wpi on p.project_id = wpi.id");
-		
 		List<Object> params = new ArrayList<Object>();
-		params.add(statWeek);
-		whereSql.append(" where p.stat_week = wpsc.max_stat_week");
+
+		querySql.append("select p.id, p.stat_week, p.contract_id, p.dept_type, p.user_id, p.serial_num, p.user_name, p.grade_, p.settlement_cost,");
+		querySql.append(" p.project_hour_cost, p.internal_budget_cost, p.sal_, p.social_security_fund, p.other_expense, p.user_month_cost, p.user_hour_cost,");
+		querySql.append(" p.product_cost, p.gross_profit, p.creator_, p.create_time, c.serial_num as contract_serial_num, wdt.name_");
+		
+		querySql.append(" from w_project_support_cost p");
+		querySql.append(" inner join (select max(wps.stat_week) as max_stat_week,wps.contract_id as contract_id from w_project_support_cost wps where wps.stat_week <= ? group by wps.contract_id) wpsc on wpsc.contract_id = p.contract_id");
+		querySql.append(" left join w_contract_info c on p.contract_id = c.id");
+		querySql.append(" left join w_dept_type wdt on p.dept_type = wdt.id");
+		querySql.append(" left join w_project_info wpi on p.project_id = wpi.id");
+		querySql.append(" left join w_dept_info wdi on wdi.id = wpi.dept_id");
+		
+		params.add(projectSupportCost.getStatWeek());
+		
+		querySql.append(" where p.stat_week = wpsc.max_stat_week");
 		//权限
-		whereSql.append(" and (wpi.pm_id = ? or wpi.creator_ = ?");
+		querySql.append(" and (wpi.pm_id = ? or wpi.creator_ = ?");
 		params.add(user.getId());
 		params.add(user.getLogin());
 		if(user.getIsManager()){
-			whereSql.append(" or wdi.id_path like ? or wdi.id = ?");
+			querySql.append(" or wdi.id_path like ? or wdi.id = ?");
 			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
 			params.add(deptInfo.getId());
 		}
-		whereSql.append(")");
-				
-//		whereSql.append(" where 1=1");
-		if(contractId != null){
-			whereSql.append(" and p.contract_id = ?");
-			params.add(contractId);
+		querySql.append(")");
+		
+		if(projectSupportCost.getContractId() != null){
+			querySql.append(" and p.contract_id = ?");
+			params.add(projectSupportCost.getContractId());
 		}
-		if(userId != null){
-			whereSql.append(" and p.user_id = ?");
-			params.add(userId);
+		if(projectSupportCost.getUserId() != null){
+			querySql.append(" and p.user_id = ?");
+			params.add(projectSupportCost.getUserId());
 		}
-		if (deptType != null) {
-			whereSql.append(" and p.dept_type = ?");
-			params.add(deptType);
+		if (projectSupportCost.getDeptType() != null) {
+			querySql.append(" and p.dept_type = ?");
+			params.add(projectSupportCost.getDeptType());
 		}
-		StringBuffer orderSql = new StringBuffer();
-		orderSql.append(" order by p.dept_type asc,p.id desc");
-    	List<Object[]> page = this.queryAllSql(querySql.toString() + whereSql.toString() + orderSql.toString(), params.toArray());
+		
+		querySql.append(" order by p.dept_type asc,p.id desc");
+		
+    	List<Object[]> page = this.queryAllSql(querySql.toString(), params.toArray());
     	List<ProjectSupportCostVo> returnList = new ArrayList<>();
     	if(page != null){
 			for(Object[] o : page){
@@ -121,83 +117,25 @@ public class ProjectSupportCostDaoImpl extends GenericDaoImpl<ProjectSupportCost
 	}
 
 	@Override
-	public List<ProjectSupportCostVo> getAllSalePurchaseInternalList(User user,DeptInfo deptInfo,Long contractId, Long userId, Long statWeek,
-			Long deptType) {
+	public Page<ProjectSupportCostVo> getAllSalePurchaseInternalDetailPage(User user,DeptInfo deptInfo,ProjectSupportCost projectSupportCost, Pageable pageable) {
 		StringBuffer querySql = new StringBuffer();
 		StringBuffer whereSql = new StringBuffer();
 		StringBuffer countSql = new StringBuffer();
-		
-		querySql.append("select distinct p.id, p.stat_week, p.contract_id, p.dept_type, p.user_id, p.serial_num, p.user_name, p.grade_, p.settlement_cost,"
-				+ " p.project_hour_cost, p.internal_budget_cost, p.sal_, p.social_security_fund, p.other_expense, p.user_month_cost, p.user_hour_cost,"
-				+ " p.product_cost, p.gross_profit, p.creator_, p.create_time, c.serial_num as contract_serial_num, wdt.name_");
-		whereSql.append(" from w_project_support_cost p");
-		whereSql.append(" inner join (select max(wps.stat_week) as max_stat_week,wps.contract_id as contract_id from w_project_support_cost wps where wps.stat_week <= ? group by wps.contract_id) wpsc on wpsc.contract_id = p.contract_id");
-		whereSql.append(" left join w_contract_info c on p.contract_id = c.id");
-		whereSql.append(" left join w_dept_type wdt on p.dept_type = wdt.id");
-		whereSql.append(" left join w_dept_info wdi on wdi.type_ = wdt.id");
-		whereSql.append(" left join w_project_info wpi on p.project_id = wpi.id");
-		
 		List<Object> params = new ArrayList<Object>();
-		params.add(statWeek);
-		whereSql.append(" where p.stat_week = wpsc.max_stat_week");
-		if(contractId == null){
-			return new ArrayList<ProjectSupportCostVo>();
-		}
-		//权限
-		whereSql.append(" and (wpi.pm_id = ? or wpi.creator_ = ?");
-		params.add(user.getId());
-		params.add(user.getLogin());
-		if(user.getIsManager()){
-			whereSql.append(" or wdi.id_path like ? or wdi.id = ?");
-			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
-			params.add(deptInfo.getId());
-		}
-		whereSql.append(")");
 		
-		whereSql.append(" and p.contract_id = ?");
-		params.add(contractId);
-		if(userId != null){
-			whereSql.append(" and p.user_id = ?");
-			params.add(userId);
-		}
-		if (deptType != null) {
-			whereSql.append(" and p.dept_type = ?");
-			params.add(deptType);
-		}
-		StringBuffer orderSql = new StringBuffer();
-    	orderSql.append(" order by p.dept_type asc,p.id desc");
-    	List<Object[]> resultList = this.queryAllSql(querySql.toString() + whereSql.toString() + orderSql.toString(), params.toArray());
-    	List<ProjectSupportCostVo> returnList = new ArrayList<>();
-    	if(resultList != null){
-			for(Object[] o : resultList){
-				returnList.add(transProjectSupportCostVo(o));
-			}
-		}
-    	return returnList;
-	}
-
-	@Override
-	public Page<ProjectSupportCostVo> getAllSalePurchaseInternalDetailPage(Long userId,Long deptType,User user,DeptInfo deptInfo,Long statWeek, Pageable pageable) {
-		StringBuffer querySql = new StringBuffer();
-		StringBuffer whereSql = new StringBuffer();
-		StringBuffer countSql = new StringBuffer();
+		querySql.append("select p.id, p.stat_week, p.contract_id, p.dept_type, p.user_id, p.serial_num, p.user_name, p.grade_, p.settlement_cost,");
+		querySql.append(" p.project_hour_cost, p.internal_budget_cost, p.sal_, p.social_security_fund, p.other_expense, p.user_month_cost, p.user_hour_cost,");
+		querySql.append(" p.product_cost, p.gross_profit, p.creator_, p.create_time, c.serial_num as contract_serial_num, wdt.name_");
 		
-		querySql.append("select distinct p.id, p.stat_week, p.contract_id, p.dept_type, p.user_id, p.serial_num, p.user_name, p.grade_, p.settlement_cost,"
-				+ " p.project_hour_cost, p.internal_budget_cost, p.sal_, p.social_security_fund, p.other_expense, p.user_month_cost, p.user_hour_cost,"
-				+ " p.product_cost, p.gross_profit, p.creator_, p.create_time, c.serial_num as contract_serial_num, wdt.name_");
 		countSql.append(" select count(distinct p.id)");
+		
 		whereSql.append(" from w_project_support_cost p");
-//		whereSql.append(" inner join (select max(wps.stat_week) as max_stat_week,wps.contract_id as contract_id from w_project_support_cost wps where wps.stat_week <= ? group by wps.contract_id) wpsc on wpsc.contract_id = p.contract_id");
 		whereSql.append(" left join w_contract_info c on p.contract_id = c.id");
 		whereSql.append(" left join w_dept_type wdt on p.dept_type = wdt.id");
-		whereSql.append(" left join w_dept_info wdi on wdi.type_ = wdt.id");
 		whereSql.append(" left join w_project_info wpi on p.project_id = wpi.id");
+		whereSql.append(" left join w_dept_info wdi on wdi.id = wpi.dept_id");
 		
-		List<Object> params = new ArrayList<Object>();
-		whereSql.append(" where p.stat_week <= ?");
-		params.add(statWeek);
-		//权限
-		whereSql.append(" and (wpi.pm_id = ? or wpi.creator_ = ?");
+		whereSql.append(" where (wpi.pm_id = ? or wpi.creator_ = ?");
 		params.add(user.getId());
 		params.add(user.getLogin());
 		if(user.getIsManager()){
@@ -207,20 +145,21 @@ public class ProjectSupportCostDaoImpl extends GenericDaoImpl<ProjectSupportCost
 		}
 		whereSql.append(")");
 		
-//		if(contractId != null){
-//			whereSql.append(" and p.contract_id = ?");
-//			params.add(contractId);
-//		}
-		if(deptType != null){
-			whereSql.append(" and p.dept_type = ?");
-			params.add(deptType);
+		if(projectSupportCost.getContractId() != null){
+			whereSql.append(" and p.contract_id = ?");
+			params.add(projectSupportCost.getContractId());
 		}
-		if(userId != null){
+		if(projectSupportCost.getDeptType() != null){
+			whereSql.append(" and p.dept_type = ?");
+			params.add(projectSupportCost.getDeptType());
+		}
+		if(projectSupportCost.getUserId() != null){
 			whereSql.append(" and p.user_id = ?");
-			params.add(userId);
+			params.add(projectSupportCost.getUserId());
 		}
 		StringBuffer orderSql = new StringBuffer();
-		orderSql.append(" order by p.contract_id desc,p.id desc");
+		orderSql.append(" order by p.id desc");
+		
     	Page<Object[]> page = this.querySqlPage(
     			querySql.toString() + whereSql.toString() + orderSql.toString(), 
     			countSql.toString() + whereSql.toString(), 
@@ -233,9 +172,6 @@ public class ProjectSupportCostDaoImpl extends GenericDaoImpl<ProjectSupportCost
 				returnList.add(transProjectSupportCostVo(o));
 			}
 		}
-    	for(ProjectSupportCostVo vo: returnList){
-    		System.out.println("------------------:"+vo);
-    	}
     	return new PageImpl(returnList, pageable, page.getTotalElements());
 	}
 }

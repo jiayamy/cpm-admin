@@ -24,7 +24,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -34,6 +33,7 @@ import com.wondertek.cpm.ExcelUtil;
 import com.wondertek.cpm.ExcelWrite;
 import com.wondertek.cpm.config.DateUtil;
 import com.wondertek.cpm.config.StringUtil;
+import com.wondertek.cpm.domain.ProjectSupportCost;
 import com.wondertek.cpm.domain.vo.ProjectSupportCostVo;
 import com.wondertek.cpm.security.AuthoritiesConstants;
 import com.wondertek.cpm.service.SalePurchaseInternalCostService;
@@ -80,7 +80,12 @@ public class SalePurchaseInternalCostResource {
 			Date now = new Date();	//截止日期默认值
 			statWeek = StringUtil.stringToLong(DateUtil.formatDate(DateUtil.DATE_YYYYMMDD_PATTERN, DateUtil.getSundayOfDay(now)));
 		}
-		List<ProjectSupportCostVo> page = salePurchaseInternalCostService.getAllSalePurchaseInternalPage(contractId, userId, statWeek, deptType);
+		ProjectSupportCost projectSupportCost = new ProjectSupportCost();
+		projectSupportCost.setContractId(contractId);
+		projectSupportCost.setUserId(userId);
+		projectSupportCost.setStatWeek(statWeek);
+		projectSupportCost.setDeptType(deptType);
+		List<ProjectSupportCostVo> page = salePurchaseInternalCostService.getAllSalePurchaseInternalPage(projectSupportCost);
 		return new ResponseEntity<>(page,new HttpHeaders(),HttpStatus.OK);
 //		HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/sale-purchase-internalCost");
 //		return Optional.ofNullable(page.getContent()).map(result -> new ResponseEntity<>(result,headers,HttpStatus.OK))
@@ -96,9 +101,7 @@ public class SalePurchaseInternalCostResource {
 			@ApiParam Pageable pageable
 			) throws URISyntaxException{
 		log.debug("REST request to get a page of SalePurchaseInternalCost:"+id);
-		Date now = new Date();	//截止日期默认值
-		Long statWeek = StringUtil.stringToLong(DateUtil.formatDate(DateUtil.DATE_YYYYMMDD_PATTERN, DateUtil.getSundayOfDay(now)));
-		Page<ProjectSupportCostVo> page = salePurchaseInternalCostService.getAllSalePurchaseInternalDetailPage(id,statWeek,pageable);
+		Page<ProjectSupportCostVo> page = salePurchaseInternalCostService.getAllSalePurchaseInternalDetailPage(id,pageable);
 		HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/sale-purchase-internalCost/queryInternalCostDetail");
 		return Optional.ofNullable(page.getContent()).map(result -> new ResponseEntity<>(result,headers,HttpStatus.OK))
 				.orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
@@ -123,8 +126,13 @@ public class SalePurchaseInternalCostResource {
 		}
 		List<ProjectSupportCostVo> pageList;
 		if (contractId != null) {
-			pageList = salePurchaseInternalCostService.getAllSalePurchaseInternalList(contractId, userId, statWeek,
-					deptType);
+			ProjectSupportCost projectSupportCost = new ProjectSupportCost();
+			projectSupportCost.setContractId(contractId);
+			projectSupportCost.setUserId(userId);
+			projectSupportCost.setStatWeek(statWeek);
+			projectSupportCost.setDeptType(deptType);
+			
+			pageList = salePurchaseInternalCostService.getAllSalePurchaseInternalPage(projectSupportCost);
 		}else{
 			pageList = new ArrayList<ProjectSupportCostVo>();
 		}
