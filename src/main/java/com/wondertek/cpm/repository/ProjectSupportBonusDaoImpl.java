@@ -14,11 +14,9 @@ import org.springframework.stereotype.Repository;
 
 import com.wondertek.cpm.config.DateUtil;
 import com.wondertek.cpm.config.StringUtil;
-import com.wondertek.cpm.domain.ContractBudget;
 import com.wondertek.cpm.domain.DeptInfo;
 import com.wondertek.cpm.domain.ProjectSupportBonus;
 import com.wondertek.cpm.domain.User;
-import com.wondertek.cpm.domain.vo.ContractBudgetVo;
 import com.wondertek.cpm.domain.vo.ProjectSupportBonusVo;
 
 @Repository("projectSupportBonusDao")
@@ -47,13 +45,13 @@ public class ProjectSupportBonusDaoImpl extends GenericDaoImpl<ProjectSupportBon
 		StringBuffer whereSql = new StringBuffer();
 		List<Object> params = new ArrayList<Object>();
 		
-		querySql.append("select wci.serial_num,wpsb.id,wpsb.stat_week,wpsb.contract_id,wpsb.dept_type,wdt.name_,wpsb.pm_id,pm_name,wpsb.delivery_time,wpsb.acceptance_rate,wpsb.plan_days,wpsb.real_days,wpsb.bonus_adjust_rate,wpsb.bonus_rate,wpsb.bonus_acceptance_rate,wpsb.contract_amount,wpsb.tax_rate,wpsb.bonus_basis,wpsb.current_bonus,wpsb.creator_,wpsb.create_time");
+		querySql.append("select wci.serial_num,wpsb.id,wpsb.stat_week,wpsb.contract_id,wpsb.dept_type,wdt.name_,wpsb.pm_id,pm_name,wpsb.delivery_time,wpsb.acceptance_rate,wpsb.plan_days,wpsb.real_days,wpsb.bonus_adjust_rate,wpsb.bonus_rate,wpsb.bonus_acceptance_rate,wpsb.contract_amount,wpsb.tax_rate,wpsb.bonus_basis,wpsb.current_bonus,wpsb.creator_,wpsb.create_time,wpsb.project_id");
 		countSql.append("select count(wpsb.id)");
 		
 		whereSql.append(" from w_project_support_bonus wpsb");
 		whereSql.append(" inner join");
 		whereSql.append("(");
-		whereSql.append("select max(wpsb1.id) as id,wpsb1.contract_id,wpsb1.dept_type from w_project_support_bonus wpsb1 where wpsb1.stat_week <= ? group by wpsb1.contract_id,wpsb1.dept_type)");
+		whereSql.append("select max(wpsb1.id) as id from w_project_support_bonus wpsb1 where wpsb1.stat_week <= ? group by wpsb1.contract_id,wpsb1.project_id)");
 		whereSql.append(" b on wpsb.id = b.id");
 		whereSql.append(" inner join w_contract_info wci on wci.id = wpsb.contract_id");
 		whereSql.append(" inner join w_dept_type wdt on wdt.id = wpsb.dept_type");
@@ -119,12 +117,12 @@ public class ProjectSupportBonusDaoImpl extends GenericDaoImpl<ProjectSupportBon
 		vo.setCurrentBonus(StringUtil.getScaleDouble(StringUtil.nullToDouble(o[18]), 2));
 		vo.setCreator(StringUtil.null2Str(o[19]));
 		vo.setCreateTime(DateUtil.getZonedDateTime((Timestamp) o[20]));
-		
+		vo.setProjectId(StringUtil.nullToCloneLong(o[21]));
 		return vo;
 	}
 
 	@Override
-	public Page<ProjectSupportBonusVo> getPageDetail(Long contractId,User user,DeptInfo deptInfo,
+	public Page<ProjectSupportBonusVo> getPageDetail(ProjectSupportBonus projectSupportBonus,User user,DeptInfo deptInfo,
 			Pageable pageable) {
 		StringBuffer querySql = new StringBuffer();
 		StringBuffer countSql = new StringBuffer();
@@ -132,7 +130,7 @@ public class ProjectSupportBonusDaoImpl extends GenericDaoImpl<ProjectSupportBon
 		StringBuffer whereSql = new StringBuffer();
 		List<Object> params = new ArrayList<Object>();
 		
-		querySql.append("select wci.serial_num,wpsb.id,wpsb.stat_week,wpsb.contract_id,wpsb.dept_type,wdt.name_,wpsb.pm_id,pm_name,wpsb.delivery_time,wpsb.acceptance_rate,wpsb.plan_days,wpsb.real_days,wpsb.bonus_adjust_rate,wpsb.bonus_rate,wpsb.bonus_acceptance_rate,wpsb.contract_amount,wpsb.tax_rate,wpsb.bonus_basis,wpsb.current_bonus,wpsb.creator_,wpsb.create_time");
+		querySql.append("select wci.serial_num,wpsb.id,wpsb.stat_week,wpsb.contract_id,wpsb.dept_type,wdt.name_,wpsb.pm_id,pm_name,wpsb.delivery_time,wpsb.acceptance_rate,wpsb.plan_days,wpsb.real_days,wpsb.bonus_adjust_rate,wpsb.bonus_rate,wpsb.bonus_acceptance_rate,wpsb.contract_amount,wpsb.tax_rate,wpsb.bonus_basis,wpsb.current_bonus,wpsb.creator_,wpsb.create_time,wpsb.project_id");
 		countSql.append("select count(wpsb.id)");
 		
 		whereSql.append(" from w_project_support_bonus wpsb");
@@ -152,9 +150,13 @@ public class ProjectSupportBonusDaoImpl extends GenericDaoImpl<ProjectSupportBon
 		}
 		whereSql.append(")");
 		
-		if (contractId != null) {
+		if (projectSupportBonus.getContractId() != null) {
 			whereSql.append(" and wpsb.contract_id = ?");
-			params.add(contractId);
+			params.add(projectSupportBonus.getContractId());
+		}
+		if(projectSupportBonus.getProjectId() != null){
+			whereSql.append(" and wpsb.project_id = ?");
+			params.add(projectSupportBonus.getProjectId());
 		}
 		querySql.append(whereSql.toString());
 		countSql.append(whereSql.toString());
@@ -181,7 +183,7 @@ public class ProjectSupportBonusDaoImpl extends GenericDaoImpl<ProjectSupportBon
 		StringBuffer whereSql = new StringBuffer();
 		List<Object> params = new ArrayList<Object>();
 		
-		querySql.append("select wci.serial_num,wpsb.id,wpsb.stat_week,wpsb.contract_id,wpsb.dept_type,wdt.name_,wpsb.pm_id,pm_name,wpsb.delivery_time,wpsb.acceptance_rate,wpsb.plan_days,wpsb.real_days,wpsb.bonus_adjust_rate,wpsb.bonus_rate,wpsb.bonus_acceptance_rate,wpsb.contract_amount,wpsb.tax_rate,wpsb.bonus_basis,wpsb.current_bonus,wpsb.creator_,wpsb.create_time");
+		querySql.append("select wci.serial_num,wpsb.id,wpsb.stat_week,wpsb.contract_id,wpsb.dept_type,wdt.name_,wpsb.pm_id,pm_name,wpsb.delivery_time,wpsb.acceptance_rate,wpsb.plan_days,wpsb.real_days,wpsb.bonus_adjust_rate,wpsb.bonus_rate,wpsb.bonus_acceptance_rate,wpsb.contract_amount,wpsb.tax_rate,wpsb.bonus_basis,wpsb.current_bonus,wpsb.creator_,wpsb.create_time,wpsb.project_id");
 		whereSql.append(" from w_project_support_bonus wpsb");
 		
 		whereSql.append(" inner join w_contract_info wci on wci.id = wpsb.contract_id");

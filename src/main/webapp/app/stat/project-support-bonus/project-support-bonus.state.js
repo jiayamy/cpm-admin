@@ -68,8 +68,8 @@
                     $translatePartialLoader.addPart('global');
                     return $translate.refresh();
                 }],
-                entity: ['$stateParams', 'ProjectSupportBonus', function($stateParams, ProjectSupportBonus) {
-                    return ProjectSupportBonus.get({id : $stateParams.id}).$promise;
+                entity: ['$stateParams', function($stateParams) {
+                    return {id : $stateParams.id};
                 }],
                 previousState: ["$state", function ($state) {
                     var currentStateData = {

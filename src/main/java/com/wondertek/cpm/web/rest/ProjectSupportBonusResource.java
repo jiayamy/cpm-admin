@@ -96,29 +96,21 @@ public class ProjectSupportBonusResource {
     @Timed
     @Secured(AuthoritiesConstants.ROLE_STAT_SUPPORT_BONUS)
     public ResponseEntity<List<ProjectSupportBonusVo>> getProjectSupportBonusDetail(
-    		@RequestParam(value = "contractId",required=false) Long contractId,
+    		@RequestParam(value = "id",required=false) Long id,
     		@ApiParam Pageable pageable) 
     	throws URISyntaxException {
-        log.debug("REST request to get ProjectOverall : {}", contractId);
-        Page<ProjectSupportBonusVo> page = projectSupportBonusService.searchPageDetail(contractId,pageable);
-    	HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(contractId.toString(), page,"/api/project-projectOverall");
-    	return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK); 
-    }
-    
-    @GetMapping("/project-support-bonus/{id}")
-    @Timed
-    @Secured(AuthoritiesConstants.ROLE_STAT_SUPPORT_BONUS)
-    public ResponseEntity<ProjectSupportBonusVo> getProjectSupportBonusById(@PathVariable Long id) {
-        log.debug("REST request to get ProjectSupportBonus : {}", id);
-        ProjectSupportBonusVo projectSupportBonus = projectSupportBonusService.getUserSupportBonus(id);
+    	ProjectSupportBonusVo projectSupportBonus = projectSupportBonusService.getUserSupportBonus(id);
         if (projectSupportBonus == null) {
         	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.projectSupportBonus.save.noPerm", "")).body(null);
 		}
-        return Optional.ofNullable(projectSupportBonus)
-            .map(result -> new ResponseEntity<>(
-                result,
-                HttpStatus.OK))
-            .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+        ProjectSupportBonus searchBonus = new ProjectSupportBonus();
+        searchBonus.setContractId(projectSupportBonus.getContractId());
+        searchBonus.setProjectId(projectSupportBonus.getProjectId());
+        
+        log.debug("REST request to get ProjectOverall");
+        Page<ProjectSupportBonusVo> page = projectSupportBonusService.searchPageDetail(searchBonus,pageable);
+    	HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page,"/api/project-projectOverall");
+    	return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK); 
     }
     
     @RequestMapping("/project-support-bonus/exportXls")

@@ -22,7 +22,7 @@
         		entity.contractId = "";
         	}
         	ProjectSupportBonus.queryDetail({
-        		contractId: entity.contractId,
+        		id: entity.id,
         		page: vm.page-1,
                 size: vm.itemsPerPage
             }, onSuccess, onError);

@@ -1,16 +1,12 @@
 package com.wondertek.cpm.domain.vo;
 
-import java.io.Serializable;
 import java.time.ZonedDateTime;
 
 /**
  * 项目支撑奖金
  */
 public class ProjectSupportBonusVo {
-	
-
     private Long id;
-    
     /**
      * 合同编号
      * 
@@ -32,6 +28,10 @@ public class ProjectSupportBonusVo {
 	 * 合同主键、
 	 */
 	private Long contractId;
+	/**
+	 * 项目ID
+	 */
+	private Long projectId;
 	
 	/**
 	 * 部门类型主键（走项目所属部门的部门类型）、
@@ -282,5 +282,12 @@ public class ProjectSupportBonusVo {
 	public void setDeptTypeName(String deptTypeName) {
 		this.deptTypeName = deptTypeName;
 	}
-	
+
+	public Long getProjectId() {
+		return projectId;
+	}
+
+	public void setProjectId(Long projectId) {
+		this.projectId = projectId;
+	}
 }

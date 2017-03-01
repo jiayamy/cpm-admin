@@ -365,7 +365,7 @@ public class ContractStateTask {
 		log.info("=====end generate Contract Weekly Stat=====");
 	}
 	
-	@Scheduled(cron = "0 0 22 1 * ?")
+	@Scheduled(cron = "0 30 23 1 * ?")
 	protected void generateContractMonthlyStat(){
 		log.info("=====begin generate Contract Monthly Stat=====");
 		init();
