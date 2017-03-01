@@ -106,7 +106,7 @@
                 <tr ng-repeat="salePurchaseInternalCost in vm.salePurchaseInternalCosts track by salePurchaseInternalCost.id">
                     <td>{{salePurchaseInternalCost.contractSerialNum}}</td>
                     <td>{{salePurchaseInternalCost.deptName}}</td>
-                    <td><a ui-sref="sale-purchase-internalCost.Detail({userId:salePurchaseInternalCost.userId})">{{salePurchaseInternalCost.serialNum}}</a></td>
+                    <td><a ui-sref="sale-purchase-internalCost.Detail({id:salePurchaseInternalCost.id})">{{salePurchaseInternalCost.serialNum}}</a></td>
                     <td>{{salePurchaseInternalCost.userName}}</td>
                     <td>{{salePurchaseInternalCost.grade}}</td>
                     <td>{{salePurchaseInternalCost.settlementCost}}</td>
@@ -121,7 +121,7 @@
                     <td>{{salePurchaseInternalCost.grossProfit}}</td>
                     <td class="text-right">
                         <div class="btn-group flex-btn-group-container" ng-show="salePurchaseInternalCost.serialNum">
-						    <button type="button" ui-sref="sale-purchase-internalCost.Detail({userId:salePurchaseInternalCost.userId})" class="btn btn-primary btn-sm">
+						    <button type="button" ui-sref="sale-purchase-internalCost.Detail({id:salePurchaseInternalCost.id})" class="btn btn-primary btn-sm">
 						        <span class="glyphicon glyphicon-eye-open"></span>
 						    </button>
                         </div>

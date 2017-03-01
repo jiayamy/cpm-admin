@@ -24,6 +24,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -90,12 +91,14 @@ public class SalePurchaseInternalCostResource {
 	@Timed
     @Secured(AuthoritiesConstants.ROLE_STAT_INTERNAL_COST)
 	public ResponseEntity<List<ProjectSupportCostVo>> queryInternalCostDetail(
-			@RequestParam(name="userId",required=false) Long userId,
+			@RequestParam(name="id",required=false) Long id,
+//			@PathVariable Long id,
 			@ApiParam Pageable pageable
 			) throws URISyntaxException{
+		log.debug("REST request to get a page of SalePurchaseInternalCost:"+id);
 		Date now = new Date();	//截止日期默认值
 		Long statWeek = StringUtil.stringToLong(DateUtil.formatDate(DateUtil.DATE_YYYYMMDD_PATTERN, DateUtil.getSundayOfDay(now)));
-		Page<ProjectSupportCostVo> page = salePurchaseInternalCostService.getAllSalePurchaseInternalDetailPage(userId,statWeek,pageable);
+		Page<ProjectSupportCostVo> page = salePurchaseInternalCostService.getAllSalePurchaseInternalDetailPage(id,statWeek,pageable);
 		HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/sale-purchase-internalCost/queryInternalCostDetail");
 		return Optional.ofNullable(page.getContent()).map(result -> new ResponseEntity<>(result,headers,HttpStatus.OK))
 				.orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));

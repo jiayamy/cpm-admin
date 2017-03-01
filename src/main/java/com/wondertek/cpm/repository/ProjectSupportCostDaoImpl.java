@@ -16,7 +16,9 @@ import org.springframework.stereotype.Repository;
 import com.wondertek.cpm.CpmConstants;
 import com.wondertek.cpm.config.DateUtil;
 import com.wondertek.cpm.config.StringUtil;
+import com.wondertek.cpm.domain.DeptInfo;
 import com.wondertek.cpm.domain.ProjectSupportCost;
+import com.wondertek.cpm.domain.User;
 import com.wondertek.cpm.domain.vo.ConsultantBonusVo;
 import com.wondertek.cpm.domain.vo.ProjectSupportCostVo;
 
@@ -37,23 +39,36 @@ public class ProjectSupportCostDaoImpl extends GenericDaoImpl<ProjectSupportCost
 	}
 
 	@Override
-	public List<ProjectSupportCostVo> getAllSalePurchaseInternalPage(Long contractId, Long userId, Long statWeek, Long deptType) {
+	public List<ProjectSupportCostVo> getAllSalePurchaseInternalPage(User user,DeptInfo deptInfo,Long contractId, Long userId, Long statWeek, Long deptType) {
 		StringBuffer querySql = new StringBuffer();
 		StringBuffer whereSql = new StringBuffer();
 		StringBuffer countSql = new StringBuffer();
 		
-		querySql.append("select p.id, p.stat_week, p.contract_id, p.dept_type, p.user_id, p.serial_num, p.user_name, p.grade_, p.settlement_cost,"
+		querySql.append("select distinct p.id, p.stat_week, p.contract_id, p.dept_type, p.user_id, p.serial_num, p.user_name, p.grade_, p.settlement_cost,"
 				+ " p.project_hour_cost, p.internal_budget_cost, p.sal_, p.social_security_fund, p.other_expense, p.user_month_cost, p.user_hour_cost,"
 				+ " p.product_cost, p.gross_profit, p.creator_, p.create_time, c.serial_num as contract_serial_num, wdt.name_");
-		countSql.append(" select count(p.id)");
+//		countSql.append(" select count(distinct p.id)");
 		whereSql.append(" from w_project_support_cost p");
 		whereSql.append(" inner join (select max(wps.stat_week) as max_stat_week,wps.contract_id as contract_id from w_project_support_cost wps where wps.stat_week <= ? group by wps.contract_id) wpsc on wpsc.contract_id = p.contract_id");
 		whereSql.append(" left join w_contract_info c on p.contract_id = c.id");
 		whereSql.append(" left join w_dept_type wdt on p.dept_type = wdt.id");
+		whereSql.append(" left join w_dept_info wdi on wdi.type_ = wdt.id");
+		whereSql.append(" left join w_project_info wpi on p.project_id = wpi.id");
 		
 		List<Object> params = new ArrayList<Object>();
 		params.add(statWeek);
 		whereSql.append(" where p.stat_week = wpsc.max_stat_week");
+		//权限
+		whereSql.append(" and (wpi.pm_id = ? or wpi.creator_ = ?");
+		params.add(user.getId());
+		params.add(user.getLogin());
+		if(user.getIsManager()){
+			whereSql.append(" or wdi.id_path like ? or wdi.id = ?");
+			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
+			params.add(deptInfo.getId());
+		}
+		whereSql.append(")");
+				
 //		whereSql.append(" where 1=1");
 		if(contractId != null){
 			whereSql.append(" and p.contract_id = ?");
@@ -106,19 +121,21 @@ public class ProjectSupportCostDaoImpl extends GenericDaoImpl<ProjectSupportCost
 	}
 
 	@Override
-	public List<ProjectSupportCostVo> getAllSalePurchaseInternalList(Long contractId, Long userId, Long statWeek,
+	public List<ProjectSupportCostVo> getAllSalePurchaseInternalList(User user,DeptInfo deptInfo,Long contractId, Long userId, Long statWeek,
 			Long deptType) {
 		StringBuffer querySql = new StringBuffer();
 		StringBuffer whereSql = new StringBuffer();
 		StringBuffer countSql = new StringBuffer();
 		
-		querySql.append("select p.id, p.stat_week, p.contract_id, p.dept_type, p.user_id, p.serial_num, p.user_name, p.grade_, p.settlement_cost,"
+		querySql.append("select distinct p.id, p.stat_week, p.contract_id, p.dept_type, p.user_id, p.serial_num, p.user_name, p.grade_, p.settlement_cost,"
 				+ " p.project_hour_cost, p.internal_budget_cost, p.sal_, p.social_security_fund, p.other_expense, p.user_month_cost, p.user_hour_cost,"
 				+ " p.product_cost, p.gross_profit, p.creator_, p.create_time, c.serial_num as contract_serial_num, wdt.name_");
 		whereSql.append(" from w_project_support_cost p");
 		whereSql.append(" inner join (select max(wps.stat_week) as max_stat_week,wps.contract_id as contract_id from w_project_support_cost wps where wps.stat_week <= ? group by wps.contract_id) wpsc on wpsc.contract_id = p.contract_id");
 		whereSql.append(" left join w_contract_info c on p.contract_id = c.id");
 		whereSql.append(" left join w_dept_type wdt on p.dept_type = wdt.id");
+		whereSql.append(" left join w_dept_info wdi on wdi.type_ = wdt.id");
+		whereSql.append(" left join w_project_info wpi on p.project_id = wpi.id");
 		
 		List<Object> params = new ArrayList<Object>();
 		params.add(statWeek);
@@ -126,6 +143,17 @@ public class ProjectSupportCostDaoImpl extends GenericDaoImpl<ProjectSupportCost
 		if(contractId == null){
 			return new ArrayList<ProjectSupportCostVo>();
 		}
+		//权限
+		whereSql.append(" and (wpi.pm_id = ? or wpi.creator_ = ?");
+		params.add(user.getId());
+		params.add(user.getLogin());
+		if(user.getIsManager()){
+			whereSql.append(" or wdi.id_path like ? or wdi.id = ?");
+			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
+			params.add(deptInfo.getId());
+		}
+		whereSql.append(")");
+		
 		whereSql.append(" and p.contract_id = ?");
 		params.add(contractId);
 		if(userId != null){
@@ -149,27 +177,44 @@ public class ProjectSupportCostDaoImpl extends GenericDaoImpl<ProjectSupportCost
 	}
 
 	@Override
-	public Page<ProjectSupportCostVo> getAllSalePurchaseInternalDetailPage(Long userId,Long statWeek, Pageable pageable) {
+	public Page<ProjectSupportCostVo> getAllSalePurchaseInternalDetailPage(Long userId,Long deptType,User user,DeptInfo deptInfo,Long statWeek, Pageable pageable) {
 		StringBuffer querySql = new StringBuffer();
 		StringBuffer whereSql = new StringBuffer();
 		StringBuffer countSql = new StringBuffer();
 		
-		querySql.append("select p.id, p.stat_week, p.contract_id, p.dept_type, p.user_id, p.serial_num, p.user_name, p.grade_, p.settlement_cost,"
+		querySql.append("select distinct p.id, p.stat_week, p.contract_id, p.dept_type, p.user_id, p.serial_num, p.user_name, p.grade_, p.settlement_cost,"
 				+ " p.project_hour_cost, p.internal_budget_cost, p.sal_, p.social_security_fund, p.other_expense, p.user_month_cost, p.user_hour_cost,"
 				+ " p.product_cost, p.gross_profit, p.creator_, p.create_time, c.serial_num as contract_serial_num, wdt.name_");
-		countSql.append(" select count(p.id)");
+		countSql.append(" select count(distinct p.id)");
 		whereSql.append(" from w_project_support_cost p");
 //		whereSql.append(" inner join (select max(wps.stat_week) as max_stat_week,wps.contract_id as contract_id from w_project_support_cost wps where wps.stat_week <= ? group by wps.contract_id) wpsc on wpsc.contract_id = p.contract_id");
 		whereSql.append(" left join w_contract_info c on p.contract_id = c.id");
 		whereSql.append(" left join w_dept_type wdt on p.dept_type = wdt.id");
+		whereSql.append(" left join w_dept_info wdi on wdi.type_ = wdt.id");
+		whereSql.append(" left join w_project_info wpi on p.project_id = wpi.id");
 		
 		List<Object> params = new ArrayList<Object>();
 		whereSql.append(" where p.stat_week <= ?");
 		params.add(statWeek);
+		//权限
+		whereSql.append(" and (wpi.pm_id = ? or wpi.creator_ = ?");
+		params.add(user.getId());
+		params.add(user.getLogin());
+		if(user.getIsManager()){
+			whereSql.append(" or wdi.id_path like ? or wdi.id = ?");
+			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
+			params.add(deptInfo.getId());
+		}
+		whereSql.append(")");
+		
 //		if(contractId != null){
 //			whereSql.append(" and p.contract_id = ?");
 //			params.add(contractId);
 //		}
+		if(deptType != null){
+			whereSql.append(" and p.dept_type = ?");
+			params.add(deptType);
+		}
 		if(userId != null){
 			whereSql.append(" and p.user_id = ?");
 			params.add(userId);
@@ -188,6 +233,9 @@ public class ProjectSupportCostDaoImpl extends GenericDaoImpl<ProjectSupportCost
 				returnList.add(transProjectSupportCostVo(o));
 			}
 		}
+    	for(ProjectSupportCostVo vo: returnList){
+    		System.out.println("------------------:"+vo);
+    	}
     	return new PageImpl(returnList, pageable, page.getTotalElements());
 	}
 }

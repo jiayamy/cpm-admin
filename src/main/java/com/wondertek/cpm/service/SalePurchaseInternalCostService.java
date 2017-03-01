@@ -16,8 +16,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.wondertek.cpm.config.StringUtil;
+import com.wondertek.cpm.domain.DeptInfo;
+import com.wondertek.cpm.domain.ProjectSupportCost;
+import com.wondertek.cpm.domain.User;
 import com.wondertek.cpm.domain.vo.ProjectSupportCostVo;
 import com.wondertek.cpm.repository.ProjectSupportCostDao;
+import com.wondertek.cpm.repository.ProjectSupportCostRepository;
+import com.wondertek.cpm.repository.UserRepository;
+import com.wondertek.cpm.security.SecurityUtils;
 
 @Service
 @Transactional
@@ -27,68 +33,92 @@ public class SalePurchaseInternalCostService {
 	
 	@Inject
 	private ProjectSupportCostDao projectSupportCostDao;
+	@Inject
+	private ProjectSupportCostRepository projectSupportCostRepository;
+	@Inject
+    private UserRepository userRepository;
 	
 	public List<ProjectSupportCostVo> getAllSalePurchaseInternalPage(Long contractId,Long userId,Long statWeek,Long deptType){
-		List<ProjectSupportCostVo> page = projectSupportCostDao.getAllSalePurchaseInternalPage(contractId, userId, statWeek, deptType);
-		List<ProjectSupportCostVo> returnList = new ArrayList<ProjectSupportCostVo>();
-		Map<String,ProjectSupportCostVo> contractSerialNumMap = new HashMap<String,ProjectSupportCostVo>();	//分合同部门合计
-		//填充数据
-		if(page != null){
-			for(ProjectSupportCostVo vo : page){
-				vo.setSettlementCost(StringUtil.getScaleDouble(vo.getSettlementCost(), 2));
-				vo.setProjectHourCost(StringUtil.getScaleDouble(vo.getProjectHourCost(), 2));
-				vo.setInternalBudgetCost(StringUtil.getScaleDouble(vo.getInternalBudgetCost(), 2));
-				vo.setSal(StringUtil.getScaleDouble(vo.getSal(), 2));
-				vo.setSocialSecurityFund(StringUtil.getScaleDouble(vo.getSocialSecurityFund(), 2));
-				vo.setOtherExpense(StringUtil.getScaleDouble(vo.getOtherExpense(), 2));
-				vo.setUserMonthCost(StringUtil.getScaleDouble(vo.getUserMonthCost(), 2));
-				vo.setUserHourCost(StringUtil.getScaleDouble(vo.getUserHourCost(), 2));
-				vo.setProductCost(StringUtil.getScaleDouble(vo.getProductCost(), 2));
-				vo.setGrossProfit(StringUtil.getScaleDouble(vo.getGrossProfit(), 2));
-				
-				returnList.add(vo);
-				//分合同部门合计
-				String key = vo.getContractId()+"_"+vo.getDeptType();
-				if (!contractSerialNumMap.containsKey(key)) {
-					ProjectSupportCostVo totalInfo = getInitProjecSupportCostTotalInfo();
-					contractSerialNumMap.put(key, totalInfo);
-					contractSerialNumMap.get(key).setContractSerialNum(vo.getContractSerialNum());
-					contractSerialNumMap.get(key).setContractSerialNum(vo.getContractSerialNum());//填充合同编号
-					contractSerialNumMap.get(key).setDeptName(vo.getDeptName());//填充部门类型
-				}
-				//填充合计
-				contractSerialNumMap.get(key).setInternalBudgetCost(contractSerialNumMap.get(key).getInternalBudgetCost()+vo.getInternalBudgetCost());
-				contractSerialNumMap.get(key).setProductCost(contractSerialNumMap.get(key).getProductCost()+vo.getProductCost());
-				contractSerialNumMap.get(key).setGrossProfit(contractSerialNumMap.get(key).getGrossProfit()+vo.getGrossProfit());
-			}
-			//处理contractSerialNumMap中totalInfo中的double值
-			List<ProjectSupportCostVo> resultHandle = handleDoubleScale(contractSerialNumMap);
-			//添加totalInfo到returnList
-			returnList.addAll(resultHandle);
-			return returnList;
-		}
+		List<Object[]> objs = userRepository.findUserInfoByLogin(SecurityUtils.getCurrentUserLogin());
+    	if(objs != null && !objs.isEmpty()){
+    		Object[] o = objs.get(0);
+    		User user = (User) o[0];
+    		DeptInfo deptInfo = (DeptInfo) o[1];
+    		List<ProjectSupportCostVo> page = projectSupportCostDao.getAllSalePurchaseInternalPage(user,deptInfo,contractId, userId, statWeek, deptType);
+    		List<ProjectSupportCostVo> returnList = new ArrayList<ProjectSupportCostVo>();
+    		Map<String,ProjectSupportCostVo> contractSerialNumMap = new HashMap<String,ProjectSupportCostVo>();	//分合同部门合计
+    		//填充数据
+    		if(page != null){
+    			for(ProjectSupportCostVo vo : page){
+    				vo.setSettlementCost(StringUtil.getScaleDouble(vo.getSettlementCost(), 2));
+    				vo.setProjectHourCost(StringUtil.getScaleDouble(vo.getProjectHourCost(), 2));
+    				vo.setInternalBudgetCost(StringUtil.getScaleDouble(vo.getInternalBudgetCost(), 2));
+    				vo.setSal(StringUtil.getScaleDouble(vo.getSal(), 2));
+    				vo.setSocialSecurityFund(StringUtil.getScaleDouble(vo.getSocialSecurityFund(), 2));
+    				vo.setOtherExpense(StringUtil.getScaleDouble(vo.getOtherExpense(), 2));
+    				vo.setUserMonthCost(StringUtil.getScaleDouble(vo.getUserMonthCost(), 2));
+    				vo.setUserHourCost(StringUtil.getScaleDouble(vo.getUserHourCost(), 2));
+    				vo.setProductCost(StringUtil.getScaleDouble(vo.getProductCost(), 2));
+    				vo.setGrossProfit(StringUtil.getScaleDouble(vo.getGrossProfit(), 2));
+    				
+    				returnList.add(vo);
+    				//分合同部门合计
+    				String key = vo.getContractId()+"_"+vo.getDeptType();
+    				if (!contractSerialNumMap.containsKey(key)) {
+    					ProjectSupportCostVo totalInfo = getInitProjecSupportCostTotalInfo();
+    					contractSerialNumMap.put(key, totalInfo);
+    					contractSerialNumMap.get(key).setContractSerialNum(vo.getContractSerialNum());
+    					contractSerialNumMap.get(key).setContractSerialNum(vo.getContractSerialNum());//填充合同编号
+    					contractSerialNumMap.get(key).setDeptName(vo.getDeptName());//填充部门类型
+    				}
+    				//填充合计
+    				contractSerialNumMap.get(key).setInternalBudgetCost(contractSerialNumMap.get(key).getInternalBudgetCost()+vo.getInternalBudgetCost());
+    				contractSerialNumMap.get(key).setProductCost(contractSerialNumMap.get(key).getProductCost()+vo.getProductCost());
+    				contractSerialNumMap.get(key).setGrossProfit(contractSerialNumMap.get(key).getGrossProfit()+vo.getGrossProfit());
+    			}
+    			//处理contractSerialNumMap中totalInfo中的double值
+    			List<ProjectSupportCostVo> resultHandle = handleDoubleScale(contractSerialNumMap);
+    			//添加totalInfo到returnList
+    			returnList.addAll(resultHandle);
+    			return returnList;
+    		}
+    	}
 		return new ArrayList<ProjectSupportCostVo>();
 	}
 	
-	public Page<ProjectSupportCostVo> getAllSalePurchaseInternalDetailPage(Long userId,Long statWeek,Pageable pageable){
-		Page<ProjectSupportCostVo> page = projectSupportCostDao.getAllSalePurchaseInternalDetailPage(userId,statWeek,pageable);
-		List<ProjectSupportCostVo> returnList = new ArrayList<ProjectSupportCostVo>();
-//		Map<String,ProjectSupportCostVo> contractSerialNumMap = new HashMap<String,ProjectSupportCostVo>();	//分合同合计
-		//填充数据
-		if(page != null && page.getContent() != null){
-			for(ProjectSupportCostVo vo : page.getContent()){
-				vo.setSettlementCost(StringUtil.getScaleDouble(vo.getSettlementCost(), 2));
-				vo.setProjectHourCost(StringUtil.getScaleDouble(vo.getProjectHourCost(), 2));
-				vo.setInternalBudgetCost(StringUtil.getScaleDouble(vo.getInternalBudgetCost(), 2));
-				vo.setSal(StringUtil.getScaleDouble(vo.getSal(), 2));
-				vo.setSocialSecurityFund(StringUtil.getScaleDouble(vo.getSocialSecurityFund(), 2));
-				vo.setOtherExpense(StringUtil.getScaleDouble(vo.getOtherExpense(), 2));
-				vo.setUserMonthCost(StringUtil.getScaleDouble(vo.getUserMonthCost(), 2));
-				vo.setUserHourCost(StringUtil.getScaleDouble(vo.getUserHourCost(), 2));
-				vo.setProductCost(StringUtil.getScaleDouble(vo.getProductCost(), 2));
-				vo.setGrossProfit(StringUtil.getScaleDouble(vo.getGrossProfit(), 2));
-				
-				returnList.add(vo);
+	public Page<ProjectSupportCostVo> getAllSalePurchaseInternalDetailPage(Long id,Long statWeek,Pageable pageable){
+		List<Object[]> objs = userRepository.findUserInfoByLogin(SecurityUtils.getCurrentUserLogin());
+    	if(objs != null && !objs.isEmpty()){
+    		Object[] o = objs.get(0);
+    		User user = (User) o[0];
+    		DeptInfo deptInfo = (DeptInfo) o[1];
+    		
+    		ProjectSupportCost projectSupportCost = projectSupportCostRepository.findOne(id);
+    		if(projectSupportCost == null){
+    			System.out.println(projectSupportCost.getUserId());
+    			return new PageImpl<>(new ArrayList<ProjectSupportCostVo>(), pageable, 0);
+    		}
+    		Long userId = projectSupportCost.getUserId();
+    		Long deptType = projectSupportCost.getDeptType();
+    		Page<ProjectSupportCostVo> page = projectSupportCostDao.getAllSalePurchaseInternalDetailPage(userId,deptType,user,deptInfo,statWeek,pageable);
+    		log.debug("///////////////////////////////--pagesize:"+page.getContent().size());
+    		List<ProjectSupportCostVo> returnList = new ArrayList<ProjectSupportCostVo>();
+//			Map<String,ProjectSupportCostVo> contractSerialNumMap = new HashMap<String,ProjectSupportCostVo>();	//分合同合计
+    		//填充数据
+    		if(page != null && page.getContent() != null){
+    			for(ProjectSupportCostVo vo : page.getContent()){
+    				vo.setSettlementCost(StringUtil.getScaleDouble(vo.getSettlementCost(), 2));
+    				vo.setProjectHourCost(StringUtil.getScaleDouble(vo.getProjectHourCost(), 2));
+    				vo.setInternalBudgetCost(StringUtil.getScaleDouble(vo.getInternalBudgetCost(), 2));
+    				vo.setSal(StringUtil.getScaleDouble(vo.getSal(), 2));
+    				vo.setSocialSecurityFund(StringUtil.getScaleDouble(vo.getSocialSecurityFund(), 2));
+    				vo.setOtherExpense(StringUtil.getScaleDouble(vo.getOtherExpense(), 2));
+    				vo.setUserMonthCost(StringUtil.getScaleDouble(vo.getUserMonthCost(), 2));
+    				vo.setUserHourCost(StringUtil.getScaleDouble(vo.getUserHourCost(), 2));
+    				vo.setProductCost(StringUtil.getScaleDouble(vo.getProductCost(), 2));
+    				vo.setGrossProfit(StringUtil.getScaleDouble(vo.getGrossProfit(), 2));
+    				log.debug("///////////////////:"+vo);
+    				returnList.add(vo);
 //				//分合同合计
 //				String key = vo.getContractSerialNum();
 //				if (!contractSerialNumMap.containsKey(key)) {
@@ -100,14 +130,15 @@ public class SalePurchaseInternalCostService {
 //				contractSerialNumMap.get(key).setInternalBudgetCost(contractSerialNumMap.get(key).getInternalBudgetCost()+vo.getInternalBudgetCost());
 //				contractSerialNumMap.get(key).setProductCost(contractSerialNumMap.get(key).getProductCost()+vo.getProductCost());
 //				contractSerialNumMap.get(key).setGrossProfit(contractSerialNumMap.get(key).getGrossProfit()+vo.getGrossProfit());
-			}
+    			}
 //			//处理contractSerialNumMap中totalInfo中的double值
 //			List<ProjectSupportCostVo> resultHandle = handleDoubleScale(contractSerialNumMap);
 //			//添加totalInfo到returnList
 //			returnList.addAll(resultHandle);
-			log.info("----------------------service-page2:"+page.getTotalElements());
-			return new PageImpl<>(returnList, pageable, page.getTotalElements());
-		}
+    			log.debug("///////////////////////////////--size:"+returnList.size());
+    			return new PageImpl<>(returnList, pageable, page.getTotalElements());
+    		}
+    	}
 		return new PageImpl<>(new ArrayList<ProjectSupportCostVo>(), pageable, 0);
 	}
 	/**
@@ -119,44 +150,50 @@ public class SalePurchaseInternalCostService {
 	 * @return
 	 */
 	public List<ProjectSupportCostVo> getAllSalePurchaseInternalList(Long contractId,Long userId,Long statWeek,Long deptType){
-		List<ProjectSupportCostVo> pageList = projectSupportCostDao.getAllSalePurchaseInternalList(contractId, userId, statWeek, deptType);
-		List<ProjectSupportCostVo> returnList = new ArrayList<ProjectSupportCostVo>();
-		Map<String,ProjectSupportCostVo> contractSerialNumMap = new HashMap<String,ProjectSupportCostVo>();	//分合同部门合计
-		//填充数据
-		if(pageList != null){
-			for(ProjectSupportCostVo vo : pageList){
-				vo.setSettlementCost(StringUtil.getScaleDouble(vo.getSettlementCost(), 2));
-				vo.setProjectHourCost(StringUtil.getScaleDouble(vo.getProjectHourCost(), 2));
-				vo.setInternalBudgetCost(StringUtil.getScaleDouble(vo.getInternalBudgetCost(), 2));
-				vo.setSal(StringUtil.getScaleDouble(vo.getSal(), 2));
-				vo.setSocialSecurityFund(StringUtil.getScaleDouble(vo.getSocialSecurityFund(), 2));
-				vo.setOtherExpense(StringUtil.getScaleDouble(vo.getOtherExpense(), 2));
-				vo.setUserMonthCost(StringUtil.getScaleDouble(vo.getUserMonthCost(), 2));
-				vo.setUserHourCost(StringUtil.getScaleDouble(vo.getUserHourCost(), 2));
-				vo.setProductCost(StringUtil.getScaleDouble(vo.getProductCost(), 2));
-				vo.setGrossProfit(StringUtil.getScaleDouble(vo.getGrossProfit(), 2));
-				
-				returnList.add(vo);
-				//分合同合计
-				String key = vo.getContractId()+"_"+vo.getDeptType();
-				if (!contractSerialNumMap.containsKey(key)) {
-					ProjectSupportCostVo totalInfo = getInitProjecSupportCostTotalInfo();
-					contractSerialNumMap.put(key, totalInfo);
-					contractSerialNumMap.get(key).setContractSerialNum(vo.getContractSerialNum());//填充合同编号
-					contractSerialNumMap.get(key).setDeptName(vo.getDeptName());//填充部门类型
-				}
-				//填充合计
-				contractSerialNumMap.get(key).setInternalBudgetCost(contractSerialNumMap.get(key).getInternalBudgetCost()+vo.getInternalBudgetCost());
-				contractSerialNumMap.get(key).setProductCost(contractSerialNumMap.get(key).getProductCost()+vo.getProductCost());
-				contractSerialNumMap.get(key).setGrossProfit(contractSerialNumMap.get(key).getGrossProfit()+vo.getGrossProfit());
-			}
-			//处理contractSerialNumMap中totalInfo中的double值
-			List<ProjectSupportCostVo> resultHandle = handleDoubleScale(contractSerialNumMap);
-			//添加totalInfo到returnList
-			returnList.addAll(resultHandle);
-			return returnList;
-		}
-		return returnList;
+		List<Object[]> objs = userRepository.findUserInfoByLogin(SecurityUtils.getCurrentUserLogin());
+    	if(objs != null && !objs.isEmpty()){
+    		Object[] o = objs.get(0);
+    		User user = (User) o[0];
+    		DeptInfo deptInfo = (DeptInfo) o[1];
+    		List<ProjectSupportCostVo> pageList = projectSupportCostDao.getAllSalePurchaseInternalList(user,deptInfo,contractId, userId, statWeek, deptType);
+    		List<ProjectSupportCostVo> returnList = new ArrayList<ProjectSupportCostVo>();
+    		Map<String,ProjectSupportCostVo> contractSerialNumMap = new HashMap<String,ProjectSupportCostVo>();	//分合同部门合计
+    		//填充数据
+    		if(pageList != null){
+    			for(ProjectSupportCostVo vo : pageList){
+    				vo.setSettlementCost(StringUtil.getScaleDouble(vo.getSettlementCost(), 2));
+    				vo.setProjectHourCost(StringUtil.getScaleDouble(vo.getProjectHourCost(), 2));
+    				vo.setInternalBudgetCost(StringUtil.getScaleDouble(vo.getInternalBudgetCost(), 2));
+    				vo.setSal(StringUtil.getScaleDouble(vo.getSal(), 2));
+    				vo.setSocialSecurityFund(StringUtil.getScaleDouble(vo.getSocialSecurityFund(), 2));
+    				vo.setOtherExpense(StringUtil.getScaleDouble(vo.getOtherExpense(), 2));
+    				vo.setUserMonthCost(StringUtil.getScaleDouble(vo.getUserMonthCost(), 2));
+    				vo.setUserHourCost(StringUtil.getScaleDouble(vo.getUserHourCost(), 2));
+    				vo.setProductCost(StringUtil.getScaleDouble(vo.getProductCost(), 2));
+    				vo.setGrossProfit(StringUtil.getScaleDouble(vo.getGrossProfit(), 2));
+    				
+    				returnList.add(vo);
+    				//分合同合计
+    				String key = vo.getContractId()+"_"+vo.getDeptType();
+    				if (!contractSerialNumMap.containsKey(key)) {
+    					ProjectSupportCostVo totalInfo = getInitProjecSupportCostTotalInfo();
+    					contractSerialNumMap.put(key, totalInfo);
+    					contractSerialNumMap.get(key).setContractSerialNum(vo.getContractSerialNum());//填充合同编号
+    					contractSerialNumMap.get(key).setDeptName(vo.getDeptName());//填充部门类型
+    				}
+    				//填充合计
+    				contractSerialNumMap.get(key).setInternalBudgetCost(contractSerialNumMap.get(key).getInternalBudgetCost()+vo.getInternalBudgetCost());
+    				contractSerialNumMap.get(key).setProductCost(contractSerialNumMap.get(key).getProductCost()+vo.getProductCost());
+    				contractSerialNumMap.get(key).setGrossProfit(contractSerialNumMap.get(key).getGrossProfit()+vo.getGrossProfit());
+    			}
+    			//处理contractSerialNumMap中totalInfo中的double值
+    			List<ProjectSupportCostVo> resultHandle = handleDoubleScale(contractSerialNumMap);
+    			//添加totalInfo到returnList
+    			returnList.addAll(resultHandle);
+    			return returnList;
+    		}
+    	}
+		return new ArrayList<ProjectSupportCostVo>();
 	}
 	/**
 	 * 初始化合计信息

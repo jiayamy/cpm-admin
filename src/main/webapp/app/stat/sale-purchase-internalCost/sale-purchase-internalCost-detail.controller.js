@@ -20,7 +20,7 @@
         vm.back = back;
         
         vm.previousState = previousState.name;
-        vm.userId = pagingParams.userId;
+        vm.id = pagingParams.id;
         
         vm.backParams = {};	//返回时所需参数
         vm.backParams.contractId = pagingParams.contractId;
@@ -36,7 +36,7 @@
                 page: pagingParams.page - 1,
                 size: vm.itemsPerPage,
                 sort: sort(),
-                userId : pagingParams.userId
+                id : pagingParams.id
             }, onSuccess, onError);
            
             function sort() {
@@ -49,6 +49,7 @@
             function onSuccess(data, headers) {
                 vm.links = ParseLinks.parse(headers('link'));
                 vm.totalItems = headers('X-Total-Count');
+                console.log(vm.totalItems);
                 vm.queryCount = vm.totalItems;
                 vm.salePurchaseInternalCosts = data;
                 vm.page = pagingParams.page;
@@ -67,7 +68,7 @@
             $state.transitionTo($state.$current, {
                 page: vm.page,
                 sort: vm.predicate + ',' + (vm.reverse ? 'asc' : 'desc'),
-                userId:vm.userId,
+                id:vm.id,
                 contractId : pagingParams.contractId,
 	            userNameId : pagingParams.userNameId,
 	            userName : pagingParams.userName,

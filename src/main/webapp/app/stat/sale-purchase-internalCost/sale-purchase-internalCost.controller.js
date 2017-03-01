@@ -5,9 +5,9 @@
         .module('cpmApp')
         .controller('SalePurchaseInternalCostController', SalePurchaseInternalCostController);
 
-    SalePurchaseInternalCostController.$inject = ['ContractInfo','DeptType','$rootScope', '$scope', '$state', 'DateUtils','paginationConstants','SalePurchaseInternalCost','ParseLinks', 'AlertService', 'pagingParams'];
+    SalePurchaseInternalCostController.$inject = ['ProjectInfo','DeptType','$rootScope', '$scope', '$state', 'DateUtils','paginationConstants','SalePurchaseInternalCost','ParseLinks', 'AlertService', 'pagingParams'];
 
-    function SalePurchaseInternalCostController (ContractInfo,DeptType,$rootScope,$scope, $state,DateUtils,paginationConstants, SalePurchaseInternalCost, ParseLinks, AlertService, pagingParams) {
+    function SalePurchaseInternalCostController (ProjectInfo,DeptType,$rootScope,$scope, $state,DateUtils,paginationConstants, SalePurchaseInternalCost, ParseLinks, AlertService, pagingParams) {
         var vm = this;
 
         vm.loadPage = loadPage;
@@ -56,7 +56,10 @@
         //合同信息
         loadContractInfo();
         function loadContractInfo(){
-        	ContractInfo.queryContractInfo({
+//        	ContractInfo.queryContractInfo({
+//        		
+//        	},
+        	ProjectInfo.queryUserContract({
         		
         	},
         	function(data, headers){

@@ -89,7 +89,7 @@
         })
         .state('sale-purchase-internalCost.Detail',{
         	parent: 'sale-purchase-internalCost',
-        	url: '/detail?page&userId',
+        	url: '/detail?page&id',
         	data:{
         		authorities: ['ROLE_STAT_INTERNAL_COST'],
         		pageTitle: 'cpmApp.consultantBonus.contractRecord.title'
@@ -110,7 +110,7 @@
                     value: 'p.id,desc',
                     squash: true
                 },
-                userId: null,
+                id: null,
                 contractId : null,
                 userNameId : null,
                 userName : null,
@@ -124,7 +124,7 @@
                         sort: $stateParams.sort,
                         predicate: PaginationUtil.parsePredicate($stateParams.sort),
                         ascending: PaginationUtil.parseAscending($stateParams.sort),
-                        userId: $stateParams.userId,
+                        id: $stateParams.id,
                         contractId: $stateParams.contractId,
                         userNameId: $stateParams.userNameId,
                         userName: $stateParams.userName,
