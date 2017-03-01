@@ -103,7 +103,7 @@ public class ProjectStateTask {
 			}
 		}
 	}
-	@Scheduled(cron = "0 0 22 ? * MON")
+	@Scheduled(cron = "0 0 21 ? * MON")
 	protected void generateProjectWeeklyState(){
 		log.info("=====begin generate project weekly state=====");
 		init();

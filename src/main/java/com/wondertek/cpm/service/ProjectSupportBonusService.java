@@ -53,15 +53,14 @@ public class ProjectSupportBonusService {
 		}
 	}
 
-	public Page<ProjectSupportBonusVo> searchPageDetail(Long contractId,
-			Pageable pageable) {
+	public Page<ProjectSupportBonusVo> searchPageDetail(ProjectSupportBonus projectSupportBonus, Pageable pageable) {
 		List<Object[]> objs = userRepository.findUserInfoByLogin(SecurityUtils.getCurrentUserLogin());
 		if(objs != null && !objs.isEmpty()){
 			Object[] o = objs.get(0);
     		User user = (User) o[0];
     		DeptInfo deptInfo = (DeptInfo) o[1];
     		
-    		Page<ProjectSupportBonusVo> page = projectSupportBonusDao.getPageDetail(contractId,user,deptInfo,pageable);
+    		Page<ProjectSupportBonusVo> page = projectSupportBonusDao.getPageDetail(projectSupportBonus,user,deptInfo,pageable);
     		return page;
 		}else {
 			return new PageImpl<ProjectSupportBonusVo>(new ArrayList<ProjectSupportBonusVo>(),pageable,0);
