@@ -40,7 +40,11 @@ public class ProjectSupportBonus implements Serializable{
 	 */
 	@Column(name = "contract_id")
 	private Long contractId;
-	
+	/**
+	 * 项目ID 
+	 */
+	@Column(name="project_id")
+	private Long projectId;
 	/**
 	 * 部门类型主键（走项目所属部门的部门类型）、
 	 */
@@ -147,6 +151,14 @@ public class ProjectSupportBonus implements Serializable{
 		this.createTime = createTime;
 	}
 	
+	public Long getProjectId() {
+		return projectId;
+	}
+
+	public void setProjectId(Long projectId) {
+		this.projectId = projectId;
+	}
+
 	public Long getId() {
 		return id;
 	}

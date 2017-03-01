@@ -384,6 +384,7 @@ public class AccountScheduledJob {
 								ProjectSupportCost projectSupportCost = new ProjectSupportCost();
 								projectSupportCost.setStatWeek(statWeek);
 								projectSupportCost.setContractId(contractId);
+								projectSupportCost.setProjectId(projectId);
 								projectSupportCost.setDeptType(deptType);
 								projectSupportCost.setUserId(userTimesheet.getUserId());
 								projectSupportCost.setSerialNum(user.getSerialNum());
@@ -447,6 +448,7 @@ public class AccountScheduledJob {
 									projectSupportCost.setInternalBudgetCost(projectSupportCost.getInternalBudgetCost() + oldProjectSupportCost.getInternalBudgetCost());
 									projectSupportCost.setProductCost(projectSupportCost.getProductCost() + oldProjectSupportCost.getProductCost());
 									projectSupportCost.setGrossProfit(projectSupportCost.getGrossProfit() + oldProjectSupportCost.getGrossProfit());
+									projectSupportCost.setProjectId(oldProjectSupportCost.getProjectId());//以最新的一个项目ID为准
 								}
 								thisSupportCostMap.put(key, projectSupportCost);
 							}
@@ -459,6 +461,7 @@ public class AccountScheduledJob {
 						ProjectSupportBonus projectSupportBonus = new ProjectSupportBonus();
 						projectSupportBonus.setStatWeek(statWeek);
 						projectSupportBonus.setContractId(contractId);
+						projectSupportBonus.setProjectId(projectId);
 						projectSupportBonus.setDeptType(deptType);
 						projectSupportBonus.setPmId(projectInfo.getPmId());
 						projectSupportBonus.setPmName(projectInfo.getPm());

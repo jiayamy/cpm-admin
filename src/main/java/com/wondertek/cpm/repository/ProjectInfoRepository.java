@@ -27,6 +27,6 @@ public interface ProjectInfoRepository extends JpaRepository<ProjectInfo,Long> {
 	@Query(" from ProjectInfo where contractId = ?1 and (status = ?2 or (updateTime >= ?3 and updateTime <= ?4))")
 	List<ProjectInfo> findByContractIdAndStatusOrUpdateTime(Long contractId, Integer status, ZonedDateTime beginTime, ZonedDateTime endTime);
 	
-	@Query(" from ProjectInfo where contractId = ?1")
+	@Query(" from ProjectInfo where contractId = ?1 order by id desc")
 	List<ProjectInfo> findAllByContractId(Long contractId);
 }
