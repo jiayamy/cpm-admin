@@ -20,6 +20,8 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -42,6 +44,9 @@ import com.wondertek.cpm.security.AuthoritiesConstants;
 import com.wondertek.cpm.service.ContractInfoService;
 import com.wondertek.cpm.service.SalesBonusService;
 import com.wondertek.cpm.service.UserService;
+import com.wondertek.cpm.web.rest.util.PaginationUtil;
+
+import io.swagger.annotations.ApiParam;
 
 /**
  * REST controller for managing SalesBonus.
@@ -57,6 +62,27 @@ public class SalesBonusResource {
     private ContractInfoService contractInfoService;
     @Inject
     private UserService userService;
+    
+    @GetMapping("/sales-bonus/queryDetail")
+    @Timed
+    @Secured(AuthoritiesConstants.ROLE_STAT_SALES_BONUS)
+    public ResponseEntity<List<SalesBonusVo>> getSalesBonusDetailPage(
+    		@RequestParam(value = "id",required=false) Long id, //主键
+    		@ApiParam Pageable pageable)
+        throws URISyntaxException {
+    	
+    	SalesBonusVo salesBonusVo = salesBonusService.getUserSalesBonus(id);
+    	if(salesBonusVo == null){
+    		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    	}
+        log.debug("REST request to get a page of ProjectUsers");
+        SalesBonus salesBonus = new SalesBonus();
+        salesBonus.setContractId(salesBonusVo.getContractId());
+        
+        Page<SalesBonusVo> page = salesBonusService.getUserDetailPage(salesBonus,pageable);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/sales-bonus/queryDetail");
+        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+    }
     /**
      * 列表页
      */

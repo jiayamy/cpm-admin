@@ -9,6 +9,7 @@
                 "title": "销售项目信息"
             },
             "statWeek":"截止日期",
+            "statTime":"统计日期",
             "salesMan": "销售",
             "annualIndex":"合同年指标",
             "finishTotal": "合同累计完成金额",

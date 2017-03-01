@@ -1,0 +1,54 @@
+<div>
+    <h2 data-translate="cpmApp.salesBonus.home.title">Sales Bonus</h2>
+    <jhi-alert></jhi-alert>
+    <div class="btn-group flex-btn-group-container">
+     	<button type="submit"
+          	 ui-sref="{{ vm.previousState }}"
+           	 class="btn btn-info">
+	      	 <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span data-translate="entity.action.back"> Back</span>
+		</button>			                     	
+    </div>
+    <br/>
+    <div class="table-responsive">
+        <table class="jh-table table table-striped" style="table-layout: fixed; ">
+            <thead>
+                <tr>
+                    <th style="width:80px;"><span data-translate="cpmApp.salesBonus.salesMan">Sales Man</span></th>
+                    <th style="width:140px;"><span data-translate="cpmApp.salesBonus.statTime">Stat Week</span></th>
+                    <th style="width:80px;"><span data-translate="cpmApp.salesBonus.contractNum">contractNum</span></th>
+                    <th style="width:110px;"><span data-translate="cpmApp.salesBonus.contractAmount">contractAmount</span></th>
+                    <th style="width:60px;"><span data-translate="cpmApp.salesBonus.taxRate">taxRate</span></th>
+                    <th style="width:110px;"><span data-translate="cpmApp.salesBonus.receiveTotal">receiveTotal</span></th>
+                    <th style="width:110px;"><span data-translate="cpmApp.salesBonus.taxes">taxes</span></th>
+                    <th style="width:110px;"><span data-translate="cpmApp.salesBonus.shareCost">shareCost</span></th>
+                    <th style="width:110px;"><span data-translate="cpmApp.salesBonus.thirdPartyPurchase">thirdPartyPurchase</span></th>
+                    <th style="width:110px;"><span data-translate="cpmApp.salesBonus.bonusBasis">bonusBasis</span></th>
+                    <th style="width:80px;"><span data-translate="cpmApp.salesBonus.bonusRate">bonusRate</span></th>
+                    <th style="width:110px;"><span data-translate="cpmApp.salesBonus.currentBonus">currentBonus</span></th>
+                    <th style="width:150px;"><span data-translate="cpmApp.salesBonus.createTime">createTime</span></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="salesBonus in vm.salesBonuss">
+                    <td>{{salesBonus.salesMan}}</td>
+                    <td>{{salesBonus.statWeek}}</td>
+                    <td>{{salesBonus.contractNum}}</td>
+                    <td>{{salesBonus.contractAmount}}</td>
+                    <td>{{salesBonus.taxRate}}<span ng-show="salesBonus.id">%</span></td>
+                    <td>{{salesBonus.receiveTotal}}</td>
+                    <td>{{salesBonus.taxes}}</td>
+                    <td>{{salesBonus.shareCost}}</td>
+                    <td>{{salesBonus.thirdPartyPurchase}}</td>
+                    <td>{{salesBonus.bonusBasis}}</td>
+                    <td>{{salesBonus.bonusRate}}<span ng-show="salesBonus.id">%</span></td>
+                    <td>{{salesBonus.currentBonus}}</td>
+                    <td>{{salesBonus.createTime | date:'medium'}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="text-center">
+        <jhi-item-count page="vm.page" total="vm.queryCount" items-per-page="vm.itemsPerPage"></jhi-item-count>
+        <uib-pagination class="pagination-sm" total-items="vm.totalItems" items-per-page="vm.itemsPerPage" ng-model="vm.page" ng-change="vm.loadAll()"></uib-pagination>
+    </div>
+</div>

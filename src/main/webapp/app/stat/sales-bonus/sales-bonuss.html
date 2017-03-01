@@ -109,7 +109,7 @@
                     <td>{{salesBonus.salesMan}}</td>
                     <td>{{salesBonus.annualIndex}}</td>
                     <td>{{salesBonus.finishTotal}}</td>
-                    <td>{{salesBonus.contractNum}}</td>
+                    <td><a ui-sref="sales-bonus-detail({id:salesBonus.id})">{{salesBonus.contractNum}}</a></td>
                     <td>{{salesBonus.contractAmount}}</td>
                     <td>{{salesBonus.taxRate}}<span ng-show="salesBonus.id">%</span></td>
                     <td>{{salesBonus.receiveTotal}}</td>

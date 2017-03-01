@@ -26,6 +26,11 @@
             	url:'api/contract-infos/queryUserContract',
             	method:'GET',
             	isArray:true
+            },
+            'queryDetail':{
+            	url:'api/sales-bonus/queryDetail',
+            	method:'GET',
+            	isArray:true
             }
         });
     }

@@ -24,7 +24,7 @@
         	ProjectSupportBonus.queryDetail({
         		contractId: entity.contractId,
         		page: vm.page-1,
-                size: vm.itemsPerPage,
+                size: vm.itemsPerPage
             }, onSuccess, onError);
         }
         

@@ -9,6 +9,8 @@ import javax.inject.Inject;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -204,5 +206,33 @@ public class SalesBonusService {
 		totalInfo.setTotalBonus(0d);//累计已计提奖金
 		totalInfo.setPayBonus(0d);//可发放奖金
 		return totalInfo;
+	}
+	public SalesBonusVo getUserSalesBonus(Long id) {
+		//获取列表页
+    	List<Object[]> objs = userRepository.findUserInfoByLogin(SecurityUtils.getCurrentUserLogin());
+		if(objs != null && !objs.isEmpty()){
+    		Object[] o = objs.get(0);
+    		User user = (User) o[0];
+    		DeptInfo deptInfo = (DeptInfo) o[1];
+    		
+    		return salesBonusDao.getUserSalesBonus(user,deptInfo,id);
+		}
+		return null;
+	}
+	/**
+	 * 获取某个合同的所有统计信息
+	 * @return
+	 */
+	public Page<SalesBonusVo> getUserDetailPage(SalesBonus salesBonus, Pageable pageable) {
+		//获取列表页
+    	List<Object[]> objs = userRepository.findUserInfoByLogin(SecurityUtils.getCurrentUserLogin());
+		if(objs != null && !objs.isEmpty()){
+    		Object[] o = objs.get(0);
+    		User user = (User) o[0];
+    		DeptInfo deptInfo = (DeptInfo) o[1];
+    		
+    		return salesBonusDao.getUserDetailPage(user, deptInfo, salesBonus, pageable);
+		}
+		return null;
 	}
 }
