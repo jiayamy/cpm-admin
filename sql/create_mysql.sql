@@ -528,7 +528,7 @@ CREATE
     	CREATE_time TIMESTAMP NULL,
         updator_ VARCHAR(100) COLLATE utf8_bin,
         update_time TIMESTAMP NULL,
-        PRIMARY KEY (id),
+        PRIMARY KEY (id)
     )
     ENGINE=InnoDB DEFAULT CHARSET=utf8;
     
@@ -583,7 +583,71 @@ CREATE
     )
     ENGINE=InnoDB DEFAULT CHARSET=utf8;
  
-CREATE 
+    insert into jhi_authority (name, detail_) values ('ROLE_ADMIN', '管理');
+	insert into jhi_authority (name, detail_) values ('ROLE_CONTRACT', '合同管理');
+	insert into jhi_authority (name, detail_) values ('ROLE_CONTRACT_BUDGET', '合同管理-内部采购单');
+	insert into jhi_authority (name, detail_) values ('ROLE_CONTRACT_COST', '合同管理-合同成本');
+	insert into jhi_authority (name, detail_) values ('ROLE_CONTRACT_INFO', '合同管理-合同信息');
+	insert into jhi_authority (name, detail_) values ('ROLE_CONTRACT_PRODUCTPRICE', '合同管理-产品定价单');
+	insert into jhi_authority (name, detail_) values ('ROLE_CONTRACT_PURCHASE', '合同管理-采购子项');
+	insert into jhi_authority (name, detail_) values ('ROLE_CONTRACT_RECEIVE', '合同管理-回款信息');
+	insert into jhi_authority (name, detail_) values ('ROLE_CONTRACT_TIMESHEET', '合同管理-合同工时');
+	insert into jhi_authority (name, detail_) values ('ROLE_CONTRACT_USER', '合同管理-合同人员');
+	insert into jhi_authority (name, detail_) values ('ROLE_INFO', '系统设置');
+	insert into jhi_authority (name, detail_) values ('ROLE_INFO_BASIC', '系统设置-基本功能');
+	insert into jhi_authority (name, detail_) values ('ROLE_INFO_USERCOST', '系统设置-员工成本');
+	insert into jhi_authority (name, detail_) values ('ROLE_PROJECT', '项目管理');
+	insert into jhi_authority (name, detail_) values ('ROLE_PROJECT_COST', '项目管理-项目报销');
+	insert into jhi_authority (name, detail_) values ('ROLE_PROJECT_INFO', '项目管理-项目信息');
+	insert into jhi_authority (name, detail_) values ('ROLE_PROJECT_TIMESHEET', '项目管理-项目工时');
+	insert into jhi_authority (name, detail_) values ('ROLE_PROJECT_USER', '项目管理-项目人员');
+	insert into jhi_authority (name, detail_) values ('ROLE_STAT', '统计报表');
+	insert into jhi_authority (name, detail_) values ('ROLE_STAT_CONTRACT', '统计报表-合同相关');
+	insert into jhi_authority (name, detail_) values ('ROLE_STAT_PROJECT', '统计报表-项目相关');
+	insert into jhi_authority (name, detail_) values ('ROLE_TIMESHEET', '日报管理');
+	insert into jhi_authority (name, detail_) values ('ROLE_USER', '用户');
+	insert into jhi_authority (name, detail_) values ('ROLE_USERCOST', '日报管理-员工日报');
+	
+	insert into w_dept_type (id, name_) values (1, '管理');
+	insert into w_dept_type (id, name_) values (2, '销售');
+	insert into w_dept_type (id, name_) values (3, '产品咨询');
+	insert into w_dept_type (id, name_) values (4, '产品研发中心');
+	insert into w_dept_type (id, name_) values (5, '项目实施');
+	insert into w_dept_type (id, name_) values (6, '采购');
+	insert into w_dept_type (id, name_) values (7, '行政');
+	insert into w_dept_type (id, name_) values (8, '财务');
+	insert into w_dept_type (id, name_) values (9, '质量管理');
+	insert into w_dept_type (id, name_) values (10, '人力资源');
+
+	insert into w_dept_info (id, name_, parent_id, id_path, type_, status_, creator_, create_time, updator_, update_time) values (1, '上海网达软件股份有限公司', null, '/', 1, 1, 'admin', '2017-01-01 00:00:00', 'admin', '2017-01-01 00:00:00');
+
+	insert into jhi_user (id, login, password_hash, first_name, last_name, email, activated, lang_key, activation_key, reset_key, created_by, created_date, reset_date, last_modified_by, last_modified_date, dept_id, is_manager, duty_, grade_, gender_, birth_year, birth_day, telephone_, serial_num, work_area) values 
+	(1, 'admin', '$2a$10$UCjAhdE2Qrskpck7/FoDGOJFTEiAGSBr6hpe95ndfLJk9f1cpxtMK', null, '管理人员', 'admin@localhost', true, 'zh-cn', null, null, 'system', '2017-01-01 00:00:00', null, 'admin', '2017-01-01 00:00:00', 1, true, null, null, 1, null, null, null, '0', '上海');
+
+	insert into jhi_user_authority (user_id, authority_name) values (1, 'ROLE_USER');
+	insert into jhi_user_authority (user_id, authority_name) values (1, 'ROLE_INFO');
+	insert into jhi_user_authority (user_id, authority_name) values (1, 'ROLE_INFO_BASIC');
+	
+	--20170125
+	ALTER TABLE w_purchase_item ADD (product_price_id BIGINT);
+	
+	--20170207
+	ALTER TABLE w_user_cost ADD sal_ DOUBLE(15,2) COMMENT '工资';
+	ALTER TABLE w_user_cost ADD social_security_fund DOUBLE(15,2) COMMENT '社保公积金';
+	ALTER TABLE w_user_cost ADD other_expense DOUBLE(15,2) COMMENT '其它费用';
+	--20170227
+	insert into jhi_authority (name, detail_) values ('ROLE_STAT_CONSULTANT_BONUS', '统计报表-咨询项目信息');
+	insert into jhi_authority (name, detail_) values ('ROLE_STAT_BONUS', '统计报表-奖金总表');
+	insert into jhi_authority (name, detail_) values ('ROLE_STAT_INTERNAL_COST', '统计报表-销售内部采购成本');
+	insert into jhi_authority (name, detail_) values ('ROLE_STAT_SALES_BONUS', '统计报表-销售项目信息');
+	insert into jhi_authority (name, detail_) values ('ROLE_STAT_PROJECT_OVERALL', '统计报表-项目总体情况控制');
+	insert into jhi_authority (name, detail_) values ('ROLE_STAT_SUPPORT_BONUS', '统计报表-项目支撑奖金');
+	
+	--20170301
+	ALTER TABLE jhi_user CHANGE COLUMN `grade_ ` `grade_ ` int(11) DEFAULT NULL COMMENT '级别';
+	ALTER TABLE w_contract_info ADD COLUMN `consultants_share_rate` double(15,2) DEFAULT NULL COMMENT '咨询分润比率';
+
+	CREATE 
 	TABLE `w_bonus` (
 	  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键、',
 	  `stat_week` bigint(20) NOT NULL COMMENT '统计日期、',
@@ -841,68 +905,3 @@ CREATE
 	  PRIMARY KEY (`id`)
 	) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='奖金公摊成本比例';
 	
-    insert into jhi_authority (name, detail_) values ('ROLE_ADMIN', '管理');
-	insert into jhi_authority (name, detail_) values ('ROLE_CONTRACT', '合同管理');
-	insert into jhi_authority (name, detail_) values ('ROLE_CONTRACT_BUDGET', '合同管理-内部采购单');
-	insert into jhi_authority (name, detail_) values ('ROLE_CONTRACT_COST', '合同管理-合同成本');
-	insert into jhi_authority (name, detail_) values ('ROLE_CONTRACT_INFO', '合同管理-合同信息');
-	insert into jhi_authority (name, detail_) values ('ROLE_CONTRACT_PRODUCTPRICE', '合同管理-产品定价单');
-	insert into jhi_authority (name, detail_) values ('ROLE_CONTRACT_PURCHASE', '合同管理-采购子项');
-	insert into jhi_authority (name, detail_) values ('ROLE_CONTRACT_RECEIVE', '合同管理-回款信息');
-	insert into jhi_authority (name, detail_) values ('ROLE_CONTRACT_TIMESHEET', '合同管理-合同工时');
-	insert into jhi_authority (name, detail_) values ('ROLE_CONTRACT_USER', '合同管理-合同人员');
-	insert into jhi_authority (name, detail_) values ('ROLE_INFO', '系统设置');
-	insert into jhi_authority (name, detail_) values ('ROLE_INFO_BASIC', '系统设置-基本功能');
-	insert into jhi_authority (name, detail_) values ('ROLE_INFO_USERCOST', '系统设置-员工成本');
-	insert into jhi_authority (name, detail_) values ('ROLE_PROJECT', '项目管理');
-	insert into jhi_authority (name, detail_) values ('ROLE_PROJECT_COST', '项目管理-项目报销');
-	insert into jhi_authority (name, detail_) values ('ROLE_PROJECT_INFO', '项目管理-项目信息');
-	insert into jhi_authority (name, detail_) values ('ROLE_PROJECT_TIMESHEET', '项目管理-项目工时');
-	insert into jhi_authority (name, detail_) values ('ROLE_PROJECT_USER', '项目管理-项目人员');
-	insert into jhi_authority (name, detail_) values ('ROLE_STAT', '统计报表');
-	insert into jhi_authority (name, detail_) values ('ROLE_STAT_CONTRACT', '统计报表-合同相关');
-	insert into jhi_authority (name, detail_) values ('ROLE_STAT_PROJECT', '统计报表-项目相关');
-	insert into jhi_authority (name, detail_) values ('ROLE_TIMESHEET', '日报管理');
-	insert into jhi_authority (name, detail_) values ('ROLE_USER', '用户');
-	insert into jhi_authority (name, detail_) values ('ROLE_USERCOST', '日报管理-员工日报');
-	
-	insert into w_dept_type (id, name_) values (1, '管理');
-	insert into w_dept_type (id, name_) values (2, '销售');
-	insert into w_dept_type (id, name_) values (3, '产品咨询');
-	insert into w_dept_type (id, name_) values (4, '产品研发中心');
-	insert into w_dept_type (id, name_) values (5, '项目实施');
-	insert into w_dept_type (id, name_) values (6, '采购');
-	insert into w_dept_type (id, name_) values (7, '行政');
-	insert into w_dept_type (id, name_) values (8, '财务');
-	insert into w_dept_type (id, name_) values (9, '质量管理');
-	insert into w_dept_type (id, name_) values (10, '人力资源');
-
-	insert into w_dept_info (id, name_, parent_id, id_path, type_, status_, creator_, create_time, updator_, update_time) values (1, '上海网达软件股份有限公司', null, '/', 1, 1, 'admin', '2017-01-01 00:00:00', 'admin', '2017-01-01 00:00:00');
-
-	insert into jhi_user (id, login, password_hash, first_name, last_name, email, activated, lang_key, activation_key, reset_key, created_by, created_date, reset_date, last_modified_by, last_modified_date, dept_id, is_manager, duty_, grade_, gender_, birth_year, birth_day, telephone_, serial_num, work_area) values 
-	(1, 'admin', '$2a$10$UCjAhdE2Qrskpck7/FoDGOJFTEiAGSBr6hpe95ndfLJk9f1cpxtMK', null, '管理人员', 'admin@localhost', true, 'zh-cn', null, null, 'system', '2017-01-01 00:00:00', null, 'admin', '2017-01-01 00:00:00', 1, true, null, null, 1, null, null, null, '0', '上海');
-
-	insert into jhi_user_authority (user_id, authority_name) values (1, 'ROLE_USER');
-	insert into jhi_user_authority (user_id, authority_name) values (1, 'ROLE_INFO');
-	insert into jhi_user_authority (user_id, authority_name) values (1, 'ROLE_INFO_BASIC');
-	
-	--20170125
-	ALTER TABLE w_purchase_item ADD (product_price_id BIGINT);
-	
-	--20170207
-	ALTER TABLE w_user_cost ADD sal_ DOUBLE(15,2) COMMENT '工资';
-	ALTER TABLE w_user_cost ADD social_security_fund DOUBLE(15,2) COMMENT '社保公积金';
-	ALTER TABLE w_user_cost ADD other_expense DOUBLE(15,2) COMMENT '其它费用';
-	--20170227
-	insert into jhi_authority (name, detail_) values ('ROLE_STAT_CONSULTANT_BONUS', '统计报表-咨询项目信息');
-	insert into jhi_authority (name, detail_) values ('ROLE_STAT_BONUS', '统计报表-奖金总表');
-	insert into jhi_authority (name, detail_) values ('ROLE_STAT_INTERNAL_COST', '统计报表-销售内部采购成本');
-	insert into jhi_authority (name, detail_) values ('ROLE_STAT_SALES_BONUS', '统计报表-销售项目信息');
-	insert into jhi_authority (name, detail_) values ('ROLE_STAT_PROJECT_OVERALL', '统计报表-项目总体情况控制');
-	insert into jhi_authority (name, detail_) values ('ROLE_STAT_SUPPORT_BONUS', '统计报表-项目支撑奖金');
-	
-	--20170301
-	ALTER TABLE jhi_user CHANGE COLUMN `grade_ ` `grade_ ` int(11) DEFAULT NULL COMMENT '级别';
-	ALTER TABLE w_contract_info ADD COLUMN `consultants_share_rate` double(15,2) DEFAULT NULL COMMENT '咨询分润比率';
-
-
