@@ -14,7 +14,7 @@
 				<div class="col-sm-6">
 	          		<label class="control-label" data-translate="cpmApp.contractBudget.budgetTotal" for="field_budgetTotal">Budget Total</label>
 	          		<input type="number" class="form-control" name="budgetTotal" id="field_budgetTotal"
-	              		ng-model="vm.contractBudget.budgetTotal" step="0.01" min="0"
+	              		ng-model="vm.contractBudget.budgetTotal" ng-required="true" step="0.01" min="0"
 	                  	/>
 	                <div ng-show="myForm.budgetTotal.$dirty&&myForm.budgetTotal.$error.number" class="alert alert-danger help-block"> 
                     	必须为数字
@@ -22,6 +22,10 @@
                 	<div ng-show="myForm.budgetTotal.$dirty&&myForm.budgetTotal.$error.min" class="alert alert-danger help-block"> 
                 		项目预算最小值为0
            			</div>
+           			<div class="help-block"
+	                   ng-show="myForm.budgetTotal.$error.required" data-translate="entity.validation.required" style="color:red">
+	                    This field is required.
+	                </div>
 	   			</div>
 	     	</div>
 	     	<div class="form-group">
@@ -60,11 +64,15 @@
 	                     	<button type="button" class="btn btn-default" ui-sref="{{vm.queryDept}}({selectType:3,showChild:true})"><i class="glyphicon glyphicon-user"></i></button>
 	                 	</span>
 	            	</div>
+	            	<div class="help-block"
+	                   ng-show="myForm.userName.$error.required" data-translate="entity.validation.required" style="color:red">
+	                    This field is required.
+	                </div>
 	      		</div>
 				<div class="col-sm-6">
 	     			<label class="control-label" data-translate="cpmApp.contractBudget.dept" for="field_dept" >Dept</label>
 	  				<input type="text" class="form-control" name="dept" id="field_dept"
-	                  	ng-model="vm.contractBudget.dept" readonly ng-required="true" ng-minlength="1"
+	                  	ng-model="vm.contractBudget.dept" readonly
 	                   	/>
 				</div>
 	     	</div>
