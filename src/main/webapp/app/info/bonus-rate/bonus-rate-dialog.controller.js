@@ -63,9 +63,10 @@
            BonusRate.update(bonusRate, onSaveSuccess, onSaveError);
         }
 
-        function onSaveSuccess (result) {
-            $scope.$emit('cpmApp:bonusRateUpdate', result);
-            $state.go('bonus-rate');
+        function onSaveSuccess (result,headers) {
+            if(headers("X-cpmApp-alert") == 'cpmApp.bonusRate.updated'){
+    			$state.go(vm.previousState);
+    		}
             vm.isSaving = false;
         }
 

@@ -164,10 +164,12 @@
             }
             PurchaseItem.update(purchaseItem, onSaveSuccess,onSaveError);
         }
-        function onSaveSuccess (result) {
-            	$state.go(vm.previousState);
-            	vm.isSaving = false;
-        	}
+        function onSaveSuccess (result,headers) {
+            if(headers("X-cpmApp-alert") == 'cpmApp.purchaseItem.updated'){
+    			$state.go(vm.previousState);
+    		}
+            vm.isSaving = false;
+        }
         
         function onSaveError (result) {
             vm.isSaving = false;

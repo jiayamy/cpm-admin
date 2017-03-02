@@ -63,9 +63,10 @@
            ShareCostRate.update(shareCostRate, onSaveSuccess, onSaveError);
         }
 
-        function onSaveSuccess (result) {
-            $scope.$emit('cpmApp:shareCostRateUpdate', result);
-            $state.go('share-cost-rate');
+        function onSaveSuccess (result,headers) {
+            if(headers("X-cpmApp-alert") == 'cpmApp.shareCostRate.updated'){
+    			$state.go(vm.previousState);
+    		}
             vm.isSaving = false;
         }
 
