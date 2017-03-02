@@ -51,9 +51,10 @@
             }
         }
 
-        function onSaveSuccess (result) {
-            $scope.$emit('cpmApp:productPriceUpdate', result);
-            $state.go('product-price');
+        function onSaveSuccess (result,headers) {
+            if(headers("X-cpmApp-alert") == 'cpmApp.productPrice.updated'){
+    			$state.go(vm.previousState);
+    		}
             vm.isSaving = false;
         }
 

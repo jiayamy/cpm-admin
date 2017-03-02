@@ -71,9 +71,10 @@
            ContractBudget.update(contractBudget, onSaveSuccess, onSaveError);
         }
 
-        function onSaveSuccess (result) {
-            $scope.$emit('cpmApp:contractBudgetUpdate', result);
-            $state.go('contract-budget');
+        function onSaveSuccess (result,headers) {
+            if(headers("X-cpmApp-alert") == 'cpmApp.contractBudget.updated'){
+    			$state.go(vm.previousState);
+    		}
             vm.isSaving = false;
         }
 
