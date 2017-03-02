@@ -1,0 +1,35 @@
+{
+    "cpmApp": {
+        "salesBonus" : {
+            "home": {
+                "title": "销售项目信息",
+                "createOrEditLabel": "销售项目信息"
+            },
+            "detail": {
+                "title": "销售项目信息"
+            },
+            "statWeek":"截止日期",
+            "statTime":"统计日期",
+            "salesMan": "销售",
+            "annualIndex":"合同年指标",
+            "finishTotal": "合同累计完成金额",
+            "originYear": "所属年份",
+            "contractId":"合同信息",
+            "contractNum": "合同编号",
+            "contractAmount": "合同金额",
+            "taxRate": "税率",
+            "receiveTotal": "收款金额",
+            "taxes": "税收",
+            "shareCost":"公摊成本",
+            "thirdPartyPurchase": "第三方采购",
+            "bonusBasis": "奖金基数",
+            "bonusRate": "奖金比例",
+            "currentBonus": "本期奖金",
+            "totalBonus": "累计已计提奖金",
+            "finishRate": "合同累计完成率",
+            "payBonus": "可发放奖金",
+            "creator": "创建者",
+            "createTime": "创建时间"
+        }
+    }
+}

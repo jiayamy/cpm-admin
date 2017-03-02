@@ -1,0 +1,24 @@
+{
+    "cpmApp": {
+        "salesAnnualIndex" : {
+            "home": {
+                "title": "销售年指标",
+                "createOrEditLabel": "销售年指标",
+                "createLabel":"新增"
+            },
+            "created": "新建成功",
+            "updated": "修改成功",
+            "deleted": "删除成功",
+            "save":{
+            	"requriedError":"必填参数为空",
+            	"noPerm":"无权限操作",
+            	"changeError":"所属年份和销售不可更改",
+            	"existError":"所属年份和销售对应记录已存在"
+            },
+            "statYear":"所属年份",
+            "userName":"销售",
+            "annualIndex":"年指标",
+            "updateTime":"更新时间"
+        }
+    }
+}

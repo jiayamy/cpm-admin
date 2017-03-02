@@ -2,30 +2,23 @@
     "cpmApp": {
         "contractMonthlyStat" : {
             "home": {
-                "title": "Contract Monthly Stats",
-                "createLabel": "Create a new Contract Monthly Stat",
-                "createOrEditLabel": "Create or edit a Contract Monthly Stat",
-                "search": "Search for Contract Monthly Stat"
-            },
-            "created": "A new Contract Monthly Stat is created with identifier {{ param }}",
-            "updated": "A Contract Monthly Stat is updated with identifier {{ param }}",
-            "deleted": "A Contract Monthly Stat is deleted with identifier {{ param }}",
-            "delete": {
-                "question": "Are you sure you want to delete Contract Monthly Stat {{ id }}?"
+                "title": "Contract Monthly Stat"
             },
             "detail": {
                 "title": "Contract Monthly Stat",
                 "transChart": "Translate Chart"
             },
             "echarts":{
-            	"title": "Contract Monthly Stat Chart",
             	"fromDate" : "Create Date From",
             	"toDate" : "Create Date End",
+            	"title": "Contract Monthly Stat",
             	"transDetail" : "Translate Detail"
             },
             "fromDate" : "Create Date From",
             "toDate" : "Create Date End",
             "statDate" : "Stat Week",
+            "transChart": "Chart",
+            "transDetail" : "Detail",
             "contractSerialNum" : "Contract SerialNum",
             "contractId": "Contract Id",
             "serialNum" : "serial Num",
@@ -44,9 +37,7 @@
             "projectHumanCost": "Project Human Cost",
             "projectPayment": "Project Payment",
             "statWeek": "Stat Week",
-            "createTime": "Create Time",
-            "transChart": "Chart",
-            "transDetail" : "Detail"
+            "createTime": "Create Time"
         }
     }
 }

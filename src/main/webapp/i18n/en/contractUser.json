@@ -4,22 +4,30 @@
             "home": {
                 "title": "Contract Users",
                 "createLabel": "Create a new Contract User",
-                "createOrEditLabel": "Create or edit a Contract User",
-                "search": "Search for Contract User"
+                "createOrEditLabel": "Create or edit a Contract User"
             },
-            "created": "A new Contract User is created with identifier {{ param }}",
-            "updated": "A Contract User is updated with identifier {{ param }}",
-            "deleted": "A Contract User is deleted with identifier {{ param }}",
+            "created": "A Contract User is created",
+            "updated": "A Contract User is updated",
+            "deleted": "A Contract User is deleted",
             "delete": {
-                "question": "Are you sure you want to delete Contract User {{ id }}?"
+                "question": "Are you sure to delete this Contract User?"
             },
             "detail": {
                 "title": "Contract User"
             },
+            "save":{
+            	"paramNone":"Mandatory parameter is empty",
+            	"dayError":"Leave Day should not before Join Day",
+            	"userIdError":"the user has been arranged to the Contract from Join Day to Leave Day, do not repeat to add",
+            	"idNone":"Data error, please refresh after operation",
+            	"contractIdError":"The contract does not allow to change",
+            	"noPerm":"No permission operation"
+            },
             "contractId": "Contract Id",
+            "contractName": "Contract Name",
             "userId": "User Id",
             "userName": "User Name",
-            "deptId": "Dept Id",
+            "dept": "Dept",
             "joinDay": "Join Day",
             "leaveDay": "Leave Day",
             "creator": "Creator",

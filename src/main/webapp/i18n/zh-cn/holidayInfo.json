@@ -22,7 +22,6 @@
             "save": {
             	"existError":"所选日期已存在",
             	"requriedError":"必填参数为空",
-            	"lessDayError":"所选日期小于当前日期",
             	"lostError":"该日期不存在"
             },
             "search":{

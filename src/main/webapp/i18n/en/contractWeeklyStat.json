@@ -2,25 +2,16 @@
     "cpmApp": {
         "contractWeeklyStat" : {
             "home": {
-                "title": "Contract Weekly Stats",
-                "createLabel": "Create a new Contract Weekly Stat",
-                "createOrEditLabel": "Create or edit a Contract Weekly Stat",
-                "search": "Search for Contract Weekly Stat"
-            },
-            "created": "A new Contract Weekly Stat is created with identifier {{ param }}",
-            "updated": "A Contract Weekly Stat is updated with identifier {{ param }}",
-            "deleted": "A Contract Weekly Stat is deleted with identifier {{ param }}",
-            "delete": {
-                "question": "Are you sure you want to delete Contract Weekly Stat {{ id }}?"
+                "title": "Contract Weekly Stat"
             },
             "detail": {
                 "title": "Contract Weekly Stat",
                 "transChart": "Translate Chart"
             },
             "echarts":{
-            	"title": "Contract Weekly Stat Chart",
             	"fromDate" : "Create Date From",
             	"toDate" : "Create Date End",
+            	"title": "Contract Weekly Stat",
             	"transDetail" : "Translate Detail"
             },
             "fromDate" : "Create Date From",

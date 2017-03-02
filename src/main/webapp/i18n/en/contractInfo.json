@@ -2,19 +2,38 @@
     "cpmApp": {
         "contractInfo" : {
             "home": {
-                "title": "Contract Infos",
+                "title": "Contract Info",
                 "createLabel": "Create a new Contract Info",
-                "createOrEditLabel": "Create or edit a Contract Info",
-                "search": "Search for Contract Info"
+                "createOrEditLabel": "Create or edit a Contract Info"
             },
-            "created": "A new Contract Info is created with identifier {{ param }}",
-            "updated": "A Contract Info is updated with identifier {{ param }}",
-            "deleted": "A Contract Info is deleted with identifier {{ param }}",
+            "created": "A Contract Info is created",
+            "updated": "A Contract Info is updated",
+            "deleted": "A Contract Info is deleted",
             "delete": {
                 "question": "Are you sure you want to delete Contract Info {{ id }}?"
             },
             "detail": {
                 "title": "Contract Info"
+            },
+            "finish":{
+            	"title": "Contract Finish Rate Info",
+            	"minError":"The Finish Rate of minimum value is 0",
+            	"maxError":"The Finish Rate of maximum value is 100",
+            	"statusError":"The deleted or the completed Contract cannot be modified",
+            	"success":"Operation is successful"
+            },
+            "save":{
+            	"manallnone":"Must fill out a Sales Man or a Consultants",
+            	"requiedError":"Mandatory parameter is empty",
+            	"endDayError":"The End Day should not be before the Start Day",
+            	"existSerialNum":"The Serial Num is already exist",
+            	"noPerm":"No permission operation",
+            	"statusError":"The deleted or the completed Contract cannot be modified",
+            	"isPreparedError":"The formal Contract cannot be change to the prepared Contract",
+            	"consultantsRateError":"The Consultants Share Rate of The Contract having Consultants cannot be empty, and must be between 0-100"
+            },
+            "required":{
+            	"salesmanAndconsultants":"Must fill out a Sales Man or a Consultants"
             },
             "serialNum": "Serial Num",
             "name": "Name",
@@ -22,8 +41,11 @@
             "type": "Type",
             "isPrepared": "Is Prepared",
             "isEpibolic": "Is Epibolic",
-            "salesman":"salesman",
-           	"dept":"dept",
+            "salesman":"Salesman",
+           	"dept":"Salesman Dept",
+           	"consultants":"Consultants",
+           	"consultantsDept":"Consultants Dept",
+           	"consultantsShareRate":"Consultants Share Rate(%)",
             "startDay": "Start Day",
             "endDay": "End Day",
             "taxRate": "Tax Rate",
@@ -38,7 +60,7 @@
             "contactDept": "Contact Dept",
             "telephone": "Telephone",
             "receiveTotal": "Receive Total",
-            "finishTotal":"finishTotal",
+            "finishTotal":"Finish Total",
             "finishRate": "Finish Rate",
             "status": "Status",
             "creator": "Creator",

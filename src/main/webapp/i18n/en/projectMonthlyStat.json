@@ -2,26 +2,17 @@
     "cpmApp": {
         "projectMonthlyStat" : {
             "home": {
-                "title": "Project Monthly Stats",
-                "createLabel": "Create a new Project Monthly Stat",
-                "createOrEditLabel": "Create or edit a Project Monthly Stat",
-                "search": "Search for Project Monthly Stat"
-            },
-            "created": "A new Project Monthly Stat is created with identifier {{ param }}",
-            "updated": "A Project Monthly Stat is updated with identifier {{ param }}",
-            "deleted": "A Project Monthly Stat is deleted with identifier {{ param }}",
-            "delete": {
-                "question": "Are you sure you want to delete Project Monthly Stat {{ id }}?"
+                "title": "项目月报统计"
             },
             "detail": {
                 "title": "Project Monthly Stat",
                 "transChart": "Translate Chart"
             },
             "echarts":{
-            	"title": "Project Monthly Stat Chart",
-            	"fromDate" : "Create Date From",
-            	"toDate" : "Create Date End",
-            	"transDetail" : "Translate Detail"
+            	"fromDate" : "起始月份",
+            	"toDate" : "结束月份",
+            	"title": "项目月报统计图表",
+            	"transDetail" : "转变详情"
             },
             "fromDate" : "Create Date From",
             "toDate" : "Create Date End",
@@ -30,9 +21,9 @@
             "transDetail" : "Detail",
             "projectSerialNum" : "Project SerialNum",
             "projectId": "Project Id",
-            "finishRate": "Finish Rate",
-            "serialNum" : "Serial Num",
-            "name" : "Project Name",
+            "serialNum" : "项目编号",
+            "name" : "项目名称",
+            "finishRate" : "完成率",
             "humanCost": "Human Cost",
             "payment": "Payment",
             "statWeek": "Stat Week",
