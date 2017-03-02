@@ -11,7 +11,7 @@
         $stateProvider
         .state('consultant-bonus', {
             parent: 'stat',
-            url: '/consultant-bonus?page&contractId&consultantsNameId&statWeek&consultantsName',
+            url: '/consultant-bonus?page&contractId&consultantsId&statWeek&consultantsName',
             data: {
                 authorities: ['ROLE_STAT_CONSULTANT_BONUS'],
                 pageTitle: 'cpmApp.consultantBonus.home.title'
@@ -33,7 +33,7 @@
                     squash: true
                 },
                 contractId : null,
-                consultantsNameId : null,
+                consultantsId : null,
                 statWeek : null,
                 consultantsName: null
             },
@@ -46,7 +46,7 @@
                         ascending: PaginationUtil.parseAscending($stateParams.sort),
                         contractId: $stateParams.contractId,
                         consultantsName: $stateParams.consultantsName,
-                        consultantsNameId: $stateParams.consultantsNameId,
+                        consultantsId: $stateParams.consultantsId,
                         statWeek : $stateParams.statWeek
                     };
                 }],

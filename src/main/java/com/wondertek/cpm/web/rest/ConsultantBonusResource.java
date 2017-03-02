@@ -68,8 +68,8 @@ public class ConsultantBonusResource {
     @Timed
     @Secured(AuthoritiesConstants.ROLE_STAT_CONSULTANT_BONUS)
     public ResponseEntity<List<ConsultantBonusVo>> getAllConsultantsBonus(
-    		@RequestParam(value="contractId",required = false) String contractId,
-    		@RequestParam(value="consultantsNameId",required = false) String consultantManId,
+    		@RequestParam(value="contractId",required = false) Long contractId,
+    		@RequestParam(value="consultantsId",required = false) Long consultantManId,
     		@RequestParam(value="statWeek",required = false) String statWeek,
     		@ApiParam Pageable pageable)
         throws URISyntaxException {
@@ -82,7 +82,11 @@ public class ConsultantBonusResource {
         	Date date = DateUtil.getSundayOfDay(DateUtil.parseDate(DateUtil.DATE_YYYYMMDD_PATTERN, statWeek.trim()));
         	statWeek = DateUtil.formatDate(DateUtil.DATE_YYYYMMDD_PATTERN, date);
         }
-        Page<ConsultantBonusVo> page = consultantBonusService.getConsultantBonusPage(contractId,consultantManId,statWeek, pageable);
+        ConsultantsBonus searchParams = new ConsultantsBonus();
+        searchParams.setContractId(contractId);
+        searchParams.setConsultantsId(consultantManId);
+        searchParams.setStatWeek(StringUtil.nullToLong(statWeek));
+        Page<ConsultantBonusVo> page = consultantBonusService.getConsultantBonusPage(searchParams, pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/consultant-bonus");
         return Optional.ofNullable(page.getContent()).map(result -> new ResponseEntity<>(result,headers,HttpStatus.OK))
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
@@ -111,7 +115,7 @@ public class ConsultantBonusResource {
     @Timed
     @Secured(AuthoritiesConstants.ROLE_STAT_CONSULTANT_BONUS)
     public ResponseEntity<List<ConsultantBonusVo>> queryConsultantRecord(
-    			@RequestParam(value="contId",required = false) String contractId,
+    			@RequestParam(value="contId",required = false) Long contractId,
     			@ApiParam Pageable pageable) throws URISyntaxException{
     	log.debug("queryChart-----contractId:"+contractId);
     	if(contractId == null){
@@ -121,7 +125,10 @@ public class ConsultantBonusResource {
     	Date date = new Date();
     	date = DateUtil.getSundayOfDay(date);
     	Long statWeek = StringUtil.stringToLong(DateUtil.formatDate(DateUtil.DATE_YYYYMMDD_PATTERN, date));
-    	Page<ConsultantBonusVo> page = consultantBonusService.getConsultantBonusRecordPage(contractId,statWeek, pageable);
+    	ConsultantsBonus searchParams = new ConsultantsBonus();
+    	searchParams.setContractId(contractId);
+    	searchParams.setStatWeek(statWeek);
+    	Page<ConsultantBonusVo> page = consultantBonusService.getConsultantBonusRecordPage(searchParams, pageable);
     	HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/consultant-bonus/queryConsultantRecord");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
@@ -141,7 +148,7 @@ public class ConsultantBonusResource {
     public void exportXls(
 	    		HttpServletRequest request, HttpServletResponse response,
 	    		@RequestParam(value="contractId",required = false) Long contractId,
-	    		@RequestParam(value="consultantsNameId",required = false) Long consultantManId,
+	    		@RequestParam(value="consultantsId",required = false) Long consultantsId,
 	    		@RequestParam(value="statWeek",required = false) Long statWeek
     		) throws IOException{
     	log.debug("REST request to exportXls");
@@ -153,7 +160,11 @@ public class ConsultantBonusResource {
         	Date date = DateUtil.getSundayOfDay(DateUtil.parseDate(DateUtil.DATE_YYYYMMDD_PATTERN, statWeek.toString().trim()));
         	statWeek = StringUtil.stringToLong(DateUtil.formatDate(DateUtil.DATE_YYYYMMDD_PATTERN, date));
         }
-    	List<ConsultantBonusVo> page = consultantBonusService.getConsultantBonusData(contractId,consultantManId,statWeek);
+    	ConsultantsBonus searchParams = new ConsultantsBonus();
+        searchParams.setContractId(contractId);
+        searchParams.setConsultantsId(consultantsId);
+        searchParams.setStatWeek(statWeek);
+    	List<ConsultantBonusVo> page = consultantBonusService.getConsultantBonusData(searchParams);
     	//拼接sheet数据
     	//标题
     	String[] heads = new String[]{
