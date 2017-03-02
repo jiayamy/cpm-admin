@@ -20,7 +20,7 @@
             	"dayError":"离开日应不早于加盟日",
             	"userIdError":"在加盟日至离开日时间内，该用户已经被安排到该合同中，勿重复添加",
             	"idNone":"数据错误，请刷新后操作",
-            	"projectIdError":"项目不允许重新选择",
+            	"contractIdError":"合同不允许重新选择",
             	"noPerm":"无权操作"
             },
             "contractId": "合同编号",

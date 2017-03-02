@@ -193,7 +193,7 @@
                         <li ui-sref-active="active" has-authority="ROLE_STAT_SUPPORT_BONUS">
                             <a ui-sref="project-support-bonus" ng-click="vm.collapseNavbar()">
                                 <span class=" glyphicon glyphicon-info-sign"></span>&nbsp;
-                                <span data-translate="global.menu.stat.projectSupporBonus">Project Suppor Bonus</span>
+                                <span data-translate="global.menu.stat.projectSupportBonus">Project Support Bonus</span>
                             </a>
                         </li>
                         <li ui-sref-active="active" has-authority="ROLE_STAT_SALES_BONUS">
@@ -284,7 +284,7 @@
                         <li ui-sref-active="active" has-authority="ROLE_INFO_BASIC">
                             <a ui-sref="sales-annualIndex" ng-click="vm.collapseNavbar()">
                                 <span class="glyphicon glyphicon-object-align-top"></span>&nbsp;
-                                <span data-translate="global.menu.info.salesAunnualIndex">Sales Aunnual Index</span>
+                                <span data-translate="global.menu.info.salesAnnualIndex">Sales Annual Index</span>
                             </a>
                         </li>
                         <li ui-sref-active="active" has-authority="ROLE_INFO_BASIC">
@@ -296,7 +296,7 @@
                     </ul>
                 </li>
                 <!-- jhipster-needle-add-element-to-menu - JHipster will add new menu items here -->
-                <li ng-class="{active: vm.$state.includes('entity')}" ng-switch-when="true" uib-dropdown class="dropdown pointer" style="display:none;">
+                <li ng-class="{active: vm.$state.includes('entity')}" ng-switch-when="true" uib-dropdown class="dropdown pointer" style="display:none;"  has-authority="ROLE_ADMIN" >
                     <a class="dropdown-toggle" uib-dropdown-toggle href="" id="entity-menu">
                         <span>
                             <span class="glyphicon glyphicon-th-list"></span>
@@ -395,7 +395,7 @@
                         <!-- jhipster-needle-add-element-to-admin-menu - JHipster will add entities to the admin menu here -->
                     </ul>
                 </li>
-                <li ui-sref-active="active" uib-dropdown class="dropdown pointer" ng-controller="JhiLanguageController as languageVm" ng-show="false">
+                <li ui-sref-active="active" uib-dropdown class="dropdown pointer" has-authority="ROLE_ADMIN" ng-controller="JhiLanguageController as languageVm" ng-show="false">
                     <a class="dropdown-toggle" uib-dropdown-toggle href="" ng-if="languageVm.languages.length > 1">
                         <span>
                             <span class="glyphicon glyphicon-flag"></span>

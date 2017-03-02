@@ -2,23 +2,36 @@
     "cpmApp": {
         "projectCost" : {
             "home": {
-                "title": "Project Costs",
-                "createLabel": "Create a new Project Cost",
-                "createOrEditLabel": "Create or edit a Project Cost",
-                "search": "Search for Project Cost"
+                "title": "项目报销",
+                "timesheetTitle": "工时成本",
+                "createLabel": "新增",
+                "createOrEditLabel": "项目报销信息"
             },
-            "created": "A new Project Cost is created with identifier {{ param }}",
-            "updated": "A Project Cost is updated with identifier {{ param }}",
-            "deleted": "A Project Cost is deleted with identifier {{ param }}",
+            "created": "新增成功",
+            "updated": "修改成本",
+            "deleted": "删除成功",
             "delete": {
-                "question": "Are you sure you want to delete Project Cost {{ id }}?"
+                "question": "确定删除该成本信息？",
+                "status2Error":"状态为删除的数据不可在执行删除操作",
+                "type1Error":"类型为工时的数据不可删除"
             },
             "detail": {
-                "title": "Project Cost"
+                "title": "项目报销信息",
+                "timesheetTitle": "工时成本信息"
+            },
+            "save":{
+            	"paramNone":"必填参数为空",
+            	"noPerm":"无权限操作",
+            	"idNone":"数据异常，请刷新后操作",
+            	"projectIdError":"项目不可更改",
+            	"type1Error":"类型为工时的数据不可编辑",
+            	"statue2Error":"状态为删除的数据不可编辑"
             },
             "projectId": "Project Id",
+            "projectName":"项目名称",
             "name": "Name",
             "type": "Type",
+            "costDay": "日期",
             "total": "Total",
             "costDesc": "Cost Desc",
             "status": "Status",

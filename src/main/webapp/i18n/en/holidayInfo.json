@@ -5,16 +5,27 @@
                 "title": "Holiday Infos",
                 "createLabel": "Create a new Holiday Info",
                 "createOrEditLabel": "Create or edit a Holiday Info",
-                "search": "Search for Holiday Info"
+                "editLabel": "Edit Holiday Info",
+                "search": "Search Holiday Info",
+                "fromCurrDay":"Start Day",
+            	"toCurrDay":"End Day"
             },
-            "created": "A new Holiday Info is created with identifier {{ param }}",
-            "updated": "A Holiday Info is updated with identifier {{ param }}",
-            "deleted": "A Holiday Info is deleted with identifier {{ param }}",
+            "created": "A new Holiday Info is created",
+            "updated": "A Holiday Info is updated",
+            "deleted": "A Holiday Info is deleted",
             "delete": {
                 "question": "Are you sure you want to delete Holiday Info {{ id }}?"
             },
             "detail": {
                 "title": "Holiday Info"
+            },
+            "save": {
+            	"existError":"Curr Day is exist",
+            	"requriedError":"Params is requried",
+            	"lostError":"Record is losted"
+            },
+            "search":{
+            	"deadLineError":"End Day must be greater than Start Day"
             },
             "currDay": "Curr Day",
             "type": "Type",

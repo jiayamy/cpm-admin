@@ -16,7 +16,11 @@
 	            "userManagement":"User management",
 	            "userCost": "User Cost",
 	            "holidayInfo": "Holiday Info",
-	            "workArea": "Work Area"
+	            "workArea": "Work Area",
+                "bonusRate":"Bonus Rate",
+                "externalQuotation":"External Quotation",
+                "salesAnnualIndex":"Sales Annual Index",
+                "shareCostRate":"Share Cost Rate"
 	        },
 	        "contract":{
 	        	"main":"Contract",
@@ -27,22 +31,29 @@
 	            "purchaseItem": "Purchase Item",
 	            "productPrice": "Product Price",
 	            "contractCost": "Contract Cost",
-	            "contractTimesheet": "Contract Timesheet"
+                "contractCostTimesheet": "Contract Timesheet Cost",
+                "contractTimesheet": "Contract Timesheet"
 	        },
 	        "project":{
             	"main":"Project",
                 "projectInfo": "Project Info",
                 "projectUser": "Project User",
                 "projectCost": "Project Cost",
+                "projectCostTimesheet": "Project Timesheet Cost",
                 "projectTimesheet": "Project Timesheet",
-                "projectFinishInfo": "Project Finish Info"
+                "projectOverAllController": "Project Overall Info"
             },
             "stat":{
             	"main":"Stat",
+            	"consultantBonus": "Consultant Project Info",
+            	"salesBonus":"Sales Project Info",
                 "contractWeeklyStat": "Contract Weekly Stat",
                 "contractMonthlyStat": "Contract Monthly Stat",
                 "projectWeeklyStat": "Project Weekly Stat",
-                "projectMonthlyStat": "Project Monthly Stat"
+                "projectMonthlyStat": "Project Monthly Stat",
+                "bonus": "Bonus Info",
+                "salePurchaseInternalCost": "Sales Purchase Internal Cost",
+                "projectSupportBonus": "Project Support Bonus"
             },
             "entities": {
                 "main": "Entities",
@@ -128,6 +139,12 @@
             "open": "Open",
             "save": "Save",
             "view": "View"
+            "add": "New",
+            "close":"Close",
+            "search":"Search",
+            "clear":"Clear",
+            "export":"Export",
+            "upload":"Upload"
         },
         "detail": {
             "field": "Field",
@@ -156,7 +173,10 @@
         "Size": "Field {{ fieldName }} does not meet min/max size requirements!",
         "userexists": "Login name already used!",
         "emailexists": "E-mail is already in use!",
-        "idexists": "A new {{ entityName }} cannot already have an ID"
+        "idexists": "A new {{ entityName }} cannot already have an ID",
+        "internalServerError":"Server is in the unknown anomaly!",
+        "methodNotSupported":"no such method Error!",
+        "serialNumexists":"Serial Num is Exist!"
     },
-    "footer": "This is your footer"
+    "footer": "Copyright © 2009-2017 Shanghai Wondertek Software. Co., Ltd."
 }

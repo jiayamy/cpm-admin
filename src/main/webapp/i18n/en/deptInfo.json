@@ -11,7 +11,14 @@
             "updated": "A Dept Info is updated with identifier {{ param }}",
             "deleted": "A Dept Info is deleted with identifier {{ param }}",
             "delete": {
-                "question": "Are you sure you want to delete Dept Info {{ id }}?"
+                "question": "Are you sure you need to delete this Dept Info?",
+                "userExist":"Dept Info [{{ param }}] have users, cannot be deleted"
+            },
+            "save":{
+            	"paramNone":"Mandatory parameter is empty",
+            	"parentNone":"Parameter error",
+            	"paramError":"Parameter error",
+            	"nameExist":"Existed Dept Info"
             },
             "detail": {
                 "title": "Dept Info"
@@ -19,7 +26,6 @@
             "name": "Name",
             "parentId": "Parent Id",
             "type": "Type",
-            "status": "Status",
             "creator": "Creator",
             "createTime": "Create Time",
             "updator": "Updator",

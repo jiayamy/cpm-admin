@@ -2,27 +2,42 @@
     "cpmApp": {
         "contractCost" : {
             "home": {
-                "title": "Contract Costs",
-                "createLabel": "Create a new Contract Cost",
-                "createOrEditLabel": "Create or edit a Contract Cost",
-                "search": "Search for Contract Cost"
+                "title": "合同报销",
+                "timesheetTitle":"工时成本",
+                "createLabel": "新增",
+                "createOrEditLabel": "合同报销信息"
             },
-            "created": "A new Contract Cost is created with identifier {{ param }}",
-            "updated": "A Contract Cost is updated with identifier {{ param }}",
-            "deleted": "A Contract Cost is deleted with identifier {{ param }}",
+            "created": "创建成功",
+            "updated": "修改成功",
+            "deleted": "删除成功",
             "delete": {
-                "question": "Are you sure you want to delete Contract Cost {{ id }}?"
+                "question": "确定删除合同成本记录 ?",
+                "status2Error":"状态为删除的数据不可在执行删除操作",
+                "type1Error":"类型为工时的数据不可删除"
             },
             "detail": {
-                "title": "Contract Cost"
+                "title": "合同报销信息",
+                "timesheetTitle": "工时成本信息"
+            },
+            "save":{
+            	"paramNone":"必填参数为空",
+            	"noPerm":"无权限操作",
+            	"idNone":"数据异常，请刷新后操作",
+            	"projectIdError":"项目不可更改",
+            	"type1Error":"类型为工时的数据不可编辑",
+            	"statue2Error":"状态为删除的数据不可编辑"
             },
             "contractId": "Contract Id",
+            "serialNum": "合同编号",
+            "contractName":"合同名称",
+            "contractName": "合同名称",
             "budgetId": "Budget Id",
             "deptId": "Dept Id",
             "dept": "Dept",
             "name": "Name",
             "type": "Type",
             "total": "Total",
+            "costDay":"成本日期",
             "costDesc": "Cost Desc",
             "status": "Status",
             "creator": "Creator",

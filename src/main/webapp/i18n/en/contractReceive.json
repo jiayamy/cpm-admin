@@ -4,20 +4,28 @@
             "home": {
                 "title": "Contract Receives",
                 "createLabel": "Create a new Contract Receive",
-                "createOrEditLabel": "Create or edit a Contract Receive",
-                "search": "Search for Contract Receive"
+                "createOrEditLabel": "Create or edit a Contract Receive"
             },
-            "created": "A new Contract Receive is created with identifier {{ param }}",
-            "updated": "A Contract Receive is updated with identifier {{ param }}",
-            "deleted": "A Contract Receive is deleted with identifier {{ param }}",
-            "import": "import excel",
+            "created": "A Contract Receives is created",
+            "updated": "A Contract Receives is updated",
+            "deleted": "A Contract Receives is deleted",
             "delete": {
-                "question": "Are you sure you want to delete Contract Receive {{ id }}?"
+                "question": "Are you sure to delete this Contract Receives?",
+                "status2Error":"Deleted records cannot delete again"
             },
             "detail": {
-                "title": "Contract Receive"
+                "title": "Contract Receives"
+            },
+            "save":{
+            	"paramNone":"Mandatory parameter is empty",
+            	"receiveTotalError":"The Receive Total must be greater than zero",
+            	"receiveDayError":"Receive Day must be less than the current time",
+            	"noPerm":"No permission operation",
+            	"contractChanged":"The Contract Info cannot be modified",
+            	"status2Error":"Deleted records cannot be modified"
             },
             "contractId": "Contract Id",
+            "contractName": "Contract Name",
             "receiveTotal": "Receive Total",
             "receiveDay": "Receive Day",
             "status": "Status",

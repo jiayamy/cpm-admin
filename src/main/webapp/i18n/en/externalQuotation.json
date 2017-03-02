@@ -1,0 +1,27 @@
+{
+    "cpmApp": {
+        "externalQuotation" : {
+            "home": {
+                "title": "External Quotation",
+                "createOrEditLabel": "External Quotation Info",
+                "createLabel":"Created a External Quotation"
+            },
+            "created": "A External Quotation is created",
+            "updated": "A External Quotation is updated",
+            "deleted": "A External Quotation is deleted",
+            "save":{
+            	"requriedError":"Mandatory parameter is empty",
+            	"noPerm":"No permission operation",
+            	"changeError":"Grade cannot be changed",
+            	"existError":"Grade corresponding record already exists"
+            },
+            "grade":"Grade",
+            "externalQuotation":"External Quotation",
+            "socialSecurityFund":"Social Security Fund",
+            "otherExpense":"Other Expense",
+            "costBasis":"Cost Basis",
+            "hourCost":"Hour Cost",
+            "updateTime":"Update Time"
+        }
+    }
+}

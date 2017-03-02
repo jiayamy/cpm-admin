@@ -9,15 +9,28 @@
             },
             "created": "A new User Timesheet is created with identifier {{ param }}",
             "updated": "A User Timesheet is updated with identifier {{ param }}",
-            "deleted": "A User Timesheet is deleted with identifier {{ param }}",
+            "deleted": "日报已成功删除",
             "delete": {
-                "question": "Are you sure you want to delete this User Timesheet?"
+                "question": "确定删除该日报?",
+                "statusError":"已删除的日报不可再次删除"
+            },
+            "save":{
+            	"success":"保存成功",
+            	"paramError":"必填参数为空",
+            	"noPermit":"无权操作",
+            	"dataNull":"工时不可为空",
+            	"dataError":"工时只能为0到8之间的小数，且最多精切到小数点后1位",
+            	"dayDataMax":"每天的工时不可大于8",
+            	"dataChanged":"数据已变更，请重新打开后在执行保存操作",
+            	"holiday":"假期[{{ param }}]的工时只能为0",
+            	"overDay":"明天及以后的工时只能为0"
             },
             "detail": {
                 "title": "User Timesheet"
             },
             "workDay": "Work Day",
             "userId": "User Id",
+            "userName": "员工名字",
             "type": "Type",
             "objId": "Obj Id",
             "objName": "Obj Name",
@@ -27,7 +40,14 @@
             "creator": "Creator",
             "createTime": "Create Time",
             "updator": "Updator",
-            "updateTime": "Update Time"
+            "updateTime": "Update Time",
+            "monday":"星期一",
+            "tuesday":"星期二",
+            "wednesday":"星期三",
+            "thursday":"星期四",
+            "friday":"星期五",
+            "saturday":"星期六",
+            "sunday":"星期日"
         }
     }
 }
