@@ -24,10 +24,10 @@
         vm.searchQuery.statWeek = DateUtils.convertYYYYMMDDDayToDate(pagingParams.statWeek);
         vm.searchQuery.contractId = pagingParams.contractId;
         vm.searchQuery.consultantsName = pagingParams.consultantsName;
-        vm.searchQuery.consultantsNameId = pagingParams.consultantsNameId;
+        vm.searchQuery.consultantsId = pagingParams.consultantsId;
         vm.contractInfos = [];
         
-        if (!vm.searchQuery.contractId && !vm.searchQuery.consultantManId && !vm.searchQuery.statWeek){
+        if (!vm.searchQuery.contractId && !vm.searchQuery.consultantsId && !vm.searchQuery.statWeek){
         	vm.haveSearch = null;
         }else{
         	vm.haveSearch = true;
@@ -60,7 +60,7 @@
                 size: vm.itemsPerPage,
                 sort: sort(),
                 contractId : pagingParams.contractId,
-                consultantsNameId : pagingParams.consultantsNameId,
+                consultantsId : pagingParams.consultantsId,
                 statWeek : pagingParams.statWeek
             }, onSuccess, onError);
            
@@ -93,14 +93,14 @@
                 page: vm.page,
                 sort: vm.predicate + ',' + (vm.reverse ? 'asc' : 'desc'),
                 contractId:vm.searchQuery.contractId ? vm.searchQuery.contractId.key : "",
-                consultantsNameId:vm.searchQuery.consultantsNameId,
+                consultantsId:vm.searchQuery.consultantsId,
                 consultantsName:vm.searchQuery.consultantsName,
                 statWeek:vm.searchQuery.statWeek ? DateUtils.convertLocalDateToFormat(vm.searchQuery.statWeek,"yyyyMMdd"):""
             });
         }
 
         function search() {
-        	if (!vm.searchQuery.contractId && !vm.searchQuery.consultantsNameId && !vm.searchQuery.statWeek){
+        	if (!vm.searchQuery.contractId && !vm.searchQuery.consultantsId && !vm.searchQuery.statWeek){
                 return vm.clear();
             }
             vm.links = null;
@@ -126,7 +126,7 @@
         	var c = 0;
         	var statWeek = DateUtils.convertLocalDateToFormat(vm.searchQuery.statWeek,"yyyyMMdd");
         	var contractId = vm.searchQuery.contractId && vm.searchQuery.contractId.key? vm.searchQuery.contractId.key : vm.searchQuery.contractId;
-			var consultantsNameId = vm.searchQuery.consultantsNameId;
+			var consultantsId = vm.searchQuery.consultantsId;
 			
 			if(statWeek){
 				if(c == 0){
@@ -146,14 +146,14 @@
 				}
 				url += "contractId="+encodeURI(contractId);
 			}
-			if(consultantsNameId){
+			if(consultantsId){
 				if(c == 0){
 					c++;
 					url += "?";
 				}else{
 					url += "&";
 				}
-				url += "consultantsNameId="+encodeURI(consultantsNameId);
+				url += "consultantsId="+encodeURI(consultantsId);
 			}
 			
         	window.open(url);
@@ -167,7 +167,7 @@
         }
         
         var unsubscribe = $rootScope.$on('cpmApp:deptInfoSelected', function(event, result) {
-        	vm.searchQuery.consultantsNameId = result.objId;
+        	vm.searchQuery.consultantsId = result.objId;
         	vm.searchQuery.consultantsName = result.name;
         });
         $scope.$on('$destroy', unsubscribe);

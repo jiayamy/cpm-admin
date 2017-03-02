@@ -13,11 +13,11 @@ import com.wondertek.cpm.domain.vo.ConsultantBonusVo;
 
 public interface ConsultantBonusDao extends GenericDao<ConsultantsBonus, Long>{
 
-	public Page<ConsultantBonusVo> getUserPage(User user,DeptInfo deptInfo,String contractId,String consultantManId,String statWeek ,Pageable pageable);
+	public Page<ConsultantBonusVo> getUserPage(User user,DeptInfo deptInfo,ConsultantsBonus consultantsBonus,Pageable pageable);
 	
-	public Page<ConsultantBonusVo> getConsultantBonusRecordPage(String contractId,Long statWeek,Pageable pageable);
+	public Page<ConsultantBonusVo> getConsultantBonusRecordPage(User user,DeptInfo deptInfo,ConsultantsBonus consultantsBonus,Pageable pageable);
 
-	public List<ConsultantBonusVo> getConsultantBonusData(User user,DeptInfo deptInfo,Long contractId, Long consultantManId,Long statWeek);
+	public List<ConsultantBonusVo> getConsultantBonusData(User user,DeptInfo deptInfo,ConsultantsBonus consultantsBonus);
 	
 	public List<ConsultantBonusVo> getConsultantBonusDetailList(Long contractId,Long statWeek);
 }

@@ -41,34 +41,21 @@ public class ConsultantBonusDaoImpl extends GenericDaoImpl<ConsultantsBonus, Lon
 	}
 
 	@Override
-	public Page<ConsultantBonusVo> getUserPage(User user,DeptInfo deptInfo,String contractId,
-			String consultantManId,String statWeek,Pageable pageable) {
-//		StringBuffer sb = new StringBuffer();
+	public Page<ConsultantBonusVo> getUserPage(User user,DeptInfo deptInfo,ConsultantsBonus consultantsBonus,Pageable pageable) {
 		StringBuffer querySql = new StringBuffer();
 		StringBuffer countSql = new StringBuffer();
 		StringBuffer whereSql = new StringBuffer();
-		querySql.append(" select m.id, m.contract_id, m.contract_amount, m.consultants_id, m.consultants_, m.bonus_basis, m.bonus_rate,"
-				+ "m.consultants_share_rate , m.current_bonus ,m.creator_ ,m.stat_week ,m.create_time , i.serial_num , i.amount_, i.name_");
+		querySql.append(" select m.id, m.contract_id, m.contract_amount, m.consultants_id, m.consultants_, m.bonus_basis, m.bonus_rate,");
+		querySql.append(" m.consultants_share_rate , m.current_bonus ,m.creator_ ,m.stat_week ,m.create_time , i.serial_num , i.amount_, i.name_");
+		
 		countSql.append(" select count(m.id)");
+		
 		whereSql.append(" from w_consultants_bonus m");
 		whereSql.append(" inner join (select max(wcb.id) as id from w_consultants_bonus wcb where wcb.stat_week <= ? group by wcb.contract_id) wcbc on wcbc.id = m.id");
 		whereSql.append(" inner join w_contract_info i on i.id = m.contract_id");
-//		querySql.append(" left join w_dept_info wdi on i.dept_id = wdi.id");
 		whereSql.append(" left join w_dept_info wdi on i.consultants_dept_id = wdi.id");
-//		sb.append(" from (select cb.id, cb.contract_id, cb.contract_amount, cb.consultants_id, cb.consultants_, cb.bonus_basis, cb.bonus_rate,"
-//				+ " cb.consultants_share_rate , cb.current_bonus ,cb.creator_ ,cb.stat_week ,cb.create_time from w_consultants_bonus cb"
-//				+ " where cb.stat_week = (select max(c.stat_week) from w_consultants_bonus c ");
-//		sb.append(" where c.contract_id = cb.contract_id");
-//		List<Object> params = new ArrayList<Object>();
-//    	if(!StringUtil.isNullStr(toDate)){
-//    		querySql.append(" and c.stat_week <= ?");
-//    		params.add(StringUtil.nullToLong(toDate));
-//    	}
-//    	sb.append(" )) m");
-//    	sb.append(" left join w_contract_info i on m.contract_id = i.id");
-//    	sb.append(" left join jhi_user j on m.consultants_id = j.id");
 		List<Object> params = new ArrayList<Object>();
-    	params.add(StringUtil.nullToLong(statWeek));
+    	params.add(consultantsBonus.getStatWeek());
     	//权限
     	whereSql.append(" where (i.creator_ = ? or i.consultants_id = ?");
     	params.add(user.getLogin());
@@ -79,13 +66,13 @@ public class ConsultantBonusDaoImpl extends GenericDaoImpl<ConsultantsBonus, Lon
 			params.add(deptInfo.getId());
 		}
     	whereSql.append(")");
-		if(!StringUtil.isNullStr(contractId)){
+		if(consultantsBonus.getContractId() != null){
     		whereSql.append(" and m.contract_id = ?");
-    		params.add(StringUtil.nullToLong(contractId));
+    		params.add(consultantsBonus.getContractId());
     	}
-		if(!StringUtil.isNullStr(consultantManId)){
+		if(consultantsBonus.getConsultantsId() != null){
 			whereSql.append(" and m.consultants_id = ?");
-			params.add(StringUtil.nullToLong(consultantManId));
+			params.add(consultantsBonus.getConsultantsId());
 		}
     	StringBuffer orderSql = new StringBuffer();
     	if(pageable.getSort() != null){//页面都会有个默认排序
@@ -141,25 +128,38 @@ public class ConsultantBonusDaoImpl extends GenericDaoImpl<ConsultantsBonus, Lon
 	}
 
 	@Override
-	public Page<ConsultantBonusVo> getConsultantBonusRecordPage(String contractId,Long statWeek, Pageable pageable) {
+	public Page<ConsultantBonusVo> getConsultantBonusRecordPage(User user,DeptInfo deptInfo,ConsultantsBonus consultantsBonus, Pageable pageable) {
 		StringBuffer fromHql = new StringBuffer();
 		StringBuffer queryHql = new StringBuffer();
 		StringBuffer countHql = new StringBuffer();
 		StringBuffer whereHql = new StringBuffer();
 		
-		queryHql.append(" select m.id, m.contractId, m.contractAmount, m.consultantsId, m.consultants, m.bonusBasis, m.bonusRate,"
-				+ "m.consultantsShareRate , m.currentBonus ,m.creator ,m.statWeek ,m.createTime , i.serialNum , i.amount,i.name");
+		queryHql.append(" select m.id, m.contractId, m.contractAmount, m.consultantsId, m.consultants, m.bonusBasis, m.bonusRate,");
+		queryHql.append(" m.consultantsShareRate , m.currentBonus ,m.creator ,m.statWeek ,m.createTime , i.serialNum , i.amount,i.name");
+		
 		countHql.append(" select count(m.id)");
+		
 		fromHql.append(" from ConsultantsBonus m");
 		fromHql.append(" left join ContractInfo i on m.contractId = i.id");
-//		fromHql.append(" left join User u on m.consultantsId = u.id");
+		fromHql.append(" left join DeptInfo di on i.consultantsDeptId = di.id");
 		
 		List<Object> params = new ArrayList<Object>();
-		whereHql.append(" where m.statWeek <= ?");
-		params.add(statWeek);
-		if(!StringUtil.isNullStr(contractId)){
+    	//权限
+    	whereHql.append(" where (i.creator = ? or i.consultantsId = ?");
+    	params.add(user.getLogin());
+    	params.add(user.getId());
+    	if(user.getIsManager()){
+    		whereHql.append(" or di.idPath like ? or di.id = ?");
+			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
+			params.add(deptInfo.getId());
+		}
+    	whereHql.append(")");
+		
+		whereHql.append(" and m.statWeek <= ?");
+		params.add(consultantsBonus.getStatWeek());
+		if(consultantsBonus.getContractId() != null){
     		whereHql.append(" and m.contractId = ?");
-    		params.add(StringUtil.nullToLong(contractId));
+    		params.add(consultantsBonus.getContractId());
     	}
 		
 		StringBuffer orderHql = new StringBuffer();
@@ -217,7 +217,7 @@ public class ConsultantBonusDaoImpl extends GenericDaoImpl<ConsultantsBonus, Lon
 	}
 
 	@Override
-	public List<ConsultantBonusVo> getConsultantBonusData(User user,DeptInfo deptInfo,Long contractId, Long consultantManId,Long statWeek) {
+	public List<ConsultantBonusVo> getConsultantBonusData(User user,DeptInfo deptInfo,ConsultantsBonus consultantsBonus) {
 		StringBuffer querySql = new StringBuffer();
 		StringBuffer whereSql = new StringBuffer();
 		querySql.append(" select m.id, m.contract_id, m.contract_amount, m.consultants_id, m.consultants_, m.bonus_basis, m.bonus_rate,"
@@ -227,7 +227,7 @@ public class ConsultantBonusDaoImpl extends GenericDaoImpl<ConsultantsBonus, Lon
 		whereSql.append(" inner join w_contract_info i on i.id = m.contract_id");
 		whereSql.append(" left join w_dept_info wdi on i.consultants_dept_id = wdi.id");
 		List<Object> params = new ArrayList<Object>();
-		params.add(StringUtil.nullToLong(statWeek));
+		params.add(consultantsBonus.getStatWeek());
 		
     	//权限
     	whereSql.append(" where (i.creator_ = ? or i.consultants_id = ?");
@@ -240,13 +240,13 @@ public class ConsultantBonusDaoImpl extends GenericDaoImpl<ConsultantsBonus, Lon
 		}
     	whereSql.append(")");
     	
-		if(contractId != null){
+		if(consultantsBonus.getContractId() != null){
     		whereSql.append(" and m.contract_id = ?");
-    		params.add(contractId);
+    		params.add(consultantsBonus.getContractId());
     	}
-		if(consultantManId != null){
+		if(consultantsBonus.getConsultantsId() != null){
 			whereSql.append(" and m.consultants_id = ?");
-			params.add(consultantManId);
+			params.add(consultantsBonus.getConsultantsId());
 		}
 		StringBuffer orderSql = new StringBuffer();
     	orderSql.append(" order by m.id desc");

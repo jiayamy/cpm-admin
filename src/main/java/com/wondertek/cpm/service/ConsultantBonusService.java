@@ -5,8 +5,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -30,8 +28,6 @@ import com.wondertek.cpm.security.SecurityUtils;
 @Transactional
 public class ConsultantBonusService {
 
-	private final Logger log = LoggerFactory.getLogger(ContractWeeklyStatService.class);
-	
 	@Inject
 	private ConsultantsBonusRepository consultantsBonusRepository;
 	
@@ -50,13 +46,13 @@ public class ConsultantBonusService {
      * @return
      */
     @Transactional(readOnly = true)
-	public Page<ConsultantBonusVo> getConsultantBonusPage(String contractId,String consultantManId,String statWeek,Pageable pageable){
+	public Page<ConsultantBonusVo> getConsultantBonusPage(ConsultantsBonus consultantsBonus,Pageable pageable){
     	List<Object[]> objs = userRepository.findUserInfoByLogin(SecurityUtils.getCurrentUserLogin());
     	if (objs != null) {
 			Object[] o = objs.get(0);
 			User user = (User)o[0];
 			DeptInfo deptInfo = (DeptInfo)o[1];
-    		Page<ConsultantBonusVo> page = consultantBonusDao.getUserPage(user,deptInfo,contractId,consultantManId,statWeek,pageable);
+    		Page<ConsultantBonusVo> page = consultantBonusDao.getUserPage(user,deptInfo,consultantsBonus,pageable);
     		List<ConsultantBonusVo> returnList = new ArrayList<ConsultantBonusVo>();
     		//填充数据
     		if(page != null && page.getContent() != null){
@@ -102,10 +98,14 @@ public class ConsultantBonusService {
      * @return
      */
     @Transactional(readOnly = true)
-    public Page<ConsultantBonusVo> getConsultantBonusRecordPage(String contractId,Long statWeek,Pageable pageable){
+    public Page<ConsultantBonusVo> getConsultantBonusRecordPage(ConsultantsBonus consultantsBonus,Pageable pageable){
     	List<Object[]> objs = userRepository.findUserInfoByLogin(SecurityUtils.getCurrentUserLogin());
     	if (objs != null) {
-    		Page<ConsultantBonusVo> page = consultantBonusDao.getConsultantBonusRecordPage(contractId,statWeek,pageable);
+    		Object[] o = objs.get(0);
+			User user = (User)o[0];
+			DeptInfo deptInfo = (DeptInfo)o[1];
+			
+    		Page<ConsultantBonusVo> page = consultantBonusDao.getConsultantBonusRecordPage(user,deptInfo,consultantsBonus,pageable);
     		List<ConsultantBonusVo> returnList = new ArrayList<ConsultantBonusVo>();
     		//填充数据
     		if(page != null && page.getContent() != null){
@@ -145,13 +145,13 @@ public class ConsultantBonusService {
      * @return
      */
     @Transactional(readOnly = true)
-    public List<ConsultantBonusVo> getConsultantBonusData(Long contractId, Long consultantManId, Long statWeek){
+    public List<ConsultantBonusVo> getConsultantBonusData(ConsultantsBonus consultantsBonus){
     	List<Object[]> objs = userRepository.findUserInfoByLogin(SecurityUtils.getCurrentUserLogin());
     	if (objs != null) {
 			Object[] o = objs.get(0);
 			User user = (User)o[0];
 			DeptInfo deptInfo = (DeptInfo)o[1];
-    		List<ConsultantBonusVo> page = consultantBonusDao.getConsultantBonusData(user,deptInfo,contractId,consultantManId,statWeek);
+    		List<ConsultantBonusVo> page = consultantBonusDao.getConsultantBonusData(user,deptInfo,consultantsBonus);
     		List<ConsultantBonusVo> returnList = new ArrayList<ConsultantBonusVo>();
     		//填充数据
     		if(page != null){
