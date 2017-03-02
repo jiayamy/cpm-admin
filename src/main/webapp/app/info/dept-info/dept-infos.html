@@ -2,7 +2,7 @@
 	<div style="" >
 		<div class="" style="height:35px;">
 			<i class="glyphicon" ng-class="{'glyphicon-menu-down':vm.isChildShowed(node), 'glyphicon-menu-right':!vm.isChildShowed(node)}" ng-if="node.isDept" 
-				style="width:25px;height:10px" ng-click="vm.showOrHiddenChild(node)"></i>
+				style="width:15px;height:10px" ng-click="vm.showOrHiddenChild(node)"></i>
 			<i class="glyphicon text-success glyphicon-home"></i>
 			<span><b>{{node.name}}</b></span>
 			&nbsp;&nbsp;&nbsp;&nbsp;
@@ -11,7 +11,7 @@
 			<i class="glyphicon glyphicon-pencil" ng-disabled="vm.isSaving" ui-sref="dept-info.edit({id:node.objId})"></i>
 			<i class="glyphicon glyphicon-remove-circle" ng-disabled="vm.isSaving" ui-sref="dept-info.delete({id:node.objId})"></i>
 	  	</div>
-		<ul  class="" ng-model="node.children" ng-if="node.showChild" style="list-style:none;">
+		<ul  class="" ng-model="node.children" ng-if="node.showChild" style="list-style:none;padding-left: 20px;">
 			<li class="" ng-repeat="node in node.children" ng-include="'dept-infos-template'">
 			
 			</li>
@@ -23,7 +23,7 @@
     <h2 data-translate="cpmApp.deptInfo.home.title">Dept Infos</h2>
     <jhi-alert></jhi-alert>
     <div id="deptInfoTree" class="tree-demo jstree jstree-2 jstree-default jstree-checkbox-selection">
-		<ul class="stree-container-ul jstree-children"  >
+		<ul class="stree-container-ul jstree-children" style="padding-left: 0px;">
 			<li class="jstree-node  jstree-open"  ng-repeat="node in vm.deptInfos" ng-include="'dept-infos-template'" style="list-style:none;" >
 			
 			</li>

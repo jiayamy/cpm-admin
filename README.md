@@ -114,3 +114,18 @@ To set up a CI environment, consult the [Setting up Continuous Integration][] pa
 外网 http://60.174.236.99:8090/cpm/ 对应内网 172.16.1.93:80
 60.174.236.99  22016 root/Wondertek@2016
 
+## es
+安装 rpm -ivh elasticsearch-2.4.1.rpm
+删除服务 rpm -e elasticsearch
+curl 'localhost:9200/_cluster/health?pretty'
+把es服务设置为开机启动 chkconfig --add elasticsearch
+启动/停止/重启...
+	service elasticsearch start
+	service elasticsearch stop
+	service elasticsearch restart
+es服务相关配置：/etc/sysconfig/elasticsearch
+es的配置文件在/etc/elasticsearch目录
+es的日志文件在/var/log/elasticsearch
+es的数据文件在/var/lib/elasticsearch
+es的bin目录在/usr/share/elasticsearch
+

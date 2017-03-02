@@ -644,7 +644,7 @@ CREATE
 	insert into jhi_authority (name, detail_) values ('ROLE_STAT_SUPPORT_BONUS', '统计报表-项目支撑奖金');
 	
 	--20170301
-	ALTER TABLE jhi_user CHANGE COLUMN `grade_ ` `grade_ ` int(11) DEFAULT NULL COMMENT '级别';
+	ALTER TABLE jhi_user MODIFY COLUMN grade_ INT DEFAULT '1';
 	ALTER TABLE w_contract_info ADD COLUMN `consultants_share_rate` double(15,2) DEFAULT NULL COMMENT '咨询分润比率';
 
 	CREATE 
