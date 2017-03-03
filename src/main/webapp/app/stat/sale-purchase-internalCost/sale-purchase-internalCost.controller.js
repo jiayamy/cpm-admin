@@ -19,6 +19,11 @@
         vm.searchQuery = {};
         vm.exportXls = exportXls;
         
+        var today = new Date();
+        if(pagingParams.statWeek == undefined){
+        	pagingParams.statWeek = DateUtils.convertLocalDateToFormat(today,"yyyyMMdd");
+        }
+        
         vm.searchQuery.statWeek = DateUtils.convertYYYYMMDDDayToDate(pagingParams.statWeek);
         vm.searchQuery.contractId = pagingParams.contractId;
         vm.searchQuery.userId = pagingParams.userId;
@@ -105,7 +110,7 @@
                 contractId:vm.searchQuery.contractId ? vm.searchQuery.contractId.key : "",
                 userId:vm.searchQuery.userId,
                 userName:vm.searchQuery.userName,
-                statWeek:vm.searchQuery.statWeek ? DateUtils.convertLocalDateToFormat(vm.searchQuery.statWeek,"yyyyMMdd"):"",
+                statWeek:DateUtils.convertLocalDateToFormat(vm.searchQuery.statWeek,"yyyyMMdd"),
                 deptType:vm.searchQuery.deptType ? vm.searchQuery.deptType.key : ""
             });
         }
@@ -123,7 +128,9 @@
 
         function clear() {
             vm.searchQuery = {};
-            vm.haveSearch = false;
+            vm.searchQuery.statWeek = new Date();
+            vm.searchQuery.contractId = vm.contractInfos[0].key;
+            vm.haveSearch = true;
             vm.transition();
         }
         
