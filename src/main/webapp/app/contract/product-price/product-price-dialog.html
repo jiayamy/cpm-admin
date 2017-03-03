@@ -55,7 +55,7 @@
 				<div class="col-sm-6">
 	     			<label class="control-label" data-translate="cpmApp.productPrice.price" for="field_price" >Price</label>
 	  				<input type="number" class="form-control" name="price" id="field_price"
-	                  	ng-model="vm.productPrice.price" ng-required="true" ng-minlength="1"
+	                  	ng-model="vm.productPrice.price" ng-required="true" min="0"
 	                   	/>
                    	<div ng-show="myForm.price.$dirty&&myForm.price.$error.number" class="alert alert-danger help-block"> 
                     	单价必须为数字

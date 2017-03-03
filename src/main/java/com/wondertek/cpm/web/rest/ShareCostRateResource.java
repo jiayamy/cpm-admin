@@ -89,7 +89,7 @@ public class ShareCostRateResource {
 			if (oldShareCostRate == null) {
         		return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.shareCostRate.save.idNone", "")).body(null);
 			}else if (oldShareCostRate.getContractType() != shareCostRate.getContractType().longValue() || oldShareCostRate.getDeptType() != shareCostRate.getDeptType().longValue()) {
-				return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.shareCostRate.update.fieldNoChange", "")).body(null);
+				return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.shareCostRate.save.fieldNoChange", "")).body(null);
 			}
 			shareCostRate.setCreateTime(oldShareCostRate.getCreateTime());
 			shareCostRate.setCreator(oldShareCostRate.getCreator());
