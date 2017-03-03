@@ -375,7 +375,7 @@ public class UserCostResource {
 									.setMsgParam(excelValue.getSheet() + "," + rowNum +","+(columnNum+1)));
 						}
 						//校验记录是否存在
-						String key = userCost.getId() + "_" + userCost.getCostMonth();
+						String key = userCost.getUserId() + "_" + userCost.getCostMonth();
 						if(existMap.containsKey(key)){
 							return ResponseEntity.ok().body(cpmResponse
 									.setSuccess(Boolean.FALSE)
@@ -395,7 +395,13 @@ public class UserCostResource {
 						}else if(val instanceof Double){//double
 							userCost.setSal((Double)val);
 						}else{//String
-							userCost.setSal(StringUtil.nullToDouble(val));
+							userCost.setSal(StringUtil.nullToCloneDouble(val));
+							if(userCost.getSal() == null){
+								return ResponseEntity.ok().body(cpmResponse
+										.setSuccess(Boolean.FALSE)
+										.setMsgKey("cpmApp.userCost.upload.dataError")
+										.setMsgParam(excelValue.getSheet() + "," + rowNum +","+(columnNum+1)));
+							}
 						}
 						//校验第四列 员工社保公积金
 						columnNum++;
@@ -408,7 +414,13 @@ public class UserCostResource {
 						}else if(val instanceof Double){//double
 							userCost.setSocialSecurityFund((Double)val);
 						}else{//String
-							userCost.setSocialSecurityFund(StringUtil.nullToDouble(val));
+							userCost.setSocialSecurityFund(StringUtil.nullToCloneDouble(val));
+							if(userCost.getSocialSecurityFund() == null){
+								return ResponseEntity.ok().body(cpmResponse
+										.setSuccess(Boolean.FALSE)
+										.setMsgKey("cpmApp.userCost.upload.dataError")
+										.setMsgParam(excelValue.getSheet() + "," + rowNum +","+(columnNum+1)));
+							}
 						}
 						//校验第五轮 其他费用
 						columnNum++;
@@ -421,7 +433,13 @@ public class UserCostResource {
 						}else if(val instanceof Double){//double
 							userCost.setOtherExpense((Double)val);
 						}else{//String
-							userCost.setOtherExpense(StringUtil.nullToDouble(val));
+							userCost.setOtherExpense(StringUtil.nullToCloneDouble(val));
+							if(userCost.getOtherExpense() == null){
+								return ResponseEntity.ok().body(cpmResponse
+										.setSuccess(Boolean.FALSE)
+										.setMsgKey("cpmApp.userCost.upload.dataError")
+										.setMsgParam(excelValue.getSheet() + "," + rowNum +","+(columnNum+1)));
+							}
 						}
 						//内部成本
 						userCost.setInternalCost(userCost.getSal()+userCost.getSocialSecurityFund()+userCost.getOtherExpense());//内部成本

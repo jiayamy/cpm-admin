@@ -160,7 +160,7 @@ public class ExcelUtil {
                 
                 totalRows = xssfSheet.getLastRowNum();
                 //读取Row
-                for(int rowNum = startNum; rowNum < totalRows; rowNum++){
+                for(int rowNum = startNum; rowNum <= totalRows; rowNum++){
                     XSSFRow xssfRow = xssfSheet.getRow(rowNum);
                     rowList = null;
                     if(xssfRow != null){
@@ -229,7 +229,7 @@ public class ExcelUtil {
                 
                 totalRows = hssfSheet.getLastRowNum();
                 //读取Row
-                for(int rowNum = startNum;rowNum < totalRows;rowNum++){
+                for(int rowNum = startNum;rowNum <= totalRows;rowNum++){
                     HSSFRow hssfRow = hssfSheet.getRow(rowNum);
                     rowList = null;
                     if(hssfRow!=null){
