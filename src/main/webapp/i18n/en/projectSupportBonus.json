@@ -2,28 +2,28 @@
     "cpmApp": {
         "projectSupportBonus" : {
             "home": {
-                "title": "项目支撑奖金",
-                "export": "导出"
+                "title": "Project Support Bonus",
+                "export": "export"
             },
             "detail": {
-                "title": "项目支撑奖金详情"
+                "title": "Project Support Bonus"
             },
-            "statWeek" : "统计日期",
-            "toDate": "截止日期",
-            "serialNum": "合同编号",
-            "deliveryTime" : "合同确认交付时间",
-            "acceptanceRate": "验收节点",
-            "planDays" : "计划天数",
-            "realDays" : "实际使用天数",
-            "bonusAdjustRate" : "奖金调节比率",
-            "bonusRate" : "奖金比率",
-            "bonusAcceptanceRate": "奖金确认比例",
-            "contractAmount": "合同金额",
-            "taxRate": "税率",
-            "bonusBasis": "奖金基数",
-            "currentBonus": "当期奖金",
-            "dept": "部门",
-            "deptType": "部门类型"
+            "statWeek" : "statWeek",
+            "toDate": "toDate",
+            "serialNum": "serialNum",
+            "deliveryTime" : "deliveryTime",
+            "acceptanceRate": "acceptanceRate",
+            "planDays" : "planDays",
+            "realDays" : "realDays",
+            "bonusAdjustRate" : "bonusAdjustRate",
+            "bonusRate" : "bonusRate",
+            "bonusAcceptanceRate": "bonusAcceptanceRate",
+            "contractAmount": "contractAmount",
+            "taxRate": "taxRate",
+            "bonusBasis": "bonusBasis",
+            "currentBonus": "currentBonus",
+            "dept": "dept",
+            "deptType": "deptType"
         }
     }
 }

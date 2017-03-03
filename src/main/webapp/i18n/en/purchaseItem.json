@@ -2,53 +2,53 @@
     "cpmApp": {
         "purchaseItem" : {
             "home": {
-                "title": "采购子项",
-                "createLabel": "新增",
-                "createOrEditLabel": "创建或者编辑",
+                "title": "Purchase Item",
+                "createLabel": "Create New",
+                "createOrEditLabel": "Create Or Edit",
                 "search": "Search for Purchase Item",
-                "choseProject" : "选择项目",
-                "project" : "项目名称",
-                "productPrice" : "采购项目"
+                "choseProject" : "choseProject",
+                "project" : "project",
+                "productPrice" : "productPrice"
             },
-            "created": "新建成功",
-            "updated": "更新操作成功",
-            "deleted": "删除成功",
+            "created": "create Success",
+            "updated": "update Success",
+            "deleted": "delete Success",
             "delete": {
-                "question": "您确定要删除吗?"
+                "question": "confirm to delete?"
             },
             "detail": {
-                "title": "采购子项信息"
+                "title": "Purchase Item"
             },
             "save":{
-            	"requiedError":"必填参数为空",
-            	"idNone":"数据异常，请刷新后操作",
-            	"contractIdError":"采购单和和合同数据异常",
-            	"statue2Error":"状态为删除的数据不可编辑",
-            	"changeNameError":"已经绑定产品定价单的相关字段不可修改",
-            	"purchaseItemError":"数据有误,不可修改",
-            	"budgetError":"合同和采购单绑定异常",
-            	"purchaseItemHaveExit": "采购子项已经存在",
-            	"noPerm": "没有权限执行操作"
+            	"requiedError":"params required",
+            	"idNone":"data error, plz reflesh",
+            	"contractIdError":"Contract Id Error",
+            	"statue2Error":"status-deleted can't be modified",
+            	"changeNameError":"params related with ProductPrice can't be modified",
+            	"purchaseItemError":"data error",
+            	"budgetError":"Budget with Contract Error",
+            	"purchaseItemHaveExit": "Purchase Item already exist",
+            	"noPerm": "no Permit"
             },
-            "contract": "合同",
-            "contractId": "合同ID",
-            "serialNum": "合同编号",
-            "contractName": "合同名称",
-            "budgetName": "内部采购名称",
-            "budgetId": "合同预算ID",
-            "name": "采购项目",
-            "quantity": "采购数量",
-            "price": "采购单价",
-            "units": "采购单位",
-            "type": "采购类型",
-            "source": "采购来源",
-            "purchaser": "采购方",
-            "totalAmount": "采购总金额",
-            "status": "状态",
-            "creator": "创建者",
-            "createTime": "创建时间",
-            "updator": "更新者",
-            "updateTime": "更新时间"
+            "contract": "contract",
+            "contractId": "contractId",
+            "serialNum": "serialNum",
+            "contractName": "contractName",
+            "budgetName": "budgetName",
+            "budgetId": "budgetId",
+            "name": "name",
+            "quantity": "quantity",
+            "price": "price",
+            "units": "units",
+            "type": "type",
+            "source": "source",
+            "purchaser": "purchaser",
+            "totalAmount": "totalAmount",
+            "status": "status",
+            "creator": "creator",
+            "createTime": "createTime",
+            "updator": "updator",
+            "updateTime": "updateTime"
         }
     }
 }

@@ -2,26 +2,26 @@
     "cpmApp": {
         "shareCostRate" : {
             "home": {
-                "title": "公摊成本比例",
-                "createOrEditLabel": "公摊成本比例",
-                "createLabel": "新增"
+                "title": "Share Cost Rate",
+                "createOrEditLabel": "Create Or Edit",
+                "createLabel": "Create New"
             },
             "save": {
-            	"requiedError": "缺少必须参数",
-            	"idNone": "id不存在",
-            	"fieldNoChange": "合同类型和部门类型不可修改",
-            	"hasExist": "对应的合同类型和部门类型已经存在"
+            	"requiedError": "params required",
+            	"idNone": "id not exist",
+            	"fieldNoChange": "Contract Type and Dept Type can't be modified",
+            	"hasExist": "Contract Type with Dept Type already exist"
             },
-            "created": "添加成功",
-            "updated": "修改成功!",
-            "deleted": "删除成功",
+            "created": "Create Success",
+            "updated": "Update Success",
+            "deleted": "Delete Success",
             "delete": {
-            	"question": "您确定要删除此记录吗?"
+            	"question": "Confirm to Deleted?"
 			},
-            "deptType":"部门类型",
-            "contractType":"合同类型",
-            "shareRate":"公摊比例(%)",
-            "updateTime":"更新时间"
+            "deptType":"deptType",
+            "contractType":"合contractType",
+            "shareRate":"shareRate(%)",
+            "updateTime":"updateTime"
         }
     }
 }

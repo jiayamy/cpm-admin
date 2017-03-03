@@ -2,36 +2,36 @@
     "cpmApp": {
         "projectCost" : {
             "home": {
-                "title": "项目报销",
-                "timesheetTitle": "工时成本",
-                "createLabel": "新增",
-                "createOrEditLabel": "项目报销信息"
+                "title": "Project Cost",
+                "timesheetTitle":"TimeSheet",
+                "createLabel": "Create New",
+                "createOrEditLabel": "Project Cost"
             },
-            "created": "新增成功",
-            "updated": "修改成本",
-            "deleted": "删除成功",
+             "created": "create Success",
+            "updated": "update Success!",
+            "deleted": "delete Success",
             "delete": {
-                "question": "确定删除该成本信息？",
-                "status2Error":"状态为删除的数据不可在执行删除操作",
-                "type1Error":"类型为工时的数据不可删除"
+                "question": "confirm to delete?"
+                "status2Error":"status-deleted can't be deleted again",
+                "type1Error":"type-humanCost can't be deleted"
             },
             "detail": {
-                "title": "项目报销信息",
-                "timesheetTitle": "工时成本信息"
+                "title": "Project Cost",
+                "timesheetTitle": "Human Cost"
             },
             "save":{
-            	"paramNone":"必填参数为空",
-            	"noPerm":"无权限操作",
-            	"idNone":"数据异常，请刷新后操作",
-            	"projectIdError":"项目不可更改",
-            	"type1Error":"类型为工时的数据不可编辑",
-            	"statue2Error":"状态为删除的数据不可编辑"
+            	"paramNone":"params required",
+            	"noPerm":"no Permit",
+            	"idNone":"id not exist",
+            	"projectIdError":"projectIdError",
+            	"type1Error":"type-humanCost can't be deleted",
+            	"statue2Error":"status-deleted can't be deleted again"
             },
             "projectId": "Project Id",
-            "projectName":"项目名称",
+            "projectName":"projectName",
             "name": "Name",
             "type": "Type",
-            "costDay": "日期",
+            "costDay": "costDay",
             "total": "Total",
             "costDesc": "Cost Desc",
             "status": "Status",
