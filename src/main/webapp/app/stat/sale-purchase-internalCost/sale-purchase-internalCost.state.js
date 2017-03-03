@@ -11,7 +11,7 @@
         $stateProvider
         .state('sale-purchase-internalCost', {
             parent: 'stat',
-            url: '/sale-purchase-internalCost?contractId&userNameId&statWeek&deptType&userName',
+            url: '/sale-purchase-internalCost?contractId&userId&statWeek&deptType&userName',
             data: {
                 authorities: ['ROLE_STAT_INTERNAL_COST'],
                 pageTitle: 'cpmApp.salePurchaseInternalCost.home.title'
@@ -24,16 +24,8 @@
                 }
             },
             params: {
-//                page: {
-//                    value: '1',
-//                    squash: true
-//                },
-//                sort: {
-//                    value: 'p.id,desc',
-//                    squash: true
-//                },
                 contractId : null,
-                userNameId : null,
+                userId : null,
                 userName : null,
                 statWeek : null,
                 deptType : null
@@ -41,12 +33,8 @@
             resolve: {
                 pagingParams: ['$stateParams', 'PaginationUtil', function ($stateParams, PaginationUtil) {
                     return {
-//                        page: PaginationUtil.parsePage($stateParams.page),
-//                        sort: $stateParams.sort,
-//                        predicate: PaginationUtil.parsePredicate($stateParams.sort),
-//                        ascending: PaginationUtil.parseAscending($stateParams.sort),
                         contractId: $stateParams.contractId,
-                        userNameId: $stateParams.userNameId,
+                        userId: $stateParams.userId,
                         userName: $stateParams.userName,
                         statWeek : $stateParams.statWeek,
                         deptType : $stateParams.deptType
@@ -113,7 +101,7 @@
                 },
                 id: null,
                 contractId : null,
-                userNameId : null,
+                userId : null,
                 userName : null,
                 statWeek : null,
                 deptType : null
@@ -127,7 +115,7 @@
                         ascending: PaginationUtil.parseAscending($stateParams.sort),
                         id: $stateParams.id,
                         contractId: $stateParams.contractId,
-                        userNameId: $stateParams.userNameId,
+                        userId: $stateParams.userId,
                         userName: $stateParams.userName,
                         statWeek : $stateParams.statWeek,
                         deptType : $stateParams.deptType

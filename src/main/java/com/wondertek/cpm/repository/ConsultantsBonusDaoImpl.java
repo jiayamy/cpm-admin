@@ -3,9 +3,7 @@ package com.wondertek.cpm.repository;
 import java.sql.Timestamp;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.persistence.EntityManager;
 
@@ -22,10 +20,10 @@ import com.wondertek.cpm.config.StringUtil;
 import com.wondertek.cpm.domain.ConsultantsBonus;
 import com.wondertek.cpm.domain.DeptInfo;
 import com.wondertek.cpm.domain.User;
-import com.wondertek.cpm.domain.vo.ConsultantBonusVo;
+import com.wondertek.cpm.domain.vo.ConsultantsBonusVo;
 
-@Repository("consultantBonusDao")
-public class ConsultantBonusDaoImpl extends GenericDaoImpl<ConsultantsBonus, Long> implements ConsultantBonusDao {
+@Repository("consultantsBonusDao")
+public class ConsultantsBonusDaoImpl extends GenericDaoImpl<ConsultantsBonus, Long> implements ConsultantsBonusDao {
 
 	@Autowired
 	private EntityManager entityManager;
@@ -41,7 +39,7 @@ public class ConsultantBonusDaoImpl extends GenericDaoImpl<ConsultantsBonus, Lon
 	}
 
 	@Override
-	public Page<ConsultantBonusVo> getUserPage(User user,DeptInfo deptInfo,ConsultantsBonus consultantsBonus,Pageable pageable) {
+	public Page<ConsultantsBonusVo> getUserPage(User user,DeptInfo deptInfo,ConsultantsBonus consultantsBonus,Pageable pageable) {
 		StringBuffer querySql = new StringBuffer();
 		StringBuffer countSql = new StringBuffer();
 		StringBuffer whereSql = new StringBuffer();
@@ -98,37 +96,36 @@ public class ConsultantBonusDaoImpl extends GenericDaoImpl<ConsultantsBonus, Lon
     			params.toArray(), 
     			pageable
     		);
-    	List<ConsultantBonusVo> returnList = new ArrayList<>();
+    	List<ConsultantsBonusVo> returnList = new ArrayList<>();
     	if(page.getContent() != null){
 			for(Object[] o : page.getContent()){
-				returnList.add(transConsultantBonusVo(o));
+				returnList.add(transConsultantsBonusVo(o));
 			}
 		}
     	return new PageImpl(returnList, pageable, page.getTotalElements());
 	}
-	private ConsultantBonusVo transConsultantBonusVo(Object[] o){
-		ConsultantBonusVo consultantBonusVo = new ConsultantBonusVo();
-		consultantBonusVo.setId(StringUtil.nullToLong(o[0]));
-		consultantBonusVo.setContractId(StringUtil.nullToLong(o[1]));
-		consultantBonusVo.setContractAmount(StringUtil.nullToDouble(o[2]));
-		consultantBonusVo.setConsultantsId(StringUtil.nullToLong(o[3]));
-		consultantBonusVo.setConsultantsName(StringUtil.null2Str(o[4]));
-		consultantBonusVo.setBonusBasis(StringUtil.nullToDouble(o[5]));
-		consultantBonusVo.setBonusRate(StringUtil.nullToDouble(o[6]));
-		consultantBonusVo.setConsultantsShareRate(StringUtil.nullToDouble(o[7]));
-		consultantBonusVo.setCurrentBonus(StringUtil.nullToDouble(o[8]));
-		consultantBonusVo.setCreator(StringUtil.null2Str(o[9]));
-		consultantBonusVo.setStatWeek(StringUtil.nullToLong(o[10]));
-		consultantBonusVo.setCreateTime(DateUtil.getZonedDateTime((Timestamp) o[11]));
-		consultantBonusVo.setSerialNum(StringUtil.null2Str(o[12]));
-		consultantBonusVo.setAmount(StringUtil.nullToDouble(o[13]));
-		consultantBonusVo.setName(StringUtil.null2Str(o[14]));
-//		consultantBonusVo.setConsultantsSerialNum(StringUtil.null2Str(o[15]));
-		return consultantBonusVo;
+	private ConsultantsBonusVo transConsultantsBonusVo(Object[] o){
+		ConsultantsBonusVo consultantsBonusVo = new ConsultantsBonusVo();
+		consultantsBonusVo.setId(StringUtil.nullToLong(o[0]));
+		consultantsBonusVo.setContractId(StringUtil.nullToLong(o[1]));
+		consultantsBonusVo.setContractAmount(StringUtil.nullToDouble(o[2]));
+		consultantsBonusVo.setConsultantsId(StringUtil.nullToLong(o[3]));
+		consultantsBonusVo.setConsultantsName(StringUtil.null2Str(o[4]));
+		consultantsBonusVo.setBonusBasis(StringUtil.nullToDouble(o[5]));
+		consultantsBonusVo.setBonusRate(StringUtil.nullToDouble(o[6]));
+		consultantsBonusVo.setConsultantsShareRate(StringUtil.nullToDouble(o[7]));
+		consultantsBonusVo.setCurrentBonus(StringUtil.nullToDouble(o[8]));
+		consultantsBonusVo.setCreator(StringUtil.null2Str(o[9]));
+		consultantsBonusVo.setStatWeek(StringUtil.nullToLong(o[10]));
+		consultantsBonusVo.setCreateTime(DateUtil.getZonedDateTime((Timestamp) o[11]));
+		consultantsBonusVo.setSerialNum(StringUtil.null2Str(o[12]));
+		consultantsBonusVo.setAmount(StringUtil.nullToDouble(o[13]));
+		consultantsBonusVo.setName(StringUtil.null2Str(o[14]));
+		return consultantsBonusVo;
 	}
 
 	@Override
-	public Page<ConsultantBonusVo> getConsultantBonusRecordPage(User user,DeptInfo deptInfo,ConsultantsBonus consultantsBonus, Pageable pageable) {
+	public Page<ConsultantsBonusVo> getConsultantsBonusRecordPage(User user,DeptInfo deptInfo,ConsultantsBonus consultantsBonus, Pageable pageable) {
 		StringBuffer fromHql = new StringBuffer();
 		StringBuffer queryHql = new StringBuffer();
 		StringBuffer countHql = new StringBuffer();
@@ -186,38 +183,37 @@ public class ConsultantBonusDaoImpl extends GenericDaoImpl<ConsultantsBonus, Lon
     			params.toArray(), 
     			pageable
     		);
-    	List<ConsultantBonusVo> returnList = new ArrayList<>();
+    	List<ConsultantsBonusVo> returnList = new ArrayList<>();
     	if(page.getContent() != null){
 			for(Object[] o : page.getContent()){
-				returnList.add(transHqlConsultantBonusVo(o));
+				returnList.add(transHqlConsultantsBonusVo(o));
 			}
 		}
     	return new PageImpl(returnList, pageable, page.getTotalElements());
 	}
 	
-	private ConsultantBonusVo transHqlConsultantBonusVo(Object[] o){
-		ConsultantBonusVo consultantBonusVo = new ConsultantBonusVo();
-		consultantBonusVo.setId(StringUtil.nullToLong(o[0]));
-		consultantBonusVo.setContractId(StringUtil.nullToLong(o[1]));
-		consultantBonusVo.setContractAmount(StringUtil.nullToDouble(o[2]));
-		consultantBonusVo.setConsultantsId(StringUtil.nullToLong(o[3]));
-		consultantBonusVo.setConsultantsName(StringUtil.null2Str(o[4]));
-		consultantBonusVo.setBonusBasis(StringUtil.nullToDouble(o[5]));
-		consultantBonusVo.setBonusRate(StringUtil.nullToDouble(o[6]));
-		consultantBonusVo.setConsultantsShareRate(StringUtil.nullToDouble(o[7]));
-		consultantBonusVo.setCurrentBonus(StringUtil.nullToDouble(o[8]));
-		consultantBonusVo.setCreator(StringUtil.null2Str(o[9]));
-		consultantBonusVo.setStatWeek(StringUtil.nullToLong(o[10]));
-		consultantBonusVo.setCreateTime((ZonedDateTime)(o[11]));
-		consultantBonusVo.setSerialNum(StringUtil.null2Str(o[12]));
-		consultantBonusVo.setAmount(StringUtil.nullToDouble(o[13]));
-		consultantBonusVo.setName(StringUtil.null2Str(o[14]));
-//		consultantBonusVo.setConsultantsSerialNum(StringUtil.null2Str(o[15]));
-		return consultantBonusVo;
+	private ConsultantsBonusVo transHqlConsultantsBonusVo(Object[] o){
+		ConsultantsBonusVo consultantsBonusVo = new ConsultantsBonusVo();
+		consultantsBonusVo.setId(StringUtil.nullToLong(o[0]));
+		consultantsBonusVo.setContractId(StringUtil.nullToLong(o[1]));
+		consultantsBonusVo.setContractAmount(StringUtil.nullToDouble(o[2]));
+		consultantsBonusVo.setConsultantsId(StringUtil.nullToLong(o[3]));
+		consultantsBonusVo.setConsultantsName(StringUtil.null2Str(o[4]));
+		consultantsBonusVo.setBonusBasis(StringUtil.nullToDouble(o[5]));
+		consultantsBonusVo.setBonusRate(StringUtil.nullToDouble(o[6]));
+		consultantsBonusVo.setConsultantsShareRate(StringUtil.nullToDouble(o[7]));
+		consultantsBonusVo.setCurrentBonus(StringUtil.nullToDouble(o[8]));
+		consultantsBonusVo.setCreator(StringUtil.null2Str(o[9]));
+		consultantsBonusVo.setStatWeek(StringUtil.nullToLong(o[10]));
+		consultantsBonusVo.setCreateTime((ZonedDateTime)(o[11]));
+		consultantsBonusVo.setSerialNum(StringUtil.null2Str(o[12]));
+		consultantsBonusVo.setAmount(StringUtil.nullToDouble(o[13]));
+		consultantsBonusVo.setName(StringUtil.null2Str(o[14]));
+		return consultantsBonusVo;
 	}
 
 	@Override
-	public List<ConsultantBonusVo> getConsultantBonusData(User user,DeptInfo deptInfo,ConsultantsBonus consultantsBonus) {
+	public List<ConsultantsBonusVo> getConsultantsBonusData(User user,DeptInfo deptInfo,ConsultantsBonus consultantsBonus) {
 		StringBuffer querySql = new StringBuffer();
 		StringBuffer whereSql = new StringBuffer();
 		querySql.append(" select m.id, m.contract_id, m.contract_amount, m.consultants_id, m.consultants_, m.bonus_basis, m.bonus_rate,"
@@ -251,17 +247,17 @@ public class ConsultantBonusDaoImpl extends GenericDaoImpl<ConsultantsBonus, Lon
 		StringBuffer orderSql = new StringBuffer();
     	orderSql.append(" order by m.id desc");
     	List<Object[]> resultList = this.queryAllSql(querySql.toString() + whereSql.toString() + orderSql.toString(), params.toArray());
-    	List<ConsultantBonusVo> returnList = new ArrayList<>();
+    	List<ConsultantsBonusVo> returnList = new ArrayList<>();
     	if(resultList != null && !resultList.isEmpty()){
 			for(Object[] o : resultList){
-				returnList.add(transConsultantBonusVo(o));
+				returnList.add(transConsultantsBonusVo(o));
 			}
 		}
     	return returnList;
 	}
 
 	@Override
-	public List<ConsultantBonusVo> getConsultantBonusDetailList(Long contractId,Long statWeek) {
+	public List<ConsultantsBonusVo> getConsultantsBonusDetailList(Long contractId,Long statWeek) {
 		StringBuffer fromHql = new StringBuffer();
 		StringBuffer queryHql = new StringBuffer();
 		StringBuffer whereHql = new StringBuffer();
@@ -283,10 +279,10 @@ public class ConsultantBonusDaoImpl extends GenericDaoImpl<ConsultantsBonus, Lon
     	List<Object[]> resultList = this.queryAllHql(
     			queryHql.toString() + fromHql.toString() + whereHql.toString(), 
     			params.toArray());
-    	List<ConsultantBonusVo> returnList = new ArrayList<>();
+    	List<ConsultantsBonusVo> returnList = new ArrayList<>();
     	if(resultList != null){
 			for(Object[] o : resultList){
-				returnList.add(transHqlConsultantBonusVo(o));
+				returnList.add(transHqlConsultantsBonusVo(o));
 			}
 		}
     	return returnList;

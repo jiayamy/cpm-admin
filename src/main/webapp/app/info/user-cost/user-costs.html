@@ -64,7 +64,6 @@
 		        </div>
 	          	<div class="col-sm-4 pull-right">
 	          		<div class="col-sm-4">
-	          			&nbsp;
 	          		</div>
 	          		<div class="col-sm-8">
 			            <span  class="width-min" >
@@ -93,15 +92,10 @@
                     <th jh-sort-by="serialNum"><span data-translate="cpmApp.userCost.serialNum">Seria lNum</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="userName"><span data-translate="cpmApp.userCost.userName">User Name</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="costMonth"><span data-translate="cpmApp.userCost.costMonth">Cost Month</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <!-- <th jh-sort-by="internalCost"><span data-translate="cpmApp.userCost.internalCost">Internal Cost</span> <span class="glyphicon glyphicon-sort"></span></th> -->
-                    <!-- <th jh-sort-by="externalCost"><span data-translate="cpmApp.userCost.externalCost">External Cost</span> <span class="glyphicon glyphicon-sort"></span></th> -->
                     <th jh-sort-by="sal"><span data-translate="cpmApp.userCost.sal">Sal</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="socialSecurityFund"><span data-translate="cpmApp.userCost.socialSecurityFund">Social Security Fund</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="otherExpense"><span data-translate="cpmApp.userCost.otherExpense">Other Expense</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="status"><span data-translate="cpmApp.userCost.status">Status</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <!-- <th jh-sort-by="creator"><span data-translate="cpmApp.userCost.creator">Creator</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="createTime"><span data-translate="cpmApp.userCost.createTime">Create Time</span> <span class="glyphicon glyphicon-sort"></span></th> -->
-                    <!-- <th jh-sort-by="updator"><span data-translate="cpmApp.userCost.updator">Updator</span> <span class="glyphicon glyphicon-sort"></span></th> -->
                     <th jh-sort-by="updateTime"><span data-translate="cpmApp.userCost.updateTime">Update Time</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th></th>
                 </tr>
@@ -109,19 +103,13 @@
             <tbody>
                 <tr ng-repeat="userCost in vm.userCosts track by userCost.id">
                     <td><a ui-sref="user-cost-detail({id:userCost.id})">{{userCost.id}}</a></td>
-                    <!-- <td>{{userCost.userId}}</td> -->
                     <td>{{userCost.serialNum}}</td>
                     <td>{{userCost.userName}}</td>
                     <td>{{userCost.costMonth}}</td>
-                    <!-- <td>{{userCost.internalCost}}</td> -->
-                    <!-- <td>{{userCost.externalCost}}</td> -->
                     <td>{{userCost.sal}}</td>
                     <td>{{userCost.socialSecurityFund}}</td>
                     <td>{{userCost.otherExpense}}</td>
                     <td>{{userCost.status}}</td>
-                    <!-- <td>{{userCost.creator}}</td>
-                    <td>{{userCost.createTime | date:'medium'}}</td> -->
-                    <!-- <td>{{userCost.updator}}</td> -->
                     <td>{{userCost.updateTime | date:'medium'}}</td>
                     <td class="text-right">
                         <div class="btn-group flex-btn-group-container">
@@ -129,19 +117,19 @@
                                     ui-sref="user-cost-detail({id:userCost.id})"
                                     class="btn btn-info btn-sm">
                                 <span class="glyphicon glyphicon-eye-open"></span>
-                                <span class="hidden-sm" data-translate="entity.action.view"></span>
+                                <span data-translate="entity.action.view"></span>
                             </button>
                             <button type="submit"
                                     ui-sref="user-cost.edit({id:userCost.id})"
                                     class="btn btn-primary btn-sm">
                                 <span class="glyphicon glyphicon-pencil"></span>
-                                <span class="hidden-sm" data-translate="entity.action.edit"></span>
+                                <span data-translate="entity.action.edit"></span>
                             </button>
                             <button type="submit"
                                     ui-sref="user-cost.delete({id:userCost.id})"
                                     class="btn btn-danger btn-sm">
                                 <span class="glyphicon glyphicon-remove-circle"></span>
-                                <span class="hidden-sm" data-translate="entity.action.delete"></span>
+                                <span data-translate="entity.action.delete"></span>
                             </button>
                         </div>
                     </td>

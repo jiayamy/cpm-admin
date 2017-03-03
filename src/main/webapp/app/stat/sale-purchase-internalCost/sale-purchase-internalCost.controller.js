@@ -21,12 +21,12 @@
         
         vm.searchQuery.statWeek = DateUtils.convertYYYYMMDDDayToDate(pagingParams.statWeek);
         vm.searchQuery.contractId = pagingParams.contractId;
-        vm.searchQuery.userNameId = pagingParams.userNameId;
+        vm.searchQuery.userId = pagingParams.userId;
         vm.searchQuery.userName = pagingParams.userName;
         vm.searchQuery.deptType = pagingParams.deptType;
         vm.contractInfos = [];
         
-        if (!vm.searchQuery.contractId && !vm.searchQuery.userNameId && !vm.searchQuery.statWeek && !vm.searchQuery.deptType){
+        if (!vm.searchQuery.contractId && !vm.searchQuery.userId && !vm.searchQuery.statWeek && !vm.searchQuery.deptType){
 			vm.haveSearch = null;
 		}else{
 			vm.haveSearch = true;
@@ -56,9 +56,6 @@
         //合同信息
         loadContractInfo();
         function loadContractInfo(){
-//        	ContractInfo.queryContractInfo({
-//        		
-//        	},
         	ProjectInfo.queryUserContract({
         		
         	},
@@ -82,28 +79,16 @@
         	});
         }
         
-//        if(vm.searchQuery.contractId){
-//        	loadAll();
-//		}
-
         function loadAll () {
         	SalePurchaseInternalCost.query({
                 contractId : pagingParams.contractId,
-                userNameId : pagingParams.userNameId,
+                userId : pagingParams.userId,
                 statWeek : pagingParams.statWeek,
                 deptType : pagingParams.deptType
             }, onSuccess, onError);
            
             function onSuccess(data, headers) {
                 vm.salePurchaseInternalCosts = data;
-//            	$rootScope.backDetail = {	//为详情页提供返回参数
-//            			contractId : pagingParams.contractId,
-//                        userNameId : pagingParams.userNameId,
-//                        userName : pagingParams.userName,
-//                        statWeek : pagingParams.statWeek,
-//                        deptType : pagingParams.deptType
-//            	};
-//            	console.log($rootScope.backDetail);
             }
             function onError(error) {
                 AlertService.error(error.data.message);
@@ -118,7 +103,7 @@
         function transition() {
             $state.transitionTo($state.$current, {
                 contractId:vm.searchQuery.contractId ? vm.searchQuery.contractId.key : "",
-                userNameId:vm.searchQuery.userNameId,
+                userId:vm.searchQuery.userId,
                 userName:vm.searchQuery.userName,
                 statWeek:vm.searchQuery.statWeek ? DateUtils.convertLocalDateToFormat(vm.searchQuery.statWeek,"yyyyMMdd"):"",
                 deptType:vm.searchQuery.deptType ? vm.searchQuery.deptType.key : ""
@@ -147,7 +132,7 @@
         	var c = 0;
         	var statWeek = DateUtils.convertLocalDateToFormat(vm.searchQuery.statWeek,"yyyyMMdd");
         	var contractId = vm.searchQuery.contractId && vm.searchQuery.contractId.key? vm.searchQuery.contractId.key : vm.searchQuery.contractId;
-        	var userNameId = vm.searchQuery.userNameId;
+        	var userId = vm.searchQuery.userId;
         	var deptType = vm.searchQuery.deptType ? vm.searchQuery.deptType.key : vm.searchQuery.deptType;
 			
         	if(!vm.searchQuery.contractId){
@@ -173,14 +158,14 @@
 				}
 				url += "contractId="+encodeURI(contractId);
 			}
-			if(userNameId){
+			if(userId){
 				if(c == 0){
 					c++;
 					url += "?";
 				}else{
 					url += "&";
 				}
-				url += "userNameId="+encodeURI(userNameId);
+				url += "userId="+encodeURI(userId);
 			}
 			if(deptType){
 				if(c == 0){
@@ -203,7 +188,7 @@
         }
         
         var unsubscribe = $rootScope.$on('cpmApp:deptInfoSelected', function(event, result) {
-        	vm.searchQuery.userNameId = result.objId;
+        	vm.searchQuery.userId = result.objId;
         	vm.searchQuery.userName = result.name;
         });
         $scope.$on('$destroy', unsubscribe);
