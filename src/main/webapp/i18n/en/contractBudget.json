@@ -34,8 +34,8 @@
             "type": "Type",
             "userId": "User Id",
             "userName": "User Name",
-            "deptId": "deptId",
-            "dept": "dept",
+            "deptId": "DeptId",
+            "dept": "Dept",
             "purchaseType": "Purchase Type",
             "budgetTotal": "Budget Total",
             "status": "Status",
@@ -43,10 +43,10 @@
             "createTime": "Create Time",
             "updator": "Updator",
             "updateTime": "Update Time",
-            "serialNum": "ContractSerialNum",
-            "name": "name",
-            "contractName": "contractName",
-            "purchaseType": "purchaseType"
+            "serialNum": "Contract Serial Num",
+            "name": "Name",
+            "contractName": "Contract Name",
+            "purchaseType": "Purchase Type"
         }
     }
 }

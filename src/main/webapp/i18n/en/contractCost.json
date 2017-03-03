@@ -28,9 +28,9 @@
             	"statue2Error":"status-deleted can't be deleted again"
             },
             "contractId": "Contract Id",
-            "serialNum": "serialNum",
-            "contractName":"contractName",
-            "contractName": "contractName",
+            "serialNum": "SerialNum",
+            "contractName":"ContractName",
+            "contractName": "ContractName",
             "budgetId": "Budget Id",
             "deptId": "Dept Id",
             "dept": "Dept",

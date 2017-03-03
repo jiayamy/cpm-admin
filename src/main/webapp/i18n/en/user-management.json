@@ -22,7 +22,7 @@
         "serialNum":"Serial Num",
         "duty":"Duty",
         "password":"Password",
-        "telephone":"Telephone号",
+        "telephone":"Telephone",
         "grade":"Grade",
         "isManager":"isManager",
         "birthYear":"Birth Year",

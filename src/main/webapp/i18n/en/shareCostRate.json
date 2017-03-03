@@ -19,7 +19,7 @@
             	"question": "Confirm to Deleted?"
 			},
             "deptType":"deptType",
-            "contractType":"合contractType",
+            "contractType":"contractType",
             "shareRate":"shareRate(%)",
             "updateTime":"updateTime"
         }

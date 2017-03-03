@@ -15,10 +15,10 @@
             	"changeError":"statYear and sales man can't be modified ",
             	"existError":"statYear and sales man already exist"
             },
-            "statYear":"statYear",
-            "userName":"userName",
-            "annualIndex":"annualIndex",
-            "updateTime":"updateTime"
+            "statYear":"StatYear",
+            "userName":"UserName",
+            "annualIndex":"Annual Index",
+            "updateTime":"Update Time"
         }
     }
 }

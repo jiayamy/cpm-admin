@@ -12,19 +12,19 @@
             	"fieldNoChange": "contract type and dept type can't be modified",
             	"hasExist": "contract type with dept type already exist"
             },
-            "created": "create Success",
-            "updated": "update Success!",
-            "deleted": "delete Success",
-            "deptType":deptType",
+            "created": "Create Success",
+            "updated": "Update Success!",
+            "deleted": "Delete Success",
+            "deptType":DeptType",
 			"delete": {
-            	"question": "confirm to delete?"
+            	"question": "Confirm to delete?"
 			},
-            "rate": "rate(%)",
-            "contractType":"contractType",
-            "creator": "creator",
-            "createTime": "createTime",
-            "updator": "updator",
-            "updateTime": "updateTime"
+            "rate": "Rate(%)",
+            "contractType":"Contract Type",
+            "creator": "Creator",
+            "createTime": "Create Time",
+            "updator": "Updator",
+            "updateTime": "UpdateTime"
         }
     }
 }

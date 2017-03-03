@@ -5,11 +5,11 @@
                 "title": "Product Prices",
                 "createLabel": "Create a new Product Price",
                 "createOrEditLabel": "Create or edit a Product Price",
-                "search": "search",
-                "hardware": "hardware",
-                "software": "software",
-                "external": "external",
-                "inside": "inside",
+                "search": "Search",
+                "hardware": "Hardware",
+                "software": "Software",
+                "external": "External",
+                "inside": "Inside",
                 "required": "Product Price Name required",
                 "required1": "Product Price Type required",
                 "required2": "Product Price Source required",
@@ -36,7 +36,7 @@
             "createTime": "Create Time",
             "updator": "Updator",
             "updateTime": "Update Time",
-            "chose": "choose"
+            "chose": "Choose"
         }
     }
 }

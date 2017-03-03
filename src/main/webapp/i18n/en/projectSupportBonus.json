@@ -8,22 +8,22 @@
             "detail": {
                 "title": "Project Support Bonus"
             },
-            "statWeek" : "statWeek",
-            "toDate": "toDate",
-            "serialNum": "serialNum",
-            "deliveryTime" : "deliveryTime",
-            "acceptanceRate": "acceptanceRate",
-            "planDays" : "planDays",
-            "realDays" : "realDays",
-            "bonusAdjustRate" : "bonusAdjustRate",
-            "bonusRate" : "bonusRate",
-            "bonusAcceptanceRate": "bonusAcceptanceRate",
-            "contractAmount": "contractAmount",
-            "taxRate": "taxRate",
-            "bonusBasis": "bonusBasis",
-            "currentBonus": "currentBonus",
-            "dept": "dept",
-            "deptType": "deptType"
+            "statWeek" : "Stat Week",
+            "toDate": "To Date",
+            "serialNum": "Serial Num",
+            "deliveryTime" : "Delivery Time",
+            "acceptanceRate": "Acceptance Rate",
+            "planDays" : "Plan Days",
+            "realDays" : "Real Days",
+            "bonusAdjustRate" : "Bonus Adjust Rate",
+            "bonusRate" : "Bonus Rate",
+            "bonusAcceptanceRate": "Bonus Acceptance Rate",
+            "contractAmount": "Contract Amount",
+            "taxRate": "Tax Rate",
+            "bonusBasis": "Bonus Basis",
+            "currentBonus": "Current Bonus",
+            "dept": "Dept",
+            "deptType": "Dept Type"
         }
     }
 }

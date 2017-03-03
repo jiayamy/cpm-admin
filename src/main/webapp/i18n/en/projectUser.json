@@ -23,17 +23,17 @@
             	"projectIdError":"projectIdError",
             	"noPerm":"no Permit"
             },
-            "projectId": "projectId",
-            "projectName":"projectName",
-            "userId": "userId",
-            "userName": "userName",
-            "userRole": "userRole",
-            "joinDay": "joinDay",
-            "leaveDay": "leaveDay",
-            "creator": "creator",
-            "createTime": "createTime",
-            "updator": "updator",
-            "updateTime": "updateTime"
+            "projectId": "Project Id",
+            "projectName":"Project Name",
+            "userId": "User Id",
+            "userName": "User Name",
+            "userRole": "User Role",
+            "joinDay": "Join Day",
+            "leaveDay": "Leave Day",
+            "creator": "Creator",
+            "createTime": "Create Time",
+            "updator": "Updator",
+            "updateTime": "Update Time"
         }
     }
 }

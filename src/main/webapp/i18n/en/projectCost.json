@@ -28,10 +28,10 @@
             	"statue2Error":"status-deleted can't be deleted again"
             },
             "projectId": "Project Id",
-            "projectName":"projectName",
+            "projectName":"Project Name",
             "name": "Name",
             "type": "Type",
-            "costDay": "costDay",
+            "costDay": "Cost Day",
             "total": "Total",
             "costDesc": "Cost Desc",
             "status": "Status",

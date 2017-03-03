@@ -23,7 +23,7 @@
             "projectId": "Project Id",
             "serialNum" : "serialNum",
             "name" : "name",
-            "finishRate" : "finishRate",
+            "finishRate" : "Finish Rate",
             "humanCost": "Human Cost",
             "payment": "Payment",
             "statWeek": "Stat Week",

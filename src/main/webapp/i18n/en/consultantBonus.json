@@ -7,19 +7,19 @@
             "contractRecord":{
             	"title":"Consultant Bonus"
             },
-            "statWeek" : "statWeek",
-            "transDetail" : "transDetail",
-            "contractSerialNum" : "contractSerialNum",
-            "contractId": "contractId",
-            "amount" : "amount",
-            "consultantsName" : "consultantsName",
-            "bonusBasis": "bonusBasis",
-            "bonusRate": "bonusRate",
-            "consultantsShareRate": "consultantsShareRate",
-            "currentBonus": "currentBonus",
-            "accumulationBonus" : "accumulationBonus",
-            "createTime": "createTime",
-            "statTime" : "statTime"
+            "statWeek" : "Stat Week",
+            "transDetail" : "Trans Detail",
+            "contractSerialNum" : "Contract SerialNum",
+            "contractId": "Contract Id",
+            "amount" : "Amount",
+            "consultantsName" : "Consultants Name",
+            "bonusBasis": "Bonus Basis",
+            "bonusRate": "Bonus Rate",
+            "consultantsShareRate": "Consultants Share Rate",
+            "currentBonus": "Current Bonus",
+            "accumulationBonus" : "Accumulation Bonus",
+            "createTime": "Create Time",
+            "statTime" : "Stat Time"
         }
     }
 }
