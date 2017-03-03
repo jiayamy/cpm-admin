@@ -2,33 +2,33 @@
     "cpmApp": {
         "salePurchaseInternalCost" : {
             "home": {
-                "title": "销售内部采购信息"
+                "title": "Sale Purchase Internal Cost"
             },
             "contractDetail":{
-            	"title":"销售内部采购信息详情"
+            	"title":"Sale Purchase Internal Cost"
             },
             "error" : {
-            	"contractSerialNumNon" : "请选择合同编号！"
+            	"contractSerialNumNon" : "Contract Serial Num needed！"
             },
-            "statWeek" : "截止日期",
-            "statTime" : "统计日期",
-            "transDetail" : "详情",
-            "contractSerialNum" : "合同编号",
-            "serialNum" : "员工编号",
-            "userName" : "员工姓名",
-            "grade" : "级别",
-            "settlementCost" : "结算成本",
-            "projectHourCost" : "项目工时",
-            "internalBudgetCost" : "内部采购成本",
-            "sal" : "工资",
-            "socialSecurityFund" : "社保公积金",
-            "otherExpense" : "其它费用",
-            "userMonthCost" : "单人月成本小计",
-            "userHourCost" : "工时成本",
-            "productCost" : "生产成本合计",
-            "grossProfit" : "生产毛利",
-            "contractId": "合同主键",
-            "deptType" : "部门类型"
+            "statWeek" : "Stat Week",
+            "statTime" : "Stat Time",
+            "transDetail" : "Trans Detail",
+            "contractSerialNum" : "Contract SerialNum",
+            "serialNum" : "SerialNum",
+            "userName" : "UserName",
+            "grade" : "Grade",
+            "settlementCost" : "Settlement Cost",
+            "projectHourCost" : "Project Hour Cost",
+            "internalBudgetCost" : "InternalBudgetCost",
+            "sal" : "Sal",
+            "socialSecurityFund" : "Social Security Fund",
+            "otherExpense" : "Other Expense",
+            "userMonthCost" : "User Month Cost",
+            "userHourCost" : "User Hour Cost",
+            "productCost" : "Product Cost",
+            "grossProfit" : "Gross Profit",
+            "contractId": "Contract Id",
+            "deptType" : "DeptType"
         }
     }
 }

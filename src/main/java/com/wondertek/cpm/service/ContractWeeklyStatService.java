@@ -33,10 +33,6 @@ import com.wondertek.cpm.security.SecurityUtils;
 public class ContractWeeklyStatService {
 
     private final Logger log = LoggerFactory.getLogger(ContractWeeklyStatService.class);
-    
-//    @Inject
-//    private ContractWeeklyStatSearchRepository contractWeeklyStatSearchRepository;
-    
     @Inject
     private UserRepository userRepository;
     
@@ -73,7 +69,6 @@ public class ContractWeeklyStatService {
     public Page<ContractWeeklyStat> search(String query, Pageable pageable) {
         log.debug("Request to search for a page of ContractWeeklyStats for query {}", query);
         Page<ContractWeeklyStat> result = null;
-//        Page<ContractWeeklyStat> result = contractWeeklyStatSearchRepository.search(queryStringQuery(query), pageable);
         return result;
     }
     

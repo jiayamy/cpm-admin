@@ -3,9 +3,7 @@ package com.wondertek.cpm.domain.vo;
 import java.io.Serializable;
 import java.time.ZonedDateTime;
 
-import javax.persistence.Column;
-
-public class ConsultantBonusVo implements Serializable {
+public class ConsultantsBonusVo implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	

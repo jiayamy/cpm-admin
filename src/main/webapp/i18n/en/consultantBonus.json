@@ -2,24 +2,24 @@
     "cpmApp": {
         "consultantBonus" : {
             "home": {
-                "title": "咨询项目信息"
+                "title": "Consultant Bonus"
             },
             "contractRecord":{
-            	"title":"咨询项目信息详情"
+            	"title":"Consultant Bonus"
             },
-            "statWeek" : "截止日期",
-            "transDetail" : "详情",
-            "contractSerialNum" : "合同编号",
-            "contractId": "合同主键",
-            "amount" : "金额",
-            "consultantsName" : "项目负责人",
-            "bonusBasis": "奖金基数",
-            "bonusRate": "奖金比例",
-            "consultantsShareRate": "项目分润比率",
-            "currentBonus": "本期奖金",
-            "accumulationBonus" : "累计已计提奖金",
-            "createTime": "创建时间",
-            "statTime" : "统计日期"
+            "statWeek" : "Stat Week",
+            "transDetail" : "Trans Detail",
+            "contractSerialNum" : "Contract SerialNum",
+            "contractId": "Contract Id",
+            "amount" : "Amount",
+            "consultantsName" : "Consultants Name",
+            "bonusBasis": "Bonus Basis",
+            "bonusRate": "Bonus Rate",
+            "consultantsShareRate": "Consultants Share Rate",
+            "currentBonus": "Current Bonus",
+            "accumulationBonus" : "Accumulation Bonus",
+            "createTime": "Create Time",
+            "statTime" : "Stat Time"
         }
     }
 }

@@ -15,7 +15,6 @@
         vm.reverse = pagingParams.ascending;
         vm.transition = transition;
         vm.itemsPerPage = paginationConstants.itemsPerPage;
-//        vm.itemsPerPage = 4;
         vm.loadAll = loadAll;
         vm.back = back;
         
@@ -24,7 +23,7 @@
         
         vm.backParams = {};	//返回时所需参数
         vm.backParams.contractId = pagingParams.contractId;
-        vm.backParams.userNameId = pagingParams.userNameId;
+        vm.backParams.userId = pagingParams.userId;
         vm.backParams.userName = pagingParams.userName;
         vm.backParams.statWeek = pagingParams.statWeek;
         vm.backParams.deptType = pagingParams.deptType;
@@ -70,7 +69,7 @@
                 sort: vm.predicate + ',' + (vm.reverse ? 'asc' : 'desc'),
                 id:vm.id,
                 contractId : pagingParams.contractId,
-	            userNameId : pagingParams.userNameId,
+                userId : pagingParams.userId,
 	            userName : pagingParams.userName,
 	            statWeek : pagingParams.statWeek,
 	            deptType : pagingParams.deptType
@@ -79,8 +78,5 @@
         function back(){
         	$state.go('sale-purchase-internalCost',vm.backParams,null);
         }
-//        function back(){
-//        	$state.go('sale-purchase-internalCost',$rootScope.backDetail,null);
-//        }
     }
 })();

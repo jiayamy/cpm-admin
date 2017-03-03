@@ -65,7 +65,7 @@ public class SalePurchaseInternalCostResource {
     @Secured(AuthoritiesConstants.ROLE_STAT_INTERNAL_COST)
 	public ResponseEntity<List<ProjectSupportCostVo>> getAllSalePurchaseInternalCost(
 				@RequestParam(name="contractId",required=false) Long contractId,
-				@RequestParam(name="userNameId",required=false) Long userId,
+				@RequestParam(name="userId",required=false) Long userId,
 				@RequestParam(name="statWeek",required=false) Long statWeek,
 				@RequestParam(name="deptType",required=false) Long deptType
 				) throws URISyntaxException{
@@ -87,9 +87,6 @@ public class SalePurchaseInternalCostResource {
 		projectSupportCost.setDeptType(deptType);
 		List<ProjectSupportCostVo> page = salePurchaseInternalCostService.getAllSalePurchaseInternalPage(projectSupportCost);
 		return new ResponseEntity<>(page,new HttpHeaders(),HttpStatus.OK);
-//		HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/sale-purchase-internalCost");
-//		return Optional.ofNullable(page.getContent()).map(result -> new ResponseEntity<>(result,headers,HttpStatus.OK))
-//				.orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
 	}
 	
 	@RequestMapping("/sale-purchase-internalCost/queryInternalCostDetail")
@@ -97,7 +94,6 @@ public class SalePurchaseInternalCostResource {
     @Secured(AuthoritiesConstants.ROLE_STAT_INTERNAL_COST)
 	public ResponseEntity<List<ProjectSupportCostVo>> queryInternalCostDetail(
 			@RequestParam(name="id",required=false) Long id,
-//			@PathVariable Long id,
 			@ApiParam Pageable pageable
 			) throws URISyntaxException{
 		log.debug("REST request to get a page of SalePurchaseInternalCost:"+id);
@@ -113,7 +109,7 @@ public class SalePurchaseInternalCostResource {
 	public void exportXls(
 			HttpServletRequest request,HttpServletResponse response,
 			@RequestParam(name="contractId",required=false) Long contractId,
-			@RequestParam(name="userNameId",required=false) Long userId,
+			@RequestParam(name="userId",required=false) Long userId,
 			@RequestParam(name="statWeek",required=false) Long statWeek,
 			@RequestParam(name="deptType",required=false) Long deptType) throws IOException{
 		log.debug("REST request to exportXls");

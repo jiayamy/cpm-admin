@@ -103,9 +103,7 @@ public class SalePurchaseInternalCostService {
     		searchCost.setContractId(projectSupportCost.getContractId());
     		
     		Page<ProjectSupportCostVo> page = projectSupportCostDao.getAllSalePurchaseInternalDetailPage(user,deptInfo,searchCost,pageable);
-    		log.debug("///////////////////////////////--pagesize:"+page.getContent().size());
     		List<ProjectSupportCostVo> returnList = new ArrayList<ProjectSupportCostVo>();
-//			Map<String,ProjectSupportCostVo> contractSerialNumMap = new HashMap<String,ProjectSupportCostVo>();	//分合同合计
     		//填充数据
     		if(page != null && page.getContent() != null){
     			for(ProjectSupportCostVo vo : page.getContent()){
@@ -119,25 +117,8 @@ public class SalePurchaseInternalCostService {
     				vo.setUserHourCost(StringUtil.getScaleDouble(vo.getUserHourCost(), 2));
     				vo.setProductCost(StringUtil.getScaleDouble(vo.getProductCost(), 2));
     				vo.setGrossProfit(StringUtil.getScaleDouble(vo.getGrossProfit(), 2));
-    				log.debug("///////////////////:"+vo);
     				returnList.add(vo);
-//				//分合同合计
-//				String key = vo.getContractSerialNum();
-//				if (!contractSerialNumMap.containsKey(key)) {
-//					ProjectSupportCostVo totalInfo = getInitProjecSupportCostTotalInfo();
-//					contractSerialNumMap.put(key, totalInfo);
-//					contractSerialNumMap.get(key).setSerialNum(vo.getContractSerialNum());
-//				}
-//				//填充合计
-//				contractSerialNumMap.get(key).setInternalBudgetCost(contractSerialNumMap.get(key).getInternalBudgetCost()+vo.getInternalBudgetCost());
-//				contractSerialNumMap.get(key).setProductCost(contractSerialNumMap.get(key).getProductCost()+vo.getProductCost());
-//				contractSerialNumMap.get(key).setGrossProfit(contractSerialNumMap.get(key).getGrossProfit()+vo.getGrossProfit());
     			}
-//			//处理contractSerialNumMap中totalInfo中的double值
-//			List<ProjectSupportCostVo> resultHandle = handleDoubleScale(contractSerialNumMap);
-//			//添加totalInfo到returnList
-//			returnList.addAll(resultHandle);
-    			log.debug("///////////////////////////////--size:"+returnList.size());
     			return new PageImpl<>(returnList, pageable, page.getTotalElements());
     		}
     	}

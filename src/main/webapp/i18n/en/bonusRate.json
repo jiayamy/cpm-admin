@@ -2,29 +2,29 @@
     "cpmApp": {
         "bonusRate" : {
             "home": {
-                "title": "奖金提成比例",
-                "createOrEditLabel": "奖金提成比例",
-                "createLabel": "新增"
+                "title": "Bonus Rate",
+                "createOrEditLabel": "Bonus Rate",
+                "createLabel": "Create New"
             },
             "save": {
-            	"requiedError": "缺少必须参数",
-            	"idNone": "id不存在",
-            	"fieldNoChange": "合同类型和部门类型不可修改",
-            	"hasExist": "对应的合同类型和部门类型已经存在"
+            	"requiedError": "param required",
+            	"idNone": "id not exist",
+            	"fieldNoChange": "contract type and dept type can't be modified",
+            	"hasExist": "contract type with dept type already exist"
             },
-            "created": "添加成功",
-            "updated": "修改成功!",
-            "deleted": "删除成功",
-            "deptType":"部门类型",
+            "created": "Create Success",
+            "updated": "Update Success!",
+            "deleted": "Delete Success",
+            "deptType":DeptType",
 			"delete": {
-            	"question": "您确定要删除此记录吗?"
+            	"question": "Confirm to delete?"
 			},
-            "rate": "提成比例(%)",
-            "contractType":"合同类型",
-            "creator": "创建者",
-            "createTime": "创建时间",
-            "updator": "更新者",
-            "updateTime": "更新时间"
+            "rate": "Rate(%)",
+            "contractType":"Contract Type",
+            "creator": "Creator",
+            "createTime": "Create Time",
+            "updator": "Updator",
+            "updateTime": "UpdateTime"
         }
     }
 }

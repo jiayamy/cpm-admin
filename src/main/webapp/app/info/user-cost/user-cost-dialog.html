@@ -8,13 +8,13 @@
 				<div class="col-sm-6">
 					<label class="control-label" data-translate="cpmApp.userCost.serialNum" for="field_serialNum">Serial Num</label>
 					<input type="text" class="form-control" name="userId" id="field_serialNum" ng-model="vm.serialNum" ng-required="true"
-						ng-disabled="vm.userCost.id" readOnly/>
+						   ng-disabled="vm.userCost.id" readOnly/>
 				</div>
 				<div class="col-sm-6">
 					<label class="control-label" data-translate="cpmApp.userCost.userName" for="field_userName">User Name</label>
 					<div class="input-group">
 						<input type="text" class="form-control" name="userName" id="field_userName" ng-model="vm.userCost.userName" ng-required="true"
-							readOnly/>
+							   readOnly/>
 						<span class="input-group-btn">
 		                	<button type="button" class="btn btn-default" ng-disabled="vm.userCost.id" ui-sref="{{vm.queryDept}}({selectType:3,showChild:true})"><i class="glyphicon glyphicon-user"></i></button>
 		                </span>
@@ -26,7 +26,7 @@
 					<label class="control-label" data-translate="cpmApp.userCost.costMonth" for="field_costMonth">Cost Month</label>
 					<div class="input-group">
 						<input type="text" class="form-control" name="costMonth" id="field_costMonth" ng-model="vm.userCost.costMonth"
-            				readOnly datetime-picker="yyyyMM" enable-time="false" ng-required="true" is-open="vm.datePickerOpenStatus.costMonth"
+            				   readOnly datetime-picker="yyyyMM" enable-time="false" ng-required="true" is-open="vm.datePickerOpenStatus.costMonth"
             				/>
             			<span class="input-group-btn">
 	                		<button type="button" class="btn btn-default" ng-disabled="vm.userCost.id" ng-click="vm.openCalendar('costMonth')"><i class="glyphicon glyphicon-calendar"></i></button>
@@ -36,45 +36,19 @@
 				<div class="col-sm-6">
 					<label class="control-label" data-translate="cpmApp.userCost.sal" for="field_sal">Sal</label>
             		<input type="number" class="form-control" name="externalCost" id="field_sal" ng-model="vm.userCost.sal"
-            		step="100" min="0" ng-required="true"/>
+            			   step="100" min="0" ng-required="true"/>
 				</div>
-				<!-- <div class="col-sm-6">
-					<label class="control-label" data-translate="cpmApp.userCost.internalCost" for="field_internalCost">Internal Cost</label>
-            		<input type="number" class="form-control" name="internalCost" id="field_internalCost" step="100" min="0" ng-required="true"
-                    ng-model="vm.userCost.internalCost"/>
-				</div> -->
 			</div>
-			<!-- <div class="form-group">
-				<div class="col-sm-6">
-					<label class="control-label" data-translate="cpmApp.userCost.externalCost" for="field_externalCost">External Cost</label>
-            		<input type="number" class="form-control" name="externalCost" id="field_externalCost" ng-model="vm.userCost.externalCost"
-            		step="100" min="0" ng-required="true" ng-disabled="true"/>
-				</div>
-				<div class="col-sm-6">
-					<label class="control-label" data-translate="cpmApp.userCost.sal" for="field_sal">Sal</label>
-            		<input type="number" class="form-control" name="externalCost" id="field_sal" ng-model="vm.userCost.sal"
-            		step="100" min="0" ng-required="true"/>
-				</div>
-				<div class="col-sm-6">
-					<label class="control-label" data-translate="cpmApp.userCost.status" for="field_status">Status</label>
-					<select class="form-control" name="status" ng-model="vm.userCost.status" id="field_status"
-	            		ng-required="true" ng-disabled="vm.projectCost.userId"
-		            	ng-options="status.val for status in vm.statuss track by status.key">
-		            	<option value="">--状态--</option>
-		         	</select>
-            		<input type="number" class="form-control" name="status" id="field_status" ng-model="vm.userCost.status"/>
-				</div>
-			</div> -->
 			<div class="form-group">
 				<div class="col-sm-6">
 					<label class="control-label" data-translate="cpmApp.userCost.socialSecurityFund" for="field_socialSecurityFund">Social Security Fund</label>
             		<input type="number" class="form-control" name="socialSecurityFund" id="field_socialSecurityFund" ng-model="vm.userCost.socialSecurityFund"
-            		step="100" min="0" ng-required="true"/>
+            			   step="100" min="0" ng-required="true"/>
 				</div>
 				<div class="col-sm-6">
 					<label class="control-label" data-translate="cpmApp.userCost.otherExpense" for="field_otherExpense">Other Expense</label>
             		<input type="number" class="form-control" name="otherExpense" id="field_otherExpense" ng-model="vm.userCost.otherExpense"
-            		step="100" min="0" ng-required="true"/>
+            			   step="100" min="0" ng-required="true"/>
 				</div>
 			</div>
 		</div>

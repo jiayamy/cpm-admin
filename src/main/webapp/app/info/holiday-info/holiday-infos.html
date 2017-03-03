@@ -75,8 +75,6 @@
                     <th jh-sort-by="id"><span data-translate="global.field.id">ID</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="currDay"><span data-translate="cpmApp.holidayInfo.currDay">Curr Day</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="type"><span data-translate="cpmApp.holidayInfo.type">Type</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <!-- <th jh-sort-by="creator"><span data-translate="cpmApp.holidayInfo.creator">Creator</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="createTime"><span data-translate="cpmApp.holidayInfo.createTime">Create Time</span> <span class="glyphicon glyphicon-sort"></span></th> -->
                     <th jh-sort-by="updator"><span data-translate="cpmApp.holidayInfo.updator">Updator</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="updateTime"><span data-translate="cpmApp.holidayInfo.updateTime">Update Time</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th></th>
@@ -87,8 +85,6 @@
                     <td><a ui-sref="holiday-info-detail({id:holidayInfo.id})">{{holidayInfo.id}}</a></td>
                     <td>{{holidayInfo.currDay}}</td>
                     <td>{{holidayInfo.type}}</td>
-                    <!-- <td>{{holidayInfo.creator}}</td>
-                    <td>{{holidayInfo.createTime | date:'medium'}}</td> -->
                     <td>{{holidayInfo.updator}}</td>
                     <td>{{holidayInfo.updateTime | date:'medium'}}</td>
                     <td class="text-right">
@@ -97,13 +93,13 @@
                                     ui-sref="holiday-info-detail({id:holidayInfo.id})"
                                     class="btn btn-info btn-sm">
                                 <span class="glyphicon glyphicon-eye-open"></span>
-                                <span class="hidden-sm" data-translate="entity.action.view"></span>
+                                <span data-translate="entity.action.view"></span>
                             </button>
                             <button type="submit"
                                     ui-sref="holiday-info.edit({id:holidayInfo.id})"
                                     class="btn btn-primary btn-sm">
                                 <span class="glyphicon glyphicon-pencil"></span>
-                                <span class="hidden-sm" data-translate="entity.action.edit"></span>
+                                <span data-translate="entity.action.edit"></span>
                             </button>
                         </div>
                     </td>

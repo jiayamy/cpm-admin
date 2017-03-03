@@ -31,9 +31,6 @@ public class HolidayInfoService {
     @Inject
     private HolidayInfoRepository holidayInfoRepository;
 
-//    @Inject
-//    private HolidayInfoSearchRepository holidayInfoSearchRepository;
-    
     @Autowired
     private HolidayInfoDao holidayInfoDao;
 
@@ -46,7 +43,6 @@ public class HolidayInfoService {
     public HolidayInfo save(HolidayInfo holidayInfo) {
         log.debug("Request to save HolidayInfo : {}", holidayInfo);
         HolidayInfo result = holidayInfoRepository.save(holidayInfo);
-//        holidayInfoSearchRepository.save(result);
         return result;
     }
 
@@ -84,7 +80,6 @@ public class HolidayInfoService {
     public void delete(Long id) {
         log.debug("Request to delete HolidayInfo : {}", id);
         holidayInfoRepository.delete(id);
-//        holidayInfoSearchRepository.delete(id);
     }
 
     /**
@@ -97,7 +92,6 @@ public class HolidayInfoService {
     public Page<HolidayInfo> search(String query, Pageable pageable) {
         log.debug("Request to search for a page of HolidayInfos for query {}", query);
         Page<HolidayInfo> result = null;
-//        Page<HolidayInfo> result = holidayInfoSearchRepository.search(queryStringQuery(query), pageable);
         return result;
     }
     

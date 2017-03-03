@@ -15,24 +15,24 @@ import com.wondertek.cpm.config.StringUtil;
 import com.wondertek.cpm.domain.ConsultantsBonus;
 import com.wondertek.cpm.domain.DeptInfo;
 import com.wondertek.cpm.domain.User;
-import com.wondertek.cpm.domain.vo.ConsultantBonusVo;
-import com.wondertek.cpm.repository.ConsultantBonusDao;
+import com.wondertek.cpm.domain.vo.ConsultantsBonusVo;
+import com.wondertek.cpm.repository.ConsultantsBonusDao;
 import com.wondertek.cpm.repository.ConsultantsBonusRepository;
 import com.wondertek.cpm.repository.UserRepository;
 import com.wondertek.cpm.security.SecurityUtils;
 
 /**
- * Service Implementation for managing ConsultantBonus.
+ * Service Implementation for managing ConsultantsBonus.
  */
 @Service
 @Transactional
-public class ConsultantBonusService {
+public class ConsultantsBonusService {
 
 	@Inject
 	private ConsultantsBonusRepository consultantsBonusRepository;
 	
 	@Inject
-	private ConsultantBonusDao consultantBonusDao;
+	private ConsultantsBonusDao consultantsBonusDao;
 	
 	@Inject
 	private UserRepository userRepository;
@@ -46,19 +46,19 @@ public class ConsultantBonusService {
      * @return
      */
     @Transactional(readOnly = true)
-	public Page<ConsultantBonusVo> getConsultantBonusPage(ConsultantsBonus consultantsBonus,Pageable pageable){
+	public Page<ConsultantsBonusVo> getConsultantsBonusPage(ConsultantsBonus consultantsBonus,Pageable pageable){
     	List<Object[]> objs = userRepository.findUserInfoByLogin(SecurityUtils.getCurrentUserLogin());
     	if (objs != null) {
 			Object[] o = objs.get(0);
 			User user = (User)o[0];
 			DeptInfo deptInfo = (DeptInfo)o[1];
-    		Page<ConsultantBonusVo> page = consultantBonusDao.getUserPage(user,deptInfo,consultantsBonus,pageable);
-    		List<ConsultantBonusVo> returnList = new ArrayList<ConsultantBonusVo>();
+    		Page<ConsultantsBonusVo> page = consultantsBonusDao.getUserPage(user,deptInfo,consultantsBonus,pageable);
+    		List<ConsultantsBonusVo> returnList = new ArrayList<ConsultantsBonusVo>();
     		//填充数据
     		if(page != null && page.getContent() != null){
-    			ConsultantBonusVo totalInfo = getInitConsultantBonusTotalInfo();
+    			ConsultantsBonusVo totalInfo = getInitConsultantsBonusTotalInfo();
     			//填充累计已计提奖金
-    			for(ConsultantBonusVo vo : page.getContent()){
+    			for(ConsultantsBonusVo vo : page.getContent()){
     				vo.setAmount(StringUtil.getScaleDouble(vo.getAmount(), 2));
     				vo.setBonusBasis(StringUtil.getScaleDouble(vo.getBonusBasis(), 2));
     				vo.setBonusRate(StringUtil.getScaleDouble(vo.getBonusRate(), 2));
@@ -76,13 +76,11 @@ public class ConsultantBonusService {
     			//处理合计的double值
         		handleDoubleScale(totalInfo);
         		//添加合计
-//        		page.getContent().add(totalInfo);
         		returnList.add(totalInfo);
     		}
-//        	return page;
     		return new PageImpl(returnList,pageable,page.getTotalElements());
     	}else{
-    		return new PageImpl(new ArrayList<ConsultantBonusVo>(), pageable, 0);
+    		return new PageImpl(new ArrayList<ConsultantsBonusVo>(), pageable, 0);
     	}
     }
     
@@ -98,20 +96,20 @@ public class ConsultantBonusService {
      * @return
      */
     @Transactional(readOnly = true)
-    public Page<ConsultantBonusVo> getConsultantBonusRecordPage(ConsultantsBonus consultantsBonus,Pageable pageable){
+    public Page<ConsultantsBonusVo> getConsultantsBonusRecordPage(ConsultantsBonus consultantsBonus,Pageable pageable){
     	List<Object[]> objs = userRepository.findUserInfoByLogin(SecurityUtils.getCurrentUserLogin());
     	if (objs != null) {
     		Object[] o = objs.get(0);
 			User user = (User)o[0];
 			DeptInfo deptInfo = (DeptInfo)o[1];
 			
-    		Page<ConsultantBonusVo> page = consultantBonusDao.getConsultantBonusRecordPage(user,deptInfo,consultantsBonus,pageable);
-    		List<ConsultantBonusVo> returnList = new ArrayList<ConsultantBonusVo>();
+    		Page<ConsultantsBonusVo> page = consultantsBonusDao.getConsultantsBonusRecordPage(user,deptInfo,consultantsBonus,pageable);
+    		List<ConsultantsBonusVo> returnList = new ArrayList<ConsultantsBonusVo>();
     		//填充数据
     		if(page != null && page.getContent() != null){
-    			ConsultantBonusVo totalInfo = getInitConsultantBonusTotalInfo();
+    			ConsultantsBonusVo totalInfo = getInitConsultantsBonusTotalInfo();
     			//填充累计已计提奖金
-    			for(ConsultantBonusVo vo : page.getContent()){
+    			for(ConsultantsBonusVo vo : page.getContent()){
     				vo.setAmount(StringUtil.getScaleDouble(vo.getAmount(), 2));
     				vo.setBonusBasis(StringUtil.getScaleDouble(vo.getBonusBasis(), 2));
     				vo.setBonusRate(StringUtil.getScaleDouble(vo.getBonusRate(), 2));
@@ -133,7 +131,7 @@ public class ConsultantBonusService {
     		}
     		return new PageImpl(returnList,pageable,page.getTotalElements());
     	}else{
-    		return new PageImpl(new ArrayList<ConsultantBonusVo>(), pageable, 0);
+    		return new PageImpl(new ArrayList<ConsultantsBonusVo>(), pageable, 0);
     	}
     }
     
@@ -145,19 +143,19 @@ public class ConsultantBonusService {
      * @return
      */
     @Transactional(readOnly = true)
-    public List<ConsultantBonusVo> getConsultantBonusData(ConsultantsBonus consultantsBonus){
+    public List<ConsultantsBonusVo> getConsultantsBonusData(ConsultantsBonus consultantsBonus){
     	List<Object[]> objs = userRepository.findUserInfoByLogin(SecurityUtils.getCurrentUserLogin());
     	if (objs != null) {
 			Object[] o = objs.get(0);
 			User user = (User)o[0];
 			DeptInfo deptInfo = (DeptInfo)o[1];
-    		List<ConsultantBonusVo> page = consultantBonusDao.getConsultantBonusData(user,deptInfo,consultantsBonus);
-    		List<ConsultantBonusVo> returnList = new ArrayList<ConsultantBonusVo>();
+    		List<ConsultantsBonusVo> page = consultantsBonusDao.getConsultantsBonusData(user,deptInfo,consultantsBonus);
+    		List<ConsultantsBonusVo> returnList = new ArrayList<ConsultantsBonusVo>();
     		//填充数据
     		if(page != null){
-    			ConsultantBonusVo totalInfo = getInitConsultantBonusTotalInfo();
+    			ConsultantsBonusVo totalInfo = getInitConsultantsBonusTotalInfo();
     			//填充累计已计提奖金
-    			for(ConsultantBonusVo vo : page){
+    			for(ConsultantsBonusVo vo : page){
     				vo.setAmount(StringUtil.getScaleDouble(vo.getAmount(), 2));
     				vo.setBonusBasis(StringUtil.getScaleDouble(vo.getBonusBasis(), 2));
     				vo.setBonusRate(StringUtil.getScaleDouble(vo.getBonusRate(), 2));
@@ -179,7 +177,7 @@ public class ConsultantBonusService {
     		}
     		return returnList;
     	}else{
-    		return new ArrayList<ConsultantBonusVo>();
+    		return new ArrayList<ConsultantsBonusVo>();
     	}
     }
     
@@ -190,8 +188,8 @@ public class ConsultantBonusService {
      * @return
      */
     @Transactional(readOnly = true)
-    public List<ConsultantBonusVo> getConsultantBonusDetailList(Long contractId,Long statWeek){
-    	List<ConsultantBonusVo> resultList =  consultantBonusDao.getConsultantBonusDetailList(contractId,statWeek);
+    public List<ConsultantsBonusVo> getConsultantsBonusDetailList(Long contractId,Long statWeek){
+    	List<ConsultantsBonusVo> resultList =  consultantsBonusDao.getConsultantsBonusDetailList(contractId,statWeek);
     	return resultList;
     }
     
@@ -199,8 +197,8 @@ public class ConsultantBonusService {
      * 初始化咨询奖金合计
      * @return
      */
-    private ConsultantBonusVo getInitConsultantBonusTotalInfo(){
-    	ConsultantBonusVo totalInfo = new ConsultantBonusVo();
+    private ConsultantsBonusVo getInitConsultantsBonusTotalInfo(){
+    	ConsultantsBonusVo totalInfo = new ConsultantsBonusVo();
     	totalInfo.setConsultantsName("合计");
     	totalInfo.setAmount(0d);		//合同金额
     	totalInfo.setBonusBasis(0d);	//奖金基数
@@ -213,7 +211,7 @@ public class ConsultantBonusService {
      * @param totaoInfo
      * @return
      */
-    private void handleDoubleScale(ConsultantBonusVo totalInfo){
+    private void handleDoubleScale(ConsultantsBonusVo totalInfo){
     	totalInfo.setAmount(StringUtil.getScaleDouble(totalInfo.getAmount(), 2));
     	totalInfo.setBonusBasis(StringUtil.getScaleDouble(totalInfo.getBonusBasis(), 2));
     	totalInfo.setCurrentBonus(StringUtil.getScaleDouble(totalInfo.getCurrentBonus(), 2));

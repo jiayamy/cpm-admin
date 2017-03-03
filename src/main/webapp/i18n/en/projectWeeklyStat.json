@@ -2,32 +2,32 @@
     "cpmApp": {
         "projectWeeklyStat" : {
             "home": {
-                "title": "项目周报统计"
+                "title": "Project Weekly Stat"
             },
             "detail": {
-                "title": "项目周报统计详情",
-                "transChart": "转变表格"
+                "title": "Project Weekly Stat",
+                "transChart": "Translate Chart"
             },
             "echarts":{
-            	"fromDate" : "起始日期",
-            	"toDate" : "结束日期",
-            	"title": "项目周报统计图表",
-            	"transDetail" : "转变详情"
+            	"fromDate" : "fromDate",
+            	"toDate" : "toDate",
+            	"title": "Project Weekly Stat",
+            	"transDetail" : "Translate Detail"
             },
-            "fromDate" : "创建日期开始",
-            "toDate" : "创建日期结束",
-            "statDate" : "统计周",
-            "transChart": "图表",
-            "transDetail" : "详情",
-            "projectSerialNum" : "项目编号",
-            "projectId": "项目主键",
-            "finishRate" : "完成率",
-            "serialNum" : "项目编号",
-            "name" : "项目名称",
-            "humanCost": "项目人工成本",
-            "payment": "项目报销成本",
-            "statWeek": "统计周",
-            "createTime": "统计日期"
+            "fromDate" : "Create Date From",
+            "toDate" : "Create Date End",
+            "statDate" : "Stat Week",
+            "transChart": "Chart",
+            "transDetail" : "Detail",
+            "projectSerialNum" : "Project SerialNum",
+            "projectId": "Project Id",
+            "serialNum" : "serialNum",
+            "name" : "name",
+            "finishRate" : "Finish Rate",
+            "humanCost": "Human Cost",
+            "payment": "Payment",
+            "statWeek": "Stat Week",
+            "createTime": "Create Time"
         }
     }
 }

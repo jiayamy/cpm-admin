@@ -2,61 +2,61 @@
     "cpmApp": {
         "projectInfo" : {
             "home": {
-                "title": "项目信息",
-                "createLabel": "新增",
-                "createOrEditLabel": "项目信息"
+                "title": "Project Info",
+                "createLabel": "Create New",
+                "createOrEditLabel": "Project Info"
             },
-            "created": "新建成功",
-            "updated": "修改成功",
-            "deleted": "删除成功",
+            "created": "create success",
+            "updated": "update success",
+            "deleted": "delete success",
             "delete": {
-                "question": "确定删除编号为[ {{ id }}]的项目信息?",
-                "status2Error":"已结项的不可删除",
-            	"status3Error":"已删除的不可再执行删除"
+                "question": "confirm to delete project :[ {{ id }}]?",
+                "status2Error":"status-closed can't be deleted",
+            	"status3Error":"status-deleted can't be deleted again"
             },
             "detail": {
-                "title": "项目信息",
-                "budgetOriginal":"采购单预算为:{{ budgetOriginal }} 元"
+                "title": "Project Info",
+                "budgetOriginal":"budget Original:{{ budgetOriginal }} ￥"
             },
             "save":{
-            	"budgetError":"采购单与合同所属不一致，请重新选择合同",
-            	"error1":"合同采购单有误",
-            	"error2":"采购单已创建项目，不可再次创建",
-            	"error3":"采购单与合同所属不一致，请重新选择合同",
-            	"error4":"项目采购单信息不可修改",
-            	"noPerm":"无此权限",
-            	"existSerialNum":"项目编号已存在，请选择其他编号",
-            	"requriedError":"必填参数为空",
-            	"endDayError":"结束日期应在开始日期之后",
-            	"statusError":"已结项或已删除的项目不可编辑"
+            	"budgetError":"budget is not accordance with contract, plz choose contract again",
+            	"error1":"contract Budget Error",
+            	"error2":"Budget already created",
+            	"error3":"budget is not accordance with contract, plz choose contract again",
+            	"error4":"Project Budget can't be modified",
+            	"noPerm":"no Permit",
+            	"existSerialNum":"Serial Num already exist, plz choose others",
+            	"requriedError":"Params Required",
+            	"endDayError":"end day should beyong start day",
+            	"statusError":"status-closed or deleted can't be modified"
             },
             "end":{
-            	"title":"结项信息",
-            	"submit":"结项",
-            	"question": "确定将编号为[ {{ id }}]的项目结项?",
-            	"status2Error":"项目状态为已结项的不可再执行结项操作",
-            	"status3Error":"项目状态为已删除的不可执行结项操作",
-            	"success":"项目结项成功"
+            	"title":"Closed Info",
+            	"submit":"Close",
+            	"question": "confirm to close project : [ {{ id }}]?",
+            	"status2Error":"status-closed can't be closed again",
+            	"status3Error":"status-delete can't be closed",
+            	"success":"success"
             },
             "finish":{
-            	"title":"项目完成率信息",
-            	"submit":"提交",
-            	"minError":"完成率最小值为0",
-            	"maxError":"完成率最大值为100",
-            	"statusError":"项目状态为已结项或已删除的不可修改完成率",
-            	"success":"设置完成率成功"
+            	"title":"Project Info",
+            	"submit":"submit",
+            	"minError":"Finish Rate should be more than 0",
+            	"maxError":"Finish Rate should be less than 100",
+            	"statusError":"status-closed or deleted can't be modified",
+            	"success":"success"
             },
             "serialNum": "Serial Num",
             "contractId": "Contract Id",
             "budgetId": "Budget Id",
-            "budgetOriginal":"采购预算",
+            "budgetOriginal":"budgetOriginal",
             "name": "Name",
             "pm": "Pm",
             "dept": "Dept",
             "startDay": "Start Day",
             "endDay": "End Day",
             "budgetTotal": "Budget Total",
-            "finishRate":"完成率(%)",
+            "finishRate":"finishRate(%)",
             "status": "Status",
             "creator": "Creator",
             "createTime": "Create Time",

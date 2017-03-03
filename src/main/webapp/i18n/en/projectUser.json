@@ -2,38 +2,38 @@
     "cpmApp": {
         "projectUser" : {
             "home": {
-                "title": "项目人员信息",
-                "createLabel": "新增",
-                "createOrEditLabel": "项目人员信息"
+                "title": "Project User",
+                "createLabel": "Create New",
+                "createOrEditLabel": "Project User"
             },
-            "created": "新增成功",
-            "updated": "更新成功",
-            "deleted": "删除成功",
+            "created": "create success",
+            "updated": "update success",
+            "deleted": "delete success",
             "delete": {
-                "question": "你确定需要删除该用户{{param}}？"
+                "question": "confirm to delete user:{{param}}？"
             },
             "detail": {
-                "title": "项目人员信息"
+                "title": "Project User"
             },
             "save":{
-            	"paramNone":"必填字段为空",
-            	"dayError":"离开日应不早于加盟日",
-            	"userIdError":"在加盟日至离开日时间内，该用户已经被安排到该项目中，勿重复添加",
-            	"idNone":"数据错误，请刷新后操作",
-            	"projectIdError":"项目不允许重新选择",
-            	"noPerm":"无权操作"
+            	"paramNone":"Params Required",
+            	"dayError":"leave day should beyond join day",
+            	"userIdError":"user Id already exist in Project between join day and leave day",
+            	"idNone":"Data Error, plz reflesh",
+            	"projectIdError":"projectIdError",
+            	"noPerm":"no Permit"
             },
-            "projectId": "项目编号",
-            "projectName":"项目名称",
-            "userId": "员工ID",
-            "userName": "员工",
-            "userRole": "角色",
-            "joinDay": "加盟日",
-            "leaveDay": "离开日",
-            "creator": "创建者",
-            "createTime": "创建时间",
-            "updator": "更新者",
-            "updateTime": "更新时间"
+            "projectId": "Project Id",
+            "projectName":"Project Name",
+            "userId": "User Id",
+            "userName": "User Name",
+            "userRole": "User Role",
+            "joinDay": "Join Day",
+            "leaveDay": "Leave Day",
+            "creator": "Creator",
+            "createTime": "Create Time",
+            "updator": "Updator",
+            "updateTime": "Update Time"
         }
     }
 }

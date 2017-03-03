@@ -6,36 +6,36 @@
                 "createLabel": "Create a new Contract Budget",
                 "createOrEditLabel": "Create or edit a Contract Budget"
             },
-            "created": "采购单新建成功",
-            "updated": "更新成功",
-            "deleted": "删除成功",
+            "created": "create Success",
+            "updated": "update Success!",
+            "deleted": "delete Success",
             "delete": {
-                "question": "确定删除该合同预算记录?"
+                "question": "confirm to delete?"
             },
             "detail": {
                 "title": "Contract Budget"
             },
             "save": {
-            	"requiedError": "缺少必须参数",
-            	"idNone": "id不存在",
-            	"contractIdError": "合同id不匹配",
-            	"statue2Error": "采购单已删除",
-            	"projectError1": "项目创建错误",
-            	"projectError2": "项目创建错误",
-            	"projectError3": "构建项目的采购单不能修改实施者",
-            	"haveDeleted": "该采购单已经被删除",
-            	"noPerm":"无权限操作"
+            	"requiedError":  "params required",
+            	"idNone": "id not exist",
+            	"contractIdError": "contractIdError",
+            	"statue2Error": "Budget already deleted",
+            	"projectError1": "projectError1",
+            	"projectError2": "projectError2",
+            	"projectError3": "projectError3",
+            	"haveDeleted": "Budget already deleted",
+            	"noPerm":"no Permit"
             },
             "button": {
-            	"createProject": "创建服务项目",
-            	"createPurchaseItem": "创建采购子项"
+            	"createProject": "createProject",
+            	"createPurchaseItem": "createPurchaseItem"
             },
             "contractId": "Contract Id",
             "type": "Type",
             "userId": "User Id",
             "userName": "User Name",
-            "deptId": "部门ID",
-            "dept": "所属部门",
+            "deptId": "DeptId",
+            "dept": "Dept",
             "purchaseType": "Purchase Type",
             "budgetTotal": "Budget Total",
             "status": "Status",
@@ -43,10 +43,10 @@
             "createTime": "Create Time",
             "updator": "Updator",
             "updateTime": "Update Time",
-            "serialNum": "合同编号",
-            "name": "采购单名称",
-            "contractName": "合同名称",
-            "purchaseType": "采购单类型"
+            "serialNum": "Contract Serial Num",
+            "name": "Name",
+            "contractName": "Contract Name",
+            "purchaseType": "Purchase Type"
         }
     }
 }

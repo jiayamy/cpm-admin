@@ -5,24 +5,24 @@
                 "title": "Product Prices",
                 "createLabel": "Create a new Product Price",
                 "createOrEditLabel": "Create or edit a Product Price",
-                "search": "根据产品名称筛选",
-                "hardware": "硬件",
-                "software": "软件",
-                "external": "外部",
-                "inside": "内部",
-                "required": "定价单名称必填",
-                "required1": "定价单类型必选",
-                "required2": "定件单商品来源必选",
-                "required3": "商品的单位必填",
-                "required4": "商品的价格必填",
-                "search": "--选择--",
-                "productPriceHaveExit": "该定价单已经存在"
+                "search": "Search",
+                "hardware": "Hardware",
+                "software": "Software",
+                "external": "External",
+                "inside": "Inside",
+                "required": "Product Price Name required",
+                "required1": "Product Price Type required",
+                "required2": "Product Price Source required",
+                "required3": "Product Price Units required",
+                "required4": "Product Price Price required",
+                "search": "--choose--",
+                "productPriceHaveExit": "Product Price already exist"
             },
-            "created": "产品定单创建成功",
-            "updated": "产品定单更新成功",
-            "deleted": "产品定单删除成功",
+            "created": "create success",
+            "updated": "update success",
+            "deleted": "delete success",
             "delete": {
-                "question": "您确定要删除产品定价单?"
+                "question": "confirm to delete?"
             },
             "detail": {
                 "title": "Product Price"
@@ -36,7 +36,7 @@
             "createTime": "Create Time",
             "updator": "Updator",
             "updateTime": "Update Time",
-            "chose": "选择"
+            "chose": "Choose"
         }
     }
 }

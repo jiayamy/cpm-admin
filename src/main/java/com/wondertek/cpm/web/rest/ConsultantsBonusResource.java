@@ -38,36 +38,36 @@ import com.wondertek.cpm.ExcelWrite;
 import com.wondertek.cpm.config.DateUtil;
 import com.wondertek.cpm.config.StringUtil;
 import com.wondertek.cpm.domain.ConsultantsBonus;
-import com.wondertek.cpm.domain.vo.ConsultantBonusVo;
+import com.wondertek.cpm.domain.vo.ConsultantsBonusVo;
 import com.wondertek.cpm.security.AuthoritiesConstants;
-import com.wondertek.cpm.service.ConsultantBonusService;
+import com.wondertek.cpm.service.ConsultantsBonusService;
 import com.wondertek.cpm.web.rest.util.PaginationUtil;
 
 import io.swagger.annotations.ApiParam;
 
 /**
- * REST controller for managing ConsultantBonus.
+ * REST controller for managing ConsultantsBonus.
  */
 @RestController
 @RequestMapping("/api")
-public class ConsultantBonusResource {
+public class ConsultantsBonusResource {
 
-	private final Logger log = LoggerFactory.getLogger(ConsultantBonusResource.class);
+	private final Logger log = LoggerFactory.getLogger(ConsultantsBonusResource.class);
 	
 	@Inject
-	private ConsultantBonusService consultantBonusService;
+	private ConsultantsBonusService consultantsBonusService;
 	
 	/**
-     * GET  /consultant-bonus : get all the ConsultantBonusVo.
+     * GET  /consultant-bonus : get all the ConsultantsBonusVo.
      *
      * @param pageable the pagination information
-     * @return the ResponseEntity with status 200 (OK) and the list of ConsultantBonusVo in body
+     * @return the ResponseEntity with status 200 (OK) and the list of ConsultantsBonusVo in body
      * @throws URISyntaxException if there is an error to generate the pagination HTTP headers
      */
     @GetMapping("/consultant-bonus")
     @Timed
     @Secured(AuthoritiesConstants.ROLE_STAT_CONSULTANT_BONUS)
-    public ResponseEntity<List<ConsultantBonusVo>> getAllConsultantsBonus(
+    public ResponseEntity<List<ConsultantsBonusVo>> getAllConsultantsBonus(
     		@RequestParam(value="contractId",required = false) Long contractId,
     		@RequestParam(value="consultantsId",required = false) Long consultantManId,
     		@RequestParam(value="statWeek",required = false) String statWeek,
@@ -86,7 +86,7 @@ public class ConsultantBonusResource {
         searchParams.setContractId(contractId);
         searchParams.setConsultantsId(consultantManId);
         searchParams.setStatWeek(StringUtil.nullToLong(statWeek));
-        Page<ConsultantBonusVo> page = consultantBonusService.getConsultantBonusPage(searchParams, pageable);
+        Page<ConsultantsBonusVo> page = consultantsBonusService.getConsultantsBonusPage(searchParams, pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/consultant-bonus");
         return Optional.ofNullable(page.getContent()).map(result -> new ResponseEntity<>(result,headers,HttpStatus.OK))
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
@@ -95,15 +95,15 @@ public class ConsultantBonusResource {
     /**
      * GET  /consultant-bonus/:id : get the "id" ConsultantsBonus.
      *
-     * @param id the id of the consultantBonus to retrieve
-     * @return the ResponseEntity with status 200 (OK) and with body the consultantBonus, or with status 404 (Not Found)
+     * @param id the id of the consultantsBonus to retrieve
+     * @return the ResponseEntity with status 200 (OK) and with body the consultantsBonus, or with status 404 (Not Found)
      */
     @GetMapping("/consultant-bonus/{id}")
     @Timed
     @Secured(AuthoritiesConstants.ROLE_STAT_CONSULTANT_BONUS)
-    public ResponseEntity<ConsultantsBonus> getConsultantBonus(@PathVariable Long id) {
-        log.debug("REST request to get ConsultantBonus : {}", id);
-        ConsultantsBonus consultantsBonus = consultantBonusService.findOne(id);
+    public ResponseEntity<ConsultantsBonus> getConsultantsBonus(@PathVariable Long id) {
+        log.debug("REST request to get ConsultantsBonus : {}", id);
+        ConsultantsBonus consultantsBonus = consultantsBonusService.findOne(id);
         return Optional.ofNullable(consultantsBonus)
             .map(result -> new ResponseEntity<>(
                 result,
@@ -114,7 +114,7 @@ public class ConsultantBonusResource {
     @GetMapping("/consultant-bonus/queryConsultantRecord")
     @Timed
     @Secured(AuthoritiesConstants.ROLE_STAT_CONSULTANT_BONUS)
-    public ResponseEntity<List<ConsultantBonusVo>> queryConsultantRecord(
+    public ResponseEntity<List<ConsultantsBonusVo>> queryConsultantRecord(
     			@RequestParam(value="contId",required = false) Long contractId,
     			@ApiParam Pageable pageable) throws URISyntaxException{
     	log.debug("queryChart-----contractId:"+contractId);
@@ -128,7 +128,7 @@ public class ConsultantBonusResource {
     	ConsultantsBonus searchParams = new ConsultantsBonus();
     	searchParams.setContractId(contractId);
     	searchParams.setStatWeek(statWeek);
-    	Page<ConsultantBonusVo> page = consultantBonusService.getConsultantBonusRecordPage(searchParams, pageable);
+    	Page<ConsultantsBonusVo> page = consultantsBonusService.getConsultantsBonusRecordPage(searchParams, pageable);
     	HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/consultant-bonus/queryConsultantRecord");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
@@ -164,7 +164,7 @@ public class ConsultantBonusResource {
         searchParams.setContractId(contractId);
         searchParams.setConsultantsId(consultantsId);
         searchParams.setStatWeek(statWeek);
-    	List<ConsultantBonusVo> page = consultantBonusService.getConsultantBonusData(searchParams);
+    	List<ConsultantsBonusVo> page = consultantsBonusService.getConsultantsBonusData(searchParams);
     	//拼接sheet数据
     	//标题
     	String[] heads = new String[]{
@@ -209,7 +209,7 @@ public class ConsultantBonusResource {
     	Date date = new Date();
     	date = DateUtil.getSundayOfDay(date);
     	Long statWeek = StringUtil.stringToLong(DateUtil.formatDate(DateUtil.DATE_YYYYMMDD_PATTERN, date));
-    	List<ConsultantBonusVo> page = consultantBonusService.getConsultantBonusDetailList(contractId,statWeek);
+    	List<ConsultantsBonusVo> page = consultantsBonusService.getConsultantsBonusDetailList(contractId,statWeek);
     	//拼接sheet数据
     	//标题
     	String[] heads = new String[]{
@@ -222,7 +222,7 @@ public class ConsultantBonusResource {
     			"本期奖金",
     			"累计已计提奖金"
     	};
-    	String fileName = "consultantBonus_detail.xlsx";
+    	String fileName = "consultantsBonus_detail.xlsx";
     	//写入sheet
     	ServletOutputStream outputStream = response.getOutputStream();
     	response.setHeader("Content-Disposition","attachment;filename=" + fileName);
@@ -242,7 +242,7 @@ public class ConsultantBonusResource {
     /**
      * 处理sheet数据
      */
-	private void handleSheetData(List<ConsultantBonusVo> page,int startRow,ExcelWrite excelWrite) {
+	private void handleSheetData(List<ConsultantsBonusVo> page,int startRow,ExcelWrite excelWrite) {
 		//除表头外的其他数据单元格格式
     	Integer[] cellType = new Integer[]{
     			Cell.CELL_TYPE_STRING,
@@ -267,7 +267,7 @@ public class ConsultantBonusResource {
 		XSSFCellStyle cellStyle = wb.createCellStyle();  
 		cellStyle.setDataFormat(HSSFDataFormat.getBuiltinFormat("0.00%")); 
 		//数据
-		for(ConsultantBonusVo vo : page){
+		for(ConsultantsBonusVo vo : page){
 			i++;
 			row = sheet.createRow(i + startRow-1);
 			

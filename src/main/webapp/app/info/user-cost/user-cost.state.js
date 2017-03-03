@@ -32,7 +32,6 @@
                     value: 'id,desc',
                     squash: true
                 },
-//                search: null
                 serialNum:null,
                 userName:null,
                 costMonth:null,
@@ -45,7 +44,6 @@
                         sort: $stateParams.sort,
                         predicate: PaginationUtil.parsePredicate($stateParams.sort),
                         ascending: PaginationUtil.parseAscending($stateParams.sort),
-//                        search: $stateParams.search
                         serialNum:$stateParams.serialNum,
                         userName:$stateParams.userName,
                         costMonth:$stateParams.costMonth,
@@ -331,17 +329,11 @@
             resolve: {
             	translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                     $translatePartialLoader.addPart('userCost');
-//                    $translatePartialLoader.addPart('deptInfo');
                     $translatePartialLoader.addPart('global');
                     return $translate.refresh();
                 }],
-//            ,
-//                entity: ['$stateParams','UserCost', function($stateParams,UserCost) {
-//                  return UserCost.uploadExcel({id : $stateParams.id}).$promise;
-//                  }],
                 previousState: ["$state", function ($state) {
                 	var currentStateData = {
-//                		queryDept:'user-cost.edit.queryDept',
             			name: $state.current.name || 'user-cost',
             			params: $state.params,
             			url: $state.href($state.current.name, $state.params)

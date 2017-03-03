@@ -52,7 +52,6 @@ public class PurchaseItemService {
     public PurchaseItem save(PurchaseItem purchaseItem) {
         log.debug("Request to save PurchaseItem : {}", purchaseItem);
         PurchaseItem result = purchaseItemRepository.save(purchaseItem);
-//        purchaseItemSearchRepository.save(result);
         return result;
     }
 
@@ -115,7 +114,6 @@ public class PurchaseItemService {
     public Page<PurchaseItem> search(String query, Pageable pageable) {
         log.debug("Request to search for a page of PurchaseItems for query {}", query);
         Page<PurchaseItem> result = null;
-//        Page<PurchaseItem> result = purchaseItemSearchRepository.search(queryStringQuery(query), pageable);
         return result;
     }
 

@@ -2,61 +2,61 @@
     "cpmApp": {
         "userCost" : {
             "home": {
-                "title": "员工成本",
-                "createLabel": "新增",
-                "createOrEditLabel": "添加员工成本",
-                "editLabel": "编辑员工成本",
+                "title": "User Cost",
+                "createLabel": "Create New",
+                "createOrEditLabel": "CreateOrEdit",
+                "editLabel": "Edit",
                 "search": "Search for User Cost",
-                "import": "导入Excel"
+                "import": "import Excel"
             },
-            "created": "新增成功",
-            "updated": "更新成功",
-            "deleted": "删除成功",
-            "uploaded": "上传成功",
+            "created": "create success",
+            "updated": "update success",
+            "deleted": "delete success",
+            "uploaded": "upload success",
             "delete": {
-                "question": "确定删除该员工成本信息 ?",
-                "statusError": "删除状态的数据不可以再执行删除操作"
+                "question": "confirm to delete?",
+                "statusError": "unable to delete deleted-status ones"
             },
             "detail": {
-                "title": "员工成本详情"
+                "title": "User Cost Detail"
             },
             "save": {
-            	"requriedError": "必填参数不能为空",
-            	"existError":"员工成本已存在",
-            	"noExistError":"数据错误，请刷新重试",
-            	"statusError": "删除状态不能编辑",
-            	"userNameError": "不能修改员工姓名"
+            	"requriedError": "Params Required",
+            	"existError":"User Cost already exist",
+            	"noExistError":"no Exist Error, plz reflesh",
+            	"statusError": "can't be edit in status-deleted ",
+            	"userNameError": "unable to edit userName"
             },
             "upload":{
-            	"requiredError":"上传文件数据有误，请重新核对",
-            	"dataError":"第{{sheetNum}}个sheet的第{{rowNum}}行第{{columnNum}}列数据存在问题",
-            	"serialNumError":"第{{sheetNum}}个sheet的第{{rowNum}}行第{{columnNum}}列员工不存在，请添加",
-            	"recordExistError":"第{{sheetNum}}个sheet的第{{rowNum}}行第{{columnNum}}列员工对应年月记录已存在，请勿重复添加",
-            	"up": "上传",
-            	"upError": "上传失败",
-            	"nonFile":"文件不能为空！",
-            	"numFile":"选择的文件数量不能大于1！",
-            	"handleError":"处理出错",
-            	"handleSucc":"处理成功"
+            	"requiredError":"upload files's data error, plz confirm again",
+            	"dataError":"No.{{sheetNum}}sheet's No.{{rowNum}}row's No.{{columnNum}}column's data error",
+            	"serialNumError":"No.{{sheetNum}}sheet's No.{{rowNum}}row's No.{{columnNum}}column's user not exist，plz add",
+            	"recordExistError":"No.{{sheetNum}}sheet's No.{{rowNum}}row's No.{{columnNum}}column's user's month record already exist",
+            	"up": "upload",
+            	"upError": "upload failed",
+            	"nonFile":"no Files！",
+            	"numFile":"Files uploaded should be less than 1！",
+            	"handleError":"Handle Error",
+            	"handleSucc":"Handle Success"
             },
             "get":{
-            	"userIdNon":"员工Id参数为空",
-            	"userNon":"无与此Id对应的员工号"
+            	"userIdNon":"user's Id is none",
+            	"userNon":"No user belongs to this Id"
             },
-            "userId": "员工号",
-            "serialNum": "员工号",
-            "userName": "员工姓名",
-            "costMonth": "所属年月",
-            "internalCost": "内部成本",
-            "externalCost": "外部成本",
-            "sal": "工资",
-            "socialSecurityFund": "社保公积金",
-            "otherExpense": "其他",
-            "status": "状态",
-            "creator": "创建者",
-            "createTime": "创建时间",
-            "updator": "更新者",
-            "updateTime": "更新时间"
+            "userId": "User Id",
+            "serialNum": "Seria lNum",
+            "userName": "UserName",
+            "costMonth": "Cost Month",
+            "internalCost": "Internal Cost",
+            "externalCost": "External Cost",
+            "sal": "sal",
+            "socialSecurityFund": "Social Security Fund",
+            "otherExpense": "Other Expense",
+            "status": "Status",
+            "creator": "Creator",
+            "createTime": "Create Time",
+            "updator": "Updator",
+            "updateTime": "Update Time"
         }
     }
 }

@@ -15,7 +15,6 @@ import com.wondertek.cpm.domain.ProductPrice;
 import com.wondertek.cpm.domain.vo.ProductPriceVo;
 import com.wondertek.cpm.repository.ProductPriceDao;
 import com.wondertek.cpm.repository.ProductPriceRepository;
-import com.wondertek.cpm.repository.UserRepository;
 
 
 
@@ -30,10 +29,6 @@ public class ProductPriceService {
     
     @Inject
     private ProductPriceRepository productPriceRepository;
-
-//    @Inject
-//    private ProductPriceSearchRepository productPriceSearchRepository;
-    
     @Inject
     private ProductPriceDao productPriceDao;
     
@@ -46,7 +41,6 @@ public class ProductPriceService {
     public ProductPrice save(ProductPrice productPrice) {
         log.debug("Request to save ProductPrice : {}", productPrice);
         ProductPrice result = productPriceRepository.save(productPrice);
-//        productPriceSearchRepository.save(result);
         return result;
     }
 
@@ -84,7 +78,6 @@ public class ProductPriceService {
     public void delete(Long id) {
         log.debug("Request to delete ProductPrice : {}", id);
         productPriceRepository.delete(id);
-//        productPriceSearchRepository.delete(id);
     }
 
     /**
@@ -97,7 +90,6 @@ public class ProductPriceService {
     public Page<ProductPrice> search(String query, Pageable pageable) {
         log.debug("Request to search for a page of ProductPrices for query {}", query);
         Page<ProductPrice> result = null;
-//        Page<ProductPrice> result = productPriceSearchRepository.search(queryStringQuery(query), pageable);
         return result;
     }
 
