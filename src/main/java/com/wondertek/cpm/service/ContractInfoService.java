@@ -39,9 +39,6 @@ public class ContractInfoService {
     @Inject
     private ContractInfoRepository contractInfoRepository;
 
-//    @Inject
-//    private ContractInfoSearchRepository contractInfoSearchRepository;
-    
     @Inject
     private ContractInfoDao contractInfoDao;
     
@@ -59,7 +56,6 @@ public class ContractInfoService {
     public ContractInfo save(ContractInfo contractInfo) {
         log.debug("Request to save ContractInfo : {}", contractInfo);
         ContractInfo result = contractInfoRepository.save(contractInfo);
-//        contractInfoSearchRepository.save(result);
         return result;
     }
 
@@ -115,7 +111,6 @@ public class ContractInfoService {
     public Page<ContractInfo> search(String query, Pageable pageable) {
     	log.debug("Request to search for a page of ContractInfos for query {}", query);
     	Page<ContractInfo> result = null;
-//        Page<ContractInfo> result = contractInfoSearchRepository.search(queryStringQuery(query), pageable);
         return result;
     }
     @Transactional(readOnly = true) 

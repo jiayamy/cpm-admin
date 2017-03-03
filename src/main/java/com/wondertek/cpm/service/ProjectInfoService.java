@@ -40,13 +40,8 @@ public class ProjectInfoService {
     private ProjectInfoRepository projectInfoRepository;
     @Inject
     private UserRepository userRepository;
-    
     @Inject
     private ProjectFinishInfoRepository projectFinishInfoRepository;
-    
-//    @Inject
-//    private ProjectInfoSearchRepository projectInfoSearchRepository;
-    
     @Autowired
     private ProjectInfoDao projectInfoDao;
 
@@ -59,7 +54,6 @@ public class ProjectInfoService {
     public ProjectInfo save(ProjectInfo projectInfo) {
         log.debug("Request to save ProjectInfo : {}", projectInfo);
         ProjectInfo result = projectInfoRepository.save(projectInfo);
-//        projectInfoSearchRepository.save(result);
         return result;
     }
 
@@ -103,8 +97,6 @@ public class ProjectInfoService {
         	projectInfo.setUpdator(SecurityUtils.getCurrentUserLogin());
         	projectInfoRepository.save(projectInfo);
         }
-//        projectInfoRepository.delete(id);
-//        projectInfoSearchRepository.delete(id);
     }
 
     /**
@@ -117,7 +109,6 @@ public class ProjectInfoService {
     public Page<ProjectInfo> search(String query, Pageable pageable) {
         log.debug("Request to search for a page of ProjectInfos for query {}", query);
         Page<ProjectInfo> result = null;
-//        Page<ProjectInfo> result = projectInfoSearchRepository.search(queryStringQuery(query), pageable);
         return result;
     }
     /**

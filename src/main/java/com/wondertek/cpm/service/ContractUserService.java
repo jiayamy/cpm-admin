@@ -38,10 +38,6 @@ public class ContractUserService {
     
     @Inject
     private ContractUserRepository contractUserRepository;
-
-//    @Inject
-//    private ContractUserSearchRepository contractUserSearchRepository;
-    
     @Inject
     private UserRepository userRepository;
     
@@ -57,7 +53,6 @@ public class ContractUserService {
     public ContractUser save(ContractUser contractUser) {
         log.debug("Request to save ContractUser : {}", contractUser);
         ContractUser result = contractUserRepository.save(contractUser);
-//        contractUserSearchRepository.save(result);
         return result;
     }
 
@@ -119,7 +114,6 @@ public class ContractUserService {
     public Page<ContractUser> search(String query, Pageable pageable) {
         log.debug("Request to search for a page of ContractUsers for query {}", query);
         Page<ContractUser> result = null;
-//        Page<ContractUser> result = contractUserSearchRepository.search(queryStringQuery(query), pageable);
         return result;
     }
     @Transactional(readOnly = true) 

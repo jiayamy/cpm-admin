@@ -35,9 +35,6 @@ public class ContractReceiveService {
     private final Logger log = LoggerFactory.getLogger(ContractReceiveService.class);
     @Inject
     private ContractReceiveRepository contractReceiveRepository;
-
-//    @Inject
-//    private ContractReceiveSearchRepository contractReceiveSearchRepository;
     @Inject
     private ContractReceiveDao contractReceiveDao;
     @Inject

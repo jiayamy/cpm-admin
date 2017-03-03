@@ -45,9 +45,6 @@ public class ProjectUserService {
     @Autowired
     private ProjectUserDao projectUserDao;
 
-//    @Inject
-//    private ProjectUserSearchRepository projectUserSearchRepository;
-
     /**
      * Save a projectUser.
      *
@@ -57,7 +54,6 @@ public class ProjectUserService {
     public ProjectUser save(ProjectUser projectUser) {
         log.debug("Request to save ProjectUser : {}", projectUser);
         ProjectUser result = projectUserRepository.save(projectUser);
-//        projectUserSearchRepository.save(result);
         return result;
     }
 
@@ -113,7 +109,6 @@ public class ProjectUserService {
         		projectUserRepository.save(projectUser);
         	}
         }
-//        projectUserSearchRepository.delete(id);
     }
 
     /**
@@ -126,7 +121,6 @@ public class ProjectUserService {
     public Page<ProjectUser> search(String query, Pageable pageable) {
         log.debug("Request to search for a page of ProjectUsers for query {}", query);
         Page<ProjectUser> result = null;
-//        Page<ProjectUser> result = projectUserSearchRepository.search(queryStringQuery(query), pageable);
         return result;
     }
     @Transactional(readOnly = true)

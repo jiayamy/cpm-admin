@@ -31,10 +31,6 @@ public class UserCostService {
     
     @Inject
     private UserCostRepository userCostRepository;
-
-//    @Inject
-//    private UserCostSearchRepository userCostSearchRepository;
-    
     @Autowired
     private UserCostDao userCostDao;
 
@@ -47,7 +43,6 @@ public class UserCostService {
     public UserCost save(UserCost userCost) {
         log.debug("Request to save UserCost : {}", userCost);
         UserCost result = userCostRepository.save(userCost);
-//        userCostSearchRepository.save(result);
         return result;
     }
 
@@ -103,7 +98,6 @@ public class UserCostService {
     public Page<UserCost> search(String query, Pageable pageable) {
         log.debug("Request to search for a page of UserCosts for query {}", query);
         Page<UserCost> result = null;
-//        Page<UserCost> result = userCostSearchRepository.search(queryStringQuery(query), pageable);
         return result;
     }
     

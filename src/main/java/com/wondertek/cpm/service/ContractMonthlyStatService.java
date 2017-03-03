@@ -35,9 +35,6 @@ public class ContractMonthlyStatService {
 	
 	private final Logger log = LoggerFactory.getLogger(ContractMonthlyStatService.class);
 	
-//	@Inject
-//	private ContractMonthlyStatSearchRepository contractMonthlyStatSearchRepository;
-	
 	@Inject
     private UserRepository userRepository;
 	
@@ -74,7 +71,6 @@ public class ContractMonthlyStatService {
     public Page<ContractMonthlyStat> search(String query, Pageable pageable) {
         log.debug("Request to search for a page of ContractMonthlyStat for query {}", query);
         Page<ContractMonthlyStat> result = null;
-//        Page<ContractMonthlyStat> result = contractMonthlyStatSearchRepository.search(queryStringQuery(query), pageable);
         return result;
     }
     

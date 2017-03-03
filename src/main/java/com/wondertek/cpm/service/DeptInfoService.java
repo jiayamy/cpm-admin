@@ -43,9 +43,6 @@ public class DeptInfoService {
     
     @Inject
     private UserRepository userRepository;
-//    @Inject
-//    private DeptInfoSearchRepository deptInfoSearchRepository;
-
     /**
      * Save a deptInfo.
      *
@@ -55,7 +52,6 @@ public class DeptInfoService {
     public DeptInfo save(DeptInfo deptInfo) {
         log.debug("Request to save DeptInfo : {}", deptInfo);
         DeptInfo result = deptInfoRepository.save(deptInfo);
-//        deptInfoSearchRepository.save(result);
         return result;
     }
 
@@ -99,7 +95,6 @@ public class DeptInfoService {
         	deptInfo.setUpdator(SecurityUtils.getCurrentUserLogin());
         	deptInfoRepository.save(deptInfo);
         }
-//		deptInfoSearchRepository.delete(id);
     }
 
     /**
@@ -112,7 +107,6 @@ public class DeptInfoService {
     public Page<DeptInfo> search(String query, Pageable pageable) {
         log.debug("Request to search for a page of DeptInfos for query {}", query);
         Page<DeptInfo> result = null;
-//        Page<DeptInfo> result = deptInfoSearchRepository.search(queryStringQuery(query), pageable);
         return result;
     }
     /**

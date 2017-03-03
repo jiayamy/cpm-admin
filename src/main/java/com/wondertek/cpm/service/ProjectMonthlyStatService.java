@@ -34,10 +34,6 @@ public class ProjectMonthlyStatService {
 	
 	@Inject
 	private ProjectMonthlyStatDao projectMonthlyStatDao;
-	
-//	@Inject
-//	private ProjectMonthlyStatSearchRepository projectMonthlyStatSearchRepository;
-	
 	@Inject
     private UserRepository userRepository;
 	
@@ -71,7 +67,6 @@ public class ProjectMonthlyStatService {
     public Page<ProjectMonthlyStat> search(String query, Pageable pageable) {
         log.debug("Request to search for a page of ProjectMonthlyStat for query {}", query);
         Page<ProjectMonthlyStat> result = null;
-//        Page<ProjectMonthlyStat> result = projectMonthlyStatSearchRepository.search(queryStringQuery(query), pageable);
         return result;
     }
     

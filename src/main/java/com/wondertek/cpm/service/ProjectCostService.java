@@ -40,9 +40,6 @@ public class ProjectCostService {
     @Inject
     private ProjectCostDao projectCostDao;
 
-//    @Inject
-//    private ProjectCostSearchRepository projectCostSearchRepository;
-
     /**
      * Save a projectCost.
      *
@@ -52,7 +49,6 @@ public class ProjectCostService {
     public ProjectCost save(ProjectCost projectCost) {
         log.debug("Request to save ProjectCost : {}", projectCost);
         ProjectCost result = projectCostRepository.save(projectCost);
-//        projectCostSearchRepository.save(result);
         return result;
     }
     /**
@@ -114,7 +110,6 @@ public class ProjectCostService {
     public Page<ProjectCost> search(String query, Pageable pageable) {
         log.debug("Request to search for a page of ProjectCosts for query {}", query);
         Page<ProjectCost> result = null;
-//        Page<ProjectCost> result = projectCostSearchRepository.search(queryStringQuery(query), pageable);
         return result;
     }
 

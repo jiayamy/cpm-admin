@@ -39,9 +39,6 @@ public class ContractBudgetService {
     @Inject
     private ContractBudgetRepository contractBudgetRepository;
     
-//    @Inject
-//    private ContractBudgetSearchRepository contractBudgetSearchRepository;
-    
     @Inject
     private ContractBudgetDao contractBudgetDao;
 
@@ -54,7 +51,6 @@ public class ContractBudgetService {
     public ContractBudget save(ContractBudget contractBudget) {
         log.debug("Request to save ContractBudget : {}", contractBudget);
         ContractBudget result = contractBudgetRepository.save(contractBudget);
-//        contractBudgetSearchRepository.save(result);
         return result;
     }
 
@@ -110,7 +106,6 @@ public class ContractBudgetService {
     public Page<ContractBudget> search(String query, Pageable pageable) {
         log.debug("Request to search for a page of ContractBudgets for query {}", query);
         Page<ContractBudget> result = null;
-//        Page<ContractBudget> result = contractBudgetSearchRepository.search(queryStringQuery(query), pageable);
         return result;
     }
 

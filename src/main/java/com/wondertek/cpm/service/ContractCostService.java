@@ -35,8 +35,6 @@ public class ContractCostService {
     
     @Inject
     private ContractCostRepository contractCostRepository;
-//    @Inject
-//    private ContractCostSearchRepository contractCostSearchRepository;
     @Inject
     private UserRepository userRepository;
     @Inject
@@ -51,7 +49,6 @@ public class ContractCostService {
     public ContractCost save(ContractCost contractCost) {
         log.debug("Request to save ContractCost : {}", contractCost);
         ContractCost result = contractCostRepository.save(contractCost);
-        //contractCostSearchRepository.save(result);
         return result;
     }
 
@@ -107,7 +104,6 @@ public class ContractCostService {
     public Page<ContractCost> search(String query, Pageable pageable) {
         log.debug("Request to search for a page of ContractCosts for query {}", query);
         Page<ContractCost> result = null;
-//        Page<ContractCost> result = contractCostSearchRepository.search(queryStringQuery(query), pageable);
         return result;
     }
     /**

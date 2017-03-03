@@ -50,10 +50,6 @@ public class UserTimesheetService {
     
     @Inject
     private UserTimesheetRepository userTimesheetRepository;
-
-//    @Inject
-//    private UserTimesheetSearchRepository userTimesheetSearchRepository;
-    
     @Autowired
     private UserTimesheetDao userTimesheetDao;
     @Inject
@@ -82,7 +78,6 @@ public class UserTimesheetService {
     public UserTimesheet save(UserTimesheet userTimesheet) {
         log.debug("Request to save UserTimesheet : {}", userTimesheet);
         UserTimesheet result = userTimesheetRepository.save(userTimesheet);
-//        userTimesheetSearchRepository.save(result);
         return result;
     }
 
@@ -126,7 +121,6 @@ public class UserTimesheetService {
         	userTimesheet.setUpdator(SecurityUtils.getCurrentUserLogin());
         	userTimesheetRepository.save(userTimesheet);
         }
-//        userTimesheetSearchRepository.delete(id);
     }
 
     /**
@@ -139,7 +133,6 @@ public class UserTimesheetService {
     public Page<UserTimesheet> search(String query, Pageable pageable) {
         log.debug("Request to search for a page of UserTimesheets for query {}", query);
         Page<UserTimesheet> result = null;
-//        result = userTimesheetSearchRepository.search(queryStringQuery(query), pageable);
         return result;
     }
     /**

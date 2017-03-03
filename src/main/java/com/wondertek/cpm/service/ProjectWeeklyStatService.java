@@ -34,9 +34,6 @@ public class ProjectWeeklyStatService {
 
     private final Logger log = LoggerFactory.getLogger(ProjectWeeklyStatService.class);
     
-//    @Inject
-//    private ProjectWeeklyStatSearchRepository projectWeeklyStatSearchRepository;
-    
     @Inject
     private UserRepository userRepository;
     
@@ -73,7 +70,6 @@ public class ProjectWeeklyStatService {
     public Page<ProjectWeeklyStat> search(String query, Pageable pageable) {
         log.debug("Request to search for a page of ProjectWeeklyStats for query {}", query);
         Page<ProjectWeeklyStat> result = null;
-//        Page<ProjectWeeklyStat> result = projectWeeklyStatSearchRepository.search(queryStringQuery(query), pageable);
         return result;
     }
     
