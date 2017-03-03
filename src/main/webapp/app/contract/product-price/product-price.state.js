@@ -142,10 +142,10 @@
                 entity: function () {
                     return {
                         name: null,
-                        type: 0,
+                        type: 1,
                         units: null,
                         price: null,
-                        source: 0,
+                        source: 1,
                         creator: null,
                         createTime: null,
                         updator: null,

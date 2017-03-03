@@ -46,7 +46,7 @@
         		<div class="col-sm-6">
             		<label class="control-label" data-translate="cpmApp.purchaseItem.purchaser" for="field_purchaser">Purchaser</label>
             		<input type="text" class="form-control" name="purchaser" id="field_purchaser"
-                    	ng-model="vm.purchaseItem.purchaser"
+                    	ng-model="vm.purchaseItem.purchaser" ng-required="true"
                      	/>
                      <div class="help-block"
 	                  	ng-hide="vm.purchaseItem.purchaser" data-translate="entity.validation.required" style="color:red">
