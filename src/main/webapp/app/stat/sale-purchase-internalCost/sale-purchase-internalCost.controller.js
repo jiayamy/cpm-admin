@@ -129,7 +129,6 @@
         function clear() {
             vm.searchQuery = {};
             vm.searchQuery.statWeek = new Date();
-            vm.searchQuery.contractId = vm.contractInfos[0].key;
             vm.haveSearch = true;
             vm.transition();
         }
