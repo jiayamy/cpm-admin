@@ -1,6 +1,6 @@
 <script type="text/ng-template" id="dept-infos-template">
 	<div style="" >
-		<div class="" style="height:35px;">
+		<div style="height:35px;">
 			<i class="glyphicon" ng-class="{'glyphicon-menu-down':vm.isChildShowed(node), 'glyphicon-menu-right':!vm.isChildShowed(node)}" ng-if="node.isDept" 
 				style="width:15px;height:10px" ng-click="vm.showOrHiddenChild(node)"></i>
 			<i class="glyphicon text-success glyphicon-home"></i>
@@ -11,8 +11,8 @@
 			<i class="glyphicon glyphicon-pencil" ng-disabled="vm.isSaving" ui-sref="dept-info.edit({id:node.objId})"></i>
 			<i class="glyphicon glyphicon-remove-circle" ng-disabled="vm.isSaving" ui-sref="dept-info.delete({id:node.objId})"></i>
 	  	</div>
-		<ul  class="" ng-model="node.children" ng-if="node.showChild" style="list-style:none;padding-left: 20px;">
-			<li class="" ng-repeat="node in node.children" ng-include="'dept-infos-template'">
+		<ul ng-model="node.children" ng-if="node.showChild" style="list-style:none;padding-left: 20px;">
+			<li ng-repeat="node in node.children" ng-include="'dept-infos-template'">
 			
 			</li>
 		</ul>

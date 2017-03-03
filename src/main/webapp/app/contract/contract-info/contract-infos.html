@@ -4,10 +4,10 @@
     <div class="container-fluid">
     	<div class="row form-horizontal">
 	        <div class="form-group">
-	            <div class="col-xs-2">
+	            <div class="col-xs-12">
 	                <button class="btn btn-primary" ui-sref="contract-info.new" >
 	                    <span class="glyphicon glyphicon-plus"></span>
-	                    <span class=""  data-translate="cpmApp.contractInfo.home.createLabel">
+	                    <span data-translate="cpmApp.contractInfo.home.createLabel">
 	                        Create new Contract Info
 	                    </span>
 	                </button>
@@ -58,7 +58,7 @@
 			            </select>
 		            </div>
 	            </div>
-	            <div class="col-sm-4 pull-right input-group">
+	            <div class="col-sm-4 pull-right">
 	            	<div class="col-sm-4">
 	            		&nbsp;
 	            	</div>
@@ -66,13 +66,13 @@
 		            	<span  class="width-min" >
 	                        <button class="btn btn-info" ng-click="vm.search()">
 	                            <span class="glyphicon glyphicon-search"></span>
-	                            <span class="hidden-xs hidden-sm" data-translate="entity.action.search"></span>
+	                            <span data-translate="entity.action.search"></span>
 	                        </button>
 	                    </span>
 	                    <span class="width-min" ng-if="vm.haveSearch">
 	                        <button class="btn btn-info" ng-click="vm.clear()">
 	                            <span class="glyphicon glyphicon-trash"></span>
-	                            <span class="hidden-xs hidden-sm" data-translate="entity.action.clear"></span>
+	                            <span data-translate="entity.action.clear"></span>
 	                        </button>
 	                    </span>
 	            	</div>

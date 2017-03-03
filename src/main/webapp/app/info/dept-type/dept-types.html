@@ -2,32 +2,34 @@
     <h2 data-translate="cpmApp.deptType.home.title">Dept Types</h2>
     <jhi-alert></jhi-alert>
     <div class="container-fluid">
-        <div class="row">
-            <div class="col-xs-4">
-                <button class="btn btn-primary" ui-sref="dept-type.new" >
-                    <span class="glyphicon glyphicon-plus"></span>
-                    <span class=""  data-translate="cpmApp.deptType.home.createLabel">
-                        Create new Dept Type
-                    </span>
-                </button>
-            </div>
-            <div class="col-xs-8 no-padding-right">
-                <form name="searchForm" class="form-inline">
-                    <div class="input-group pull-right" >
-                        <input type="text" class="form-control" ng-model="vm.searchQuery" id="searchQuery" placeholder="{{ 'cpmApp.deptType.home.search' | translate }}">
-                        <span  class="input-group-btn width-min" >
-                            <button class="btn btn-info" ng-click="vm.search(vm.searchQuery)">
-                                <span class="glyphicon glyphicon-search"></span>
-                            </button>
-                        </span>
-                        <span class="input-group-btn width-min" ng-if="vm.currentSearch">
-                            <button class="btn btn-info" ng-click="vm.clear()">
-                                <span class="glyphicon glyphicon-trash"></span>
-                            </button>
-                        </span>
-                    </div>
-                </form>
-            </div>
+        <div class="row form-horizontal">
+	        <div class="form-group">
+	            <div class="col-xs-4">
+	                <button class="btn btn-primary" ui-sref="dept-type.new" >
+	                    <span class="glyphicon glyphicon-plus"></span>
+	                    <span data-translate="cpmApp.deptType.home.createLabel">
+	                        Create new Dept Type
+	                    </span>
+	                </button>
+	            </div>
+	            <div class="col-xs-8">
+	                <form name="searchForm" class="form-inline">
+	                    <div class="input-group pull-right" >
+	                        <input type="text" class="form-control" ng-model="vm.searchQuery" id="searchQuery" placeholder="{{ 'cpmApp.deptType.home.search' | translate }}">
+	                        <span  class="input-group-btn width-min" >
+	                            <button class="btn btn-info" ng-click="vm.search(vm.searchQuery)">
+	                                <span class="glyphicon glyphicon-search"></span>
+	                            </button>
+	                        </span>
+	                        <span class="input-group-btn width-min" ng-if="vm.currentSearch">
+	                            <button class="btn btn-info" ng-click="vm.clear()">
+	                                <span class="glyphicon glyphicon-trash"></span>
+	                            </button>
+	                        </span>
+	                    </div>
+	                </form>
+	            </div>
+	      	</div>
         </div>
     </div>
     <br/>

@@ -1,6 +1,6 @@
 <script type="text/ng-template" id="dept-info-query-template">
 	<div style="" >
-		<div class="" style="height:35px;">
+		<div style="height:35px;">
 			<i class="glyphicon" ng-class="{'glyphicon-menu-down':vm.isChildShowed(node), 'glyphicon-menu-right':!vm.isChildShowed(node)}" ng-if="node.isDept" 
 				style="width:15px;height:10px" ng-click="vm.showOrHiddenChild(node)"></i>
 			<i class="glyphicon" ng-class="node.isDept ? 'text-success glyphicon-home ':'text-warning glyphicon-user'"></i>			
@@ -8,8 +8,8 @@
 			&nbsp;&nbsp;&nbsp;
 			<i class="glyphicon glyphicon-ok" ng-if="node.supportSelect" ng-disabled="vm.isSaving" ng-click="vm.selectNode(node)"></i>
 	  	</div>
-		<ul  class="" ng-model="node.children" ng-if="node.showChild" style="list-style:none;padding-left: 20px;">
-			<li class="" ng-repeat="node in node.children" ng-include="'dept-info-query-template'">
+		<ul ng-model="node.children" ng-if="node.showChild" style="list-style:none;padding-left: 20px;">
+			<li ng-repeat="node in node.children" ng-include="'dept-info-query-template'">
 			
 			</li>
 		</ul>

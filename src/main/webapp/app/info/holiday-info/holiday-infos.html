@@ -3,22 +3,23 @@
     <jhi-alert></jhi-alert>
     <div class="container-fluid">
         <div class="row form-horizontal">
-            <div class="col-xs-12">
-                <button class="btn btn-primary" ui-sref="holiday-info.new" >
-                    <span class="glyphicon glyphicon-plus"></span>
-                    <span class=""  data-translate="cpmApp.holidayInfo.home.createLabel">
-                        Create new Holiday Info
-                    </span>
-                </button>
-            </div>
+        	<div class="form-group">
+	            <div class="col-xs-12">
+	                <button class="btn btn-primary" ui-sref="holiday-info.new" >
+	                    <span class="glyphicon glyphicon-plus"></span>
+	                    <span data-translate="cpmApp.holidayInfo.home.createLabel">
+	                        Create new Holiday Info
+	                    </span>
+	                </button>
+	            </div>
+	       	</div>
          </div>
          <br/>
          <form name="searchForm" class="form-horizontal">
 			<div class="form-group">
-				<!--开始日期：fromCurrDay -->
-				<div class="col-xs-5">
-					<label class="col-xs-4 control-label" data-translate="cpmApp.holidayInfo.home.fromCurrDay">From CurrDay</label>
-					<div class="col-xs-8">
+				<div class="col-sm-4">
+					<label class="col-sm-4 control-label" data-translate="cpmApp.holidayInfo.home.fromCurrDay">From CurrDay</label>
+					<div class="col-sm-8">
 						<p class="input-group">
 							<input id="search_fromCurrDay" type="text" class="form-control" name="fromCurrDay" datetime-picker="yyyyMMdd"
 								enable-time="false" ng-model="vm.searchQuery.fromCurrDay" is-open="vm.datePickerOpenStatus.fromCurrDay" /> 
@@ -30,11 +31,9 @@
 						</p>
 					</div>
 				</div>
-				<!--开始日期：fromCurrDay -->
-				<!--结束日期：toCurrDay -->
-				<div class="col-xs-5">
-					<label class="col-xs-4 control-label" data-translate="cpmApp.holidayInfo.home.toCurrDay">From CurrDay</label>
-					<div class="col-xs-8">
+				<div class="col-sm-4">
+					<label class="col-sm-4 control-label" data-translate="cpmApp.holidayInfo.home.toCurrDay">From CurrDay</label>
+					<div class="col-sm-8">
 						<p class="input-group">
 							<input id="search_toCurrDay" type="text" class="form-control" name="toCurrDay" datetime-picker="yyyyMMdd" enable-time="false"
 								ng-model="vm.searchQuery.toCurrDay" is-open="vm.datePickerOpenStatus.toCurrDay" /> 
@@ -46,25 +45,24 @@
 						</p>
 					</div>
 				</div>
-				<!--结束日期：toCurrDay -->
-				<div class="col-xs-2 no-padding-right">
-					<form name="searchForm" class="form-inline">
-						<div class="input-group pull-right">
-							<!-- <input type="text" class="form-control" ng-model="vm.searchQuery" placeholder="{{ 'cpmApp.holidayInfo.home.search' | translate }}"> -->
-							<span class="input-group-btn width-min">
-								<button class="btn btn-info" ng-click="vm.search()">
-									<span class="glyphicon glyphicon-search"></span>
-									<span class="hidden-xs hidden-sm" data-translate="entity.action.search"></span>
-								</button>
-							</span> 
-							<span class="input-group-btn width-min" ng-if="vm.haveSearch">
-								<button class="btn btn-info" ng-click="vm.clear()">
-									<span class="glyphicon glyphicon-trash"></span>
-									<span class="hidden-xs hidden-sm" data-translate="entity.action.clear"></span>
-								</button>
-							</span>
-						</div>
-					</form>
+				<div class="col-sm-4">
+					<div class="col-sm-4">
+						&nbsp;
+					</div>
+					<div class="col-sm-8 pull-right">
+						<span  class="width-min" >
+	                       <button class="btn btn-info" ng-click="vm.search()">
+	                           <span class="glyphicon glyphicon-search"></span>
+	                           <span data-translate="entity.action.search"></span>
+	                       </button>
+	                   </span>
+	                   <span class="width-min" ng-if="vm.haveSearch">
+	                       <button class="btn btn-info" ng-click="vm.clear()">
+	                           <span class="glyphicon glyphicon-trash"></span>
+	                           <span data-translate="entity.action.clear"></span>
+	                       </button>
+	                   </span>
+					</div>
 				</div>
 			</div>
 		</form>
