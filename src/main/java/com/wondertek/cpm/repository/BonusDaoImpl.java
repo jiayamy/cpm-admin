@@ -110,15 +110,15 @@ public class BonusDaoImpl extends GenericDaoImpl<Bonus, Long> implements BonusDa
 		vo.setId(StringUtil.nullToLong(o[1]));
 		vo.setStatWeek(StringUtil.nullToLong(o[2]));
 		vo.setContractId(StringUtil.nullToLong(o[3]));
-		vo.setSalesBonus(StringUtil.getScaleDouble(StringUtil.nullToDouble(o[4]), 2));
-		vo.setProjectBonus(StringUtil.getScaleDouble(StringUtil.nullToDouble(o[5]), 2));
-		vo.setImplemtationBonus(StringUtil.getScaleDouble(StringUtil.nullToDouble(o[6]), 2));
-		vo.setAcademicBonus(StringUtil.getScaleDouble(StringUtil.nullToDouble(o[7]), 2));
-		vo.setConsultantsBonus(StringUtil.getScaleDouble(StringUtil.nullToDouble(o[8]), 2));
-		vo.setBonusTotal(StringUtil.getScaleDouble(StringUtil.nullToDouble(o[9]), 2));
+		vo.setSalesBonus(StringUtil.nullToDouble(o[4]));
+		vo.setProjectBonus(StringUtil.nullToDouble(o[5]));
+		vo.setImplemtationBonus(StringUtil.nullToDouble(o[6]));
+		vo.setAcademicBonus(StringUtil.nullToDouble(o[7]));
+		vo.setConsultantsBonus(StringUtil.nullToDouble(o[8]));
+		vo.setBonusTotal(StringUtil.nullToDouble(o[9]));
 		vo.setCreator(StringUtil.null2Str(o[10]));
 		vo.setCreateTime(DateUtil.getZonedDateTime((Timestamp) o[11]));
-		vo.setContractAmount(StringUtil.getScaleDouble(StringUtil.nullToDouble(o[12]), 2));
+		vo.setContractAmount(StringUtil.nullToDouble(o[12]));
 		return vo;
 	}
 
