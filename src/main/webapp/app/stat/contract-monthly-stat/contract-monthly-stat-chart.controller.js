@@ -511,7 +511,7 @@
             vm.transition();
         }
         function search(searchQuery) {
-        	if (!vm.searchQuery.workDay && !vm.searchQuery.toDate){
+        	if (!vm.searchQuery.fromDate && !vm.searchQuery.toDate){
                 return vm.clear();
             }
         	vm.reverse = false;
