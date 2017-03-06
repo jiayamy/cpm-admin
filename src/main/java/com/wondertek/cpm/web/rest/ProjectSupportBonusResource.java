@@ -100,7 +100,7 @@ public class ProjectSupportBonusResource {
     		@RequestParam(value = "id",required=false) Long id,
     		@ApiParam Pageable pageable) 
     	throws URISyntaxException {
-    	log.debug(SecurityUtils.getCurrentUserLogin() + "REST request to get a ProjectSupportBonusDetail : {}",id);
+    	log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to get a ProjectSupportBonusDetail : {}",id);
     	ProjectSupportBonusVo projectSupportBonus = projectSupportBonusService.getUserSupportBonus(id);
         if (projectSupportBonus == null) {
         	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.projectSupportBonus.save.noPerm", "")).body(null);
@@ -109,7 +109,6 @@ public class ProjectSupportBonusResource {
         searchBonus.setContractId(projectSupportBonus.getContractId());
         searchBonus.setProjectId(projectSupportBonus.getProjectId());
         
-        log.debug("REST request to get ProjectOverall");
         Page<ProjectSupportBonusVo> page = projectSupportBonusService.searchPageDetail(searchBonus,pageable);
     	HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page,"/api/project-projectOverall");
     	return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK); 
