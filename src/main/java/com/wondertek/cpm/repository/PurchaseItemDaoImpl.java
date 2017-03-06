@@ -146,7 +146,7 @@ public class PurchaseItemDaoImpl extends GenericDaoImpl<PurchaseItem, Long> impl
 		params.add(user.getLogin());
 		if (user.getIsManager()) {
 			queryHql.append(" or wdi.idPath like ?" + (count++) + " or wdi.id = ?" + (count++));
-			params.add(deptInfo.getIdPath() + deptInfo.getIdPath() + "/%");
+			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
 			params.add(deptInfo.getId());
 		}
 		queryHql.append(")");
@@ -178,7 +178,7 @@ public class PurchaseItemDaoImpl extends GenericDaoImpl<PurchaseItem, Long> impl
 		
 		if (user.getIsManager()) {
 			queryHql.append(" or wdi.idPath like ?" + (count++) + " or wdi.id = ?" + (count++));
-			params.add(deptInfo.getIdPath() + deptInfo.getIdPath() + "/%");
+			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
 			params.add(deptInfo.getId());
 		}
 		

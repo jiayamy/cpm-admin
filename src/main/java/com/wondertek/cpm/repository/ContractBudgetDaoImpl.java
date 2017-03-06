@@ -174,7 +174,7 @@ public class ContractBudgetDaoImpl extends GenericDaoImpl<ContractBudget, Long> 
 		
 		if (user.getIsManager()) {
 			queryHql.append(" or wdi.idPath like ?" + (count++) + " or wdi.id = ?" + (count++));
-			params.add(deptInfo.getIdPath() + deptInfo.getIdPath() + "/%");
+			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
 			params.add(deptInfo.getId());
 			
 			queryHql.append(" or wdi2.idPath like ?" + (count++) + " or wdi2.id = ?" + (count++));
@@ -222,7 +222,7 @@ public class ContractBudgetDaoImpl extends GenericDaoImpl<ContractBudget, Long> 
 		
 		if (user.getIsManager()) {
 			queryHql.append(" or wdi.idPath like ?" + (count++) + " or wdi.id = ?" + (count++));
-			params.add(deptInfo.getIdPath() + deptInfo.getIdPath() + "/%");
+			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
 			params.add(deptInfo.getId());
 			
 			queryHql.append(" or wdi2.idPath like ?" + (count++) + " or wdi2.id = ?" + (count++));
@@ -271,7 +271,7 @@ public class ContractBudgetDaoImpl extends GenericDaoImpl<ContractBudget, Long> 
 		
 		if (user.getIsManager()) {
 			queryHql.append(" or wdi.idPath like ?" + (count++) + " or wdi.id = ?" + (count++));
-			params.add(deptInfo.getIdPath() + deptInfo.getIdPath() + "/%");
+			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
 			params.add(deptInfo.getId());
 			
 			queryHql.append(" or wdi2.idPath like ?" + (count++) + " or wdi2.id = ?" + (count++));
