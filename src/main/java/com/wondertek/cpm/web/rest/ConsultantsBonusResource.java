@@ -40,6 +40,7 @@ import com.wondertek.cpm.config.StringUtil;
 import com.wondertek.cpm.domain.ConsultantsBonus;
 import com.wondertek.cpm.domain.vo.ConsultantsBonusVo;
 import com.wondertek.cpm.security.AuthoritiesConstants;
+import com.wondertek.cpm.security.SecurityUtils;
 import com.wondertek.cpm.service.ConsultantsBonusService;
 import com.wondertek.cpm.web.rest.util.PaginationUtil;
 
@@ -73,7 +74,7 @@ public class ConsultantsBonusResource {
     		@RequestParam(value="statWeek",required = false) String statWeek,
     		@ApiParam Pageable pageable)
         throws URISyntaxException {
-        log.debug("REST request to get a page of ConsultantsBonus:contractId--"+contractId+",consultantManId--"+consultantManId+",statWeek--"+statWeek);
+        log.debug(SecurityUtils.getCurrentUserLogin()+" REST request to get a page of getAllConsultantsBonus : {}","contractId--"+contractId+",consultantManId--"+consultantManId+",statWeek--"+statWeek);
         if(StringUtil.isNullStr(statWeek)){//搜索日期条件为空时，默认截止日期为当前日期的周末
         	Date date = new Date();
         	date = DateUtil.getSundayOfDay(date);
@@ -102,7 +103,7 @@ public class ConsultantsBonusResource {
     @Timed
     @Secured(AuthoritiesConstants.ROLE_STAT_CONSULTANT_BONUS)
     public ResponseEntity<ConsultantsBonus> getConsultantsBonus(@PathVariable Long id) {
-        log.debug("REST request to get ConsultantsBonus : {}", id);
+        log.debug(SecurityUtils.getCurrentUserLogin()+" REST request to getConsultantsBonus : {}","id--"+id);
         ConsultantsBonus consultantsBonus = consultantsBonusService.findOne(id);
         return Optional.ofNullable(consultantsBonus)
             .map(result -> new ResponseEntity<>(
@@ -117,7 +118,7 @@ public class ConsultantsBonusResource {
     public ResponseEntity<List<ConsultantsBonusVo>> queryConsultantRecord(
     			@RequestParam(value="contId",required = false) Long contractId,
     			@ApiParam Pageable pageable) throws URISyntaxException{
-    	log.debug("queryChart-----contractId:"+contractId);
+    	log.debug(SecurityUtils.getCurrentUserLogin()+" REST request to queryConsultantRecord : {}","contractId--"+contractId);
     	if(contractId == null){
     		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     	}
@@ -151,7 +152,7 @@ public class ConsultantsBonusResource {
 	    		@RequestParam(value="consultantsId",required = false) Long consultantsId,
 	    		@RequestParam(value="statWeek",required = false) Long statWeek
     		) throws IOException{
-    	log.debug("REST request to exportXls");
+    	log.debug(SecurityUtils.getCurrentUserLogin()+" REST request to exportXls : {}","contractId--"+contractId+",consultantsId--"+consultantsId+",statWeek--"+statWeek);
     	if(statWeek == null){//搜索日期条件为空时，默认截止日期为当前日期的周末
         	Date date = new Date();
         	date = DateUtil.getSundayOfDay(date);
@@ -204,7 +205,7 @@ public class ConsultantsBonusResource {
 	    		HttpServletRequest request, HttpServletResponse response,
 	    		@RequestParam(value="contractId",required = false) Long contractId
     		) throws IOException{
-    	log.debug("REST request to exportXls");
+    	log.debug(SecurityUtils.getCurrentUserLogin()+" REST request to exportRecordDetailXls : {}","contractId--"+contractId);
     	//设置默认截止日期
     	Date date = new Date();
     	date = DateUtil.getSundayOfDay(date);

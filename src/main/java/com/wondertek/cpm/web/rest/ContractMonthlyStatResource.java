@@ -32,6 +32,7 @@ import com.wondertek.cpm.domain.vo.ChartReportDataVo;
 import com.wondertek.cpm.domain.vo.ChartReportVo;
 import com.wondertek.cpm.domain.vo.ContractMonthlyStatVo;
 import com.wondertek.cpm.security.AuthoritiesConstants;
+import com.wondertek.cpm.security.SecurityUtils;
 import com.wondertek.cpm.service.ContractMonthlyStatService;
 import com.wondertek.cpm.web.rest.util.PaginationUtil;
 
@@ -63,7 +64,7 @@ public class ContractMonthlyStatResource {
     		@ApiParam(value="contractId") @RequestParam(value="contractId") String contractId,
     		@ApiParam Pageable pageable)
         throws URISyntaxException {
-        log.debug("REST request to get a page of ContractMonthlyStats");
+        log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to get a page of ContractMonthlyStats");
         Page<ContractMonthlyStatVo> page = contractMonthlyStatService.getStatPage(contractId, pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/contract-monthly-stats");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
@@ -79,7 +80,7 @@ public class ContractMonthlyStatResource {
     @Timed
     @Secured(AuthoritiesConstants.ROLE_STAT_CONTRACT)
     public ResponseEntity<ContractMonthlyStatVo> getContractMonthlyStat(@PathVariable Long id) {
-        log.debug("REST request to get ContractMonthlyStats : {}", id);
+        log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to get ContractMonthlyStats : {}", id);
         ContractMonthlyStatVo contractMonthlyStat = contractMonthlyStatService.findOne(id);
         return Optional.ofNullable(contractMonthlyStat)
             .map(result -> new ResponseEntity<>(
@@ -103,7 +104,7 @@ public class ContractMonthlyStatResource {
     @Secured(AuthoritiesConstants.ROLE_STAT_CONTRACT)
     public ResponseEntity<List<ContractMonthlyStat>> searchContractMonthlyStats(@RequestParam String query, @ApiParam Pageable pageable)
         throws URISyntaxException {
-        log.debug("REST request to search for a page of ContractMonthlyStat for query {}", query);
+        log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to search for a page of ContractMonthlyStat for query {}", query);
         Page<ContractMonthlyStat> page = contractMonthlyStatService.search(query, pageable);
         HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/contract-monthly-stats");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
@@ -115,6 +116,8 @@ public class ContractMonthlyStatResource {
     public ResponseEntity<ChartReportVo> getChartReport(@ApiParam(value="fromDate") @RequestParam(value="fromDate") String fromDate,
     		@ApiParam(value="toDate") @RequestParam(value="toDate") String toDate,
     		@ApiParam(value="id") @RequestParam(value="id") Long statId){
+    	log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to get Chart Report of ContractMonthlyStat by fromDate : {}, toDate : {}, "
+    			+ "statId : {}", fromDate, toDate, statId);
     	ChartReportVo chartReportVo = new ChartReportVo();
     	ContractMonthlyStatVo contractMonthlyStatvo = contractMonthlyStatService.findOne(statId);
     	if(contractMonthlyStatvo == null){
@@ -161,6 +164,8 @@ public class ContractMonthlyStatResource {
     public ResponseEntity<ChartReportVo> getFinishRateChartReport(@ApiParam(value="fromDate") @RequestParam(value="fromDate") String fromDate,
     		@ApiParam(value="toDate") @RequestParam(value="toDate") String toDate,
     		@ApiParam(value="id") @RequestParam(value="id") Long statId){
+    	log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to get FinishRate Chart Report of ContractMonthlyStat by fromDate : {}, toDate : {}, "
+    			+ "statId : {}", fromDate, toDate, statId);
     	ChartReportVo chartReportVo = new ChartReportVo();
     	ContractMonthlyStatVo contractMonthlyStatvo = contractMonthlyStatService.findOne(statId);
     	if(contractMonthlyStatvo == null){

@@ -55,7 +55,7 @@ public class ExternalQuotationResource {
     		@ApiParam Pageable pageable
     		)
         throws URISyntaxException {
-        log.debug("REST request to get a page of BonusRate  grade:{}",grade);
+        log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to get a page of BonusRate  grade:{}",grade);
         ExternalQuotation externalQuotation = new ExternalQuotation();
         externalQuotation.setGrade(grade);
         
@@ -69,7 +69,7 @@ public class ExternalQuotationResource {
     @Timed
     @Secured(AuthoritiesConstants.ROLE_INFO_BASIC)
     public ResponseEntity<ExternalQuotation> updateExternalQuotation(@RequestBody ExternalQuotation externalQuotation) throws URISyntaxException {
-        log.debug("REST request to update ProjectInfo : {}", externalQuotation);
+        log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to update ProjectInfo : {}", externalQuotation);
         Boolean isNew = externalQuotation.getId() == null;
         //基本校验
         if(externalQuotation.getGrade() == null || externalQuotation.getCostBasis() == null || externalQuotation.getExternalQuotation() == null
@@ -120,7 +120,7 @@ public class ExternalQuotationResource {
     @Timed
     @Secured(AuthoritiesConstants.ROLE_INFO_BASIC)
     public ResponseEntity<ExternalQuotation> getProjectInfo(@PathVariable Long id) {
-        log.debug("REST request to get ProjectInfo : {}", id);
+        log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to get ProjectInfo : {}", id);
         ExternalQuotation externalQuotation = externalQuotationService.findOne(id);
         
         return Optional.ofNullable(externalQuotation)
@@ -134,7 +134,7 @@ public class ExternalQuotationResource {
     @Timed
     @Secured(AuthoritiesConstants.ROLE_INFO_BASIC)
     public ResponseEntity<Void> deleteProjectInfo(@PathVariable Long id) {
-        log.debug("REST request to delete ProjectInfo : {}", id);
+        log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to delete ProjectInfo : {}", id);
         ExternalQuotation externalQuotation = externalQuotationService.findOne(id);
         if(externalQuotation == null){
         	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.externalQuotation.save.noPerm", "")).body(null);

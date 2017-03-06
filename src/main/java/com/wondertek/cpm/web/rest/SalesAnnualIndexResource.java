@@ -56,7 +56,7 @@ public class SalesAnnualIndexResource {
     		@ApiParam Pageable pageable
     		)
         throws URISyntaxException {
-        log.debug("REST request to get a page of BonusRate  statYear:{},userId:{}",statYear,userId);
+        log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to get a page of BonusRate  statYear:{},userId:{}",statYear,userId);
         SalesAnnualIndex salesAnnualIndex = new SalesAnnualIndex();
         salesAnnualIndex.setUserId(userId);
         salesAnnualIndex.setStatYear(statYear);
@@ -71,7 +71,7 @@ public class SalesAnnualIndexResource {
     @Timed
     @Secured(AuthoritiesConstants.ROLE_INFO_BASIC)
     public ResponseEntity<SalesAnnualIndex> updatesalesAnnualIndex(@RequestBody SalesAnnualIndex salesAnnualIndex) throws URISyntaxException {
-        log.debug("REST request to update ProjectInfo : {}", salesAnnualIndex);
+        log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to update ProjectInfo : {}", salesAnnualIndex);
         Boolean isNew = salesAnnualIndex.getId() == null;
         //基本校验
         if(salesAnnualIndex.getStatYear() == null || salesAnnualIndex.getUserId() == null || salesAnnualIndex.getUserName() == null
@@ -123,7 +123,7 @@ public class SalesAnnualIndexResource {
     @Timed
     @Secured(AuthoritiesConstants.ROLE_INFO_BASIC)
     public ResponseEntity<SalesAnnualIndex> getProjectInfo(@PathVariable Long id) {
-        log.debug("REST request to get ProjectInfo : {}", id);
+        log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to get ProjectInfo : {}", id);
         SalesAnnualIndex salesAnnualIndex = salesAnnualIndexService.findOne(id);
         
         return Optional.ofNullable(salesAnnualIndex)
@@ -137,7 +137,7 @@ public class SalesAnnualIndexResource {
     @Timed
     @Secured(AuthoritiesConstants.ROLE_INFO_BASIC)
     public ResponseEntity<Void> deleteProjectInfo(@PathVariable Long id) {
-        log.debug("REST request to delete ProjectInfo : {}", id);
+        log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to delete ProjectInfo : {}", id);
         SalesAnnualIndex salesAnnualIndex = salesAnnualIndexService.findOne(id);
         if(salesAnnualIndex == null){
         	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.salesAnnualIndex.save.noPerm", "")).body(null);

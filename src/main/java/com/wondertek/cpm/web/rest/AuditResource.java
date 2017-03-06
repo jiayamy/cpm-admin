@@ -1,8 +1,12 @@
 package com.wondertek.cpm.web.rest;
 
+import com.wondertek.cpm.security.SecurityUtils;
 import com.wondertek.cpm.service.AuditEventService;
 import com.wondertek.cpm.web.rest.util.PaginationUtil;
 import io.swagger.annotations.ApiParam;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.actuate.audit.AuditEvent;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,7 +26,9 @@ import java.util.List;
 @RestController
 @RequestMapping("/management/audits")
 public class AuditResource {
-
+	
+	private final Logger log = LoggerFactory.getLogger(AuditResource.class);
+	
     private AuditEventService auditEventService;
 
     @Inject
@@ -39,7 +45,8 @@ public class AuditResource {
      */
     @GetMapping
     public ResponseEntity<List<AuditEvent>> getAll(@ApiParam Pageable pageable) throws URISyntaxException {
-        Page<AuditEvent> page = auditEventService.findAll(pageable);
+    	log.debug(SecurityUtils.getCurrentUserLogin() + " Rest request to get All AuditEvent");
+    	Page<AuditEvent> page = auditEventService.findAll(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/management/audits");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
@@ -59,7 +66,7 @@ public class AuditResource {
         @RequestParam(value = "fromDate") LocalDate fromDate,
         @RequestParam(value = "toDate") LocalDate toDate,
         @ApiParam Pageable pageable) throws URISyntaxException {
-
+    	log.debug(SecurityUtils.getCurrentUserLogin() + " Rest request to get AuditEvent By fromDate : {}, toDate : {}", fromDate, toDate);
         Page<AuditEvent> page = auditEventService.findByDates(fromDate.atTime(0, 0), toDate.atTime(23, 59), pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/management/audits");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
@@ -73,7 +80,8 @@ public class AuditResource {
      */
     @GetMapping("/{id:.+}")
     public ResponseEntity<AuditEvent> get(@PathVariable Long id) {
-        return auditEventService.find(id)
+    	log.debug(SecurityUtils.getCurrentUserLogin() + " Rest request to get AuditEvent By id : {}", id);
+    	return auditEventService.find(id)
                 .map((entity) -> new ResponseEntity<>(entity, HttpStatus.OK))
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }

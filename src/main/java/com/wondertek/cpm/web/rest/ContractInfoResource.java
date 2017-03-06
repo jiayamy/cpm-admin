@@ -55,7 +55,7 @@ public class ContractInfoResource {
     @Timed
     @Secured(AuthoritiesConstants.ROLE_CONTRACT_INFO)
     public ResponseEntity<Boolean> updateContractInfo(@RequestBody ContractInfo contractInfo) throws URISyntaxException {
-        log.debug("REST request to update ContractInfo : {}", contractInfo);
+        log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to update ContractInfo : {}", contractInfo);
         Boolean isNew = contractInfo.getId() == null;
         if(contractInfo.getIsPrepared() == null){
         	contractInfo.setIsPrepared(Boolean.FALSE);
@@ -151,7 +151,8 @@ public class ContractInfoResource {
 			@RequestParam(value = "isEpibolic",required=false) Boolean isEpibolic, @RequestParam(value = "serialNum",required=false) String serialNum,
 			@RequestParam(value = "salesmanId",required=false) Long salesmanId,@RequestParam(value = "consultantsId",required=false) Long consultantsId,
 			@ApiParam Pageable pageable) throws URISyntaxException {
-		log.debug("REST request to get a page of ContractInfos");
+		log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to get a page of ContractInfos by name : {}, type : {}, isPrepared : {}, "
+				+ "isEpibolic : {}, serialNum : {}, salesmanId : {}, consultantsId : {}", name, type, isPrepared, isEpibolic, serialNum,salesmanId,consultantsId);
 		ContractInfo contractInfo = new ContractInfo();
 
 		contractInfo.setName(name);
@@ -171,7 +172,7 @@ public class ContractInfoResource {
 	@Timed
 	@Secured(AuthoritiesConstants.ROLE_CONTRACT_INFO)
 	public ResponseEntity<ContractInfoVo> getContractInfo(@PathVariable Long id) {
-		log.debug("REST request to get ContractInfo : {}", id);
+		log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to get ContractInfo : {}", id);
 		ContractInfoVo contractInfo = contractInfoService.getUserContractInfo(id);
 		return Optional.ofNullable(contractInfo).map(result -> new ResponseEntity<>(result, HttpStatus.OK))
 				.orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
@@ -188,7 +189,7 @@ public class ContractInfoResource {
 	@Timed
 	@Secured(AuthoritiesConstants.ROLE_CONTRACT_INFO)
 	public ResponseEntity<Void> deleteContractInfo(@PathVariable Long id) {
-		log.debug("REST request to delete ContractInfo : {}", id);
+		log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to delete ContractInfo : {}", id);
 		contractInfoService.delete(id);
 		return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert("contractInfo", id.toString())).build();
 	}
@@ -199,7 +200,7 @@ public class ContractInfoResource {
 	@Secured(AuthoritiesConstants.ROLE_CONTRACT_INFO)
 	public ResponseEntity<List<ContractInfo>> searchContractInfos(@RequestParam String query,
 			@ApiParam Pageable pageable) throws URISyntaxException {
-		log.debug("REST request to search for a page of ContractInfos for query {}", query);
+		log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to search for a page of ContractInfos for query {}", query);
 		Page<ContractInfo> page = contractInfoService.search(query, pageable);
 		HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page,
 				"/api/_search/contract-infos");
@@ -211,7 +212,7 @@ public class ContractInfoResource {
 	@GetMapping("/contract-infos/queryUserContract")
 	@Secured(AuthoritiesConstants.USER)
 	public ResponseEntity<List<LongValue>> queryUserContract() {
-		log.debug("REST request to queryUserContract");
+		log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to queryUserContract");
 		 List<LongValue> list = contractInfoService.queryUserContract();
 		 return new ResponseEntity<>(list, null, HttpStatus.OK);
 	}
@@ -221,7 +222,7 @@ public class ContractInfoResource {
     @Timed
     @Secured(AuthoritiesConstants.ROLE_CONTRACT_INFO)
     public ResponseEntity<ProjectInfo> finishContractInfo(@RequestBody ContractInfo contractInfo) throws URISyntaxException {
-    	log.debug("REST request to finishContractInfo");
+    	log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to finishContractInfo");
     	if(contractInfo.getId() == null || contractInfo.getFinishRate() == null){
     		return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.contractInfo.save.requiedError", "")).body(null);
     	}

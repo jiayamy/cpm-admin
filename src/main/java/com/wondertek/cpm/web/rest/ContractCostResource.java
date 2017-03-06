@@ -56,7 +56,7 @@ public class ContractCostResource {
     @Timed
     @Secured(AuthoritiesConstants.ROLE_CONTRACT_COST)
     public ResponseEntity<Boolean> updateContractCost(@RequestBody ContractCost contractCost) throws URISyntaxException {
-        log.debug("REST request to update ContractCost : {}", contractCost);
+        log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to update ContractCost : {}", contractCost);
         Boolean isNew = contractCost.getId() == null;
         if (contractCost.getContractId() == null
         		|| contractCost.getType() == null || contractCost.getCostDay() == null
@@ -118,7 +118,7 @@ public class ContractCostResource {
     		@RequestParam(value = "pageType",required=true) Integer pageType, 
     		@ApiParam Pageable pageable)
         throws URISyntaxException {
-        log.debug("REST request to get a page of ContractCosts");
+        log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to get a page of ContractCosts by contractId : {}, type : {}, name : {}, pageType : {}", contractId, type, name, pageType);
         ContractCost contractCost = new ContractCost();
         contractCost.setContractId(contractId);
         contractCost.setType(type);
@@ -146,7 +146,7 @@ public class ContractCostResource {
     @Timed
     @Secured(AuthoritiesConstants.ROLE_CONTRACT_COST)
     public ResponseEntity<Void> deleteContractCost(@PathVariable Long id) {
-        log.debug("REST request to delete ContractCost : {}", id);
+        log.debug(SecurityUtils.getCurrentUserLogin() +  " REST request to delete ContractCost : {}", id);
         ContractCostVo contractCost = contractCostService.getContractCost(id);
         if (contractCost == null) {
         	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.contractCost.save.noPerm", "")).body(null);

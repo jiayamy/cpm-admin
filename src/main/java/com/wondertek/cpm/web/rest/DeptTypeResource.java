@@ -30,6 +30,7 @@ import com.codahale.metrics.annotation.Timed;
 import com.wondertek.cpm.domain.DeptType;
 import com.wondertek.cpm.domain.vo.LongValue;
 import com.wondertek.cpm.security.AuthoritiesConstants;
+import com.wondertek.cpm.security.SecurityUtils;
 import com.wondertek.cpm.service.DeptTypeService;
 import com.wondertek.cpm.web.rest.util.HeaderUtil;
 import com.wondertek.cpm.web.rest.util.PaginationUtil;
@@ -59,7 +60,7 @@ public class DeptTypeResource {
     @Timed
     @Secured(AuthoritiesConstants.ROLE_INFO_BASIC)
     public ResponseEntity<DeptType> createDeptType(@Valid @RequestBody DeptType deptType) throws URISyntaxException {
-        log.debug("REST request to save DeptType : {}", deptType);
+        log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to save DeptType : {}", deptType);
         if (deptType.getId() != null) {
             return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("deptType", "idexists", "A new deptType cannot already have an ID")).body(null);
         }
@@ -82,7 +83,7 @@ public class DeptTypeResource {
     @Timed
     @Secured(AuthoritiesConstants.ROLE_INFO_BASIC)
     public ResponseEntity<DeptType> updateDeptType(@Valid @RequestBody DeptType deptType) throws URISyntaxException {
-        log.debug("REST request to update DeptType : {}", deptType);
+        log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to update DeptType : {}", deptType);
         if (deptType.getId() == null) {
             return createDeptType(deptType);
         }
@@ -104,7 +105,7 @@ public class DeptTypeResource {
     @Secured(AuthoritiesConstants.ROLE_INFO_BASIC)
     public ResponseEntity<List<DeptType>> getAllDeptTypes(@ApiParam Pageable pageable)
         throws URISyntaxException {
-        log.debug("REST request to get a page of DeptTypes");
+        log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to get a page of DeptTypes");
         Page<DeptType> page = deptTypeService.findAll(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/dept-types");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
@@ -120,7 +121,7 @@ public class DeptTypeResource {
     @Timed
     @Secured(AuthoritiesConstants.ROLE_INFO_BASIC)
     public ResponseEntity<DeptType> getDeptType(@PathVariable Long id) {
-        log.debug("REST request to get DeptType : {}", id);
+        log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to get DeptType : {}", id);
         DeptType deptType = deptTypeService.findOne(id);
         return Optional.ofNullable(deptType)
             .map(result -> new ResponseEntity<>(
@@ -139,7 +140,7 @@ public class DeptTypeResource {
     @Timed
     @Secured(AuthoritiesConstants.ADMIN)
     public ResponseEntity<Void> deleteDeptType(@PathVariable Long id) {
-        log.debug("REST request to delete DeptType : {}", id);
+        log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to delete DeptType : {}", id);
         deptTypeService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert("deptType", id.toString())).build();
     }
@@ -158,7 +159,7 @@ public class DeptTypeResource {
     @Secured(AuthoritiesConstants.ROLE_INFO_BASIC)
     public ResponseEntity<List<DeptType>> searchDeptTypes(@RequestParam String query, @ApiParam Pageable pageable)
         throws URISyntaxException {
-        log.debug("REST request to search for a page of DeptTypes for query {}", query);
+        log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to search for a page of DeptTypes for query {}", query);
         Page<DeptType> page = deptTypeService.search(query, pageable);
         HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/dept-types");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
@@ -171,7 +172,7 @@ public class DeptTypeResource {
     @Secured(AuthoritiesConstants.USER)
     public ResponseEntity<List<LongValue>> getAllForCombox(@ApiParam Pageable pageable)
         throws URISyntaxException {
-        log.debug("REST request to get a page of getAllForCombox");
+        log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to get a page of getAllForCombox");
         List<LongValue> list = deptTypeService.getAllForCombox();
         return new ResponseEntity<>(list, null, HttpStatus.OK);
     }

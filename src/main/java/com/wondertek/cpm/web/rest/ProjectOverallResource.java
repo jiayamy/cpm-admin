@@ -41,6 +41,7 @@ import com.wondertek.cpm.config.StringUtil;
 import com.wondertek.cpm.domain.ProjectOverall;
 import com.wondertek.cpm.domain.vo.ProjectOverallVo;
 import com.wondertek.cpm.security.AuthoritiesConstants;
+import com.wondertek.cpm.security.SecurityUtils;
 import com.wondertek.cpm.service.ProjectOverallService;
 import com.wondertek.cpm.web.rest.util.HeaderUtil;
 import com.wondertek.cpm.web.rest.util.PaginationUtil;
@@ -72,7 +73,7 @@ public class ProjectOverallResource {
     		@RequestParam(value = "userId",required=false) Long userId,
     		@ApiParam Pageable pageable)
 		throws URISyntaxException {
-		log.debug("REST request to get a page of ProjectOverallVo");
+		log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to get a page of ProjectOverall  statWeek:{},contractId:{},userId:{}",statWeek,contractId,userId);
 		Date now = new Date();
 		ProjectOverall projectOverall = new ProjectOverall();
 		projectOverall.setStatWeek(statWeek);
@@ -99,7 +100,7 @@ public class ProjectOverallResource {
     		@RequestParam(value = "contractId",required=false) Long contractId,
     		@ApiParam Pageable pageable) 
     	throws URISyntaxException {
-        log.debug("REST request to get ProjectOverall : {}", contractId);
+        log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to get ProjectOverallDetail : {}", contractId);
         Page<ProjectOverallVo> page = projectOverallService.searchPageDetail(contractId,pageable);
     	HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(contractId.toString(), page,"/api/project-projectOverall");
     	return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK); 
@@ -109,7 +110,7 @@ public class ProjectOverallResource {
     @Timed
     @Secured(AuthoritiesConstants.ROLE_STAT_PROJECT_OVERALL)
     public ResponseEntity<ProjectOverallVo> getProjectOverall(@PathVariable Long id) {
-        log.debug("REST request to get ProjectOverall : {}", id);
+        log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to get ProjectOverall : {}", id);
         ProjectOverallVo projectOverall = projectOverallService.getUserProjectOverall(id);
         if (projectOverall == null) {
         	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.projectOverallController.noPerm", "")).body(null);
@@ -131,7 +132,7 @@ public class ProjectOverallResource {
     		@RequestParam(value = "userId",required=false) Long userId,
     		@ApiParam Pageable pageable)
 		throws URISyntaxException, IOException {
-    	log.debug("REST request to get a page of exportXls");
+    	log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to get a page of exportXls  statWeek:{},contractId:{},userId:{}",statWeek,contractId,userId);
     	Date now = new Date();
     	ProjectOverall projectOverall = new ProjectOverall();
 		projectOverall.setStatWeek(statWeek);

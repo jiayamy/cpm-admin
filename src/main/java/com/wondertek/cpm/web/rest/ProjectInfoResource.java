@@ -54,7 +54,7 @@ public class ProjectInfoResource {
     @Timed
     @Secured(AuthoritiesConstants.ROLE_PROJECT_INFO)
     public ResponseEntity<ProjectInfo> updateProjectInfo(@RequestBody ProjectInfo projectInfo) throws URISyntaxException {
-        log.debug("REST request to update ProjectInfo : {}", projectInfo);
+        log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to update ProjectInfo : {}", projectInfo);
         Boolean isNew = projectInfo.getId() == null;
         //基本校验
         if(projectInfo.getBudgetId() == null || projectInfo.getContractId() == null
@@ -149,7 +149,8 @@ public class ProjectInfoResource {
     		@RequestParam(value = "status",required=false) String status, 
     		@ApiParam Pageable pageable)
         throws URISyntaxException {
-        log.debug("REST request to get a page of ProjectInfos");
+        log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to get a page of ProjectInfos by contractId : {}, serialNum : {}, "
+        		+ "name : {}, status : {}", contractId, serialNum, name, status);
 //        Page<ProjectInfo> page = projectInfoService.findAll(pageable);
         
         ProjectInfo projectInfo = new ProjectInfo();
@@ -176,7 +177,7 @@ public class ProjectInfoResource {
     @Timed
     @Secured(AuthoritiesConstants.ROLE_PROJECT_INFO)
     public ResponseEntity<ProjectInfoVo> getProjectInfo(@PathVariable Long id) {
-        log.debug("REST request to get ProjectInfo : {}", id);
+        log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to get ProjectInfo : {}", id);
 //        ProjectInfo projectInfo = projectInfoService.findOne(id);
         ProjectInfoVo projectInfo = projectInfoService.getUserProjectInfo(id);
         
@@ -197,7 +198,7 @@ public class ProjectInfoResource {
     @Timed
     @Secured(AuthoritiesConstants.ROLE_PROJECT_INFO)
     public ResponseEntity<Void> deleteProjectInfo(@PathVariable Long id) {
-        log.debug("REST request to delete ProjectInfo : {}", id);
+        log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to delete ProjectInfo : {}", id);
         ProjectInfoVo projectInfo = projectInfoService.getUserProjectInfo(id);
         if(projectInfo == null){
         	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.projectInfo.save.noPerm", "")).body(null);
@@ -218,7 +219,7 @@ public class ProjectInfoResource {
     @Timed
     @Secured(AuthoritiesConstants.USER)
     public ResponseEntity<List<LongValue>> queryUserContract() throws URISyntaxException {
-        log.debug("REST request to queryUserContract");
+        log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to queryUserContract");
         List<LongValue> list = projectInfoService.queryUserContract();
         return new ResponseEntity<>(list, null, HttpStatus.OK);
     }
@@ -229,7 +230,7 @@ public class ProjectInfoResource {
     @Timed
     @Secured(AuthoritiesConstants.USER)
     public ResponseEntity<List<LongValue>> queryUserContractBudget(@RequestParam(value = "contractId") String contractId) throws URISyntaxException {
-        log.debug("REST request to queryUserContract");
+        log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to queryUserContract by contractId : {}", contractId);
         Long contractIdLong = StringUtil.nullToCloneLong(contractId);
         if(contractIdLong == null){
         	return new ResponseEntity<>(new ArrayList<LongValue>(), null, HttpStatus.OK);
@@ -242,7 +243,7 @@ public class ProjectInfoResource {
     @Timed
     @Secured(AuthoritiesConstants.ROLE_PROJECT_INFO)
     public ResponseEntity<ProjectInfo> endProjectInfo(@RequestParam(value = "id") Long id) throws URISyntaxException {
-    	log.debug("REST request to endProjectInfo");
+    	log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to endProjectInfo by id : {}", id);
     	//有没权限
     	ProjectInfoVo projectInfo = projectInfoService.getUserProjectInfo(id);
         if(projectInfo == null){
@@ -267,7 +268,7 @@ public class ProjectInfoResource {
     		@RequestParam(value = "id") Long id,
     		@RequestParam(value = "finishRate") Double finishRate
     		) throws URISyntaxException {
-    	log.debug("REST request to endProjectInfo");
+    	log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to endProjectInfo by id : {}, finishRate : {}", id, finishRate);
     	//有没权限
     	ProjectInfoVo projectInfo = projectInfoService.getUserProjectInfo(id);
         if(projectInfo == null){
@@ -295,7 +296,7 @@ public class ProjectInfoResource {
     @Timed
     @Secured(AuthoritiesConstants.USER)
     public ResponseEntity<List<LongValue>> queryUserProject() throws URISyntaxException {
-        log.debug("REST request to queryUserContract");
+        log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to queryUserContract");
         List<LongValue> list = projectInfoService.queryUserProject();
         return new ResponseEntity<>(list, null, HttpStatus.OK);
     }

@@ -41,6 +41,7 @@ import com.wondertek.cpm.domain.SalesBonus;
 import com.wondertek.cpm.domain.User;
 import com.wondertek.cpm.domain.vo.SalesBonusVo;
 import com.wondertek.cpm.security.AuthoritiesConstants;
+import com.wondertek.cpm.security.SecurityUtils;
 import com.wondertek.cpm.service.ContractInfoService;
 import com.wondertek.cpm.service.SalesBonusService;
 import com.wondertek.cpm.service.UserService;
@@ -70,7 +71,7 @@ public class SalesBonusResource {
     		@RequestParam(value = "id",required=false) Long id, //主键
     		@ApiParam Pageable pageable)
         throws URISyntaxException {
-    	
+    	log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to get SalesBonus Detail Page by id : {}", id);
     	SalesBonusVo salesBonusVo = salesBonusService.getUserSalesBonus(id);
     	if(salesBonusVo == null){
     		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -96,7 +97,8 @@ public class SalesBonusResource {
     		@RequestParam(value = "salesManId",required=false) Long salesManId //销售
     		)
         throws URISyntaxException {
-        log.debug("REST request to get a page of getSalesBonusPage");
+        log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to get a page of getSalesBonusPage by originYear : {}, statWeek : {}, "
+        		+ "contractId : {}, salesManId : {}", originYear, statWeek, contractId, salesManId);
         SalesBonus salesBonus = new SalesBonus();
         salesBonus.setOriginYear(originYear);
         salesBonus.setStatWeek(statWeek);
@@ -131,7 +133,8 @@ public class SalesBonusResource {
     		@RequestParam(value = "contractId",required=false) Long contractId, //合同主键
     		@RequestParam(value = "salesManId",required=false) Long salesManId //销售
     	)throws URISyntaxException, IOException {
-    	log.debug("REST request to get a page of exportXls");
+    	log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to get a page of exportXls by originYear : {}, statWeek : {}, "
+    			+ "contractId : {}, salesManId : {}", originYear, statWeek, contractId, salesManId);
     	SalesBonus salesBonus = new SalesBonus();
         salesBonus.setOriginYear(originYear);
         salesBonus.setStatWeek(statWeek);

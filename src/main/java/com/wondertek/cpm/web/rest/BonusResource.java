@@ -41,6 +41,7 @@ import com.wondertek.cpm.config.StringUtil;
 import com.wondertek.cpm.domain.Bonus;
 import com.wondertek.cpm.domain.vo.BonusVo;
 import com.wondertek.cpm.security.AuthoritiesConstants;
+import com.wondertek.cpm.security.SecurityUtils;
 import com.wondertek.cpm.service.BonusService;
 import com.wondertek.cpm.web.rest.util.HeaderUtil;
 import com.wondertek.cpm.web.rest.util.PaginationUtil;
@@ -69,7 +70,7 @@ public class BonusResource {
     		@RequestParam(value = "contractId",required=false) Long contractId,
     		@ApiParam Pageable pageable)
 		throws URISyntaxException {
-		log.debug("REST request to get a page of BonusVo");
+		log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to get a page of Bonus  statWeek:{},contractId:{}",statWeek,contractId);
 		Date now = new Date();
 		Bonus bonus = new Bonus();
 		bonus.setStatWeek(statWeek);
@@ -95,7 +96,7 @@ public class BonusResource {
     		@RequestParam(value = "contractId",required=false) Long contractId,
     		@ApiParam Pageable pageable) 
     	throws URISyntaxException {
-        log.debug("REST request to get Bonus : {}", contractId);
+        log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to get BonusVoDetail : {}", contractId);
         Page<BonusVo> page = bonusService.searchPageDetail(contractId,pageable);
     	HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(contractId.toString(), page,"/api/bonus");
     	return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK); 
@@ -105,7 +106,7 @@ public class BonusResource {
     @Timed
     @Secured(AuthoritiesConstants.ROLE_STAT_BONUS)
     public ResponseEntity<BonusVo> getBonus(@PathVariable Long id) {
-        log.debug("REST request to get Bonus : {}", id);
+        log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to get Bonus : {}", id);
         BonusVo bonus = bonusService.getUserBonus(id);
         if (bonus == null) {
         	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.bonus.noPerm", "")).body(null);
@@ -126,7 +127,7 @@ public class BonusResource {
     		@RequestParam(value = "contractId",required=false) Long contractId,
     		@ApiParam Pageable pageable)
     	throws URISyntaxException, IOException  {
-    	log.debug("REST request to get a page of exportXls");
+    	log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to get a page of exportXls  statWeek:{},contractId:{}",statWeek,contractId);
     	Date now = new Date();
     	Bonus bonus = new Bonus();
     	bonus.setStatWeek(statWeek);

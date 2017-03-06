@@ -62,7 +62,7 @@ public class ProjectCostResource {
     @Timed
     @Secured(AuthoritiesConstants.ROLE_PROJECT_COST)
     public ResponseEntity<Boolean> updateProjectCost(@RequestBody ProjectCost projectCost) throws URISyntaxException {
-        log.debug("REST request to update ProjectCost : {}", projectCost);
+        log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to update ProjectCost : {}", projectCost);
         Boolean isNew = projectCost.getId() == null;
         if(projectCost.getProjectId() == null || projectCost.getType() == null || projectCost.getCostDay() == null
         		|| StringUtil.isNullStr(projectCost.getName()) || projectCost.getTotal() == null || projectCost.getTotal() < 0){
@@ -128,7 +128,8 @@ public class ProjectCostResource {
     		@RequestParam(value = "pageType",required=true) Integer pageType, 
     		@ApiParam Pageable pageable)
         throws URISyntaxException {
-        log.debug("REST request to get a page of ProjectCosts");
+        log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to get a page of ProjectCosts by projectId : {}, type : {}, "
+        		+ "name : {}", projectId, type, name);
         ProjectCost projectCost = new ProjectCost();
         projectCost.setProjectId(projectId);
         projectCost.setType(type);
@@ -150,7 +151,7 @@ public class ProjectCostResource {
     @Timed
     @Secured(AuthoritiesConstants.ROLE_PROJECT_COST)
     public ResponseEntity<ProjectCostVo> getProjectCost(@PathVariable Long id) {
-        log.debug("REST request to get ProjectCost : {}", id);
+        log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to get ProjectCost : {}", id);
 //        ProjectCost projectCost = projectCostService.findOne(id);
         ProjectCostVo projectCost = projectCostService.getProjectCost(id);
         return Optional.ofNullable(projectCost)
@@ -170,7 +171,7 @@ public class ProjectCostResource {
     @Timed
     @Secured(AuthoritiesConstants.ROLE_PROJECT_COST)
     public ResponseEntity<Void> deleteProjectCost(@PathVariable Long id) {
-        log.debug("REST request to delete ProjectCost : {}", id);
+        log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to delete ProjectCost : {}", id);
         ProjectCostVo projectCost = projectCostService.getProjectCost(id);
         if(projectCost == null){
         	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.projectCost.save.noPerm", "")).body(null);
@@ -199,7 +200,7 @@ public class ProjectCostResource {
     @Secured(AuthoritiesConstants.ROLE_PROJECT_COST)
     public ResponseEntity<List<ProjectCost>> searchProjectCosts(@RequestParam String query, @ApiParam Pageable pageable)
         throws URISyntaxException {
-        log.debug("REST request to search for a page of ProjectCosts for query {}", query);
+        log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to search for a page of ProjectCosts for query {}", query);
         Page<ProjectCost> page = projectCostService.search(query, pageable);
         HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/project-costs");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);

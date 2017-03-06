@@ -69,7 +69,7 @@ public class ProductPriceResource {
     @Timed
     @Secured(AuthoritiesConstants.ROLE_CONTRACT_PRODUCTPRICE)
     public ResponseEntity<ProductPrice> createProductPrice(@RequestBody ProductPrice productPrice) throws URISyntaxException {
-        log.debug("REST request to save ProductPrice : {}", productPrice);
+        log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to save ProductPrice : {}", productPrice);
         if (productPrice.getId() != null) {
             return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("productPrice", "idexists", "A new productPrice cannot already have an ID")).body(null);
         }
@@ -102,7 +102,7 @@ public class ProductPriceResource {
     @Timed
     @Secured(AuthoritiesConstants.ROLE_CONTRACT_PRODUCTPRICE)
     public ResponseEntity<ProductPrice> updateProductPrice(@RequestBody ProductPrice productPrice) throws URISyntaxException {
-        log.debug("REST request to update ProductPrice : {}", productPrice);
+        log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to update ProductPrice : {}", productPrice);
         if (productPrice.getId() == null) {
             return createProductPrice(productPrice);
         }
@@ -146,7 +146,7 @@ public class ProductPriceResource {
     @Timed
     @Secured(AuthoritiesConstants.ROLE_CONTRACT_PRODUCTPRICE)
     public ResponseEntity<ProductPrice> getProductPrice(@PathVariable Long id) {
-        log.debug("REST request to get ProductPrice : {}", id);
+        log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to get ProductPrice : {}", id);
         ProductPrice productPrice = productPriceService.findOne(id);
         return Optional.ofNullable(productPrice)
             .map(result -> new ResponseEntity<>(
@@ -165,34 +165,11 @@ public class ProductPriceResource {
     @Timed
     @Secured(AuthoritiesConstants.ROLE_CONTRACT_PRODUCTPRICE)
     public ResponseEntity<Void> deleteProductPrice(@PathVariable Long id) {
-        log.debug("REST request to delete ProductPrice : {}", id);
+        log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to delete ProductPrice : {}", id);
         productPriceService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert("productPrice", id.toString())).build();
     }
 
-//    /**
-//     * SEARCH  /_search/product-prices?query=:query : search for the productPrice corresponding
-//     * to the query.
-//     *
-//     * @param query the query of the productPrice search 
-//     * @param pageable the pagination information
-//     * @return the result of the search
-//     * @throws URISyntaxException if there is an error to generate the pagination HTTP headers
-//     */
-//    @GetMapping("/_search/product-prices")
-//    @Timed
-//    @Secured(AuthoritiesConstants.ROLE_CONTRACT_PRODUCTPRICE)
-//    public ResponseEntity<List<ProductPrice>> searchProductPrices(
-//    		@RequestParam(value = "name",required=false) String name,
-//    		@RequestParam(value = "type",required=false) String type,
-//    		@RequestParam(value = "source",required=false) String source,
-//    		@ApiParam Pageable pageable)
-//        throws URISyntaxException {
-//        log.debug("REST request to search for a page of ProductPrices for query {}", name);
-//        Page<ProductPrice> page = productPriceService.search(name,type,source, pageable);
-//        HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(name,page, "/api/_search/product-prices");
-//        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
-//    }
     /**
      * GET  /product-prices : get all the productPrice corresponding
      * to the query.
@@ -211,7 +188,7 @@ public class ProductPriceResource {
     		@RequestParam(value = "name",required=false) String name,
     		@ApiParam Pageable pageable)
     	throws URISyntaxException{
-    	log.debug("REST request to get a page of ProductPrice");
+    	log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to get a page of ProductPrice  source:{},type:{},name:{}",source,type,name);
     	ProductPrice productPrice = new ProductPrice();
     	if (!StringUtil.isNullStr(name)) {
 			productPrice.setName(name);

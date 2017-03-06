@@ -55,7 +55,7 @@ public class ContractReceiveResource {
     @Timed
     @Secured(AuthoritiesConstants.ROLE_CONTRACT_RECEIVE)
     public ResponseEntity<Void> updateContractReceive(@RequestBody ContractReceive contractReceive) throws URISyntaxException {
-        log.debug("REST request to update ContractReceive : {}", contractReceive);
+        log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to update ContractReceive : {}", contractReceive);
         Boolean isNew = contractReceive.getId() == null;
         
         if (contractReceive.getContractId() == null
@@ -114,7 +114,7 @@ public class ContractReceiveResource {
     		@RequestParam(value="contractId",required = false) Long contractId,
     		@ApiParam Pageable pageable)
         throws URISyntaxException {
-        log.debug("REST request to get a page of ContractReceives");
+        log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to get a page of ContractReceives by contractId : {}", contractId);
         ContractReceive contractReceive = new ContractReceive();
         contractReceive.setContractId(contractId);
         
@@ -128,7 +128,7 @@ public class ContractReceiveResource {
     @Timed
     @Secured(AuthoritiesConstants.ROLE_CONTRACT_RECEIVE)
     public ResponseEntity<ContractReceiveVo> getContractReceive(@PathVariable Long id) {
-        log.debug("REST request to get ContractReceive : {}", id);
+        log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to get ContractReceive : {}", id);
         ContractReceiveVo contractReceive = contractReceiveService.getContractReceive(id);
         return Optional.ofNullable(contractReceive)
             .map(result -> new ResponseEntity<>(
@@ -141,7 +141,7 @@ public class ContractReceiveResource {
     @Timed
     @Secured(AuthoritiesConstants.ROLE_CONTRACT_RECEIVE)
     public ResponseEntity<Void> deleteContractReceive(@PathVariable Long id) {
-        log.debug("REST request to delete ContractReceive : {}", id);
+        log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to delete ContractReceive : {}", id);
         ContractReceiveVo contractReceiveVo = contractReceiveService.getContractReceive(id);
         if(contractReceiveVo == null){
         	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.contractReceive.save.noPerm", "")).body(null);

@@ -76,7 +76,7 @@ public class BonusRateResource {
     @Timed
     @Secured(AuthoritiesConstants.ROLE_INFO_BASIC)
     public ResponseEntity<Boolean> updateBonusRate(@RequestBody BonusRate bonusRate) throws URISyntaxException {
-    	 log.debug("REST request to update BonusRate : {}", bonusRate);
+    	 log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to update BonusRate : {}", bonusRate);
     	 Boolean isNew = bonusRate.getId() == null;
     	 //校验参数
     	 if (bonusRate.getContractType() == null || bonusRate.getDeptType() == null || bonusRate.getRate() == null) {
@@ -124,7 +124,7 @@ public class BonusRateResource {
     @Timed
     @Secured(AuthoritiesConstants.ROLE_INFO_BASIC)
     public ResponseEntity<BonusRate> getBonusRate(@PathVariable Long id){
-        log.debug("REST request to get BonusRate : {}", id);
+        log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to get BonusRate : {}", id);
         BonusRate bonusRate = bonusRateService.getBonusRate(id);
         return Optional.ofNullable(bonusRate)
             .map(result -> new ResponseEntity<>(
@@ -142,7 +142,7 @@ public class BonusRateResource {
     @Timed
     @Secured(AuthoritiesConstants.ROLE_INFO_BASIC)
     public ResponseEntity<Void> deleteBonusRate(@PathVariable Long id) {
-        log.debug("REST request to delete BonusRate : {}", id);
+        log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to delete BonusRate : {}", id);
         bonusRateService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert("bonusRate", id.toString())).build();
     }

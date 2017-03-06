@@ -65,7 +65,7 @@ public class PurchaseItemResource {
     @Timed
     @Secured(AuthoritiesConstants.ROLE_CONTRACT_PURCHASE)
     public ResponseEntity<PurchaseItem> createPurchaseItem(@RequestBody PurchaseItem purchaseItem) throws URISyntaxException {
-        log.debug("REST request to save PurchaseItem : {}", purchaseItem);
+        log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to save PurchaseItem : {}", purchaseItem);
         if (purchaseItem.getId() != null) {
             return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("purchaseItem", "idexists", "A new purchaseItem cannot already have an ID")).body(null);
         }
@@ -88,7 +88,7 @@ public class PurchaseItemResource {
     @Timed
     @Secured(AuthoritiesConstants.ROLE_CONTRACT_PURCHASE)
     public ResponseEntity<Boolean> updatePurchaseItem(@RequestBody PurchaseItem purchaseItem) throws URISyntaxException {
-        log.debug("REST request to update PurchaseItem : {}", purchaseItem);
+        log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to update PurchaseItem : {}", purchaseItem);
         Boolean isNew = purchaseItem.getId() == null;
         if (purchaseItem.getBudgetId() == null || purchaseItem.getContractId() == null
         		|| StringUtil.isNullStr(purchaseItem.getName()) || purchaseItem.getSource() == null
@@ -147,7 +147,7 @@ public class PurchaseItemResource {
     @Timed
     @Secured(AuthoritiesConstants.ROLE_CONTRACT_PURCHASE)
     public ResponseEntity<PurchaseItemVo> getPurchaseItem(@PathVariable Long id) {
-        log.debug("REST request to get PurchaseItem : {}", id);
+        log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to get PurchaseItem : {}", id);
         PurchaseItemVo purchaseItem = purchaseItemService.getPurchaseItem(id);
         return Optional.ofNullable(purchaseItem)
             .map(result -> new ResponseEntity<>(
@@ -166,7 +166,7 @@ public class PurchaseItemResource {
     @Timed
     @Secured(AuthoritiesConstants.ROLE_CONTRACT_PURCHASE)
     public ResponseEntity<Void> deletePurchaseItem(@PathVariable Long id) {
-        log.debug("REST request to delete PurchaseItem : {}", id);
+        log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to delete PurchaseItem : {}", id);
         PurchaseItemVo purchaseItem = purchaseItemService.getPurchaseItem(id);
         if (purchaseItem == null) {
     		return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.purchaseItem.save.noPerm", "")).body(null);
@@ -196,7 +196,7 @@ public class PurchaseItemResource {
     		@RequestParam(value = "ppType",required=false) String ppType,
     		@ApiParam Pageable pageable)
         throws URISyntaxException {
-        log.debug("REST request to search for a page of PurchaseItems");
+        log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to search for a page of PurchaseItems  contractId:{},source:{},ppType:{}",contractId,source,ppType);
         PurchaseItem purchaseItem = new PurchaseItem();
         if (!StringUtil.isNullStr(name)) {
 			purchaseItem.setName(name);
@@ -221,7 +221,7 @@ public class PurchaseItemResource {
     @Timed
     @Secured(AuthoritiesConstants.USER)
     public ResponseEntity<List<LongValue>> queryUserContract() throws URISyntaxException{
-    	 log.debug("REST request to queryUserContract");
+    	 log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to queryUserContract");
     	 List<LongValue> list = purchaseItemService.queryUserContract();
     	 return new ResponseEntity<>(list, null, HttpStatus.OK);
     }
@@ -234,7 +234,7 @@ public class PurchaseItemResource {
     		@RequestParam(value = "type",required=false) Integer type,
     		@ApiParam Pageable pageable)
     	throws URISyntaxException{
-    	log.debug("REST request to get a page of ProductPrice");
+    	log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to get a page of ProductPrice  selectName:{},type:{}",selectName,type);
     	 Page<ProductPriceVo> page = purchaseItemService.searchPricePage(selectName,type,pageable);
          HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(selectName,page, "/api/product-prices");
          return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);

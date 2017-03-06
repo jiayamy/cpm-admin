@@ -39,6 +39,7 @@ import com.wondertek.cpm.repository.ExternalQuotationRepository;
 import com.wondertek.cpm.repository.UserRepository;
 import com.wondertek.cpm.repository.search.UserSearchRepository;
 import com.wondertek.cpm.security.AuthoritiesConstants;
+import com.wondertek.cpm.security.SecurityUtils;
 import com.wondertek.cpm.service.MailService;
 import com.wondertek.cpm.service.UserService;
 import com.wondertek.cpm.web.rest.util.HeaderUtil;
@@ -110,7 +111,7 @@ public class UserResource {
     @Timed
     @Secured(AuthoritiesConstants.ROLE_INFO_BASIC)
     public ResponseEntity<?> createUser(@RequestBody ManagedUserVM managedUserVM) throws URISyntaxException {
-        log.debug("REST request to save User : {}", managedUserVM);
+        log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to save User : {}", managedUserVM);
 
         //Lowercase the user login before comparing with database
         if (userRepository.findOneByLogin(managedUserVM.getLogin().toLowerCase()).isPresent()) {
@@ -149,7 +150,7 @@ public class UserResource {
     @Timed
     @Secured(AuthoritiesConstants.ROLE_INFO_BASIC)
     public ResponseEntity<ManagedUserVM> updateUser(@RequestBody ManagedUserVM managedUserVM) {
-        log.debug("REST request to update User : {}", managedUserVM);
+        log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to update User : {}", managedUserVM);
         Optional<User> existingUser = userRepository.findOneByEmail(managedUserVM.getEmail());
         if (existingUser.isPresent() && (!existingUser.get().getId().equals(managedUserVM.getId()))) {
             return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("userManagement", "emailexists", "E-mail already in use")).body(null);
@@ -193,6 +194,8 @@ public class UserResource {
     		@RequestParam(value = "grade",required=false) Integer grade,
     		@ApiParam Pageable pageable)
         throws URISyntaxException {
+    	log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to get All Users login : {}, serialNum : {}, lastName : {}, "
+    			+ "deptId : {}, workArea : {}, grade : {}", login, serialNum, lastName, deptId, workArea, grade);
     	User user = new User();
     	user.setLogin(login);
     	user.setSerialNum(serialNum);
@@ -231,7 +234,7 @@ public class UserResource {
     @GetMapping("/users/{login:" + Constants.LOGIN_REGEX + "}")
     @Timed
     public ResponseEntity<ManagedUserVM> getUser(@PathVariable String login) {
-        log.debug("REST request to get User : {}", login);
+        log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to get User : {}", login);
         return userService.getUserWithAuthoritiesByLogin(login)
                 .map(ManagedUserVM::new)
                 .map(managedUserVM -> new ResponseEntity<>(managedUserVM, HttpStatus.OK))
@@ -248,7 +251,7 @@ public class UserResource {
     @Timed
     @Secured(AuthoritiesConstants.ROLE_INFO_BASIC)
     public ResponseEntity<Void> deleteUser(@PathVariable String login) {
-        log.debug("REST request to delete User: {}", login);
+        log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to delete User: {}", login);
         userService.deleteUser(login);
         return ResponseEntity.ok().headers(HeaderUtil.createAlert( "userManagement.deleted", login)).build();
     }
@@ -264,7 +267,8 @@ public class UserResource {
     @Timed
     @Secured(AuthoritiesConstants.ROLE_INFO_BASIC)
     public List<User> search(@PathVariable String query) {
-        return StreamSupport
+    	log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to search User: {}", query);
+    	return StreamSupport
             .stream(userSearchRepository.search(queryStringQuery(query)).spliterator(), false)
             .collect(Collectors.toList());
     }
@@ -273,6 +277,7 @@ public class UserResource {
     @Timed
     @Secured(AuthoritiesConstants.ROLE_INFO_BASIC)
     public ResponseEntity<List<Authority>> queryAllAuthorities() {
+    	log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to query All Authorities");
     	List<Authority> page = userService.queryAllAuthorities();
         return new ResponseEntity<>(page, null, HttpStatus.OK);
     }
@@ -281,6 +286,7 @@ public class UserResource {
     @Timed
     @Secured(AuthoritiesConstants.ROLE_INFO_BASIC)
     public ResponseEntity<List<Integer>> queryAllGrade() {
+    	log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to query All Grade");
     	List<Integer> all = externalQuotationRepository.findGradeOrderByGrade();
         return new ResponseEntity<>(all, null, HttpStatus.OK);
     }

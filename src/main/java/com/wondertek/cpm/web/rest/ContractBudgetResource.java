@@ -68,7 +68,7 @@ public class ContractBudgetResource {
     @Timed
     @Secured(AuthoritiesConstants.ROLE_CONTRACT_BUDGET)
     public ResponseEntity<Boolean> updateContractBudget(@RequestBody ContractBudget contractBudget) throws URISyntaxException {
-        log.debug("REST request to update ContractBudget : {}", contractBudget);
+        log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to update ContractBudget : {}", contractBudget);
         Boolean isNew = contractBudget.getId() == null;
         //检验参数
         if (contractBudget.getContractId() == null || contractBudget.getUserId() == null
@@ -155,7 +155,7 @@ public class ContractBudgetResource {
     @Timed
     @Secured(AuthoritiesConstants.ROLE_CONTRACT_BUDGET)
     public ResponseEntity<ContractBudgetVo> getContractBudgetVo(@PathVariable Long id) {
-        log.debug("REST request to get ContractBudget : {}", id);
+        log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to get ContractBudget : {}", id);
         ContractBudgetVo contractBudget = contractBudgetService.getUserBudget(id);
         return Optional.ofNullable(contractBudget)
             .map(result -> new ResponseEntity<>(
@@ -174,7 +174,7 @@ public class ContractBudgetResource {
     @Timed
     @Secured(AuthoritiesConstants.ROLE_CONTRACT_BUDGET)
     public ResponseEntity<Void> deleteContractBudget(@PathVariable Long id) {
-        log.debug("REST request to delete ContractBudget : {}", id);
+        log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to delete ContractBudget : {}", id);
         ContractBudgetVo contractBudget = contractBudgetService.getUserBudget(id);
         if (contractBudget == null) {
         	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.contractBudget.save.noPerm", "")).body(null);
@@ -204,7 +204,7 @@ public class ContractBudgetResource {
     		@RequestParam(value = "purchaseType",required=false) String purchaseType,
     		@ApiParam Pageable pageable)
     	throws URISyntaxException{
-    	log.debug("REST request to get a page of ContractBudget");
+    	log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to get a page of ContractBudget  name:{},contractId:{},purchaseType:{}",name,contractId,purchaseType);
     	ContractBudget contractBudget = new ContractBudget();
     	if (!StringUtil.isNullStr(name)) {
 			contractBudget.setName(name);
@@ -226,7 +226,7 @@ public class ContractBudgetResource {
     @Timed
     @Secured(AuthoritiesConstants.USER)
     public ResponseEntity<List<LongValue>> queryUserContract() throws URISyntaxException{
-		log.debug("REST request to queryUserContrac");
+		log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to queryUserContract");
 		List<LongValue> list = contractBudgetService.queryUserContract();
         return new ResponseEntity<>(list, null, HttpStatus.OK);
     	
@@ -238,7 +238,7 @@ public class ContractBudgetResource {
     @Timed
     @Secured(AuthoritiesConstants.USER)
     public ResponseEntity<List<LongValue>> queryUserContractBudget(@RequestParam(value = "contractId") String contractId) throws URISyntaxException{
-    	 log.debug("REST request to queryUserContract");
+    	 log.debug( SecurityUtils.getCurrentUserLogin() + " REST request to queryUserContractBudget : {}",contractId);
     	 Long contractIdLong = StringUtil.nullToCloneLong(contractId);
     	 if (contractIdLong == null) {
     		 return new ResponseEntity<>(new ArrayList<LongValue>(), null, HttpStatus.OK);

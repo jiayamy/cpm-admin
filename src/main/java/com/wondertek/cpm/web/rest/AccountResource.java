@@ -61,7 +61,7 @@ public class AccountResource {
                     produces={MediaType.APPLICATION_JSON_VALUE, MediaType.TEXT_PLAIN_VALUE})
     @Timed
     public ResponseEntity<?> registerAccount(@Valid @RequestBody ManagedUserVM managedUserVM) {
-
+    	log.debug(SecurityUtils.getCurrentUserLogin() + " Rest request to register Account : {}", managedUserVM);
         HttpHeaders textPlainHeaders = new HttpHeaders();
         textPlainHeaders.setContentType(MediaType.TEXT_PLAIN);
 
@@ -90,7 +90,8 @@ public class AccountResource {
     @GetMapping("/activate")
     @Timed
     public ResponseEntity<String> activateAccount(@RequestParam(value = "key") String key) {
-        return userService.activateRegistration(key)
+    	log.debug(SecurityUtils.getCurrentUserLogin() + " Rest request to activate Account : {}", key);
+    	return userService.activateRegistration(key)
             .map(user -> new ResponseEntity<String>(HttpStatus.OK))
             .orElse(new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR));
     }
@@ -104,7 +105,7 @@ public class AccountResource {
     @GetMapping("/authenticate")
     @Timed
     public String isAuthenticated(HttpServletRequest request) {
-        log.debug("REST request to check if the current user is authenticated");
+        log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to check if the current user is authenticated");
         return request.getRemoteUser();
     }
 
@@ -116,7 +117,8 @@ public class AccountResource {
     @GetMapping("/account")
     @Timed
     public ResponseEntity<UserDTO> getAccount() {
-        return Optional.ofNullable(userService.getUserWithAuthorities())
+    	log.debug(SecurityUtils.getCurrentUserLogin() + " Rest request to get Account");
+    	return Optional.ofNullable(userService.getUserWithAuthorities())
             .map(user -> new ResponseEntity<>(new UserDTO(user), HttpStatus.OK))
             .orElse(new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR));
     }
@@ -130,7 +132,8 @@ public class AccountResource {
     @PostMapping("/account")
     @Timed
     public ResponseEntity<String> saveAccount(@Valid @RequestBody UserDTO userDTO) {
-        Optional<User> existingUser = userRepository.findOneByEmail(userDTO.getEmail());
+    	log.debug(SecurityUtils.getCurrentUserLogin() + " Rest request to save Account : {}", userDTO);
+    	Optional<User> existingUser = userRepository.findOneByEmail(userDTO.getEmail());
         if (existingUser.isPresent() && (!existingUser.get().getLogin().equalsIgnoreCase(userDTO.getLogin()))) {
             return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("user-management", "emailexists", "Email already in use")).body(null);
         }
@@ -154,7 +157,8 @@ public class AccountResource {
         produces = MediaType.TEXT_PLAIN_VALUE)
     @Timed
     public ResponseEntity<?> changePassword(@RequestBody String password) {
-        if (!checkPasswordLength(password)) {
+    	log.debug(SecurityUtils.getCurrentUserLogin() + " Rest request to change Pasword : {}", password);
+    	if (!checkPasswordLength(password)) {
             return new ResponseEntity<>("Incorrect password", HttpStatus.BAD_REQUEST);
         }
         userService.changePassword(password);
@@ -170,7 +174,8 @@ public class AccountResource {
     @GetMapping("/account/sessions")
     @Timed
     public ResponseEntity<List<PersistentToken>> getCurrentSessions() {
-        return userRepository.findOneByLogin(SecurityUtils.getCurrentUserLogin())
+    	log.debug(SecurityUtils.getCurrentUserLogin() + " Rest request to get Current Sessions");
+    	return userRepository.findOneByLogin(SecurityUtils.getCurrentUserLogin())
             .map(user -> new ResponseEntity<>(
                 persistentTokenRepository.findByUser(user),
                 HttpStatus.OK))
@@ -196,7 +201,8 @@ public class AccountResource {
     @DeleteMapping("/account/sessions/{series}")
     @Timed
     public void invalidateSession(@PathVariable String series) throws UnsupportedEncodingException {
-        String decodedSeries = URLDecoder.decode(series, "UTF-8");
+    	log.debug(SecurityUtils.getCurrentUserLogin() + " Rest request to invalidate Session : {}", series);
+    	String decodedSeries = URLDecoder.decode(series, "UTF-8");
         userRepository.findOneByLogin(SecurityUtils.getCurrentUserLogin()).ifPresent(u -> {
             persistentTokenRepository.findByUser(u).stream()
                 .filter(persistentToken -> StringUtils.equals(persistentToken.getSeries(), decodedSeries))
@@ -214,7 +220,8 @@ public class AccountResource {
         produces = MediaType.TEXT_PLAIN_VALUE)
     @Timed
     public ResponseEntity<?> requestPasswordReset(@RequestBody String mail) {
-        return userService.requestPasswordReset(mail)
+    	log.debug(SecurityUtils.getCurrentUserLogin() + " Rest request to request Password Reset : {}", mail);
+    	return userService.requestPasswordReset(mail)
             .map(user -> {
                 mailService.sendPasswordResetMail(user);
                 return new ResponseEntity<>("e-mail was sent", HttpStatus.OK);
@@ -232,7 +239,8 @@ public class AccountResource {
         produces = MediaType.TEXT_PLAIN_VALUE)
     @Timed
     public ResponseEntity<String> finishPasswordReset(@RequestBody KeyAndPasswordVM keyAndPassword) {
-        if (!checkPasswordLength(keyAndPassword.getNewPassword())) {
+    	log.debug(SecurityUtils.getCurrentUserLogin() + " Rest request to finish Password Reset : {}", keyAndPassword);
+    	if (!checkPasswordLength(keyAndPassword.getNewPassword())) {
             return new ResponseEntity<>("Incorrect password", HttpStatus.BAD_REQUEST);
         }
         return userService.completePasswordReset(keyAndPassword.getNewPassword(), keyAndPassword.getKey())
