@@ -39,6 +39,7 @@ public class ShareCostRateDaoImpl extends GenericDaoImpl<ShareCostRate, Long> im
 		StringBuffer whereHql = new StringBuffer();
 		StringBuffer orderHql = new StringBuffer();
 		List<Object> params = new ArrayList<Object>();
+		int count = 0;//jpa格式 问号后的数组，一定要从0开始
 		
 		queryHql.append("select wscr");
 		queryHql.append(",wpt.name");
@@ -51,11 +52,11 @@ public class ShareCostRateDaoImpl extends GenericDaoImpl<ShareCostRate, Long> im
 		whereHql.append(" where 1=1");
 		//查询条件
 		if(shareCostRate.getContractType() != null){
-			whereHql.append(" and wscr.contractType = ?");
+			whereHql.append(" and wscr.contractType = ?" + (count++));
 			params.add(shareCostRate.getContractType());
 		}
 		if(shareCostRate.getDeptType() != null){
-			whereHql.append(" and wscr.deptType = ?");
+			whereHql.append(" and wscr.deptType = ?" + (count++));
 			params.add(shareCostRate.getDeptType());
 		}
 		queryHql.append(whereHql.toString());

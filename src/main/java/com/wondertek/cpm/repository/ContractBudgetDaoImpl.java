@@ -44,6 +44,8 @@ public class ContractBudgetDaoImpl extends GenericDaoImpl<ContractBudget, Long> 
 		StringBuffer whereHql = new StringBuffer();
 		StringBuffer orderHql = new StringBuffer();
 		List<Object> params = new ArrayList<Object>();
+		int count = 0;//jpa格式 问号后的数组，一定要从0开始
+		
 		queryHql.append("select wcb,");
 		queryHql.append("wci.serialNum,wci.name as contractName,wci.creator as contractCreator,wci.salesmanId,wci.consultantsId,");
 		queryHql.append("wdi.id as wdiId,wdi.idPath as wdiIdPath,");
@@ -57,22 +59,23 @@ public class ContractBudgetDaoImpl extends GenericDaoImpl<ContractBudget, Long> 
 		whereHql.append(" left join DeptInfo wdi2 on wci.consultantsDeptId = wdi2.id");
 		whereHql.append(" left join DeptInfo wdi3 on wcb.deptId = wdi3.id");
 		//权限
-		whereHql.append(" where (wci.salesmanId = ? or wci.consultantsId = ? or wcb.userId = ? or wci.creator = ? or wcb.creator = ?");
+		whereHql.append(" where (wci.salesmanId = ?" + (count++) + " or wci.consultantsId = ?" + (count++)
+				+ " or wcb.userId = ?" + (count++) + " or wci.creator = ?" + (count++) + " or wcb.creator = ?" + (count++));
 		params.add(user.getId());
 		params.add(user.getId());
 		params.add(user.getId());
 		params.add(user.getLogin());
 		params.add(user.getLogin());
 		if (user.getIsManager()) {
-			whereHql.append(" or wdi.idPath like ? or wdi.id = ?");
+			whereHql.append(" or wdi.idPath like ?" + (count++) + " or wdi.id = ?" + (count++));
 			params.add(deptInfo.getIdPath() + deptInfo.getIdPath() + "/%");
 			params.add(deptInfo.getId());
 			
-			whereHql.append(" or wdi2.idPath like ? or wdi2.id = ?");
+			whereHql.append(" or wdi2.idPath like ?" + (count++) + " or wdi2.id = ?" + (count++));
 			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
 			params.add(deptInfo.getId());
 			
-			whereHql.append(" or wdi3.idPath like ? or wdi3.id = ?");
+			whereHql.append(" or wdi3.idPath like ?" + (count++) + " or wdi3.id = ?" + (count++));
 			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
 			params.add(deptInfo.getId());
 		}
@@ -80,15 +83,15 @@ public class ContractBudgetDaoImpl extends GenericDaoImpl<ContractBudget, Long> 
 		
 		//页面搜索条件
 		if (contractBudget.getContractId() != null) {
-			whereHql.append(" and wcb.contractId = ?");
+			whereHql.append(" and wcb.contractId = ?" + (count++));
 			params.add(contractBudget.getContractId());
 		}
 		if (contractBudget.getName() != null) {
-			whereHql.append(" and wcb.name like ?");
+			whereHql.append(" and wcb.name like ?" + (count++));
 			params.add("%" + contractBudget.getName() + "%");
 		}
 		if (contractBudget.getPurchaseType() != null) {
-			whereHql.append(" and wcb.purchaseType = ?");
+			whereHql.append(" and wcb.purchaseType = ?" + (count++));
 			params.add(contractBudget.getPurchaseType());
 		}
 		queryHql.append(whereHql.toString());
@@ -111,8 +114,8 @@ public class ContractBudgetDaoImpl extends GenericDaoImpl<ContractBudget, Long> 
     			}else{
     				orderHql.append(" desc");
     			}
-    	}
-   }
+	    	}
+	   }
     	queryHql.append(orderHql.toString());
     	orderHql.setLength(0);
     	orderHql = null;
@@ -139,7 +142,7 @@ public class ContractBudgetDaoImpl extends GenericDaoImpl<ContractBudget, Long> 
 		List<Object> params = new ArrayList<Object>();
 		
 		queryHql.append(" select wpi from ProjectInfo wpi left join ContractBudget wcb on wpi.budgetId = wcb.id");
-		queryHql.append(" where wcb.id = ?");
+		queryHql.append(" where wcb.id = ?0");
 		params.add(contractBudget.getId());
 		
 		List<Object[]> list = this.queryAllHql(queryHql.toString(), params.toArray());
@@ -153,13 +156,15 @@ public class ContractBudgetDaoImpl extends GenericDaoImpl<ContractBudget, Long> 
 	public List<LongValue> queryUserContract(User user, DeptInfo deptInfo) {
 		StringBuffer queryHql = new StringBuffer();
 		ArrayList<Object> params = new ArrayList<Object>();
+		int count = 0;//jpa格式 问号后的数组，一定要从0开始
 		
 		queryHql.append(" select distinct wci.id,wci.serialNum,wci.name from ContractInfo as wci");
 		queryHql.append(" left join DeptInfo wdi on wci.deptId = wdi.id");
 		queryHql.append(" left join DeptInfo wdi2 on wci.consultantsDeptId = wdi2.id");
 		queryHql.append(" left join ContractBudget wcb on wci.id = wcb.contractId");
 		queryHql.append(" left join DeptInfo wdi3 on wcb.deptId = wdi3.id");
-		queryHql.append(" where (wci.salesmanId = ? or wci.consultantsId = ? or wcb.userId = ? or wci.creator = ? or wcb.creator = ?");
+		queryHql.append(" where (wci.salesmanId = ?" + (count++) + " or wci.consultantsId = ?" + (count++)
+				+ " or wcb.userId = ?" + (count++) + " or wci.creator = ?" + (count++) + " or wcb.creator = ?" + (count++));
 		
 		params.add(user.getId());
 		params.add(user.getId());
@@ -168,15 +173,15 @@ public class ContractBudgetDaoImpl extends GenericDaoImpl<ContractBudget, Long> 
 		params.add(user.getLogin());
 		
 		if (user.getIsManager()) {
-			queryHql.append(" or wdi.idPath like ? or wdi.id = ?");
+			queryHql.append(" or wdi.idPath like ?" + (count++) + " or wdi.id = ?" + (count++));
 			params.add(deptInfo.getIdPath() + deptInfo.getIdPath() + "/%");
 			params.add(deptInfo.getId());
 			
-			queryHql.append(" or wdi2.idPath like ? or wdi2.id = ?");
+			queryHql.append(" or wdi2.idPath like ?" + (count++) + " or wdi2.id = ?" + (count++));
 			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
 			params.add(deptInfo.getId());
 			
-			queryHql.append(" or wdi3.idPath like ? or wdi3.id = ?");
+			queryHql.append(" or wdi3.idPath like ?" + (count++) + " or wdi3.id = ?" + (count++));
 			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
 			params.add(deptInfo.getId());
 		}
@@ -199,13 +204,15 @@ public class ContractBudgetDaoImpl extends GenericDaoImpl<ContractBudget, Long> 
 			DeptInfo deptInfo, Long contractId) {
 		StringBuffer queryHql = new StringBuffer();
 		ArrayList<Object> params = new ArrayList<Object>();
+		int count = 0;//jpa格式 问号后的数组，一定要从0开始
 		
 		queryHql.append("select distinct wcb.id,wcb.name,wcb.contractId from ContractBudget as wcb");
 		queryHql.append(" left join ContractInfo wci on wci.id = wcb.contractId");
 		queryHql.append(" left join DeptInfo wdi on wci.deptId = wdi.id");
 		queryHql.append(" left join DeptInfo wdi2 on wci.consultantsDeptId = wdi2.id");
 		queryHql.append(" left join DeptInfo wdi3 on wcb.deptId = wdi3.id");
-		queryHql.append(" where (wci.salesmanId = ? or wci.consultantsId = ? or wcb.userId = ? or wci.creator = ? or wcb.creator = ?");
+		queryHql.append(" where (wci.salesmanId = ?" + (count++) + " or wci.consultantsId = ?" + (count++) 
+				+ " or wcb.userId = ?" + (count++) + " or wci.creator = ?" + (count++) + " or wcb.creator = ?" + (count++));
 		
 		params.add(user.getId());
 		params.add(user.getId());
@@ -214,21 +221,21 @@ public class ContractBudgetDaoImpl extends GenericDaoImpl<ContractBudget, Long> 
 		params.add(user.getLogin());
 		
 		if (user.getIsManager()) {
-			queryHql.append(" or wdi.idPath like ? or wdi.id = ?");
+			queryHql.append(" or wdi.idPath like ?" + (count++) + " or wdi.id = ?" + (count++));
 			params.add(deptInfo.getIdPath() + deptInfo.getIdPath() + "/%");
 			params.add(deptInfo.getId());
 			
-			queryHql.append(" or wdi2.idPath like ? or wdi2.id = ?");
+			queryHql.append(" or wdi2.idPath like ?" + (count++) + " or wdi2.id = ?" + (count++));
 			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
 			params.add(deptInfo.getId());
 			
-			queryHql.append(" or wdi3.idPath like ? or wdi3.id = ?");
+			queryHql.append(" or wdi3.idPath like ?" + (count++) + " or wdi3.id = ?" + (count++));
 			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
 			params.add(deptInfo.getId());
 		}
 		queryHql.append(")");
 		if (contractId != null ) {
-			queryHql.append(" and wcb.contractId = ?");
+			queryHql.append(" and wcb.contractId = ?" + (count++));
 			params.add(contractId);
 		}
 		List<Object[]> list = this.queryAllHql(queryHql.toString(), params.toArray());
@@ -246,13 +253,15 @@ public class ContractBudgetDaoImpl extends GenericDaoImpl<ContractBudget, Long> 
 			DeptInfo deptInfo) {
 		StringBuffer queryHql = new StringBuffer();
 		ArrayList<Object> params = new ArrayList<Object>();
+		int count = 0;//jpa格式 问号后的数组，一定要从0开始
 		
 		queryHql.append("select wcb,wci.name,wci.serialNum from ContractBudget as wcb");
 		queryHql.append(" left join ContractInfo wci on wci.id = wcb.contractId");
 		queryHql.append(" left join DeptInfo wdi on wci.deptId = wdi.id");
 		queryHql.append(" left join DeptInfo wdi2 on wci.consultantsDeptId = wdi2.id");
 		queryHql.append(" left join DeptInfo wdi3 on wcb.deptId = wdi3.id");
-		queryHql.append(" where (wci.salesmanId = ? or wci.consultantsId = ? or wcb.userId = ? or wci.creator = ? or wcb.creator = ?");
+		queryHql.append(" where (wci.salesmanId = ?" + (count++) + " or wci.consultantsId = ?" + (count++) 
+				+ " or wcb.userId = ?" + (count++) + " or wci.creator = ?" + (count++) + " or wcb.creator = ?" + (count++));
 		
 		params.add(user.getId());
 		params.add(user.getId());
@@ -261,22 +270,22 @@ public class ContractBudgetDaoImpl extends GenericDaoImpl<ContractBudget, Long> 
 		params.add(user.getLogin());
 		
 		if (user.getIsManager()) {
-			queryHql.append(" or wdi.idPath like ? or wdi.id = ?");
+			queryHql.append(" or wdi.idPath like ?" + (count++) + " or wdi.id = ?" + (count++));
 			params.add(deptInfo.getIdPath() + deptInfo.getIdPath() + "/%");
 			params.add(deptInfo.getId());
 			
-			queryHql.append(" or wdi2.idPath like ? or wdi2.id = ?");
+			queryHql.append(" or wdi2.idPath like ?" + (count++) + " or wdi2.id = ?" + (count++));
 			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
 			params.add(deptInfo.getId());
 			
-			queryHql.append(" or wdi3.idPath like ? or wdi3.id = ?");
+			queryHql.append(" or wdi3.idPath like ?" + (count++) + " or wdi3.id = ?" + (count++));
 			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
 			params.add(deptInfo.getId());
 		}
 		queryHql.append(")");
 		//搜索条件
 		if (id != null) {
-			queryHql.append(" and wcb.id = ?");
+			queryHql.append(" and wcb.id = ?" + (count++));
 			params.add(id);
 		}
 		List<Object[]> list = this.queryAllHql(queryHql.toString(), params.toArray());

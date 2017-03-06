@@ -273,7 +273,7 @@ public abstract class GenericDaoImpl<T, PK extends Serializable> implements Gene
 		Query query = entityManager.createQuery(queryHql);
 		if (params != null) {
 			for (int i = 0; i < params.length; i++) {
-				query.setParameter(i, params[i]);
+				query.setParameter(""+i, params[i]);
 			}
 		}
 		if (paramNameList != null) {
@@ -318,7 +318,7 @@ public abstract class GenericDaoImpl<T, PK extends Serializable> implements Gene
 		TypedQuery<Long> query = entityManager.createQuery(countHql,Long.class);
 		if (params != null) {
 			for (int i = 0; i < params.length; i++) {
-				query.setParameter(i, params[i]);
+				query.setParameter(""+i, params[i]);
 			}
 		}
 		if (paramNameList != null) {
@@ -361,7 +361,7 @@ public abstract class GenericDaoImpl<T, PK extends Serializable> implements Gene
 		Query query = entityManager.createQuery(excuteHql);
 		if (params != null) {
 			for (int i = 0; i < params.length; i++) {
-				query.setParameter(i, params[i]);
+				query.setParameter(""+i, params[i]);
 			}
 		}
 		if (paramNameList != null) {

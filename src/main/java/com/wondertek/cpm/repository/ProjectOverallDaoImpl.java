@@ -226,6 +226,7 @@ public class ProjectOverallDaoImpl extends GenericDaoImpl<ProjectOverall, Long> 
 		
 		StringBuffer whereSql = new StringBuffer();
 		List<Object> params = new ArrayList<Object>();
+		int count = 0;//jpa格式 问号后的数组，一定要从0开始
 		
 		querySql.append("select wpo");
 		
@@ -234,16 +235,16 @@ public class ProjectOverallDaoImpl extends GenericDaoImpl<ProjectOverall, Long> 
 		whereSql.append(" left join DeptInfo wdi on wci.deptId = wdi.id");
 		whereSql.append(" left join DeptInfo wdi2 on wci.consultantsDeptId = wdi2.id");
 		//权限
-		whereSql.append(" where (wci.creator = ? or wci.salesmanId = ? or wci.consultantsId = ?");
+		whereSql.append(" where (wci.creator = ?" + (count++) + " or wci.salesmanId = ?" + (count++) + " or wci.consultantsId = ?" + (count++));
 		params.add(user.getLogin());
 		params.add(user.getId());
 		params.add(user.getId());
 		if(user.getIsManager()){
-			whereSql.append(" or wdi.idPath like ? or wdi.id = ?");
+			whereSql.append(" or wdi.idPath like ?" + (count++) + " or wdi.id = ?" + (count++));
 			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
 			params.add(deptInfo.getId());
 			
-			whereSql.append(" or wdi2.idPath like ? or wdi2.id = ?");
+			whereSql.append(" or wdi2.idPath like ?" + (count++) + " or wdi2.id = ?" + (count++));
 			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
 			params.add(deptInfo.getId());
 		}
@@ -251,7 +252,7 @@ public class ProjectOverallDaoImpl extends GenericDaoImpl<ProjectOverall, Long> 
 		
 		//搜索条件
 		if (id != null) {
-			whereSql.append(" and wpo.id = ?");
+			whereSql.append(" and wpo.id = ?" + (count++));
 			params.add(id);
 		}
 		querySql.append(whereSql.toString());

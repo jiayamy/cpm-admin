@@ -44,6 +44,7 @@ public class ProductPriceDaoImpl extends GenericDaoImpl<ProductPrice, Long> impl
 		StringBuffer orderHql = new StringBuffer();
 		StringBuffer countHql = new StringBuffer();
 		List<Object> params = new ArrayList<Object>();
+		int count = 0;//jpa格式 问号后的数组，一定要从0开始
 		
 		queryHql.append(" select wpp");
 		countHql.append("select count(wpp.id)");
@@ -53,15 +54,15 @@ public class ProductPriceDaoImpl extends GenericDaoImpl<ProductPrice, Long> impl
 		
 		//页面查询条件
 		if (!StringUtil.isNullStr(productPrice.getName())) {
-			whereHql.append(" and wpp.name like ?");
+			whereHql.append(" and wpp.name like ?" + (count++));
 			params.add("%"+productPrice.getName()+"%");
 		}
 		if (!StringUtil.isNullStr(productPrice.getType())) {
-			whereHql.append(" and wpp.type = ?");
+			whereHql.append(" and wpp.type = ?" + (count++));
 			params.add(Integer.valueOf(productPrice.getType()));
 		}
 		if (!StringUtil.isNullStr(productPrice.getSource())) {
-			whereHql.append(" and wpp.source = ?");
+			whereHql.append(" and wpp.source = ?" + (count++));
 			params.add(Integer.valueOf(productPrice.getSource()));
 		}
 		queryHql.append(whereHql.toString());

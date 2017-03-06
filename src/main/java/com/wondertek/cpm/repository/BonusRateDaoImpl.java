@@ -40,6 +40,7 @@ public class BonusRateDaoImpl extends GenericDaoImpl<BonusRate, Long> implements
 		StringBuffer whereHql = new StringBuffer();
 		StringBuffer orderHql = new StringBuffer();
 		List<Object> params = new ArrayList<Object>();
+		int count = 0;//jpa格式 问号后的数组，一定要从0开始
 		
 		queryHql.append("select wbr");
 		queryHql.append(",wpt.name");
@@ -52,11 +53,11 @@ public class BonusRateDaoImpl extends GenericDaoImpl<BonusRate, Long> implements
 		whereHql.append(" where 1=1");
 		//查询条件
 		if(bonusRate.getContractType() != null){
-			whereHql.append(" and wbr.contractType = ?");
+			whereHql.append(" and wbr.contractType = ?" + (count++));
 			params.add(bonusRate.getContractType());
 		}
 		if(bonusRate.getDeptType() != null){
-			whereHql.append(" and wbr.deptType = ?");
+			whereHql.append(" and wbr.deptType = ?" + (count++));
 			params.add(bonusRate.getDeptType());
 		}
 		queryHql.append(whereHql.toString());

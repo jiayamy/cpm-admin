@@ -36,30 +36,32 @@ public class UserTimesheetDaoImpl extends GenericDaoImpl<UserTimesheet, Long> im
 	public Page<UserTimesheet> getUserPage(UserTimesheet userTimesheet, Pageable pageable, User user) {
 		StringBuffer sb = new StringBuffer();
     	List<Object> params = new ArrayList<Object>();
+    	int count = 0;//jpa格式 问号后的数组，一定要从0开始
+    	
     	sb.append("where 1=1");
     	if(!StringUtil.isNullStr(userTimesheet.getObjName())){
-    		sb.append(" and objName like ?");
+    		sb.append(" and objName like ?" + (count++));
     		params.add("%"+userTimesheet.getObjName() +"%");
     	}
     	if(userTimesheet.getObjId() != null){
-    		sb.append(" and objId = ?");
+    		sb.append(" and objId = ?" + (count++));
     		params.add(userTimesheet.getObjId());
     	}
     	if(userTimesheet.getType() != null){
-    		sb.append(" and type = ?");
+    		sb.append(" and type = ?" + (count++));
     		params.add(userTimesheet.getType());
     	}
     	if(userTimesheet.getUserId() != null){
-    		sb.append(" and userId = ?");
+    		sb.append(" and userId = ?" + (count++));
     		params.add(userTimesheet.getUserId());
     	}
     	if(userTimesheet.getWorkDay() != null){
-    		sb.append(" and workDay = ?");
+    		sb.append(" and workDay = ?" + (count++));
     		params.add(userTimesheet.getWorkDay());
     	}
-    	sb.append(" and status = ?");
+    	sb.append(" and status = ?" + (count++));
     	params.add(CpmConstants.STATUS_VALID);
-    	sb.append(" and userId = ?");
+    	sb.append(" and userId = ?" + (count++));
     	params.add(user.getId());
     	
     	StringBuffer orderHql = new StringBuffer();
@@ -92,43 +94,45 @@ public class UserTimesheetDaoImpl extends GenericDaoImpl<UserTimesheet, Long> im
 	public Page<UserTimesheet> getContractPage(UserTimesheet userTimesheet, User user, DeptInfo deptInfo,Pageable pageable) {
 		StringBuffer sb = new StringBuffer();
     	List<Object> params = new ArrayList<Object>();
+    	int count = 0;//jpa格式 问号后的数组，一定要从0开始
+    	
     	sb.append(" left join ContractInfo wci on wci.id = wut.objId");
     	sb.append(" left join DeptInfo wdi on wdi.id = wci.deptId");
     	sb.append(" left join DeptInfo wdi2 on wdi2.id = wci.consultantsDeptId");
     	
-    	sb.append(" where (wci.salesmanId = ? or wci.consultantsId = ?");
+    	sb.append(" where (wci.salesmanId = ?" + (count++) + " or wci.consultantsId = ?" + (count++));
     	params.add(user.getId());
     	params.add(user.getId());
     	if(user.getIsManager()){
-    		sb.append(" or wdi.id = ? or wdi.idPath like ?");
+    		sb.append(" or wdi.id = ?" + (count++) + " or wdi.idPath like ?" + (count++));
     		params.add(deptInfo.getId());
     		params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
     		
-    		sb.append(" or wdi2.id = ? or wdi2.idPath like ?");
+    		sb.append(" or wdi2.id = ?" + (count++) + " or wdi2.idPath like ?" + (count++));
     		params.add(deptInfo.getId());
     		params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
     	}
     	sb.append(")");
     	
     	if(!StringUtil.isNullStr(userTimesheet.getObjName())){
-    		sb.append(" and wut.objName like ?");
+    		sb.append(" and wut.objName like ?" + (count++));
     		params.add("%"+userTimesheet.getObjName() +"%");
     	}
     	if(userTimesheet.getObjId() != null){
-    		sb.append(" and wut.objId = ?");
+    		sb.append(" and wut.objId = ?" + (count++));
     		params.add(userTimesheet.getObjId());
     	}
     	if(userTimesheet.getUserId() != null){
-    		sb.append(" and wut.userId = ?");
+    		sb.append(" and wut.userId = ?" + (count++));
     		params.add(userTimesheet.getUserId());
     	}
     	if(userTimesheet.getWorkDay() != null){
-    		sb.append(" and wut.workDay = ?");
+    		sb.append(" and wut.workDay = ?" + (count++));
     		params.add(userTimesheet.getWorkDay());
     	}
-    	sb.append(" and wut.type = ?");
+    	sb.append(" and wut.type = ?" + (count++));
     	params.add(UserTimesheet.TYPE_CONTRACT);
-    	sb.append(" and wut.status = ?");
+    	sb.append(" and wut.status = ?" + (count++));
     	params.add(CpmConstants.STATUS_VALID);
     	
     	StringBuffer orderHql = new StringBuffer();
@@ -161,37 +165,39 @@ public class UserTimesheetDaoImpl extends GenericDaoImpl<UserTimesheet, Long> im
 	public Page<UserTimesheet> getProjectPage(UserTimesheet userTimesheet, User user, DeptInfo deptInfo,Pageable pageable){
 		StringBuffer sb = new StringBuffer();
     	List<Object> params = new ArrayList<Object>();
+    	int count = 0;//jpa格式 问号后的数组，一定要从0开始
+    	
     	sb.append(" left join ProjectInfo wpi on wpi.id = wut.objId");
     	sb.append(" left join DeptInfo wdi on wdi.id = wpi.deptId");
     	
-    	sb.append(" where (wpi.pmId = ?");
+    	sb.append(" where (wpi.pmId = ?" + (count++));
     	params.add(user.getId());
     	if(user.getIsManager()){
-    		sb.append(" or wdi.id = ? or wdi.idPath like ?");
+    		sb.append(" or wdi.id = ?" + (count++) + " or wdi.idPath like ?" + (count++));
     		params.add(deptInfo.getId());
     		params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
     	}
     	sb.append(")");
     	
     	if(!StringUtil.isNullStr(userTimesheet.getObjName())){
-    		sb.append(" and wut.objName like ?");
+    		sb.append(" and wut.objName like ?" + (count++));
     		params.add("%"+userTimesheet.getObjName() +"%");
     	}
     	if(userTimesheet.getObjId() != null){
-    		sb.append(" and wut.objId = ?");
+    		sb.append(" and wut.objId = ?" + (count++));
     		params.add(userTimesheet.getObjId());
     	}
     	if(userTimesheet.getUserId() != null){
-    		sb.append(" and wut.userId = ?");
+    		sb.append(" and wut.userId = ?" + (count++));
     		params.add(userTimesheet.getUserId());
     	}
     	if(userTimesheet.getWorkDay() != null){
-    		sb.append(" and wut.workDay = ?");
+    		sb.append(" and wut.workDay = ?" + (count++));
     		params.add(userTimesheet.getWorkDay());
     	}
-    	sb.append(" and wut.type = ?");
+    	sb.append(" and wut.type = ?" + (count++));
     	params.add(UserTimesheet.TYPE_PROJECT);
-    	sb.append(" and wut.status = ?");
+    	sb.append(" and wut.status = ?" + (count++));
     	params.add(CpmConstants.STATUS_VALID);
     	
     	StringBuffer orderHql = new StringBuffer();
@@ -222,7 +228,7 @@ public class UserTimesheetDaoImpl extends GenericDaoImpl<UserTimesheet, Long> im
 	}
 	@Override
 	public List<UserTimesheet> getByWorkDayAndUser(Long startDay, Long endDay, Long userId) {
-		return this.queryAllHql("from UserTimesheet where workDay >= ? and workDay <= ? and status = ? and userId = ? order by workDay asc,id asc",
+		return this.queryAllHql("from UserTimesheet where workDay >= ?0 and workDay <= ?1 and status = ?2 and userId = ?3 order by workDay asc,id asc",
 				new Object[]{startDay,endDay,CpmConstants.STATUS_VALID,userId});
 	}
 
@@ -235,7 +241,7 @@ public class UserTimesheetDaoImpl extends GenericDaoImpl<UserTimesheet, Long> im
 		}
 		if(updateList != null && !updateList.isEmpty()){
 			for(UserTimesheet userTimesheet : updateList){
-				this.excuteHql("update UserTimesheet set realInput = ?,status = ?,workArea = ?,updator = ?,updateTime = ? where (realInput != ? or workArea != ?) and id = ?",
+				this.excuteHql("update UserTimesheet set realInput = ?0,status = ?1,workArea = ?2,updator = ?3,updateTime = ?4 where (realInput != ?5 or workArea != ?6) and id = ?7",
 						new Object[]{userTimesheet.getRealInput(),userTimesheet.getStatus(),userTimesheet.getWorkArea(),
 								userTimesheet.getUpdator(),userTimesheet.getUpdateTime(),
 								userTimesheet.getRealInput(),userTimesheet.getWorkArea(),
@@ -248,25 +254,27 @@ public class UserTimesheetDaoImpl extends GenericDaoImpl<UserTimesheet, Long> im
 	public UserTimesheet getUserTimesheetForContract(Long id, User user, DeptInfo deptInfo){
 		StringBuffer sb = new StringBuffer();
     	List<Object> params = new ArrayList<Object>();
+    	int count = 0;//jpa格式 问号后的数组，一定要从0开始
+    	
     	sb.append("select wut from UserTimesheet wut");
     	sb.append(" left join ContractInfo wci on wci.id = wut.objId");
     	sb.append(" left join DeptInfo wdi on wdi.id = wci.deptId");
     	sb.append(" left join DeptInfo wdi2 on wdi2.id = wci.consultantsDeptId");
     	
-    	sb.append(" where (wci.salesmanId = ? or wci.consultantsId = ?");
+    	sb.append(" where (wci.salesmanId = ?" + (count++) + " or wci.consultantsId = ?" + (count++));
     	params.add(user.getId());
     	params.add(user.getId());
     	if(user.getIsManager()){
-    		sb.append(" or wdi.id = ? or wdi.idPath like ?");
+    		sb.append(" or wdi.id = ?" + (count++) + " or wdi.idPath like ?" + (count++));
     		params.add(deptInfo.getId());
     		params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
     		
-    		sb.append(" or wdi2.id = ? or wdi2.idPath like ?");
+    		sb.append(" or wdi2.id = ?" + (count++) + " or wdi2.idPath like ?" + (count++));
     		params.add(deptInfo.getId());
     		params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
     	}
     	sb.append(")");
-    	sb.append(" and wut.type = ? and wut.id = ?");
+    	sb.append(" and wut.type = ?" + (count++) + " and wut.id = ?" + (count++));
     	params.add(UserTimesheet.TYPE_CONTRACT);
     	params.add(id);
     	
@@ -280,19 +288,21 @@ public class UserTimesheetDaoImpl extends GenericDaoImpl<UserTimesheet, Long> im
 	public UserTimesheet getUserTimesheetForProject(Long id, User user, DeptInfo deptInfo){
 		StringBuffer sb = new StringBuffer();
     	List<Object> params = new ArrayList<Object>();
+    	int count = 0;//jpa格式 问号后的数组，一定要从0开始
+    	
     	sb.append("select wut from UserTimesheet wut");
     	sb.append(" left join ProjectInfo wpi on wpi.id = wut.objId");
     	sb.append(" left join DeptInfo wdi on wdi.id = wpi.deptId");
     	
-    	sb.append(" where (wpi.pmId = ?");
+    	sb.append(" where (wpi.pmId = ?" + (count++));
     	params.add(user.getId());
     	if(user.getIsManager()){
-    		sb.append(" or wdi.id = ? or wdi.idPath like ?");
+    		sb.append(" or wdi.id = ?" + (count++) + " or wdi.idPath like ?" + (count++));
     		params.add(deptInfo.getId());
     		params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
     	}
     	sb.append(")");
-    	sb.append(" and wut.type = ? and wut.id = ?");
+    	sb.append(" and wut.type = ?" + (count++) + " and wut.id = ?" + (count++));
     	params.add(UserTimesheet.TYPE_PROJECT);
     	params.add(id);
     	
@@ -304,7 +314,7 @@ public class UserTimesheetDaoImpl extends GenericDaoImpl<UserTimesheet, Long> im
 	}
 	@Override
 	public List<UserTimesheet> getByWorkDayAndObjType(Long startDay, Long endDay, Long objId, Integer type){
-		return this.queryAllHql("from UserTimesheet where workDay >= ? and workDay <= ? and status = ? and objId = ? and type = ? order by workDay asc,id asc",
+		return this.queryAllHql("from UserTimesheet where workDay >= ?0 and workDay <= ?1 and status = ?2 and objId = ?3 and type = ?4 order by workDay asc,id asc",
 				new Object[]{startDay,endDay,CpmConstants.STATUS_VALID,objId,type});
 	}
 
@@ -312,7 +322,7 @@ public class UserTimesheetDaoImpl extends GenericDaoImpl<UserTimesheet, Long> im
 	public void updateAcceptInput(List<UserTimesheet> updateList) {
 		if(updateList != null && !updateList.isEmpty()){
 			for(UserTimesheet userTimesheet : updateList){
-				this.excuteHql("update UserTimesheet set acceptInput = ?,updator = ?,updateTime = ? where acceptInput != ? and userId = ? and objId = ? and type = ? and id = ?",
+				this.excuteHql("update UserTimesheet set acceptInput = ?0,updator = ?1,updateTime = ?2 where acceptInput != ?3 and userId = ?4 and objId = ?5 and type = ?6 and id = ?7",
 						new Object[]{userTimesheet.getAcceptInput(),
 								userTimesheet.getUpdator(),userTimesheet.getUpdateTime(),
 								userTimesheet.getAcceptInput(),

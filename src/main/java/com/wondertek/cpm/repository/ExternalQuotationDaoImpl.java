@@ -37,6 +37,7 @@ public class ExternalQuotationDaoImpl extends GenericDaoImpl<ExternalQuotation, 
 		StringBuffer whereHql = new StringBuffer();
 		StringBuffer orderHql = new StringBuffer();
 		List<Object> params = new ArrayList<Object>();
+		int count = 0;//jpa格式 问号后的数组，一定要从0开始
 		
 		countHql.append("select count(weq.id)");
 		
@@ -46,7 +47,7 @@ public class ExternalQuotationDaoImpl extends GenericDaoImpl<ExternalQuotation, 
 		
 		//查询条件
 		if(externalQuotation.getGrade() != null){
-			whereHql.append(" and weq.grade = ?");
+			whereHql.append(" and weq.grade = ?" + (count++));
 			params.add(externalQuotation.getGrade());
 		}
 		

@@ -77,6 +77,8 @@ public class ProjectWeeklyStatDaoImpl extends GenericDaoImpl<ProjectWeeklyStat, 
 		StringBuffer sb = new StringBuffer();
 		StringBuffer querysql = new StringBuffer();
 		StringBuffer countsql = new StringBuffer();
+		int count = 0;//jpa格式 问号后的数组，一定要从0开始
+		
 		querysql.append(" select m.id, m.projectId, m.finishRate, m.humanCost, m.payment, m.statWeek, m.createTime, i.serialNum, i.name ");
 		countsql.append(" select count(m.id)");
 		sb.append(" from ProjectWeeklyStat m");
@@ -85,16 +87,16 @@ public class ProjectWeeklyStatDaoImpl extends GenericDaoImpl<ProjectWeeklyStat, 
 		List<Object> params = new ArrayList<Object>();
     	sb.append(" where m.id in (select max(id) from ProjectWeeklyStat where 1=1 ");
     	if(!StringUtil.isNullStr(projectId)){
-    		sb.append(" and projectId = ?");
+    		sb.append(" and projectId = ?" + (count++));
     		params.add(StringUtil.nullToLong(projectId));
     	}
     	sb.append(" group by projectId");
     	sb.append(" )");
-    	sb.append(" and ( i.creator = ? or i.pmId = ?");
+    	sb.append(" and ( i.creator = ?" + (count++) + " or i.pmId = ?" + (count++));
     	params.add(user.getLogin());
     	params.add(user.getId());
     	if(user.getIsManager()){
-    		sb.append(" or wdi.idPath like ? or wdi.id = ?");
+    		sb.append(" or wdi.idPath like ?" + (count++) + " or wdi.id = ?" + (count++));
     		params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
 			params.add(deptInfo.getId());
     	}

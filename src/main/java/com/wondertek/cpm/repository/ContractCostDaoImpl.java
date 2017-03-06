@@ -43,6 +43,7 @@ public class ContractCostDaoImpl extends GenericDaoImpl<ContractCost, Long> impl
 		StringBuffer whereHql = new StringBuffer();
 		StringBuffer orderHql = new StringBuffer();
 		List<Object> params = new ArrayList<Object>();
+		int count = 0;//jpa格式 问号后的数组，一定要从0开始
 		
 		queryHql.append("select wcc,wci.serialNum,wci.name,wcb.budgetTotal");
 		countHql.append("select count(wcc.id)");
@@ -52,40 +53,40 @@ public class ContractCostDaoImpl extends GenericDaoImpl<ContractCost, Long> impl
 		whereHql.append(" left join ContractBudget wcb on wcb.id = wcc.budgetId");
 		whereHql.append(" left join DeptInfo wdi on wdi.id = wci.deptId");
 		whereHql.append(" left join DeptInfo wdi2 on wci.consultantsDeptId = wdi2.id");
-		whereHql.append(" where (wci.salesmanId = ? or wci.consultantsId = ? or wci.creator = ?");
+		whereHql.append(" where (wci.salesmanId = ?" + (count++) + " or wci.consultantsId = ?" + (count++) + " or wci.creator = ?" + (count++));
 		
 		params.add(user.getId());
 		params.add(user.getId());
 		params.add(user.getLogin());
 		
 		if (user.getIsManager()) {
-			whereHql.append(" or wdi.idPath like ? or wdi.id = ?");
+			whereHql.append(" or wdi.idPath like ?" + (count++) + " or wdi.id = ?" + (count++));
 			params.add(deptInfo.getIdPath()+deptInfo.getId()+"/%");
 			params.add(deptInfo.getId());
 			
-			whereHql.append(" or wdi2.idPath like ? or wdi2.id = ?");
+			whereHql.append(" or wdi2.idPath like ?" + (count++) + " or wdi2.id = ?" + (count++));
 			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
 			params.add(deptInfo.getId());
 		}
 		whereHql.append(")");
 		if(pageType == 1){//工时
-			whereHql.append(" and wcc.type = ?");	
+			whereHql.append(" and wcc.type = ?" + (count++));	
 			params.add(ProjectCost.TYPE_HUMAN_COST);
 		}else{//其他
-			whereHql.append(" and wcc.type > ?");	
+			whereHql.append(" and wcc.type > ?" + (count++));	
 			params.add(ProjectCost.TYPE_HUMAN_COST);
 		}
 		//查询条件
 		if (contractCost.getName() != null) {
-			whereHql.append(" and wcc.name like ?");
+			whereHql.append(" and wcc.name like ?" + (count++));
 			params.add("%"+contractCost.getName()+"%");
 		}
 		if (contractCost.getType() != null) {
-			whereHql.append(" and wcc.type = ?");
+			whereHql.append(" and wcc.type = ?" + (count++));
 			params.add(contractCost.getType());
 		}
 		if (contractCost.getContractId()!= null) {
-			whereHql.append(" and wcc.contractId = ?");
+			whereHql.append(" and wcc.contractId = ?" + (count++));
 			params.add(contractCost.getContractId());
 		}
 		
@@ -133,6 +134,7 @@ public class ContractCostDaoImpl extends GenericDaoImpl<ContractCost, Long> impl
 	public ContractCostVo getContractCost(User user, DeptInfo deptInfo, Long id) {
 		StringBuffer queryHql = new StringBuffer();
 		List<Object> params = new ArrayList<Object>();
+		int count = 0;//jpa格式 问号后的数组，一定要从0开始
 		
 		queryHql.append("select wcc,wci.serialNum,wci.name,wcb.budgetTotal");
 		queryHql.append(" from ContractCost wcc");
@@ -140,22 +142,22 @@ public class ContractCostDaoImpl extends GenericDaoImpl<ContractCost, Long> impl
 		queryHql.append(" left join ContractBudget wcb on wcb.id = wcc.budgetId");
 		queryHql.append(" left join DeptInfo wdi on wdi.id = wci.deptId");
 		queryHql.append(" left join DeptInfo wdi2 on wci.consultantsDeptId = wdi2.id");
-		queryHql.append(" where (wci.salesmanId = ? or wci.consultantsId = ? or wci.creator = ?");
+		queryHql.append(" where (wci.salesmanId = ?" + (count++) + " or wci.consultantsId = ?" + (count++) + " or wci.creator = ?" + (count++));
 		
 		params.add(user.getId());
 		params.add(user.getId());
 		params.add(user.getLogin());
 		
 		if (user.getIsManager()) {
-			queryHql.append(" or wdi.idPath like ? or wdi.id = ?");
+			queryHql.append(" or wdi.idPath like ?" + (count++) + " or wdi.id = ?" + (count++));
 			params.add(deptInfo.getIdPath()+deptInfo.getId()+"/%");
 			params.add(deptInfo.getId());
 			
-			queryHql.append(" or wdi2.idPath like ? or wdi2.id = ?");
+			queryHql.append(" or wdi2.idPath like ?" + (count++) + " or wdi2.id = ?" + (count++));
 			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
 			params.add(deptInfo.getId());
 		}
-		queryHql.append(") and wcc.id = ?");
+		queryHql.append(") and wcc.id = ?" + (count++));
 		params.add(id);
 		List<Object[]> list = this.queryAllHql(queryHql.toString(), params.toArray());
 		if (list != null && !list.isEmpty()) {

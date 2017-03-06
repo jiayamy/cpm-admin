@@ -37,6 +37,7 @@ public class SalesAnnualIndexDaoImpl extends GenericDaoImpl<SalesAnnualIndex, Lo
 		StringBuffer whereHql = new StringBuffer();
 		StringBuffer orderHql = new StringBuffer();
 		List<Object> params = new ArrayList<Object>();
+		int count = 0;//jpa格式 问号后的数组，一定要从0开始
 		
 		countHql.append("select count(wsai.id)");
 		
@@ -44,11 +45,11 @@ public class SalesAnnualIndexDaoImpl extends GenericDaoImpl<SalesAnnualIndex, Lo
 		whereHql.append(" where 1=1");
 		//查询条件
 		if(salesAnnualIndex.getUserId() != null){
-			whereHql.append(" and wsai.userId = ?");
+			whereHql.append(" and wsai.userId = ?" + (count++));
 			params.add(salesAnnualIndex.getUserId());
 		}
 		if(salesAnnualIndex.getStatYear() != null){
-			whereHql.append(" and wsai.statYear = ?");
+			whereHql.append(" and wsai.statYear = ?" + (count++));
 			params.add(salesAnnualIndex.getStatYear());
 		}
 		queryHql.append(whereHql.toString());

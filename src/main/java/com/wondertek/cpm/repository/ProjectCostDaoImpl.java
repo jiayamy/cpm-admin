@@ -42,6 +42,7 @@ public class ProjectCostDaoImpl extends GenericDaoImpl<ProjectCost, Long> implem
 		StringBuffer whereHql = new StringBuffer();
 		StringBuffer orderHql = new StringBuffer();
 		List<Object> params = new ArrayList<Object>();
+		int count = 0;//jpa格式 问号后的数组，一定要从0开始
 		
 		queryHql.append("select wpc,wpi.serialNum,wpi.name");
 		countHql.append("select count(wpc.id)");
@@ -50,35 +51,35 @@ public class ProjectCostDaoImpl extends GenericDaoImpl<ProjectCost, Long> implem
 		whereHql.append(" left join ProjectInfo wpi on wpi.id = wpc.projectId");
 		whereHql.append(" left join DeptInfo wdi on wpi.deptId = wdi.id");
 		
-		whereHql.append(" where (wpi.pmId = ? or wpi.creator = ?");
+		whereHql.append(" where (wpi.pmId = ?" + (count++) + " or wpi.creator = ?" + (count++));
 		params.add(user.getId());
 		params.add(user.getLogin());
 		
 		if(user.getIsManager()){
-			whereHql.append(" or wdi.idPath like ? or wdi.id = ?");
+			whereHql.append(" or wdi.idPath like ?" + (count++) + " or wdi.id = ?" + (count++));
 			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
 			params.add(deptInfo.getId());
 		}
 		whereHql.append(")");
 		if(pageType == 1){//工时
-			whereHql.append(" and wpc.type = ?");	
+			whereHql.append(" and wpc.type = ?" + (count++));	
 			params.add(ProjectCost.TYPE_HUMAN_COST);
 		}else{//其他
-			whereHql.append(" and wpc.type > ?");	
+			whereHql.append(" and wpc.type > ?" + (count++));	
 			params.add(ProjectCost.TYPE_HUMAN_COST);
 		}
 		
 		//查询条件
 		if(projectCost.getName() != null){
-			whereHql.append(" and wpc.name like ?");
+			whereHql.append(" and wpc.name like ?" + (count++));
 			params.add("%" + projectCost.getName() + "%");
 		}
 		if(projectCost.getType() != null){
-			whereHql.append(" and wpc.type = ?");
+			whereHql.append(" and wpc.type = ?" + (count++));
 			params.add(projectCost.getType());
 		}
 		if(projectCost.getProjectId() != null){
-			whereHql.append(" and wpc.projectId = ?");
+			whereHql.append(" and wpc.projectId = ?" + (count++));
 			params.add(projectCost.getProjectId());
 		}
 		
@@ -125,21 +126,22 @@ public class ProjectCostDaoImpl extends GenericDaoImpl<ProjectCost, Long> implem
 	public ProjectCostVo getProjectCost(User user, DeptInfo deptInfo, Long id) {
 		StringBuffer queryHql = new StringBuffer();
 		List<Object> params = new ArrayList<Object>();
+		int count = 0;//jpa格式 问号后的数组，一定要从0开始
 		
 		queryHql.append("select wpc,wpi.serialNum,wpi.name");
 		queryHql.append(" from ProjectCost wpc");
 		queryHql.append(" left join ProjectInfo wpi on wpi.id = wpc.projectId ");
 		queryHql.append(" left join DeptInfo wdi on wdi.id = wpi.deptId");
-		queryHql.append(" where (wpi.pmId = ? or wpi.creator = ?");
+		queryHql.append(" where (wpi.pmId = ?" + (count++) + " or wpi.creator = ?" + (count++));
 		params.add(user.getId());
 		params.add(user.getLogin());
 		
 		if(user.getIsManager()){
-			queryHql.append(" or wdi.idPath like ? or wdi.id = ?");
+			queryHql.append(" or wdi.idPath like ?" + (count++) + " or wdi.id = ?" + (count++));
 			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
 			params.add(deptInfo.getId());
 		}
-		queryHql.append(") and wpc.id = ?");
+		queryHql.append(") and wpc.id = ?" + (count++));
 		params.add(id);
 		
 		List<Object[]> list = this.queryAllHql(queryHql.toString(),params.toArray());

@@ -111,12 +111,17 @@ public class StringUtil {
 	public static Integer nullToInteger(Object value, int def) {
 		return value == null || "null".equals(value.toString()) ? def : stringToInteger(value.toString(), def);
 	}
-	
+	/**
+	 * 默认格式化到小数点后2位
+	 * @return
+	 */
 	public static Double nullToDouble(Object value){
 		Double d = new Double(0);
 		try{
 			if(value != null && !StringUtil.isNullStr(value.toString())){
 				d = Double.parseDouble(String.valueOf(value));
+				BigDecimal b = new BigDecimal(d);
+				d = b.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
 			}
 		}catch(Exception e){
 			e.printStackTrace();
@@ -124,12 +129,17 @@ public class StringUtil {
 		}
 		return d;
 	}
-	
+	/**
+	 * 默认格式化到小数点后2位
+	 * @return
+	 */
 	public static Double nullToCloneDouble(Object value){
 		Double d = null;
 		try{
 			if(value != null && !StringUtil.isNullStr(value.toString())){
 				d = Double.parseDouble(String.valueOf(value));
+				BigDecimal b = new BigDecimal(d);
+				d = b.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
 			}
 		}catch(Exception e){
 			e.printStackTrace();

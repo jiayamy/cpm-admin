@@ -49,6 +49,7 @@ public class PurchaseItemDaoImpl extends GenericDaoImpl<PurchaseItem, Long> impl
 		StringBuffer whereHql = new StringBuffer();
 		StringBuffer orderHql = new StringBuffer();
 		List<Object> params = new ArrayList<Object>();
+		int count = 0;//jpa格式 问号后的数组，一定要从0开始
 		
 		queryHql.append("select wpi,wci.serialNum,wci.name as contractName,wcb.name as budgetName");
 		countHql.append("select count(wpi.id)");
@@ -59,10 +60,10 @@ public class PurchaseItemDaoImpl extends GenericDaoImpl<PurchaseItem, Long> impl
 		whereHql.append(" left join ContractInfo wci on wci.id = wpi.contractId");
 		whereHql.append(" left join ContractBudget wcb on wcb.id = wpi.budgetId");
 		//权限
-		whereHql.append(" where (wpi.creator = ?");
+		whereHql.append(" where (wpi.creator = ?" + (count++));
 		params.add(user.getLogin());
 		if (user.getIsManager()) {
-			whereHql.append(" or wdi.idPath like ? or wdi.id = ?");
+			whereHql.append(" or wdi.idPath like ?" + (count++) + " or wdi.id = ?" + (count++));
 			params.add(deptInfo.getIdPath() + deptInfo.getIdPath() + "/%");
 			params.add(deptInfo.getId());
 		}
@@ -70,19 +71,19 @@ public class PurchaseItemDaoImpl extends GenericDaoImpl<PurchaseItem, Long> impl
 		
 		//查询条件
 		if (purchaseItem.getContractId() != null) {
-			whereHql.append(" and wpi.contractId = ?");
+			whereHql.append(" and wpi.contractId = ?" + (count++));
 			params.add(purchaseItem.getContractId());
 		}
 		if (purchaseItem.getName() != null) {
-			whereHql.append(" and wpi.name like ?");
+			whereHql.append(" and wpi.name like ?" + (count++));
 			params.add("%" + purchaseItem.getName() + "%");
 		}
 		if (purchaseItem.getType() != null) {
-			whereHql.append(" and wpi.type = ?");
+			whereHql.append(" and wpi.type = ?" + (count++));
 			params.add(purchaseItem.getType());
 		}
 		if (purchaseItem.getSource() != null) {
-			whereHql.append(" and wpi.source = ?");
+			whereHql.append(" and wpi.source = ?" + (count++));
 			params.add(purchaseItem.getSource());
 		}
 		queryHql.append(whereHql.toString());
@@ -131,6 +132,7 @@ public class PurchaseItemDaoImpl extends GenericDaoImpl<PurchaseItem, Long> impl
 	public PurchaseItemVo findPurchaseItemById(Long id,User user, DeptInfo deptInfo) {
 		StringBuffer 	queryHql = new StringBuffer();
 		List<Object> params = new ArrayList<Object>();
+		int count = 0;//jpa格式 问号后的数组，一定要从0开始
 		
 		queryHql.append("select wpi,wci.serialNum,wci.name as contractName,wcb.name as budgetName");
 		queryHql.append(" from PurchaseItem wpi");
@@ -140,17 +142,17 @@ public class PurchaseItemDaoImpl extends GenericDaoImpl<PurchaseItem, Long> impl
 		queryHql.append(" left join ContractBudget wcb on wcb.id = wpi.budgetId");
 		
 		//权限
-		queryHql.append(" where (wpi.creator = ?");
+		queryHql.append(" where (wpi.creator = ?" + (count++));
 		params.add(user.getLogin());
 		if (user.getIsManager()) {
-			queryHql.append(" or wdi.idPath like ? or wdi.id = ?");
+			queryHql.append(" or wdi.idPath like ?" + (count++) + " or wdi.id = ?" + (count++));
 			params.add(deptInfo.getIdPath() + deptInfo.getIdPath() + "/%");
 			params.add(deptInfo.getId());
 		}
 		queryHql.append(")");
 		
 		if (id != null) {
-			queryHql.append(" and wpi.id = ?");
+			queryHql.append(" and wpi.id = ?" + (count++));
 			params.add(id);
 		}
 		List<Object[]> list = this.queryAllHql(queryHql.toString(),params.toArray());
@@ -164,17 +166,18 @@ public class PurchaseItemDaoImpl extends GenericDaoImpl<PurchaseItem, Long> impl
 	public List<LongValue> queryUserContract(User user,DeptInfo deptInfo) {
 		StringBuffer queryHql = new StringBuffer();
 		ArrayList<Object> params = new ArrayList<Object>();
+		int count = 0;//jpa格式 问号后的数组，一定要从0开始
 		
 		queryHql.append(" select distinct wci.id,wci.serialNum,wci.name from ContractInfo as wci");
 		queryHql.append(" left join PurchaseItem wpi on wci.id = wpi.contractId");
 		queryHql.append(" left join User wju on wpi.creator = wju.login");
 		queryHql.append(" left join DeptInfo wdi on wju.deptId = wdi.id");
-		queryHql.append(" where (wpi.creator = ?");
+		queryHql.append(" where (wpi.creator = ?" + (count++));
 		
 		params.add(user.getLogin());
 		
 		if (user.getIsManager()) {
-			queryHql.append(" or wdi.idPath like ? or wdi.id = ?");
+			queryHql.append(" or wdi.idPath like ?" + (count++) + " or wdi.id = ?" + (count++));
 			params.add(deptInfo.getIdPath() + deptInfo.getIdPath() + "/%");
 			params.add(deptInfo.getId());
 		}
@@ -200,6 +203,7 @@ public class PurchaseItemDaoImpl extends GenericDaoImpl<PurchaseItem, Long> impl
 		
 		StringBuffer countHql = new StringBuffer();
 		List<Object> params = new ArrayList<Object>();
+		int count = 0;//jpa格式 问号后的数组，一定要从0开始
 		
 		queryHql.append(" select wpp");
 		countHql.append("select count(wpp.id)");
@@ -209,11 +213,11 @@ public class PurchaseItemDaoImpl extends GenericDaoImpl<PurchaseItem, Long> impl
 		
 		//页面查询条件
 		if (!StringUtil.isNullStr(selectName)) {
-			whereHql.append(" and wpp.name like ?");
+			whereHql.append(" and wpp.name like ?" + (count++));
 			params.add("%"+ selectName +"%");
 		}
 		if (!StringUtil.isNullStr(type)) {
-			whereHql.append(" and wpp.type = ?");
+			whereHql.append(" and wpp.type = ?" + (count++));
 			params.add(type);
 		}
 		queryHql.append(whereHql.toString());

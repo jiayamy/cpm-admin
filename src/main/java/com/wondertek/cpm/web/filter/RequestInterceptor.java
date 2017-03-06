@@ -18,6 +18,7 @@ public class RequestInterceptor extends HandlerInterceptorAdapter {
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
 			throws Exception {
         startTimeThreadLocal.set(System.currentTimeMillis());//线程绑定变量（该数据只有当前请求的线程可见）  
+        log.info("RequestInterceptor preHandle starting");
         return true;//继续流程  
 	}
 	

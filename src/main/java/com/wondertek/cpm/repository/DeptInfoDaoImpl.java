@@ -53,7 +53,7 @@ public class DeptInfoDaoImpl extends GenericDaoImpl<DeptInfo, Long> implements D
 		querySql.append("select wdi,wdi2.name as parentName,wdt.name as typeName from DeptInfo wdi");
 		querySql.append(" left join DeptType wdt on wdt.id = wdi.type");
 		querySql.append(" left join DeptInfo wdi2 on wdi2.id = wdi.parentId");
-		querySql.append(" where wdi.id = ?");
+		querySql.append(" where wdi.id = ?0");
 		
 		List<Object[]> list = this.queryAllHql(querySql.toString(), new Object[]{id});
 		if(list != null && !list.isEmpty()){

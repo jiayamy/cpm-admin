@@ -43,6 +43,8 @@ public class ContractInfoDaoImpl extends GenericDaoImpl<ContractInfo, Long> impl
 		StringBuffer whereHql = new StringBuffer();
 		StringBuffer orderHql = new StringBuffer();
 		List<Object> params = new ArrayList<Object>();
+		int count = 0;//jpa格式 问号后的数组，一定要从0开始
+		
 		queryHql.append("select wci");
 		countHql.append("select count(wci.id)");
 		
@@ -51,51 +53,51 @@ public class ContractInfoDaoImpl extends GenericDaoImpl<ContractInfo, Long> impl
 		whereHql.append(" left join DeptInfo wdi2 on wci.consultantsDeptId = wdi2.id");
 		
 		//权限
-		whereHql.append(" where (wci.creator = ? or wci.salesmanId = ? or wci.consultantsId = ?");
+		whereHql.append(" where (wci.creator = ?" + (count++) + " or wci.salesmanId = ?" + (count++) + " or wci.consultantsId = ?" + (count++));
 		params.add(user.getLogin());
 		params.add(user.getId());
 		params.add(user.getId());
 		if(user.getIsManager()){
-			whereHql.append(" or wdi.idPath like ? or wdi.id = ?");
+			whereHql.append(" or wdi.idPath like ?" + (count++) + " or wdi.id = ?" + (count++));
 			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
 			params.add(deptInfo.getId());
 			
-			whereHql.append(" or wdi2.idPath like ? or wdi2.id = ?");
+			whereHql.append(" or wdi2.idPath like ?" + (count++) + " or wdi2.id = ?" + (count++));
 			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
 			params.add(deptInfo.getId());
 		}
 		whereHql.append(")");
 		if (!StringUtil.isNullStr(contractInfo.getSerialNum())) {
-			whereHql.append(" and wci.serialNum like ?");
+			whereHql.append(" and wci.serialNum like ?" + (count++));
 			params.add("%"+contractInfo.getSerialNum()+"%");
 		}
 		
 		if (!StringUtil.isNullStr(contractInfo.getName())) {
-			whereHql.append(" and wci.name like ?");
+			whereHql.append(" and wci.name like ?" + (count++));
 			params.add("%"+contractInfo.getName()+"%");
 		}
 		if (contractInfo.getType() != null) {
-			whereHql.append(" and wci.type = ?");
+			whereHql.append(" and wci.type = ?" + (count++));
 			params.add(contractInfo.getType());
 		}
 		if (contractInfo.getIsEpibolic() != null) {
-			whereHql.append(" and wci.isEpibolic = ?");
+			whereHql.append(" and wci.isEpibolic = ?" + (count++));
 			params.add(contractInfo.getIsEpibolic());
 		}
 		if (contractInfo.getIsPrepared() != null) {
-			whereHql.append(" and wci.isPrepared = ?");
+			whereHql.append(" and wci.isPrepared = ?" + (count++));
 			params.add(contractInfo.getIsPrepared());
 		}
 		if (contractInfo.getSalesmanId() != null) {
-			whereHql.append(" and wci.salesmanId = ?");
+			whereHql.append(" and wci.salesmanId = ?" + (count++));
 			params.add(contractInfo.getSalesmanId());
 		}
 		if(contractInfo.getConsultantsId() != null){
-			whereHql.append(" and wci.consultantsId = ?");
+			whereHql.append(" and wci.consultantsId = ?" + (count++));
 			params.add(contractInfo.getConsultantsId());
 		}
 		
-//		sb.append(" and wci.status = ?");
+//		sb.append(" and wci.status = ?" + (count++));
 //    	params.add(CpmConstants.STATUS_VALID);
 		
 		queryHql.append(whereHql.toString());
@@ -135,10 +137,10 @@ public class ContractInfoDaoImpl extends GenericDaoImpl<ContractInfo, Long> impl
 	public boolean checkByContract(String serialNum, Long id) {
 		StringBuffer countHql = new StringBuffer();
 		ArrayList<Object> params = new ArrayList<>();
-		countHql.append("select count(id) from ContractInfo where serialNum = ? ");
+		countHql.append("select count(id) from ContractInfo where serialNum = ?0 ");
 		params.add(serialNum);
 		if (id != null) {
-			countHql.append("and id <> ?");
+			countHql.append("and id <> ?1");
 			params.add(id);
 		}
 		return this.countHql(countHql.toString(), params.toArray())>0;
@@ -148,26 +150,27 @@ public class ContractInfoDaoImpl extends GenericDaoImpl<ContractInfo, Long> impl
 	public ContractInfoVo getUserContractInfo(Long id, User user, DeptInfo deptInfo) {
 		StringBuffer queryHql = new StringBuffer();
 		List<Object> params = new ArrayList<Object>();
+		int count = 0;//jpa格式 问号后的数组，一定要从0开始
 		
 		queryHql.append("select wci from ContractInfo wci");
 		queryHql.append(" left join DeptInfo wdi on wci.deptId = wdi.id");
 		queryHql.append(" left join DeptInfo wdi2 on wci.consultantsDeptId = wdi2.id");
 		
-		queryHql.append(" where (wci.creator = ? or wci.salesmanId = ? or wci.consultantsId = ?");
+		queryHql.append(" where (wci.creator = ?" + (count++) + " or wci.salesmanId = ?" + (count++) + " or wci.consultantsId = ?" + (count++));
 		params.add(user.getLogin());
 		params.add(user.getId());
 		params.add(user.getId());
 		if(user.getIsManager()){
-			queryHql.append(" or wdi.idPath like ? or wdi.id = ?");
+			queryHql.append(" or wdi.idPath like ?" + (count++) + " or wdi.id = ?" + (count++));
 			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
 			params.add(deptInfo.getId());
 			
-			queryHql.append(" or wdi2.idPath like ? or wdi2.id = ?");
+			queryHql.append(" or wdi2.idPath like ?" + (count++) + " or wdi2.id = ?" + (count++));
 			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
 			params.add(deptInfo.getId());
 		}
 		queryHql.append(")");
-		queryHql.append(" and wci.id = ?");
+		queryHql.append(" and wci.id = ?" + (count++));
 		params.add(id);
 		
 		List<ContractInfo> list = this.queryAllHql(queryHql.toString(),params.toArray());
@@ -181,21 +184,22 @@ public class ContractInfoDaoImpl extends GenericDaoImpl<ContractInfo, Long> impl
 	public List<LongValue> queryUserContract(User user, DeptInfo deptInfo) {
 		StringBuffer queryHql = new StringBuffer();
 		List<Object> params = new ArrayList<Object>();
+		int count = 0;//jpa格式 问号后的数组，一定要从0开始
 		
 		queryHql.append("select wci.id,wci.serialNum,wci.name from ContractInfo wci");
 		queryHql.append(" left join DeptInfo wdi on wci.deptId = wdi.id");
 		queryHql.append(" left join DeptInfo wdi2 on wci.consultantsDeptId = wdi2.id");
 		
-		queryHql.append(" where (wci.creator = ? or wci.salesmanId = ? or wci.consultantsId = ?");
+		queryHql.append(" where (wci.creator = ?" + (count++) + " or wci.salesmanId = ?" + (count++) + " or wci.consultantsId = ?" + (count++));
 		params.add(user.getLogin());
 		params.add(user.getId());
 		params.add(user.getId());
 		if(user.getIsManager()){
-			queryHql.append(" or wdi.idPath like ? or wdi.id = ?");
+			queryHql.append(" or wdi.idPath like ?" + (count++) + " or wdi.id = ?" + (count++));
 			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
 			params.add(deptInfo.getId());
 			
-			queryHql.append(" or wdi2.idPath like ? or wdi2.id = ?");
+			queryHql.append(" or wdi2.idPath like ?" + (count++) + " or wdi2.id = ?" + (count++));
 			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
 			params.add(deptInfo.getId());
 		}
@@ -214,7 +218,7 @@ public class ContractInfoDaoImpl extends GenericDaoImpl<ContractInfo, Long> impl
 	}
 
 	public int finishContractInfo(Long id, Double finishRate, String updator) {
-		return this.excuteHql("update ContractInfo set finishRate = ? , updator = ?, updateTime = ? where id = ?", new Object[]{finishRate,updator,ZonedDateTime.now(),id});
+		return this.excuteHql("update ContractInfo set finishRate = ?0 , updator = ?1, updateTime = ?2 where id = ?3", new Object[]{finishRate,updator,ZonedDateTime.now(),id});
 	}
 
 	@Override

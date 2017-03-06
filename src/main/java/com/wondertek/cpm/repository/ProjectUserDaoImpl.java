@@ -169,21 +169,22 @@ public class ProjectUserDaoImpl extends GenericDaoImpl<ProjectUser, Long> implem
 	public ProjectUserVo getProjectUser(User user, DeptInfo deptInfo, Long id) {
 		StringBuffer queryHql = new StringBuffer();
 		List<Object> params = new ArrayList<Object>();
+		int count = 0;//jpa格式 问号后的数组，一定要从0开始
 		
 		queryHql.append("select wpu,wpi.serialNum,wpi.name");
 		queryHql.append(" from ProjectUser wpu");
 		queryHql.append(" left join ProjectInfo wpi on wpi.id = wpu.projectId ");
 		queryHql.append(" left join DeptInfo wdi on wdi.id = wpi.deptId");
-		queryHql.append(" where (wpi.pmId = ? or wpi.creator = ?");
+		queryHql.append(" where (wpi.pmId = ?" + (count++) + " or wpi.creator = ?" + (count++));
 		params.add(user.getId());
 		params.add(user.getLogin());
 		
 		if(user.getIsManager()){
-			queryHql.append(" or wdi.idPath like ? or wdi.id = ?");
+			queryHql.append(" or wdi.idPath like ?" + (count++) + " or wdi.id = ?" + (count++));
 			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
 			params.add(deptInfo.getId());
 		}
-		queryHql.append(") and wpu.id = ?");
+		queryHql.append(") and wpu.id = ?" + (count++));
 		params.add(id);
 		
 		List<Object[]> list = this.queryAllHql(queryHql.toString(),params.toArray());

@@ -43,6 +43,7 @@ public class UserDaoImpl extends GenericDaoImpl<User, Long> implements UserDao  
 		StringBuffer whereSql = new StringBuffer();
 		StringBuffer orderSql = new StringBuffer();
 		List<Object> params = new ArrayList<Object>();
+		int count = 0;//jpa格式 问号后的数组，一定要从0开始
 		
 		querySql.append("select distinct user from User user left join fetch user.authorities left join DeptInfo wdi on wdi.id = user.deptId");
 		
@@ -52,34 +53,34 @@ public class UserDaoImpl extends GenericDaoImpl<User, Long> implements UserDao  
 		
 		//查询条件
 		if(!StringUtil.isNullStr(user.getLogin())){
-			whereSql.append(" and user.login like ?");
+			whereSql.append(" and user.login like ?" + (count++));
 			params.add("%" + user.getLogin() + "%");
 		}
 		if(!StringUtil.isNullStr(user.getLastName())){
-			whereSql.append(" and user.lastName like ?");
+			whereSql.append(" and user.lastName like ?" + (count++));
 			params.add("%" + user.getLastName() + "%");
 		}
 		if(!StringUtil.isNullStr(user.getSerialNum())){
-			whereSql.append(" and user.serialNum like ?");
+			whereSql.append(" and user.serialNum like ?" + (count++));
 			params.add("%" + user.getSerialNum() + "%");
 		}
 		if(!StringUtil.isNullStr(user.getWorkArea())){
-			whereSql.append(" and user.workArea = ?");
+			whereSql.append(" and user.workArea = ?" + (count++));
 			params.add(user.getWorkArea());
 		}
 		if(user.getDeptId() != null){
 			DeptInfo deptInfo = deptInfoRepository.getOne(user.getDeptId());
 			if(deptInfo != null){
-				whereSql.append(" and (user.deptId = ? or wdi.idPath like ?)");
+				whereSql.append(" and (user.deptId = ?" + (count++) + " or wdi.idPath like ?" + (count++) + ")");
 				params.add(user.getDeptId());
 				params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
 			}else{
-				whereSql.append(" and user.deptId = ?");
+				whereSql.append(" and user.deptId = ?" + (count++));
 				params.add(user.getDeptId());
 			}
 		}
 		if(user.getGrade() != null){
-			whereSql.append(" and user.grade = ?");
+			whereSql.append(" and user.grade = ?" + (count++));
 			params.add(user.getGrade());
 		}
 		querySql.append(whereSql.toString());

@@ -130,6 +130,7 @@ public class ConsultantsBonusDaoImpl extends GenericDaoImpl<ConsultantsBonus, Lo
 		StringBuffer queryHql = new StringBuffer();
 		StringBuffer countHql = new StringBuffer();
 		StringBuffer whereHql = new StringBuffer();
+		int count = 0;//jpa格式 问号后的数组，一定要从0开始
 		
 		queryHql.append(" select m.id, m.contractId, m.contractAmount, m.consultantsId, m.consultants, m.bonusBasis, m.bonusRate,");
 		queryHql.append(" m.consultantsShareRate , m.currentBonus ,m.creator ,m.statWeek ,m.createTime , i.serialNum , i.amount,i.name");
@@ -142,20 +143,20 @@ public class ConsultantsBonusDaoImpl extends GenericDaoImpl<ConsultantsBonus, Lo
 		
 		List<Object> params = new ArrayList<Object>();
     	//权限
-    	whereHql.append(" where (i.creator = ? or i.consultantsId = ?");
+    	whereHql.append(" where (i.creator = ?" + (count++) + " or i.consultantsId = ?" + (count++));
     	params.add(user.getLogin());
     	params.add(user.getId());
     	if(user.getIsManager()){
-    		whereHql.append(" or di.idPath like ? or di.id = ?");
+    		whereHql.append(" or di.idPath like ?" + (count++) + " or di.id = ?" + (count++));
 			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
 			params.add(deptInfo.getId());
 		}
     	whereHql.append(")");
 		
-		whereHql.append(" and m.statWeek <= ?");
+		whereHql.append(" and m.statWeek <= ?" + (count++));
 		params.add(consultantsBonus.getStatWeek());
 		if(consultantsBonus.getContractId() != null){
-    		whereHql.append(" and m.contractId = ?");
+    		whereHql.append(" and m.contractId = ?" + (count++));
     		params.add(consultantsBonus.getContractId());
     	}
 		
@@ -269,10 +270,10 @@ public class ConsultantsBonusDaoImpl extends GenericDaoImpl<ConsultantsBonus, Lo
 		fromHql.append(" left join User u on m.consultantsId = u.id");
 		
 		List<Object> params = new ArrayList<Object>();
-		whereHql.append(" where m.statWeek <= ?");
+		whereHql.append(" where m.statWeek <= ?0");
 		params.add(statWeek);	//resource已设默认值,不为空
 		if(contractId != null){
-    		whereHql.append(" and m.contractId = ?");
+    		whereHql.append(" and m.contractId = ?1");
     		params.add(contractId);
     	}
 		

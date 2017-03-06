@@ -343,10 +343,10 @@ public class ProjectInfoDaoImpl extends GenericDaoImpl<ProjectInfo, Long> implem
 	public boolean checkByProject(String serialNum, Long id) {
 		StringBuffer countHql = new StringBuffer();
 		List<Object> params = new ArrayList<Object>();
-		countHql.append("select count(id) from ProjectInfo where serialNum = ?");
+		countHql.append("select count(id) from ProjectInfo where serialNum = ?0");
 		params.add(serialNum);
 		if(id != null){
-			countHql.append(" and id <> ?");
+			countHql.append(" and id <> ?1");
 			params.add(id);
 		}
 		return this.countHql(countHql.toString(), params.toArray()) > 0;
@@ -354,12 +354,12 @@ public class ProjectInfoDaoImpl extends GenericDaoImpl<ProjectInfo, Long> implem
 
 	@Override
 	public int finishProjectInfo(Long id, Double finishRate, String updator) {
-		return this.excuteHql("update ProjectInfo set finishRate = ? , updator = ?, updateTime = ? where id = ?", new Object[]{finishRate,updator,ZonedDateTime.now(),id});
+		return this.excuteHql("update ProjectInfo set finishRate = ?0 , updator = ?1, updateTime = ?2 where id = ?3", new Object[]{finishRate,updator,ZonedDateTime.now(),id});
 	}
 
 	@Override
 	public int endProjectInfo(Long id, String updator) {
-		return this.excuteHql("update ProjectInfo set status = ? , updator = ?, updateTime = ? where id = ?", new Object[]{ProjectInfo.STATUS_CLOSED,updator,ZonedDateTime.now(),id});
+		return this.excuteHql("update ProjectInfo set status = ?0 , updator = ?1, updateTime = ?2 where id = ?3", new Object[]{ProjectInfo.STATUS_CLOSED,updator,ZonedDateTime.now(),id});
 	}
 
 	@Override

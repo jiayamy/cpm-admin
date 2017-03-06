@@ -43,6 +43,8 @@ public class ContractWeeklyStatDaoImpl extends GenericDaoImpl<ContractWeeklyStat
 		StringBuffer sb = new StringBuffer();
 		StringBuffer querysql = new StringBuffer();
 		StringBuffer countsql = new StringBuffer();
+		int count = 0;//jpa格式 问号后的数组，一定要从0开始
+		
 		querysql.append(" select m.id, m.contractId, m.finishRate, m.receiveTotal, m.costTotal, m.grossProfit, m.salesHumanCost,"
 				+ "m.salesPayment , m.consultHumanCost ,m.consultPayment ,m.hardwarePurchase ,m.externalSoftware ,m.internalSoftware ,m.projectHumanCost ,"
 				+ "m.projectPayment ,m.statWeek ,m.createTime , i.serialNum , i.name");
@@ -54,21 +56,21 @@ public class ContractWeeklyStatDaoImpl extends GenericDaoImpl<ContractWeeklyStat
 		List<Object> params = new ArrayList<Object>();
     	sb.append(" where m.id in (select max(id) from ContractWeeklyStat where 1=1 ");
     	if(!StringUtil.isNullStr(contractId)){
-    		sb.append(" and contractId = ?");
+    		sb.append(" and contractId = ?" + (count++));
     		params.add(StringUtil.nullToLong(contractId));
     	}
     	sb.append(" group by contractId");
     	sb.append(" )");
-    	sb.append(" and ( i.creator = ? or i.salesmanId = ? or i.consultantsId = ? ");
+    	sb.append(" and ( i.creator = ?" + (count++) + " or i.salesmanId = ?" + (count++) + " or i.consultantsId = ?" + (count++) + " ");
     	params.add(user.getLogin());
 		params.add(user.getId());
 		params.add(user.getId());
 		if(user.getIsManager()){
-			sb.append(" or wdi.idPath like ? or wdi.id = ?");
+			sb.append(" or wdi.idPath like ?" + (count++) + " or wdi.id = ?" + (count++));
 			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
 			params.add(deptInfo.getId());
 			
-			sb.append(" or wdi2.idPath like ? or wdi2.id = ?");
+			sb.append(" or wdi2.idPath like ?" + (count++) + " or wdi2.id = ?" + (count++));
 			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
 			params.add(deptInfo.getId());
 		}

@@ -35,13 +35,15 @@ public class HolidayInfoDaoImpl extends GenericDaoImpl<HolidayInfo, Long> implem
 	public Page<HolidayInfo> getHolidayInfoPage(Map<String, Long> condition, Pageable pageable) {
 		StringBuffer sb = new StringBuffer();
 		List<Long> params = new ArrayList<Long>();
+		int count = 0;//jpa格式 问号后的数组，一定要从0开始
+		
 		sb.append("where 1=1");
 		if(condition.get("fromCurrDay") != null){
-			sb.append(" and currDay >= ?");
+			sb.append(" and currDay >= ?" + (count++));
 			params.add(condition.get("fromCurrDay"));
 		}
 		if(condition.get("toCurrDay") != null){
-			sb.append(" and currDay <= ?");
+			sb.append(" and currDay <= ?" + (count++));
 			params.add(condition.get("toCurrDay"));
 		}
 		
