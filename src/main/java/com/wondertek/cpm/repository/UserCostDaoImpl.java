@@ -16,9 +16,7 @@ import org.springframework.stereotype.Repository;
 import com.wondertek.cpm.CpmConstants;
 import com.wondertek.cpm.config.DateUtil;
 import com.wondertek.cpm.config.StringUtil;
-import com.wondertek.cpm.domain.HolidayInfo;
 import com.wondertek.cpm.domain.UserCost;
-import com.wondertek.cpm.domain.vo.ProjectUserVo;
 import com.wondertek.cpm.domain.vo.UserCostVo;
 
 @Repository("userCostDao")
@@ -42,7 +40,6 @@ public class UserCostDaoImpl extends GenericDaoImpl<UserCost, Long> implements U
 		StringBuffer querySql = new StringBuffer();
 		StringBuffer countSql = new StringBuffer();
 		
-//		StringBuffer whereHql = new StringBuffer();
 		StringBuffer whereSql = new StringBuffer();
 		StringBuffer orderSql = new StringBuffer();
 		
@@ -79,7 +76,6 @@ public class UserCostDaoImpl extends GenericDaoImpl<UserCost, Long> implements U
 		whereSql.setLength(0);
 		whereSql = null;
 		
-//		StringBuffer orderSql = new StringBuffer();
 		if(pageable.getSort() != null){
     		for (Order order : pageable.getSort()) {
     			if(CpmConstants.ORDER_IGNORE_SCORE.equalsIgnoreCase(order.getProperty())){

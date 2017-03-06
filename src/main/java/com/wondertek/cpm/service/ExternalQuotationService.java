@@ -39,7 +39,6 @@ public class ExternalQuotationService {
     public ExternalQuotation save(ExternalQuotation externalQuotation) {
         log.debug("Request to save ExternalQuotation : {}", externalQuotation);
         ExternalQuotation result = externalQuotationRepository.save(externalQuotation);
-//        ExternalQuotationSearchRepository.save(result);
         return result;
     }
 

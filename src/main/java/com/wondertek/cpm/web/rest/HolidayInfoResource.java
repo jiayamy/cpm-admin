@@ -65,7 +65,7 @@ public class HolidayInfoResource {
     @Timed
     @Secured(AuthoritiesConstants.ROLE_INFO_BASIC)
     public ResponseEntity<HolidayInfo> updateHolidayInfo(@RequestBody HolidayInfo holidayInfo) throws URISyntaxException {
-        log.debug(SecurityUtils.getCurrentUserLogin()+" REST request to updateHolidayInfo : {}", holidayInfo);
+        log.debug(SecurityUtils.getCurrentUserLogin()+" REST request to update HolidayInfo : {}", holidayInfo);
         Boolean isNew = null;
         if(holidayInfo == null){
         	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.holidayInfo.save.requriedError", "")).body(null);
@@ -125,7 +125,7 @@ public class HolidayInfoResource {
     		@RequestParam(value = "toCurrDay",required=false) Long toCurrDay,
     		@ApiParam Pageable pageable)
         throws URISyntaxException {
-        log.debug(SecurityUtils.getCurrentUserLogin()+" REST request to get a page of getAllHolidayInfos : {}","fromCurrDay--"+fromCurrDay+",toCurrDay--"+toCurrDay);
+        log.debug(SecurityUtils.getCurrentUserLogin()+" REST request to get a page of HolidayInfos : fromCurrDay:{},toCurrDay:{}",fromCurrDay,toCurrDay);
         //初始化，以防定时任务不起作用
         Calendar cal = Calendar.getInstance();
         cal.set(Calendar.YEAR, cal.get(Calendar.YEAR)+1);
@@ -169,7 +169,7 @@ public class HolidayInfoResource {
     @Timed
     @Secured(AuthoritiesConstants.ROLE_INFO_BASIC)
     public ResponseEntity<HolidayInfo> getHolidayInfo(@PathVariable Long id) {
-        log.debug(SecurityUtils.getCurrentUserLogin()+" REST request to getHolidayInfo : {}","id--"+id);
+        log.debug(SecurityUtils.getCurrentUserLogin()+" REST request to getHolidayInfo : {}",id);
         HolidayInfo holidayInfo = holidayInfoService.findOne(id);
         return Optional.ofNullable(holidayInfo)
             .map(result -> new ResponseEntity<>(
@@ -188,7 +188,7 @@ public class HolidayInfoResource {
     @Timed
     @Secured(AuthoritiesConstants.ROLE_INFO_BASIC)
     public ResponseEntity<Void> deleteHolidayInfo(@PathVariable Long id) {
-        log.debug(SecurityUtils.getCurrentUserLogin()+" REST request to delete HolidayInfo : {}","id--"+id);
+        log.debug(SecurityUtils.getCurrentUserLogin()+" REST request to delete HolidayInfo : {}",id);
 //        holidayInfoService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert("holidayInfo", id.toString())).build();
     }
@@ -210,7 +210,7 @@ public class HolidayInfoResource {
         		@RequestParam(value = "toCurrDay",required=false) Long toCurrDay,
     			@ApiParam Pageable pageable)
         throws URISyntaxException {
-        log.debug(SecurityUtils.getCurrentUserLogin()+" REST request to search for a page of searchHolidayInfos : {}","fromCurrDay--"+fromCurrDay+",toCurrDay"+toCurrDay);
+        log.debug(SecurityUtils.getCurrentUserLogin()+" REST request to search for a page of HolidayInfos : fromCurrDay:{},toCurrDay:{}",fromCurrDay,toCurrDay);
         Map<String,Long> searchCondition = new HashMap<String,Long>();
         searchCondition.put("fromCurrDay", fromCurrDay);
         searchCondition.put("toCurrDay", toCurrDay);

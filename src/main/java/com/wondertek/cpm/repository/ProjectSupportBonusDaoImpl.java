@@ -110,11 +110,11 @@ public class ProjectSupportBonusDaoImpl extends GenericDaoImpl<ProjectSupportBon
 		vo.setRealDays(StringUtil.nullToInteger(o[11]));
 		vo.setBonusAdjustRate(StringUtil.nullToDouble(o[12]));
 		vo.setBonusRate(StringUtil.nullToDouble(o[13]));
-		vo.setBonusAcceptanceRate(StringUtil.getScaleDouble(StringUtil.nullToDouble(o[14]), 2));
+		vo.setBonusAcceptanceRate(StringUtil.nullToDouble(o[14]));
 		vo.setContractAmount(StringUtil.nullToDouble(o[15]));
 		vo.setTaxRate(StringUtil.nullToDouble(o[16]));
 		vo.setBonusBasis(StringUtil.nullToDouble(o[17]));
-		vo.setCurrentBonus(StringUtil.getScaleDouble(StringUtil.nullToDouble(o[18]), 2));
+		vo.setCurrentBonus(StringUtil.nullToDouble(o[18]));
 		vo.setCreator(StringUtil.null2Str(o[19]));
 		vo.setCreateTime(DateUtil.getZonedDateTime((Timestamp) o[20]));
 		vo.setProjectId(StringUtil.nullToCloneLong(o[21]));

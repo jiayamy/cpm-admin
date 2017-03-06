@@ -184,8 +184,8 @@ public class UserCostResource {
     		@RequestParam(value = "status",required=false) String status,
     		@ApiParam Pageable pageable)
         throws URISyntaxException {
-        log.debug(SecurityUtils.getCurrentUserLogin()+" REST request to get a page of getAllUserCosts : {}",
-        		"serialNum--"+serialNum+",userName--"+userName+",costMonth--"+costMonth+",status--"+status);
+        log.debug(SecurityUtils.getCurrentUserLogin()+" REST request to get a page of getAllUserCosts : "
+        		+ "serialNum:{},userName:{},costMonth:{},status:{}",serialNum,userName,costMonth,status);
         UserCost userCost = new UserCost();
         Optional<User> user = userRepository.findOneBySerialNum(serialNum);
         if(user.isPresent()){

@@ -68,7 +68,7 @@ public class ContractBudgetDaoImpl extends GenericDaoImpl<ContractBudget, Long> 
 		params.add(user.getLogin());
 		if (user.getIsManager()) {
 			whereHql.append(" or wdi.idPath like ?" + (count++) + " or wdi.id = ?" + (count++));
-			params.add(deptInfo.getIdPath() + deptInfo.getIdPath() + "/%");
+			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
 			params.add(deptInfo.getId());
 			
 			whereHql.append(" or wdi2.idPath like ?" + (count++) + " or wdi2.id = ?" + (count++));

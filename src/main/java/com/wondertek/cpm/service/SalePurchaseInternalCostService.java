@@ -39,6 +39,7 @@ public class SalePurchaseInternalCostService {
     private UserRepository userRepository;
 	
 	public List<ProjectSupportCostVo> getAllSalePurchaseInternalPage(ProjectSupportCost projectSupportCost){
+		log.debug("Service request to getAllSalePurchaseInternalPage : {}", projectSupportCost);
 		List<Object[]> objs = userRepository.findUserInfoByLogin(SecurityUtils.getCurrentUserLogin());
     	if(objs != null && !objs.isEmpty()){
     		Object[] o = objs.get(0);
@@ -87,6 +88,7 @@ public class SalePurchaseInternalCostService {
 	}
 	
 	public Page<ProjectSupportCostVo> getAllSalePurchaseInternalDetailPage(Long id,Pageable pageable){
+		log.debug("Service request to getAllSalePurchaseInternalDetailPage : {}", id);
 		List<Object[]> objs = userRepository.findUserInfoByLogin(SecurityUtils.getCurrentUserLogin());
     	if(objs != null && !objs.isEmpty()){
     		Object[] o = objs.get(0);
