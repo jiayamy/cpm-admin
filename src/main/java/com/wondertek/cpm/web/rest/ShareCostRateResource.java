@@ -56,7 +56,7 @@ public class ShareCostRateResource {
     		@ApiParam Pageable pageable
     		)
         throws URISyntaxException {
-        log.debug("REST request to get a page of BonusRate  contractType:{},deptType:{}",contractType,deptType);
+        log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to get a page of BonusRate  contractType:{},deptType:{}",contractType,deptType);
         ShareCostRate shareCostRate = new ShareCostRate();
         shareCostRate.setContractType(contractType);
         shareCostRate.setDeptType(deptType);
@@ -75,7 +75,7 @@ public class ShareCostRateResource {
     @Timed
     @Secured(AuthoritiesConstants.ROLE_INFO_BASIC)
     public ResponseEntity<Boolean> updateShareCostRate(@RequestBody ShareCostRate shareCostRate) throws URISyntaxException {
-    	log.debug("REST request to update ShareCostRate : {}", shareCostRate);
+    	log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to update ShareCostRate : {}", shareCostRate);
     	Boolean isNew = shareCostRate.getId() == null;
     	//校验参数
     	if (shareCostRate.getContractType() == null || shareCostRate.getDeptType() == null
@@ -124,7 +124,7 @@ public class ShareCostRateResource {
     @Timed
     @Secured(AuthoritiesConstants.ROLE_INFO_BASIC)
     public ResponseEntity<ShareCostRate> getShareCostRate(@PathVariable Long id){
-        log.debug("REST request to get ShareCostRate : {}", id);
+        log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to get ShareCostRate : {}", id);
         ShareCostRate shareCostRate = shareCostRateService.findOne(id);
         return Optional.ofNullable(shareCostRate)
             .map(result -> new ResponseEntity<>(
@@ -142,7 +142,7 @@ public class ShareCostRateResource {
     @Timed
     @Secured(AuthoritiesConstants.ROLE_INFO_BASIC)
     public ResponseEntity<Void> deleteShareCostRate(@PathVariable Long id) {
-        log.debug("REST request to delete ShareCostRate : {}", id);
+        log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to delete ShareCostRate : {}", id);
         shareCostRateService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert("shareCostRate", id.toString())).build();
     }

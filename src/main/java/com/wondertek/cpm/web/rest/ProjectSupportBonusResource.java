@@ -41,6 +41,7 @@ import com.wondertek.cpm.config.StringUtil;
 import com.wondertek.cpm.domain.ProjectSupportBonus;
 import com.wondertek.cpm.domain.vo.ProjectSupportBonusVo;
 import com.wondertek.cpm.security.AuthoritiesConstants;
+import com.wondertek.cpm.security.SecurityUtils;
 import com.wondertek.cpm.service.ProjectSupportBonusService;
 import com.wondertek.cpm.web.rest.util.HeaderUtil;
 import com.wondertek.cpm.web.rest.util.PaginationUtil;
@@ -72,7 +73,7 @@ public class ProjectSupportBonusResource {
     		@RequestParam(value = "deptType",required=false) Long deptType,
     		@ApiParam Pageable pageable)
 		throws URISyntaxException {
-		log.debug("REST request to get a page of ProjectSupportBonus");
+		log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to get a page of ProjectSupportBonus : {}",statWeek,contractId,deptType);
 		Date now = new Date();
 		ProjectSupportBonus projectSupportBonus = new ProjectSupportBonus();
 		projectSupportBonus.setStatWeek(statWeek);
@@ -99,6 +100,7 @@ public class ProjectSupportBonusResource {
     		@RequestParam(value = "id",required=false) Long id,
     		@ApiParam Pageable pageable) 
     	throws URISyntaxException {
+    	log.debug(SecurityUtils.getCurrentUserLogin() + "REST request to get a ProjectSupportBonusDetail : {}",id);
     	ProjectSupportBonusVo projectSupportBonus = projectSupportBonusService.getUserSupportBonus(id);
         if (projectSupportBonus == null) {
         	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.projectSupportBonus.save.noPerm", "")).body(null);
@@ -123,7 +125,7 @@ public class ProjectSupportBonusResource {
     		@RequestParam(value = "deptType",required=false) Long deptType,
     		@ApiParam Pageable pageable)
 		throws URISyntaxException, IOException {
-    	log.debug("REST request to get a page of exportXls");
+    	log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to get a page of exportXls : {}",statWeek,contractId,deptType);
     	Date now = new Date();
     	ProjectSupportBonus projectSupportBonus = new ProjectSupportBonus();
     	projectSupportBonus.setStatWeek(statWeek);
