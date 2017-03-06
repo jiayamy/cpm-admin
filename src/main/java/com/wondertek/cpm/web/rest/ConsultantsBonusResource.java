@@ -223,7 +223,7 @@ public class ConsultantsBonusResource {
     			"本期奖金",
     			"累计已计提奖金"
     	};
-    	String fileName = "consultantsBonus_detail.xlsx";
+    	String fileName = "咨询详情.xlsx";
     	//写入sheet
     	ServletOutputStream outputStream = response.getOutputStream();
     	response.setHeader("Content-Disposition","attachment;filename=" + fileName);
@@ -232,7 +232,7 @@ public class ConsultantsBonusResource {
     	
     	ExcelWrite excelWrite = new ExcelWrite();
     	//写入标题
-    	excelWrite.createSheetTitle("咨询奖金", 1, heads);
+    	excelWrite.createSheetTitle("咨询详情", 1, heads);
     	//写入数据
     	if(page != null){
     		handleSheetData(page,2,excelWrite);
