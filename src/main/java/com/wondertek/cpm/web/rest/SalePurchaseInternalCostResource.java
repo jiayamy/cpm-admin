@@ -70,7 +70,7 @@ public class SalePurchaseInternalCostResource {
 				@RequestParam(name="statWeek",required=false) Long statWeek,
 				@RequestParam(name="deptType",required=false) Long deptType
 				) throws URISyntaxException{
-		log.debug(SecurityUtils.getCurrentUserLogin()+" REST request to get a page of getAllSalePurchaseInternalCost : {}","contractId--"+contractId+",userId--"+userId+",statWeek--"+statWeek+",deptType--"+deptType);
+		log.debug(SecurityUtils.getCurrentUserLogin()+" REST request to get a page of getAllSalePurchaseInternalCost : contractId:{},userId:{},statWeek:{},deptType:{}",contractId,userId,statWeek,deptType);
 		if(contractId == null){
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
@@ -97,7 +97,7 @@ public class SalePurchaseInternalCostResource {
 			@RequestParam(name="id",required=false) Long id,
 			@ApiParam Pageable pageable
 			) throws URISyntaxException{
-		log.debug(SecurityUtils.getCurrentUserLogin()+" REST request to get a page of queryInternalCostDetail : {}","id--"+id);
+		log.debug(SecurityUtils.getCurrentUserLogin()+" REST request to get a page of queryInternalCostDetail : {}",id);
 		Page<ProjectSupportCostVo> page = salePurchaseInternalCostService.getAllSalePurchaseInternalDetailPage(id,pageable);
 		HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/sale-purchase-internalCost/queryInternalCostDetail");
 		return Optional.ofNullable(page.getContent()).map(result -> new ResponseEntity<>(result,headers,HttpStatus.OK))
@@ -113,7 +113,7 @@ public class SalePurchaseInternalCostResource {
 			@RequestParam(name="userId",required=false) Long userId,
 			@RequestParam(name="statWeek",required=false) Long statWeek,
 			@RequestParam(name="deptType",required=false) Long deptType) throws IOException{
-		log.debug(SecurityUtils.getCurrentUserLogin()+" REST request to exportXls : {}","contractId--"+contractId+",userId--"+userId+",statWeek--"+statWeek+",deptType--"+deptType);
+		log.debug(SecurityUtils.getCurrentUserLogin()+" REST request to exportXls : contractId:{},userId:{},statWeek:{},deptType:{}",contractId,userId,statWeek,deptType);
 		if(statWeek != null){		//转换截止日期至周末
 			statWeek = StringUtil.stringToLong(DateUtil.formatDate(DateUtil.DATE_YYYYMMDD_PATTERN,
 					DateUtil.getSundayOfDay(DateUtil.parseDate(DateUtil.DATE_YYYYMMDD_PATTERN, statWeek.toString().trim()))));
