@@ -57,7 +57,7 @@ public class BonusRateResource {
     		@ApiParam Pageable pageable
     		)
         throws URISyntaxException {
-        log.debug("REST request to get a page of BonusRate  contractType:{},deptType:{}",contractType,deptType);
+        log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to get a page of BonusRate  contractType:{},deptType:{}",contractType,deptType);
         BonusRate bonusRate = new BonusRate();
         bonusRate.setContractType(contractType);
         bonusRate.setDeptType(deptType);

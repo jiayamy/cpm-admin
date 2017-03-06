@@ -133,7 +133,7 @@ public class ContractCostResource {
     @Timed
     @Secured(AuthoritiesConstants.ROLE_CONTRACT_COST)
     public ResponseEntity<ContractCostVo> getContractCost(@PathVariable Long id) {
-        log.debug("REST request to get ContractCost : {}", id);
+        log.debug(SecurityUtils.getCurrentUserLogin() +  " REST request to get ContractCost : {}", id);
         ContractCostVo contractCost = contractCostService.getContractCost(id);
         return Optional.ofNullable(contractCost)
             .map(result -> new ResponseEntity<>(

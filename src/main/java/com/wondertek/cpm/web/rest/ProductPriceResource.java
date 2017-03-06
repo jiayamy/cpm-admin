@@ -120,23 +120,6 @@ public class ProductPriceResource {
     }
 
     /**
-     * GET  /product-prices : get all the productPrices.
-     *
-     * @param pageable the pagination information
-     * @return the ResponseEntity with status 200 (OK) and the list of productPrices in body
-     * @throws URISyntaxException if there is an error to generate the pagination HTTP headers
-     */
-//    @GetMapping("/product-prices")
-//    @Timed
-//    public ResponseEntity<List<ProductPrice>> getAllProductPrices(@ApiParam Pageable pageable)
-//        throws URISyntaxException {
-//        log.debug("REST request to get a page of ProductPrices");
-//        Page<ProductPrice> page = productPriceService.findAll(pageable);
-//        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/product-prices");
-//        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
-//    }
-
-    /**
      * GET  /product-prices/:id : get the "id" productPrice.
      *
      * @param id the id of the productPrice to retrieve

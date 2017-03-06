@@ -76,7 +76,6 @@ public class SalesBonusResource {
     	if(salesBonusVo == null){
     		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     	}
-        log.debug("REST request to get a page of ProjectUsers");
         SalesBonus salesBonus = new SalesBonus();
         salesBonus.setContractId(salesBonusVo.getContractId());
         
