@@ -53,7 +53,7 @@ public class ContractUserResource {
     @Timed
     @Secured(AuthoritiesConstants.ROLE_CONTRACT_USER)
     public ResponseEntity<Boolean> updateContractUser(@RequestBody ContractUser contractUser) throws URISyntaxException {
-        log.debug("REST request to update ContractUser : {}", contractUser);
+        log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to update ContractUser : {}", contractUser);
         Boolean isNew = contractUser.getId() == null;
         if (contractUser.getContractId() == null || contractUser.getUserId() == null 
         		 || StringUtil.isNullStr(contractUser.getUserName()) || contractUser.getJoinDay() == null
@@ -114,7 +114,7 @@ public class ContractUserResource {
     		@RequestParam(value = "userId" ,required=false) Long userId, 
     		@ApiParam Pageable pageable)
         throws URISyntaxException {
-        log.debug("REST request to get a page of ContractUsers");
+        log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to get a page of ContractUsers by contractId : {}, userId : {}", contractId, userId);
         ContractUser contractUser = new ContractUser();
         contractUser.setContractId(contractId);
         contractUser.setUserId(userId);
@@ -128,7 +128,7 @@ public class ContractUserResource {
     @Timed
     @Secured(AuthoritiesConstants.ROLE_CONTRACT_USER)
     public ResponseEntity<ContractUserVo> getContractUser(@PathVariable Long id) {
-        log.debug("REST request to get ContractUser : {}", id);
+        log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to get ContractUser : {}", id);
         ContractUserVo contractUserVo = contractUserService.getContractUser(id);
         return Optional.ofNullable(contractUserVo)
             .map(result -> new ResponseEntity<>(
@@ -141,7 +141,7 @@ public class ContractUserResource {
     @Timed
     @Secured(AuthoritiesConstants.ROLE_CONTRACT_USER)
     public ResponseEntity<Void> deleteContractUser(@PathVariable Long id) {
-        log.debug("REST request to delete ContractUser : {}", id);
+        log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to delete ContractUser : {}", id);
         ContractUserVo contractVo = contractUserService.getContractUser(id);
         if (contractVo == null) {
         	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.contractUser.save.noPerm", "")).body(null);
@@ -156,7 +156,7 @@ public class ContractUserResource {
     @Secured(AuthoritiesConstants.ROLE_CONTRACT_USER)
     public ResponseEntity<List<ContractUser>> searchContractUsers(@RequestParam String query, @ApiParam Pageable pageable)
         throws URISyntaxException {
-        log.debug("REST request to search for a page of ContractUsers for query {}", query);
+        log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to search for a page of ContractUsers for query {}", query);
         Page<ContractUser> page = contractUserService.search(query, pageable);
         HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/contract-users");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);

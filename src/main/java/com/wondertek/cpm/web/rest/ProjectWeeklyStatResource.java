@@ -31,6 +31,7 @@ import com.wondertek.cpm.domain.vo.ChartReportDataVo;
 import com.wondertek.cpm.domain.vo.ChartReportVo;
 import com.wondertek.cpm.domain.vo.ProjectWeeklyStatVo;
 import com.wondertek.cpm.security.AuthoritiesConstants;
+import com.wondertek.cpm.security.SecurityUtils;
 import com.wondertek.cpm.service.ProjectWeeklyStatService;
 import com.wondertek.cpm.web.rest.util.PaginationUtil;
 
@@ -62,7 +63,7 @@ public class ProjectWeeklyStatResource {
     		@ApiParam(value="projectId") @RequestParam(value="projectId") String projectId,
     		@ApiParam Pageable pageable)
         throws URISyntaxException {
-        log.debug("REST request to get a page of ProjectWeeklyStats");
+        log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to get a page of ProjectWeeklyStats by projectId : {}", projectId);
         Page<ProjectWeeklyStatVo> page = projectWeeklyStatService.getStatPage(projectId, pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/project-weekly-stats");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
@@ -78,7 +79,7 @@ public class ProjectWeeklyStatResource {
     @Timed
     @Secured(AuthoritiesConstants.ROLE_STAT_PROJECT)
     public ResponseEntity<ProjectWeeklyStatVo> getProjectWeeklyStat(@PathVariable Long id) {
-        log.debug("REST request to get ProjectWeeklyStat : {}", id);
+        log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to get ProjectWeeklyStat : {}", id);
         ProjectWeeklyStatVo projectWeeklyStat = projectWeeklyStatService.findOne(id);
         return Optional.ofNullable(projectWeeklyStat)
             .map(result -> new ResponseEntity<>(
@@ -101,7 +102,7 @@ public class ProjectWeeklyStatResource {
     @Secured(AuthoritiesConstants.ROLE_STAT_PROJECT)
     public ResponseEntity<List<ProjectWeeklyStat>> searchProjectWeeklyStats(@RequestParam String query, @ApiParam Pageable pageable)
         throws URISyntaxException {
-        log.debug("REST request to search for a page of ProjectWeeklyStats for query {}", query);
+        log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to search for a page of ProjectWeeklyStats for query {}", query);
         Page<ProjectWeeklyStat> page = projectWeeklyStatService.search(query, pageable);
         HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/project-weekly-stats");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
@@ -113,6 +114,8 @@ public class ProjectWeeklyStatResource {
     public ResponseEntity<ChartReportVo> getChartReport(@ApiParam(value="fromDate") @RequestParam(value="fromDate") String fromDate,
     		@ApiParam(value="toDate") @RequestParam(value="toDate") String toDate,
     		@ApiParam(value="id") @RequestParam(value="id", required = true) Long statId){
+    	log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to get Chart Report of ProjectWeeklyStats by fromDate : {}, "
+    			+ "toDate : {}, statId : {}", fromDate, toDate, statId);
     	ChartReportVo chartReportVo = new ChartReportVo();
     	ProjectWeeklyStatVo projectWeeklyStatVo = projectWeeklyStatService.findOne(statId);
     	if(projectWeeklyStatVo == null){
@@ -157,6 +160,8 @@ public class ProjectWeeklyStatResource {
     public ResponseEntity<ChartReportVo> getFinishRateChartReport(@ApiParam(value="fromDate") @RequestParam(value="fromDate") String fromDate,
     		@ApiParam(value="toDate") @RequestParam(value="toDate") String toDate,
     		@ApiParam(value="id") @RequestParam(value="id", required = true) Long statId){
+    	log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to get FinishRate Chart Report of ProjectWeeklyStats by fromDate : {}, "
+    			+ "toDate : {}, statId : {}", fromDate, toDate, statId);
     	ChartReportVo chartReportVo = new ChartReportVo();
     	ProjectWeeklyStatVo projectWeeklyStatVo = projectWeeklyStatService.findOne(statId);
     	if(projectWeeklyStatVo == null){

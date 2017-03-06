@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.codahale.metrics.annotation.Timed;
 import com.wondertek.cpm.domain.WorkArea;
 import com.wondertek.cpm.security.AuthoritiesConstants;
+import com.wondertek.cpm.security.SecurityUtils;
 import com.wondertek.cpm.service.WorkAreaService;
 import com.wondertek.cpm.web.rest.util.HeaderUtil;
 import com.wondertek.cpm.web.rest.util.PaginationUtil;
@@ -57,7 +58,7 @@ public class WorkAreaResource {
     @Timed
     @Secured(AuthoritiesConstants.ROLE_INFO_BASIC)
     public ResponseEntity<WorkArea> createWorkArea(@RequestBody WorkArea workArea) throws URISyntaxException {
-        log.debug("REST request to save WorkArea : {}", workArea);
+        log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to save WorkArea : {}", workArea);
         if (workArea.getId() != null) {
             return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("workArea", "idexists", "A new workArea cannot already have an ID")).body(null);
         }
@@ -79,7 +80,7 @@ public class WorkAreaResource {
     @Secured(AuthoritiesConstants.ROLE_INFO_BASIC)
     public ResponseEntity<List<WorkArea>> getAllWorkAreas(@ApiParam Pageable pageable)
         throws URISyntaxException {
-        log.debug("REST request to get a page of WorkAreas");
+        log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to get a page of WorkAreas");
         Page<WorkArea> page = workAreaService.findAll(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/work-areas");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
@@ -95,7 +96,7 @@ public class WorkAreaResource {
     @Timed
     @Secured(AuthoritiesConstants.ROLE_INFO_BASIC)
     public ResponseEntity<WorkArea> getWorkArea(@PathVariable Long id) {
-        log.debug("REST request to get WorkArea : {}", id);
+        log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to get WorkArea : {}", id);
         WorkArea workArea = workAreaService.findOne(id);
         return Optional.ofNullable(workArea)
             .map(result -> new ResponseEntity<>(
@@ -114,7 +115,7 @@ public class WorkAreaResource {
     @Timed
     @Secured(AuthoritiesConstants.ADMIN)
     public ResponseEntity<Void> deleteWorkArea(@PathVariable Long id) {
-        log.debug("REST request to delete WorkArea : {}", id);
+        log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to delete WorkArea : {}", id);
         workAreaService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert("workArea", id.toString())).build();
     }
@@ -133,7 +134,7 @@ public class WorkAreaResource {
     @Secured(AuthoritiesConstants.ROLE_INFO_BASIC)
     public ResponseEntity<List<WorkArea>> searchWorkAreas(@RequestParam String query, @ApiParam Pageable pageable)
         throws URISyntaxException {
-        log.debug("REST request to search for a page of WorkAreas for query {}", query);
+        log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to search for a page of WorkAreas for query {}", query);
         Page<WorkArea> page = workAreaService.search(query, pageable);
         HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/work-areas");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
@@ -145,7 +146,7 @@ public class WorkAreaResource {
     @Timed
     @Secured(AuthoritiesConstants.USER)
     public ResponseEntity<List<String>> queryAllWorkAreas() throws URISyntaxException {
-    	log.debug("REST request to queryAllWorkAreas");
+    	log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to queryAllWorkAreas");
         List<String> page = workAreaService.queryAll();
         return new ResponseEntity<>(page, null, HttpStatus.OK);
     }

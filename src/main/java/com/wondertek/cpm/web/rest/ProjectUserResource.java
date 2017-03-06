@@ -61,7 +61,7 @@ public class ProjectUserResource {
     @Timed
     @Secured(AuthoritiesConstants.ROLE_PROJECT_USER)
     public ResponseEntity<Boolean> updateProjectUser(@RequestBody ProjectUser projectUser) throws URISyntaxException {
-        log.debug("REST request to update ProjectUser : {}", projectUser);
+        log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to update ProjectUser : {}", projectUser);
         Boolean isNew = projectUser.getId() == null;
         if(projectUser.getProjectId() == null || projectUser.getUserId() == null || StringUtil.isNullStr(projectUser.getUserName())
         		 || StringUtil.isNullStr(projectUser.getUserRole()) || projectUser.getJoinDay() == null){
@@ -125,7 +125,7 @@ public class ProjectUserResource {
     		@ApiParam Pageable pageable)
         throws URISyntaxException {
     	
-        log.debug("REST request to get a page of ProjectUsers");
+        log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to get a page of ProjectUsers by projectId : {}, userId : {}", projectId, userId);
         ProjectUser projectUser = new ProjectUser();
         projectUser.setProjectId(projectId);
         projectUser.setUserId(userId);
@@ -146,7 +146,7 @@ public class ProjectUserResource {
     @Timed
     @Secured(AuthoritiesConstants.ROLE_PROJECT_USER)
     public ResponseEntity<ProjectUserVo> getProjectUser(@PathVariable Long id) {
-        log.debug("REST request to get ProjectUser : {}", id);
+        log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to get ProjectUser : {}", id);
         ProjectUserVo projectUserVo = projectUserService.getProjectUser(id);
         return Optional.ofNullable(projectUserVo)
             .map(result -> new ResponseEntity<>(
@@ -165,7 +165,7 @@ public class ProjectUserResource {
     @Timed
     @Secured(AuthoritiesConstants.ROLE_PROJECT_USER)
     public ResponseEntity<Void> deleteProjectUser(@PathVariable Long id) {
-        log.debug("REST request to delete ProjectUser : {}", id);
+        log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to delete ProjectUser : {}", id);
         ProjectUserVo projectUserVo = projectUserService.getProjectUser(id);
         if(projectUserVo == null){
         	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.projectUser.save.noPerm", "")).body(null);

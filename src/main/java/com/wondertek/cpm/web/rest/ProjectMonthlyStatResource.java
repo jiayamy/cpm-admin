@@ -32,6 +32,7 @@ import com.wondertek.cpm.domain.vo.ChartReportDataVo;
 import com.wondertek.cpm.domain.vo.ChartReportVo;
 import com.wondertek.cpm.domain.vo.ProjectMonthlyStatVo;
 import com.wondertek.cpm.security.AuthoritiesConstants;
+import com.wondertek.cpm.security.SecurityUtils;
 import com.wondertek.cpm.service.ProjectMonthlyStatService;
 import com.wondertek.cpm.web.rest.util.PaginationUtil;
 
@@ -63,7 +64,7 @@ public class ProjectMonthlyStatResource {
     		@ApiParam(value="projectId") @RequestParam(value="projectId") String projectId,
     		@ApiParam Pageable pageable)
         throws URISyntaxException {
-        log.debug("REST request to get a page of ProjectMonthlyStats");
+        log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to get a page of ProjectMonthlyStats by projectId : {}", projectId);
         Page<ProjectMonthlyStatVo> page = projectMonthlyStatService.getStatPage(projectId, pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/project-monthly-stats");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
@@ -79,7 +80,7 @@ public class ProjectMonthlyStatResource {
     @Timed
     @Secured(AuthoritiesConstants.ROLE_STAT_PROJECT)
     public ResponseEntity<ProjectMonthlyStatVo> getProjectMonthlyStat(@PathVariable Long id) {
-        log.debug("REST request to get ProjectMonthlyStats : {}", id);
+        log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to get ProjectMonthlyStats : {}", id);
         ProjectMonthlyStatVo projectMonthlyStat = projectMonthlyStatService.findOne(id);
         return Optional.ofNullable(projectMonthlyStat)
             .map(result -> new ResponseEntity<>(
@@ -103,7 +104,7 @@ public class ProjectMonthlyStatResource {
     @Secured(AuthoritiesConstants.ROLE_STAT_PROJECT)
     public ResponseEntity<List<ProjectMonthlyStat>> searchProjectMonthlyStats(@RequestParam String query, @ApiParam Pageable pageable)
         throws URISyntaxException {
-        log.debug("REST request to search for a page of ProjectMonthlyStat for query {}", query);
+        log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to search for a page of ProjectMonthlyStat for query {}", query);
         Page<ProjectMonthlyStat> page = projectMonthlyStatService.search(query, pageable);
         HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/project-monthly-stats");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
@@ -115,6 +116,8 @@ public class ProjectMonthlyStatResource {
     public ResponseEntity<ChartReportVo> getChartReport(@ApiParam(value="fromDate") @RequestParam(value="fromDate") String fromDate,
     		@ApiParam(value="toDate") @RequestParam(value="toDate") String toDate,
     		@ApiParam(value="id") @RequestParam(value="id") Long statId){
+    	log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to get Chart Report of ProjectMonthlyStat by fromDate : {}, "
+    			+ "toDate : {}, statId : {}", fromDate, toDate, statId);
     	ChartReportVo chartReportVo = new ChartReportVo();
     	ProjectMonthlyStatVo projectMonthlyStatvo = projectMonthlyStatService.findOne(statId);
     	if(projectMonthlyStatvo == null){
@@ -161,6 +164,8 @@ public class ProjectMonthlyStatResource {
     public ResponseEntity<ChartReportVo> getFinishRateChartReport(@ApiParam(value="fromDate") @RequestParam(value="fromDate") String fromDate,
     		@ApiParam(value="toDate") @RequestParam(value="toDate") String toDate,
     		@ApiParam(value="id") @RequestParam(value="id") Long statId){
+    	log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to get FinishRate Chart Report of ProjectMonthlyStat by fromDate : {}, "
+    			+ "toDate : {}, statId : {}", fromDate, toDate, statId);
     	ChartReportVo chartReportVo = new ChartReportVo();
     	ProjectMonthlyStatVo projectMonthlyStatvo = projectMonthlyStatService.findOne(statId);
     	if(projectMonthlyStatvo == null){

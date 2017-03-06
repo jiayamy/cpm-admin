@@ -58,7 +58,7 @@ public class DeptInfoResource {
     @Timed
     @Secured(AuthoritiesConstants.ROLE_INFO_BASIC)
     public ResponseEntity<DeptInfo> updateDeptInfo(@Valid @RequestBody DeptInfo deptInfo) throws URISyntaxException {
-        log.debug("REST request to update DeptInfo : {}", deptInfo);
+        log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to update DeptInfo : {}", deptInfo);
         Boolean isNew = deptInfo.getId() == null;
         
         //必要校验
@@ -129,7 +129,7 @@ public class DeptInfoResource {
     @Timed
     @Secured(AuthoritiesConstants.ROLE_INFO_BASIC)
     public ResponseEntity<DeptInfoVo> getDeptInfo(@PathVariable Long id) {
-        log.debug("REST request to get DeptInfo : {}", id);
+        log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to get DeptInfo : {}", id);
         DeptInfoVo deptInfo = deptInfoService.getDeptInfo(id);
         return Optional.ofNullable(deptInfo)
             .map(result -> new ResponseEntity<>(
@@ -147,7 +147,7 @@ public class DeptInfoResource {
     @Timed
     @Secured(AuthoritiesConstants.ROLE_INFO_BASIC)
     public ResponseEntity<Void> deleteDeptInfo(@PathVariable Long id) {
-        log.debug("REST request to delete DeptInfo : {}", id);
+        log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to delete DeptInfo : {}", id);
         //检查部门及下面的部门对应用户是否全部删除
         DeptInfo deptInfo = deptInfoService.findOne(id);
         if(deptInfo != null){
@@ -170,7 +170,8 @@ public class DeptInfoResource {
     			@RequestParam(value = "showChild",required=false) Boolean showChild,
     			@RequestParam(value = "showUser",required=false) Boolean showUser
     		) throws URISyntaxException {
-        log.debug("REST request to get a page of getDeptAndUserTree");
+        log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to get a page of getDeptAndUserTree by selectType : {}, showChild : {}, "
+        		+ "showUser : {}", selectType, showChild, showUser);
         if(selectType == null){
         	selectType = DeptTree.SELECTTYPE_NONE;
         }
@@ -190,7 +191,7 @@ public class DeptInfoResource {
     @Timed
     @Secured(AuthoritiesConstants.USER)
     public ResponseEntity<List<DeptTree>> getDeptTree() throws URISyntaxException {
-        log.debug("REST request to get a page of getDeptAndUserTree");
+        log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to get a page of getDeptAndUserTree");
         List<DeptTree> list = deptInfoService.getDeptAndUserTree(DeptTree.SELECTTYPE_NONE,Boolean.TRUE,Boolean.FALSE);
         return new ResponseEntity<>(list, null, HttpStatus.OK);
     }

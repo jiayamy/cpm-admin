@@ -34,6 +34,7 @@ import com.wondertek.cpm.domain.vo.UserTimesheetForOther;
 import com.wondertek.cpm.domain.vo.UserTimesheetForUser;
 import com.wondertek.cpm.domain.vo.UserTimesheetVo;
 import com.wondertek.cpm.security.AuthoritiesConstants;
+import com.wondertek.cpm.security.SecurityUtils;
 import com.wondertek.cpm.service.UserTimesheetService;
 import com.wondertek.cpm.web.rest.util.PaginationUtil;
 
@@ -60,7 +61,8 @@ public class ContractTimesheetResource {
     		@RequestParam(value = "userId",required=false) Long userId,
     		@ApiParam Pageable pageable)
         throws URISyntaxException {
-        log.debug("REST request to get a page of UserTimesheets");
+        log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to get a page of UserTimesheets by workDay : {}, contractId : {},"
+        		+ " userId : {}", workDay, contractId, userId);
         UserTimesheet userTimesheet = new UserTimesheet();
         userTimesheet.setWorkDay(workDay);
         userTimesheet.setType(UserTimesheet.TYPE_CONTRACT);
@@ -82,7 +84,7 @@ public class ContractTimesheetResource {
     @Timed
     @Secured(AuthoritiesConstants.ROLE_CONTRACT_TIMESHEET)
     public ResponseEntity<UserTimesheetVo> getUserTimesheet(@PathVariable Long id) {
-        log.debug("REST request to get UserTimesheet : {}", id);
+        log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to get UserTimesheet : {}", id);
         UserTimesheet userTimesheet = userTimesheetService.getUserTimesheetForContract(id);
         UserTimesheetVo vo = null;
         if(userTimesheet != null){
@@ -102,7 +104,7 @@ public class ContractTimesheetResource {
     		@RequestParam(value = "workDay") String workDay,
     		@RequestParam(value = "id") Long id
     		) {
-        log.debug("REST request to get UserTimesheet : {}", id);
+        log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to get UserTimesheet : {}, workDay : {}", id, workDay);
         Date workDayDate = null;
         if(!StringUtil.isNullStr(workDay)){
         	workDayDate = DateUtil.parseDate(DateUtil.DATE_YYYYMMDD_PATTERN, workDay);
@@ -115,7 +117,7 @@ public class ContractTimesheetResource {
     @Timed
     @Secured(AuthoritiesConstants.ROLE_CONTRACT_TIMESHEET)
     public ResponseEntity<Map<String, Object>> getEditUserTimesheets(@RequestBody List<UserTimesheetForOther> userTimesheetForOthers) {
-        log.debug("REST request to update UserTimesheet : {}", userTimesheetForOthers);
+        log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to update UserTimesheet : {}", userTimesheetForOthers);
         Map<String,Object> resultMap = new HashMap<String,Object>(); 
         if (userTimesheetForOthers == null || userTimesheetForOthers.isEmpty() || userTimesheetForOthers.size() < 2) {
         	resultMap.put("message", "cpmApp.userTimesheet.save.paramError");

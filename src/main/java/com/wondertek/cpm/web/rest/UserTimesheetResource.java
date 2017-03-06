@@ -35,6 +35,7 @@ import com.wondertek.cpm.domain.UserTimesheet;
 import com.wondertek.cpm.domain.vo.UserTimesheetForUser;
 import com.wondertek.cpm.domain.vo.UserTimesheetVo;
 import com.wondertek.cpm.security.AuthoritiesConstants;
+import com.wondertek.cpm.security.SecurityUtils;
 import com.wondertek.cpm.service.UserTimesheetService;
 import com.wondertek.cpm.web.rest.util.HeaderUtil;
 import com.wondertek.cpm.web.rest.util.PaginationUtil;
@@ -68,7 +69,8 @@ public class UserTimesheetResource {
     		@RequestParam(value = "objName",required=false) String objName,
     		@ApiParam Pageable pageable)
         throws URISyntaxException {
-        log.debug("REST request to get a page of UserTimesheets");
+        log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to get a page of UserTimesheets by workDay : {}, type : {}, "
+        		+ "objName : {}", workDay, type, objName);
 //        Page<UserTimesheet> page = userTimesheetService.findAll(pageable);
         UserTimesheet userTimesheet = new UserTimesheet();
         userTimesheet.setWorkDay(workDay);
@@ -95,7 +97,7 @@ public class UserTimesheetResource {
     @Timed
     @Secured(AuthoritiesConstants.ROLE_TIMESHEET)
     public ResponseEntity<UserTimesheetVo> getUserTimesheet(@PathVariable Long id) {
-        log.debug("REST request to get UserTimesheet : {}", id);
+        log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to get UserTimesheet : {}", id);
         UserTimesheet userTimesheet = userTimesheetService.getUserTimesheetForUser(id);
         UserTimesheetVo vo = null;
         if(userTimesheet != null){
@@ -118,7 +120,7 @@ public class UserTimesheetResource {
     @Timed
     @Secured(AuthoritiesConstants.ROLE_TIMESHEET)
     public ResponseEntity<Void> deleteUserTimesheet(@PathVariable Long id) {
-        log.debug("REST request to delete UserTimesheet : {}", id);
+        log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to delete UserTimesheet : {}", id);
         UserTimesheet userTimesheet = userTimesheetService.getUserTimesheetForUser(id);
         if(userTimesheet == null){
         	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.userTimesheet.save.noPermit", "")).body(null);
@@ -134,7 +136,7 @@ public class UserTimesheetResource {
     @Secured(AuthoritiesConstants.ROLE_TIMESHEET)
     public ResponseEntity<List<UserTimesheetForUser>> queryEditByUser(@RequestParam(value = "workDay") String workDay, @ApiParam Pageable pageable)
         throws URISyntaxException {
-        log.debug("REST request to queryByUser for a page of UserTimesheets for query {}", workDay);
+        log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to queryByUser for a page of UserTimesheets for query {}", workDay);
         Date workDayDate = null;
         if(!StringUtil.isNullStr(workDay)){
         	workDayDate = DateUtil.parseDate(DateUtil.DATE_YYYYMMDD_PATTERN, workDay);
@@ -150,7 +152,7 @@ public class UserTimesheetResource {
     @Timed
     @Secured(AuthoritiesConstants.ROLE_TIMESHEET)
     public ResponseEntity<Map<String, Object>> updateEditByUser(@RequestBody List<UserTimesheetForUser> userTimesheetForUsers) throws URISyntaxException {
-        log.debug("REST request to update UserTimesheet : {}", userTimesheetForUsers);
+        log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to update UserTimesheet : {}", userTimesheetForUsers);
         Map<String,Object> resultMap = new HashMap<String,Object>(); 
         if (userTimesheetForUsers == null || userTimesheetForUsers.isEmpty() || userTimesheetForUsers.size() < 3) {
         	resultMap.put("message", "cpmApp.userTimesheet.save.paramError");
