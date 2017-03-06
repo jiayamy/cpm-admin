@@ -104,9 +104,9 @@ public class PurchaseItemResource {
 			}else if (oldPurchaseItem.getStatus() == PurchaseItem.STATUS_DELETED) {
         		return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.purchaseItem.save.statue2Error", "")).body(null);
 			}else if (oldPurchaseItem.getProductPriceId() != null) {
-				if (oldPurchaseItem.getContractId() != purchaseItem.getContractId() || !oldPurchaseItem.getName().equals(purchaseItem.getName())
-						|| oldPurchaseItem.getBudgetId() != purchaseItem.getBudgetId() || oldPurchaseItem.getType() != purchaseItem.getType()
-						|| oldPurchaseItem.getSource() != purchaseItem.getSource() || !oldPurchaseItem.getUnits().equals(purchaseItem.getUnits())) {
+				if (oldPurchaseItem.getContractId() != purchaseItem.getContractId().longValue() || !oldPurchaseItem.getName().equals(purchaseItem.getName())
+						|| oldPurchaseItem.getBudgetId() != purchaseItem.getBudgetId().longValue() || oldPurchaseItem.getType() != purchaseItem.getType().intValue()
+						|| oldPurchaseItem.getSource() != purchaseItem.getSource().intValue() || !oldPurchaseItem.getUnits().equals(purchaseItem.getUnits())) {
 					return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.purchaseItem.save.changeNameError", "")).body(null);
 				}
 			}

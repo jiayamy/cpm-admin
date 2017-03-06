@@ -88,7 +88,7 @@ public class ContractBudgetResource {
         	}else if(oldContractBudget.getStatus() == ContractBudget.STATUS_DELETED){
         		return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.contractBudget.save.statue2Error", "")).body(null);
         	}
-        	if(oldContractBudget.getPurchaseType() == ContractBudget.PURCHASETYPE_SERVICE && oldContractBudget.getPurchaseType() != contractBudget.getPurchaseType()){
+        	if(oldContractBudget.getPurchaseType() == ContractBudget.PURCHASETYPE_SERVICE && oldContractBudget.getPurchaseType() != contractBudget.getPurchaseType().intValue()){
         		//是否构建项目
         		flag = contractBudgetService.checkByBudget(contractBudget);
         		//构建项目
@@ -102,14 +102,14 @@ public class ContractBudgetResource {
         		if (flag) {
         			return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.contractBudget.save.projectError2", "")).body(null);
         		}
-			}else if (oldContractBudget.getPurchaseType() == ContractBudget.PURCHASETYPE_SERVICE && oldContractBudget.getPurchaseType() == contractBudget.getPurchaseType()) {
+			}else if (oldContractBudget.getPurchaseType() == ContractBudget.PURCHASETYPE_SERVICE && oldContractBudget.getPurchaseType() == contractBudget.getPurchaseType().intValue()) {
 				//是否构建项目
         		flag = contractBudgetService.checkByBudget(contractBudget);
         		//构建项目
         		if (flag) {
         			if (!contractBudget.getUserName().equals(oldContractBudget.getUserName()) || !contractBudget.getDept().equals(oldContractBudget.getDept()) 
-        					|| contractBudget.getUserId() != oldContractBudget.getUserId() || contractBudget.getDeptId() != oldContractBudget.getDeptId()
-        					|| contractBudget.getContractId() != oldContractBudget.getContractId()) {
+        					|| contractBudget.getUserId() != oldContractBudget.getUserId().longValue() || contractBudget.getDeptId() != oldContractBudget.getDeptId().longValue()
+        					|| contractBudget.getContractId() != oldContractBudget.getContractId().longValue()) {
         				return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.contractBudget.save.projectError3", "")).body(null);
         			}
         			contractBudget.setUserId(oldContractBudget.getUserId());
