@@ -92,7 +92,7 @@
             <tbody>
                 <tr ng-repeat="consultantBonus in vm.consultantBonuss track by consultantBonus.id">
                     <td>{{consultantBonus.consultantsName}}</td>
-                    <td>{{consultantBonus.serialNum}}</td>
+                    <td><a ui-sref="consultant-bonus-contractRecord({contId:consultantBonus.contractId})">{{consultantBonus.serialNum}}</a></td>
                     <td>{{consultantBonus.amount}}</td>
                     <td>{{consultantBonus.bonusBasis}}</td>
                     <td>{{consultantBonus.bonusRate}}<span ng-show="consultantBonus.id">%</span></td>
