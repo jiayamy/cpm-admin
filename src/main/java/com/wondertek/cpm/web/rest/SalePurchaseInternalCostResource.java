@@ -36,6 +36,7 @@ import com.wondertek.cpm.config.StringUtil;
 import com.wondertek.cpm.domain.ProjectSupportCost;
 import com.wondertek.cpm.domain.vo.ProjectSupportCostVo;
 import com.wondertek.cpm.security.AuthoritiesConstants;
+import com.wondertek.cpm.security.SecurityUtils;
 import com.wondertek.cpm.service.SalePurchaseInternalCostService;
 import com.wondertek.cpm.web.rest.util.PaginationUtil;
 
@@ -69,7 +70,7 @@ public class SalePurchaseInternalCostResource {
 				@RequestParam(name="statWeek",required=false) Long statWeek,
 				@RequestParam(name="deptType",required=false) Long deptType
 				) throws URISyntaxException{
-		log.debug("REST request to get a page of SalePurchaseInternalCost:contractId--"+contractId+",userId--"+userId+",statWeek--"+statWeek+",deptType--"+deptType);
+		log.debug(SecurityUtils.getCurrentUserLogin()+" REST request to get a page of getAllSalePurchaseInternalCost : {}","contractId--"+contractId+",userId--"+userId+",statWeek--"+statWeek+",deptType--"+deptType);
 		if(contractId == null){
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
@@ -96,7 +97,7 @@ public class SalePurchaseInternalCostResource {
 			@RequestParam(name="id",required=false) Long id,
 			@ApiParam Pageable pageable
 			) throws URISyntaxException{
-		log.debug("REST request to get a page of SalePurchaseInternalCost:"+id);
+		log.debug(SecurityUtils.getCurrentUserLogin()+" REST request to get a page of queryInternalCostDetail : {}","id--"+id);
 		Page<ProjectSupportCostVo> page = salePurchaseInternalCostService.getAllSalePurchaseInternalDetailPage(id,pageable);
 		HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/sale-purchase-internalCost/queryInternalCostDetail");
 		return Optional.ofNullable(page.getContent()).map(result -> new ResponseEntity<>(result,headers,HttpStatus.OK))
@@ -112,7 +113,7 @@ public class SalePurchaseInternalCostResource {
 			@RequestParam(name="userId",required=false) Long userId,
 			@RequestParam(name="statWeek",required=false) Long statWeek,
 			@RequestParam(name="deptType",required=false) Long deptType) throws IOException{
-		log.debug("REST request to exportXls");
+		log.debug(SecurityUtils.getCurrentUserLogin()+" REST request to exportXls : {}","contractId--"+contractId+",userId--"+userId+",statWeek--"+statWeek+",deptType--"+deptType);
 		if(statWeek != null){		//转换截止日期至周末
 			statWeek = StringUtil.stringToLong(DateUtil.formatDate(DateUtil.DATE_YYYYMMDD_PATTERN,
 					DateUtil.getSundayOfDay(DateUtil.parseDate(DateUtil.DATE_YYYYMMDD_PATTERN, statWeek.toString().trim()))));

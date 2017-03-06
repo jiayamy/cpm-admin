@@ -87,7 +87,7 @@ public class UserCostResource {
     @Timed
     @Secured(AuthoritiesConstants.ROLE_INFO_USERCOST)
     public ResponseEntity<UserCost> createUserCost(@RequestBody UserCost userCost) throws URISyntaxException {
-        log.debug("REST request to save UserCost : {}", userCost);
+        log.debug(SecurityUtils.getCurrentUserLogin()+" REST request to createUserCost : {}", userCost);
         if (userCost.getId() != null) {
             return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("userCost", "idexists", "A new userCost cannot already have an ID")).body(null);
         }
@@ -110,7 +110,7 @@ public class UserCostResource {
     @Timed
     @Secured(AuthoritiesConstants.ROLE_INFO_USERCOST)
     public ResponseEntity<UserCost> updateUserCost(@RequestBody UserCost userCost) throws URISyntaxException {
-        log.debug("REST request to update UserCost : {}", userCost);
+        log.debug(SecurityUtils.getCurrentUserLogin()+" REST request to updateUserCost : {}", userCost);
         Boolean isNew = null;
         if(userCost == null || userCost.getUserId() == null || userCost.getCostMonth() == null || 
         		userCost.getUserName() == null || userCost.getSal() == null || userCost.getSocialSecurityFund() == null || userCost.getOtherExpense() == null){
@@ -147,7 +147,6 @@ public class UserCostResource {
         		return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.userCost.save.userNameError", "")).body(null);
         	}
         }
-//        findUserCost.setStatus(userCost.getStatus());
         findUserCost.setSal(userCost.getSal());
         findUserCost.setSocialSecurityFund(userCost.getSocialSecurityFund());
         findUserCost.setOtherExpense(userCost.getOtherExpense());
@@ -185,16 +184,13 @@ public class UserCostResource {
     		@RequestParam(value = "status",required=false) String status,
     		@ApiParam Pageable pageable)
         throws URISyntaxException {
-        log.debug("REST request to get a page of UserCosts");
+        log.debug(SecurityUtils.getCurrentUserLogin()+" REST request to get a page of getAllUserCosts : {}",
+        		"serialNum--"+serialNum+",userName--"+userName+",costMonth--"+costMonth+",status--"+status);
         UserCost userCost = new UserCost();
         Optional<User> user = userRepository.findOneBySerialNum(serialNum);
         if(user.isPresent()){
         	userCost.setUserId(user.get().getId());
         }
-//        userCost.setUserId(userId);
-//        if(!StringUtil.isNullStr(userId)){
-//        	userCost.setUserId(StringUtil.nullToLong(userId));
-//        }
         if(!StringUtil.isNullStr(userName)){
         	userCost.setUserName(userName);
         }
@@ -219,7 +215,7 @@ public class UserCostResource {
     @Timed
     @Secured(AuthoritiesConstants.ROLE_INFO_USERCOST)
     public ResponseEntity<UserCost> getUserCost(@PathVariable Long id) {
-        log.debug("REST request to get UserCost : {}", id);
+        log.debug(SecurityUtils.getCurrentUserLogin()+" REST request to getUserCost : {}", id);
         UserCost userCost = userCostService.findOne(id);
         return Optional.ofNullable(userCost)
             .map(result -> new ResponseEntity<>(
@@ -238,7 +234,7 @@ public class UserCostResource {
     @Timed
     @Secured(AuthoritiesConstants.ROLE_INFO_USERCOST)
     public ResponseEntity<Void> deleteUserCost(@PathVariable Long id) {
-        log.debug("REST request to delete UserCost : {}", id);
+        log.debug(SecurityUtils.getCurrentUserLogin()+" REST request to deleteUserCost : {}", id);
         UserCost userCost = userCostService.findOne(id);
         if(userCost.getStatus() == CpmConstants.STATUS_DELETED){
         	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.userCost.delete.statusError", "")).body(null);
@@ -261,7 +257,7 @@ public class UserCostResource {
     @Secured(AuthoritiesConstants.ROLE_INFO_USERCOST)
     public ResponseEntity<List<UserCost>> searchUserCosts(@RequestParam String query, @ApiParam Pageable pageable)
         throws URISyntaxException {
-        log.debug("REST request to search for a page of UserCosts for query {}", query);
+        log.debug(SecurityUtils.getCurrentUserLogin()+" REST request to search for a page of searchUserCosts for query : {}", query);
         Page<UserCost> page = userCostService.search(query, pageable);
         HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/user-costs");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
@@ -271,14 +267,12 @@ public class UserCostResource {
     @Timed
     @Secured(AuthoritiesConstants.ROLE_INFO_USERCOST)
     public ResponseEntity<UserCostVo> getSerialNumByuserId(@RequestParam(value="id",required=false) Long id) throws URISyntaxException{
-    	log.debug("REST request to get serialNum for getSerialNumByuserId {}",id);
+    	log.debug(SecurityUtils.getCurrentUserLogin()+" REST request to get a page of getSerialNumByuserId : {}",id);
     	if(id == null){
-//    		return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.userCost.get.userIdNon", "")).body(null);
     		return new ResponseEntity<>(null,HttpStatus.BAD_REQUEST);
     	}
     	User user = userRepository.findOne(id);
     	if(user == null){
-//    		return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.userCost.get.userNon", "")).body(null);
     		return new ResponseEntity<>(null,HttpStatus.BAD_REQUEST);
     	}
     	UserCostVo userCostVo = new UserCostVo();
@@ -291,7 +285,7 @@ public class UserCostResource {
     @Secured(AuthoritiesConstants.ROLE_INFO_USERCOST)
     public ResponseEntity<CpmResponse> uploadExcel(@RequestParam(value="file",required=false) MultipartFile file)
             throws URISyntaxException {
-        log.debug("REST request to upload UserCosts Excel for fileName {}",file.getOriginalFilename());
+        log.debug(SecurityUtils.getCurrentUserLogin()+" REST request to uploadExcel for file : {}",file.getOriginalFilename());
         List<UserCost> userCosts = null;
         CpmResponse cpmResponse = new CpmResponse();
         try {
