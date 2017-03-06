@@ -188,7 +188,7 @@ public class ProductPriceResource {
     		@RequestParam(value = "name",required=false) String name,
     		@ApiParam Pageable pageable)
     	throws URISyntaxException{
-    	log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to get a page of ProductPrice : {}",source,type,name);
+    	log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to get a page of ProductPrice  source:{},type:{},name:{}",source,type,name);
     	ProductPrice productPrice = new ProductPrice();
     	if (!StringUtil.isNullStr(name)) {
 			productPrice.setName(name);

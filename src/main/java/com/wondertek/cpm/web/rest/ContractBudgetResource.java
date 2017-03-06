@@ -204,7 +204,7 @@ public class ContractBudgetResource {
     		@RequestParam(value = "purchaseType",required=false) String purchaseType,
     		@ApiParam Pageable pageable)
     	throws URISyntaxException{
-    	log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to get a page of ContractBudget : {}",name,contractId,purchaseType);
+    	log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to get a page of ContractBudget  name:{},contractId:{},purchaseType:{}",name,contractId,purchaseType);
     	ContractBudget contractBudget = new ContractBudget();
     	if (!StringUtil.isNullStr(name)) {
 			contractBudget.setName(name);

@@ -196,7 +196,7 @@ public class PurchaseItemResource {
     		@RequestParam(value = "ppType",required=false) String ppType,
     		@ApiParam Pageable pageable)
         throws URISyntaxException {
-        log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to search for a page of PurchaseItems : {}",contractId,source,ppType);
+        log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to search for a page of PurchaseItems  contractId:{},source:{},ppType:{}",contractId,source,ppType);
         PurchaseItem purchaseItem = new PurchaseItem();
         if (!StringUtil.isNullStr(name)) {
 			purchaseItem.setName(name);
@@ -234,7 +234,7 @@ public class PurchaseItemResource {
     		@RequestParam(value = "type",required=false) Integer type,
     		@ApiParam Pageable pageable)
     	throws URISyntaxException{
-    	log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to get a page of ProductPrice : {}",selectName,type);
+    	log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to get a page of ProductPrice  selectName:{},type:{}",selectName,type);
     	 Page<ProductPriceVo> page = purchaseItemService.searchPricePage(selectName,type,pageable);
          HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(selectName,page, "/api/product-prices");
          return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);

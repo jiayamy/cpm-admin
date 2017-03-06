@@ -70,7 +70,7 @@ public class BonusResource {
     		@RequestParam(value = "contractId",required=false) Long contractId,
     		@ApiParam Pageable pageable)
 		throws URISyntaxException {
-		log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to get a page of Bonus : {}",statWeek,contractId);
+		log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to get a page of Bonus  statWeek:{},contractId:{}",statWeek,contractId);
 		Date now = new Date();
 		Bonus bonus = new Bonus();
 		bonus.setStatWeek(statWeek);
@@ -127,7 +127,7 @@ public class BonusResource {
     		@RequestParam(value = "contractId",required=false) Long contractId,
     		@ApiParam Pageable pageable)
     	throws URISyntaxException, IOException  {
-    	log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to get a page of exportXls : {}",statWeek,contractId);
+    	log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to get a page of exportXls  statWeek:{},contractId:{}",statWeek,contractId);
     	Date now = new Date();
     	Bonus bonus = new Bonus();
     	bonus.setStatWeek(statWeek);

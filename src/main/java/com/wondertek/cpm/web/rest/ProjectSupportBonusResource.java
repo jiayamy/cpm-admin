@@ -73,7 +73,7 @@ public class ProjectSupportBonusResource {
     		@RequestParam(value = "deptType",required=false) Long deptType,
     		@ApiParam Pageable pageable)
 		throws URISyntaxException {
-		log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to get a page of ProjectSupportBonus : {}",statWeek,contractId,deptType);
+		log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to get a page of ProjectSupportBonus  statWeek:{},contractId:{},deptType:{}",statWeek,contractId,deptType);
 		Date now = new Date();
 		ProjectSupportBonus projectSupportBonus = new ProjectSupportBonus();
 		projectSupportBonus.setStatWeek(statWeek);
@@ -125,7 +125,7 @@ public class ProjectSupportBonusResource {
     		@RequestParam(value = "deptType",required=false) Long deptType,
     		@ApiParam Pageable pageable)
 		throws URISyntaxException, IOException {
-    	log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to get a page of exportXls : {}",statWeek,contractId,deptType);
+    	log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to get a page of exportXls  statWeek:{},contractId:{},deptType:{}",statWeek,contractId,deptType);
     	Date now = new Date();
     	ProjectSupportBonus projectSupportBonus = new ProjectSupportBonus();
     	projectSupportBonus.setStatWeek(statWeek);

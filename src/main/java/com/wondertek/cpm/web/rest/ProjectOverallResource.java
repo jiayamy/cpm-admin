@@ -73,7 +73,7 @@ public class ProjectOverallResource {
     		@RequestParam(value = "userId",required=false) Long userId,
     		@ApiParam Pageable pageable)
 		throws URISyntaxException {
-		log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to get a page of ProjectOverall : {}",statWeek,contractId,userId);
+		log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to get a page of ProjectOverall  statWeek:{},contractId:{},userId:{}",statWeek,contractId,userId);
 		Date now = new Date();
 		ProjectOverall projectOverall = new ProjectOverall();
 		projectOverall.setStatWeek(statWeek);
@@ -132,7 +132,7 @@ public class ProjectOverallResource {
     		@RequestParam(value = "userId",required=false) Long userId,
     		@ApiParam Pageable pageable)
 		throws URISyntaxException, IOException {
-    	log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to get a page of exportXls : {}",statWeek,contractId,userId);
+    	log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to get a page of exportXls  statWeek:{},contractId:{},userId:{}",statWeek,contractId,userId);
     	Date now = new Date();
     	ProjectOverall projectOverall = new ProjectOverall();
 		projectOverall.setStatWeek(statWeek);
