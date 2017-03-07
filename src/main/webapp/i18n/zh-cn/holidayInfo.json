@@ -24,7 +24,7 @@
             	"requriedError":"必填参数为空",
             	"lostError":"该日期不存在"
             },
-            "search":{
+            "search": {
             	"deadLineError":"结束日期应大于开始日期"
             },
             "currDay": "日期",

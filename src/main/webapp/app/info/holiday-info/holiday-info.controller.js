@@ -24,7 +24,7 @@
         vm.searchQuery.fromCurrDay = DateUtils.convertDayToDate(pagingParams.fromCurrDay);
         vm.searchQuery.toCurrDay = DateUtils.convertDayToDate(pagingParams.toCurrDay);
         
-        if (pagingParams.fromCurrDay == undefined && pagingParams.toCurrDay == undefined){
+        if (!vm.searchQuery.fromCurrDay && !vm.searchQuery.toCurrDay){
         	vm.haveSearch = null;
         }else{
         	vm.haveSearch = true;
@@ -61,7 +61,7 @@
                 vm.page = pagingParams.page;
             }
             function onError(error) {
-                AlertService.error(error.data.message);
+            	AlertService.error(error.data.message);
             }
         }
         
@@ -97,9 +97,16 @@
         }
 
         function search() {
-        	if (pagingParams.fromCurrDay == undefined && pagingParams.toCurrDay == undefined){
+        	if (!vm.searchQuery.fromCurrDay && !vm.searchQuery.toCurrDay){
                 return vm.clear();
             }
+        	if(vm.searchQuery.fromCurrDay && vm.searchQuery.toCurrDay ){
+        		var fromDay = DateUtils.convertLocalDateToFormat(vm.searchQuery.fromCurrDay,"yyyyMMdd");
+        		var toDay = DateUtils.convertLocalDateToFormat(vm.searchQuery.toCurrDay,"yyyyMMdd");
+        		if(toDay < fromDay){
+        			AlertService.error("cpmApp.holidayInfo.search.deadLineError");
+        		}
+        	}
             vm.links = null;
             vm.page = 1;
             vm.predicate = 'currDay';

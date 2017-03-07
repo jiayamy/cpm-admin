@@ -147,9 +147,9 @@ public class HolidayInfoResource {
 			log.error("HolidayInfo update error:",e);
 		}
         
-        if(fromCurrDay != null && toCurrDay != null && toCurrDay < fromCurrDay){
-        	return new ResponseEntity<>(HeaderUtil.createError("cpmApp.holidayInfo.search.deadLineError", ""),HttpStatus.BAD_REQUEST);
-        }
+//        if(fromCurrDay != null && toCurrDay != null && toCurrDay < fromCurrDay){
+//        	return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+//        }
         Map<String,Long> searchCondition = new HashMap<String,Long>();
         searchCondition.put("fromCurrDay", fromCurrDay);
         searchCondition.put("toCurrDay", toCurrDay);
