@@ -63,6 +63,7 @@
            	projectCost.total = vm.projectCost.total;
            	projectCost.costDesc = vm.projectCost.costDesc;
            	if(!projectCost.projectId || !projectCost.name || !projectCost.type || !projectCost.costDay || projectCost.total == undefined ){
+           		vm.isSaving = false;
             	AlertService.error("cpmApp.projectCost.save.paramNone");
             	return;
             }

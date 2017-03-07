@@ -60,10 +60,12 @@
             contractUser.joinDay = DateUtils.convertLocalDateToFormat(vm.contractUser.joinDay,"yyyyMMdd");
             contractUser.leaveDay = DateUtils.convertLocalDateToFormat(vm.contractUser.leaveDay,"yyyyMMdd");
             if(!contractUser.contractId || !contractUser.userId || !contractUser.userName ||!contractUser.joinDay){
+            	vm.isSaving = false;
             	AlertService.error("cpmApp.contractUser.save.paramNone");
             	return;
             }
             if(!contractUser.leaveDay && parseInt(contractUser.leaveDay) > parseInt(contractUser.joinDay)){
+            	vm.isSaving = false;
             	AlertService.error("cpmApp.contractUser.save.dayError");
             }
             ContractUser.update(contractUser,

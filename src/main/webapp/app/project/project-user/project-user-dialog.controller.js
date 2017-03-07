@@ -57,10 +57,12 @@
             projectUser.joinDay = DateUtils.convertLocalDateToFormat(vm.projectUser.joinDay,"yyyyMMdd");
             projectUser.leaveDay = DateUtils.convertLocalDateToFormat(vm.projectUser.leaveDay,"yyyyMMdd");
             if(!projectUser.projectId || !projectUser.userId || !projectUser.userName || !projectUser.userRole || !projectUser.joinDay){
+            	vm.isSaving = false;
             	AlertService.error("cpmApp.projectUser.save.paramNone");
             	return;
             }
             if(!projectUser.leaveDay && parseInt(projectUser.leaveDay) > parseInt(projectUser.joinDay)){
+            	vm.isSaving = false;
             	AlertService.error("cpmApp.projectUser.save.dayError");
             }
             ProjectUser.update(projectUser,

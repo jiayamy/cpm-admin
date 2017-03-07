@@ -54,6 +54,7 @@
             
             if( !contractReceive.contractId || contractReceive.receiveTotal == undefined
             		|| !contractReceive.receiveDay || !contractReceive.receiver){
+            	vm.isSaving = false;
             	AlertService.error("cpmApp.contractReceive.save.paramNone");
             	return;
             }

@@ -58,7 +58,7 @@ public class ContractInfo implements Serializable {
     @Column(name = "is_prepared")
     private Boolean isPrepared;
     /**
-     * 是否外包（false内部合同/true外包合同）
+     * 是否外部（false内部合同/true外部合同）
      */
     @Column(name = "is_epibolic")
     private Boolean isEpibolic;

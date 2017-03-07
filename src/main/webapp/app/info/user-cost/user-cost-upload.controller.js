@@ -17,8 +17,10 @@
         	vm.isSaving = true;
         	var file = document.querySelector('input[type=file]').files;
         	if(file == undefined || file.length < 1){
+        		vm.isSaving = false;
         		AlertService.error("cpmApp.userCost.upload.nonFile");
         	}else if(file.length>1){
+        		vm.isSaving = false;
         		AlertService.error("cpmApp.userCost.upload.numFile");
         	}else{
         		Upload.upload({
@@ -28,6 +30,7 @@
             		headers: {'Content-Type':undefined},
             		transformRequest: angular.identity
             	}).success(function(data,a,b,c){
+            		vm.isSaving = false;
             		if(data.msgKey && !data.success){
             			var param = {};
             			if(data.msgParam){
@@ -42,6 +45,7 @@
             			$state.go(vm.previousState);
             		}
             	}).error(function(data){
+            		vm.isSaving = false;
             		if(data.msgKey && !data.success){
             			var param = {};
             			if(data.msgParam){

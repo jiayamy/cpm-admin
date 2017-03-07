@@ -48,6 +48,7 @@
             userCost.otherExpense = vm.userCost.otherExpense;
             if(!userCost.userId ||!userCost.userName || !userCost.costMonth || 
             		!userCost.sal || !userCost.socialSecurityFund || !userCost.otherExpense){
+            	vm.isSaving = false;
             	AlertService.error("cpmApp.userCost.save.requriedError");
             	return;
             }

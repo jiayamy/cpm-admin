@@ -68,6 +68,7 @@
             contractCost.dept = vm.contractCost.dept;
             if(!contractCost.contractId || !contractCost.name || !contractCost.type || !contractCost.costDay || contractCost.total == undefined
             		|| !contractCost.deptId){
+            	vm.isSaving = false;
             	AlertService.error("cpmApp.contractCost.save.paramNone");
             	return;
             }
