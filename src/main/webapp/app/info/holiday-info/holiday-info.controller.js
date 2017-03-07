@@ -61,7 +61,7 @@
                 vm.page = pagingParams.page;
             }
             function onError(error) {
-            	AlertService.error(error.data.message);
+            	AlertService.error(error.headers("X-cpmApp-error"));
             }
         }
         
@@ -100,18 +100,19 @@
         	if (!vm.searchQuery.fromCurrDay && !vm.searchQuery.toCurrDay){
                 return vm.clear();
             }
-        	if(vm.searchQuery.fromCurrDay && vm.searchQuery.toCurrDay ){
-        		var fromDay = DateUtils.convertLocalDateToFormat(vm.searchQuery.fromCurrDay,"yyyyMMdd");
-        		var toDay = DateUtils.convertLocalDateToFormat(vm.searchQuery.toCurrDay,"yyyyMMdd");
-        		if(toDay < fromDay){
-        			AlertService.error("cpmApp.holidayInfo.search.deadLineError");
-        		}
-        	}
             vm.links = null;
             vm.page = 1;
             vm.predicate = 'currDay';
             vm.reverse = false;
             vm.haveSearch = true;
+            if(vm.searchQuery.fromCurrDay && vm.searchQuery.toCurrDay ){
+            	var fromDay = DateUtils.convertLocalDateToFormat(vm.searchQuery.fromCurrDay,"yyyyMMdd");
+            	var toDay = DateUtils.convertLocalDateToFormat(vm.searchQuery.toCurrDay,"yyyyMMdd");
+            	if(toDay < fromDay){
+            		AlertService.error("cpmApp.holidayInfo.search.deadLineError");
+            	}
+            	return ;
+            }
             vm.transition();
         }
 
