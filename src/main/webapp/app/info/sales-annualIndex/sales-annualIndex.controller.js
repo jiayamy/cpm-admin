@@ -9,7 +9,7 @@
 
     function SalesAnnualIndexController ($scope,$rootScope, $state, SalesAnnualIndex, ParseLinks, AlertService, paginationConstants, pagingParams, DateUtils) {
         var vm = this;
-        console.log(vm);
+
         vm.loadPage = loadPage;
         vm.predicate = pagingParams.predicate;
         vm.reverse = pagingParams.ascending;

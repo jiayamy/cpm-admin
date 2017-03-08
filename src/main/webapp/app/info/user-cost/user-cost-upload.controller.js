@@ -54,7 +54,6 @@
             				param.rowNum = obj[1];
             				param.columnNum = obj[2];
             			}
-            			console.log(param);
             			AlertService.error(data.msgKey,param);
             		}else if(data.msgKey){
             			AlertService.success(data.msgKey);
