@@ -29,7 +29,7 @@
                     squash: true
                 },
                 sort: {
-                    value: 'id,desc',
+                    value: 'wuc.id,desc',
                     squash: true
                 },
                 serialNum:null,

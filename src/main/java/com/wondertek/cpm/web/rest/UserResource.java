@@ -233,6 +233,7 @@ public class UserResource {
      */
     @GetMapping("/users/{login:" + Constants.LOGIN_REGEX + "}")
     @Timed
+    @Secured(AuthoritiesConstants.ROLE_INFO_BASIC)
     public ResponseEntity<ManagedUserVM> getUser(@PathVariable String login) {
         log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to get User : {}", login);
         return userService.getUserWithAuthoritiesByLogin(login)
