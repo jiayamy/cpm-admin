@@ -36,7 +36,7 @@
 				<div class="col-sm-6">
 					<label class="control-label" data-translate="cpmApp.userCost.sal" for="field_sal">Sal</label>
             		<input type="number" class="form-control" name="externalCost" id="field_sal" ng-model="vm.userCost.sal"
-            			   step="100" min="0" ng-required="true"/>
+            			   step="100" min="0" ng-required="true" ng-change="vm.salChanged()"/>
 				</div>
 			</div>
 			<div class="form-group">

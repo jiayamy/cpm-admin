@@ -43,6 +43,7 @@ import com.wondertek.cpm.domain.User;
 import com.wondertek.cpm.domain.UserCost;
 import com.wondertek.cpm.domain.vo.UserBaseVo;
 import com.wondertek.cpm.domain.vo.UserCostVo;
+import com.wondertek.cpm.repository.UserCostRepository;
 import com.wondertek.cpm.repository.UserRepository;
 import com.wondertek.cpm.security.AuthoritiesConstants;
 import com.wondertek.cpm.security.SecurityUtils;
@@ -66,46 +67,15 @@ public class UserCostResource {
         
     @Inject
     private UserCostService userCostService;
-    
     @Inject
     private UserRepository userRepository;
-    
+    @Inject
+    private UserCostRepository userCostRepository;
     @Inject
     private UserService userService;
-    
     @Inject
     private ExternalQuotationService externalQuotationService;
 
-    /**
-     * POST  /user-costs : Create a new userCost.
-     *
-     * @param userCost the userCost to create
-     * @return the ResponseEntity with status 201 (Created) and with body the new userCost, or with status 400 (Bad Request) if the userCost has already an ID
-     * @throws URISyntaxException if the Location URI syntax is incorrect
-     */
-    @PostMapping("/user-costs")
-    @Timed
-    @Secured(AuthoritiesConstants.ROLE_INFO_USERCOST)
-    public ResponseEntity<UserCost> createUserCost(@RequestBody UserCost userCost) throws URISyntaxException {
-        log.debug(SecurityUtils.getCurrentUserLogin()+" REST request to createUserCost : {}", userCost);
-        if (userCost.getId() != null) {
-            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("userCost", "idexists", "A new userCost cannot already have an ID")).body(null);
-        }
-        UserCost result = userCostService.save(userCost);
-        return ResponseEntity.created(new URI("/api/user-costs/" + result.getId()))
-            .headers(HeaderUtil.createEntityCreationAlert("userCost", result.getId().toString()))
-            .body(result);
-    }
-
-    /**
-     * PUT  /user-costs : Updates an existing userCost.
-     *
-     * @param userCost the userCost to update
-     * @return the ResponseEntity with status 200 (OK) and with body the updated userCost,
-     * or with status 400 (Bad Request) if the userCost is not valid,
-     * or with status 500 (Internal Server Error) if the userCost couldnt be updated
-     * @throws URISyntaxException if the Location URI syntax is incorrect
-     */
     @PutMapping("/user-costs")
     @Timed
     @Secured(AuthoritiesConstants.ROLE_INFO_USERCOST)
@@ -156,6 +126,13 @@ public class UserCostResource {
     	findUserCost.setUpdator(updator);
     	
         UserCost result = userCostService.save(findUserCost);
+        //更新用户的等级
+        UserCost maxUserCost = userCostRepository.findMaxByCostMonthAndUserId(StringUtil.nullToLong(DateUtil.formatDate(CpmConstants.DEFAULT_USER_COST_COSTMONTH_FROMAT, new Date())), findUserCost.getUserId());
+        if(maxUserCost != null){
+        	List<ExternalQuotation> externalQuotations = externalQuotationService.getAllInfoOrderByGradeAsc();
+        	
+        	userService.updateUser(maxUserCost.getUserId(), getUserGrade(externalQuotations,maxUserCost.getSal()));
+        }
         if(isNew){
         	return ResponseEntity.created(new URI("/api/user-costs/" + result.getId()))
                     .headers(HeaderUtil.createEntityCreationAlert("userCost", result.getId().toString()))
@@ -166,8 +143,24 @@ public class UserCostResource {
                     .body(result);
         }
     }
-
     /**
+     * 获取用户的级别
+     * @return
+     */
+    private Integer getUserGrade(List<ExternalQuotation> externalQuotations, Double sal) {
+    	int grade = 1;
+    	if(externalQuotations != null && sal != null){
+    		for(ExternalQuotation externalQuotation : externalQuotations){
+    			grade = externalQuotation.getGrade();
+    			if(externalQuotation.getExternalQuotation().doubleValue() >= sal){
+    				break;
+    			}
+    		}
+    	}
+		return grade;
+	}
+
+	/**
      * GET  /user-costs : get all the userCosts.
      *
      * @param pageable the pagination information
@@ -301,7 +294,13 @@ public class UserCostResource {
 			//初始化员工信息
 			Map<String,UserBaseVo> userMap = userService.getAllUser();
 			//初始化
-			Map<Integer,ExternalQuotation> externalQuotationMap = externalQuotationService.getAllInfo();
+			List<ExternalQuotation> externalQuotations = externalQuotationService.getAllInfoOrderByGradeAsc();
+			Map<Integer, ExternalQuotation> externalQuotationMap = new HashMap<Integer, ExternalQuotation>();
+			if(externalQuotations != null){
+				for(ExternalQuotation externalQuotation : externalQuotations){
+					externalQuotationMap.put(externalQuotation.getGrade(), externalQuotation);
+				}
+			}
 			//其他信息
 			userCosts = new ArrayList<UserCost>();
 			String updator = SecurityUtils.getCurrentUserLogin();
@@ -310,6 +309,7 @@ public class UserCostResource {
 			Object val = null;
 			ExternalQuotation externalQuotation = null;
 			Map<String,Integer> existMap = new HashMap<String,Integer>();
+			Map<Long,Long> userIdMap = new HashMap<Long,Long>();
 			for (ExcelValue excelValue : lists) {
 				if (excelValue.getVals() == null || excelValue.getVals().isEmpty()) {//每个sheet也可能没有数据，空sheet
 					continue;
@@ -440,6 +440,8 @@ public class UserCostResource {
 						//外部成本
 						externalQuotation = externalQuotationMap.get(vo.getGrade());
 						userCost.setExternalCost(externalQuotation == null ? userCost.getInternalCost() : externalQuotation.getCostBasis());
+						
+						userIdMap.put(userCost.getUserId(), userCost.getUserId());
 						userCosts.add(userCost);
 					} catch (Exception e) {
 						log.error("校验excel数据出错，msg:"+e.getMessage(),e);
@@ -452,6 +454,16 @@ public class UserCostResource {
 			}
 			//校验完成后，入库处理
 			userCostService.saveOrUpdateUploadRecord(userCosts);
+			//更新用户的等级
+			if(!userIdMap.isEmpty()){
+				Long nowDate = StringUtil.nullToLong(DateUtil.formatDate(CpmConstants.DEFAULT_USER_COST_COSTMONTH_FROMAT, new Date()));
+				for(Long userId : userIdMap.keySet()){
+					UserCost maxUserCost = userCostRepository.findMaxByCostMonthAndUserId(nowDate, userId);
+					if(maxUserCost != null){
+						userService.updateUser(maxUserCost.getUserId(), getUserGrade(externalQuotations,maxUserCost.getSal()));
+					}
+				}
+			}
 			return ResponseEntity.ok().body(cpmResponse
 						.setSuccess(Boolean.TRUE)
 						.setMsgKey("cpmApp.userCost.upload.handleSucc"));

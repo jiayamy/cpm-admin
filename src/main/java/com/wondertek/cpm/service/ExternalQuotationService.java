@@ -10,6 +10,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.domain.Sort.Order;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -83,6 +86,11 @@ public class ExternalQuotationService {
 		return returnMap;
 	}
 
+	public List<ExternalQuotation> getAllInfoOrderByGradeAsc() {
+		Sort sort = new Sort(new Order(Direction.ASC,"grade"));
+		return externalQuotationRepository.findAll(sort);
+	}
+	
 	public ExternalQuotation findOneByGrade(Integer grade) {
 		return externalQuotationRepository.findByGrade(grade);
 	}
