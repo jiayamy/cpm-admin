@@ -107,7 +107,7 @@ public class ConsultantsBonusService {
     		List<ConsultantsBonusVo> returnList = new ArrayList<ConsultantsBonusVo>();
     		//填充数据
     		if(page != null && page.getContent() != null){
-    			ConsultantsBonusVo totalInfo = getInitConsultantsBonusTotalInfo();
+//    			ConsultantsBonusVo totalInfo = getInitConsultantsBonusTotalInfo();
     			//填充累计已计提奖金
     			for(ConsultantsBonusVo vo : page.getContent()){
     				vo.setAmount(StringUtil.getScaleDouble(vo.getAmount(), 2));
@@ -119,15 +119,15 @@ public class ConsultantsBonusService {
 
     				returnList.add(vo);
     				//填充totalInfo
-    				totalInfo.setAmount(totalInfo.getAmount()+vo.getAmount());
-    				totalInfo.setBonusBasis(totalInfo.getBonusBasis()+vo.getBonusBasis());
-    				totalInfo.setCurrentBonus(totalInfo.getCurrentBonus()+vo.getCurrentBonus());
-    				totalInfo.setAccumulationBonus(totalInfo.getAccumulationBonus()+vo.getAccumulationBonus());
+//    				totalInfo.setAmount(totalInfo.getAmount()+vo.getAmount());
+//    				totalInfo.setBonusBasis(totalInfo.getBonusBasis()+vo.getBonusBasis());
+//    				totalInfo.setCurrentBonus(totalInfo.getCurrentBonus()+vo.getCurrentBonus());
+//    				totalInfo.setAccumulationBonus(totalInfo.getAccumulationBonus()+vo.getAccumulationBonus());
     			}
     			//处理合计的double值
-    			handleDoubleScale(totalInfo);
+//    			handleDoubleScale(totalInfo);
     			//添加合计
-    			returnList.add(totalInfo);
+//    			returnList.add(totalInfo);
     		}
     		return new PageImpl(returnList,pageable,page.getTotalElements());
     	}else{
