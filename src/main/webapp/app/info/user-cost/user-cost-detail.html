@@ -1,62 +1,69 @@
-
 <div>
     <h2><span data-translate="cpmApp.userCost.detail.title">User Cost</span> {{vm.userCost.id}}</h2>
     <hr>
     <jhi-alert></jhi-alert>
     <jhi-alert-error></jhi-alert-error>
-    <dl class="dl-horizontal jh-entity-details">
-        <dt><span data-translate="cpmApp.userCost.serialNum">User Id</span></dt>
-        <dd>
-            <span>{{vm.serialNum}}</span>
-        </dd>
-        <dt><span data-translate="cpmApp.userCost.userName">User Name</span></dt>
-        <dd>
-            <span>{{vm.userCost.userName}}</span>
-        </dd>
-        <dt><span data-translate="cpmApp.userCost.costMonth">Cost Month</span></dt>
-        <dd>
-            <span>{{vm.userCost.costMonth}}</span>
-        </dd>
-        <dt><span data-translate="cpmApp.userCost.sal">Sal</span></dt>
-        <dd>
-            <span>{{vm.userCost.sal}}</span>
-        </dd>
-        <dt><span data-translate="cpmApp.userCost.socialSecurityFund">Social Security Fund</span></dt>
-        <dd>
-            <span>{{vm.userCost.socialSecurityFund}}</span>
-        </dd>
-        <dt><span data-translate="cpmApp.userCost.otherExpense">Other Expense</span></dt>
-        <dd>
-            <span>{{vm.userCost.otherExpense}}</span>
-        </dd>
-        <dt><span data-translate="cpmApp.userCost.status">Status</span></dt>
-        <dd>
-            <span>{{vm.userCost.statusName}}</span>
-        </dd>
-        <dt><span data-translate="cpmApp.userCost.creator">Creator</span></dt>
-        <dd>
-            <span>{{vm.userCost.creator}}</span>
-        </dd>
-        <dt><span data-translate="cpmApp.userCost.createTime">Create Time</span></dt>
-        <dd>
-            <span>{{vm.userCost.createTime | date:'medium'}}</span>
-        </dd>
-        <dt><span data-translate="cpmApp.userCost.updator">Updator</span></dt>
-        <dd>
-            <span>{{vm.userCost.updator}}</span>
-        </dd>
-        <dt><span data-translate="cpmApp.userCost.updateTime">Update Time</span></dt>
-        <dd>
-            <span>{{vm.userCost.updateTime | date:'medium'}}</span>
-        </dd>
-    </dl>
-
+    <div class="form-horizontal">
+        <div class="form-group" >
+ 			<div class="col-sm-6">
+ 				<dl class="dl-horizontal jh-entity-details">
+  				<dt><span data-translate="cpmApp.userCost.serialNum">User Id</span></dt>
+		        <dd>
+		            <span>{{vm.serialNum}}</span>
+		        </dd>
+		        <dt><span data-translate="cpmApp.userCost.userName">User Name</span></dt>
+		        <dd>
+		            <span>{{vm.userCost.userName}}</span>
+		        </dd>
+		        <dt><span data-translate="cpmApp.userCost.costMonth">Cost Month</span></dt>
+		        <dd>
+		            <span>{{vm.userCost.costMonth}}</span>
+		        </dd>
+		        <dt><span data-translate="cpmApp.userCost.sal">Sal</span></dt>
+		        <dd>
+		            <span>{{vm.userCost.sal}}</span>
+		        </dd>
+		        <dt><span data-translate="cpmApp.userCost.socialSecurityFund">Social Security Fund</span></dt>
+		        <dd>
+		            <span>{{vm.userCost.socialSecurityFund}}</span>
+		        </dd>
+     			</dl>
+ 			</div>
+ 			<div class="col-sm-6">
+ 				<dl class="dl-horizontal jh-entity-details">
+  				<dt><span data-translate="cpmApp.userCost.otherExpense">Other Expense</span></dt>
+		        <dd>
+		            <span>{{vm.userCost.otherExpense}}</span>
+		        </dd>
+		        <dt><span data-translate="cpmApp.userCost.status">Status</span></dt>
+		        <dd>
+		            <span>{{vm.userCost.statusName}}</span>
+		        </dd>
+		        <dt><span data-translate="cpmApp.userCost.creator">Creator</span></dt>
+		        <dd>
+		            <span>{{vm.userCost.creator}}</span>
+		        </dd>
+		        <dt><span data-translate="cpmApp.userCost.createTime">Create Time</span></dt>
+		        <dd>
+		            <span>{{vm.userCost.createTime | date:'medium'}}</span>
+		        </dd>
+		        <dt><span data-translate="cpmApp.userCost.updator">Updator</span></dt>
+		        <dd>
+		            <span>{{vm.userCost.updator}}</span>
+		        </dd>
+		        <dt><span data-translate="cpmApp.userCost.updateTime">Update Time</span></dt>
+		        <dd>
+		            <span>{{vm.userCost.updateTime | date:'medium'}}</span>
+		        </dd>
+     			</dl>
+ 			</div>
+ 		</div>
+ 	</div>
     <button type="submit"
             ui-sref="user-cost"
             class="btn btn-info">
         <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span data-translate="entity.action.back"> Back</span>
     </button>
-
     <button type="button" ui-sref="user-cost-detail.edit({id:vm.userCost.id})" class="btn btn-primary">
         <span class="glyphicon glyphicon-pencil"></span>
         <span data-translate="entity.action.edit"> Edit</span>

@@ -1,53 +1,60 @@
-
 <div>
     <h2><span data-translate="cpmApp.productPrice.detail.title">Product Price</span> {{vm.productPrice.id}}</h2>
     <hr>
     <jhi-alert-error></jhi-alert-error>
-    <dl class="dl-horizontal jh-entity-details">
-        <dt><span data-translate="cpmApp.productPrice.name">Name</span></dt>
-        <dd>
-            <span>{{vm.productPrice.name}}</span>
-        </dd>
-        <dt><span data-translate="cpmApp.productPrice.type">Type</span></dt>
-        <dd>
-            <span>{{vm.productPrice.typeName}}</span>
-        </dd>
-        <dt><span data-translate="cpmApp.productPrice.units">Units</span></dt>
-        <dd>
-            <span>{{vm.productPrice.units}}</span>
-        </dd>
-        <dt><span data-translate="cpmApp.productPrice.price">Price</span></dt>
-        <dd>
-            <span>{{vm.productPrice.price}}</span>
-        </dd>
-        <dt><span data-translate="cpmApp.productPrice.source">Source</span></dt>
-        <dd>
-            <span>{{vm.productPrice.sourceName}}</span>
-        </dd>
-        <dt><span data-translate="cpmApp.productPrice.creator">Creator</span></dt>
-        <dd>
-            <span>{{vm.productPrice.creator}}</span>
-        </dd>
-        <dt><span data-translate="cpmApp.productPrice.createTime">Create Time</span></dt>
-        <dd>
-            <span>{{vm.productPrice.createTime | date:'medium'}}</span>
-        </dd>
-        <dt><span data-translate="cpmApp.productPrice.updator">Updator</span></dt>
-        <dd>
-            <span>{{vm.productPrice.updator}}</span>
-        </dd>
-        <dt><span data-translate="cpmApp.productPrice.updateTime">Update Time</span></dt>
-        <dd>
-            <span>{{vm.productPrice.updateTime | date:'medium'}}</span>
-        </dd>
-    </dl>
-
+	<div class="form-horizontal">
+        <div class="form-group" >
+ 			<div class="col-sm-6">
+ 				<dl class="dl-horizontal jh-entity-details">
+  				<dt><span data-translate="cpmApp.productPrice.name">Name</span></dt>
+		        <dd>
+		            <span>{{vm.productPrice.name}}</span>
+		        </dd>
+		        <dt><span data-translate="cpmApp.productPrice.type">Type</span></dt>
+		        <dd>
+		            <span>{{vm.productPrice.typeName}}</span>
+		        </dd>
+		        <dt><span data-translate="cpmApp.productPrice.units">Units</span></dt>
+		        <dd>
+		            <span>{{vm.productPrice.units}}</span>
+		        </dd>
+		        <dt><span data-translate="cpmApp.productPrice.price">Price</span></dt>
+		        <dd>
+		            <span>{{vm.productPrice.price}}</span>
+		        </dd>
+     			</dl>
+ 			</div>
+ 			<div class="col-sm-6">
+ 				<dl class="dl-horizontal jh-entity-details">
+  				<dt><span data-translate="cpmApp.productPrice.source">Source</span></dt>
+		        <dd>
+		            <span>{{vm.productPrice.sourceName}}</span>
+		        </dd>
+		        <dt><span data-translate="cpmApp.productPrice.creator">Creator</span></dt>
+		        <dd>
+		            <span>{{vm.productPrice.creator}}</span>
+		        </dd>
+		        <dt><span data-translate="cpmApp.productPrice.createTime">Create Time</span></dt>
+		        <dd>
+		            <span>{{vm.productPrice.createTime | date:'medium'}}</span>
+		        </dd>
+		        <dt><span data-translate="cpmApp.productPrice.updator">Updator</span></dt>
+		        <dd>
+		            <span>{{vm.productPrice.updator}}</span>
+		        </dd>
+		        <dt><span data-translate="cpmApp.productPrice.updateTime">Update Time</span></dt>
+		        <dd>
+		            <span>{{vm.productPrice.updateTime | date:'medium'}}</span>
+		        </dd>
+     			</dl>
+ 			</div>
+ 		</div>
+ 	</div>    
     <button type="submit"
             ui-sref="{{ vm.previousState }}"
             class="btn btn-info">
         <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span data-translate="entity.action.back"> Back</span>
     </button>
-
     <button type="button" ui-sref="product-price-detail.edit({id:vm.productPrice.id})" class="btn btn-primary">
         <span class="glyphicon glyphicon-pencil"></span>
         <span data-translate="entity.action.edit"> Edit</span>

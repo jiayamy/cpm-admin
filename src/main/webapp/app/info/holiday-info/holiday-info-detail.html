@@ -1,41 +1,47 @@
-
 <div>
     <h2><span data-translate="cpmApp.holidayInfo.detail.title">Holiday Info</span> {{vm.holidayInfo.id}}</h2>
     <hr>
     <jhi-alert-error></jhi-alert-error>
-    <dl class="dl-horizontal jh-entity-details">
-        <dt><span data-translate="cpmApp.holidayInfo.currDay">Curr Day</span></dt>
-        <dd>
-            <span>{{vm.holidayInfo.currDay}}</span>
-        </dd>
-        <dt><span data-translate="cpmApp.holidayInfo.type">Type</span></dt>
-        <dd>
-            <span>{{vm.holidayInfo.typeName}}</span>
-        </dd>
-        <dt><span data-translate="cpmApp.holidayInfo.creator">Creator</span></dt>
-        <dd>
-            <span>{{vm.holidayInfo.creator}}</span>
-        </dd>
-        <dt><span data-translate="cpmApp.holidayInfo.createTime">Create Time</span></dt>
-        <dd>
-            <span>{{vm.holidayInfo.createTime | date:'medium'}}</span>
-        </dd>
-        <dt><span data-translate="cpmApp.holidayInfo.updator">Updator</span></dt>
-        <dd>
-            <span>{{vm.holidayInfo.updator}}</span>
-        </dd>
-        <dt><span data-translate="cpmApp.holidayInfo.updateTime">Update Time</span></dt>
-        <dd>
-            <span>{{vm.holidayInfo.updateTime | date:'medium'}}</span>
-        </dd>
-    </dl>
-
+    <div class="form-horizontal">
+        <div class="form-group" >
+ 			<div class="col-sm-6">
+ 				<dl class="dl-horizontal jh-entity-details">
+  				<dt><span data-translate="cpmApp.holidayInfo.currDay">Curr Day</span></dt>
+		        <dd>
+		            <span>{{vm.holidayInfo.currDay}}</span>
+		        </dd>
+		        <dt><span data-translate="cpmApp.holidayInfo.type">Type</span></dt>
+		        <dd>
+		            <span>{{vm.holidayInfo.typeName}}</span>
+		        </dd>
+		        <dt><span data-translate="cpmApp.holidayInfo.creator">Creator</span></dt>
+		        <dd>
+		            <span>{{vm.holidayInfo.creator}}</span>
+		        </dd>
+ 			</div>
+ 			<div class="col-sm-6">
+ 				<dl class="dl-horizontal jh-entity-details">
+  				<dt><span data-translate="cpmApp.holidayInfo.createTime">Create Time</span></dt>
+		        <dd>
+		            <span>{{vm.holidayInfo.createTime | date:'medium'}}</span>
+		        </dd>
+		        <dt><span data-translate="cpmApp.holidayInfo.updator">Updator</span></dt>
+		        <dd>
+		            <span>{{vm.holidayInfo.updator}}</span>
+		        </dd>
+		        <dt><span data-translate="cpmApp.holidayInfo.updateTime">Update Time</span></dt>
+		        <dd>
+		            <span>{{vm.holidayInfo.updateTime | date:'medium'}}</span>
+		        </dd>
+     			</dl>
+ 			</div>
+ 		</div>
+ 	</div>
     <button type="submit"
             ui-sref="{{ vm.previousState }}"
             class="btn btn-info">
         <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span data-translate="entity.action.back"> Back</span>
     </button>
-
     <button type="button" ui-sref="holiday-info-detail.edit({id:vm.holidayInfo.id})" class="btn btn-primary">
         <span class="glyphicon glyphicon-pencil"></span>
         <span data-translate="entity.action.edit"> Edit</span>
