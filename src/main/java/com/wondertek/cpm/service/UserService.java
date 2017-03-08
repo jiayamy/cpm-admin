@@ -29,7 +29,6 @@ import com.wondertek.cpm.repository.PersistentTokenRepository;
 import com.wondertek.cpm.repository.UserDao;
 import com.wondertek.cpm.repository.UserRepository;
 import com.wondertek.cpm.repository.search.UserSearchRepository;
-import com.wondertek.cpm.security.AuthoritiesConstants;
 import com.wondertek.cpm.security.SecurityUtils;
 import com.wondertek.cpm.service.util.RandomUtil;
 import com.wondertek.cpm.web.rest.vm.ManagedUserVM;
@@ -99,32 +98,6 @@ public class UserService {
             });
     }
 
-    public User createUser(String login, String password, String firstName, String lastName, String email,
-        String langKey) {
-
-        User newUser = new User();
-        Authority authority = authorityRepository.findOne(AuthoritiesConstants.USER);
-        Set<Authority> authorities = new HashSet<>();
-        String encryptedPassword = passwordEncoder.encode(password);
-        newUser.setLogin(login);
-        // new user gets initially a generated password
-        newUser.setPassword(encryptedPassword);
-        newUser.setFirstName(firstName);
-        newUser.setLastName(lastName);
-        newUser.setEmail(email);
-        newUser.setLangKey(langKey);
-        // new user is not active
-        newUser.setActivated(false);
-        // new user gets registration key
-        newUser.setActivationKey(RandomUtil.generateActivationKey());
-        authorities.add(authority);
-        newUser.setAuthorities(authorities);
-        userRepository.save(newUser);
-        userSearchRepository.save(newUser);
-        log.debug("Created Information for User: {}", newUser);
-        return newUser;
-    }
-
     public User createUser(ManagedUserVM managedUserVM) {
         User user = new User();
         user.setLogin(managedUserVM.getLogin());
@@ -169,7 +142,15 @@ public class UserService {
         log.debug("Created Information for User: {}", user);
         return user;
     }
-
+    
+    public void updateUser(Long id, Integer grade){
+    	User user = userRepository.findOne(id);
+    	if(user != null){
+    		 user.setGrade(grade);
+    		 userRepository.save(user);
+    	     userSearchRepository.save(user);
+    	}
+    }
     public void updateUser(String firstName, String lastName, String email, String langKey) {
         userRepository.findOneByLogin(SecurityUtils.getCurrentUserLogin()).ifPresent(user -> {
             user.setFirstName(firstName);
@@ -210,6 +191,8 @@ public class UserService {
                 user.setBirthDay(managedUserVM.getBirthDay());
                 user.setTelephone(managedUserVM.getTelephone());
                 user.setWorkArea(managedUserVM.getWorkArea());
+                
+                userSearchRepository.save(user);
                 
                 Set<Authority> managedAuthorities = user.getAuthorities();
                 managedAuthorities.clear();

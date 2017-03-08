@@ -118,6 +118,7 @@ public class UserCostService {
      * 根据用户Id和所属年月查找员工成本信息
      * @return
      */
+    @Transactional(readOnly = true)
     public UserCost findByUserIdAndCostMonth(Long userId,Long costMonth){
     	log.debug("Request to get UserCost by userId and costMonth {}",userId+"-"+costMonth);
     	UserCost userCost = userCostRepository.findByUserIdAndCostMonth(userId,costMonth);
@@ -140,5 +141,9 @@ public class UserCostService {
 			}
 			userCostRepository.save(userCosts);
 		}
+	}
+    @Transactional(readOnly = true)
+	public List<Object[]> findAllMaxByCostMonth(Long costMonth) {
+		return userCostDao.findAllMaxByCostMonth(costMonth);
 	}
 }

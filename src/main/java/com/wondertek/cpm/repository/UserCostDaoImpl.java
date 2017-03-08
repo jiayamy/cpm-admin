@@ -124,4 +124,16 @@ public class UserCostDaoImpl extends GenericDaoImpl<UserCost, Long> implements U
 		return vo;
 	}
 
+	public List<Object[]> findAllMaxByCostMonth(Long costMonth){
+		StringBuffer querySql = new StringBuffer();
+		querySql.append("select wuc.user_id,wuc.sal_");
+		
+		querySql.append(" from w_user_cost wuc");
+		querySql.append(" inner join (select max(cost_month) as cost_month,user_id from w_user_cost where cost_month <= ? and status_ = 1 group by user_id) wucm");
+		querySql.append(" on wuc.user_id = wucm.user_id and wuc.cost_month = wucm.cost_month");
+		
+		querySql.append(" order by wuc.id asc");
+		
+		return this.queryAllSql(querySql.toString(), new Object[]{costMonth});
+	}
 }
