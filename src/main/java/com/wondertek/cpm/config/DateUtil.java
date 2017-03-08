@@ -1063,4 +1063,71 @@ public class DateUtil {
 		cal.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
 		return cal.getTime();
 	}
+	
+	public static List<MonthInfo> getMonthData(String date){
+		Date day = DateUtil.parseDate(DateUtil.DATE_YYYYMMDD_PATTERN, date);//当天的日期
+		
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(day);
+		cal.setFirstDayOfWeek(Calendar.SUNDAY);	//周日开始
+		int year = cal.get(Calendar.YEAR);		//所在年
+		int month = cal.get(Calendar.MONTH);	//所在月
+		//这一个月的第一周的第一天
+		cal.set(Calendar.WEEK_OF_MONTH, 1);//这个月的第一周
+		cal.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);//这个月的第一周的第一天
+		//获取这一个月的所有日期
+		List<MonthInfo> returnList = new ArrayList<MonthInfo>();
+		boolean isThisMonth = false;
+		boolean isLastThisMonth = false;
+		MonthInfo monthInfo = null;
+		while(true){
+			if(cal.get(Calendar.MONTH) == month){
+				isThisMonth = true;
+			}else{
+				isThisMonth = false;
+			}
+			if(isLastThisMonth && !isThisMonth){//跨月了，到下个月了
+				break;
+			}
+			//一次加一周的记录
+			monthInfo = new MonthInfo();
+			monthInfo.setYear(year);
+			monthInfo.setMonth(month + 1);
+			monthInfo.setWeek(cal.get(Calendar.WEEK_OF_YEAR));
+			
+			cal.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
+			monthInfo.setSunday(StringUtil.nullToInteger(DateUtil.formatDate(DateUtil.DATE_YYYYMMDD_PATTERN, cal.getTime())));
+			monthInfo.setSun(cal.get(Calendar.DAY_OF_MONTH));
+			
+			cal.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+			monthInfo.setMonday(StringUtil.nullToInteger(DateUtil.formatDate(DateUtil.DATE_YYYYMMDD_PATTERN, cal.getTime())));
+			monthInfo.setMon(cal.get(Calendar.DAY_OF_MONTH));
+			
+			cal.set(Calendar.DAY_OF_WEEK, Calendar.TUESDAY);
+			monthInfo.setTuesday(StringUtil.nullToInteger(DateUtil.formatDate(DateUtil.DATE_YYYYMMDD_PATTERN, cal.getTime())));
+			monthInfo.setTues(cal.get(Calendar.DAY_OF_MONTH));
+			
+			cal.set(Calendar.DAY_OF_WEEK, Calendar.WEDNESDAY);
+			monthInfo.setWednesday(StringUtil.nullToInteger(DateUtil.formatDate(DateUtil.DATE_YYYYMMDD_PATTERN, cal.getTime())));
+			monthInfo.setWed(cal.get(Calendar.DAY_OF_MONTH));
+			
+			cal.set(Calendar.DAY_OF_WEEK, Calendar.THURSDAY);
+			monthInfo.setThursday(StringUtil.nullToInteger(DateUtil.formatDate(DateUtil.DATE_YYYYMMDD_PATTERN, cal.getTime())));
+			monthInfo.setThur(cal.get(Calendar.DAY_OF_MONTH));
+			
+			cal.set(Calendar.DAY_OF_WEEK, Calendar.FRIDAY);
+			monthInfo.setFriday(StringUtil.nullToInteger(DateUtil.formatDate(DateUtil.DATE_YYYYMMDD_PATTERN, cal.getTime())));
+			monthInfo.setFri(cal.get(Calendar.DAY_OF_MONTH));
+			
+			cal.set(Calendar.DAY_OF_WEEK, Calendar.SATURDAY);
+			monthInfo.setSaturday(StringUtil.nullToInteger(DateUtil.formatDate(DateUtil.DATE_YYYYMMDD_PATTERN, cal.getTime())));
+			monthInfo.setSat(cal.get(Calendar.DAY_OF_MONTH));
+			
+			returnList.add(monthInfo);
+			isLastThisMonth = isThisMonth;
+			//下一周的数据
+			cal.add(Calendar.DAY_OF_YEAR, 1);
+		}
+		return returnList;
+	}
 }
