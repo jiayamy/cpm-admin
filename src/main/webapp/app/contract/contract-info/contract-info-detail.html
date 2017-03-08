@@ -1,146 +1,153 @@
-
 <div>
     <h2><span data-translate="cpmApp.contractInfo.detail.title">Contract Info</span> {{vm.contractInfo.id}}</h2>
     <hr>
     <jhi-alert-error></jhi-alert-error>
-    <dl class="dl-horizontal jh-entity-details">
-        <dt><span data-translate="cpmApp.contractInfo.serialNum">Serial Num</span></dt>
-        <dd>
-            <span>{{vm.contractInfo.serialNum}}</span>
-        </dd>
-        <dt><span data-translate="cpmApp.contractInfo.name">Name</span></dt>
-        <dd>
-            <span>{{vm.contractInfo.name}}</span>
-        </dd>
-        <dt><span data-translate="cpmApp.contractInfo.amount">Amount</span></dt>
-        <dd>
-            <span>{{vm.contractInfo.amount}}</span>
-        </dd>
-        <dt><span data-translate="cpmApp.contractInfo.type">Type</span></dt>
-        <dd>
-            <span>{{vm.contractInfo.typeName}}</span>
-        </dd>
-        <dt><span data-translate="cpmApp.contractInfo.isPrepared">Is Prepared</span></dt>
-        <dd>
-            <span>{{vm.contractInfo.isPreparedName}}</span>
-        </dd>
-        <dt><span data-translate="cpmApp.contractInfo.isEpibolic">Is Epibolic</span></dt>
-        <dd>
-            <span>{{vm.contractInfo.isEpibolicName}}</span>
-        </dd>
-         <dt><span data-translate="cpmApp.contractInfo.salesman">Salesman</span></dt>
-        <dd>
-            <span>{{vm.contractInfo.salesman}}</span>
-        </dd>
-         <dt><span data-translate="cpmApp.contractInfo.dept">Salesman Dept</span></dt>
-        <dd>
-            <span>{{vm.contractInfo.dept}}</span>
-        </dd>
-        <dt><span data-translate="cpmApp.contractInfo.consultants">Consultants</span></dt>
-        <dd>
-            <span>{{vm.contractInfo.consultants}}</span>
-        </dd>
-         <dt><span data-translate="cpmApp.contractInfo.consultantsDept">consultants Dept</span></dt>
-        <dd>
-            <span>{{vm.contractInfo.consultantsDept}}</span>
-        </dd>
-        <dt><span data-translate="cpmApp.contractInfo.consultantsShareRate">consultants Rate</span></dt>
-        <dd>
-            <span>{{vm.contractInfo.consultantsShareRate}}</span>
-        </dd>
-        <dt><span data-translate="cpmApp.contractInfo.startDay">Start Day</span></dt>
-        <dd>
-            <span>{{vm.contractInfo.startDay | date:'shortDate'}}</span>
-        </dd>
-        <dt><span data-translate="cpmApp.contractInfo.endDay">End Day</span></dt>
-        <dd>
-            <span>{{vm.contractInfo.endDay | date:'shortDate'}}</span>
-        </dd>
-        <dt><span data-translate="cpmApp.contractInfo.taxRate">Tax Rate</span></dt>
-        <dd>
-            <span>{{vm.contractInfo.taxRate}}</span>
-        </dd>
-        <dt><span data-translate="cpmApp.contractInfo.taxes">Taxes</span></dt>
-        <dd>
-            <span>{{vm.contractInfo.taxes}}</span>
-        </dd>
-        <dt><span data-translate="cpmApp.contractInfo.shareRate">Share Rate</span></dt>
-        <dd>
-            <span>{{vm.contractInfo.shareRate}}</span>
-        </dd>
-        <dt><span data-translate="cpmApp.contractInfo.shareCost">Share Cost</span></dt>
-        <dd>
-            <span>{{vm.contractInfo.shareCost}}</span>
-        </dd>
-        <dt><span data-translate="cpmApp.contractInfo.paymentWay">Payment Way</span></dt>
-        <dd>
-            <span>{{vm.contractInfo.paymentWay}}</span>
-        </dd>
-        <dt><span data-translate="cpmApp.contractInfo.contractor">Contractor</span></dt>
-        <dd>
-            <span>{{vm.contractInfo.contractor}}</span>
-        </dd>
-        <dt><span data-translate="cpmApp.contractInfo.address">Address</span></dt>
-        <dd>
-            <span>{{vm.contractInfo.address}}</span>
-        </dd>
-        <dt><span data-translate="cpmApp.contractInfo.postcode">Postcode</span></dt>
-        <dd>
-            <span>{{vm.contractInfo.postcode}}</span>
-        </dd>
-        <dt><span data-translate="cpmApp.contractInfo.linkman">Linkman</span></dt>
-        <dd>
-            <span>{{vm.contractInfo.linkman}}</span>
-        </dd>
-        <dt><span data-translate="cpmApp.contractInfo.contactDept">Contact Dept</span></dt>
-        <dd>
-            <span>{{vm.contractInfo.contactDept}}</span>
-        </dd>
-        <dt><span data-translate="cpmApp.contractInfo.telephone">Telephone</span></dt>
-        <dd>
-            <span>{{vm.contractInfo.telephone}}</span>
-        </dd>
-        <dt><span data-translate="cpmApp.contractInfo.receiveTotal">Receive Total</span></dt>
-        <dd>
-            <span>{{vm.contractInfo.receiveTotal}}</span>
-        </dd>
-        
-         <dt><span data-translate="cpmApp.contractInfo.finishTotal">FinishTotal</span></dt>
-        <dd>
-            <span>{{vm.contractInfo.finishTotal}}</span>
-        </dd>
-        <dt><span data-translate="cpmApp.contractInfo.finishRate">Finish Rate</span></dt>
-        <dd>
-            <span>{{vm.contractInfo.finishRate}}</span>
-        </dd>
-        <dt><span data-translate="cpmApp.contractInfo.status">Status</span></dt>
-        <dd>
-            <span>{{vm.contractInfo.statusName}}</span>
-        </dd>
-        <dt><span data-translate="cpmApp.contractInfo.creator">Creator</span></dt>
-        <dd>
-            <span>{{vm.contractInfo.creator}}</span>
-        </dd>
-        <dt><span data-translate="cpmApp.contractInfo.createTime">Create Time</span></dt>
-        <dd>
-            <span>{{vm.contractInfo.createTime | date:'medium'}}</span>
-        </dd>
-        <dt><span data-translate="cpmApp.contractInfo.updator">Updator</span></dt>
-        <dd>
-            <span>{{vm.contractInfo.updator}}</span>
-        </dd>
-        <dt><span data-translate="cpmApp.contractInfo.updateTime">Update Time</span></dt>
-        <dd>
-            <span>{{vm.contractInfo.updateTime | date:'medium'}}</span>
-        </dd>
-    </dl>
-
+	<div class="form-horizontal"> 
+      	<div class="form-group"> 
+         	<div class="col-sm-6"> 
+         	 	<dl class="dl-horizontal jh-entity-details"> 
+         	 		<dt><span data-translate="cpmApp.contractInfo.serialNum">Serial Num</span></dt>
+			       	<dd>
+			           	 <span>{{vm.contractInfo.serialNum}}</span>
+			       	</dd>
+			        <dt><span data-translate="cpmApp.contractInfo.name">Name</span></dt>
+			        <dd>
+			            <span>{{vm.contractInfo.name}}</span>
+			        </dd>
+			        <dt><span data-translate="cpmApp.contractInfo.amount">Amount</span></dt>
+			        <dd>
+			            <span>{{vm.contractInfo.amount}}</span>
+			        </dd>
+			        <dt><span data-translate="cpmApp.contractInfo.type">Type</span></dt>
+			        <dd>
+			            <span>{{vm.contractInfo.typeName}}</span>
+			        </dd>
+			        <dt><span data-translate="cpmApp.contractInfo.isPrepared">Is Prepared</span></dt>
+			        <dd>
+			            <span>{{vm.contractInfo.isPreparedName}}</span>
+			        </dd>
+			        <dt><span data-translate="cpmApp.contractInfo.isEpibolic">Is Epibolic</span></dt>
+			        <dd>
+			            <span>{{vm.contractInfo.isEpibolicName}}</span>
+			        </dd>
+			        <dt><span data-translate="cpmApp.contractInfo.salesman">Salesman</span></dt>
+			        <dd>
+			            <span>{{vm.contractInfo.salesman}}</span>
+			        </dd>
+			        <dt><span data-translate="cpmApp.contractInfo.dept">Salesman Dept</span></dt>
+			        <dd>
+			            <span>{{vm.contractInfo.dept}}</span>
+			        </dd>
+			        <dt><span data-translate="cpmApp.contractInfo.consultants">Consultants</span></dt>
+			        <dd>
+			            <span>{{vm.contractInfo.consultants}}</span>
+			        </dd>
+			        <dt><span data-translate="cpmApp.contractInfo.consultantsDept">consultants Dept</span></dt>
+			        <dd>
+			            <span>{{vm.contractInfo.consultantsDept}}</span>
+			        </dd>
+			        <dt><span data-translate="cpmApp.contractInfo.consultantsShareRate">consultants Rate</span></dt>
+			        <dd>
+			            <span>{{vm.contractInfo.consultantsShareRate}}</span>
+			        </dd>
+			        <dt><span data-translate="cpmApp.contractInfo.startDay">Start Day</span></dt>
+			        <dd>
+			            <span>{{vm.contractInfo.startDay | date:'shortDate'}}</span>
+			        </dd>
+			        <dt><span data-translate="cpmApp.contractInfo.endDay">End Day</span></dt>
+			        <dd>
+			            <span>{{vm.contractInfo.endDay | date:'shortDate'}}</span>
+			        </dd>
+			        <dt><span data-translate="cpmApp.contractInfo.taxRate">Tax Rate</span></dt>
+			        <dd>
+			            <span>{{vm.contractInfo.taxRate}}</span>
+			        </dd>
+			        <dt><span data-translate="cpmApp.contractInfo.taxes">Taxes</span></dt>
+			        <dd>
+			            <span>{{vm.contractInfo.taxes}}</span>
+			        </dd>
+			        <dt><span data-translate="cpmApp.contractInfo.shareRate">Share Rate</span></dt>
+			        <dd>
+			            <span>{{vm.contractInfo.shareRate}}</span>
+			       </dd>
+			    </dl>    
+         	</div> 
+            <div class="col-sm-6"> 
+            	<dl class="dl-horizontal jh-entity-details">
+            		<dt><span data-translate="cpmApp.contractInfo.shareCost">Share Cost</span></dt>
+		        <dd>
+		            <span>{{vm.contractInfo.shareCost}}</span>
+		        </dd>
+		        <dt><span data-translate="cpmApp.contractInfo.paymentWay">Payment Way</span></dt>
+		        <dd>
+		            <span>{{vm.contractInfo.paymentWay}}</span>
+		        </dd>
+		        <dt><span data-translate="cpmApp.contractInfo.contractor">Contractor</span></dt>
+		        <dd>
+		            <span>{{vm.contractInfo.contractor}}</span>
+		        </dd>
+		        <dt><span data-translate="cpmApp.contractInfo.address">Address</span></dt>
+		        <dd>
+		            <span>{{vm.contractInfo.address}}</span>
+		        </dd>
+		        <dt><span data-translate="cpmApp.contractInfo.postcode">Postcode</span></dt>
+		        <dd>
+		            <span>{{vm.contractInfo.postcode}}</span>
+		        </dd>
+		        <dt><span data-translate="cpmApp.contractInfo.linkman">Linkman</span></dt>
+		        <dd>
+		            <span>{{vm.contractInfo.linkman}}</span>
+		        </dd>
+		        <dt><span data-translate="cpmApp.contractInfo.contactDept">Contact Dept</span></dt>
+		        <dd>
+		            <span>{{vm.contractInfo.contactDept}}</span>
+		        </dd>
+		        <dt><span data-translate="cpmApp.contractInfo.telephone">Telephone</span></dt>
+		        <dd>
+		            <span>{{vm.contractInfo.telephone}}</span>
+		        </dd>
+		        <dt><span data-translate="cpmApp.contractInfo.receiveTotal">Receive Total</span></dt>
+		        <dd>
+		            <span>{{vm.contractInfo.receiveTotal}}</span>
+		        </dd>
+		        
+		         <dt><span data-translate="cpmApp.contractInfo.finishTotal">FinishTotal</span></dt>
+		        <dd>
+		            <span>{{vm.contractInfo.finishTotal}}</span>
+		        </dd>
+		        <dt><span data-translate="cpmApp.contractInfo.finishRate">Finish Rate</span></dt>
+		        <dd>
+		            <span>{{vm.contractInfo.finishRate}}</span>
+		        </dd>
+		        <dt><span data-translate="cpmApp.contractInfo.status">Status</span></dt>
+		        <dd>
+		            <span>{{vm.contractInfo.statusName}}</span>
+		        </dd>
+		        <dt><span data-translate="cpmApp.contractInfo.creator">Creator</span></dt>
+		        <dd>
+		            <span>{{vm.contractInfo.creator}}</span>
+		        </dd>
+		        <dt><span data-translate="cpmApp.contractInfo.createTime">Create Time</span></dt>
+		        <dd>
+		            <span>{{vm.contractInfo.createTime | date:'medium'}}</span>
+		        </dd>
+		        <dt><span data-translate="cpmApp.contractInfo.updator">Updator</span></dt>
+		        <dd>
+		            <span>{{vm.contractInfo.updator}}</span>
+		        </dd>
+		        <dt><span data-translate="cpmApp.contractInfo.updateTime">Update Time</span></dt>
+		        <dd>
+		            <span>{{vm.contractInfo.updateTime | date:'medium'}}</span>
+		        </dd>
+            	</dl> 
+            </div> 
+      </div> 
+   	</div>
     <button type="submit"
             ui-sref="{{ vm.previousState }}"
             class="btn btn-info">
         <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span data-translate="entity.action.back"> Back</span>
     </button>
-
     <button type="button" ui-sref="contract-info-detail.edit({id:vm.contractInfo.id})" class="btn btn-primary">
         <span class="glyphicon glyphicon-pencil"></span>
         <span data-translate="entity.action.edit"> Edit</span>

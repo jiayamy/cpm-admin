@@ -1,53 +1,60 @@
-
 <div>
     <h2><span data-translate="cpmApp.contractTimesheet.detail.title">Contract Timesheet</span> {{vm.contractTimesheet.workDay}}-{{vm.contractTimesheet.userName}}</h2>
     <hr>
     <jhi-alert-error></jhi-alert-error>
-    <dl class="dl-horizontal jh-entity-details">
-        <dt><span data-translate="cpmApp.contractTimesheet.objName">Contract Info</span></dt>
-        <dd>
-            <span>{{vm.contractTimesheet.objName}}</span>
-        </dd>
-        <dt><span data-translate="cpmApp.contractTimesheet.workDay">Work Day</span></dt>
-        <dd>
-            <span>{{vm.contractTimesheet.workDay}}</span>
-        </dd>
-        <dt><span data-translate="cpmApp.contractTimesheet.userName">User Name</span></dt>
-        <dd>
-            <span>{{vm.contractTimesheet.userName}}</span>
-        </dd>
-        <dt><span data-translate="cpmApp.contractTimesheet.realInput">Real Input</span></dt>
-        <dd>
-            <span>{{vm.contractTimesheet.realInput}}</span>
-        </dd>
-        <dt><span data-translate="cpmApp.contractTimesheet.acceptInput">Accept Input</span></dt>
-        <dd>
-            <span>{{vm.contractTimesheet.acceptInput}}</span>
-        </dd>
-        <dt><span data-translate="cpmApp.contractTimesheet.creator">Creator</span></dt>
-        <dd>
-            <span>{{vm.contractTimesheet.creator}}</span>
-        </dd>
-        <dt><span data-translate="cpmApp.contractTimesheet.createTime">Create Time</span></dt>
-        <dd>
-            <span>{{vm.contractTimesheet.createTime | date:'medium'}}</span>
-        </dd>
-        <dt><span data-translate="cpmApp.contractTimesheet.updator">Updator</span></dt>
-        <dd>
-            <span>{{vm.contractTimesheet.updator}}</span>
-        </dd>
-        <dt><span data-translate="cpmApp.contractTimesheet.updateTime">Update Time</span></dt>
-        <dd>
-            <span>{{vm.contractTimesheet.updateTime | date:'medium'}}</span>
-        </dd>
-    </dl>
-
+    <div class="form-horizontal">
+        <div class="form-group" >
+ 			<div class="col-sm-6">
+ 				<dl class="dl-horizontal jh-entity-details">
+  				<dt><span data-translate="cpmApp.contractTimesheet.objName">Contract Info</span></dt>
+		        <dd>
+		            <span>{{vm.contractTimesheet.objName}}</span>
+		        </dd>
+		        <dt><span data-translate="cpmApp.contractTimesheet.workDay">Work Day</span></dt>
+		        <dd>
+		            <span>{{vm.contractTimesheet.workDay}}</span>
+		        </dd>
+		        <dt><span data-translate="cpmApp.contractTimesheet.userName">User Name</span></dt>
+		        <dd>
+		            <span>{{vm.contractTimesheet.userName}}</span>
+		        </dd>
+		        <dt><span data-translate="cpmApp.contractTimesheet.realInput">Real Input</span></dt>
+		        <dd>
+		            <span>{{vm.contractTimesheet.realInput}}</span>
+		        </dd>
+     			</dl>
+ 			</div>
+ 			<div class="col-sm-6">
+ 				<dl class="dl-horizontal jh-entity-details">
+  				<dt><span data-translate="cpmApp.contractTimesheet.acceptInput">Accept Input</span></dt>
+		        <dd>
+		            <span>{{vm.contractTimesheet.acceptInput}}</span>
+		        </dd>
+		        <dt><span data-translate="cpmApp.contractTimesheet.creator">Creator</span></dt>
+		        <dd>
+		            <span>{{vm.contractTimesheet.creator}}</span>
+		        </dd>
+		        <dt><span data-translate="cpmApp.contractTimesheet.createTime">Create Time</span></dt>
+		        <dd>
+		            <span>{{vm.contractTimesheet.createTime | date:'medium'}}</span>
+		        </dd>
+		        <dt><span data-translate="cpmApp.contractTimesheet.updator">Updator</span></dt>
+		        <dd>
+		            <span>{{vm.contractTimesheet.updator}}</span>
+		        </dd>
+		        <dt><span data-translate="cpmApp.contractTimesheet.updateTime">Update Time</span></dt>
+		        <dd>
+		            <span>{{vm.contractTimesheet.updateTime | date:'medium'}}</span>
+		        </dd>
+     			</dl>
+ 			</div>
+ 		</div>
+ 	</div>
     <button type="submit"
             ui-sref="{{ vm.previousState }}"
             class="btn btn-info">
         <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span data-translate="entity.action.back"> Back</span>
     </button>
-
     <button type="button" ui-sref="contract-timesheet-detail.edit({id:vm.contractTimesheet.id})" class="btn btn-primary">
         <span class="glyphicon glyphicon-pencil"></span>
         <span data-translate="entity.action.edit"> Edit</span>

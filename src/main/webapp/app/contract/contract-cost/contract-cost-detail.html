@@ -1,65 +1,72 @@
-
 <div>
     <h2><span data-translate="{{vm.contractCostDetailTitle}}">Contract Cost</span> {{vm.contractCost.id}}</h2>
     <hr>
     <jhi-alert-error></jhi-alert-error>
-    <dl class="dl-horizontal jh-entity-details">
-        <dt><span data-translate="cpmApp.contractCost.contractId">Contract Id</span></dt>
-        <dd>
-            <span>{{vm.contractCost.contractNum}}</span>
-        </dd>
-        <dt><span data-translate="cpmApp.contractCost.contractName">Contract Id</span></dt>
-        <dd>
-            <span>{{vm.contractCost.contractName}}</span>
-        </dd>
-        <dt><span data-translate="cpmApp.contractCost.name">Name</span></dt>
-        <dd>
-            <span>{{vm.contractCost.name}}</span>
-        </dd>
-        <dt><span data-translate="cpmApp.contractCost.type">Type</span></dt>
-        <dd>
-            <span>{{vm.contractCost.typeName}}</span>
-        </dd>
-        <dt><span data-translate="cpmApp.contractCost.dept">Dept</span></dt>
-        <dd>
-            <span>{{vm.contractCost.dept}}</span>
-        </dd>
-        <dt><span data-translate="cpmApp.contractCost.total">Total</span></dt>
-        <dd>
-            <span>{{vm.contractCost.total}}</span>
-        </dd>
-        <dt><span data-translate="cpmApp.contractCost.costDesc">Cost Desc</span></dt>
-        <dd>
-            <span>{{vm.contractCost.costDesc}}</span>
-        </dd>
-        <dt><span data-translate="cpmApp.contractCost.status">Status</span></dt>
-        <dd>
-            <span>{{vm.contractCost.statusName}}</span>
-        </dd>
-        <dt><span data-translate="cpmApp.contractCost.creator">Creator</span></dt>
-        <dd>
-            <span>{{vm.contractCost.creator}}</span>
-        </dd>
-        <dt><span data-translate="cpmApp.contractCost.createTime">Create Time</span></dt>
-        <dd>
-            <span>{{vm.contractCost.createTime | date:'medium'}}</span>
-        </dd>
-        <dt><span data-translate="cpmApp.contractCost.updator">Updator</span></dt>
-        <dd>
-            <span>{{vm.contractCost.updator}}</span>
-        </dd>
-        <dt><span data-translate="cpmApp.contractCost.updateTime">Update Time</span></dt>
-        <dd>
-            <span>{{vm.contractCost.updateTime | date:'medium'}}</span>
-        </dd>
-    </dl>
-
+    <div class="form-horizontal">
+        <div class="form-group" >
+ 			<div class="col-sm-6">
+ 				<dl class="dl-horizontal jh-entity-details">
+  				<dt><span data-translate="cpmApp.contractCost.contractId">Contract Id</span></dt>
+		        <dd>
+		            <span>{{vm.contractCost.contractNum}}</span>
+		        </dd>
+		        <dt><span data-translate="cpmApp.contractCost.contractName">Contract Id</span></dt>
+		        <dd>
+		            <span>{{vm.contractCost.contractName}}</span>
+		        </dd>
+		        <dt><span data-translate="cpmApp.contractCost.name">Name</span></dt>
+		        <dd>
+		            <span>{{vm.contractCost.name}}</span>
+		        </dd>
+		        <dt><span data-translate="cpmApp.contractCost.type">Type</span></dt>
+		        <dd>
+		            <span>{{vm.contractCost.typeName}}</span>
+		        </dd>
+		        <dt><span data-translate="cpmApp.contractCost.dept">Dept</span></dt>
+		        <dd>
+		            <span>{{vm.contractCost.dept}}</span>
+		        </dd>
+		        <dt><span data-translate="cpmApp.contractCost.total">Total</span></dt>
+		        <dd>
+		            <span>{{vm.contractCost.total}}</span>
+		        </dd>
+     			</dl>
+ 			</div>
+ 			<div class="col-sm-6">
+ 				<dl class="dl-horizontal jh-entity-details">
+  				<dt><span data-translate="cpmApp.contractCost.costDesc">Cost Desc</span></dt>
+		        <dd>
+		            <span>{{vm.contractCost.costDesc}}</span>
+		        </dd>
+		        <dt><span data-translate="cpmApp.contractCost.status">Status</span></dt>
+		        <dd>
+		            <span>{{vm.contractCost.statusName}}</span>
+		        </dd>
+		        <dt><span data-translate="cpmApp.contractCost.creator">Creator</span></dt>
+		        <dd>
+		            <span>{{vm.contractCost.creator}}</span>
+		        </dd>
+		        <dt><span data-translate="cpmApp.contractCost.createTime">Create Time</span></dt>
+		        <dd>
+		            <span>{{vm.contractCost.createTime | date:'medium'}}</span>
+		        </dd>
+		        <dt><span data-translate="cpmApp.contractCost.updator">Updator</span></dt>
+		        <dd>
+		            <span>{{vm.contractCost.updator}}</span>
+		        </dd>
+		        <dt><span data-translate="cpmApp.contractCost.updateTime">Update Time</span></dt>
+		        <dd>
+		            <span>{{vm.contractCost.updateTime | date:'medium'}}</span>
+		        </dd>
+     			</dl>
+ 			</div>
+ 		</div>
+ 	</div>
     <button type="submit"
             ui-sref="{{ vm.previousState }}"
             class="btn btn-info">
         <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span data-translate="entity.action.back"> Back</span>
     </button>
-
     <button type="button" ui-sref="contract-cost-detail.edit({id:vm.contractCost.id})" class="btn btn-primary"  ng-hide="{{vm.contractCost.type == 1}}">
         <span class="glyphicon glyphicon-pencil"></span>
         <span data-translate="entity.action.edit"> Edit</span>

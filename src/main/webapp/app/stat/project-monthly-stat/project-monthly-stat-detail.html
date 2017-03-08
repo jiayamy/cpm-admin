@@ -1,39 +1,47 @@
-
 <div>
     <h2><span data-translate="cpmApp.projectMonthlyStat.detail.title">Project Monthly Stat</span> {{vm.projectMonthlyStat.id}} : {{vm.projectMonthlyStat.name}}</h2>
     <hr>
     <jhi-alert-error></jhi-alert-error>
-    <dl class="dl-horizontal jh-entity-details">
-        <dt><span data-translate="cpmApp.projectMonthlyStat.serialNum">Serial Num</span></dt>
-        <dd>
-            <span>{{vm.projectMonthlyStat.serialNum}}</span>
-        </dd>
-        <dt><span data-translate="cpmApp.projectMonthlyStat.name">Project Name</span></dt>
-        <dd>
-            <span>{{vm.projectMonthlyStat.name}}</span>
-        </dd>
-        <dt><span data-translate="cpmApp.projectMonthlyStat.finishRate">Finish Rage</span></dt>
-        <dd>
-            <span>{{vm.projectMonthlyStat.finishRate}}%</span>
-        </dd>
-        <dt><span data-translate="cpmApp.projectMonthlyStat.humanCost">Human Cost</span></dt>
-        <dd>
-            <span>{{vm.projectMonthlyStat.humanCost}}</span>
-        </dd>
-        <dt><span data-translate="cpmApp.projectMonthlyStat.payment">Payment</span></dt>
-        <dd>
-            <span>{{vm.projectMonthlyStat.payment}}</span>
-        </dd>
-        <dt><span data-translate="cpmApp.projectMonthlyStat.statWeek">Stat Week</span></dt>
-        <dd>
-            <span>{{vm.projectMonthlyStat.statWeek}}</span>
-        </dd>
-        <dt><span data-translate="cpmApp.projectMonthlyStat.createTime">Create Time</span></dt>
-        <dd>
-            <span>{{vm.projectMonthlyStat.createTime | date:'medium'}}</span>
-        </dd>
-    </dl>
-
+    <div class="form-horizontal">
+        <div class="form-group" >
+ 			<div class="col-sm-6">
+ 				<dl class="dl-horizontal jh-entity-details">
+  				<dt><span data-translate="cpmApp.projectMonthlyStat.serialNum">Serial Num</span></dt>
+		        <dd>
+		            <span>{{vm.projectMonthlyStat.serialNum}}</span>
+		        </dd>
+		        <dt><span data-translate="cpmApp.projectMonthlyStat.name">Project Name</span></dt>
+		        <dd>
+		            <span>{{vm.projectMonthlyStat.name}}</span>
+		        </dd>
+		        <dt><span data-translate="cpmApp.projectMonthlyStat.finishRate">Finish Rage</span></dt>
+		        <dd>
+		            <span>{{vm.projectMonthlyStat.finishRate}}%</span>
+		        </dd>
+		        <dt><span data-translate="cpmApp.projectMonthlyStat.statWeek">Stat Week</span></dt>
+		        <dd>
+		            <span>{{vm.projectMonthlyStat.statWeek}}</span>
+		        </dd>
+     			</dl>
+ 			</div>
+ 			<div class="col-sm-6">
+ 				<dl class="dl-horizontal jh-entity-details">
+ 				<dt><span data-translate="cpmApp.projectMonthlyStat.humanCost">Human Cost</span></dt>
+		        <dd>
+		            <span>{{vm.projectMonthlyStat.humanCost}}</span>
+		        </dd>
+		        <dt><span data-translate="cpmApp.projectMonthlyStat.payment">Payment</span></dt>
+		        <dd>
+		            <span>{{vm.projectMonthlyStat.payment}}</span>
+		        </dd>
+		        <dt><span data-translate="cpmApp.projectMonthlyStat.createTime">Create Time</span></dt>
+		        <dd>
+		            <span>{{vm.projectMonthlyStat.createTime | date:'medium'}}</span>
+		        </dd>
+		        </dl>
+ 			</div>
+ 		</div>
+ 	</div>
     <button type="submit"
             ui-sref="{{ vm.previousState }}"
             class="btn btn-info">

@@ -1,47 +1,55 @@
-
 <div>
     <h2><span data-translate="cpmApp.purchaseItem.detail.title">Purchase Item</span> {{vm.purchaseItem.id}}</h2>
     <hr>
     <jhi-alert-error></jhi-alert-error>
-    <dl class="dl-horizontal jh-entity-details">
-        <dt><span data-translate="cpmApp.purchaseItem.name">Name</span></dt>
-        <dd>
-            <span>{{vm.purchaseItem.name}}</span>
-        </dd>
-        <dt><span data-translate="cpmApp.purchaseItem.quantity">Quantity</span></dt>
-        <dd>
-            <span>{{vm.purchaseItem.quantity}}</span>
-        </dd>
-        <dt><span data-translate="cpmApp.purchaseItem.price">Price</span></dt>
-        <dd>
-            <span>{{vm.purchaseItem.price}}</span>
-        </dd>
-        <dt><span data-translate="cpmApp.purchaseItem.units">Units</span></dt>
-        <dd>
-            <span>{{vm.purchaseItem.units}}</span>
-        </dd>
-        <dt><span data-translate="cpmApp.purchaseItem.type">Type</span></dt>
-        <dd>
-            <span>{{vm.purchaseItem.typeName}}</span>
-        </dd>
-        <dt><span data-translate="cpmApp.purchaseItem.source">Source</span></dt>
-        <dd>
-            <span>{{vm.purchaseItem.sourceName}}</span>
-        </dd>
-        <dt><span data-translate="cpmApp.purchaseItem.purchaser">Purchaser</span></dt>
-        <dd>
-            <span>{{vm.purchaseItem.purchaser}}</span>
-        </dd>
-        <dt><span data-translate="cpmApp.purchaseItem.totalAmount">Total Amount</span></dt>
-        <dd>
-            <span>{{vm.purchaseItem.totalAmount}}</span>
-        </dd>
-        <dt><span data-translate="cpmApp.purchaseItem.status">Status</span></dt>
-        <dd>
-            <span>{{vm.purchaseItem.statusName}}</span>
-        </dd>
-    </dl>
-
+    <div class="form-horizontal">
+        <div class="form-group" >
+ 			<div class="col-sm-6">
+ 				<dl class="dl-horizontal jh-entity-details">
+  				<dt><span data-translate="cpmApp.purchaseItem.name">Name</span></dt>
+		        <dd>
+		            <span>{{vm.purchaseItem.name}}</span>
+		        </dd>
+		        <dt><span data-translate="cpmApp.purchaseItem.quantity">Quantity</span></dt>
+		        <dd>
+		            <span>{{vm.purchaseItem.quantity}}</span>
+		        </dd>
+		        <dt><span data-translate="cpmApp.purchaseItem.price">Price</span></dt>
+		        <dd>
+		            <span>{{vm.purchaseItem.price}}</span>
+		        </dd>
+		        <dt><span data-translate="cpmApp.purchaseItem.units">Units</span></dt>
+		        <dd>
+		            <span>{{vm.purchaseItem.units}}</span>
+		        </dd>
+     			</dl>
+ 			</div>
+ 			<div class="col-sm-6">
+ 				<dl class="dl-horizontal jh-entity-details">
+  				<dt><span data-translate="cpmApp.purchaseItem.type">Type</span></dt>
+		        <dd>
+		            <span>{{vm.purchaseItem.typeName}}</span>
+		        </dd>
+		        <dt><span data-translate="cpmApp.purchaseItem.source">Source</span></dt>
+		        <dd>
+		            <span>{{vm.purchaseItem.sourceName}}</span>
+		        </dd>
+		        <dt><span data-translate="cpmApp.purchaseItem.purchaser">Purchaser</span></dt>
+		        <dd>
+		            <span>{{vm.purchaseItem.purchaser}}</span>
+		        </dd>
+		        <dt><span data-translate="cpmApp.purchaseItem.totalAmount">Total Amount</span></dt>
+		        <dd>
+		            <span>{{vm.purchaseItem.totalAmount}}</span>
+		        </dd>
+		        <dt><span data-translate="cpmApp.purchaseItem.status">Status</span></dt>
+		        <dd>
+		            <span>{{vm.purchaseItem.statusName}}</span>
+		        </dd>
+     			</dl>
+ 			</div>
+ 		</div>
+ 	</div>
     <button type="submit"
             ui-sref="{{ vm.previousState }}"
             class="btn btn-info">

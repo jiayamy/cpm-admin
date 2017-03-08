@@ -1,47 +1,93 @@
 <div>
     <h2><span data-translate="userManagement.detail.title">User</span> "{{vm.user.login}}"</h2>
-    <dl class="dl-horizontal">
-        <dt><span data-translate="userManagement.login">Login</span></dt>
-        <dd><span>{{vm.user.login}}</span></dd>
-        <dt><span data-translate="userManagement.serialNum">Serial Num</span></dt>
-        <dd>{{vm.user.serialNum}}</dd>
-        <dt><span data-translate="userManagement.lastName">Name</span></dt>
-        <dd>{{vm.user.lastName}}</dd>
-        <dt><span data-translate="userManagement.dept">Dept</span></dt>
-        <dd>{{vm.user.dept}}</dd>
-        <dt><span data-translate="userManagement.workArea">Work Area</span></dt>
-        <dd>{{vm.user.workArea}}</dd>
-        <dt><span data-translate="userManagement.gender">Gender</span></dt>
-        <dd>{{vm.user.genderName}}</dd>
-        <dt><span data-translate="userManagement.duty">Duty</span></dt>
-        <dd>{{vm.user.duty}}</dd>
-        <dt><span data-translate="userManagement.email">Email</span></dt>
-        <dd>{{vm.user.email}}</dd>
-        <dt><span data-translate="userManagement.telephone">Telephone</span></dt>
-        <dd>{{vm.user.telephone}}</dd>
-        <dt><span data-translate="userManagement.grade">Grade</span></dt>
-        <dd>{{vm.user.grade}}</dd>
-        <dt><span data-translate="userManagement.birthDay">BirthDay</span></dt>
-        <dd>{{vm.user.birthYear}}{{vm.user.birthDay}}</dd>
-        <dt><span data-translate="userManagement.activated">Activated</span></dt>
-        <dd>{{vm.user.activated}}</dd>
-        <dt><span data-translate="userManagement.langKey">Lang Key</span></dt>
-        <dd>{{vm.user.langKey}}</dd>
-        <dt><span data-translate="userManagement.createdBy">Created By</span></dt>
-        <dd>{{vm.user.createdBy}}</dd>
-        <dt><span data-translate="userManagement.createdDate">Created Date</span></dt>
-        <dd>{{vm.user.createdDate | date:'yyyy-MM-dd HH:mm' }}</dd>
-        <dt><span data-translate="userManagement.lastModifiedBy">Last Modified By</span></dt>
-        <dd>{{vm.user.lastModifiedBy}}</dd>
-        <dt><span data-translate="userManagement.lastModifiedDate">Last Modified Date</span></dt>
-        <dd>{{vm.user.lastModifiedDate | date:'yyyy-MM-dd HH:mm'}}</dd>
-        <dt><span data-translate="userManagement.profiles">Profiles</span></dt>
-        <dd>
-            <ul class="list-unstyled">
-                <li ng-repeat="authority in vm.user.authorities"><span>{{authority}}</span></li>
-            </ul>
-        </dd>
-    </dl>
+    <div class="form-horizontal">
+        <div class="form-group" >
+ 			<div class="col-sm-6">
+ 				<dl class="dl-horizontal jh-entity-details">
+  				<dt><span data-translate="userManagement.login">Login</span></dt>
+		        <dd>
+		        	<span>{{vm.user.login}}</span>
+		        </dd>
+		        <dt><span data-translate="userManagement.serialNum">Serial Num</span></dt>
+		        <dd>
+		        	<span>{{vm.user.serialNum}}</span>
+		        </dd>
+		        <dt><span data-translate="userManagement.lastName">Name</span></dt>
+		        <dd>
+		        	<span>{{vm.user.lastName}}</span>
+		        </dd>
+		        <dt><span data-translate="userManagement.dept">Dept</span></dt>
+		        <dd>
+		        	<span>{{vm.user.dept}}</span>
+		        </dd>
+		        <dt><span data-translate="userManagement.workArea">Work Area</span></dt>
+		        <dd>
+		        	<span>{{vm.user.workArea}}</span>
+		        </dd>
+		        <dt><span data-translate="userManagement.gender">Gender</span></dt>
+		        <dd>
+		        	<span>{{vm.user.genderName}}</span>
+		        </dd>
+		        <dt><span data-translate="userManagement.duty">Duty</span></dt>
+		        <dd>
+		        	<span>{{vm.user.duty}}</span>
+		        </dd>
+		        <dt><span data-translate="userManagement.email">Email</span></dt>
+		        <dd>
+		        	<span>{{vm.user.email}}</span>
+		        </dd>
+		        <dt><span data-translate="userManagement.telephone">Telephone</span></dt>
+		        <dd>
+		        	<span>{{vm.user.telephone}}</span>
+		        </dd>
+     			</dl>
+ 			</div>
+ 			<div class="col-sm-6">
+ 				<dl class="dl-horizontal jh-entity-details">
+  				<dt><span data-translate="userManagement.grade">Grade</span></dt>
+		        <dd>
+		        	<span>{{vm.user.grade}}</span>
+		        </dd>
+		        <dt><span data-translate="userManagement.birthDay">BirthDay</span></dt>
+		        <dd>
+		        	<span>{{vm.user.birthYear}}{{vm.user.birthDay}}</span>
+		        </dd>
+		        <dt><span data-translate="userManagement.activated">Activated</span></dt>
+		        <dd>
+		        	<span>{{vm.user.activated}}</span>
+		        </dd>
+		        <dt><span data-translate="userManagement.langKey">Lang Key</span></dt>
+		        <dd>
+		        	<span>{{vm.user.langKey}}</span>
+		        </dd>
+		        <dt><span data-translate="userManagement.createdBy">Created By</span></dt>
+		        <dd>
+		        	<span>{{vm.user.createdBy}}</span>
+		        </dd>
+		        <dt><span data-translate="userManagement.createdDate">Created Date</span></dt>
+		        <dd>
+		        	<span>{{vm.user.createdDate | date:'yyyy-MM-dd HH:mm' }}</span>
+		        </dd>
+		        <dt><span data-translate="userManagement.lastModifiedBy">Last Modified By</span></dt>
+		        <dd>
+		        	<span>{{vm.user.lastModifiedBy}}</span>
+		        </dd>
+		        <dt><span data-translate="userManagement.lastModifiedDate">Last Modified Date</span></dt>
+		        <dd>
+		        	<span>{{vm.user.lastModifiedDate | date:'yyyy-MM-dd HH:mm'}}</span>
+		        </dd>
+		        <dt><span data-translate="userManagement.profiles">Profiles</span></dt>
+		        <dd>
+		            <ul class="list-unstyled">
+		                <li ng-repeat="authority in vm.user.authorities">
+		                	<span>{{authority}}</span>
+		                </li>
+		            </ul>
+		        </dd>
+     			</dl>
+ 			</div>
+ 		</div>
+ 	</div>
     <button type="submit"
             ui-sref="user-management"
             class="btn btn-info">
