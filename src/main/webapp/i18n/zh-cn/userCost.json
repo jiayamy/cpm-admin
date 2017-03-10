@@ -7,7 +7,7 @@
                 "createOrEditLabel": "添加员工成本",
                 "editLabel": "编辑员工成本",
                 "search": "Search for User Cost",
-                "import": "导入Excel"
+                "import": "导入"
             },
             "created": "新增成功",
             "updated": "更新成功",

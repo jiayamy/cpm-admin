@@ -3,7 +3,8 @@
         "home": {
             "title": "用户信息",
             "createLabel": "新增",
-            "createOrEditLabel": "用户信息"
+            "createOrEditLabel": "用户信息",
+            "importLabel":"导入"
         },
         "created": "用户 {{ param }} 创建成功",
         "updated": "用户 {{ param }} 更新成功",
@@ -13,6 +14,18 @@
         },
         "detail": {
             "title": "用户"
+        },
+        "import":{
+        	"requiredError":"上传文件数据有误，请重新核对",
+        	"dataError":"第{{sheetNum}}个sheet的第{{rowNum}}行第{{columnNum}}列数据存在问题",
+        	"recordExistError":"第{{sheetNum}}个sheet的第{{rowNum}}行第{{columnNum}}列员工对应年月记录已存在，请勿重复添加",
+        	"dataNotExist":"第{{sheetNum}}个sheet的第{{rowNum}}行第{{columnNum}}列数据不存在，请确认",
+        	"up": "上传",
+        	"upError": "上传失败",
+        	"nonFile":"文件不能为空！",
+        	"numFile":"选择的文件数量不能大于1!",
+        	"handleError":"处理出错",
+        	"handleSucc":"处理成功"
         },
         "login": "登录",
         "firstName": "名字",
