@@ -3,7 +3,8 @@
         "home": {
             "title": "Users",
             "createLabel": "Create a new user",
-            "createOrEditLabel": "Create or edit a user"
+            "createOrEditLabel": "Create or edit a user",
+            "importLabel":"Import Excel"
         },
         "created": "A new user is created with identifier {{ param }}",
         "updated": "An user is updated with identifier {{ param }}",
@@ -13,6 +14,18 @@
         },
         "detail": {
             "title": "User"
+        },
+        "import":{
+        	"requiredError":"upload files's data error, plz confirm again",
+        	"dataError":"No.{{sheetNum}}sheet's No.{{rowNum}}row's No.{{columnNum}}column's data error",
+        	"recordExistError":"No.{{sheetNum}}sheet's No.{{rowNum}}row's No.{{columnNum}}column's user's month record already exist,please dont increase again",
+        	"dataNotExist":"No.{{sheetNum}}sheet's No.{{rowNum}}row's No.{{columnNum}}column's user not exist，plz add",
+        	"up": "upload",
+        	"upError": "upload failed",
+        	"nonFile":"no Files！",
+        	"numFile":"Files uploaded should be less than 1！",
+        	"handleError":"Handle Error",
+        	"handleSucc":"Handle Success"
         },
         "login": "Login",
         "firstName": "First name",

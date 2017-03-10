@@ -269,6 +269,35 @@
                     $state.go('^');
                 });
             }]
+        })
+        .state('user-management.upload', {
+            parent: 'user-management',
+            url: '/upload',
+            data: {
+            	authorities: ['ROLE_INFO_BASIC']
+            },
+            views: {
+                'content@': {
+                    templateUrl: 'app/info/user-management/user-management-upload.html',
+                    controller: 'UserManagementUploadController',
+                    controllerAs: 'vm'
+                }
+            },
+            resolve: {
+            	translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
+                    $translatePartialLoader.addPart('user-management');
+                    $translatePartialLoader.addPart('global');
+                    return $translate.refresh();
+                }],
+                previousState: ["$state", function ($state) {
+                	var currentStateData = {
+            			name: $state.current.name || 'user-management',
+            			params: $state.params,
+            			url: $state.href($state.current.name, $state.params)
+                	};
+                	return currentStateData;
+	            }]
+            }
         });
     }
 })();
