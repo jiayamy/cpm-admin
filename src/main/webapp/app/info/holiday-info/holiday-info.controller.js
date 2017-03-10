@@ -110,8 +110,8 @@
             	var toDay = DateUtils.convertLocalDateToFormat(vm.searchQuery.toCurrDay,"yyyyMMdd");
             	if(toDay < fromDay){
             		AlertService.error("cpmApp.holidayInfo.search.deadLineError");
+            		return ;
             	}
-            	return ;
             }
             vm.transition();
         }
