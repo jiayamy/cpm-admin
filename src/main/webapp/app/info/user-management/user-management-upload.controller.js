@@ -5,9 +5,9 @@
         .module('cpmApp')
         .controller('UserManagementUploadController', UserManagementUploadController);
 
-    UserManagementUploadController.$inject = ['$state','$rootScope', '$scope','UserCost','Upload','previousState','AlertService'];
+    UserManagementUploadController.$inject = ['$state','$rootScope', '$scope','Upload','previousState','AlertService'];
 
-    function UserManagementUploadController ($state,$rootScope, $scope, UserManagement, Upload,previousState,AlertService) {
+    function UserManagementUploadController ($state,$rootScope, $scope, Upload,previousState,AlertService) {
         var vm = this;
 
         vm.previousState = previousState.name;

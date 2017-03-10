@@ -22,13 +22,11 @@
             'delete':{ method:'DELETE'},
             'queryAllAuthorities':{
             	method: 'GET',
-            	method:'GET',
             	url:'api/_authorities/users/queryAll',
             	isArray:true
             },
             'queryAllGrade':{
             	method: 'GET',
-            	method:'GET',
             	url:'api/_usersGrade/users/queryAll',
             	isArray:true
             }
