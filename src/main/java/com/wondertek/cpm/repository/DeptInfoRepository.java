@@ -7,7 +7,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import com.wondertek.cpm.domain.DeptInfo;
-import com.wondertek.cpm.domain.User;
 
 /**
  * Spring Data JPA repository for the DeptInfo entity.
@@ -30,4 +29,8 @@ public interface DeptInfoRepository extends JpaRepository<DeptInfo,Long> {
 	@Query("from DeptInfo wdi where wdi.name = ?2 and wdi.status = 1 and wdi.parentId = ?1")
 	Optional<DeptInfo> findOneByParentName(Long parentId, String name);
 	
+	@Query("from DeptInfo where status = 1 and parentId is null")
+	List<DeptInfo> findCompanyByParentId();
+	@Query("from DeptInfo where status = 1 and idPath like ?1 order by id asc")
+	List<DeptInfo> findByIdPath(String idPath);
 }

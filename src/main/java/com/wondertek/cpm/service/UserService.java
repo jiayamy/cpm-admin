@@ -306,4 +306,49 @@ public class UserService {
 		}
 		return returnMap;
 	}
+	@Transactional(readOnly = true)
+	public Map<String, String> getSerialNumForLogin() {
+		List<User> list = userRepository.findAll();
+		Map<String, String> returnMap = new HashMap<String, String>();
+		if(list != null){
+			for(User user : list){
+				returnMap.put(user.getLogin(), user.getSerialNum());
+			}
+		}
+		return returnMap;
+	}
+
+	public void saveOrUpdateUserForExcel(User updateUser) {
+		Optional<User> oldUsers = userRepository.findOneBySerialNum(updateUser.getSerialNum());
+		if(oldUsers.isPresent()){//修改
+			User oldUser = oldUsers.get();
+			
+			oldUser.setLangKey(updateUser.getLangKey());
+			oldUser.setActivated(updateUser.getActivated());
+			oldUser.setLastModifiedBy(updateUser.getLastModifiedBy());
+			oldUser.setLastModifiedDate(updateUser.getLastModifiedDate());
+			
+			oldUser.setLastName(updateUser.getLastName());
+			oldUser.setDuty(updateUser.getDuty());
+			oldUser.setDeptId(updateUser.getDeptId());
+			oldUser.setWorkArea(updateUser.getWorkArea());
+			oldUser.setIsManager(updateUser.getIsManager());
+			oldUser.setEmail(updateUser.getEmail());
+			oldUser.setTelephone(updateUser.getTelephone());
+			oldUser.setGender(updateUser.getGender());
+			oldUser.setBirthYear(updateUser.getBirthYear());
+			oldUser.setBirthDay(updateUser.getBirthDay());
+			
+			userRepository.save(oldUser);
+			userSearchRepository.save(oldUser);
+		}else{//新增
+			//密码，新增走login
+			String password = updateUser.getLogin();
+	        String encryptedPassword = passwordEncoder.encode(password);
+	        updateUser.setPassword(encryptedPassword);
+	        
+			updateUser = userRepository.save(updateUser);
+			userSearchRepository.save(updateUser);
+		}
+	}
 }

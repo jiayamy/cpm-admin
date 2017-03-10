@@ -18,8 +18,11 @@
         "import":{
         	"requiredError":"上传文件数据有误，请重新核对",
         	"dataError":"第{{sheetNum}}个sheet的第{{rowNum}}行第{{columnNum}}列数据存在问题",
-        	"recordExistError":"第{{sheetNum}}个sheet的第{{rowNum}}行第{{columnNum}}列员工对应年月记录已存在，请勿重复添加",
+        	"recordExistError":"第{{sheetNum}}个sheet的第{{rowNum}}行第{{columnNum}}列记录已存在，请勿重复添加",
+        	"loginNotMatchError":"第{{sheetNum}}个sheet的第{{rowNum}}行第{{columnNum}}列记录对应登录账号已被使用",
         	"dataNotExist":"第{{sheetNum}}个sheet的第{{rowNum}}行第{{columnNum}}列数据不存在，请确认",
+        	"deptNotExist":"第{{sheetNum}}个sheet的第{{rowNum}}行用户部门未匹配，请确认",
+        	"authNotExist":"第{{sheetNum}}个sheet的第{{rowNum}}行第{{columnNum}}列用户角色未匹配，请确认",
         	"up": "上传",
         	"upError": "上传失败",
         	"nonFile":"文件不能为空！",

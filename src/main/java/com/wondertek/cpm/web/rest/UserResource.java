@@ -2,10 +2,17 @@ package com.wondertek.cpm.web.rest;
 
 import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
 
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.ZonedDateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -28,20 +35,29 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.codahale.metrics.annotation.Timed;
+import com.wondertek.cpm.ExcelUtil;
+import com.wondertek.cpm.ExcelValue;
 import com.wondertek.cpm.config.Constants;
+import com.wondertek.cpm.config.StringUtil;
 import com.wondertek.cpm.domain.Authority;
 import com.wondertek.cpm.domain.DeptInfo;
 import com.wondertek.cpm.domain.User;
+import com.wondertek.cpm.repository.AuthorityRepository;
 import com.wondertek.cpm.repository.DeptInfoRepository;
 import com.wondertek.cpm.repository.ExternalQuotationRepository;
 import com.wondertek.cpm.repository.UserRepository;
 import com.wondertek.cpm.repository.search.UserSearchRepository;
 import com.wondertek.cpm.security.AuthoritiesConstants;
 import com.wondertek.cpm.security.SecurityUtils;
+import com.wondertek.cpm.service.DeptInfoService;
 import com.wondertek.cpm.service.MailService;
 import com.wondertek.cpm.service.UserService;
+import com.wondertek.cpm.service.WorkAreaService;
+import com.wondertek.cpm.service.util.RandomUtil;
+import com.wondertek.cpm.web.rest.errors.CpmResponse;
 import com.wondertek.cpm.web.rest.util.HeaderUtil;
 import com.wondertek.cpm.web.rest.util.PaginationUtil;
 import com.wondertek.cpm.web.rest.vm.ManagedUserVM;
@@ -94,7 +110,13 @@ public class UserResource {
     private UserSearchRepository userSearchRepository;
     @Inject
     private ExternalQuotationRepository externalQuotationRepository;
-
+    @Inject
+    private DeptInfoService deptInfoService;
+    @Inject
+    private WorkAreaService workAreaService;
+    @Inject
+    private AuthorityRepository authorityRepository;
+    
     /**
      * POST  /users  : Creates a new user.
      * <p>
@@ -291,4 +313,342 @@ public class UserResource {
     	List<Integer> all = externalQuotationRepository.findGradeOrderByGrade();
         return new ResponseEntity<>(all, null, HttpStatus.OK);
     }
+    
+    @PostMapping("/users/uploadExcel")
+    @Timed
+    @Secured(AuthoritiesConstants.ROLE_INFO_BASIC)
+    public ResponseEntity<CpmResponse> uploadExcel(@RequestParam(value="file",required=false) MultipartFile file)
+            throws URISyntaxException {
+        log.debug(SecurityUtils.getCurrentUserLogin()+" REST request to uploadExcel for file : {}",file.getOriginalFilename());
+        List<User> users = null;
+        CpmResponse cpmResponse = new CpmResponse();
+		try {
+			//从第一行读取，最多读取10个sheet，最多读取15列
+			int startNum = 1;
+			List<ExcelValue> lists = ExcelUtil.readExcel(file,startNum,10,15);
+			if(lists == null || lists.isEmpty()){
+				return ResponseEntity.ok()
+						.body(cpmResponse
+								.setSuccess(Boolean.FALSE)
+								.setMsgKey("userManagement.import.requiredError"));
+			}
+			//初始信息
+			//工作地点
+			List<String> areas = workAreaService.queryAll();
+			//初始化部门
+			Map<String,Long> companys = deptInfoService.getUsedCompanyInfos();
+			//获取公司下的部门
+			Map<String,List<DeptInfo>> deptInfos = deptInfoService.getUsedDetpInfos(companys.values());
+			//现有登录账号对应工号
+			Map<String,String> loginSerialNums = userService.getSerialNumForLogin();
+			//角色
+			List<Authority> authorityLists = authorityRepository.findAll();
+			Map<String,Authority> authoritys = new HashMap<String,Authority>();
+			if(authorityLists != null){
+				for(Authority authority : authorityLists){
+					authoritys.put(authority.getDetail(), authority);
+				}
+			}
+			//其他信息
+			users = new ArrayList<User>();
+			String updator = SecurityUtils.getCurrentUserLogin();
+			ZonedDateTime updateTime = ZonedDateTime.now();
+			int columnNum = 0;
+			int rowNum = 0;
+			Object val = null;
+			String serialNum = null;
+			Long companyId = null;
+			List<DeptInfo> primaryDeptInfos = null;	//一级部门
+			List<DeptInfo> secondaryDeptInfos = null;	//二级部门
+			Map<String,Integer> loginExistMap = new HashMap<String,Integer>();
+			Map<String,Integer> serialNumExistMap = new HashMap<String,Integer>();
+			for (ExcelValue excelValue : lists) {
+				if (excelValue.getVals() == null || excelValue.getVals().isEmpty()) {//每个sheet也可能没有数据，空sheet
+					continue;
+				}
+				rowNum = 1;//都是从第一行读取的
+				for(List<Object> ls : excelValue.getVals()){
+					rowNum ++;
+					if(ls == null){//每个sheet里面也可能有空行
+						continue;
+					}
+					try {
+						User user = new User();
+				        
+				        user.setLangKey("zh-cn");
+				        user.setResetKey(RandomUtil.generateResetKey());
+				        user.setResetDate(updateTime);
+				        user.setActivated(true);
+				        user.setGrade(1);
+				        user.setCreatedBy(updator);
+				        user.setCreatedDate(updateTime);
+				        user.setLastModifiedBy(updator);
+				        user.setLastModifiedDate(updateTime);
+				        
+						//校验第一列 员工工号 要唯一，不可重复，若系统存在该工号，就是更新该员工的其他信息
+						columnNum = 0;
+						val = ls.get(columnNum);
+						if(val == null || StringUtil.isNullStr(val)){
+							return ResponseEntity.ok().body(cpmResponse
+											.setSuccess(Boolean.FALSE)
+											.setMsgKey("userManagement.import.dataError")
+											.setMsgParam(excelValue.getSheet() + "," + rowNum +","+(columnNum+1)));
+						}
+						user.setSerialNum(StringUtil.null2Str(val));
+						//记录中是否存在同一工号
+						if(serialNumExistMap.containsKey(user.getSerialNum())){
+							return ResponseEntity.ok().body(cpmResponse
+									.setSuccess(Boolean.FALSE)
+									.setMsgKey("userManagement.import.recordExistError")
+									.setMsgParam(excelValue.getSheet() + "," + rowNum +","+(columnNum+1)));
+						}
+						serialNumExistMap.put(user.getSerialNum(), 1);
+						
+						//校验第二列 登录账号 可为空，默认就是工号
+						columnNum++;
+						val = ls.get(columnNum);
+						if(val == null || StringUtil.isNullStr(val)){
+							user.setLogin(user.getSerialNum());
+						}else{
+							user.setLogin(StringUtil.null2Str(val));
+						}
+						//记录中是否存在同一登录账号
+						if(loginExistMap.containsKey(user.getSerialNum())){
+							return ResponseEntity.ok().body(cpmResponse
+									.setSuccess(Boolean.FALSE)
+									.setMsgKey("userManagement.import.recordExistError")
+									.setMsgParam(excelValue.getSheet() + "," + rowNum +","+(columnNum+1)));
+						}
+						//查看下登录账号是否被现有数据库中的其他工号占用
+						serialNum = loginSerialNums.get(user.getLogin());
+						if(serialNum != null && !serialNum.equals(user.getSerialNum())){
+							return ResponseEntity.ok().body(cpmResponse
+									.setSuccess(Boolean.FALSE)
+									.setMsgKey("userManagement.import.loginNotMatchError")
+									.setMsgParam(excelValue.getSheet() + "," + rowNum +","+(columnNum+1)));
+						}
+						loginExistMap.put(user.getLogin(), 1);
+						
+						//校验第三列 员工姓名 不可为空，可重复
+						columnNum++;
+						val = ls.get(columnNum);
+						if(val == null || StringUtil.isNullStr(val)){
+							return ResponseEntity.ok().body(cpmResponse
+									.setSuccess(Boolean.FALSE)
+									.setMsgKey("userManagement.import.dataError")
+									.setMsgParam(excelValue.getSheet() + "," + rowNum +","+(columnNum+1)));
+						}
+						user.setLastName(StringUtil.null2Str(val));
+						
+						//校验第四列 公司名 系统设置-部门信息中的顶级部门名称。方便获取下面的一级部门和二级部门
+						columnNum++;
+						val = ls.get(columnNum);
+						if(val == null || StringUtil.isNullStr(val)){
+							return ResponseEntity.ok().body(cpmResponse
+									.setSuccess(Boolean.FALSE)
+									.setMsgKey("userManagement.import.dataError")
+									.setMsgParam(excelValue.getSheet() + "," + rowNum +","+(columnNum+1)));
+						}
+						companyId = companys.get(StringUtil.null2Str(val));
+						if(companyId == null){
+							return ResponseEntity.ok().body(cpmResponse
+									.setSuccess(Boolean.FALSE)
+									.setMsgKey("userManagement.import.dataNotExist")
+									.setMsgParam(excelValue.getSheet() + "," + rowNum +","+(columnNum+1)));
+						}
+						
+						//校验第五列 一级部门 不可为空，且在一个公司下名称必须唯一
+						columnNum++;
+						val = ls.get(columnNum);
+						if(val == null || StringUtil.isNullStr(val)){
+							return ResponseEntity.ok().body(cpmResponse
+									.setSuccess(Boolean.FALSE)
+									.setMsgKey("userManagement.import.dataError")
+									.setMsgParam(excelValue.getSheet() + "," + rowNum +","+(columnNum+1)));
+						}
+						primaryDeptInfos = deptInfos.get(companyId + "_" + StringUtil.null2Str(val));
+						if(primaryDeptInfos == null || primaryDeptInfos.isEmpty()){
+							return ResponseEntity.ok().body(cpmResponse
+									.setSuccess(Boolean.FALSE)
+									.setMsgKey("userManagement.import.dataNotExist")
+									.setMsgParam(excelValue.getSheet() + "," + rowNum +","+(columnNum+1)));
+						}else if(primaryDeptInfos.size() > 1){
+							return ResponseEntity.ok().body(cpmResponse
+									.setSuccess(Boolean.FALSE)
+									.setMsgKey("userManagement.import.dataError")
+									.setMsgParam(excelValue.getSheet() + "," + rowNum +","+(columnNum+1)));
+						}
+						
+						//校验第六列 二级部门 必须在一级部门下，可为空
+						columnNum++;
+						val = ls.get(columnNum);
+						if(!StringUtil.isNullStr(val)){//校验二级部门是否存在
+							secondaryDeptInfos = deptInfos.get(companyId + "_" + StringUtil.null2Str(val));
+							if(secondaryDeptInfos == null || secondaryDeptInfos.isEmpty()){
+								return ResponseEntity.ok().body(cpmResponse
+										.setSuccess(Boolean.FALSE)
+										.setMsgKey("userManagement.import.dataNotExist")
+										.setMsgParam(excelValue.getSheet() + "," + rowNum +","+(columnNum+1)));
+							}									
+						}
+						
+						Long deptId = getUserDeptFromDeptInfos(deptInfos,companyId,primaryDeptInfos.get(0),StringUtil.null2Str(val));
+						if(deptId < 0){
+							return ResponseEntity.ok().body(cpmResponse
+									.setSuccess(Boolean.FALSE)
+									.setMsgKey("userManagement.import.deptNotExist")
+									.setMsgParam(excelValue.getSheet() + "," + rowNum +","+(columnNum+1)));
+						}
+						user.setDeptId(deptId);
+				        
+						//校验第七列 岗位 可随意 填写
+						columnNum++;
+						val = ls.get(columnNum);
+						user.setDuty(StringUtil.null2Str(val));
+						
+						//校验第八列 工作地点 必须是系统设置-“工作地点”中
+						columnNum++;
+						val = ls.get(columnNum);
+						if(val == null || StringUtil.isNullStr(val)){
+							return ResponseEntity.ok().body(cpmResponse
+									.setSuccess(Boolean.FALSE)
+									.setMsgKey("userManagement.import.dataError")
+									.setMsgParam(excelValue.getSheet() + "," + rowNum +","+(columnNum+1)));
+						}
+						user.setWorkArea(StringUtil.null2Str(val));
+						if(!areas.contains(user.getWorkArea())){//校验工作地点是否存在
+							return ResponseEntity.ok().body(cpmResponse
+									.setSuccess(Boolean.FALSE)
+									.setMsgKey("userManagement.import.dataNotExist")
+									.setMsgParam(excelValue.getSheet() + "," + rowNum +","+(columnNum+1)));
+						}
+						
+						//校验第九列 管理人员 是否是对应“一级部门”或者“二级部门”的管理人员，方便获取数据权限
+						columnNum++;
+						val = ls.get(columnNum);
+						user.setIsManager(StringUtil.nullToBoolean(val));
+						
+						//校验第十列 邮箱 要唯一，可不填写
+						columnNum++;
+						val = ls.get(columnNum);
+						user.setEmail(StringUtil.null2Str(val));
+						
+						//校验第十一列 手机号 正常联系方式
+						columnNum++;
+						val = ls.get(columnNum);
+						if(val == null){
+						}else if(val instanceof Double){//double
+							user.setTelephone(""+((Double)val).longValue());
+						}else{
+							user.setTelephone(StringUtil.null2Str(val));
+						}
+						
+						//校验第十二列 性别 女/男
+						columnNum++;
+						val = ls.get(columnNum);
+						if(val != null && val.equals("女")){
+							user.setGender(2);
+						}else{
+							user.setGender(1);
+						}
+						
+						//校验第十三列 出生年份 系统根据输入确定，最好四位数字，如1985
+						columnNum++;
+						val = ls.get(columnNum);
+						if(val == null){
+						}else if(val instanceof Double){//double
+							user.setBirthYear(""+((Double)val).longValue());
+						}else{
+							user.setBirthYear(StringUtil.null2Str(val));
+						}
+						if(user.getBirthYear() != null && !(user.getBirthYear().length() == 0 || user.getBirthYear().length() == 4)){
+							return ResponseEntity.ok().body(cpmResponse
+									.setSuccess(Boolean.FALSE)
+									.setMsgKey("userManagement.import.dataError")
+									.setMsgParam(excelValue.getSheet() + "," + rowNum +","+(columnNum+1)));
+						}
+						
+						//校验第十四列 生日 系统根据输入确定，最好为四位数字，如1212
+						columnNum++;
+						val = ls.get(columnNum);
+						if(val == null){
+						}else if(val instanceof Double){//double
+							user.setBirthDay(""+((Double)val).longValue());
+						}else{
+							user.setBirthDay(StringUtil.null2Str(val));
+						}
+						if(user.getBirthDay() != null && !(user.getBirthDay().length() == 0 || user.getBirthDay().length() == 4)){
+							return ResponseEntity.ok().body(cpmResponse
+									.setSuccess(Boolean.FALSE)
+									.setMsgKey("userManagement.import.dataError")
+									.setMsgParam(excelValue.getSheet() + "," + rowNum +","+(columnNum+1)));
+						}
+						
+						//校验第十五列 角色 必须在“系统设置”-“用户信息”-“新增”中的“角色”范围内
+						columnNum++;
+						val = ls.get(columnNum);
+						Set<Authority> authorities = new HashSet<>();
+						if(val != null && !StringUtil.isNullStr(val)){
+							List<String> list = StringUtil.stringToStrList(StringUtil.null2Str(val), "[,|，]");
+							if(list != null){
+								for(String auth : list){
+									if(authoritys.containsKey(auth)){
+										authorities.add(authoritys.get(auth));
+									}else{
+										return ResponseEntity.ok().body(cpmResponse
+												.setSuccess(Boolean.FALSE)
+												.setMsgKey("userManagement.import.authNotExist")
+												.setMsgParam(excelValue.getSheet() + "," + rowNum +","+(columnNum+1)));
+									}
+								}
+							}
+						}
+						user.setAuthorities(authorities);
+						
+						users.add(user);
+					} catch (Exception e) {
+						log.error("校验excel数据出错，msg:"+e.getMessage(),e);
+						return ResponseEntity.ok().body(cpmResponse
+									.setSuccess(Boolean.FALSE)
+									.setMsgKey("userManagement.import.dataError")
+									.setMsgParam(excelValue.getSheet() + "," + rowNum +","+(columnNum+1)));
+					}
+				}
+			}
+			
+			//入库
+			if(users != null ){
+				for(User user : users){
+					userService.saveOrUpdateUserForExcel(user);
+				}
+			}
+			return ResponseEntity.ok().body(cpmResponse
+					.setSuccess(Boolean.TRUE)
+					.setMsgKey("userManagement.import.handleSucc"));
+		} catch (IOException e) {
+			log.error("msg:" + e.getMessage(),e);
+			return ResponseEntity.ok().body(cpmResponse
+						.setSuccess(Boolean.FALSE)
+						.setMsgKey("userManagement.import.handleError"));
+		}
+		
+    }
+    /**
+     * 根据一级部门，二级部门来判定用户的所属部门
+     * @return
+     */
+	private Long getUserDeptFromDeptInfos(Map<String, List<DeptInfo>> deptInfos, Long companyId, DeptInfo primaryDeptInfo, String secondaryDept) {
+		if(secondaryDept == null || StringUtil.isNullStr(secondaryDept)){
+			return primaryDeptInfo.getId();
+		}
+		List<DeptInfo> secondaryDepts = deptInfos.get(companyId + "_" + secondaryDept);
+		String likePath = "/"+primaryDeptInfo.getId()+"/";
+		for(DeptInfo deptInfo : secondaryDepts){
+			if(deptInfo.getIdPath().indexOf(likePath) != -1){//属于一级部门的子部门
+				return deptInfo.getId();
+			}
+		}
+		return -1L;
+	}
+			
 }

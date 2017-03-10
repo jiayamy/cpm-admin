@@ -2,6 +2,7 @@ package com.wondertek.cpm.service;
 
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -113,6 +114,7 @@ public class DeptInfoService {
      * 获取用户和部门的树形结构数据
      * @return
      */
+    @Transactional(readOnly = true)
 	public List<DeptTree> getDeptAndUserTree(Integer selectType, Boolean showChild, Boolean showUser) {
 		List<DeptTree> returnList = new ArrayList<DeptTree>();
 		//查询出所有的用户
@@ -202,16 +204,54 @@ public class DeptInfoService {
 		}
 		return deptUsers;
 	}
-
+	@Transactional(readOnly = true)
 	public Optional<DeptInfo> findOneByParentName(Long parentId, String name) {
 		return deptInfoRepository.findOneByParentName(parentId,name);
 	}
-
+	@Transactional(readOnly = true)
 	public List<String> getExistUserDeptNameByDeptParent(Long deptId, String idPath) {
 		return deptInfoDao.getExistUserDeptNameByDeptParent(deptId, idPath);
 	}
-
+	@Transactional(readOnly = true)
 	public DeptInfoVo getDeptInfo(Long id) {
 		return deptInfoDao.getDeptInfo(id);
+	}
+	/**
+	 * 获取可用公司名
+	 * @return
+	 */
+	@Transactional(readOnly = true)
+	public Map<String, Long> getUsedCompanyInfos() {
+		List<DeptInfo> infos = deptInfoRepository.findCompanyByParentId();
+		Map<String,Long> returnMap = new HashMap<String,Long>();
+		if(infos != null){
+			for(DeptInfo deptInfo : infos){
+				returnMap.put(deptInfo.getName(), deptInfo.getId());
+			}
+		}
+		return returnMap;
+	}
+	/**
+	 * 获取公司下的所有可用部门
+	 * @param companyIds
+	 * @return
+	 */
+	@Transactional(readOnly = true)
+	public Map<String, List<DeptInfo>> getUsedDetpInfos(Collection<Long> companyIds) {
+		Map<String, List<DeptInfo>> deptInfos = new HashMap<String,List<DeptInfo>>();
+		if(companyIds != null){
+			String key = null;
+			for(Long companyId : companyIds){
+				List<DeptInfo> infos = deptInfoRepository.findByIdPath("/"+companyId+"/%");
+				for(DeptInfo deptInfo : infos){
+					key = companyId + "_" + deptInfo.getName();
+					if(!deptInfos.containsKey(key)){
+						deptInfos.put(key, new ArrayList<DeptInfo>());
+					}
+					deptInfos.get(key).add(deptInfo);
+				}
+			}
+		}
+		return deptInfos;
 	}
 }
