@@ -210,7 +210,8 @@
                         trigger: 'axis'
                     },
                     legend: {
-                        data: []
+                        data: [],
+                        y:'30'
                     },
                     toolbox: {
                         show: true,
