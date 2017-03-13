@@ -48,7 +48,32 @@
                 id : pagingParams.id
             }, onSuccess, onError);
            function onSuccess(data, headers) {
-                //第三方参数设置
+        	   var series = [];
+	       	   	for(var i = 0; i < 12 ; i++){
+	       	   		series.push({//1
+	                       name: '',
+	                       type: '',
+	                       data: [],
+	                       markPoint: {
+	                           data: [{
+	                               type: 'max',
+	                               name: '最大值'
+	                           }
+	                           ,{
+	                               type: 'min',
+	                               name: '最小值'
+	                           }
+	                           ]
+	                       },
+	                       markLine: {
+	                           data: [{
+	                               type: 'average',
+	                               name: '平均值'
+	                           }]
+	                       }
+	                   });
+	       	   	} 
+        	   //第三方参数设置
                 var option = {
                     title: {
                         text: "订单数",
@@ -59,25 +84,25 @@
                         trigger: 'axis'
                     },
                     legend: {
-                        data: []
+                        data: [],
+                        selected: {
+                            '所有成本' : false,
+                            '合同毛利' : false,
+                            '销售人工成本' : false,
+                            '销售报销成本' : false,
+                            '咨询人工成本' : false,
+                            '咨询报销成本' : false,
+                            '硬件采购成本' : false,
+                            '外部软件采购成本' : false,
+                            '内部软件采购成本' : false,
+                            '项目人工成本' : false,
+                            '项目报销成本' : false
+                        },
+                        y:'30'
                     },
                     toolbox: {
                         show: true,
                         feature: {
-                            mark: {
-                                show: true
-                            },
-                            dataZoom: {
-                                yAxisIndex: 'none'
-                            },
-                            dataView: {
-                                show: true,
-                                readOnly: false
-                            },
-                            magicType: {
-                                show: true,
-                                type: ['line', 'bar']
-                            },
                             saveAsImage: {
                                 show: true
                             }
@@ -99,239 +124,11 @@
                         }
                     }],
                     grid: {
-                        width: '80%'
+                        width: '80%',
+                        height : '65%',
+                        y: '30%'
                     },
-                    series: [
-                        {//1
-                            name: '',
-                            type: '',
-                            data: [],//必须是Integer类型的,String计算平均值会出错
-                            markPoint: {
-                                data: [{
-                                    type: 'max',
-                                    name: '最大值'
-                                }, {
-                                    type: 'min',
-                                    name: '最小值'
-                                }]
-                            },
-                            markLine: {
-                                data: [{
-                                    type: 'average',
-                                    name: '平均值'
-                                }]
-                            }
-                        }, {//2
-                            name: '',
-                            type: '',
-                            data: [],//必须是Integer类型的,String计算平均值会出错
-                            markPoint: {
-                                data: [{
-                                    type: 'max',
-                                    name: '最大值'
-                                }, {
-                                    type: 'min',
-                                    name: '最小值'
-                                }]
-                            },
-                            markLine: {
-                                data: [{
-                                    type: 'average',
-                                    name: '平均值'
-                                }]
-                            }
-                        }, {//3
-                            name: '',
-                            type: '',
-                            data: [],//必须是Integer类型的,String计算平均值会出错
-                            markPoint: {
-                                data: [{
-                                    type: 'max',
-                                    name: '最大值'
-                                }, {
-                                    type: 'min',
-                                    name: '最小值'
-                                }]
-                            },
-                            markLine: {
-                                data: [{
-                                    type: 'average',
-                                    name: '平均值'
-                                }]
-                            }
-                        }, {//4
-                            name: '',
-                            type: '',
-                            data: [],//必须是Integer类型的,String计算平均值会出错
-                            markPoint: {
-                                data: [{
-                                    type: 'max',
-                                    name: '最大值'
-                                }, {
-                                    type: 'min',
-                                    name: '最小值'
-                                }]
-                            },
-                            markLine: {
-                                data: [{
-                                    type: 'average',
-                                    name: '平均值'
-                                }]
-                            }
-                        }, {//5
-                            name: '',
-                            type: '',
-                            data: [],//必须是Integer类型的,String计算平均值会出错
-                            markPoint: {
-                                data: [{
-                                    type: 'max',
-                                    name: '最大值'
-                                }, {
-                                    type: 'min',
-                                    name: '最小值'
-                                }]
-                            },
-                            markLine: {
-                                data: [{
-                                    type: 'average',
-                                    name: '平均值'
-                                }]
-                            }
-                        }, {//6
-                            name: '',
-                            type: '',
-                            data: [],//必须是Integer类型的,String计算平均值会出错
-                            markPoint: {
-                                data: [{
-                                    type: 'max',
-                                    name: '最大值'
-                                }, {
-                                    type: 'min',
-                                    name: '最小值'
-                                }]
-                            },
-                            markLine: {
-                                data: [{
-                                    type: 'average',
-                                    name: '平均值'
-                                }]
-                            }
-                        }, {//7
-                            name: '',
-                            type: '',
-                            data: [],//必须是Integer类型的,String计算平均值会出错
-                            markPoint: {
-                                data: [{
-                                    type: 'max',
-                                    name: '最大值'
-                                }, {
-                                    type: 'min',
-                                    name: '最小值'
-                                }]
-                            },
-                            markLine: {
-                                data: [{
-                                    type: 'average',
-                                    name: '平均值'
-                                }]
-                            }
-                        }, {//8
-                            name: '',
-                            type: '',
-                            data: [],//必须是Integer类型的,String计算平均值会出错
-                            markPoint: {
-                                data: [{
-                                    type: 'max',
-                                    name: '最大值'
-                                }, {
-                                    type: 'min',
-                                    name: '最小值'
-                                }]
-                            },
-                            markLine: {
-                                data: [{
-                                    type: 'average',
-                                    name: '平均值'
-                                }]
-                            }
-                        }, {//9
-                            name: '',
-                            type: '',
-                            data: [],//必须是Integer类型的,String计算平均值会出错
-                            markPoint: {
-                                data: [{
-                                    type: 'max',
-                                    name: '最大值'
-                                }, {
-                                    type: 'min',
-                                    name: '最小值'
-                                }]
-                            },
-                            markLine: {
-                                data: [{
-                                    type: 'average',
-                                    name: '平均值'
-                                }]
-                            }
-                        }, {//10
-                            name: '',
-                            type: '',
-                            data: [],//必须是Integer类型的,String计算平均值会出错
-                            markPoint: {
-                                data: [{
-                                    type: 'max',
-                                    name: '最大值'
-                                }, {
-                                    type: 'min',
-                                    name: '最小值'
-                                }]
-                            },
-                            markLine: {
-                                data: [{
-                                    type: 'average',
-                                    name: '平均值'
-                                }]
-                            }
-                        }, {//11
-                            name: '',
-                            type: '',
-                            data: [],//必须是Integer类型的,String计算平均值会出错
-                            markPoint: {
-                                data: [{
-                                    type: 'max',
-                                    name: '最大值'
-                                }, {
-                                    type: 'min',
-                                    name: '最小值'
-                                }]
-                            },
-                            markLine: {
-                                data: [{
-                                    type: 'average',
-                                    name: '平均值'
-                                }]
-                            }
-                        }, {//12
-                            name: '',
-                            type: '',
-                            data: [],//必须是Integer类型的,String计算平均值会出错
-                            markPoint: {
-                                data: [{
-                                    type: 'max',
-                                    name: '最大值'
-                                }, {
-                                    type: 'min',
-                                    name: '最小值'
-                                }]
-                            },
-                            markLine: {
-                                data: [{
-                                    type: 'average',
-                                    name: '平均值'
-                                }]
-                            }
-                        }
-                    ]
+                    series: series
                 };
 
                 var chartBottom = echarts.init(document.getElementById('tabcontent1'));
@@ -413,28 +210,12 @@
                         trigger: 'axis'
                     },
                     legend: {
-                        data: []
+                        data: [],
+                        y : '30'
                     },
                     toolbox: {
                         show: true,
                         feature: {
-                            mark: {
-                                show: true
-                            },
-                            dataZoom: {
-                                yAxisIndex: 'none'
-                            },
-                            dataView: {
-                                show: true,
-                                readOnly: false
-                            },
-                            magicType: {
-                                show: true,
-                                type: ['line', 'bar']
-                            },
-                            restore: {
-                                show: true
-                            },
                             saveAsImage: {
                                 show: true
                             }

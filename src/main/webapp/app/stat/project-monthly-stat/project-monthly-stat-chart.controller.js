@@ -59,28 +59,12 @@
                         trigger: 'axis'
                     },
                     legend: {
-                        data: []
+                        data: [],
+                        y :'30'
                     },
                     toolbox: {
                         show: true,
                         feature: {
-                            mark: {
-                                show: true
-                            },
-                            dataZoom: {
-                                yAxisIndex: 'none'
-                            },
-                            dataView: {
-                                show: true,
-                                readOnly: false
-                            },
-                            magicType: {
-                                show: true,
-                                type: ['line', 'bar','stack', 'tiled']
-                            },
-                            restore: {
-                                show: true
-                            },
                             saveAsImage: {
                                 show: true
                             }
@@ -212,28 +196,12 @@
                          trigger: 'axis'
                      },
                      legend: {
-                         data: []
+                         data: [],
+                         y: '30'
                      },
                      toolbox: {
                          show: true,
                          feature: {
-                             mark: {
-                                 show: true
-                             },
-                             dataZoom: {
-                                 yAxisIndex: 'none'
-                             },
-                             dataView: {
-                                 show: true,
-                                 readOnly: false
-                             },
-                             magicType: {
-                                 show: true,
-                                 type: ['line', 'bar']
-                             },
-                             restore: {
-                                 show: true
-                             },
                              saveAsImage: {
                                  show: true
                              }
