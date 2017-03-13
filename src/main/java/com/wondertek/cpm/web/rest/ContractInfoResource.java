@@ -28,7 +28,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.codahale.metrics.annotation.Timed;
 import com.wondertek.cpm.config.StringUtil;
 import com.wondertek.cpm.domain.ContractInfo;
-import com.wondertek.cpm.domain.ProjectInfo;
 import com.wondertek.cpm.domain.vo.ContractInfoVo;
 import com.wondertek.cpm.domain.vo.LongValue;
 import com.wondertek.cpm.security.AuthoritiesConstants;
@@ -221,7 +220,7 @@ public class ContractInfoResource {
 	@PutMapping("/contract-infos/finish")
     @Timed
     @Secured(AuthoritiesConstants.ROLE_CONTRACT_INFO)
-    public ResponseEntity<ProjectInfo> finishContractInfo(@RequestBody ContractInfo contractInfo) throws URISyntaxException {
+    public ResponseEntity<ContractInfo> finishContractInfo(@RequestBody ContractInfo contractInfo) throws URISyntaxException {
     	log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to finishContractInfo");
     	if(contractInfo.getId() == null || contractInfo.getFinishRate() == null){
     		return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.contractInfo.save.requiedError", "")).body(null);

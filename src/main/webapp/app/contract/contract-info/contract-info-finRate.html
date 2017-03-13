@@ -25,7 +25,10 @@
 		                     />
 		            <div ng-show="myForm.finishRate.$dirty&&myForm.finishRate.$error.number" class="alert alert-danger help-block"> 
 		            	必须为数字
-		            </div>        
+		            </div>  
+		            <div ng-show="myForm.finishRate.$dirty&&myForm.finishRate.$error.min" class="alert alert-danger help-block"> 
+                		最小值为0
+           			</div>      
 		        </div>
 		   	</div>
 	  	</div>

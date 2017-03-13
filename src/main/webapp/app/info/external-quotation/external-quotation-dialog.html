@@ -24,6 +24,9 @@
 	                   ng-show="myForm.externalQuotation.$error.required" data-translate="entity.validation.required" style="color:red">
 	                    This field is required.
 	                </div>
+	                <div ng-show="myForm.externalQuotation.$dirty&&myForm.externalQuotation.$error.min" class="alert alert-danger help-block"> 
+                		最小值为0
+           			</div>
 				</div>
 	     	</div>
 	     	<div class="form-group">
@@ -35,6 +38,9 @@
 	                   ng-show="myForm.socialSecurityFund.$error.required" data-translate="entity.validation.required" style="color:red">
 	                    This field is required.
 	                </div>
+	                <div ng-show="myForm.socialSecurityFund.$dirty&&myForm.socialSecurityFund.$error.min" class="alert alert-danger help-block"> 
+                		最小值为0
+           			</div>
 				</div>
 				<div class="col-sm-6">
 	          		<label class="control-label" data-translate="cpmApp.externalQuotation.otherExpense" for="field_otherExpense">Other Expense</label>
@@ -44,6 +50,9 @@
 	                   ng-show="myForm.externalQuotation.$error.required" data-translate="entity.validation.required" style="color:red">
 	                    This field is required.
 	                </div>
+	                <div ng-show="myForm.externalQuotation.$dirty&&myForm.externalQuotation.$error.min" class="alert alert-danger help-block"> 
+                		最小值为0
+           			</div>
 				</div>
 	     	</div>
 	     	<div class="form-group">
@@ -55,6 +64,9 @@
 	                   ng-show="myForm.costBasis.$error.required" data-translate="entity.validation.required" style="color:red">
 	                    This field is required.
 	                </div>
+	                <div ng-show="myForm.costBasis.$dirty&&myForm.costBasis.$error.min" class="alert alert-danger help-block"> 
+                		最小值为0
+           			</div>
 				</div>
 	     		<div class="col-sm-6">
 	          		<label class="control-label" data-translate="cpmApp.externalQuotation.hourCost" for="field_hourCost">Hour Cost</label>
@@ -64,6 +76,9 @@
 	                   ng-show="myForm.hourCost.$error.required" data-translate="entity.validation.required" style="color:red">
 	                    This field is required.
 	                </div>
+	                <div ng-show="myForm.hourCost.$dirty&&myForm.hourCost.$error.min" class="alert alert-danger help-block"> 
+                		最小值为0
+           			</div>
 				</div>
 	     	</div>
 		</div>

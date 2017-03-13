@@ -31,13 +31,16 @@
 	     		<div class="col-sm-6">
 	          		<label class="control-label" data-translate="cpmApp.bonusRate.rate" for="field_rate">Rate</label>
 	          		<input type="number" class="form-control" name="rate" id="field_rate"
-	              		ng-model="vm.bonusRate.rate" step="0.01" max="100"  ng-required="true"
+	              		ng-model="vm.bonusRate.rate" step="0.01" max="100" min="0"  ng-required="true"
 	                  	/>
 	                <div ng-show="myForm.rate.$dirty&&myForm.rate.$error.number" class="alert alert-danger help-block"> 
                     	必须为数字
                 	</div>
+                	<div ng-show="myForm.rate.$dirty&&myForm.rate.$error.min" class="alert alert-danger help-block"> 
+                		最小值为0
+           			</div>
                 	<div ng-show="myForm.rate.$dirty&&myForm.rate.$error.max" class="alert alert-danger help-block"> 
-                		项目预算最大值为100
+                		最大值为100
            			</div>
                 	<div class="help-block"
 	                   ng-show="myForm.rate.$error.required" data-translate="entity.validation.required" style="color:red">

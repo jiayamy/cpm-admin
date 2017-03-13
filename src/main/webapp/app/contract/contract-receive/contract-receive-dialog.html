@@ -57,6 +57,9 @@
 	                   ng-show="myForm.receiveTotal.$error.required" data-translate="entity.validation.required" style="color:red">
 	                    This field is required.
 	                </div>
+	                <div ng-show="myForm.receiveTotal.$dirty&&myForm.receiveTotal.$error.min" class="alert alert-danger help-block"> 
+                		最小值为0
+           			</div>
 				</div>
         	</div>
 	  	</div>

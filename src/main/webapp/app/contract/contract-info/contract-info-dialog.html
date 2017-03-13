@@ -122,6 +122,12 @@
 	                   ng-show="myForm.consultantsShareRate.$error.required" data-translate="entity.validation.required" style="color:red">
 	                    This field is required.
 	                </div>
+	                <div ng-show="myForm.consultantsShareRate.$dirty&&myForm.consultantsShareRate.$error.min" class="alert alert-danger help-block"> 
+                		最小值为0
+           			</div>
+           			<div ng-show="myForm.consultantsShareRate.$dirty&&myForm.consultantsShareRate.$error.max" class="alert alert-danger help-block"> 
+                		最大值为100
+           			</div>
 				</div>
         		<div class="col-sm-6">
         			&nbsp;
@@ -178,6 +184,9 @@
 	                   ng-show="myForm.amount.$error.required" data-translate="entity.validation.required" style="color:red">
 	                    This field is required.
 	                </div>
+	                <div ng-show="myForm.amount.$dirty&&myForm.amount.$error.min" class="alert alert-danger help-block"> 
+                		最小值为0
+           			</div>
 				</div>
         		<div class="col-sm-6">
         			<label class="control-label" data-translate="cpmApp.contractInfo.paymentWay" for="field_paymentWay">Payment Way</label>
@@ -202,6 +211,12 @@
 	                   ng-show="myForm.taxRate.$error.required" data-translate="entity.validation.required" style="color:red">
 	                    This field is required.
 	                </div>
+	                <div ng-show="myForm.taxRate.$dirty&&myForm.taxRate.$error.min" class="alert alert-danger help-block"> 
+                		最小值为0
+           			</div>
+           			<div ng-show="myForm.taxRate.$dirty&&myForm.taxRate.$error.max" class="alert alert-danger help-block"> 
+                		最大值为100
+           			</div>
 				</div>
         		<div class="col-sm-6">
         			<label class="control-label" data-translate="cpmApp.contractInfo.taxes" for="field_taxes">Taxes</label>
@@ -215,6 +230,9 @@
 	                   ng-show="myForm.taxes.$error.required" data-translate="entity.validation.required" style="color:red">
 	                    This field is required.
 	                </div>
+	                <div ng-show="myForm.taxes.$dirty&&myForm.taxes.$error.min" class="alert alert-danger help-block"> 
+                		最小值为0
+           			</div>
         		</div>
         	</div>
         	<div class="form-group">
@@ -230,6 +248,12 @@
 	                   ng-show="myForm.shareRate.$error.required" data-translate="entity.validation.required" style="color:red">
 	                    This field is required.
 	                </div>
+	                <div ng-show="myForm.shareRate.$dirty&&myForm.shareRate.$error.min" class="alert alert-danger help-block"> 
+                		最小值为0
+           			</div>
+           			<div ng-show="myForm.shareRate.$dirty&&myForm.shareRate.$error.max" class="alert alert-danger help-block"> 
+                		最大值为100
+           			</div>
 				</div>
         		<div class="col-sm-6">
         			<label class="control-label" data-translate="cpmApp.contractInfo.shareCost" for="field_shareCost">Share Cost</label>
@@ -243,6 +267,9 @@
 	                   ng-show="myForm.shareCost.$error.required" data-translate="entity.validation.required" style="color:red">
 	                    This field is required.
 	                </div>
+	                <div ng-show="myForm.shareCost.$dirty&&myForm.shareCost.$error.min" class="alert alert-danger help-block"> 
+                		最小值为0
+           			</div>
         		</div>
         	</div>
         	<div class="form-group">

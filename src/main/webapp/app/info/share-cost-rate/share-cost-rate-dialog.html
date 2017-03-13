@@ -31,13 +31,16 @@
 	     		<div class="col-sm-6">
 	          		<label class="control-label" data-translate="cpmApp.shareCostRate.shareRate" for="field_shareRate">Share Rate</label>
 	          		<input type="number" class="form-control" name="shareRate" id="field_shareRate"
-	              		ng-model="vm.shareCostRate.shareRate" step="0.01" max="100"  ng-required="true"
+	              		ng-model="vm.shareCostRate.shareRate" step="0.01" max="100" min="0" ng-required="true"
 	                  	/>
 	                <div ng-show="myForm.shareRate.$dirty&&myForm.shareRate.$error.number" class="alert alert-danger help-block"> 
                     	必须为数字
                 	</div>
+                	<div ng-show="myForm.shareRate.$dirty&&myForm.shareRate.$error.min" class="alert alert-danger help-block"> 
+                		最小值为0
+           			</div>
                 	<div ng-show="myForm.shareRate.$dirty&&myForm.shareRate.$error.max" class="alert alert-danger help-block"> 
-                		项目预算最大值为100
+                		最大值为100
            			</div>
                 	<div class="help-block"
 	                   ng-show="myForm.shareRate.$error.required" data-translate="entity.validation.required" style="color:red">
