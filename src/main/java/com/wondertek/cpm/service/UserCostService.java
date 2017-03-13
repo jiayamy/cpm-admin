@@ -108,9 +108,9 @@ public class UserCostService {
      * @return
      */
     @Transactional(readOnly = true)
-    public Page<UserCostVo> getUserCostPage(UserCost userCost,Pageable pageable){
-    	log.debug("Request to a page of UserCosts {}",userCost);
-    	Page<UserCostVo> page = userCostDao.getUserCostPage(userCost, pageable);
+    public Page<UserCostVo> getUserCostPage(UserCostVo userCostVo,Pageable pageable){
+    	log.debug("Request to a page of UserCosts {}",userCostVo);
+    	Page<UserCostVo> page = userCostDao.getUserCostPage(userCostVo, pageable);
     	return page;
     }
     

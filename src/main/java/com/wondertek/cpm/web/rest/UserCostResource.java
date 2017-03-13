@@ -179,21 +179,20 @@ public class UserCostResource {
         throws URISyntaxException {
         log.debug(SecurityUtils.getCurrentUserLogin()+" REST request to get a page of getAllUserCosts : "
         		+ "serialNum:{},userName:{},costMonth:{},status:{}",serialNum,userName,costMonth,status);
-        UserCost userCost = new UserCost();
-        Optional<User> user = userRepository.findOneBySerialNum(serialNum);
-        if(user.isPresent()){
-        	userCost.setUserId(user.get().getId());
+        UserCostVo userCostVo = new UserCostVo();
+        if(!StringUtil.isNullStr(serialNum)){
+        	userCostVo.setSerialNum(serialNum);
         }
         if(!StringUtil.isNullStr(userName)){
-        	userCost.setUserName(userName);
+        	userCostVo.setUserName(userName);
         }
         if(!StringUtil.isNullStr(costMonth)){
-        	userCost.setCostMonth(StringUtil.nullToLong(costMonth));
+        	userCostVo.setCostMonth(StringUtil.nullToLong(costMonth));
         }
         if(!StringUtil.isNullStr(status)){
-        	userCost.setStatus(StringUtil.nullToInteger(status));
+        	userCostVo.setStatus(StringUtil.nullToInteger(status));
         }
-        Page<UserCostVo> page = userCostService.getUserCostPage(userCost,pageable);
+        Page<UserCostVo> page = userCostService.getUserCostPage(userCostVo,pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/user-costs");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
