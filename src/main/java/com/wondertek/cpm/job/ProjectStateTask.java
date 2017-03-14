@@ -102,6 +102,10 @@ public class ProjectStateTask {
 				userIdGradeMap.put(user.getId(), user.getGrade());
 			}
 		}
+		List<StatIdentify> statIdentifies = statIdentifyRepository.findByStatus(StatIdentify.STATUS_UNAVALIABLE);
+		if(statIdentifies != null && statIdentifies.size() > 0){
+			statIdentifyRepository.delete(statIdentifies);
+		}
 	}
 	@Scheduled(cron = "0 0 21 ? * MON")
 	protected void generateProjectWeeklyState(){
@@ -111,11 +115,10 @@ public class ProjectStateTask {
 	protected void generateProjectWeeklyState(Date now){
 		log.info("=====begin generate project weekly state=====");
 		init();
-		
 		String [] dates = DateUtil.getWholeWeekByDate(DateUtil.lastSaturday(now));
 		ZonedDateTime beginTime = DateUtil.getZonedDateTime(DateUtil.lastMonday(now).getTime());
 		ZonedDateTime endTime = DateUtil.getZonedDateTime(DateUtil.lastSundayEnd(now).getTime());
-		List<ProjectInfo> projectInfos = projectInfoRepository.findByStatusOrUpdateTime(ProjectInfo.STATUS_ADD, beginTime, endTime);
+		List<ProjectInfo> projectInfos = projectInfoRepository.findByStatusOrBeginTime(ProjectInfo.STATUS_ADD, beginTime);
 		if(projectInfos != null && projectInfos.size() > 0){
 			for (ProjectInfo projectInfo : projectInfos) {
 				log.info("======begin generate project : "+projectInfo.getSerialNum()+"=====");
@@ -223,10 +226,10 @@ public class ProjectStateTask {
 		init();
 		ZonedDateTime beginTime = DateUtil.getZonedDateTime(DateUtil.lastMonthBegin(now).getTime());
 		ZonedDateTime endTime = DateUtil.getZonedDateTime(DateUtil.lastMonthend(now).getTime());
-		String fDay = DateUtil.getFirstDayOfLastMonth("yyyyMMdd");
-		String lDay = DateUtil.getLastDayOfLastMonth("yyyyMMdd");
-		String lMonth = DateUtil.getLastDayOfLastMonth("yyyyMM");
-		List<ProjectInfo> projectInfos = projectInfoRepository.findByStatusOrUpdateTime(ProjectInfo.STATUS_ADD, beginTime, endTime);
+		String fDay = DateUtil.formatDate("yyyyMMdd", DateUtil.lastMonthBegin(now));
+		String lDay = DateUtil.formatDate("yyyyMMdd", DateUtil.lastMonthend(now));
+		String lMonth = DateUtil.formatDate("yyyyMM", DateUtil.lastMonthBegin(now));
+		List<ProjectInfo> projectInfos = projectInfoRepository.findByStatusOrBeginTime(ProjectInfo.STATUS_ADD, beginTime);
 		if(projectInfos != null && projectInfos.size() > 0){
 			for (ProjectInfo projectInfo : projectInfos) {
 				log.info("=======begin generate project : "+projectInfo.getSerialNum()+"=======");
@@ -345,7 +348,7 @@ public class ProjectStateTask {
 				UserCost userCost = userCostRepository.findMaxByCostMonthAndUserId(costMonth, userTimesheet.getUserId());
 				if(userCost != null){
 					if(contractType == ContractInfo.TYPE_INTERNAL){
-						total += userTimesheet.getRealInput() * (userCost.getInternalCost()/22.5/8);
+						total += userTimesheet.getRealInput() * (userCost.getInternalCost()/168);
 					}else if(contractType == ContractInfo.TYPE_EXTERNAL){
 						total += userTimesheet.getRealInput() * StringUtil.nullToDouble((externalQuotationMap.get(userIdGradeMap.get(userTimesheet.getUserId()))));
 					}else{
