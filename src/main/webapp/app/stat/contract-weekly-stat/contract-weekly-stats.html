@@ -42,7 +42,6 @@
         <table class="jh-table table table-striped">
             <thead>
                 <tr jh-sort="vm.predicate" ascending="vm.reverse" callback="vm.transition()">
-                    <th jh-sort-by="m.id"><span data-translate="global.field.id">ID</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="i.serialNum"><span data-translate="cpmApp.contractWeeklyStat.serialNum">Contract serialNum</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="i.name"><span data-translate="cpmApp.contractWeeklyStat.name">Contract name</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="m.finishRate"><span data-translate="cpmApp.contractWeeklyStat.finishRate">Finish Rate</span> <span class="glyphicon glyphicon-sort"></span></th>
@@ -50,21 +49,18 @@
                     <th jh-sort-by="m.costTotal"><span data-translate="cpmApp.contractWeeklyStat.costTotal">Cost Total</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="m.grossProfit"><span data-translate="cpmApp.contractWeeklyStat.grossProfit">Gross Profit</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="m.statWeek"><span data-translate="cpmApp.contractWeeklyStat.statWeek">Stat Week</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="m.createTime"><span data-translate="cpmApp.contractWeeklyStat.createTime">Create Time</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th></th>
                 </tr>
             </thead>
             <tbody>
                 <tr ng-repeat="contractWeeklyStat in vm.contractWeeklyStats track by contractWeeklyStat.id">
-                    <td><a ui-sref="contract-weekly-stat-detail({id:contractWeeklyStat.id})">{{contractWeeklyStat.id}}</a></td>
-                    <td>{{contractWeeklyStat.serialNum}}</td>
+                    <td><a ui-sref="contract-weekly-stat-detail({id:contractWeeklyStat.id})">{{contractWeeklyStat.serialNum}}</a></td>
                     <td>{{contractWeeklyStat.name}}</td>
                     <td>{{contractWeeklyStat.finishRate}}%</td>
                     <td>{{contractWeeklyStat.receiveTotal}}</td>
                     <td>{{contractWeeklyStat.costTotal}}</td>
                     <td>{{contractWeeklyStat.grossProfit}}</td>
                     <td>{{contractWeeklyStat.statWeek}}</td>
-                    <td>{{contractWeeklyStat.createTime | date:'medium'}}</td>
                     <td class="text-right">
                         <div class="btn-group flex-btn-group-container">
                             <button type="submit"

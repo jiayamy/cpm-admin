@@ -2,6 +2,7 @@ package com.wondertek.cpm.web.rest;
 
 import java.net.URISyntaxException;
 import java.time.ZonedDateTime;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.codahale.metrics.annotation.Timed;
+import com.wondertek.cpm.config.DateUtil;
 import com.wondertek.cpm.config.StringUtil;
 import com.wondertek.cpm.domain.ContractUser;
 import com.wondertek.cpm.domain.vo.ContractUserVo;
@@ -87,6 +89,10 @@ public class ContractUserResource {
 			}else if (old.getContractId() != contractUser.getContractId().longValue()) {
 				return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.contractUser.save.contractIdError", "")).body(null);
 			}
+			long leaveDay = StringUtil.nullToLong(DateUtil.formatDate(DateUtil.DATE_YYYYMMDD_PATTERN, new Date()));
+	        if(old.getLeaveDay() != null && old.getLeaveDay() <= leaveDay){
+	        	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.contractUser.save.leaveDayError", "")).body(null);
+	        }
 			contractUser.setCreateTime(old.getCreateTime());
 			contractUser.setCreator(old.getCreator());
 		}
@@ -146,7 +152,10 @@ public class ContractUserResource {
         if (contractVo == null) {
         	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.contractUser.save.noPerm", "")).body(null);
 		}
-        
+        long leaveDay = StringUtil.nullToLong(DateUtil.formatDate(DateUtil.DATE_YYYYMMDD_PATTERN, new Date()));
+        if(contractVo.getLeaveDay() != null && contractVo.getLeaveDay() <= leaveDay){
+        	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.contractUser.save.leaveDayError", "")).body(null);
+        }
         contractUserService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert("contractUser", id.toString())).build();
     }

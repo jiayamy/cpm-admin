@@ -44,7 +44,6 @@
         <table class="jh-table table table-striped">
             <thead>
                 <tr jh-sort="vm.predicate" ascending="vm.reverse" callback="vm.transition()">
-                    <th jh-sort-by="m.id"><span data-translate="global.field.id">ID</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="i.serialNum"><span data-translate="cpmApp.contractMonthlyStat.serialNum">Contract serialNum</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="i.name"><span data-translate="cpmApp.contractMonthlyStat.name">Contract name</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="m.finishRate"><span data-translate="cpmApp.contractMonthlyStat.finishRate">Finish Rate</span> <span class="glyphicon glyphicon-sort"></span></th>
@@ -52,21 +51,18 @@
                     <th jh-sort-by="m.costTotal"><span data-translate="cpmApp.contractMonthlyStat.costTotal">Cost Total</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="m.grossProfit"><span data-translate="cpmApp.contractMonthlyStat.grossProfit">Gross Profit</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="m.statWeek"><span data-translate="cpmApp.contractMonthlyStat.statWeek">Stat Week</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="m.createTime"><span data-translate="cpmApp.contractMonthlyStat.createTime">Create Time</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th></th>
                 </tr>
             </thead>
             <tbody>
                 <tr ng-repeat="contractMonthlyStat in vm.contractMonthlyStats track by contractMonthlyStat.id">
-                    <td><a ui-sref="contract-monthly-stat-detail({id:contractMonthlyStat.id})">{{contractMonthlyStat.id}}</a></td>
-                    <td>{{contractMonthlyStat.serialNum}}</td>
+                    <td><a ui-sref="contract-monthly-stat-detail({id:contractMonthlyStat.id})">{{contractMonthlyStat.serialNum}}</a></td>
                     <td>{{contractMonthlyStat.name}}</td>
                     <td>{{contractMonthlyStat.finishRate}}%</td>
                     <td>{{contractMonthlyStat.receiveTotal}}</td>
                     <td>{{contractMonthlyStat.costTotal}}</td>
                     <td>{{contractMonthlyStat.grossProfit}}</td>
                     <td>{{contractMonthlyStat.statWeek}}</td>
-                    <td>{{contractMonthlyStat.createTime | date:'medium'}}</td>
                     <td class="text-right">
                         <div class="btn-group flex-btn-group-container">
                             <button type="submit"
