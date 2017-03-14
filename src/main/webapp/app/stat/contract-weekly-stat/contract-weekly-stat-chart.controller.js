@@ -33,6 +33,17 @@
         loadAll();
         vm.previousState = previousState.name;
         function loadAll () {
+        	var windowWidth = window.screen.width;
+        	var gridHeight, gridY,legendY;
+        	if(windowWidth <= 430){
+            	gridHeight = '55%';
+            	gridY = '40%';
+            	legendY = '36';
+            }else{
+            	gridHeight = '65%';
+            	gridY = '25%';
+            	legendY = '32';
+            }
         	if(pagingParams.fromDate == undefined){
         		pagingParams.fromDate = "";
         	};
@@ -98,7 +109,7 @@
                             '项目人工成本' : false,
                             '项目报销成本' : false
                         },
-                        y:'30'
+                        y: legendY
                     },
                     toolbox: {
                         show: true,
@@ -125,8 +136,9 @@
                     }],
                     grid: {
                         width: '80%',
-                        height : '65%',
-                        y: '30%'
+                        
+                        height : gridHeight,
+                        y: gridY
                     },
                     series: series
                 };
