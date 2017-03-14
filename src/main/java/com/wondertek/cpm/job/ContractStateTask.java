@@ -116,6 +116,10 @@ public class ContractStateTask {
 				userIdGradeMap.put(user.getId(), user.getGrade());
 			}
 		}
+		List<StatIdentify> statIdentifies = statIdentifyRepository.findByStatus(StatIdentify.STATUS_UNAVALIABLE);
+		if(statIdentifies != null && statIdentifies.size() > 0){
+			statIdentifyRepository.delete(statIdentifies);
+		}
 	}
 	
 	@Scheduled(cron = "0 0 23 ? * MON")
@@ -132,7 +136,7 @@ public class ContractStateTask {
 		ZonedDateTime endTime = DateUtil.getZonedDateTime(DateUtil.lastSundayEnd(now).getTime());
 		Long fDay = StringUtil.nullToLong(dates[0]);
 		Long statWeek = StringUtil.nullToLong(dates[6]);
-		List<ContractInfo> contractInfos = contractInfoRepository.findByStatusOrUpdateTime(ContractInfo.STATUS_VALIDABLE, beginTime, endTime);
+		List<ContractInfo> contractInfos = contractInfoRepository.findByStatusOrEndTime(ContractInfo.STATUS_VALIDABLE, beginTime);
 		if(contractInfos != null && contractInfos.size() > 0){
 			for(ContractInfo contractInfo : contractInfos){
 				log.info("=========begin generate Contract : "+contractInfo.getSerialNum()+"=========");
@@ -308,7 +312,7 @@ public class ContractStateTask {
 									UserCost userCost = userCostRepository.findMaxByCostMonthAndUserId(costMonth, userTimesheet.getUserId());
 									if(userCost != null){
 										if(contractInfo.getType() == ContractInfo.TYPE_INTERNAL){
-											projectHumanCost += userTimesheet.getRealInput() * (userCost.getInternalCost()/22.5/8);
+											projectHumanCost += userTimesheet.getRealInput() * (userCost.getInternalCost()/168);
 										}else if(contractInfo.getType() == ContractInfo.TYPE_EXTERNAL){
 											projectHumanCost += userTimesheet.getRealInput() * StringUtil.nullToDouble((externalQuotationMap.get(userIdGradeMap.get(userTimesheet.getUserId()))));
 										}else{
@@ -380,10 +384,10 @@ public class ContractStateTask {
 		init();
 		ZonedDateTime beginTime = DateUtil.getZonedDateTime(DateUtil.lastMonthBegin(now).getTime());
 		ZonedDateTime endTime = DateUtil.getZonedDateTime(DateUtil.lastMonthend(now).getTime());
-		String fDay = DateUtil.getFirstDayOfLastMonth("yyyyMMdd");
-		String lDay = DateUtil.getLastDayOfLastMonth("yyyyMMdd");
-		String lMonth = DateUtil.getLastDayOfLastMonth("yyyyMM");
-		List<ContractInfo> contractInfos = contractInfoRepository.findByStatusOrUpdateTime(ContractInfo.STATUS_VALIDABLE, beginTime, endTime);
+		String fDay = DateUtil.formatDate("yyyyMMdd", DateUtil.lastMonthBegin(now));
+		String lDay = DateUtil.formatDate("yyyyMMdd", DateUtil.lastMonthend(now));
+		String lMonth = DateUtil.formatDate("yyyyMM", DateUtil.lastMonthBegin(now));
+		List<ContractInfo> contractInfos = contractInfoRepository.findByStatusOrEndTime(ContractInfo.STATUS_VALIDABLE, beginTime);
 		if(contractInfos != null && contractInfos.size() > 0){
 			for(ContractInfo contractInfo : contractInfos){
 				log.info("=====begin generate Contract : "+contractInfo.getSerialNum()+"=======");
@@ -563,7 +567,7 @@ public class ContractStateTask {
 								for(UserTimesheet userTimesheet : userTimesheets3){
 									UserCost userCost = userCostRepository.findMaxByCostMonthAndUserId(StringUtil.nullToLong(lMonth), userTimesheet.getUserId());
 									if(contractInfo.getType() == ContractInfo.TYPE_INTERNAL){
-										projectHumanCost += userTimesheet.getRealInput() * (userCost.getInternalCost()/22.5/8);
+										projectHumanCost += userTimesheet.getRealInput() * (userCost.getInternalCost()/168);
 									}else if(contractInfo.getType() == ContractInfo.TYPE_EXTERNAL){
 										projectHumanCost += userTimesheet.getRealInput() * StringUtil.nullToDouble((externalQuotationMap.get(userIdGradeMap.get(userTimesheet.getUserId()))));
 									}else{
@@ -653,7 +657,7 @@ public class ContractStateTask {
 						UserCost userCost = userCostRepository.findMaxByCostMonthAndUserId(costMonth, userTimesheet.getUserId());
 						if(userCost != null){
 							if(contractType == ContractInfo.TYPE_INTERNAL){
-								total += userTimesheet.getRealInput() * (userCost.getInternalCost()/22.5/8);
+								total += userTimesheet.getRealInput() * (userCost.getInternalCost()/168);
 							}else if(contractType == ContractInfo.TYPE_EXTERNAL){
 								total += userTimesheet.getRealInput() * userTimesheet.getRealInput() * StringUtil.nullToDouble((externalQuotationMap.get(userIdGradeMap.get(userTimesheet.getUserId()))));
 							}else{
@@ -683,7 +687,7 @@ public class ContractStateTask {
 						UserCost userCost = userCostRepository.findMaxByCostMonthAndUserId(costMonth, userTimesheet.getUserId());
 						if(userCost != null){
 							if(contractType == ContractInfo.TYPE_INTERNAL){
-								total2 += userTimesheet.getRealInput() * (userCost.getInternalCost()/22.5/8);
+								total2 += userTimesheet.getRealInput() * (userCost.getInternalCost()/168);
 							}else if(contractType == ContractInfo.TYPE_EXTERNAL){
 								total2 += userTimesheet.getRealInput() * userTimesheet.getRealInput() * StringUtil.nullToDouble((externalQuotationMap.get(userIdGradeMap.get(userTimesheet.getUserId()))));
 							}else{
@@ -734,14 +738,14 @@ public class ContractStateTask {
 						UserCost userCost = userCostRepository.findMaxByCostMonthAndUserId(costMonth, userTimesheet.getUserId());
 						if(userCost != null){
 							if(contractType == ContractInfo.TYPE_INTERNAL){
-								total += userTimesheet.getRealInput() * (userCost.getInternalCost()/22.5/8);
+								total += userTimesheet.getRealInput() * (userCost.getInternalCost()/168);
 							}else if(contractType == ContractInfo.TYPE_EXTERNAL){
 								total += userTimesheet.getRealInput() * StringUtil.nullToDouble((externalQuotationMap.get(userIdGradeMap.get(userTimesheet.getUserId()))));
 							}else if (contractType == ContractInfo.TYPE_PUBLIC) {
 								if(contractInfo.getIsEpibolic()){
 									total += userTimesheet.getRealInput() * StringUtil.nullToDouble((externalQuotationMap.get(userIdGradeMap.get(userTimesheet.getUserId()))));
 								}else{
-									total += userTimesheet.getRealInput() * (userCost.getInternalCost()/22.5/8);
+									total += userTimesheet.getRealInput() * (userCost.getInternalCost()/168);
 								}
 							}else{
 								log.info(" no contractType found belong to UserTimesheet : " + userTimesheet.getId());

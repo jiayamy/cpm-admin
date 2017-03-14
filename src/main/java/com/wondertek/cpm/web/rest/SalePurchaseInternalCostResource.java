@@ -152,7 +152,7 @@ public class SalePurchaseInternalCostResource {
     			"生产成本合计",
     			"生产毛利"
     	};
-    	String fileName = "销售内部采购成本.xlsx";
+    	String fileName = "销售内部采购成本_" + statWeek +".xlsx";
     	//写入sheet
     	ServletOutputStream outputStream = response.getOutputStream();
     	response.setHeader("Content-Disposition","attachment;filename=" + ExcelUtil.getExportName(request, fileName));

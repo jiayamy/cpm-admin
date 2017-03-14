@@ -28,10 +28,12 @@ import org.springframework.web.bind.annotation.RestController;
 import com.codahale.metrics.annotation.Timed;
 import com.wondertek.cpm.config.DateUtil;
 import com.wondertek.cpm.config.StringUtil;
+import com.wondertek.cpm.domain.ProjectInfo;
 import com.wondertek.cpm.domain.ProjectUser;
 import com.wondertek.cpm.domain.vo.ProjectUserVo;
 import com.wondertek.cpm.security.AuthoritiesConstants;
 import com.wondertek.cpm.security.SecurityUtils;
+import com.wondertek.cpm.service.ProjectInfoService;
 import com.wondertek.cpm.service.ProjectUserService;
 import com.wondertek.cpm.web.rest.util.HeaderUtil;
 import com.wondertek.cpm.web.rest.util.PaginationUtil;
@@ -49,6 +51,9 @@ public class ProjectUserResource {
         
     @Inject
     private ProjectUserService projectUserService;
+    
+    @Inject
+    private ProjectInfoService projectInfoService;
 
     /**
      * PUT  /project-users : Updates an existing projectUser.
@@ -76,6 +81,11 @@ public class ProjectUserResource {
         boolean isExist = projectUserService.checkUserExist(projectUser);
         if(isExist){
         	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.projectUser.save.userIdError", "")).body(null);
+        }
+        //查看项目是否删除或者结项
+        ProjectInfo projectInfo = projectInfoService.findOne(projectUser.getProjectId());
+        if(projectInfo.getStatus() != ProjectInfo.STATUS_ADD){
+        	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.projectUser.save.projectError", "")).body(null);
         }
         String updator = SecurityUtils.getCurrentUserLogin();
         ZonedDateTime updateTime = ZonedDateTime.now();
@@ -179,6 +189,11 @@ public class ProjectUserResource {
         long leaveDay = StringUtil.nullToLong(DateUtil.formatDate(DateUtil.DATE_YYYYMMDD_PATTERN, new Date()));
         if(projectUserVo.getLeaveDay() != null && projectUserVo.getLeaveDay() <= leaveDay){
         	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.projectUser.save.leaveDayError", "")).body(null);
+        }
+        //查看项目是否删除或者结项
+        ProjectInfo projectInfo = projectInfoService.findOne(projectUserVo.getProjectId());
+        if(projectInfo.getStatus() != ProjectInfo.STATUS_ADD){
+        	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.projectUser.save.projectError", "")).body(null);
         }
         projectUserService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert("projectUser", id.toString())).build();

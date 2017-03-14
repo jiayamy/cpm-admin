@@ -11,7 +11,7 @@
         $stateProvider
         .state('consultant-bonus', {
             parent: 'stat',
-            url: '/consultant-bonus?page&contractId&consultantsId&statWeek&consultantsName',
+            url: '/consultant-bonus?contractId&consultantsId&statWeek&consultantsName',
             data: {
                 authorities: ['ROLE_STAT_CONSULTANT_BONUS'],
                 pageTitle: 'cpmApp.consultantBonus.home.title'
@@ -24,14 +24,6 @@
                 }
             },
             params: {
-                page: {
-                    value: '1',
-                    squash: true
-                },
-                sort: {
-                    value: 'm.id,desc',
-                    squash: true
-                },
                 contractId : null,
                 consultantsId : null,
                 statWeek : null,
@@ -40,10 +32,6 @@
             resolve: {
                 pagingParams: ['$stateParams', 'PaginationUtil', function ($stateParams, PaginationUtil) {
                     return {
-                        page: PaginationUtil.parsePage($stateParams.page),
-                        sort: $stateParams.sort,
-                        predicate: PaginationUtil.parsePredicate($stateParams.sort),
-                        ascending: PaginationUtil.parseAscending($stateParams.sort),
                         contractId: $stateParams.contractId,
                         consultantsName: $stateParams.consultantsName,
                         consultantsId: $stateParams.consultantsId,
@@ -105,13 +93,28 @@
                     value: '1',
                     squash: true
                 },
+                sort: {
+                    value: 'm.id,desc',
+                    squash: true
+                },
+                contId: null,
+                contractId : null,
+                consultantsId : null,
+                statWeek : null,
+                consultantsName: null
             },
             resolve: {
                 pagingParams: ['$stateParams', 'PaginationUtil', function ($stateParams, PaginationUtil) {
                     return {
                         page: PaginationUtil.parsePage($stateParams.page),
                         sort: $stateParams.sort,
-                        contId: $stateParams.contId
+                        predicate: PaginationUtil.parsePredicate($stateParams.sort),
+                        ascending: PaginationUtil.parseAscending($stateParams.sort),
+                        contId: $stateParams.contId,
+                        contractId : $stateParams.contractId,
+                        consultantsId : $stateParams.consultantsId,
+                        statWeek : $stateParams.statWeek,
+                        consultantsName: $stateParams.consultantsName
                     };
                 }],
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {

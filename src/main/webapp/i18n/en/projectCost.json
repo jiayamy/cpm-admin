@@ -25,7 +25,8 @@
             	"idNone":"id not exist",
             	"projectIdError":"projectIdError",
             	"type1Error":"type-humanCost can't be deleted",
-            	"statue2Error":"status-deleted can't be deleted again"
+            	"statue2Error":"status-deleted can't be deleted again",
+            	"projectError" : "project is finished or deleted"
             },
             "projectId": "Project Id",
             "projectName":"Project Name",

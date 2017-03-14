@@ -28,10 +28,12 @@ import com.codahale.metrics.annotation.Timed;
 import com.wondertek.cpm.CpmConstants;
 import com.wondertek.cpm.config.StringUtil;
 import com.wondertek.cpm.domain.ProjectCost;
+import com.wondertek.cpm.domain.ProjectInfo;
 import com.wondertek.cpm.domain.vo.ProjectCostVo;
 import com.wondertek.cpm.security.AuthoritiesConstants;
 import com.wondertek.cpm.security.SecurityUtils;
 import com.wondertek.cpm.service.ProjectCostService;
+import com.wondertek.cpm.service.ProjectInfoService;
 import com.wondertek.cpm.web.rest.util.HeaderUtil;
 import com.wondertek.cpm.web.rest.util.PaginationUtil;
 
@@ -48,6 +50,9 @@ public class ProjectCostResource {
         
     @Inject
     private ProjectCostService projectCostService;
+    
+    @Inject
+    private ProjectInfoService projectInfoService;
 
     /**
      * PUT  /project-costs : Updates an existing projectCost.
@@ -59,7 +64,7 @@ public class ProjectCostResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PutMapping("/project-costs")
-    @Timed
+    @Timed	
     @Secured(AuthoritiesConstants.ROLE_PROJECT_COST)
     public ResponseEntity<Boolean> updateProjectCost(@RequestBody ProjectCost projectCost) throws URISyntaxException {
         log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to update ProjectCost : {}", projectCost);
@@ -70,6 +75,11 @@ public class ProjectCostResource {
         }
         if(projectCost.getType() == ProjectCost.TYPE_HUMAN_COST){
         	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.projectCost.save.type1Error", "")).body(null);
+        }
+        //查看项目是否删除或者结项
+        ProjectInfo projectInfo = projectInfoService.findOne(projectCost.getProjectId());
+        if(projectInfo.getStatus() != ProjectInfo.STATUS_ADD){
+        	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.projectCost.save.projectError", "")).body(null);
         }
         String updator = SecurityUtils.getCurrentUserLogin();
         ZonedDateTime updateTime = ZonedDateTime.now();
@@ -181,6 +191,11 @@ public class ProjectCostResource {
         }
         if(projectCost.getType() == ProjectCost.TYPE_HUMAN_COST){
         	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.projectCost.delete.type1Error", "")).body(null);
+        }
+        //查看项目是否删除或者结项
+        ProjectInfo projectInfo = projectInfoService.findOne(projectCost.getProjectId());
+        if(projectInfo.getStatus() != ProjectInfo.STATUS_ADD){
+        	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.projectCost.save.projectError", "")).body(null);
         }
         projectCostService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert("projectCost", id.toString())).build();

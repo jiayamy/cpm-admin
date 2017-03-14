@@ -19,11 +19,11 @@ import com.wondertek.cpm.security.SecurityUtils;
 
 @RestController
 @RequestMapping("/api")
-public class TestResource extends AccountScheduledJob{
+public class AccountScheduleJobTestResource extends AccountScheduledJob{
 	
 	private final Logger log = LoggerFactory.getLogger(AccountScheduledJob.class);
 	
-	@GetMapping("/test/")
+	@GetMapping("/accountScheduledJobTest/")
 	@Timed
 	@Secured(AuthoritiesConstants.ADMIN)
 	public @ResponseBody String generateProjectWeeklyState(@RequestParam(value="date", required = false) Long date) {
