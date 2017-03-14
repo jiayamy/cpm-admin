@@ -24,7 +24,9 @@
             	"projectError2": "项目创建错误",
             	"projectError3": "构建项目的采购单不能修改实施者",
             	"haveDeleted": "该采购单已经被删除",
-            	"noPerm":"无权限操作"
+            	"noPerm":"无权限操作",
+            	"dataError":"内部采购单数据错误",
+            	"contractInfoError":"合同结项或者已删除"
             },
             "button": {
             	"createProject": "创建服务项目",

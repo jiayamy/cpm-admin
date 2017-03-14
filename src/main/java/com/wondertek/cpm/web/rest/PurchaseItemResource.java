@@ -30,12 +30,14 @@ import org.springframework.web.bind.annotation.RestController;
 import com.codahale.metrics.annotation.Timed;
 import com.wondertek.cpm.config.StringUtil;
 import com.wondertek.cpm.domain.ContractBudget;
+import com.wondertek.cpm.domain.ContractInfo;
 import com.wondertek.cpm.domain.ProductPrice;
 import com.wondertek.cpm.domain.PurchaseItem;
 import com.wondertek.cpm.domain.vo.LongValue;
 import com.wondertek.cpm.domain.vo.ProductPriceVo;
 import com.wondertek.cpm.domain.vo.PurchaseItemVo;
 import com.wondertek.cpm.repository.ContractBudgetRepository;
+import com.wondertek.cpm.repository.ContractInfoRepository;
 import com.wondertek.cpm.security.AuthoritiesConstants;
 import com.wondertek.cpm.security.SecurityUtils;
 import com.wondertek.cpm.service.PurchaseItemService;
@@ -58,6 +60,9 @@ public class PurchaseItemResource {
     
     @Inject
     private ContractBudgetRepository contractBudetRepository;
+    
+    @Inject
+    private ContractInfoRepository contractInfoRepository;
 
     /**
      * PUT  /purchase-items : Updates an existing purchaseItem.
@@ -78,6 +83,15 @@ public class PurchaseItemResource {
         		|| StringUtil.isNullStr(purchaseItem.getName()) || purchaseItem.getSource() == null
         		|| purchaseItem.getType() == null || purchaseItem.getPrice() == null) {
         	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.purchaseItem.save.requiedError", "")).body(null);
+		}
+        ContractInfo contractInfo = contractInfoRepository.findOne(purchaseItem.getContractId());
+        ContractBudget contractBudget = contractBudetRepository.findOneById(purchaseItem.getBudgetId());
+        //判断合同和内部采购单的状态是否可用
+        if (contractInfo == null || contractBudget == null) {
+        	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.purchaseItem.save.dataError", "")).body(null);
+		}
+        if (contractInfo.getStatus() != ContractInfo.STATUS_VALIDABLE || contractBudget.getStatus() != ContractBudget.STATUS_VALIDABLE) {
+        	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.purchaseItem.save.statusUnvalidable", "")).body(null);
 		}
         String updator = SecurityUtils.getCurrentUserLogin();
         ZonedDateTime updateTime = ZonedDateTime.now();
@@ -105,7 +119,6 @@ public class PurchaseItemResource {
 			if (purchaseItem.getId() != null) {
 	            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("purchaseItem", "idexists", "A new purchaseItem cannot already have an ID")).body(null);
 	        }
-	        ContractBudget contractBudget = contractBudetRepository.findOneById(purchaseItem.getBudgetId());
 	        if (contractBudget == null) {
 	        	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.purchaseItem.save.saveError", "")).body(null);
 			}
@@ -162,9 +175,20 @@ public class PurchaseItemResource {
     public ResponseEntity<Void> deletePurchaseItem(@PathVariable Long id) {
         log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to delete PurchaseItem : {}", id);
         PurchaseItemVo purchaseItem = purchaseItemService.getPurchaseItem(id);
+        ContractInfo contractInfo = contractInfoRepository.findOne(purchaseItem.getContractId());
+        ContractBudget contractBudget = contractBudetRepository.findOneById(purchaseItem.getBudgetId());
+        
         if (purchaseItem == null) {
     		return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.purchaseItem.save.noPerm", "")).body(null);
 		}
+        //判断合同和内部采购单的状态是否可用
+        if (contractInfo == null || contractBudget == null) {
+        	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.purchaseItem.save.dataError", "")).body(null);
+		}
+        if (contractInfo.getStatus() != ContractInfo.STATUS_VALIDABLE || contractBudget.getStatus() != ContractBudget.STATUS_VALIDABLE) {
+        	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.purchaseItem.save.statusUnvalidable", "")).body(null);
+		}
+        //判断记录是否已经完成删除
         if (purchaseItem.getStatus() != PurchaseItem.STATUS_VALIBLE) {
     		return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.purchaseItem.delete.hasDeleted", "")).body(null);
 		}

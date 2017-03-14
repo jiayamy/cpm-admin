@@ -28,8 +28,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.codahale.metrics.annotation.Timed;
 import com.wondertek.cpm.config.StringUtil;
 import com.wondertek.cpm.domain.ContractBudget;
+import com.wondertek.cpm.domain.ContractInfo;
 import com.wondertek.cpm.domain.vo.ContractBudgetVo;
 import com.wondertek.cpm.domain.vo.LongValue;
+import com.wondertek.cpm.repository.ContractInfoRepository;
 import com.wondertek.cpm.security.AuthoritiesConstants;
 import com.wondertek.cpm.security.SecurityUtils;
 import com.wondertek.cpm.service.ContractBudgetService;
@@ -55,6 +57,9 @@ public class ContractBudgetResource {
     @Inject
     private ContractBudgetService contractBudgetService;
     
+    @Inject
+    private ContractInfoRepository contractInfoRepository;
+    
     /**
      * PUT  /contract-budgets : Updates an existing contractBudget.
      *
@@ -75,6 +80,14 @@ public class ContractBudgetResource {
         		|| StringUtil.isNullStr(contractBudget.getUserName()) || contractBudget.getDeptId() == null || StringUtil.isNullStr(contractBudget.getDept())
         		|| contractBudget.getPurchaseType() == null || contractBudget.getBudgetTotal() == null || contractBudget.getBudgetTotal() < 0 || StringUtil.isNullStr(contractBudget.getName())) {
         	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.contractBudget.save.requiedError", "")).body(null);
+		}
+        //校验合同状态是否可用
+        ContractInfo contractInfo = contractInfoRepository.findOne(contractBudget.getContractId());
+        if (contractInfo == null) {
+        	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.contractBudget.save.dataError", "")).body(null);
+		}
+        if (contractInfo.getStatus() != ContractInfo.STATUS_VALIDABLE) {
+        	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.contractBudget.save.contractInfoError", "")).body(null);
 		}
         Boolean flag = Boolean.FALSE;
         String updator = SecurityUtils.getCurrentUserLogin();
@@ -179,6 +192,15 @@ public class ContractBudgetResource {
         if (contractBudget == null) {
         	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.contractBudget.save.noPerm", "")).body(null);
 		}
+        //校验合同状态是否可用
+        ContractInfo contractInfo = contractInfoRepository.findOne(contractBudget.getContractId());
+        if (contractInfo == null) {
+        	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.contractBudget.save.dataError", "")).body(null);
+		}
+        if (contractInfo.getStatus() != ContractInfo.STATUS_VALIDABLE) {
+        	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.contractBudget.save.contractInfoError", "")).body(null);
+		}
+        //校验采购单是否已经删除
         if (contractBudget.getStatus() == ContractBudget.STATUS_DELETED) {
         	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.contractBudget.save.haveDeleted", "")).body(null);
 		}

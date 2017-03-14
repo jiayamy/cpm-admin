@@ -115,12 +115,12 @@
 					}
 					if (data[i].isCreate == true) {
 						if (data[i].purchaseTypeName == "服务") {
-							if (data[i].status == 1 && data[i].hasCreatedProject == true) {
+							if (data[i].status == 1 && data[i].hasCreatedProject == true && data[i].isValidable == true) {
 								data[i].haveCreateProject = true;
 							}
 							data[i].haveCreateItem = null;
 						}else {
-							if (data[i].status == 1) {
+							if (data[i].status == 1 && data[i].isValidable == true) {
 								data[i].haveCreateItem = true;
 							}
 							data[i].haveCreateProject = null;

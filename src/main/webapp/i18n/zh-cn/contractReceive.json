@@ -22,7 +22,9 @@
             	"receiveDayError":"回款时间必须小于当前时间",
             	"noPerm":"无此权限",
             	"contractChanged":"合同编号不可修改",
-            	"status2Error":"已删除的记录不可修改"
+            	"status2Error":"已删除的记录不可修改",
+            	"dataError":"内部采购单数据错误",
+            	"contractInfoError":"合同结项或者已删除"
             },
             "contractId": "合同编号",
             "contractName": "合同名称",

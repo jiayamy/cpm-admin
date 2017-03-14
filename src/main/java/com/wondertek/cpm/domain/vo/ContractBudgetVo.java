@@ -4,6 +4,7 @@ import java.time.ZonedDateTime;
 
 import com.wondertek.cpm.config.StringUtil;
 import com.wondertek.cpm.domain.ContractBudget;
+import com.wondertek.cpm.domain.ContractInfo;
 
 public class ContractBudgetVo {
 	private Long id;
@@ -24,6 +25,7 @@ public class ContractBudgetVo {
 	private Boolean isEdit = Boolean.FALSE;		//能够编辑采购单
 	private Boolean isCreate = Boolean.FALSE;	//能够创建项目或者采购子项
 	private Boolean hasCreatedProject = Boolean.FALSE;//是否已经创建项目
+	private Boolean isValidable = Boolean.FALSE;//关联的合同状态是否有效
 	
 	public ContractBudgetVo(){
 		
@@ -81,6 +83,9 @@ public class ContractBudgetVo {
 		
 		Long budgetId = StringUtil.nullToCloneLong(o[12]);
 		
+		//合同状态
+		Integer contractStatus = StringUtil.nullToInteger(o[13]);
+		
 		//判定 isEdit
 		if(contractCreator.equals(login) || (salesmanId != null && salesmanId == userId) || (consultantsId != null && consultantsId == userId) || login.equals(contractBudget.getCreator())
 				|| (wdiId != null && wdiId == deptId) || wdiIdPath.startsWith(idPath)
@@ -96,6 +101,11 @@ public class ContractBudgetVo {
 		//判定 hasCreatedProject
 		if (budgetId == null) {
 			this.hasCreatedProject = Boolean.TRUE;
+		}
+		
+		//判定 isValidable
+		if (contractStatus == ContractInfo.STATUS_VALIDABLE) {
+			this.isValidable = Boolean.TRUE;
 		}
 	}
 	
@@ -121,6 +131,14 @@ public class ContractBudgetVo {
 
 	public void setHasCreatedProject(Boolean hasCreatedProject) {
 		this.hasCreatedProject = hasCreatedProject;
+	}
+	
+	public Boolean getIsValidable() {
+		return isValidable;
+	}
+
+	public void setIsValidable(Boolean isValidable) {
+		this.isValidable = isValidable;
 	}
 
 	public void setContractName(String contractName) {

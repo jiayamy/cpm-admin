@@ -28,8 +28,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.codahale.metrics.annotation.Timed;
 import com.wondertek.cpm.config.DateUtil;
 import com.wondertek.cpm.config.StringUtil;
+import com.wondertek.cpm.domain.ContractInfo;
 import com.wondertek.cpm.domain.ContractUser;
 import com.wondertek.cpm.domain.vo.ContractUserVo;
+import com.wondertek.cpm.repository.ContractInfoRepository;
 import com.wondertek.cpm.security.AuthoritiesConstants;
 import com.wondertek.cpm.security.SecurityUtils;
 import com.wondertek.cpm.service.ContractUserService;
@@ -49,6 +51,9 @@ public class ContractUserResource {
         
     @Inject
     private ContractUserService contractUserService;
+    
+    @Inject
+    private ContractInfoRepository contractInfoRepository;
 
 
     @PutMapping("/contract-users")
@@ -62,6 +67,14 @@ public class ContractUserResource {
         		 || contractUser.getUserId() == null || StringUtil.isNullStr(contractUser.getUserName())
         		) {
         	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.contractUser.save.paramNone", "")).body(null);
+		}
+        //校验合同状态是否可用
+        ContractInfo contractInfo = contractInfoRepository.findOne(contractUser.getContractId());
+        if (contractInfo == null) {
+        	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.contractReceive.save.dataError", "")).body(null);
+		}
+        if (contractInfo.getStatus() != ContractInfo.STATUS_VALIDABLE) {
+        	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.contractReceive.save.contractInfoError", "")).body(null);
 		}
         if(contractUser.getLeaveDay() != null && contractUser.getLeaveDay().longValue() < contractUser.getJoinDay()){
         	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.contractUser.save.dayError", "")).body(null);
@@ -151,6 +164,14 @@ public class ContractUserResource {
         ContractUserVo contractVo = contractUserService.getContractUser(id);
         if (contractVo == null) {
         	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.contractUser.save.noPerm", "")).body(null);
+		}
+        //校验合同状态是否可用
+        ContractInfo contractInfo = contractInfoRepository.findOne(contractVo.getContractId());
+        if (contractInfo == null) {
+        	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.contractReceive.save.dataError", "")).body(null);
+		}
+        if (contractInfo.getStatus() != ContractInfo.STATUS_VALIDABLE) {
+        	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.contractReceive.save.contractInfoError", "")).body(null);
 		}
         long leaveDay = StringUtil.nullToLong(DateUtil.formatDate(DateUtil.DATE_YYYYMMDD_PATTERN, new Date()));
         if(contractVo.getLeaveDay() != null && contractVo.getLeaveDay() <= leaveDay){

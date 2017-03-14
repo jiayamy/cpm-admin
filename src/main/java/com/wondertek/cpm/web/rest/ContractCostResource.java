@@ -30,7 +30,9 @@ import com.codahale.metrics.annotation.Timed;
 import com.wondertek.cpm.CpmConstants;
 import com.wondertek.cpm.config.StringUtil;
 import com.wondertek.cpm.domain.ContractCost;
+import com.wondertek.cpm.domain.ContractInfo;
 import com.wondertek.cpm.domain.vo.ContractCostVo;
+import com.wondertek.cpm.repository.ContractInfoRepository;
 import com.wondertek.cpm.security.AuthoritiesConstants;
 import com.wondertek.cpm.security.SecurityUtils;
 import com.wondertek.cpm.service.ContractBudgetService;
@@ -51,6 +53,8 @@ public class ContractCostResource {
     private ContractCostService contractCostService;
     @Inject
     private ContractBudgetService contractBudgetService;
+    @Inject
+    private ContractInfoRepository contractInfoRepository;
 
     @PutMapping("/contract-costs")
     @Timed
@@ -64,6 +68,14 @@ public class ContractCostResource {
         		|| contractCost.getTotal() < 0 || contractCost.getDeptId() ==  null
         		|| StringUtil.isNullStr(contractCost.getDept())) {
         	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.contractCost.save.paramNone", "")).body(null);
+		}
+        //校验合同状态是否可用
+        ContractInfo contractInfo = contractInfoRepository.findOne(contractCost.getContractId());
+        if (contractInfo == null) {
+        	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.contractReceive.save.dataError", "")).body(null);
+		}
+        if (contractInfo.getStatus() != ContractInfo.STATUS_VALIDABLE) {
+        	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.contractReceive.save.contractInfoError", "")).body(null);
 		}
         if (contractCost.getType() == ContractCost.TYPE_HUMAN_COST) {
         	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.contractCost.save.type1Error", "")).body(null);
@@ -150,6 +162,14 @@ public class ContractCostResource {
         ContractCostVo contractCost = contractCostService.getContractCost(id);
         if (contractCost == null) {
         	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.contractCost.save.noPerm", "")).body(null);
+		}
+        //校验合同状态是否可用
+        ContractInfo contractInfo = contractInfoRepository.findOne(contractCost.getContractId());
+        if (contractInfo == null) {
+        	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.contractReceive.save.dataError", "")).body(null);
+		}
+        if (contractInfo.getStatus() != ContractInfo.STATUS_VALIDABLE) {
+        	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.contractReceive.save.contractInfoError", "")).body(null);
 		}
         if (contractCost.getStatus() == CpmConstants.STATUS_DELETED) {
         	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.contractCost.delete.status2Error", "")).body(null);

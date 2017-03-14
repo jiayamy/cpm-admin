@@ -51,7 +51,8 @@ public class ContractBudgetDaoImpl extends GenericDaoImpl<ContractBudget, Long> 
 		queryHql.append("wdi.id as wdiId,wdi.idPath as wdiIdPath,");
 		queryHql.append("wdi2.id as wdi2Id,wdi2.idPath as wdi2IdPath,");
 		queryHql.append("wdi3.id as wdi3Id,wdi3.idPath as wdi3IdPath,");
-		queryHql.append("wpi.budgetId");
+		queryHql.append("wpi.budgetId,");
+		queryHql.append("wci.status");
 		
 		countHql.append("select count(wci.id)");
 		whereHql.append(" from ContractBudget wcb");

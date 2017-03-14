@@ -25,7 +25,9 @@
             	"idNone":"数据异常，请刷新后操作",
             	"projectIdError":"项目不可更改",
             	"type1Error":"类型为工时的数据不可编辑",
-            	"statue2Error":"状态为删除的数据不可编辑"
+            	"statue2Error":"状态为删除的数据不可编辑",
+            	"dataError":"内部采购单数据错误",
+            	"contractInfoError":"合同结项或者已删除"
             },
             "contractId":"合同编号",
             "serialNum": "合同编号",
