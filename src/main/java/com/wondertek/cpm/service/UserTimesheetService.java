@@ -180,7 +180,6 @@ public class UserTimesheetService {
 	}
     /**
      * 获取编辑列表中的数据
-     * @param workDayDate
      * @return
      */
     @Transactional(readOnly = true) 
@@ -278,6 +277,7 @@ public class UserTimesheetService {
 	private void getOtherTimesheetForUser(List<UserTimesheetForUser> returnList, UserTimesheetForUser areaTimesheet, Map<String, Map<Long, UserTimesheet>> map, Long userId, Long[] lds) {
 		UserTimesheet tmpTimesheet = null;
 		Map<Long, UserTimesheet> childs = null;
+		long workDayL = 0;
 		for(String mapKey : map.keySet()){
 			childs = map.get(mapKey);
 			UserTimesheetForUser timesheet = getDefaultUserTimesheetForUser(userId,null,null,null,CpmConstants.DFAULT_USER_TIMESHEET_USER_INPUT);
@@ -286,7 +286,8 @@ public class UserTimesheetService {
 				timesheet.setType(tmpTimesheet.getType());
 				timesheet.setObjId(tmpTimesheet.getObjId());
 				timesheet.setObjName(tmpTimesheet.getObjName());
-				if(lds[0] == workDay){
+				workDayL = workDay.longValue();
+				if(lds[0] == workDayL){
 					if(tmpTimesheet.getRealInput() != null){
 						timesheet.setData1(tmpTimesheet.getRealInput().toString());
 					}
@@ -294,7 +295,7 @@ public class UserTimesheetService {
 						areaTimesheet.setData1(tmpTimesheet.getWorkArea());
 					}
 					timesheet.setId1(tmpTimesheet.getId());
-				}else if(lds[1] == workDay){
+				}else if(lds[1] == workDayL){
 					if(tmpTimesheet.getRealInput() != null){
 						timesheet.setData2(tmpTimesheet.getRealInput().toString());
 					}
@@ -302,7 +303,7 @@ public class UserTimesheetService {
 						areaTimesheet.setData2(tmpTimesheet.getWorkArea());
 					}
 					timesheet.setId2(tmpTimesheet.getId());
-				}else if(lds[2] == workDay){
+				}else if(lds[2] == workDayL){
 					if(tmpTimesheet.getRealInput() != null){
 						timesheet.setData3(tmpTimesheet.getRealInput().toString());
 					}
@@ -310,7 +311,7 @@ public class UserTimesheetService {
 						areaTimesheet.setData3(tmpTimesheet.getWorkArea());
 					}
 					timesheet.setId3(tmpTimesheet.getId());
-				}else if(lds[3] == workDay){
+				}else if(lds[3] == workDayL){
 					if(tmpTimesheet.getRealInput() != null){
 						timesheet.setData4(tmpTimesheet.getRealInput().toString());
 					}
@@ -318,7 +319,7 @@ public class UserTimesheetService {
 						areaTimesheet.setData4(tmpTimesheet.getWorkArea());
 					}
 					timesheet.setId4(tmpTimesheet.getId());
-				}else if(lds[4] == workDay){
+				}else if(lds[4] == workDayL){
 					if(tmpTimesheet.getRealInput() != null){
 						timesheet.setData5(tmpTimesheet.getRealInput().toString());
 					}
@@ -326,7 +327,7 @@ public class UserTimesheetService {
 						areaTimesheet.setData5(tmpTimesheet.getWorkArea());
 					}
 					timesheet.setId5(tmpTimesheet.getId());
-				}else if(lds[5] == workDay){
+				}else if(lds[5] == workDayL){
 					if(tmpTimesheet.getRealInput() != null){
 						timesheet.setData6(tmpTimesheet.getRealInput().toString());
 					}
@@ -334,7 +335,7 @@ public class UserTimesheetService {
 						areaTimesheet.setData6(tmpTimesheet.getWorkArea());
 					}
 					timesheet.setId6(tmpTimesheet.getId());
-				}else if(lds[6] == workDay){
+				}else if(lds[6] == workDayL){
 					if(tmpTimesheet.getRealInput() != null){
 						timesheet.setData7(tmpTimesheet.getRealInput().toString());
 					}
