@@ -22,6 +22,7 @@ import com.wondertek.cpm.domain.ProjectUser;
 import com.wondertek.cpm.domain.User;
 import com.wondertek.cpm.domain.UserTimesheet;
 import com.wondertek.cpm.domain.vo.LongValue;
+import com.wondertek.cpm.domain.vo.ParticipateInfo;
 import com.wondertek.cpm.domain.vo.ProjectUserVo;
 @Repository("projectUserDao")
 public class ProjectUserDaoImpl extends GenericDaoImpl<ProjectUser, Long> implements ProjectUserDao  {
@@ -43,11 +44,11 @@ public class ProjectUserDaoImpl extends GenericDaoImpl<ProjectUser, Long> implem
 	public List<LongValue> getByUserAndDay(Long userId, Long[] weekDays) {
 		StringBuffer sql = new StringBuffer();
 		List<Object> params = new ArrayList<Object>();
-		sql.append("select distinct pu.project_id,pi.serial_num,pi.name_ from w_project_user pu left join w_project_info pi on pu.project_id = pi.id where pi.id is not null and pu.user_id = ?");
-		params.add(userId);
-		
+		sql.append("select distinct pu.project_id,pi.serial_num,pi.name_ from w_project_user pu left join w_project_info pi on pu.project_id = pi.id where");
+		int count = 0;
 		if(weekDays != null && weekDays.length > 0){
-			sql.append(" and (");
+			count++;
+			sql.append(" (");
 			for(int i = 0 ; i < weekDays.length; i++){
 				if(i != 0){
 					sql.append(" or ");
@@ -58,12 +59,52 @@ public class ProjectUserDaoImpl extends GenericDaoImpl<ProjectUser, Long> implem
 			}
 			sql.append(")");
 		}
-		
+		if(count > 0){
+			sql.append(" and");
+		}
+		sql.append(" pi.id is not null and pu.user_id = ?");
+		params.add(userId);
 		List<Object[]> list = this.queryAllSql(sql.toString(),params.toArray());
 		List<LongValue> returnList = new ArrayList<LongValue>();
 		if(list != null){
 			for(Object[] o : list){
 				returnList.add(new LongValue(StringUtil.nullToLong(o[0]),UserTimesheet.TYPE_PROJECT,StringUtil.null2Str(o[1]) + ":" + StringUtil.null2Str(o[2])));
+			}
+		}
+		return returnList;
+	}
+	@Override
+	public List<ParticipateInfo> getInfoByUserAndDay(Long userId, Long[] weekDays){
+		StringBuffer sql = new StringBuffer();
+		List<Object> params = new ArrayList<Object>();
+		sql.append("select distinct pu.project_id,pu.join_day,pu.leave_day from w_project_user pu where");
+		int count = 0;
+		if(weekDays != null && weekDays.length > 0){
+			count++;
+			sql.append(" (");
+			for(int i = 0 ; i < weekDays.length; i++){
+				if(i != 0){
+					sql.append(" or ");
+				}
+				sql.append("(pu.join_day <= ? and (pu.leave_day is null or pu.leave_day >= ?))");
+				params.add(weekDays[i]);
+				params.add(weekDays[i]);
+			}
+			sql.append(")");
+		}
+		if(count > 0){
+			sql.append(" and");
+		}
+		sql.append(" pu.user_id = ?");
+		params.add(userId);
+		List<Object[]> list = this.queryAllSql(sql.toString(),params.toArray());
+		List<ParticipateInfo> returnList = new ArrayList<ParticipateInfo>();
+		if(list != null){
+			for(Object[] o : list){
+				returnList.add(new ParticipateInfo(StringUtil.nullToLong(o[0]),
+						UserTimesheet.TYPE_PROJECT,
+						StringUtil.nullToCloneLong(o[1]),
+						StringUtil.nullToCloneLong(o[2])));
 			}
 		}
 		return returnList;

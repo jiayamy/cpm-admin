@@ -23,6 +23,7 @@ import com.wondertek.cpm.domain.User;
 import com.wondertek.cpm.domain.UserTimesheet;
 import com.wondertek.cpm.domain.vo.ContractUserVo;
 import com.wondertek.cpm.domain.vo.LongValue;
+import com.wondertek.cpm.domain.vo.ParticipateInfo;
 @Repository("contractUserDao")
 public class ContractUserDaoImpl extends GenericDaoImpl<ContractUser, Long> implements ContractUserDao  {
 	
@@ -43,10 +44,11 @@ public class ContractUserDaoImpl extends GenericDaoImpl<ContractUser, Long> impl
 	public List<LongValue> getByUserAndDay(Long userId,Long[] weekDays) {
 		StringBuffer sql = new StringBuffer();
 		List<Object> params = new ArrayList<Object>();
-		sql.append("select distinct cu.contract_id,ci.serial_num,ci.name_ from w_contract_user cu left join w_contract_info ci on cu.contract_id = ci.id where ci.id is not null and cu.user_id = ?");
-		params.add(userId);
+		sql.append("select distinct cu.contract_id,ci.serial_num,ci.name_ from w_contract_user cu left join w_contract_info ci on cu.contract_id = ci.id where");
+		int count = 0;
 		if(weekDays != null && weekDays.length > 0){
-			sql.append(" and (");
+			count ++;
+			sql.append(" (");
 			for(int i = 0 ; i < weekDays.length; i++){
 				if(i != 0){
 					sql.append(" or ");
@@ -57,7 +59,11 @@ public class ContractUserDaoImpl extends GenericDaoImpl<ContractUser, Long> impl
 			}
 			sql.append(")");
 		}
-		
+		if(count > 0){
+			sql.append(" and");
+		}
+		sql.append(" ci.id is not null and cu.user_id = ?");
+		params.add(userId);
 		List<Object[]> list = this.queryAllSql(sql.toString(),params.toArray());
 		List<LongValue> returnList = new ArrayList<LongValue>();
 		if(list != null){
@@ -68,6 +74,44 @@ public class ContractUserDaoImpl extends GenericDaoImpl<ContractUser, Long> impl
 		return returnList;
 	}
 
+	@Override
+	public List<ParticipateInfo> getInfoByUserAndDay(Long userId, Long[] weekDays){
+		StringBuffer sql = new StringBuffer();
+		List<Object> params = new ArrayList<Object>();
+		sql.append("select distinct cu.contract_id,cu.join_day,cu.leave_day from w_contract_user cu where");
+		int count = 0;
+		if(weekDays != null && weekDays.length > 0){
+			count ++;
+			sql.append(" (");
+			for(int i = 0 ; i < weekDays.length; i++){
+				if(i != 0){
+					sql.append(" or ");
+				}
+				sql.append("(cu.join_day <= ? and (cu.leave_day is null or cu.leave_day >= ?))");
+				params.add(weekDays[i]);
+				params.add(weekDays[i]);
+			}
+			sql.append(")");
+		}
+		if(count > 0){
+			sql.append(" and");
+		}
+		sql.append(" cu.user_id = ?");
+		params.add(userId);
+		
+		List<Object[]> list = this.queryAllSql(sql.toString(),params.toArray());
+		List<ParticipateInfo> returnList = new ArrayList<ParticipateInfo>();
+		if(list != null){
+			for(Object[] o : list){
+				returnList.add(new ParticipateInfo(StringUtil.nullToLong(o[0]),
+						UserTimesheet.TYPE_CONTRACT,
+						StringUtil.nullToCloneLong(o[1]),
+						StringUtil.nullToCloneLong(o[2])));
+			}
+		}
+		return returnList;
+	}
+	
 	@Override
 	public Page<ContractUserVo> getUserPage(ContractUser contractUser, User user, DeptInfo deptInfo,
 			Pageable pageable) {
