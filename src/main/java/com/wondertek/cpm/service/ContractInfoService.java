@@ -170,7 +170,7 @@ public class ContractInfoService {
 		return contractInfoDao.finishContractInfo(id,finishRate,updator);
 	}
 
-	public void endContractInfo(Long id) {
+	public int endContractInfo(Long id) {
 		String updator = SecurityUtils.getCurrentUserLogin();
 		//保存记录
 		ContractFinishInfo contractFinishInfo = new ContractFinishInfo();
