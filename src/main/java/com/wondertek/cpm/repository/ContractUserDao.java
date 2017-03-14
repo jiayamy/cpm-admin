@@ -9,6 +9,7 @@ import com.wondertek.cpm.domain.DeptInfo;
 import com.wondertek.cpm.domain.User;
 import com.wondertek.cpm.domain.vo.ContractUserVo;
 import com.wondertek.cpm.domain.vo.LongValue;
+import com.wondertek.cpm.domain.vo.ParticipateInfo;
 
 public interface ContractUserDao extends GenericDao<ContractUser, Long> {
 	/**
@@ -16,6 +17,7 @@ public interface ContractUserDao extends GenericDao<ContractUser, Long> {
 	 * @return
 	 */
 	List<LongValue> getByUserAndDay(Long userId,Long[] weekDays);
+	List<ParticipateInfo> getInfoByUserAndDay(Long userId,Long[] weekDays);
 	/**
 	 * 查看的项目用户列表
 	 * @return

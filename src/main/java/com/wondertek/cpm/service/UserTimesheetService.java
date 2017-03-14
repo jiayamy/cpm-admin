@@ -28,6 +28,7 @@ import com.wondertek.cpm.domain.User;
 import com.wondertek.cpm.domain.UserTimesheet;
 import com.wondertek.cpm.domain.vo.ContractInfoVo;
 import com.wondertek.cpm.domain.vo.LongValue;
+import com.wondertek.cpm.domain.vo.ParticipateInfo;
 import com.wondertek.cpm.domain.vo.ProjectInfoVo;
 import com.wondertek.cpm.domain.vo.UserTimesheetForOther;
 import com.wondertek.cpm.domain.vo.UserTimesheetForUser;
@@ -500,6 +501,10 @@ public class UserTimesheetService {
     		if(dayTimesheet.getType() != UserTimesheet.TYPE_DAY){//类型不是日期
     			return "cpmApp.userTimesheet.save.paramError";
     		}
+    		//初始化用户在该周参与的项目
+    		List<ParticipateInfo> participateInfos = contractUserDao.getInfoByUserAndDay(userId, lds);
+    		participateInfos.addAll(projectUserDao.getInfoByUserAndDay(userId, lds));
+    		
     		//地区
     		UserTimesheetForUser areaTimesheet = userTimesheetForUsers.get(1);
     		String[] areas = new String[7];
@@ -565,6 +570,13 @@ public class UserTimesheetService {
         		if(td1 > 8 || td2 > 8 || td3 > 8 || td4 > 8
         				 || td5 > 8 || td6 > 8 || td7 > 8){
         			return "cpmApp.userTimesheet.save.dayDataMax";
+        		}
+        		//校验用户在该项目中是否可以填数据
+        		if(userTimesheetForUser.getType() == UserTimesheet.TYPE_CONTRACT || userTimesheetForUser.getType() == UserTimesheet.TYPE_PROJECT){
+        			String result = checkParticipate(participateInfos,userTimesheetForUser,lds,d1,d2,d3,d4,d5,d6,d7);
+        			if(result != null){
+        				return "cpmApp.userTimesheet.save.objId#"+result;
+        			}
         		}
         		if(userTimesheetForUser.getId1() != null || d1 != 0){
         			if(userTimesheetForUser.getId1() != null){
@@ -718,6 +730,138 @@ public class UserTimesheetService {
     	}else{
     		return "cpmApp.userTimesheet.save.paramError";
     	}
+	}
+	/**
+	 * 检查用户在某个时间段内是否参与了项目或者合同
+	 * @return
+	 */
+	private String checkParticipate(List<ParticipateInfo> participateInfos, UserTimesheetForUser userTimesheetForUser,
+			Long[] lds, Double d1, Double d2, Double d3, Double d4, Double d5, Double d6, Double d7) {
+		Boolean c1 = Boolean.FALSE;
+		if(d1 == null || d1 == 0){
+			c1 = Boolean.TRUE;
+		}
+		Boolean c2 = Boolean.FALSE;
+		if(d2 == null || d2 == 0){
+			c2 = Boolean.TRUE;
+		}
+		Boolean c3 = Boolean.FALSE;
+		if(d3 == null || d3 == 0){
+			c3 = Boolean.TRUE;
+		}
+		Boolean c4 = Boolean.FALSE;
+		if(d4 == null || d4 == 0){
+			c4 = Boolean.TRUE;
+		}
+		Boolean c5 = Boolean.FALSE;
+		if(d5 == null || d5 == 0){
+			c5 = Boolean.TRUE;
+		}
+		Boolean c6 = Boolean.FALSE;
+		if(d6 == null || d6 == 0){
+			c6 = Boolean.TRUE;
+		}
+		Boolean c7 = Boolean.FALSE;
+		if(d7 == null || d7 == 0){
+			c7 = Boolean.TRUE;
+		}
+		if(c1 && c2 && c3 && c4 && c5 && c6 && c7){
+			return null;
+		}
+		
+		if(participateInfos != null && !participateInfos.isEmpty()){
+			StringBuffer sb = new StringBuffer();
+			for(ParticipateInfo info : participateInfos){
+				if(c1 && c2 && c3 && c4 && c5 && c6 && c7){
+					return null;
+				}
+				if(info.getType() == userTimesheetForUser.getType() 
+						&& info.getObjId().longValue() == userTimesheetForUser.getObjId()){//同一个类型的同一个项目或合同
+					if(!c1){
+						if(info.getJoinDay().longValue() <= lds[0] && (info.getLeaveDay() == null || info.getLeaveDay().longValue() >= lds[0])){
+							c1 = Boolean.TRUE;
+						}
+					}
+					if(!c2){
+						if(info.getJoinDay().longValue() <= lds[1] && (info.getLeaveDay() == null || info.getLeaveDay().longValue() >= lds[1])){
+							c2 = Boolean.TRUE;
+						}
+					}
+					if(!c3){
+						if(info.getJoinDay().longValue() <= lds[2] && (info.getLeaveDay() == null || info.getLeaveDay().longValue() >= lds[2])){
+							c3 = Boolean.TRUE;
+						}
+					}
+					if(!c4){
+						if(info.getJoinDay().longValue() <= lds[3] && (info.getLeaveDay() == null || info.getLeaveDay().longValue() >= lds[3])){
+							c4 = Boolean.TRUE;
+						}
+					}
+					if(!c5){
+						if(info.getJoinDay().longValue() <= lds[4] && (info.getLeaveDay() == null || info.getLeaveDay().longValue() >= lds[4])){
+							c5 = Boolean.TRUE;
+						}
+					}
+					if(!c6){
+						if(info.getJoinDay().longValue() <= lds[5] && (info.getLeaveDay() == null || info.getLeaveDay().longValue() >= lds[5])){
+							c6 = Boolean.TRUE;
+						}
+					}
+					if(!c7){
+						if(info.getJoinDay().longValue() <= lds[6] && (info.getLeaveDay() == null || info.getLeaveDay().longValue() >= lds[6])){
+							c7 = Boolean.TRUE;
+						}
+					}
+				}
+			}
+			if(c1 && c2 && c3 && c4 && c5 && c6 && c7){
+				return null;
+			}
+			if(!c1){
+				if(sb.length() > 0){
+					sb.append(",");
+				}
+				sb.append(lds[0]);
+			}
+			if(!c2){
+				if(sb.length() > 0){
+					sb.append(",");
+				}
+				sb.append(lds[1]);
+			}
+			if(!c3){
+				if(sb.length() > 0){
+					sb.append(",");
+				}
+				sb.append(lds[2]);
+			}
+			if(!c4){
+				if(sb.length() > 0){
+					sb.append(",");
+				}
+				sb.append(lds[3]);
+			}
+			if(!c5){
+				if(sb.length() > 0){
+					sb.append(",");
+				}
+				sb.append(lds[4]);
+			}
+			if(!c6){
+				if(sb.length() > 0){
+					sb.append(",");
+				}
+				sb.append(lds[5]);
+			}
+			if(!c7){
+				if(sb.length() > 0){
+					sb.append(",");
+				}
+				sb.append(lds[6]);
+			}
+			return userTimesheetForUser.getObjName() +"[" + sb.toString() + "]";
+		}
+		return userTimesheetForUser.getObjName();
 	}
 
 	private UserTimesheet createUserTimesheetForUser(UserTimesheetForUser userTimesheetForUser,String userName, String updator, Long id, Double realInput,Long workDay,String workArea) {
