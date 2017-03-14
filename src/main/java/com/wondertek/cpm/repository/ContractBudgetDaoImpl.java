@@ -50,7 +50,8 @@ public class ContractBudgetDaoImpl extends GenericDaoImpl<ContractBudget, Long> 
 		queryHql.append("wci.serialNum,wci.name as contractName,wci.creator as contractCreator,wci.salesmanId,wci.consultantsId,");
 		queryHql.append("wdi.id as wdiId,wdi.idPath as wdiIdPath,");
 		queryHql.append("wdi2.id as wdi2Id,wdi2.idPath as wdi2IdPath,");
-		queryHql.append("wdi3.id as wdi3Id,wdi3.idPath as wdi3IdPath");
+		queryHql.append("wdi3.id as wdi3Id,wdi3.idPath as wdi3IdPath,");
+		queryHql.append("wpi.budgetId");
 		
 		countHql.append("select count(wci.id)");
 		whereHql.append(" from ContractBudget wcb");
@@ -58,6 +59,7 @@ public class ContractBudgetDaoImpl extends GenericDaoImpl<ContractBudget, Long> 
 		whereHql.append(" left join DeptInfo wdi on wci.deptId = wdi.id");
 		whereHql.append(" left join DeptInfo wdi2 on wci.consultantsDeptId = wdi2.id");
 		whereHql.append(" left join DeptInfo wdi3 on wcb.deptId = wdi3.id");
+		whereHql.append(" left join ProjectInfo wpi on wpi.contractId = wcb.contractId and wpi.budgetId = wcb.id");
 		//权限
 		whereHql.append(" where (wci.salesmanId = ?" + (count++) + " or wci.consultantsId = ?" + (count++)
 				+ " or wcb.userId = ?" + (count++) + " or wci.creator = ?" + (count++) + " or wcb.creator = ?" + (count++));
@@ -124,6 +126,7 @@ public class ContractBudgetDaoImpl extends GenericDaoImpl<ContractBudget, Long> 
 		List<ContractBudgetVo> returnList = new ArrayList<ContractBudgetVo>();
 		if (page.getContent() != null) {
 			for (Object[] o : page.getContent()) {
+				System.out.println("===========================" + o[12] + "==================================");
 				returnList.add(transContractBudgetVo(o,user.getId(),user.getLogin(),deptInfo.getId(),deptInfo.getIdPath() + deptInfo.getId() + "/"));
 			}
 		}

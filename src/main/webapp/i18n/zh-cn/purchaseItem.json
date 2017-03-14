@@ -14,7 +14,8 @@
             "updated": "更新操作成功",
             "deleted": "删除成功",
             "delete": {
-                "question": "您确定要删除吗?"
+                "question": "您确定要删除吗?",
+                "hasDeleted": "该采购子项已经被删除"
             },
             "detail": {
                 "title": "采购子项信息"
@@ -28,7 +29,9 @@
             	"purchaseItemError":"数据有误,不可修改",
             	"budgetError":"合同和采购单绑定异常",
             	"purchaseItemHaveExit": "采购子项已经存在",
-            	"noPerm": "没有权限执行操作"
+            	"noPerm": "没有权限执行操作",
+            	"saveError":"采购子项创建失败",
+            	"statue2CreateError":"状态为删除的内部采购单不可创建采购子项"
             },
             "contract": "合同",
             "contractId": "合同ID",

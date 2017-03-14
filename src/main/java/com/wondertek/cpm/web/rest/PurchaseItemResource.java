@@ -29,11 +29,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.codahale.metrics.annotation.Timed;
 import com.wondertek.cpm.config.StringUtil;
+import com.wondertek.cpm.domain.ContractBudget;
 import com.wondertek.cpm.domain.ProductPrice;
 import com.wondertek.cpm.domain.PurchaseItem;
 import com.wondertek.cpm.domain.vo.LongValue;
 import com.wondertek.cpm.domain.vo.ProductPriceVo;
 import com.wondertek.cpm.domain.vo.PurchaseItemVo;
+import com.wondertek.cpm.repository.ContractBudgetRepository;
 import com.wondertek.cpm.security.AuthoritiesConstants;
 import com.wondertek.cpm.security.SecurityUtils;
 import com.wondertek.cpm.service.PurchaseItemService;
@@ -53,27 +55,9 @@ public class PurchaseItemResource {
         
     @Inject
     private PurchaseItemService purchaseItemService;
-
-    /**
-     * POST  /purchase-items : Create a new purchaseItem.
-     *
-     * @param purchaseItem the purchaseItem to create
-     * @return the ResponseEntity with status 201 (Created) and with body the new purchaseItem, or with status 400 (Bad Request) if the purchaseItem has already an ID
-     * @throws URISyntaxException if the Location URI syntax is incorrect
-     */
-    @PostMapping("/purchase-items")
-    @Timed
-    @Secured(AuthoritiesConstants.ROLE_CONTRACT_PURCHASE)
-    public ResponseEntity<PurchaseItem> createPurchaseItem(@RequestBody PurchaseItem purchaseItem) throws URISyntaxException {
-        log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to save PurchaseItem : {}", purchaseItem);
-        if (purchaseItem.getId() != null) {
-            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("purchaseItem", "idexists", "A new purchaseItem cannot already have an ID")).body(null);
-        }
-        PurchaseItem result = purchaseItemService.save(purchaseItem);
-        return ResponseEntity.created(new URI("/api/purchase-items/" + result.getId()))
-            .headers(HeaderUtil.createEntityCreationAlert("purchaseItem", result.getId().toString()))
-            .body(result);
-    }
+    
+    @Inject
+    private ContractBudgetRepository contractBudetRepository;
 
     /**
      * PUT  /purchase-items : Updates an existing purchaseItem.
@@ -117,7 +101,17 @@ public class PurchaseItemResource {
 //			List<PurchaseItem> list = this.purchaseItemService.findOneByParams(purchaseItem.getName(),purchaseItem.getSource(),purchaseItem.getType(),purchaseItem.getPurchaser());
 //			if (list != null && !list.isEmpty()) {
 //				return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.purchaseItem.save.purchaseItemHaveExit", "")).body(null);
-//			}			
+//			}
+			if (purchaseItem.getId() != null) {
+	            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("purchaseItem", "idexists", "A new purchaseItem cannot already have an ID")).body(null);
+	        }
+	        ContractBudget contractBudget = contractBudetRepository.findOneById(purchaseItem.getBudgetId());
+	        if (contractBudget == null) {
+	        	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.purchaseItem.save.saveError", "")).body(null);
+			}
+	        if (contractBudget.getStatus() == ContractBudget.STATUS_DELETED) {
+	        	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.purchaseItem.save.statue2CreateError", "")).body(null);
+			}
 			purchaseItem.setCreateTime(updateTime);
 			purchaseItem.setCreator(updator);
 			purchaseItem.setStatus(PurchaseItem.STATUS_VALIBLE);

@@ -1,5 +1,7 @@
 package com.wondertek.cpm.web.rest;
 
+import io.swagger.annotations.ApiParam;
+
 import java.net.URISyntaxException;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
@@ -27,16 +29,16 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.codahale.metrics.annotation.Timed;
 import com.wondertek.cpm.config.StringUtil;
+import com.wondertek.cpm.domain.ContractBudget;
 import com.wondertek.cpm.domain.ProjectInfo;
 import com.wondertek.cpm.domain.vo.LongValue;
 import com.wondertek.cpm.domain.vo.ProjectInfoVo;
+import com.wondertek.cpm.repository.ContractBudgetRepository;
 import com.wondertek.cpm.security.AuthoritiesConstants;
 import com.wondertek.cpm.security.SecurityUtils;
 import com.wondertek.cpm.service.ProjectInfoService;
 import com.wondertek.cpm.web.rest.util.HeaderUtil;
 import com.wondertek.cpm.web.rest.util.PaginationUtil;
-
-import io.swagger.annotations.ApiParam;
 
 /**
  * REST controller for managing ProjectInfo.
@@ -49,6 +51,9 @@ public class ProjectInfoResource {
         
     @Inject
     private ProjectInfoService projectInfoService;
+    
+    @Inject
+    private ContractBudgetRepository contractBudgetRepository;
 
     @PutMapping("/project-infos")
     @Timed
@@ -67,6 +72,13 @@ public class ProjectInfoResource {
         	if(projectInfo.getPmId() == null || projectInfo.getDeptId() == null){
         		return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.projectInfo.save.requriedError", "")).body(null);
         	}
+        	ContractBudget contractBudget = contractBudgetRepository.findOneById(projectInfo.getBudgetId());
+	        if (contractBudget == null) {
+	        	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.projectInfo.save.saveError", "")).body(null);
+			}
+	        if (contractBudget.getStatus() == ContractBudget.STATUS_DELETED) {
+	        	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.projectInfo.save.statue2CreateError", "")).body(null);
+			}
         }
         //结束时间校验
         if(projectInfo.getEndDay() != null && projectInfo.getEndDay().isBefore(projectInfo.getStartDay())){
@@ -81,7 +93,7 @@ public class ProjectInfoResource {
         }
         boolean isExist = projectInfoService.checkByProject(projectInfo.getSerialNum(),projectInfo.getId());
         if(isExist){
-        	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.projectInfo.save.existSerialNum" + count, "")).body(null);
+        	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.projectInfo.save.existSerialNum", "")).body(null);
         }
         //查看该用户是否有修改的权限
         String updator = SecurityUtils.getCurrentUserLogin();
