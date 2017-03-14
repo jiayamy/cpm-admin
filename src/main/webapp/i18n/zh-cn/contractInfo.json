@@ -10,7 +10,9 @@
             "updated": "更新成功",
             "deleted": "删除成功",
             "delete": {
-                "question": "确定删除编号为{{ id }}的合同信息?"
+                "question": "确定删除编号为{{ id }}的合同信息?",
+                "status2Error":"状态为已完成的不可执行删除操作",
+                "status3Error":"状态为已删除的不可再执行删除操作"
             },
             "detail": {
                 "title": "合同基本信息"
@@ -35,6 +37,7 @@
             "end":{
             	"title":"合同完成信息",
             	"submit":"完成",
+            	"question": "确定完成编号为[ {{ id }}]的合同?",
             	"status2Error":"合同状态为已完成的不可再执行完成操作",
             	"status3Error":"合同状态为已删除的不可执行完成操作",
             	"success":"合同完成成功"

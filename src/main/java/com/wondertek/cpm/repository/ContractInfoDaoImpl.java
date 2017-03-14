@@ -228,6 +228,7 @@ public class ContractInfoDaoImpl extends GenericDaoImpl<ContractInfo, Long> impl
 
 	@Override
 	public int endContractInfo(Long id, String updator) {
-		return this.excuteHql("update ContractInfo set status = ?0 , updator = ?1, updateTime = ?2 where id = ?3", new Object[]{ContractInfo.STATU_FINISH,updator,ZonedDateTime.now(),id});
+		//结项的时候是否要填充完成率100%
+		return this.excuteHql("update ContractInfo set status = ?0 , finishRate = ?1, updator = ?2, updateTime = ?3 where id = ?4", new Object[]{ContractInfo.STATU_FINISH,100d,updator,ZonedDateTime.now(),id});
 	}
 }

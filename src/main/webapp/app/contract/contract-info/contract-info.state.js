@@ -367,7 +367,7 @@
             parent: 'contract-info',
             url: '/end/{id}',
             data: {
-                authorities: ['ROLE_PROJECT_INFO']
+                authorities: ['ROLE_CONTRACT_INFO']
             },
             onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
                 $uibModal.open({

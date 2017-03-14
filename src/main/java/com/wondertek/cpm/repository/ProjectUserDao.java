@@ -25,4 +25,8 @@ public interface ProjectUserDao extends GenericDao<ProjectUser, Long> {
 	 * 获取用户权限下的项目用户
 	 */
 	ProjectUserVo getProjectUser(User user, DeptInfo deptInfo, Long id);
+	/**
+	 * 更新项目的人员离开日
+	 */
+	int updateLeaveDayByProject(Long projectId, long leaveDay, String updator);
 }

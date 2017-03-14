@@ -2,6 +2,7 @@ package com.wondertek.cpm.service;
 
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -15,6 +16,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.wondertek.cpm.config.DateUtil;
+import com.wondertek.cpm.config.StringUtil;
 import com.wondertek.cpm.domain.DeptInfo;
 import com.wondertek.cpm.domain.ProjectFinishInfo;
 import com.wondertek.cpm.domain.ProjectInfo;
@@ -24,6 +27,7 @@ import com.wondertek.cpm.domain.vo.ProjectInfoVo;
 import com.wondertek.cpm.repository.ProjectFinishInfoRepository;
 import com.wondertek.cpm.repository.ProjectInfoDao;
 import com.wondertek.cpm.repository.ProjectInfoRepository;
+import com.wondertek.cpm.repository.ProjectUserDao;
 import com.wondertek.cpm.repository.UserRepository;
 import com.wondertek.cpm.security.SecurityUtils;
 
@@ -44,6 +48,8 @@ public class ProjectInfoService {
     private ProjectFinishInfoRepository projectFinishInfoRepository;
     @Autowired
     private ProjectInfoDao projectInfoDao;
+    @Inject
+    private ProjectUserDao projectUserDao;
 
     /**
      * Save a projectInfo.
@@ -92,6 +98,10 @@ public class ProjectInfoService {
         log.debug("Request to delete ProjectInfo : {}", id);
         ProjectInfo projectInfo = projectInfoRepository.findOne(id);
         if(projectInfo != null){
+        	//更新项目人员的离开日期
+    		long leaveDay = StringUtil.nullToLong(DateUtil.formatDate(DateUtil.DATE_YYYYMMDD_PATTERN, new Date()));
+    		projectUserDao.updateLeaveDayByProject(id,leaveDay,SecurityUtils.getCurrentUserLogin());
+    		
         	projectInfo.setStatus(ProjectInfo.STATUS_DELETED);
         	projectInfo.setUpdateTime(ZonedDateTime.now());
         	projectInfo.setUpdator(SecurityUtils.getCurrentUserLogin());
@@ -203,6 +213,10 @@ public class ProjectInfoService {
 		projectFinishInfo.setId(null);
 		projectFinishInfo.setProjectId(id);
 		projectFinishInfoRepository.save(projectFinishInfo);
+		
+		//更新项目人员的离开日期
+		long leaveDay = StringUtil.nullToLong(DateUtil.formatDate(DateUtil.DATE_YYYYMMDD_PATTERN, new Date()));
+		projectUserDao.updateLeaveDayByProject(id,leaveDay,updator);
 		
 		return projectInfoDao.endProjectInfo(id,updator);
 	}

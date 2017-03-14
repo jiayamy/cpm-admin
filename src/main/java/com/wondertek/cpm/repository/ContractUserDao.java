@@ -25,5 +25,10 @@ public interface ContractUserDao extends GenericDao<ContractUser, Long> {
 	 * 获取用户权限下的合同用户
 	 */
 	ContractUserVo getContractUser(User user, DeptInfo deptInfo, Long id);
+	/**
+	 * 更新合同的人员离开日
+	 * @return
+	 */
+	int updateLeaveDayByContract(Long contractId, long leaveDay, String updator);
 
 }

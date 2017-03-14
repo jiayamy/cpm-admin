@@ -1,6 +1,7 @@
 package com.wondertek.cpm.repository;
 
 import java.sql.Timestamp;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -192,6 +193,12 @@ public class ProjectUserDaoImpl extends GenericDaoImpl<ProjectUser, Long> implem
 			return new ProjectUserVo((ProjectUser)list.get(0)[0],StringUtil.null2Str(list.get(0)[1]),StringUtil.null2Str(list.get(0)[2]));
 		}
 		return null;
+	}
+
+	@Override
+	public int updateLeaveDayByProject(Long projectId, long leaveDay, String updator) {
+		return this.excuteHql("update ProjectUser set leaveDay = ?0 , updator = ?1, updateTime = ?2 where (leaveDay is null or leaveDay > ?3) and projectId = ?4", 
+				new Object[]{leaveDay,updator,ZonedDateTime.now(),leaveDay,projectId});
 	}
 	
 }

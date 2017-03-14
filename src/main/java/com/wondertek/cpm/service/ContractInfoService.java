@@ -2,6 +2,7 @@ package com.wondertek.cpm.service;
 
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -14,17 +15,18 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.wondertek.cpm.CpmConstants;
+import com.wondertek.cpm.config.DateUtil;
+import com.wondertek.cpm.config.StringUtil;
 import com.wondertek.cpm.domain.ContractFinishInfo;
 import com.wondertek.cpm.domain.ContractInfo;
 import com.wondertek.cpm.domain.DeptInfo;
-import com.wondertek.cpm.domain.ProjectFinishInfo;
 import com.wondertek.cpm.domain.User;
 import com.wondertek.cpm.domain.vo.ContractInfoVo;
 import com.wondertek.cpm.domain.vo.LongValue;
 import com.wondertek.cpm.repository.ContractFinishInfoRepository;
 import com.wondertek.cpm.repository.ContractInfoDao;
 import com.wondertek.cpm.repository.ContractInfoRepository;
+import com.wondertek.cpm.repository.ContractUserDao;
 import com.wondertek.cpm.repository.UserRepository;
 import com.wondertek.cpm.security.SecurityUtils;
 
@@ -36,13 +38,12 @@ import com.wondertek.cpm.security.SecurityUtils;
 public class ContractInfoService {
 
     private final Logger log = LoggerFactory.getLogger(ContractInfoService.class);
-    
     @Inject
     private ContractInfoRepository contractInfoRepository;
-
     @Inject
     private ContractInfoDao contractInfoDao;
-    
+    @Inject
+    private ContractUserDao contractUserDao;
     @Inject
     private ContractFinishInfoRepository contractFinishInfoRepository;
     
@@ -95,10 +96,15 @@ public class ContractInfoService {
         log.debug("Request to delete ContractInfo : {}", id);
         ContractInfo contractInfo = contractInfoRepository.findOne(id);
         if (contractInfo != null) {
-        	contractInfo.setStatus(CpmConstants.STATUS_DELETED);
+        	//更新合同人员的离开日期
+        	long leaveDay = StringUtil.nullToLong(DateUtil.formatDate(DateUtil.DATE_YYYYMMDD_PATTERN, new Date()));
+        	contractUserDao.updateLeaveDayByContract(id,leaveDay,SecurityUtils.getCurrentUserLogin());
+        	
+        	contractInfo.setStatus(ContractInfo.STATUS_DELETED);
         	contractInfo.setUpdateTime(ZonedDateTime.now());
         	contractInfo.setUpdator(SecurityUtils.getCurrentUserLogin());
             contractInfoRepository.save(contractInfo);
+            
 		}
     }
 
@@ -181,6 +187,10 @@ public class ContractInfoService {
 		contractFinishInfo.setContractId(id);
 		contractFinishInfoRepository.save(contractFinishInfo);
 		
+		//更新合同人员的离开日期
+		long leaveDay = StringUtil.nullToLong(DateUtil.formatDate(DateUtil.DATE_YYYYMMDD_PATTERN, new Date()));
+		contractUserDao.updateLeaveDayByContract(id,leaveDay,updator);
+				
 		return contractInfoDao.endContractInfo(id,updator);
 	}
 }

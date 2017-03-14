@@ -189,6 +189,17 @@ public class ContractInfoResource {
 	@Secured(AuthoritiesConstants.ROLE_CONTRACT_INFO)
 	public ResponseEntity<Void> deleteContractInfo(@PathVariable Long id) {
 		log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to delete ContractInfo : {}", id);
+		
+		ContractInfoVo contractInfo = contractInfoService.getUserContractInfo(id);
+        if(contractInfo == null){
+        	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.contractInfo.save.noPerm", "")).body(null);
+        }
+        if(contractInfo.getStatus() == ContractInfo.STATU_FINISH){
+        	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.contractInfo.delete.status2Error", "")).body(null);
+        }else if(contractInfo.getStatus() == ContractInfo.STATUS_DELETED){
+        	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.contractInfo.delete.status3Error", "")).body(null);
+        }
+	        
 		contractInfoService.delete(id);
 		return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert("contractInfo", id.toString())).build();
 	}
