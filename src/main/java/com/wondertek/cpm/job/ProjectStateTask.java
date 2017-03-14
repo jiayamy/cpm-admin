@@ -105,9 +105,13 @@ public class ProjectStateTask {
 	}
 	@Scheduled(cron = "0 0 21 ? * MON")
 	protected void generateProjectWeeklyState(){
+		Date now = new Date();
+		generateProjectWeeklyState(now);
+	}
+	protected void generateProjectWeeklyState(Date now){
 		log.info("=====begin generate project weekly state=====");
 		init();
-		Date now = new Date();
+		
 		String [] dates = DateUtil.getWholeWeekByDate(DateUtil.lastSaturday(now));
 		ZonedDateTime beginTime = DateUtil.getZonedDateTime(DateUtil.lastMonday(now).getTime());
 		ZonedDateTime endTime = DateUtil.getZonedDateTime(DateUtil.lastSundayEnd(now).getTime());
@@ -211,8 +215,11 @@ public class ProjectStateTask {
 	
 	@Scheduled(cron = "0 0 22 1 * ?")
 	protected void generateProjectMonthlyState(){
-		log.info("=====begin generate project monthly state=====");
 		Date now = new Date();
+		generateProjectMonthlyState(now);
+	}
+	protected void generateProjectMonthlyState(Date now){
+		log.info("=====begin generate project monthly state=====");
 		init();
 		ZonedDateTime beginTime = DateUtil.getZonedDateTime(DateUtil.lastMonthBegin(now).getTime());
 		ZonedDateTime endTime = DateUtil.getZonedDateTime(DateUtil.lastMonthend(now).getTime());

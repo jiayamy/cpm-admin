@@ -5,9 +5,9 @@
         .module('cpmApp')
         .controller('ContractReceiveController', ContractReceiveController);
 
-    ContractReceiveController.$inject = ['$scope', '$state', 'ContractReceive', 'ContractReceiveSearch', 'ParseLinks', 'AlertService', 'paginationConstants', 'pagingParams','ContractInfo'];
+    ContractReceiveController.$inject = ['$scope', '$state', 'ContractReceive', 'ParseLinks', 'AlertService', 'paginationConstants', 'pagingParams','ContractInfo'];
 
-    function ContractReceiveController ($scope, $state, ContractReceive, ContractReceiveSearch, ParseLinks, AlertService, paginationConstants, pagingParams,ContractInfo) {
+    function ContractReceiveController ($scope, $state, ContractReceive, ParseLinks, AlertService, paginationConstants, pagingParams,ContractInfo) {
         var vm = this;
 
         vm.loadPage = loadPage;

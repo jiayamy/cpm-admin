@@ -244,4 +244,29 @@ public class ContractInfoResource {
     			.headers(HeaderUtil.createAlert("cpmApp.contractInfo.finish.success", contractInfoInfo.getId().toString()))
     			.body(null);
     }
+	
+	@GetMapping("/contract-infos/end")
+    @Timed
+    @Secured(AuthoritiesConstants.ROLE_CONTRACT_INFO)
+    public ResponseEntity<ContractInfo> endContractInfo(@RequestParam(value = "id") Long id) throws URISyntaxException {
+    	log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to endContractInfo by id : {}", id);
+    	if(id == null){
+    		return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.contractInfo.save.requiedError", "")).body(null);
+    	}
+    	//有没权限
+    	ContractInfoVo contractInfoInfo = contractInfoService.getUserContractInfo(id);
+        if(contractInfoInfo == null){
+        	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.contractInfo.save.noPerm", "")).body(null);
+        }
+        if(contractInfoInfo.getStatus() == ContractInfo.STATU_FINISH){
+        	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.contractInfo.end.status2Error", "")).body(null);
+        }else if(contractInfoInfo.getStatus() == ContractInfo.STATUS_DELETED){
+        	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.contractInfo.end.status3Error", "")).body(null);
+        }
+        contractInfoService.endContractInfo(id);
+        
+    	return ResponseEntity.ok()
+    			.headers(HeaderUtil.createAlert("cpmApp.contractInfo.end.success", contractInfoInfo.getId().toString()))
+    			.body(null);
+    }
 }

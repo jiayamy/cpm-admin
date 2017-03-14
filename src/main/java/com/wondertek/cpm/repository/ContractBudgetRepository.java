@@ -10,7 +10,7 @@ import com.wondertek.cpm.domain.ContractBudget;
  */
 public interface ContractBudgetRepository extends JpaRepository<ContractBudget, Long> {
 
-	@Query(value = "select * from w_contract_budget cb where cb.id = ?1", nativeQuery = true)
+	@Query(value = "from ContractBudget where id = ?1")
 	public ContractBudget findOneById(Long id);
 	
 }

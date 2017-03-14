@@ -39,6 +39,11 @@ public interface ContractInfoDao extends GenericDao<ContractInfo, Long>{
 	 * 更新合同的回款总额
 	 */
 	public int updateReceiveTotal(Long contractId, Double receiveTotal, Double oldTotal);
+	/**
+	 * 合同完成
+	 * @return
+	 */
+	public int endContractInfo(Long id, String updator);
 	
 	
 }

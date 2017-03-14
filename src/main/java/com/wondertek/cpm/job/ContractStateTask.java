@@ -120,9 +120,13 @@ public class ContractStateTask {
 	
 	@Scheduled(cron = "0 0 23 ? * MON")
 	protected void generateContractWeeklyStat(){
+		Date now = new Date();
+		generateContractWeeklyStat(now);
+	}
+	protected void generateContractWeeklyStat(Date now){
 		log.info("=====begin generate Contract Weekly Stat=====");
 		init();
-		Date now = new Date();
+		
 		String [] dates = DateUtil.getWholeWeekByDate(DateUtil.lastSaturday(now));
 		ZonedDateTime beginTime = DateUtil.getZonedDateTime(DateUtil.lastMonday(now).getTime());
 		ZonedDateTime endTime = DateUtil.getZonedDateTime(DateUtil.lastSundayEnd(now).getTime());
@@ -367,9 +371,13 @@ public class ContractStateTask {
 	
 	@Scheduled(cron = "0 30 23 1 * ?")
 	protected void generateContractMonthlyStat(){
+		Date now = new Date();
+		generateContractMonthlyStat(now);
+	}
+	
+	protected void generateContractMonthlyStat(Date now){
 		log.info("=====begin generate Contract Monthly Stat=====");
 		init();
-		Date now = new Date();
 		ZonedDateTime beginTime = DateUtil.getZonedDateTime(DateUtil.lastMonthBegin(now).getTime());
 		ZonedDateTime endTime = DateUtil.getZonedDateTime(DateUtil.lastMonthend(now).getTime());
 		String fDay = DateUtil.getFirstDayOfLastMonth("yyyyMMdd");

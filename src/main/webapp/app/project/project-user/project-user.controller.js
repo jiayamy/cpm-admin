@@ -5,9 +5,9 @@
         .module('cpmApp')
         .controller('ProjectUserController', ProjectUserController);
 
-    ProjectUserController.$inject = ['$scope','$rootScope', '$state', 'ProjectUser', 'ProjectUserSearch', 'ParseLinks', 'AlertService', 'paginationConstants', 'pagingParams','ProjectInfo'];
+    ProjectUserController.$inject = ['$scope','$rootScope', '$state', 'ProjectUser', 'ParseLinks', 'AlertService', 'paginationConstants', 'pagingParams','ProjectInfo'];
 
-    function ProjectUserController ($scope,$rootScope, $state, ProjectUser, ProjectUserSearch, ParseLinks, AlertService, paginationConstants, pagingParams,ProjectInfo) {
+    function ProjectUserController ($scope,$rootScope, $state, ProjectUser, ParseLinks, AlertService, paginationConstants, pagingParams,ProjectInfo) {
         var vm = this;
 
         vm.loadPage = loadPage;

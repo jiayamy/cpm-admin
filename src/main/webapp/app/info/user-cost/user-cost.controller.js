@@ -5,9 +5,9 @@
         .module('cpmApp')
         .controller('UserCostController', UserCostController);
 
-    UserCostController.$inject = ['$scope', '$state', 'UserCost', 'UserCostSearch', 'ParseLinks', 'AlertService', 'paginationConstants', 'pagingParams','DateUtils'];
+    UserCostController.$inject = ['$scope', '$state', 'UserCost', 'ParseLinks', 'AlertService', 'paginationConstants', 'pagingParams','DateUtils'];
 
-    function UserCostController ($scope, $state, UserCost, UserCostSearch, ParseLinks, AlertService, paginationConstants, pagingParams,DateUtils) {
+    function UserCostController ($scope, $state, UserCost, ParseLinks, AlertService, paginationConstants, pagingParams,DateUtils) {
         var vm = this;
 
         vm.loadPage = loadPage;

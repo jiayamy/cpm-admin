@@ -5,9 +5,9 @@
         .module('cpmApp')
         .controller('HolidayInfoController', HolidayInfoController);
 
-    HolidayInfoController.$inject = ['$scope', '$state','DateUtils', 'HolidayInfo', 'HolidayInfoSearch', 'ParseLinks', 'AlertService', 'paginationConstants', 'pagingParams'];
+    HolidayInfoController.$inject = ['$scope', '$state','DateUtils', 'HolidayInfo', 'ParseLinks', 'AlertService', 'paginationConstants', 'pagingParams'];
 
-    function HolidayInfoController ($scope, $state,DateUtils, HolidayInfo, HolidayInfoSearch, ParseLinks, AlertService, paginationConstants, pagingParams) {
+    function HolidayInfoController ($scope, $state,DateUtils, HolidayInfo, ParseLinks, AlertService, paginationConstants, pagingParams) {
         var vm = this;
 
         vm.loadPage = loadPage;

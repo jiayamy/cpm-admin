@@ -5,9 +5,9 @@
         .module('cpmApp')
         .controller('ContractUserController', ContractUserController);
 
-    ContractUserController.$inject = ['ContractInfo','$rootScope','$scope', '$state', 'ContractUser', 'ContractUserSearch', 'ParseLinks', 'AlertService', 'paginationConstants', 'pagingParams'];
+    ContractUserController.$inject = ['ContractInfo','$rootScope','$scope', '$state', 'ContractUser', 'ParseLinks', 'AlertService', 'paginationConstants', 'pagingParams'];
 
-    function ContractUserController (ContractInfo,$rootScope,$scope, $state, ContractUser, ContractUserSearch, ParseLinks, AlertService, paginationConstants, pagingParams) {
+    function ContractUserController (ContractInfo,$rootScope,$scope, $state, ContractUser, ParseLinks, AlertService, paginationConstants, pagingParams) {
         var vm = this;
 
         vm.loadPage = loadPage;

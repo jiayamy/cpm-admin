@@ -18,6 +18,7 @@ import com.wondertek.cpm.CpmConstants;
 import com.wondertek.cpm.domain.ContractFinishInfo;
 import com.wondertek.cpm.domain.ContractInfo;
 import com.wondertek.cpm.domain.DeptInfo;
+import com.wondertek.cpm.domain.ProjectFinishInfo;
 import com.wondertek.cpm.domain.User;
 import com.wondertek.cpm.domain.vo.ContractInfoVo;
 import com.wondertek.cpm.domain.vo.LongValue;
@@ -167,5 +168,19 @@ public class ContractInfoService {
 		contractFinishInfoRepository.save(contractFinishInfo);
 		
 		return contractInfoDao.finishContractInfo(id,finishRate,updator);
+	}
+
+	public void endContractInfo(Long id) {
+		String updator = SecurityUtils.getCurrentUserLogin();
+		//保存记录
+		ContractFinishInfo contractFinishInfo = new ContractFinishInfo();
+		contractFinishInfo.setCreateTime(ZonedDateTime.now());
+		contractFinishInfo.setCreator(updator);
+		contractFinishInfo.setFinishRate(100d);
+		contractFinishInfo.setId(null);
+		contractFinishInfo.setContractId(id);
+		contractFinishInfoRepository.save(contractFinishInfo);
+		
+		return contractInfoDao.endContractInfo(id,updator);
 	}
 }

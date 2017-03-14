@@ -5,9 +5,9 @@
         .module('cpmApp')
         .controller('DeptInfoController', DeptInfoController);
 
-    DeptInfoController.$inject = ['$scope','$rootScope', '$state', 'DeptInfo', 'DeptInfoSearch', 'ParseLinks', 'AlertService', 'paginationConstants', 'pagingParams'];
+    DeptInfoController.$inject = ['$scope','$rootScope', '$state', 'DeptInfo', 'ParseLinks', 'AlertService', 'paginationConstants', 'pagingParams'];
 
-    function DeptInfoController ($scope,$rootScope, $state, DeptInfo, DeptInfoSearch, ParseLinks, AlertService, paginationConstants, pagingParams) {
+    function DeptInfoController ($scope,$rootScope, $state, DeptInfo, ParseLinks, AlertService, paginationConstants, pagingParams) {
         var vm = this;
 
         vm.isChildShowed = isChildShowed;

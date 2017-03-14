@@ -32,6 +32,13 @@
             	"isPreparedError":"正式合同不可在转为预立合同",
             	"consultantsRateError":"有咨询合同的咨询分润比例不可为空，且必须在0-100之间"
             },
+            "end":{
+            	"title":"合同完成信息",
+            	"submit":"完成",
+            	"status2Error":"合同状态为已完成的不可再执行完成操作",
+            	"status3Error":"合同状态为已删除的不可执行完成操作",
+            	"success":"合同完成成功"
+            },
             "required":{
             	"salesmanAndconsultants":"销售和咨询必填一个"
             },

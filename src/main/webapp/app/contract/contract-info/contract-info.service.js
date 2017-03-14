@@ -31,7 +31,12 @@
             	method:'GET',
             	isArray:true
             },
-            'finish': { method:'PUT',url:'api/contract-infos/finish' }
+            'finish': { method:'PUT',url:'api/contract-infos/finish' },
+            'end':{
+            	url:'api/contract-infos/end',
+            	method:'GET',
+            	isArray:true
+            }
         });
     }
 })();
