@@ -126,7 +126,6 @@ public class ContractBudgetDaoImpl extends GenericDaoImpl<ContractBudget, Long> 
 		List<ContractBudgetVo> returnList = new ArrayList<ContractBudgetVo>();
 		if (page.getContent() != null) {
 			for (Object[] o : page.getContent()) {
-				System.out.println("===========================" + o[12] + "==================================");
 				returnList.add(transContractBudgetVo(o,user.getId(),user.getLogin(),deptInfo.getId(),deptInfo.getIdPath() + deptInfo.getId() + "/"));
 			}
 		}
