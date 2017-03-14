@@ -178,7 +178,7 @@ public class ConsultantsBonusResource {
     			"本期奖金",
     			"累计已计提奖金"
     	};
-    	String fileName = "咨询.xlsx";
+    	String fileName = "咨询奖金_" + statWeek + ".xlsx";
     	//写入sheet
     	ServletOutputStream outputStream = response.getOutputStream();
     	response.setHeader("Content-Disposition","attachment;filename=" + ExcelUtil.getExportName(request, fileName));
