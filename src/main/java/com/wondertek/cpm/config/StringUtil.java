@@ -116,12 +116,15 @@ public class StringUtil {
 	 * @return
 	 */
 	public static Double nullToDouble(Object value){
+		return nullToDouble(value,2);
+	}
+	public static Double nullToDouble(Object value,int scale){
 		Double d = new Double(0);
 		try{
 			if(value != null && !StringUtil.isNullStr(value.toString())){
 				d = Double.parseDouble(String.valueOf(value));
 				BigDecimal b = new BigDecimal(d);
-				d = b.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
+				d = b.setScale(scale, BigDecimal.ROUND_HALF_UP).doubleValue();
 			}
 		}catch(Exception e){
 			e.printStackTrace();
@@ -134,12 +137,15 @@ public class StringUtil {
 	 * @return
 	 */
 	public static Double nullToCloneDouble(Object value){
+		return nullToCloneDouble(value,2);
+	}
+	public static Double nullToCloneDouble(Object value,int scale){
 		Double d = null;
 		try{
 			if(value != null && !StringUtil.isNullStr(value.toString())){
 				d = Double.parseDouble(String.valueOf(value));
 				BigDecimal b = new BigDecimal(d);
-				d = b.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
+				d = b.setScale(scale, BigDecimal.ROUND_HALF_UP).doubleValue();
 			}
 		}catch(Exception e){
 			e.printStackTrace();
@@ -156,6 +162,20 @@ public class StringUtil {
 			return value;
 		}
 		BigDecimal b = new BigDecimal(value);
+		return b.setScale(scale, BigDecimal.ROUND_HALF_UP).doubleValue();
+	}
+	/**
+	 * 对double取指定小数点后几位，四舍五入
+	 * @return
+	 */
+	public static Double getScaleDouble(Double value,Double denominator, int scale){
+		if(value == null){
+			return value;
+		}
+		if(denominator == null || denominator == 0){
+			return null;
+		}
+		BigDecimal b = new BigDecimal(value/denominator);
 		return b.setScale(scale, BigDecimal.ROUND_HALF_UP).doubleValue();
 	}
 	
