@@ -49,7 +49,7 @@
 	            </thead>
 	            <tbody>
 	                <tr ng-repeat="productPrice in vm.productPrices track by productPrice.id">
-	                    <td><a ui-sref="product-price-detail({id:productPrice.id})">{{productPrice.name}}</a></td>
+	                    <td>{{productPrice.name}}</td>
 	                    <td>{{productPrice.typeName}}</td>
 	                    <td>{{productPrice.sourceName}}</td>
 	                    <td>{{productPrice.units}}</td>

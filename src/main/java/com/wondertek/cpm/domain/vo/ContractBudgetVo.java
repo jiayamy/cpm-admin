@@ -23,6 +23,7 @@ public class ContractBudgetVo {
 	
 	private Boolean isEdit = Boolean.FALSE;		//能够编辑采购单
 	private Boolean isCreate = Boolean.FALSE;	//能够创建项目或者采购子项
+	private Boolean hasCreatedProject = Boolean.FALSE;//是否已经创建项目
 	
 	public ContractBudgetVo(){
 		
@@ -78,6 +79,8 @@ public class ContractBudgetVo {
 		Long wdi3Id = StringUtil.nullToLong(o[10]).longValue();
 		String wdi3IdPath = StringUtil.null2Str(o[11]);
 		
+		Long budgetId = StringUtil.nullToCloneLong(o[12]);
+		
 		//判定 isEdit
 		if(contractCreator.equals(login) || (salesmanId != null && salesmanId == userId) || (consultantsId != null && consultantsId == userId) || login.equals(contractBudget.getCreator())
 				|| (wdiId != null && wdiId == deptId) || wdiIdPath.startsWith(idPath)
@@ -88,6 +91,11 @@ public class ContractBudgetVo {
 		//判定 isCreate
 		if(contractBudget.getUserId() == userId || wdi3Id == deptId || wdi3IdPath.startsWith(idPath)){
 			this.isCreate = Boolean.TRUE;
+		}
+		
+		//判定 hasCreatedProject
+		if (budgetId == null) {
+			this.hasCreatedProject = Boolean.TRUE;
 		}
 	}
 	
@@ -105,6 +113,14 @@ public class ContractBudgetVo {
 
 	public void setIsCreate(Boolean isCreate) {
 		this.isCreate = isCreate;
+	}
+	
+	public Boolean getHasCreatedProject() {
+		return hasCreatedProject;
+	}
+
+	public void setHasCreatedProject(Boolean hasCreatedProject) {
+		this.hasCreatedProject = hasCreatedProject;
 	}
 
 	public void setContractName(String contractName) {

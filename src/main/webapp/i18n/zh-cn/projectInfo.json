@@ -28,7 +28,9 @@
             	"existSerialNum":"项目编号已存在，请选择其他编号",
             	"requriedError":"必填参数为空",
             	"endDayError":"结束日期应在开始日期之后",
-            	"statusError":"已结项或已删除的项目不可编辑"
+            	"statusError":"已结项或已删除的项目不可编辑",
+            	"saveError":"项目创建失败",
+            	"statue2CreateError":"已经删除的内部采购单不可以创建项目"
             },
             "end":{
             	"title":"结项信息",

@@ -236,7 +236,7 @@
         	if (vm.purchaseItem.totalAmount == undefined) {
 				vm.purchaseItem.totalAmount = 0;
 			}
-        	vm.purchaseItem.quantity = Math.floor(vm.purchaseItem.totalAmount / vm.purchaseItem.price);
+        	vm.purchaseItem.price = Math.floor(vm.purchaseItem.totalAmount / vm.purchaseItem.quantity);
         }
 
         vm.datePickerOpenStatus.createTime = false;

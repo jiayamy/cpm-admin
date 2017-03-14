@@ -38,13 +38,10 @@
 
         vm.salChanged = salChanged;
         function salChanged(){
-        	if(vm.userCost.sal == undefined){
-        		vm.userCost.sal = 0;
-        	}
         	//社保公积金44%
-        	vm.userCost.socialSecurityFund = vm.userCost.sal * 0.44;
+        	vm.userCost.socialSecurityFund = Math.round(vm.userCost.sal * 0.44 * 100) / 100;
         	//其他费用10%
-        	vm.userCost.otherExpense = vm.userCost.sal * 0.10;
+        	vm.userCost.otherExpense = Math.round(vm.userCost.sal * 0.10 * 100) / 100;
         }
         
         function save () {

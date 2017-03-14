@@ -14,7 +14,7 @@ public interface UserCostDao extends GenericDao<UserCost, Long> {
 	 * 获取员工成本列表
 	 * @return
 	 */
-	public Page<UserCostVo> getUserCostPage(UserCost userCost,Pageable pageable);
+	public Page<UserCostVo> getUserCostPage(UserCostVo userCostVo,Pageable pageable);
 	/**
 	 * 获取costMonth以及之前的每个用户最后一条记录
 	 * @return

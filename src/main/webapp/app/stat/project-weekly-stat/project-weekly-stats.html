@@ -42,27 +42,23 @@
         <table class="jh-table table table-striped">
             <thead>
                 <tr jh-sort="vm.predicate" ascending="vm.reverse" callback="vm.transition()">
-                    <th jh-sort-by="m.id"><span data-translate="global.field.id">ID</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="i.serialNum"><span data-translate="cpmApp.projectWeeklyStat.serialNum">Serial Num</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="i.name"><span data-translate="cpmApp.projectWeeklyStat.name">Project Name</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="m.finishRate"><span data-translate="cpmApp.projectWeeklyStat.finishRate">Finish Rate</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="m.humanCost"><span data-translate="cpmApp.projectWeeklyStat.humanCost">Human Cost</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="m.payment"><span data-translate="cpmApp.projectWeeklyStat.payment">Payment</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="m.statWeek"><span data-translate="cpmApp.projectWeeklyStat.statWeek">Stat Week</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="m.createTime"><span data-translate="cpmApp.projectWeeklyStat.createTime">Create Time</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th></th>
                 </tr>
             </thead>
             <tbody>
                 <tr ng-repeat="projectWeeklyStat in vm.projectWeeklyStats track by projectWeeklyStat.id">
-                    <td><a ui-sref="project-weekly-stat-detail({id:projectWeeklyStat.id})">{{projectWeeklyStat.id}}</a></td>
-                    <td>{{projectWeeklyStat.serialNum}}</td>
+                    <td><a ui-sref="project-weekly-stat-detail({id:projectWeeklyStat.id})">{{projectWeeklyStat.serialNum}}</a></td>
                     <td>{{projectWeeklyStat.name}}</td>
                     <td>{{projectWeeklyStat.finishRate}}%</td>
                     <td>{{projectWeeklyStat.humanCost}}</td>
                     <td>{{projectWeeklyStat.payment}}</td>
                     <td>{{projectWeeklyStat.statWeek}}</td>
-                    <td>{{projectWeeklyStat.createTime | date:'medium'}}</td>
                     <td class="text-right">
                         <div class="btn-group flex-btn-group-container">
                             <button type="submit"

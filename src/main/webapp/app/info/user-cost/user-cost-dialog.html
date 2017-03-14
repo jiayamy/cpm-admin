@@ -1,7 +1,7 @@
 <h2><span data-translate="cpmApp.userCost.home.createOrEditLabel" ng-hide="vm.userCost.id">Create or edit a User Cost</span></h2>
 <h2><span data-translate="cpmApp.userCost.home.editLabel" ng-show="vm.userCost.id">Edit a User Cost</span></h2>
 <hr>
-<form name="editForm" role="form" novalidate ng-submit="vm.save()">
+<form name="editForm" role="form" ng-submit="vm.save()">
 	<div class="container-fluid">
 		<div class="row form-horizontal">
 			<div class="form-group">
@@ -36,7 +36,7 @@
 				<div class="col-sm-6">
 					<label class="control-label" data-translate="cpmApp.userCost.sal" for="field_sal">Sal</label>
             		<input type="number" class="form-control" name="sal" id="field_sal" ng-model="vm.userCost.sal"
-            			   step="100" min="0" ng-required="true" ng-change="vm.salChanged()"/>
+            			   step="0.01" min="0" ng-required="true" ng-change="vm.salChanged()"/>
             		<div ng-show="myForm.sal.$dirty&&myForm.sal.$error.min" class="alert alert-danger help-block"> 
                 		最小值为0
            			</div>
@@ -46,7 +46,7 @@
 				<div class="col-sm-6">
 					<label class="control-label" data-translate="cpmApp.userCost.socialSecurityFund" for="field_socialSecurityFund">Social Security Fund</label>
             		<input type="number" class="form-control" name="socialSecurityFund" id="field_socialSecurityFund" ng-model="vm.userCost.socialSecurityFund"
-            			   step="100" min="0" ng-required="true"/>
+            			   step="0.01" min="0" ng-required="true"/>
             		<div ng-show="myForm.socialSecurityFund.$dirty&&myForm.socialSecurityFund.$error.min" class="alert alert-danger help-block"> 
                 		最小值为0
            			</div>
@@ -54,7 +54,7 @@
 				<div class="col-sm-6">
 					<label class="control-label" data-translate="cpmApp.userCost.otherExpense" for="field_otherExpense">Other Expense</label>
             		<input type="number" class="form-control" name="otherExpense" id="field_otherExpense" ng-model="vm.userCost.otherExpense"
-            			   step="100" min="0" ng-required="true"/>
+            			   step="0.01" min="0" ng-required="true"/>
             		<div ng-show="myForm.otherExpense.$dirty&&myForm.otherExpense.$error.min" class="alert alert-danger help-block"> 
                 		最小值为0
            			</div>

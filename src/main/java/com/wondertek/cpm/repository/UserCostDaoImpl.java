@@ -36,7 +36,7 @@ public class UserCostDaoImpl extends GenericDaoImpl<UserCost, Long> implements U
 	}
 
 	@Override
-	public Page<UserCostVo> getUserCostPage(UserCost userCost, Pageable pageable) {
+	public Page<UserCostVo> getUserCostPage(UserCostVo userCostVo, Pageable pageable) {
 		StringBuffer querySql = new StringBuffer();
 		StringBuffer countSql = new StringBuffer();
 		
@@ -54,21 +54,21 @@ public class UserCostDaoImpl extends GenericDaoImpl<UserCost, Long> implements U
 		List<Object> params = new ArrayList<Object>();
 		
 		whereSql.append(" where 1 = 1");
-		if(userCost.getUserId() != null){
-			whereSql.append(" and wuc.user_id = ?");
-			params.add(userCost.getUserId());
+		if(userCostVo.getSerialNum() != null){
+			whereSql.append(" and ju.serial_num like ?");
+			params.add("%" + userCostVo.getSerialNum() + "%");
 		}
-		if(userCost.getUserName() != null){
-			whereSql.append(" and wuc.user_name = ?");
-			params.add(userCost.getUserName());
+		if(userCostVo.getUserName() != null){
+			whereSql.append(" and wuc.user_name like ?");
+			params.add("%" + userCostVo.getUserName() + "%");
 		}
-		if(userCost.getCostMonth() != null){
+		if(userCostVo.getCostMonth() != null){
 			whereSql.append(" and wuc.cost_month = ?");
-			params.add(userCost.getCostMonth());
+			params.add(userCostVo.getCostMonth());
 		}
-		if(userCost.getStatus() != null){
+		if(userCostVo.getStatus() != null){
 			whereSql.append(" and wuc.status_ = ?");
-			params.add(userCost.getStatus());
+			params.add(userCostVo.getStatus());
 		}
 		
 		querySql.append(whereSql);

@@ -2,6 +2,7 @@ package com.wondertek.cpm.web.rest;
 
 import java.net.URISyntaxException;
 import java.time.ZonedDateTime;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.codahale.metrics.annotation.Timed;
+import com.wondertek.cpm.config.DateUtil;
 import com.wondertek.cpm.config.StringUtil;
 import com.wondertek.cpm.domain.ProjectUser;
 import com.wondertek.cpm.domain.vo.ProjectUserVo;
@@ -91,6 +93,10 @@ public class ProjectUserResource {
         	}else if(old.getProjectId() != projectUser.getProjectId().longValue()){
         		return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.projectUser.save.projectIdError", "")).body(null);
         	}
+        	long leaveDay = StringUtil.nullToLong(DateUtil.formatDate(DateUtil.DATE_YYYYMMDD_PATTERN, new Date()));
+            if(old.getLeaveDay() != null && old.getLeaveDay() <= leaveDay){
+            	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.projectUser.save.leaveDayError", "")).body(null);
+            }
         	projectUser.setCreateTime(old.getCreateTime());
         	projectUser.setCreator(old.getCreator());
         }
@@ -169,6 +175,10 @@ public class ProjectUserResource {
         ProjectUserVo projectUserVo = projectUserService.getProjectUser(id);
         if(projectUserVo == null){
         	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.projectUser.save.noPerm", "")).body(null);
+        }
+        long leaveDay = StringUtil.nullToLong(DateUtil.formatDate(DateUtil.DATE_YYYYMMDD_PATTERN, new Date()));
+        if(projectUserVo.getLeaveDay() != null && projectUserVo.getLeaveDay() <= leaveDay){
+        	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.projectUser.save.leaveDayError", "")).body(null);
         }
         projectUserService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert("projectUser", id.toString())).build();
