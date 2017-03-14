@@ -21,7 +21,8 @@
             	"userIdError":"user Id already exist in Project between join day and leave day",
             	"idNone":"Data Error, plz reflesh",
             	"projectIdError":"projectIdError",
-            	"noPerm":"no Permit"
+            	"noPerm":"no Permit",
+            	"projectError" : "project is finished or deleted"
             },
             "projectId": "Project Id",
             "projectName":"Project Name",
