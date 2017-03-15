@@ -74,14 +74,13 @@
                 <tr jh-sort="vm.predicate" ascending="vm.reverse" callback="vm.transition()">
                     <th jh-sort-by="wcb.id"><span data-translate="global.field.id">ID</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="wci.serialNum"><span data-translate="cpmApp.contractBudget.serialNum">SerialNum</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="wci.name"><span data-translate="cpmApp.contractBudget.name">Name</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="wcb.name"><span data-translate="cpmApp.contractBudget.contractName">contractName</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="wci.name"><span data-translate="cpmApp.contractBudget.contractName">contractName</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="wcb.name"><span data-translate="cpmApp.contractBudget.name">Name</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="wcb.purchaseType"><span data-translate="cpmApp.contractBudget.purchaseType">PurchaseType</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="wcb.userName"><span data-translate="cpmApp.contractBudget.userName">User Name</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="wcb.dept"><span data-translate="cpmApp.contractBudget.dept">Dept</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="wcb.budgetTotal"><span data-translate="cpmApp.contractBudget.budgetTotal">Budget Total</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="wcb.status"><span data-translate="cpmApp.contractBudget.status">Status</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="wcb.createTime"><span data-translate="cpmApp.contractBudget.createTime">Create Time</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="wcb.updateTime"><span data-translate="cpmApp.contractBudget.updateTime">Update Time</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th></th>
                 </tr>
@@ -90,14 +89,13 @@
                 <tr ng-repeat="contractBudget in vm.contractBudgets track by contractBudget.id">
                     <td><a ui-sref="contract-budget-detail({id:contractBudget.id})">{{contractBudget.id}}</a></td>
                     <td>{{contractBudget.serialNum}}</td>
-                    <td>{{contractBudget.name}}</td>
                     <td>{{contractBudget.contractName}}</td>
+                    <td>{{contractBudget.name}}</td>
                     <td>{{contractBudget.purchaseTypeName}}</td>
                     <td>{{contractBudget.userName}}</td>
                     <td>{{contractBudget.dept}}</td>
                     <td>{{contractBudget.budgetTotal}}</td>
                     <td>{{contractBudget.statusName}}</td>
-                    <td>{{contractBudget.createTime | date:'medium'}}</td>
                     <td>{{contractBudget.updateTime | date:'medium'}}</td>
                     <td class="text-right">
                         <div class="btn-group flex-btn-group-container">
@@ -121,13 +119,13 @@
                             </button>
                             <button type="submit" ng-if="contractBudget.haveCreateProject" has-authority="ROLE_PROJECT_INFO"
                                     ui-sref="contract-budget.createProject({id:contractBudget.id})"
-                                    class="btn btn-warning btn-sm">
+                                    class="btn btn-warning btn-sm" ng-disabled="contractBudget.isCreateDisabled">
                                 <span class="glyphicon glyphicon-plus"></span>
                                 <span class="hidden-xs hidden-sm" data-translate="cpmApp.contractBudget.button.createProject"></span>
                             </button>
                             <button type="submit" ng-if="contractBudget.haveCreateItem" has-authority="ROLE_CONTRACT_PURCHASE"
                                     ui-sref="contract-budget.createPurchaseItem({id:contractBudget.id})"
-                                    class="btn btn-success btn-sm">
+                                    class="btn btn-success btn-sm" ng-disabled="contractBudget.isCreateDisabled">
                                 <span class="glyphicon glyphicon-plus"></span>
                                 <span class="hidden-xs hidden-sm" data-translate="cpmApp.contractBudget.button.createPurchaseItem"></span>
                             </button>
