@@ -73,7 +73,23 @@ public class ConsultantsBonusDaoImpl extends GenericDaoImpl<ConsultantsBonus, Lo
 			params.add(consultantsBonus.getConsultantsId());
 		}
     	StringBuffer orderSql = new StringBuffer();
-    	orderSql.append(" order by m.id desc");
+    	if(pageable.getSort() != null){//页面都会有个默认排序
+    		for (Order order : pageable.getSort()) {
+    			if(CpmConstants.ORDER_IGNORE_SCORE.equalsIgnoreCase(order.getProperty())){
+    				continue;
+    			}
+    			if(orderSql.length() != 0){
+    				orderSql.append(",");
+    			}else{
+    				orderSql.append(" order by ");
+    			}
+    			if(order.isAscending()){
+    				orderSql.append(order.getProperty()).append(" asc");
+    			}else{
+    				orderSql.append(order.getProperty()).append(" desc");
+    			}
+    		}
+    	}
     	
     	Page<Object[]> page = this.querySqlPage(
     			querySql.toString() + whereSql.toString() + orderSql.toString(), 

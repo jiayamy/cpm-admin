@@ -114,20 +114,29 @@
 						data[i].haveEdit = null;
 					}
 					if (data[i].isCreate == true) {
-						if (data[i].purchaseTypeName == "服务") {
+						if (data[i].purchaseType == 3) {
 							if (data[i].status == 1 && data[i].hasCreatedProject == true && data[i].isValidable == true) {
 								data[i].haveCreateProject = true;
+								data[i].isCreateDisabled = false;
+							}else{
+								data[i].haveCreateProject = true;
+								data[i].isCreateDisabled = true;
 							}
 							data[i].haveCreateItem = null;
 						}else {
 							if (data[i].status == 1 && data[i].isValidable == true) {
 								data[i].haveCreateItem = true;
+								data[i].isCreateDisabled = false;
+							}else{
+								data[i].haveCreateItem = true;
+								data[i].isCreateDisabled = true;
 							}
 							data[i].haveCreateProject = null;
 						}
 					}else{
 						data[i].haveCreateProject = null;
 						data[i].haveCreateItem = null;
+						data[i].isCreateDisabled = true;
 					}
 				}
 			}

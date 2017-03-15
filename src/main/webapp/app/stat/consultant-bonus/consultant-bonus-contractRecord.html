@@ -4,7 +4,7 @@
     <br/>
     <div class="btn-group flex-btn-group-container">
        	<button type="submit"
-	           ng-click="vm.back()"
+	           ui-sref="{{ vm.previousState }}"
 	           class="btn btn-info">
 	       <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span data-translate="entity.action.back"> Back</span>
 	   	</button>
@@ -42,6 +42,6 @@
     </div>
     <div class="text-center">
         <jhi-item-count page="vm.page" total="vm.queryCount" items-per-page="vm.itemsPerPage"></jhi-item-count>
-        <uib-pagination class="pagination-sm" total-items="vm.totalItems" items-per-page="vm.itemsPerPage" ng-model="vm.page" ng-change="vm.transition()"></uib-pagination>
+        <uib-pagination class="pagination-sm" total-items="vm.totalItems" items-per-page="vm.itemsPerPage" ng-model="vm.page" ng-change="vm.loadAll()"></uib-pagination>
     </div>
 </div>
