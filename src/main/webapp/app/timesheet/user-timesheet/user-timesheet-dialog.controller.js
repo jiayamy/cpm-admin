@@ -122,6 +122,27 @@
             	for(var i = 0; i< vm.userTimesheets.length ; i++){
             		tmp = vm.userTimesheets[i];
             		//校验是否为空
+            		if(tmp.data1 == undefined){
+            			tmp.data1 = "0";
+            		}
+            		if(tmp.data2 == undefined){
+            			tmp.data2 = "0";
+            		}
+            		if(tmp.data3 == undefined){
+            			tmp.data3 = "0";
+            		}
+            		if(tmp.data4 == undefined){
+            			tmp.data4 = "0";
+            		}
+            		if(tmp.data5 == undefined){
+            			tmp.data5 = "0";
+            		}
+            		if(tmp.data6 == undefined){
+            			tmp.data6 = "0";
+            		}
+            		if(tmp.data7 == undefined){
+            			tmp.data7 = "0";
+            		}
             		if(!tmp.data1 || !tmp.data2 || !tmp.data3 || !tmp.data4 
             				|| !tmp.data5|| !tmp.data6|| !tmp.data7){
             			vm.isSaving = false;

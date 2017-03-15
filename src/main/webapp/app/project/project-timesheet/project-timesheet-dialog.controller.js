@@ -103,6 +103,27 @@
             	for(var i = 0; i< vm.userTimesheets.length ; i++){
             		tmp = vm.userTimesheets[i];
             		//校验是否为空
+            		if(tmp.check1 == undefined){
+            			tmp.check1 = "0";
+            		}
+            		if(tmp.check2 == undefined){
+            			tmp.check2 = "0";
+            		}
+            		if(tmp.check3 == undefined){
+            			tmp.check3 = "0";
+            		}
+            		if(tmp.check4 == undefined){
+            			tmp.check4 = "0";
+            		}
+            		if(tmp.check5 == undefined){
+            			tmp.check5 = "0";
+            		}
+            		if(tmp.check6 == undefined){
+            			tmp.check6 = "0";
+            		}
+            		if(tmp.check7 == undefined){
+            			tmp.check7 = "0";
+            		}
             		if(!tmp.check1 || !tmp.check2 || !tmp.check3 || !tmp.check4 
             				|| !tmp.check5|| !tmp.check6|| !tmp.check7){
             			AlertService.error("cpmApp.projectTimesheet.save.dataNull");
