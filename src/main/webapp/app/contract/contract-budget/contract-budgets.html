@@ -98,26 +98,31 @@
                     <td class="text-right">
                         <div class="btn-group flex-btn-group-container">
                             <button type="submit"
+                            		data-toggle="tooltip" title="查看"
                                     ui-sref="contract-budget-detail({id:contractBudget.id})"
                                     class="btn btn-info btn-sm">
                                 <span class="glyphicon glyphicon-eye-open"></span>
                             </button>
                             <button type="submit" ng-if="contractBudget.haveEdit"
+                            		data-toggle="tooltip" title="编辑"
                                     ui-sref="contract-budget.edit({id:contractBudget.id})"
                                     class="btn btn-primary btn-sm">
                                 <span class="glyphicon glyphicon-pencil"></span>
                             </button>
                             <button type="submit" ng-if="contractBudget.haveEdit"
+                            		data-toggle="tooltip" title="删除"
                                     ui-sref="contract-budget.delete({id:contractBudget.id})"
                                     class="btn btn-danger btn-sm">
                                 <span class="glyphicon glyphicon-remove-circle"></span>
                             </button>
                             <button type="submit" ng-if="contractBudget.haveCreateProject" has-authority="ROLE_PROJECT_INFO"
+                            		data-toggle="tooltip" title="创建项目"
                                     ui-sref="contract-budget.createProject({id:contractBudget.id})"
                                     class="btn btn-warning btn-sm" ng-disabled="contractBudget.isCreateDisabled">
                                 <span class="glyphicon glyphicon-plus"></span>
                             </button>
                             <button type="submit" ng-if="contractBudget.haveCreateItem" has-authority="ROLE_CONTRACT_PURCHASE"
+                            		data-toggle="tooltip" title="创建采购子项"
                                     ui-sref="contract-budget.createPurchaseItem({id:contractBudget.id})"
                                     class="btn btn-success btn-sm" ng-disabled="contractBudget.isCreateDisabled">
                                 <span class="glyphicon glyphicon-plus"></span>
