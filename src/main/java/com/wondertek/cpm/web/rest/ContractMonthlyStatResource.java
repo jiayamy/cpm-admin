@@ -66,6 +66,11 @@ public class ContractMonthlyStatResource {
         throws URISyntaxException {
         log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to get a page of ContractMonthlyStats");
         Page<ContractMonthlyStatVo> page = contractMonthlyStatService.getStatPage(contractId, pageable);
+        for (ContractMonthlyStatVo contractMonthlyStatVo : page) {
+        	contractMonthlyStatVo.setReceiveTotal(StringUtil.getScaleDouble(contractMonthlyStatVo.getReceiveTotal(), 10000d, 2));
+			contractMonthlyStatVo.setCostTotal(StringUtil.getScaleDouble(contractMonthlyStatVo.getCostTotal(), 10000d, 2));
+			contractMonthlyStatVo.setGrossProfit(StringUtil.getScaleDouble(contractMonthlyStatVo.getGrossProfit(), 10000d, 2));
+		}
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/contract-monthly-stats");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
@@ -82,6 +87,18 @@ public class ContractMonthlyStatResource {
     public ResponseEntity<ContractMonthlyStatVo> getContractMonthlyStat(@PathVariable Long id) {
         log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to get ContractMonthlyStats : {}", id);
         ContractMonthlyStatVo contractMonthlyStat = contractMonthlyStatService.findOne(id);
+        contractMonthlyStat.setReceiveTotal(StringUtil.getScaleDouble(contractMonthlyStat.getReceiveTotal(), 10000d, 2));
+        contractMonthlyStat.setCostTotal(StringUtil.getScaleDouble(contractMonthlyStat.getCostTotal(), 10000d, 2));
+        contractMonthlyStat.setGrossProfit(StringUtil.getScaleDouble(contractMonthlyStat.getGrossProfit(), 10000d, 2));
+        contractMonthlyStat.setSalesHumanCost(StringUtil.getScaleDouble(contractMonthlyStat.getSalesHumanCost(), 10000d, 2));
+        contractMonthlyStat.setSalesPayment(StringUtil.getScaleDouble(contractMonthlyStat.getSalesPayment(), 10000d, 2));
+        contractMonthlyStat.setConsultHumanCost(StringUtil.getScaleDouble(contractMonthlyStat.getConsultHumanCost(), 10000d, 2));
+        contractMonthlyStat.setConsultPayment(StringUtil.getScaleDouble(contractMonthlyStat.getConsultPayment(), 10000d, 2));
+        contractMonthlyStat.setHardwarePurchase(StringUtil.getScaleDouble(contractMonthlyStat.getHardwarePurchase(), 10000d, 2));
+        contractMonthlyStat.setExternalSoftware(StringUtil.getScaleDouble(contractMonthlyStat.getExternalSoftware(), 10000d, 2));
+        contractMonthlyStat.setInternalSoftware(StringUtil.getScaleDouble(contractMonthlyStat.getInternalSoftware(), 10000d, 2));
+        contractMonthlyStat.setProjectHumanCost(StringUtil.getScaleDouble(contractMonthlyStat.getProjectHumanCost(), 10000d, 2));
+        contractMonthlyStat.setProjectPayment(StringUtil.getScaleDouble(contractMonthlyStat.getProjectPayment(), 10000d, 2));
         return Optional.ofNullable(contractMonthlyStat)
             .map(result -> new ResponseEntity<>(
                 result,

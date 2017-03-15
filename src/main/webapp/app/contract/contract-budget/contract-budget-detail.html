@@ -1,5 +1,5 @@
 <div>
-    <h2><span data-translate="cpmApp.contractBudget.detail.title">Contract Budget</span> {{vm.contractBudget.id}}</h2>
+    <h2><span data-translate="cpmApp.contractBudget.detail.title">Contract Budget</span> {{vm.contractBudget.serialNum}}</h2>
     <hr>
     <jhi-alert-error></jhi-alert-error>
     <div class="form-horizontal">
@@ -10,13 +10,13 @@
 			    <dd>
 			        <span>{{vm.contractBudget.serialNum}}</span>
 			    </dd> 
+			    <dt><span data-translate="cpmApp.contractBudget.contractName">Contract Name</span></dt>
+		        <dd>
+		            <span>{{vm.contractBudget.contractName}}</span>
+		        </dd>
   				<dt><span data-translate="cpmApp.contractBudget.name">Name</span></dt>
 		        <dd>
 		            <span>{{vm.contractBudget.name}}</span>
-		        </dd>
-		        <dt><span data-translate="cpmApp.contractBudget.contractName">Contract Name</span></dt>
-		        <dd>
-		            <span>{{vm.contractBudget.contractName}}</span>
 		        </dd>
         		<dt><span data-translate="cpmApp.contractBudget.purchaseType">PurchaseType</span></dt>
      			<dd>

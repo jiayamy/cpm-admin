@@ -65,6 +65,10 @@ public class ProjectWeeklyStatResource {
         throws URISyntaxException {
         log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to get a page of ProjectWeeklyStats by projectId : {}", projectId);
         Page<ProjectWeeklyStatVo> page = projectWeeklyStatService.getStatPage(projectId, pageable);
+        for (ProjectWeeklyStatVo projectWeeklyStatVo : page) {
+			projectWeeklyStatVo.setHumanCost(StringUtil.getScaleDouble(projectWeeklyStatVo.getHumanCost(), 10000d, 2));
+			projectWeeklyStatVo.setPayment(StringUtil.getScaleDouble(projectWeeklyStatVo.getPayment(), 10000d, 2));
+		}
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/project-weekly-stats");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
@@ -81,6 +85,8 @@ public class ProjectWeeklyStatResource {
     public ResponseEntity<ProjectWeeklyStatVo> getProjectWeeklyStat(@PathVariable Long id) {
         log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to get ProjectWeeklyStat : {}", id);
         ProjectWeeklyStatVo projectWeeklyStat = projectWeeklyStatService.findOne(id);
+        projectWeeklyStat.setHumanCost(StringUtil.getScaleDouble(projectWeeklyStat.getHumanCost(), 10000d, 2));
+		projectWeeklyStat.setPayment(StringUtil.getScaleDouble(projectWeeklyStat.getPayment(), 10000d, 2));
         return Optional.ofNullable(projectWeeklyStat)
             .map(result -> new ResponseEntity<>(
                 result,

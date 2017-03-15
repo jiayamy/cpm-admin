@@ -55,7 +55,6 @@
         <table class="jh-table table table-striped">
             <thead>
                 <tr jh-sort="vm.predicate" ascending="vm.reverse" callback="vm.transition()">
-                    <th ng-hide jh-sort-by="wcr.id"><span data-translate="global.field.id">ID</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="wci.serialNum"><span data-translate="cpmApp.contractReceive.contractId">Contract Num</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="wci.name"><span data-translate="cpmApp.contractReceive.contractName">Contract Name</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="wcr.receiveTotal"><span data-translate="cpmApp.contractReceive.receiveTotal">Receive Total</span> <span class="glyphicon glyphicon-sort"></span></th>
@@ -67,8 +66,7 @@
             </thead>
             <tbody>
                 <tr ng-repeat="contractReceive in vm.contractReceives track by contractReceive.id">
-                    <td><a ui-sref="contract-receive-detail({id:contractReceive.id})">{{contractReceive.id}}</a></td>
-                    <td>{{contractReceive.contractNum}}</td>
+                    <td><a ui-sref="contract-receive-detail({id:contractReceive.id})">{{contractReceive.contractNum}}</a></td>
                     <td>{{contractReceive.contractName}}</td>
                     <td>{{contractReceive.receiveTotal}}</td>
                     <td>{{contractReceive.receiveDay}}</td>

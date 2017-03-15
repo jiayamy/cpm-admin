@@ -66,6 +66,10 @@ public class ProjectMonthlyStatResource {
         throws URISyntaxException {
         log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to get a page of ProjectMonthlyStats by projectId : {}", projectId);
         Page<ProjectMonthlyStatVo> page = projectMonthlyStatService.getStatPage(projectId, pageable);
+        for (ProjectMonthlyStatVo projectMonthlyStatVo : page) {
+        	projectMonthlyStatVo.setHumanCost(StringUtil.getScaleDouble(projectMonthlyStatVo.getHumanCost(), 10000d, 2));
+        	projectMonthlyStatVo.setPayment(StringUtil.getScaleDouble(projectMonthlyStatVo.getPayment(), 10000d, 2));
+		}
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/project-monthly-stats");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
@@ -82,6 +86,8 @@ public class ProjectMonthlyStatResource {
     public ResponseEntity<ProjectMonthlyStatVo> getProjectMonthlyStat(@PathVariable Long id) {
         log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to get ProjectMonthlyStats : {}", id);
         ProjectMonthlyStatVo projectMonthlyStat = projectMonthlyStatService.findOne(id);
+        projectMonthlyStat.setHumanCost(StringUtil.getScaleDouble(projectMonthlyStat.getHumanCost(), 10000d, 2));
+        projectMonthlyStat.setPayment(StringUtil.getScaleDouble(projectMonthlyStat.getPayment(), 10000d, 2));
         return Optional.ofNullable(projectMonthlyStat)
             .map(result -> new ResponseEntity<>(
                 result,

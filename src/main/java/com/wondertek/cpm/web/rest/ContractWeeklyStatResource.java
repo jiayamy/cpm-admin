@@ -66,7 +66,9 @@ public class ContractWeeklyStatResource {
         log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to get a page of ContractWeeklyStats by contractId : {}", contractId);
         Page<ContractWeeklyStatVo> page = contractWeeklyStatService.getStatPage(contractId, pageable);
         for (ContractWeeklyStatVo contractWeeklyStatVo : page.getContent()) {
-			
+			contractWeeklyStatVo.setReceiveTotal(StringUtil.getScaleDouble(contractWeeklyStatVo.getReceiveTotal(), 10000d, 2));
+			contractWeeklyStatVo.setCostTotal(StringUtil.getScaleDouble(contractWeeklyStatVo.getCostTotal(), 10000d, 2));
+			contractWeeklyStatVo.setGrossProfit(StringUtil.getScaleDouble(contractWeeklyStatVo.getGrossProfit(), 10000d, 2));
 		}
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/contract-weekly-stats");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
@@ -84,6 +86,18 @@ public class ContractWeeklyStatResource {
     public ResponseEntity<ContractWeeklyStatVo> getContractWeeklyStat(@PathVariable Long id) {
         log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to get ContractWeeklyStat : {}", id);
         ContractWeeklyStatVo contractWeeklyStat = contractWeeklyStatService.findOne(id);
+        contractWeeklyStat.setReceiveTotal(StringUtil.getScaleDouble(contractWeeklyStat.getReceiveTotal(), 10000d, 2));
+        contractWeeklyStat.setCostTotal(StringUtil.getScaleDouble(contractWeeklyStat.getCostTotal(), 10000d, 2));
+        contractWeeklyStat.setGrossProfit(StringUtil.getScaleDouble(contractWeeklyStat.getGrossProfit(), 10000d, 2));
+        contractWeeklyStat.setSalesHumanCost(StringUtil.getScaleDouble(contractWeeklyStat.getSalesHumanCost(), 10000d, 2));
+        contractWeeklyStat.setSalesPayment(StringUtil.getScaleDouble(contractWeeklyStat.getSalesPayment(), 10000d, 2));
+        contractWeeklyStat.setConsultHumanCost(StringUtil.getScaleDouble(contractWeeklyStat.getConsultHumanCost(), 10000d, 2));
+        contractWeeklyStat.setConsultPayment(StringUtil.getScaleDouble(contractWeeklyStat.getConsultPayment(), 10000d, 2));
+        contractWeeklyStat.setHardwarePurchase(StringUtil.getScaleDouble(contractWeeklyStat.getHardwarePurchase(), 10000d, 2));
+        contractWeeklyStat.setExternalSoftware(StringUtil.getScaleDouble(contractWeeklyStat.getExternalSoftware(), 10000d, 2));
+        contractWeeklyStat.setInternalSoftware(StringUtil.getScaleDouble(contractWeeklyStat.getInternalSoftware(), 10000d, 2));
+        contractWeeklyStat.setProjectHumanCost(StringUtil.getScaleDouble(contractWeeklyStat.getProjectHumanCost(), 10000d, 2));
+        contractWeeklyStat.setProjectPayment(StringUtil.getScaleDouble(contractWeeklyStat.getProjectPayment(), 10000d, 2));
         return Optional.ofNullable(contractWeeklyStat)
             .map(result -> new ResponseEntity<>(
                 result,

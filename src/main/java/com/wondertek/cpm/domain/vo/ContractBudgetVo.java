@@ -33,7 +33,7 @@ public class ContractBudgetVo {
 		
 	}
 	
-	public ContractBudgetVo(ContractBudget contractBudget,String serialNum,String contractName){
+	public ContractBudgetVo(ContractBudget contractBudget,String contractName,String serialNum){
 		this.id = contractBudget.getId();
 		this.name = contractBudget.getName();
 		this.budgetTotal = contractBudget.getBudgetTotal();

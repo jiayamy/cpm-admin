@@ -69,26 +69,24 @@
     </div>
     <br/>
     <div class="table-responsive">
-        <table class="jh-table table table-striped">
+        <table class="jh-table table table-striped" style="table-layout: fixed; ">
             <thead>
                 <tr jh-sort="vm.predicate" ascending="vm.reverse" callback="vm.transition()">
-                    <th jh-sort-by="wcb.id"><span data-translate="global.field.id">ID</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="wci.serialNum"><span data-translate="cpmApp.contractBudget.serialNum">SerialNum</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="wci.name"><span data-translate="cpmApp.contractBudget.contractName">contractName</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="wcb.name"><span data-translate="cpmApp.contractBudget.name">Name</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="wcb.purchaseType"><span data-translate="cpmApp.contractBudget.purchaseType">PurchaseType</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="wcb.userName"><span data-translate="cpmApp.contractBudget.userName">User Name</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="wcb.dept"><span data-translate="cpmApp.contractBudget.dept">Dept</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="wcb.budgetTotal"><span data-translate="cpmApp.contractBudget.budgetTotal">Budget Total</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="wcb.status"><span data-translate="cpmApp.contractBudget.status">Status</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="wcb.updateTime"><span data-translate="cpmApp.contractBudget.updateTime">Update Time</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th></th>
+                    <th style="width:100px;" jh-sort-by="wci.serialNum"><span data-translate="cpmApp.contractBudget.serialNum">SerialNum</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th style="width:160px;" jh-sort-by="wci.name"><span data-translate="cpmApp.contractBudget.contractName">contractName</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th style="width:160px;" jh-sort-by="wcb.name"><span data-translate="cpmApp.contractBudget.name">Name</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th style="width:110px;" jh-sort-by="wcb.purchaseType"><span data-translate="cpmApp.contractBudget.purchaseType">PurchaseType</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th style="width:110px;" jh-sort-by="wcb.userName"><span data-translate="cpmApp.contractBudget.userName">User Name</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th style="width:160px;" jh-sort-by="wcb.dept"><span data-translate="cpmApp.contractBudget.dept">Dept</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th style="width:110px;" jh-sort-by="wcb.budgetTotal"><span data-translate="cpmApp.contractBudget.budgetTotal">Budget Total</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th style="width:80px;" jh-sort-by="wcb.status"><span data-translate="cpmApp.contractBudget.status">Status</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th style="width:160px;" jh-sort-by="wcb.updateTime"><span data-translate="cpmApp.contractBudget.updateTime">Update Time</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th style="width:160px;">&nbsp;</th>
                 </tr>
             </thead>
             <tbody>
                 <tr ng-repeat="contractBudget in vm.contractBudgets track by contractBudget.id">
-                    <td><a ui-sref="contract-budget-detail({id:contractBudget.id})">{{contractBudget.id}}</a></td>
-                    <td>{{contractBudget.serialNum}}</td>
+                    <td><a ui-sref="contract-budget-detail({id:contractBudget.id})">{{contractBudget.serialNum}}</a></td>
                     <td>{{contractBudget.contractName}}</td>
                     <td>{{contractBudget.name}}</td>
                     <td>{{contractBudget.purchaseTypeName}}</td>
@@ -103,31 +101,26 @@
                                     ui-sref="contract-budget-detail({id:contractBudget.id})"
                                     class="btn btn-info btn-sm">
                                 <span class="glyphicon glyphicon-eye-open"></span>
-                                <span class="hidden-xs hidden-sm" data-translate="entity.action.view"></span>
                             </button>
                             <button type="submit" ng-if="contractBudget.haveEdit"
                                     ui-sref="contract-budget.edit({id:contractBudget.id})"
                                     class="btn btn-primary btn-sm">
                                 <span class="glyphicon glyphicon-pencil"></span>
-                                <span class="hidden-xs hidden-sm" data-translate="entity.action.edit"></span>
                             </button>
                             <button type="submit" ng-if="contractBudget.haveEdit"
                                     ui-sref="contract-budget.delete({id:contractBudget.id})"
                                     class="btn btn-danger btn-sm">
                                 <span class="glyphicon glyphicon-remove-circle"></span>
-                                <span class="hidden-xs hidden-sm" data-translate="entity.action.delete"></span>
                             </button>
                             <button type="submit" ng-if="contractBudget.haveCreateProject" has-authority="ROLE_PROJECT_INFO"
                                     ui-sref="contract-budget.createProject({id:contractBudget.id})"
                                     class="btn btn-warning btn-sm" ng-disabled="contractBudget.isCreateDisabled">
                                 <span class="glyphicon glyphicon-plus"></span>
-                                <span class="hidden-xs hidden-sm" data-translate="cpmApp.contractBudget.button.createProject"></span>
                             </button>
                             <button type="submit" ng-if="contractBudget.haveCreateItem" has-authority="ROLE_CONTRACT_PURCHASE"
                                     ui-sref="contract-budget.createPurchaseItem({id:contractBudget.id})"
                                     class="btn btn-success btn-sm" ng-disabled="contractBudget.isCreateDisabled">
                                 <span class="glyphicon glyphicon-plus"></span>
-                                <span class="hidden-xs hidden-sm" data-translate="cpmApp.contractBudget.button.createPurchaseItem"></span>
                             </button>
                         </div>
                     </td>

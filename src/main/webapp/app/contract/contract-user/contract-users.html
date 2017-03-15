@@ -65,7 +65,6 @@
         <table class="jh-table table table-striped">
             <thead>
                 <tr jh-sort="vm.predicate" ascending="vm.reverse" callback="vm.transition()">
-                    <th jh-sort-by="wcu.id"><span data-translate="global.field.id">ID</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="wci.serial_num"><span data-translate="cpmApp.contractUser.contractId">Contract Id</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="wci.name_"><span data-translate="cpmApp.contractUser.contractName">Contract Name</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="wcu.user_name"><span data-translate="cpmApp.contractUser.userName">User Name</span> <span class="glyphicon glyphicon-sort"></span></th>
@@ -78,10 +77,9 @@
             </thead>
             <tbody>
                 <tr ng-repeat="contractUser in vm.contractUsers track by contractUser.id">
-                    <td><a ui-sref="contract-user-detail({id:contractUser.id})">{{contractUser.id}}</a></td>
+                    <td><a ui-sref="contract-user-detail({id:contractUser.id})">{{contractUser.userName}}</a></td>
                     <td>{{contractUser.contractNum}}</td>
                     <td>{{contractUser.contractName}}</td>
-                    <td>{{contractUser.userName}}</td>
                     <td>{{contractUser.dept}}</td>
                     <td>{{contractUser.joinDay }}</td>
                     <td>{{contractUser.leaveDay}}</td>

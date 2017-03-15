@@ -24,8 +24,8 @@
             "finishRate" : "完成率",
             "serialNum" : "项目编号",
             "name" : "项目名称",
-            "humanCost": "项目人工成本",
-            "payment": "项目报销成本",
+            "humanCost": "项目人工成本(万)",
+            "payment": "项目报销成本(万)",
             "statWeek": "统计周",
             "createTime": "统计日期"
         }

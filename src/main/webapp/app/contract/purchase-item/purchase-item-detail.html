@@ -1,11 +1,19 @@
 <div>
-    <h2><span data-translate="cpmApp.purchaseItem.detail.title">Purchase Item</span> {{vm.purchaseItem.id}}</h2>
+    <h2><span data-translate="cpmApp.purchaseItem.detail.title">Purchase Item</span> {{vm.purchaseItem.name}}</h2>
     <hr>
     <jhi-alert-error></jhi-alert-error>
     <div class="form-horizontal">
         <div class="form-group" >
  			<div class="col-sm-6">
  				<dl class="dl-horizontal jh-entity-details">
+ 				<dt><span data-translate="cpmApp.purchaseItem.serialNum">SerailNum</span></dt>
+		        <dd>
+		            <span>{{vm.purchaseItem.contractNum}}</span>
+		        </dd>
+		        <dt><span data-translate="cpmApp.purchaseItem.contractName">Contract Name</span></dt>
+		        <dd>
+		            <span>{{vm.purchaseItem.contractName}}</span>
+		        </dd>
   				<dt><span data-translate="cpmApp.purchaseItem.name">Name</span></dt>
 		        <dd>
 		            <span>{{vm.purchaseItem.name}}</span>
@@ -26,14 +34,14 @@
 		        <dd>
 		            <span>{{vm.purchaseItem.typeName}}</span>
 		        </dd>
-		        <dt><span data-translate="cpmApp.purchaseItem.source">Source</span></dt>
-		        <dd>
-		            <span>{{vm.purchaseItem.sourceName}}</span>
-		        </dd>
      			</dl>
  			</div>
  			<div class="col-sm-6">
  				<dl class="dl-horizontal jh-entity-details">
+ 				<dt><span data-translate="cpmApp.purchaseItem.source">Source</span></dt>
+		        <dd>
+		            <span>{{vm.purchaseItem.sourceName}}</span>
+		        </dd>
 		        <dt><span data-translate="cpmApp.purchaseItem.purchaser">Purchaser</span></dt>
 		        <dd>
 		            <span>{{vm.purchaseItem.purchaser}}</span>
