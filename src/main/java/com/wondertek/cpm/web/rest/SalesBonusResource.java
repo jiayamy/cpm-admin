@@ -80,6 +80,19 @@ public class SalesBonusResource {
         salesBonus.setContractId(salesBonusVo.getContractId());
         
         Page<SalesBonusVo> page = salesBonusService.getUserDetailPage(salesBonus,pageable);
+        for (SalesBonusVo salesBonusVo2 : page.getContent()) {
+			salesBonusVo2.setAnnualIndex(StringUtil.getScaleDouble(salesBonusVo2.getAnnualIndex(), 10000d, 2));
+			salesBonusVo2.setFinishTotal(StringUtil.getScaleDouble(salesBonusVo2.getFinishTotal(), 10000d, 2));
+			salesBonusVo2.setContractAmount(StringUtil.getScaleDouble(salesBonusVo2.getContractAmount(), 10000d, 2));
+			salesBonusVo2.setReceiveTotal(StringUtil.getScaleDouble(salesBonusVo2.getReceiveTotal(), 10000d, 2));
+			salesBonusVo2.setTaxes(StringUtil.getScaleDouble(salesBonusVo2.getTaxes(), 10000d, 2));
+			salesBonusVo2.setShareCost(StringUtil.getScaleDouble(salesBonusVo2.getShareCost(), 10000d, 2));
+			salesBonusVo2.setThirdPartyPurchase(StringUtil.getScaleDouble(salesBonusVo2.getThirdPartyPurchase(), 10000d, 2));
+			salesBonusVo2.setBonusBasis(StringUtil.getScaleDouble(salesBonusVo2.getBonusBasis(), 10000d, 2));
+			salesBonusVo2.setCurrentBonus(StringUtil.getScaleDouble(salesBonusVo2.getCurrentBonus(), 10000d, 2));
+			salesBonusVo2.setTotalBonus(StringUtil.getScaleDouble(salesBonusVo2.getTotalBonus(), 10000d, 2));
+			salesBonusVo2.setPayBonus(StringUtil.getScaleDouble(salesBonusVo2.getPayBonus(), 10000d, 2));
+		}
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/sales-bonus/queryDetail");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
@@ -118,6 +131,19 @@ public class SalesBonusResource {
         }
         
         List<SalesBonusVo> page = salesBonusService.getUserPage(salesBonus);
+        for (SalesBonusVo salesBonusVo : page) {
+			salesBonusVo.setAnnualIndex(StringUtil.getScaleDouble(salesBonusVo.getAnnualIndex(), 10000d, 2));
+			salesBonusVo.setFinishTotal(StringUtil.getScaleDouble(salesBonusVo.getFinishTotal(), 10000d, 2));
+			salesBonusVo.setContractAmount(StringUtil.getScaleDouble(salesBonusVo.getContractAmount(), 10000d, 2));
+			salesBonusVo.setReceiveTotal(StringUtil.getScaleDouble(salesBonusVo.getReceiveTotal(), 10000d, 2));
+			salesBonusVo.setTaxes(StringUtil.getScaleDouble(salesBonusVo.getTaxes(), 10000d, 2));
+			salesBonusVo.setShareCost(StringUtil.getScaleDouble(salesBonusVo.getShareCost(), 10000d, 2));
+			salesBonusVo.setThirdPartyPurchase(StringUtil.getScaleDouble(salesBonusVo.getThirdPartyPurchase(), 10000d, 2));
+			salesBonusVo.setBonusBasis(StringUtil.getScaleDouble(salesBonusVo.getBonusBasis(), 10000d, 2));
+			salesBonusVo.setCurrentBonus(StringUtil.getScaleDouble(salesBonusVo.getCurrentBonus(), 10000d, 2));
+			salesBonusVo.setTotalBonus(StringUtil.getScaleDouble(salesBonusVo.getTotalBonus(), 10000d, 2));
+			salesBonusVo.setPayBonus(StringUtil.getScaleDouble(salesBonusVo.getPayBonus(), 10000d, 2));
+		}
         
         return new ResponseEntity<>(page, new HttpHeaders(), HttpStatus.OK);
     }

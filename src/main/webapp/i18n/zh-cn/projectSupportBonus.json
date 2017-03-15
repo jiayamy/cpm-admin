@@ -18,10 +18,10 @@
             "bonusAdjustRate" : "奖金调节比率",
             "bonusRate" : "奖金比率",
             "bonusAcceptanceRate": "奖金确认比例",
-            "contractAmount": "合同金额",
+            "contractAmount": "合同金额(万)",
             "taxRate": "税率",
-            "bonusBasis": "奖金基数",
-            "currentBonus": "当期奖金",
+            "bonusBasis": "奖金基数(万)",
+            "currentBonus": "当期奖金(万)",
             "dept": "部门",
             "deptType": "部门类型"
         }

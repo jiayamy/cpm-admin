@@ -87,6 +87,17 @@ public class SalePurchaseInternalCostResource {
 		projectSupportCost.setStatWeek(statWeek);
 		projectSupportCost.setDeptType(deptType);
 		List<ProjectSupportCostVo> page = salePurchaseInternalCostService.getAllSalePurchaseInternalPage(projectSupportCost);
+		for (ProjectSupportCostVo projectSupportCostVo : page) {
+			projectSupportCostVo.setSettlementCost(StringUtil.getScaleDouble(projectSupportCostVo.getSettlementCost(), 10000d, 2));
+			projectSupportCostVo.setInternalBudgetCost(StringUtil.getScaleDouble(projectSupportCostVo.getInternalBudgetCost(), 10000d, 2));
+			projectSupportCostVo.setSal(StringUtil.getScaleDouble(projectSupportCostVo.getSal(), 10000d, 2));
+			projectSupportCostVo.setSocialSecurityFund(StringUtil.getScaleDouble(projectSupportCostVo.getSocialSecurityFund(), 10000d, 2));
+			projectSupportCostVo.setOtherExpense(StringUtil.getScaleDouble(projectSupportCostVo.getOtherExpense(), 10000d, 2));
+			projectSupportCostVo.setUserMonthCost(StringUtil.getScaleDouble(projectSupportCostVo.getUserMonthCost(), 10000d, 2));
+			projectSupportCostVo.setUserHourCost(StringUtil.getScaleDouble(projectSupportCostVo.getUserHourCost(), 10000d, 2));
+			projectSupportCostVo.setProductCost(StringUtil.getScaleDouble(projectSupportCostVo.getProductCost(), 10000d, 2));
+			projectSupportCostVo.setGrossProfit(StringUtil.getScaleDouble(projectSupportCostVo.getGrossProfit(), 10000d, 2));
+		}
 		return new ResponseEntity<>(page,new HttpHeaders(),HttpStatus.OK);
 	}
 	
@@ -99,6 +110,17 @@ public class SalePurchaseInternalCostResource {
 			) throws URISyntaxException{
 		log.debug(SecurityUtils.getCurrentUserLogin()+" REST request to get a page of queryInternalCostDetail : {}",id);
 		Page<ProjectSupportCostVo> page = salePurchaseInternalCostService.getAllSalePurchaseInternalDetailPage(id,pageable);
+		for (ProjectSupportCostVo projectSupportCostVo : page.getContent()) {
+			projectSupportCostVo.setSettlementCost(StringUtil.getScaleDouble(projectSupportCostVo.getSettlementCost(), 10000d, 2));
+			projectSupportCostVo.setInternalBudgetCost(StringUtil.getScaleDouble(projectSupportCostVo.getInternalBudgetCost(), 10000d, 2));
+			projectSupportCostVo.setSal(StringUtil.getScaleDouble(projectSupportCostVo.getSal(), 10000d, 2));
+			projectSupportCostVo.setSocialSecurityFund(StringUtil.getScaleDouble(projectSupportCostVo.getSocialSecurityFund(), 10000d, 2));
+			projectSupportCostVo.setOtherExpense(StringUtil.getScaleDouble(projectSupportCostVo.getOtherExpense(), 10000d, 2));
+			projectSupportCostVo.setUserMonthCost(StringUtil.getScaleDouble(projectSupportCostVo.getUserMonthCost(), 10000d, 2));
+			projectSupportCostVo.setUserHourCost(StringUtil.getScaleDouble(projectSupportCostVo.getUserHourCost(), 10000d, 2));
+			projectSupportCostVo.setProductCost(StringUtil.getScaleDouble(projectSupportCostVo.getProductCost(), 10000d, 2));
+			projectSupportCostVo.setGrossProfit(StringUtil.getScaleDouble(projectSupportCostVo.getGrossProfit(), 10000d, 2));
+		}
 		HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/sale-purchase-internalCost/queryInternalCostDetail");
 		return Optional.ofNullable(page.getContent()).map(result -> new ResponseEntity<>(result,headers,HttpStatus.OK))
 				.orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));

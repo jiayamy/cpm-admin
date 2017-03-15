@@ -85,6 +85,15 @@ public class BonusResource {
          					DateUtil.getSundayOfDay(DateUtil.parseDate(DateUtil.DATE_YYYYMMDD_PATTERN,""+bonus.getStatWeek())))));
 		}
 		Page<BonusVo> page = bonusService.searchPage(bonus,pageable);
+		for (BonusVo bonusVo : page.getContent()) {
+			bonusVo.setContractAmount(StringUtil.getScaleDouble(bonusVo.getContractAmount(), 10000d, 2));
+			bonusVo.setSalesBonus(StringUtil.getScaleDouble(bonusVo.getSalesBonus(), 10000d, 2));
+			bonusVo.setProjectBonus(StringUtil.getScaleDouble(bonusVo.getProjectBonus(), 10000d, 2));
+			bonusVo.setImplemtationBonus(StringUtil.getScaleDouble(bonusVo.getImplemtationBonus(), 10000d, 2));
+			bonusVo.setAcademicBonus(StringUtil.getScaleDouble(bonusVo.getAcademicBonus(), 10000d, 2));
+			bonusVo.setConsultantsBonus(StringUtil.getScaleDouble(bonusVo.getAcademicBonus(), 10000d, 2));
+			bonusVo.setBonusTotal(StringUtil.getScaleDouble(bonusVo.getBonusTotal(), 10000d, 2));
+		}
     	HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(statWeek.toString(), page,"/api/bonus");
     	return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);    	
     }
@@ -98,6 +107,15 @@ public class BonusResource {
     	throws URISyntaxException {
         log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to get BonusVoDetail : {}", contractId);
         Page<BonusVo> page = bonusService.searchPageDetail(contractId,pageable);
+        for (BonusVo bonusVo : page.getContent()) {
+			bonusVo.setContractAmount(StringUtil.getScaleDouble(bonusVo.getContractAmount(), 10000d, 2));
+			bonusVo.setSalesBonus(StringUtil.getScaleDouble(bonusVo.getSalesBonus(), 10000d, 2));
+			bonusVo.setProjectBonus(StringUtil.getScaleDouble(bonusVo.getProjectBonus(), 10000d, 2));
+			bonusVo.setImplemtationBonus(StringUtil.getScaleDouble(bonusVo.getImplemtationBonus(), 10000d, 2));
+			bonusVo.setAcademicBonus(StringUtil.getScaleDouble(bonusVo.getAcademicBonus(), 10000d, 2));
+			bonusVo.setConsultantsBonus(StringUtil.getScaleDouble(bonusVo.getAcademicBonus(), 10000d, 2));
+			bonusVo.setBonusTotal(StringUtil.getScaleDouble(bonusVo.getBonusTotal(), 10000d, 2));
+		}
     	HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(contractId.toString(), page,"/api/bonus");
     	return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK); 
     }

@@ -19,7 +19,9 @@ public class ContractBudgetVo {
 	private Long deptId;
 	private Double budgetTotal;
 	private Integer status;
+	private String creator;
 	private ZonedDateTime createTime;
+	private String updator;
 	private ZonedDateTime updateTime;
 	
 	private Boolean isEdit = Boolean.FALSE;		//能够编辑采购单
@@ -39,10 +41,12 @@ public class ContractBudgetVo {
 		this.dept = contractBudget.getDept();
 		this.deptId = contractBudget.getDeptId();
 		this.purchaseType = contractBudget.getPurchaseType();
+		this.creator = contractBudget.getCreator();
 		this.createTime = contractBudget.getCreateTime();
 		this.userId = contractBudget.getUserId();
 		this.userName = contractBudget.getUserName();
 		this.status = contractBudget.getStatus();
+		this.updator = contractBudget.getUpdator();
 		this.updateTime = contractBudget.getUpdateTime();
 		
 		this.serialNum = serialNum;
@@ -59,10 +63,12 @@ public class ContractBudgetVo {
 		this.dept = contractBudget.getDept();
 		this.deptId = contractBudget.getDeptId();
 		this.purchaseType = contractBudget.getPurchaseType();
+		this.creator = contractBudget.getCreator();
 		this.createTime = contractBudget.getCreateTime();
 		this.userId = contractBudget.getUserId();
 		this.userName = contractBudget.getUserName();
 		this.status = contractBudget.getStatus();
+		this.updator = contractBudget.getUpdator();
 		this.updateTime = contractBudget.getUpdateTime();
 		
 		this.serialNum = StringUtil.null2Str(o[1]);
@@ -228,5 +234,17 @@ public class ContractBudgetVo {
 	}
 	public void setContractId(Long contractId) {
 		this.contractId = contractId;
+	}
+	public String getCreator() {
+		return creator;
+	}
+	public void setCreator(String creator) {
+		this.creator = creator;
+	}
+	public String getUpdator() {
+		return updator;
+	}
+	public void setUpdator(String updator) {
+		this.updator = updator;
 	}
 }

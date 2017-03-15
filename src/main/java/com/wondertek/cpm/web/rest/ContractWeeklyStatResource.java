@@ -65,6 +65,9 @@ public class ContractWeeklyStatResource {
         throws URISyntaxException {
         log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to get a page of ContractWeeklyStats by contractId : {}", contractId);
         Page<ContractWeeklyStatVo> page = contractWeeklyStatService.getStatPage(contractId, pageable);
+        for (ContractWeeklyStatVo contractWeeklyStatVo : page.getContent()) {
+			
+		}
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/contract-weekly-stats");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }

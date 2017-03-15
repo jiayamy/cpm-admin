@@ -89,6 +89,20 @@ public class ProjectOverallResource {
          					DateUtil.getSundayOfDay(DateUtil.parseDate(DateUtil.DATE_YYYYMMDD_PATTERN,""+projectOverall.getStatWeek())))));
 		}
 		Page<ProjectOverallVo> page = projectOverallService.searchPage(projectOverall,pageable);
+		for (ProjectOverallVo projectOverallVo : page.getContent()) {
+			projectOverallVo.setContractAmount(StringUtil.getScaleDouble(projectOverallVo.getContractAmount(),10000d,2));
+			projectOverallVo.setIdentifiableIncome(StringUtil.getScaleDouble(projectOverallVo.getIdentifiableIncome(),10000d,2));
+			projectOverallVo.setAcceptanceIncome(StringUtil.getScaleDouble(projectOverallVo.getAcceptanceIncome(),10000d,2));
+			projectOverallVo.setReceiveTotal(StringUtil.getScaleDouble(projectOverallVo.getReceiveTotal(),10000d,2));
+			projectOverallVo.setReceivableAccount(StringUtil.getScaleDouble(projectOverallVo.getReceivableAccount(),10000d,2));
+			projectOverallVo.setShareCost(StringUtil.getScaleDouble(projectOverallVo.getShareCost(),10000d,2));
+			projectOverallVo.setThirdPartyPurchase(StringUtil.getScaleDouble(projectOverallVo.getThirdPartyPurchase(),10000d,2));
+			projectOverallVo.setInternalPurchase(StringUtil.getScaleDouble(projectOverallVo.getInternalPurchase(),10000d,2));
+			projectOverallVo.setImplementationCost(StringUtil.getScaleDouble(projectOverallVo.getImplementationCost(),10000d,2));
+			projectOverallVo.setAcademicCost(StringUtil.getScaleDouble(projectOverallVo.getAcademicCost(), 10000d, 2));
+			projectOverallVo.setBonus(StringUtil.getScaleDouble(projectOverallVo.getBonus(),10000d,2));
+			projectOverallVo.setGrossProfit(StringUtil.getScaleDouble(projectOverallVo.getGrossProfit(),10000d,2));
+		}
     	HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(statWeek.toString(), page,"/api/project-projectOverall");
     	return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);    	
     }
@@ -102,6 +116,20 @@ public class ProjectOverallResource {
     	throws URISyntaxException {
         log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to get ProjectOverallDetail : {}", contractId);
         Page<ProjectOverallVo> page = projectOverallService.searchPageDetail(contractId,pageable);
+        for (ProjectOverallVo projectOverallVo : page.getContent()) {
+			projectOverallVo.setContractAmount(StringUtil.getScaleDouble(projectOverallVo.getContractAmount(),10000d,2));
+			projectOverallVo.setIdentifiableIncome(StringUtil.getScaleDouble(projectOverallVo.getIdentifiableIncome(),10000d,2));
+			projectOverallVo.setAcceptanceIncome(StringUtil.getScaleDouble(projectOverallVo.getAcceptanceIncome(),10000d,2));
+			projectOverallVo.setReceiveTotal(StringUtil.getScaleDouble(projectOverallVo.getReceiveTotal(),10000d,2));
+			projectOverallVo.setReceivableAccount(StringUtil.getScaleDouble(projectOverallVo.getReceivableAccount(),10000d,2));
+			projectOverallVo.setShareCost(StringUtil.getScaleDouble(projectOverallVo.getShareCost(),10000d,2));
+			projectOverallVo.setThirdPartyPurchase(StringUtil.getScaleDouble(projectOverallVo.getThirdPartyPurchase(),10000d,2));
+			projectOverallVo.setInternalPurchase(StringUtil.getScaleDouble(projectOverallVo.getInternalPurchase(),10000d,2));
+			projectOverallVo.setImplementationCost(StringUtil.getScaleDouble(projectOverallVo.getImplementationCost(),10000d,2));
+			projectOverallVo.setAcademicCost(StringUtil.getScaleDouble(projectOverallVo.getAcademicCost(), 10000d, 2));
+			projectOverallVo.setBonus(StringUtil.getScaleDouble(projectOverallVo.getBonus(),10000d,2));
+			projectOverallVo.setGrossProfit(StringUtil.getScaleDouble(projectOverallVo.getGrossProfit(),10000d,2));
+		}
     	HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(contractId.toString(), page,"/api/project-projectOverall");
     	return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK); 
     }

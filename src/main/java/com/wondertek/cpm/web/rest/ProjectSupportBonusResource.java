@@ -89,6 +89,11 @@ public class ProjectSupportBonusResource {
          					DateUtil.getSundayOfDay(DateUtil.parseDate(DateUtil.DATE_YYYYMMDD_PATTERN,""+projectSupportBonus.getStatWeek())))));
 		}
 		Page<ProjectSupportBonusVo> page = projectSupportBonusService.searchPage(projectSupportBonus,pageable);
+		for (ProjectSupportBonusVo projectSupportBonusVo : page.getContent()) {
+			projectSupportBonusVo.setContractAmount(StringUtil.getScaleDouble(projectSupportBonusVo.getContractAmount(), 10000d, 2));
+			projectSupportBonusVo.setBonusBasis(StringUtil.getScaleDouble(projectSupportBonusVo.getBonusBasis(), 10000d, 2));
+			projectSupportBonusVo.setCurrentBonus(StringUtil.getScaleDouble(projectSupportBonusVo.getCurrentBonus(), 10000d, 2));
+		}
     	HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(statWeek.toString(), page,"/api/project-support-bonus");
     	return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);    	
     }
@@ -110,6 +115,11 @@ public class ProjectSupportBonusResource {
         searchBonus.setProjectId(projectSupportBonus.getProjectId());
         
         Page<ProjectSupportBonusVo> page = projectSupportBonusService.searchPageDetail(searchBonus,pageable);
+        for (ProjectSupportBonusVo projectSupportBonusVo : page.getContent()) {
+			projectSupportBonusVo.setContractAmount(StringUtil.getScaleDouble(projectSupportBonusVo.getContractAmount(), 10000d, 2));
+			projectSupportBonusVo.setBonusBasis(StringUtil.getScaleDouble(projectSupportBonusVo.getBonusBasis(), 10000d, 2));
+			projectSupportBonusVo.setCurrentBonus(StringUtil.getScaleDouble(projectSupportBonusVo.getCurrentBonus(), 10000d, 2));
+		}
     	HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page,"/api/project-projectOverall");
     	return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK); 
     }

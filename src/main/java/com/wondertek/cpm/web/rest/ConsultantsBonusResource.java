@@ -88,6 +88,12 @@ public class ConsultantsBonusResource {
         searchParams.setConsultantsId(consultantsId);
         searchParams.setStatWeek(StringUtil.nullToLong(statWeek));
         Page<ConsultantsBonusVo> page = consultantsBonusService.getConsultantsBonusPage(searchParams, pageable);
+        for (ConsultantsBonusVo consultantsBonusVo : page) {
+			consultantsBonusVo.setAmount(StringUtil.getScaleDouble(consultantsBonusVo.getAmount(), 10000d, 2));
+			consultantsBonusVo.setBonusBasis(StringUtil.getScaleDouble(consultantsBonusVo.getBonusBasis(), 10000d, 2));
+			consultantsBonusVo.setCurrentBonus(StringUtil.getScaleDouble(consultantsBonusVo.getCurrentBonus(), 10000d, 2));
+			consultantsBonusVo.setAccumulationBonus(StringUtil.getScaleDouble(consultantsBonusVo.getAccumulationBonus(), 10000d, 2));
+		}
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/consultant-bonus");
         return Optional.ofNullable(page.getContent()).map(result -> new ResponseEntity<>(result,headers,HttpStatus.OK))
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
@@ -130,6 +136,12 @@ public class ConsultantsBonusResource {
     	searchParams.setContractId(contractId);
     	searchParams.setStatWeek(statWeek);
     	Page<ConsultantsBonusVo> page = consultantsBonusService.getConsultantsBonusRecordPage(searchParams, pageable);
+    	for (ConsultantsBonusVo consultantsBonusVo : page) {
+    		consultantsBonusVo.setAmount(StringUtil.getScaleDouble(consultantsBonusVo.getAmount(), 10000d, 2));
+    		consultantsBonusVo.setBonusBasis(StringUtil.getScaleDouble(consultantsBonusVo.getBonusBasis(), 10000d, 2));
+    		consultantsBonusVo.setCurrentBonus(StringUtil.getScaleDouble(consultantsBonusVo.getCurrentBonus(), 10000d, 2));
+    		consultantsBonusVo.setAccumulationBonus(StringUtil.getScaleDouble(consultantsBonusVo.getAccumulationBonus(), 10000d, 2));
+    	}
     	HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/consultant-bonus/queryConsultantRecord");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }

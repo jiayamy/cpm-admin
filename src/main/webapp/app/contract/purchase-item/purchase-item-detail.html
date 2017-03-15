@@ -22,11 +22,7 @@
 		        <dd>
 		            <span>{{vm.purchaseItem.units}}</span>
 		        </dd>
-     			</dl>
- 			</div>
- 			<div class="col-sm-6">
- 				<dl class="dl-horizontal jh-entity-details">
-  				<dt><span data-translate="cpmApp.purchaseItem.type">Type</span></dt>
+     			<dt><span data-translate="cpmApp.purchaseItem.type">Type</span></dt>
 		        <dd>
 		            <span>{{vm.purchaseItem.typeName}}</span>
 		        </dd>
@@ -34,6 +30,10 @@
 		        <dd>
 		            <span>{{vm.purchaseItem.sourceName}}</span>
 		        </dd>
+     			</dl>
+ 			</div>
+ 			<div class="col-sm-6">
+ 				<dl class="dl-horizontal jh-entity-details">
 		        <dt><span data-translate="cpmApp.purchaseItem.purchaser">Purchaser</span></dt>
 		        <dd>
 		            <span>{{vm.purchaseItem.purchaser}}</span>
@@ -46,6 +46,22 @@
 		        <dd>
 		            <span>{{vm.purchaseItem.statusName}}</span>
 		        </dd>
+		        <dt><span data-translate="cpmApp.purchaseItem.creator">Creator</span></dt>
+     			<dd>
+         			<span>{{vm.purchaseItem.creator}}</span>
+     			</dd>
+     			<dt><span data-translate="cpmApp.purchaseItem.createTime">CreateTime</span></dt>
+     			<dd>
+         			<span>{{vm.purchaseItem.createTime | date:'medium'}}</span>
+     			</dd>
+		        <dt><span data-translate="cpmApp.purchaseItem.updator">Updator</span></dt>
+     			<dd>
+         			<span>{{vm.purchaseItem.updator}}</span>
+     			</dd>
+     			<dt><span data-translate="cpmApp.purchaseItem.updateTime">Update Time</span></dt>
+     			<dd>
+         			<span>{{vm.purchaseItem.updateTime | date:'medium'}}</span>
+     			</dd>
      			</dl>
  			</div>
  		</div>
