@@ -45,7 +45,7 @@ public class ProjectStateTask {
 	
 	private Logger log = LoggerFactory.getLogger(ProjectStateTask.class);
 	
-	private Map<Long, Integer> contractTypeMap = new HashMap<>();
+	private Map<Long, Boolean> contractIsEpibolicMap = new HashMap<>();
 	
 	private Map<Long, Integer> userIdGradeMap = new HashMap<>();
 	
@@ -87,8 +87,7 @@ public class ProjectStateTask {
 	private void init(){
 		List<ContractInfo> contractInfos = contractInfoRepository.findAll();
 		for(ContractInfo contractInfo : contractInfos){
-			contractTypeMap.put(contractInfo.getId(), contractInfo.getType());
-//			deptIdContractMap.put(contractInfo.getDeptId(), contractInfo);
+			contractIsEpibolicMap.put(contractInfo.getId(), contractInfo.getIsEpibolic() != null ? contractInfo.getIsEpibolic() : Boolean.FALSE);
 		}
 		List<ExternalQuotation> externalQuotations = externalQuotationRepository.findAll();
 		if(externalQuotations != null && externalQuotations.size() > 0){
@@ -333,7 +332,7 @@ public class ProjectStateTask {
 			return;
 		}
 		Long countDay = (endTime.getTime() - beginTime.getTime())/(24*60*60*1000);
-		Integer contractType = contractTypeMap.get(projectInfo.getContractId());
+		Boolean isEpibolic = contractIsEpibolicMap.get(projectInfo.getContractId());
 		Date currentDay = beginTime;
 		for(int i = 0; i <= countDay; i++){
 			Long workDay = StringUtil.nullToLong(DateUtil.formatDate("yyyyMMdd", currentDay).toString());
@@ -343,24 +342,25 @@ public class ProjectStateTask {
 			projectCost.setName(projectInfo.getSerialNum() + "-" + DateUtil.formatDate("yyyyMMdd", currentDay).toString());
 			projectCost.setType(ProjectCost.TYPE_HUMAN_COST);
 			Double total = 0D; 
+			Double totalHour = 0D;
 			List<UserTimesheet> userTimesheets = userTimesheetRepository.findByWorkDayAndObjIdAndType(workDay, projectInfo.getId(), UserTimesheet.TYPE_PROJECT);
 			for(UserTimesheet userTimesheet : userTimesheets){
 				UserCost userCost = userCostRepository.findMaxByCostMonthAndUserId(costMonth, userTimesheet.getUserId());
 				if(userCost != null){
-					if(contractType == ContractInfo.TYPE_INTERNAL){
+					if(!isEpibolic){
 						total += userTimesheet.getRealInput() * (userCost.getInternalCost()/168);
-					}else if(contractType == ContractInfo.TYPE_EXTERNAL){
-						total += userTimesheet.getRealInput() * StringUtil.nullToDouble((externalQuotationMap.get(userIdGradeMap.get(userTimesheet.getUserId()))));
 					}else{
-						log.info(" no contractType found belong to UserTimesheet : " + userTimesheet.getId());
+						total += userTimesheet.getRealInput() * StringUtil.nullToDouble((externalQuotationMap.get(userIdGradeMap.get(userTimesheet.getUserId()))));
 					}
 				}else{
 					log.error(" no UserCost founded belong to User : " +userTimesheet.getUserId() + ":" + userTimesheet.getUserName());
 				}
-				
+				if(userTimesheet.getRealInput() != null){
+					totalHour += userTimesheet.getRealInput();
+				}
 			}
 			projectCost.setTotal(total);
-			projectCost.setCostDesc(DateUtil.formatDate("yyyyMMdd", currentDay).toString());
+			projectCost.setCostDesc(StringUtil.getScaleDouble(totalHour, 1).toString());
 			projectCost.setStatus(1);
 			projectCost.setCreator("admin");
 			projectCost.setCreateTime(ZonedDateTime.now());
