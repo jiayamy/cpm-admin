@@ -39,7 +39,8 @@
         vm.salChanged = salChanged;
         function salChanged(){
         	//社保公积金44%
-        	vm.userCost.socialSecurityFund = Math.round(vm.userCost.sal * 0.44 * 100) / 100;
+        	vm.userCost.socialSecurity = Math.round(vm.userCost.sal * 0.37 * 100) / 100;
+        	vm.userCost.fund = Math.round(vm.userCost.sal * 0.07 * 100) / 100;
         	//其他费用10%
         	vm.userCost.otherExpense = Math.round(vm.userCost.sal * 0.10 * 100) / 100;
         }
@@ -52,10 +53,12 @@
             userCost.userName = vm.userCost.userName;
             userCost.costMonth = DateUtils.convertLocalDateToFormat(vm.userCost.costMonth,"yyyyMM");
             userCost.sal = vm.userCost.sal;
-            userCost.socialSecurityFund = vm.userCost.socialSecurityFund;
+            userCost.socialSecurity = vm.userCost.socialSecurity;
+            userCost.fund = vm.userCost.fund;
             userCost.otherExpense = vm.userCost.otherExpense;
+            
             if(!userCost.userId ||!userCost.userName || !userCost.costMonth || 
-            		!userCost.sal || !userCost.socialSecurityFund || !userCost.otherExpense){
+            		userCost.sal == undefined || userCost.socialSecurity == undefined || userCost.fund == undefined || userCost.otherExpense == undefined){
             	vm.isSaving = false;
             	AlertService.error("cpmApp.userCost.save.requriedError");
             	return;

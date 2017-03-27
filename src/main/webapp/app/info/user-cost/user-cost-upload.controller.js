@@ -62,5 +62,14 @@
             	});
         	}
         }
+        
+        vm.downloadTpl = downloadTpl;
+        function downloadTpl(){
+        	var url = "api/download-file/downloadXlsxTpl";
+			
+        	url += "?filePath="+encodeURI("importTpl/userCostImportTpl.xlsx");
+        	
+        	window.open(url);
+        }
     }
 })();
