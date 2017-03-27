@@ -26,7 +26,7 @@
             	"projectIdError":"项目不可更改",
             	"type1Error":"类型为工时的数据不可编辑",
             	"statue2Error":"状态为删除的数据不可编辑",
-            	"projectError" : "项目已经删除或者结项"
+            	"projectError" : "项目已经终止或者结项"
             },
             "projectId": "项目编号",
             "projectName":"项目名称",

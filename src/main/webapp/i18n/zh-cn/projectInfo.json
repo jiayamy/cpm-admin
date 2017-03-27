@@ -8,11 +8,11 @@
             },
             "created": "新建成功",
             "updated": "修改成功",
-            "deleted": "删除成功",
+            "deleted": "终止成功",
             "delete": {
-                "question": "确定删除编号为[ {{ id }}]的项目信息?",
-                "status2Error":"已结项的不可删除",
-            	"status3Error":"已删除的不可再执行删除"
+                "question": "确定终止编号为[ {{ id }}]的项目信息?",
+                "status2Error":"已结项的不可执行终止操作",
+            	"status3Error":"已终止的不可再执行终止操作"
             },
             "detail": {
                 "title": "项目信息",
@@ -28,7 +28,7 @@
             	"existSerialNum":"项目编号已存在，请选择其他编号",
             	"requriedError":"必填参数为空",
             	"endDayError":"结束日期应在开始日期之后",
-            	"statusError":"已结项或已删除的项目不可编辑",
+            	"statusError":"已结项或已终止的项目不可编辑",
             	"saveError":"项目创建失败",
             	"statue2CreateError":"已经删除的内部采购单不可以创建项目"
             },
@@ -37,7 +37,7 @@
             	"submit":"结项",
             	"question": "确定将编号为[ {{ id }}]的项目结项?",
             	"status2Error":"项目状态为已结项的不可再执行结项操作",
-            	"status3Error":"项目状态为已删除的不可执行结项操作",
+            	"status3Error":"项目状态为已终止的不可执行结项操作",
             	"success":"项目结项成功"
             },
             "finish":{
@@ -45,7 +45,7 @@
             	"submit":"提交",
             	"minError":"完成率最小值为0",
             	"maxError":"完成率最大值为100",
-            	"statusError":"项目状态为已结项或已删除的不可修改完成率",
+            	"statusError":"项目状态为已结项或已终止的不可修改完成率",
             	"success":"设置完成率成功"
             },
             "serialNum": "项目编号",

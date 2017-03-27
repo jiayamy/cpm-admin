@@ -24,7 +24,7 @@
             	"contractChanged":"合同编号不可修改",
             	"status2Error":"已删除的记录不可修改",
             	"dataError":"内部采购单数据错误",
-            	"contractInfoError":"合同已完成或者已删除"
+            	"contractInfoError":"合同已完成或者已终止"
             },
             "contractId": "合同编号",
             "contractName": "合同名称",

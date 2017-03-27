@@ -83,7 +83,7 @@ public class ProjectInfo implements Serializable {
     @Column(name = "budget_total")
     private Double budgetTotal;
     /**
-     * 状态（1开发中/2结项/3删除）
+     * 状态（1开发中/2结项/3终止）
      */
     @Column(name = "status_")
     private Integer status;

@@ -359,7 +359,8 @@ public class ProjectInfoDaoImpl extends GenericDaoImpl<ProjectInfo, Long> implem
 
 	@Override
 	public int endProjectInfo(Long id, String updator) {
-		return this.excuteHql("update ProjectInfo set status = ?0, finishRate = ?1, updator = ?2, updateTime = ?3 where id = ?4", new Object[]{ProjectInfo.STATUS_CLOSED,100d,updator,ZonedDateTime.now(),id});
+//		return this.excuteHql("update ProjectInfo set status = ?0, finishRate = ?1, updator = ?2, updateTime = ?3 where id = ?4", new Object[]{ProjectInfo.STATUS_CLOSED,100d,updator,ZonedDateTime.now(),id});
+		return this.excuteHql("update ProjectInfo set status = ?0, updator = ?1, updateTime = ?2 where id = ?3", new Object[]{ProjectInfo.STATUS_CLOSED,updator,ZonedDateTime.now(),id});
 	}
 
 	@Override
