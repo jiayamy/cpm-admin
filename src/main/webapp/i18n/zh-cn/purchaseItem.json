@@ -47,7 +47,7 @@
             "units": "采购单位",
             "type": "采购类型",
             "source": "采购来源",
-            "purchaser": "采购方",
+            "purchaser": "供货方",
             "totalAmount": "采购总金额",
             "status": "状态",
             "creator": "创建者",

@@ -90,135 +90,6 @@
                 }]
             }
         })
-        .state('purchase-item-detail.edit', {
-            parent: 'purchase-item-detail',
-            url: '/edit',
-            data: {
-                authorities: ['ROLE_CONTRACT_PURCHASE']
-            },
-            views:{
-            	'content@':{
-            		templateUrl: 'app/contract/purchase-item/purchase-item-dialog.html',
-            		controller: 'PurchaseItemDialogController',
-            		controllerAs: 'vm'
-            	}
-            },
-            resolve: {
-            	translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
-                    $translatePartialLoader.addPart('purchaseItem');
-                    $translatePartialLoader.addPart('global');
-                    return $translate.refresh();
-                }],
-                entity: ['PurchaseItem','$stateParams', function(PurchaseItem,$stateParams) {
-                    return PurchaseItem.get({id : $stateParams.id}).$promise;
-                }],
-                budgetEntity:function(){
-                	return null;
-                },
-                previousState: ["$state", function ($state) {
-                    var currentStateData = {
-                        name: $state.current.name || 'purchase-item-detail',
-                        params: $state.params,
-                        url: $state.href($state.current.name, $state.params)
-                    };
-                    return currentStateData;
-                }]
-            }
-        })
-        .state('purchase-item.new', {
-            parent: 'purchase-item',
-            url: '/new',
-            data: {
-                authorities: ['ROLE_CONTRACT_PURCHASE']
-            },
-            views:{
-            	'content@':{
-            		templateUrl: 'app/contract/purchase-item/purchase-item-dialog.html',
-            		controller: 'PurchaseItemDialogController',
-            		controllerAs: 'vm'
-            	}
-            },
-            resolve: {
-           	 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
-                    $translatePartialLoader.addPart('purchaseItem');
-                    $translatePartialLoader.addPart('productPrice');
-                    $translatePartialLoader.addPart('global');
-                    return $translate.refresh();
-                }],
-                entity: function () {
-                    return {
-                        contractId: null,
-                        budgetId: null,
-                        productPriceId: null,
-                        name: null,
-                        quantity: null,
-                        price: null,
-                        units: null,
-                        type: 1,
-                        source: 1,
-                        purchaser: null,
-                        totalAmount: null,
-                        status: null,
-                        creator: null,
-                        createTime: null,
-                        updator: null,
-                        updateTime: null,
-                        id: null,
-                        contractNum: null,
-                        contractName: null,
-                        budgetOriginal:0
-                    };
-                },
-                budgetEntity:function(){
-                	return null;
-                },
-                previousState: ["$state", function ($state) {
-                    var currentStateData = {
-                    	choseProject:'purchase-item.new.choseProject',
-                        name: $state.current.name || 'purchase-item',
-                        params: $state.params,
-                        url: $state.href($state.current.name, $state.params)
-                    };
-                    return currentStateData;
-                }]
-            }
-        })
-        .state('purchase-item.new.choseProject', {
-            parent: 'purchase-item.new',
-            url: '/queryProductPrice?selectName',
-            data: {
-            	authorities: ['ROLE_PROJECT_INFO'],
-                pageTitle: 'cpmApp.projectInfo.home.title'
-            },
-            onEnter: ['$stateParams','$state','$uibModal',function($stateParams,$state,$uibModal){
-            	$uibModal.open({
-            		templateUrl: 'app/contract/purchase-item/purchase-item-choseProject.html',
-            		controller: 'ChoseProjectsController',
-            		controllerAs: 'vm',
-            		backdrop: 'static',
-            		size: 'lg',
-            		params: {
-            			page: {
-            				value: '1',
-            				squash: true
-            			},
-            			selectName: null
-            		},
-            		resolve: {
-            			entity: ['$stateParams', 'PaginationUtil', function ($stateParams, PaginationUtil) {
-            				return {
-            					page: PaginationUtil.parsePage($stateParams.page),
-            					selectName: $stateParams.selectName
-            				}
-            			}]
-            		}
-            	}).result.then(function() {
-            		$state.go('^', {}, { reload: false });
-                }, function() {
-                    $state.go('^');
-                });
-            }]
-        })
         .state('purchase-item.edit', {
             parent: 'purchase-item',
             url: '/edit/{id}',
@@ -237,6 +108,7 @@
             	translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
             		$translatePartialLoader.addPart('purchaseItem');
             		$translatePartialLoader.addPart('productPrice');
+            		$translatePartialLoader.addPart('deptInfo');
             		$translatePartialLoader.addPart('global');
                     return $translate.refresh();
                 }],
@@ -249,6 +121,7 @@
                 previousState: ["$state", function ($state) {
                     var currentStateData = {
                     	choseProject: 'purchase-item.choseProject',
+                    	queryDept:'purchase-item.edit.queryDept',
                         name: $state.current.name || 'purchase-item',
                         params: $state.params,
                         url: $state.href($state.current.name, $state.params)
@@ -256,6 +129,35 @@
                     return currentStateData;
                 }]
             }
+        })
+        .state('purchase-item.edit.queryDept', {
+            parent: 'purchase-item.edit',
+            url: '/queryDept?selectType&showChild&showUser',
+            data: {
+                authorities: ['ROLE_INFO_BASIC']
+            },
+            onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
+                $uibModal.open({
+                    templateUrl: 'app/info/dept-info/dept-info-query.html',
+                    controller: 'DeptInfoQueryController',
+                    controllerAs: 'vm',
+                    backdrop: 'static',
+                    size: 'lg',
+                    resolve: {
+                        entity: function() {
+                            return {
+                            	selectType : $stateParams.selectType,
+                            	showChild : $stateParams.showChild,
+                            	showUser : $stateParams.showUser
+                            }
+                        }
+                    }
+                }).result.then(function() {
+                    $state.go('^', {}, { reload: false });
+                }, function() {
+                    $state.go('^');
+                });
+            }]
         })
         .state('purchase-item.choseProject', {
             parent: 'purchase-item.edit',
