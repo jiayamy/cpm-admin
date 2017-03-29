@@ -83,9 +83,12 @@ public class UserCostResource {
         log.debug(SecurityUtils.getCurrentUserLogin()+" REST request to updateUserCost : {}", userCost);
         Boolean isNew = null;
         if(userCost == null || userCost.getUserId() == null || userCost.getCostMonth() == null || 
-        		userCost.getUserName() == null || userCost.getSal() == null || userCost.getSocialSecurityFund() == null || userCost.getOtherExpense() == null){
+        		userCost.getUserName() == null || userCost.getSal() == null /*|| userCost.getSocialSecurityFund() == null*/
+        		|| userCost.getSocialSecurity() == null || userCost.getFund() == null
+        		|| userCost.getOtherExpense() == null){
     		return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.userCost.save.requriedError", "")).body(null);
     	}
+        userCost.setSocialSecurityFund(userCost.getSocialSecurity() + userCost.getFund());
         //获取当前用户
         String updator = SecurityUtils.getCurrentUserLogin();
         ZonedDateTime updateTime = ZonedDateTime.now();
@@ -118,6 +121,8 @@ public class UserCostResource {
         	}
         }
         findUserCost.setSal(userCost.getSal());
+        findUserCost.setSocialSecurity(userCost.getSocialSecurity());
+        findUserCost.setFund(userCost.getFund());
         findUserCost.setSocialSecurityFund(userCost.getSocialSecurityFund());
         findUserCost.setOtherExpense(userCost.getOtherExpense());
     	findUserCost.setInternalCost(userCost.getSal()+userCost.getSocialSecurityFund()+userCost.getOtherExpense());
@@ -283,7 +288,7 @@ public class UserCostResource {
         try {
 			//从第一行读取，最多读取10个sheet，最多读取6列
         	int startNum = 1;
-			List<ExcelValue> lists = ExcelUtil.readExcel(file,startNum,10,6);
+			List<ExcelValue> lists = ExcelUtil.readExcel(file,startNum,10,7);
 			if(lists == null || lists.isEmpty()){
 				return ResponseEntity.ok()
 						.body(cpmResponse
@@ -396,7 +401,7 @@ public class UserCostResource {
 										.setMsgParam(excelValue.getSheet() + "," + rowNum +","+(columnNum+1)));
 							}
 						}
-						//校验第四列 员工社保公积金
+						//校验第五列 员工社保
 						columnNum++;
 						val = ls.get(columnNum);
 						if(val == null){
@@ -405,17 +410,38 @@ public class UserCostResource {
 									.setMsgKey("cpmApp.userCost.upload.dataError")
 									.setMsgParam(excelValue.getSheet() + "," + rowNum +","+(columnNum+1)));
 						}else if(val instanceof Double){//double
-							userCost.setSocialSecurityFund((Double)val);
+							userCost.setSocialSecurity((Double)val);
 						}else{//String
-							userCost.setSocialSecurityFund(StringUtil.nullToCloneDouble(val));
-							if(userCost.getSocialSecurityFund() == null){
+							userCost.setSocialSecurity(StringUtil.nullToCloneDouble(val));
+							if(userCost.getSocialSecurity() == null){
 								return ResponseEntity.ok().body(cpmResponse
 										.setSuccess(Boolean.FALSE)
 										.setMsgKey("cpmApp.userCost.upload.dataError")
 										.setMsgParam(excelValue.getSheet() + "," + rowNum +","+(columnNum+1)));
 							}
 						}
-						//校验第五轮 其他费用
+						
+						//校验第六列 员工公积金
+						columnNum++;
+						val = ls.get(columnNum);
+						if(val == null){
+							return ResponseEntity.ok().body(cpmResponse
+									.setSuccess(Boolean.FALSE)
+									.setMsgKey("cpmApp.userCost.upload.dataError")
+									.setMsgParam(excelValue.getSheet() + "," + rowNum +","+(columnNum+1)));
+						}else if(val instanceof Double){//double
+							userCost.setFund((Double)val);
+						}else{//String
+							userCost.setFund(StringUtil.nullToCloneDouble(val));
+							if(userCost.getFund() == null){
+								return ResponseEntity.ok().body(cpmResponse
+										.setSuccess(Boolean.FALSE)
+										.setMsgKey("cpmApp.userCost.upload.dataError")
+										.setMsgParam(excelValue.getSheet() + "," + rowNum +","+(columnNum+1)));
+							}
+						}
+						
+						//校验第七轮 其他费用
 						columnNum++;
 						val = ls.get(columnNum);
 						if(val == null){
@@ -434,6 +460,8 @@ public class UserCostResource {
 										.setMsgParam(excelValue.getSheet() + "," + rowNum +","+(columnNum+1)));
 							}
 						}
+						//社保公积金合计
+						userCost.setSocialSecurityFund(userCost.getSocialSecurity() + userCost.getFund());
 						//内部成本
 						userCost.setInternalCost(userCost.getSal()+userCost.getSocialSecurityFund()+userCost.getOtherExpense());//内部成本
 						//外部成本

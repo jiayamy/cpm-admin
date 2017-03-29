@@ -45,9 +45,14 @@
         		</div>
         		<div class="col-sm-6">
             		<label class="control-label" data-translate="cpmApp.purchaseItem.purchaser" for="field_purchaser">Purchaser</label>
-            		<input type="text" class="form-control" name="purchaser" id="field_purchaser"
+            		<div class="input-group">
+		          		<input type="text" class="form-control" name="purchaser" id="field_purchaser"
                     	ng-model="vm.purchaseItem.purchaser" ng-required="true"
                      	/>
+	                   	<span class="input-group-btn">
+	                     	<button type="button" class="btn btn-default" ui-sref="{{vm.queryDept}}({selectType:2,showChild:true,showUser:false})"><i class="glyphicon glyphicon-home"></i></button>
+	                 	</span>
+	            	</div>
                      <div class="help-block"
 	                  	ng-hide="vm.purchaseItem.purchaser" data-translate="entity.validation.required" style="color:red">
 	                    This field is required.

@@ -905,3 +905,12 @@ CREATE
 	  PRIMARY KEY (`id`)
 	) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='奖金公摊成本比例';
 	
+--20170327
+ALTER TABLE w_user_cost ADD (social_security DOUBLE(15,2) DEFAULT '0');
+ALTER TABLE w_user_cost ADD (fund_ DOUBLE(15,2) DEFAULT '0');
+
+--UPDATE W_USER_COST SET social_security = ( social_security_fund * 37 /44 );
+--UPDATE W_USER_COST SET FUND_ = ( social_security_fund * 7 /44 );
+
+
+    

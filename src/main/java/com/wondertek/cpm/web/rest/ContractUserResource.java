@@ -71,10 +71,10 @@ public class ContractUserResource {
         //校验合同状态是否可用
         ContractInfo contractInfo = contractInfoRepository.findOne(contractUser.getContractId());
         if (contractInfo == null) {
-        	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.contractReceive.save.dataError", "")).body(null);
+        	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.contractUser.save.dataError", "")).body(null);
 		}
         if (contractInfo.getStatus() != ContractInfo.STATUS_VALIDABLE) {
-        	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.contractReceive.save.contractInfoError", "")).body(null);
+        	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.contractUser.save.contractInfoError", "")).body(null);
 		}
         if(contractUser.getLeaveDay() != null && contractUser.getLeaveDay().longValue() < contractUser.getJoinDay()){
         	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.contractUser.save.dayError", "")).body(null);
@@ -168,10 +168,10 @@ public class ContractUserResource {
         //校验合同状态是否可用
         ContractInfo contractInfo = contractInfoRepository.findOne(contractVo.getContractId());
         if (contractInfo == null) {
-        	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.contractReceive.save.dataError", "")).body(null);
+        	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.contractUser.save.dataError", "")).body(null);
 		}
         if (contractInfo.getStatus() != ContractInfo.STATUS_VALIDABLE) {
-        	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.contractReceive.save.contractInfoError", "")).body(null);
+        	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.contractUser.save.contractInfoError", "")).body(null);
 		}
         long leaveDay = StringUtil.nullToLong(DateUtil.formatDate(DateUtil.DATE_YYYYMMDD_PATTERN, new Date()));
         if(contractVo.getLeaveDay() != null && contractVo.getLeaveDay() <= leaveDay){

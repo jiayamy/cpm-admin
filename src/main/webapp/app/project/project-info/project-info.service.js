@@ -27,7 +27,7 @@
             			}else if(data.status == 2){
             				data.statusName = "已结项";
             			}else if(data.status == 3){
-            				data.statusName = "已删除";
+            				data.statusName = "已终止";
             			}
                     }
                     return data;

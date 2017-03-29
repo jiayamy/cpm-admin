@@ -9,11 +9,11 @@
             },
             "created": "新建成功",
             "updated": "更新成功",
-            "deleted": "删除成功",
+            "deleted": "终止成功",
             "delete": {
-                "question": "确定删除编号为{{ id }}的合同信息?",
-                "status2Error":"状态为已完成的不可执行删除操作",
-                "status3Error":"状态为已删除的不可再执行删除操作"
+                "question": "确定终止编号为{{ id }}的合同信息?",
+                "status2Error":"状态为已完成的不可执行终止操作",
+                "status3Error":"状态为已终止的不可再执行终止操作"
             },
             "detail": {
                 "title": "合同基本信息"
@@ -22,7 +22,7 @@
             	"title": "合同完成率信息",
             	"minError":"完成率最小值为0",
             	"maxError":"完成率最大值为100",
-            	"statusError":"状态为已删除或已完成的合同不可修改",
+            	"statusError":"状态为已终止或已完成的合同不可修改",
             	"success":"设置完成率成功"
             },
             "save":{
@@ -31,7 +31,7 @@
             	"endDayError":"结束日期不应在开始日期之前",
             	"existSerialNum":"合同编号已存在",
             	"noPerm":"无权限操作",
-            	"statusError":"已删除或已完成的合同不可更改",
+            	"statusError":"已终止或已完成的合同不可更改",
             	"isPreparedError":"正式合同不可在转为预立合同",
             	"consultantsRateError":"有咨询合同的咨询分润比例不可为空，且必须在0-100之间"
             },
@@ -40,7 +40,7 @@
             	"submit":"完成",
             	"question": "确定完成编号为[ {{ id }}]的合同?",
             	"status2Error":"合同状态为已完成的不可再执行完成操作",
-            	"status3Error":"合同状态为已删除的不可执行完成操作",
+            	"status3Error":"合同状态为已终止的不可执行完成操作",
             	"success":"合同完成成功"
             },
             "required":{

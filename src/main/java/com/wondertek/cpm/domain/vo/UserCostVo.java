@@ -16,6 +16,8 @@ public class UserCostVo {
     private String updator;
     private ZonedDateTime updateTime;
     private Double sal;
+    private Double socialSecurity;
+    private Double fund;
     private Double socialSecurityFund;
     private Double otherExpense;
     private String serialNum;
@@ -109,5 +111,17 @@ public class UserCostVo {
 	}
 	public void setSerialNum(String serialNum) {
 		this.serialNum = serialNum;
+	}
+	public Double getSocialSecurity() {
+		return socialSecurity;
+	}
+	public void setSocialSecurity(Double socialSecurity) {
+		this.socialSecurity = socialSecurity;
+	}
+	public Double getFund() {
+		return fund;
+	}
+	public void setFund(Double fund) {
+		this.fund = fund;
 	}
 }

@@ -408,6 +408,7 @@
            	 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                     $translatePartialLoader.addPart('purchaseItem');
                     $translatePartialLoader.addPart('productPrice');
+                    $translatePartialLoader.addPart('deptInfo');
                     $translatePartialLoader.addPart('global');
                     return $translate.refresh();
                 }],
@@ -440,6 +441,7 @@
                 previousState: ["$state", function ($state) {
                     var currentStateData = {
                     	choseProject:'contract-budget.createPurchaseItem.choseProject',
+                    	queryDept:'contract-budget.createPurchaseItem.queryDept',
                         name: $state.current.name || 'contract-budget',
                         params: $state.params,
                         url: $state.href($state.current.name, $state.params)
@@ -447,6 +449,35 @@
                     return currentStateData;
                 }]
             }
+        })
+        .state('contract-budget.createPurchaseItem.queryDept', {
+            parent: 'contract-budget.createPurchaseItem',
+            url: '/queryDept?selectType&showChild&showUser',
+            data: {
+                authorities: ['ROLE_INFO_BASIC']
+            },
+            onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
+                $uibModal.open({
+                    templateUrl: 'app/info/dept-info/dept-info-query.html',
+                    controller: 'DeptInfoQueryController',
+                    controllerAs: 'vm',
+                    backdrop: 'static',
+                    size: 'lg',
+                    resolve: {
+                        entity: function() {
+                            return {
+                            	selectType : $stateParams.selectType,
+                            	showChild : $stateParams.showChild,
+                            	showUser : $stateParams.showUser
+                            }
+                        }
+                    }
+                }).result.then(function() {
+                    $state.go('^', {}, { reload: false });
+                }, function() {
+                    $state.go('^');
+                });
+            }]
         })
         .state('contract-budget.createPurchaseItem.choseProject', {
             parent: 'contract-budget.createPurchaseItem',

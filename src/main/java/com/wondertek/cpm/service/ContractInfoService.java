@@ -193,14 +193,14 @@ public class ContractInfoService {
 
 	public int endContractInfo(Long id) {
 		String updator = SecurityUtils.getCurrentUserLogin();
-		//保存记录
-		ContractFinishInfo contractFinishInfo = new ContractFinishInfo();
-		contractFinishInfo.setCreateTime(ZonedDateTime.now());
-		contractFinishInfo.setCreator(updator);
-		contractFinishInfo.setFinishRate(100d);
-		contractFinishInfo.setId(null);
-		contractFinishInfo.setContractId(id);
-		contractFinishInfoRepository.save(contractFinishInfo);
+//		//保存记录
+//		ContractFinishInfo contractFinishInfo = new ContractFinishInfo();
+//		contractFinishInfo.setCreateTime(ZonedDateTime.now());
+//		contractFinishInfo.setCreator(updator);
+//		contractFinishInfo.setFinishRate(100d);
+//		contractFinishInfo.setId(null);
+//		contractFinishInfo.setContractId(id);
+//		contractFinishInfoRepository.save(contractFinishInfo);
 		
 		//更新合同人员的离开日期
 		long leaveDay = StringUtil.nullToLong(DateUtil.formatDate(DateUtil.DATE_YYYYMMDD_PATTERN, new Date()));

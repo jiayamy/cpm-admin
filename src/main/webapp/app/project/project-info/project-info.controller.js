@@ -19,7 +19,7 @@
         
         vm.searchQuery = {};
         //搜索项中的参数
-        vm.prjStatuss = [{key:1,val:"开发中"},{key:2,val:"已结项"},{key:3,val:"已删除"}]
+        vm.prjStatuss = [{key:1,val:"开发中"},{key:2,val:"已结项"},{key:3,val:"已终止"}]
         for(var i = 0; i < vm.prjStatuss.length; i++){
 			if(pagingParams.status == vm.prjStatuss[i].key){
 				vm.searchQuery.status = vm.prjStatuss[i];
@@ -105,7 +105,7 @@
             			}else if(data[i].status == 2){
             				data[i].status = "已结项";
             			}else if(data[i].status == 3){
-            				data[i].status = "已删除";
+            				data[i].status = "已终止";
             			}
             		}
             	}

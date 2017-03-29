@@ -72,10 +72,10 @@ public class ContractCostResource {
         //校验合同状态是否可用
         ContractInfo contractInfo = contractInfoRepository.findOne(contractCost.getContractId());
         if (contractInfo == null) {
-        	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.contractReceive.save.dataError", "")).body(null);
+        	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.contractCost.save.dataError", "")).body(null);
 		}
         if (contractInfo.getStatus() != ContractInfo.STATUS_VALIDABLE) {
-        	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.contractReceive.save.contractInfoError", "")).body(null);
+        	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.contractCost.save.contractInfoError", "")).body(null);
 		}
         if (contractCost.getType() == ContractCost.TYPE_HUMAN_COST) {
         	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.contractCost.save.type1Error", "")).body(null);
@@ -166,10 +166,10 @@ public class ContractCostResource {
         //校验合同状态是否可用
         ContractInfo contractInfo = contractInfoRepository.findOne(contractCost.getContractId());
         if (contractInfo == null) {
-        	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.contractReceive.save.dataError", "")).body(null);
+        	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.contractCost.save.dataError", "")).body(null);
 		}
         if (contractInfo.getStatus() != ContractInfo.STATUS_VALIDABLE) {
-        	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.contractReceive.save.contractInfoError", "")).body(null);
+        	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.contractCost.save.contractInfoError", "")).body(null);
 		}
         if (contractCost.getStatus() == CpmConstants.STATUS_DELETED) {
         	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.contractCost.delete.status2Error", "")).body(null);

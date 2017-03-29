@@ -198,7 +198,7 @@ public class ContractInfo implements Serializable {
     @Column(name = "finish_rate")
     private Double finishRate;
     /**
-     * 状态（1可用/2完成/3删除）
+     * 状态（1可用/2完成/3终止）
      */
     @Column(name = "status_")
     private Integer status;

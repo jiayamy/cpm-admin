@@ -26,8 +26,13 @@ import org.springframework.data.elasticsearch.annotations.Document;
 public class DeptType implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    
+    /**
+     * 中央研究院
+     */
     public static final Long PRODUCT_DEVELOPMENT = 4L;
+    /**
+     * 产品研发中心
+     */
     public static final Long PROJECT_IMPLEMENTATION = 5L;
     
     @Id
