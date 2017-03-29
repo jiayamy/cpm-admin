@@ -3,7 +3,10 @@ package com.wondertek.cpm.service;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 import javax.inject.Inject;
 
@@ -161,6 +164,18 @@ public class ContractInfoService {
     	}
 		return returnList;
 	}
+    
+    @Transactional(readOnly = true)
+    public Map<String,ContractInfo> getContractInfoMapBySerialnum(){
+    	List<ContractInfo> contractInfos = contractInfoRepository.findAll();
+    	Map<String,ContractInfo> returnMap = new HashMap<String,ContractInfo>();
+    	if (contractInfos != null) {
+			for (ContractInfo contractInfo : contractInfos) {
+				returnMap.put(contractInfo.getSerialNum(), contractInfo);
+			} 
+		}
+		return returnMap;
+    }
 
 	public int finishContractInfo(Long id, Double finishRate) {
 		String updator = SecurityUtils.getCurrentUserLogin();
@@ -192,5 +207,24 @@ public class ContractInfoService {
 		contractUserDao.updateLeaveDayByContract(id,leaveDay,updator);
 				
 		return contractInfoDao.endContractInfo(id,updator);
+	}
+	
+	/**
+	 * 更新、新增合同信息
+	 * @param contractInfos
+	 */
+	public void saveOrUpdateUploadRecord(List<ContractInfo> contractInfos){
+		if(contractInfos != null){
+			Optional<ContractInfo> oldInfo = null;
+			for(ContractInfo contractInfo : contractInfos){
+				oldInfo = contractInfoRepository.findOneBySerialNum(contractInfo.getSerialNum());
+				if(oldInfo.isPresent()){//修改
+					contractInfo.setId(oldInfo.get().getId());
+					contractInfo.setCreator(oldInfo.get().getCreator());
+					contractInfo.setCreateTime(oldInfo.get().getCreateTime());
+				}
+			}
+			contractInfoRepository.save(contractInfos);
+		}
 	}
 }
