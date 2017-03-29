@@ -27,6 +27,9 @@ public class ContractCost implements Serializable {
     private static final long serialVersionUID = 1L;
     
     public static final Integer TYPE_HUMAN_COST = 1;
+    public static final Integer TYPE_TRAVEL_COST = 2;
+    public static final Integer TYPE_PURCHASE_COST = 3;
+    public static final Integer TYPE_BUSINESS_COST = 4;
     
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

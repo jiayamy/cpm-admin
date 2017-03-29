@@ -409,6 +409,35 @@
                     $state.go('^');
                 });
             }]
+        })
+        .state('contract-cost.import', {
+            parent: 'contract-cost',
+            url: '/upload',
+            data: {
+                authorities: ['ROLE_CONTRACT_COST'],
+            },
+            views: {
+                'content@': {
+                    templateUrl: 'app/contract/contract-cost/contract-cost-import.html',
+                    controller: 'ContractCostImportController',
+                    controllerAs: 'vm'
+                }
+            },
+            resolve: {
+            	translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
+                    $translatePartialLoader.addPart('contractCost');
+                    $translatePartialLoader.addPart('global');
+                    return $translate.refresh();
+                }],
+                previousState: ["$state", function ($state) {
+                	var currentStateData = {
+            			name: $state.current.name || 'contract-cost',
+            			params: $state.params,
+            			url: $state.href($state.current.name, $state.params)
+                	};
+                	return currentStateData;
+	            }]
+            }
         });
     }
 
