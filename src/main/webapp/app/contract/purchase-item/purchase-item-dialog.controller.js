@@ -11,7 +11,7 @@
         var vm = this;
         
         vm.choseProject = previousState.choseProject;
-
+        vm.queryDept = previousState.queryDept;
         vm.purchaseItem = entity;
         vm.contractInfoDisable = vm.purchaseItem.id;
         if (budgetEntity != null && budgetEntity.purchaseType != 3 && entity.id == null) {
@@ -195,6 +195,10 @@
         	}
         });
         $scope.$on('$destroy', unsubscribe);
+        var unsubscribeDeptInfoSelected = $rootScope.$on('cpmApp:deptInfoSelected', function(event, result) {
+        	vm.purchaseItem.purchaser = result.name;
+        });
+        $scope.$on('$destroy', unsubscribeDeptInfoSelected);
         
         vm.priceChanged = priceChanged;
         vm.quantityChanged = quantityChanged;

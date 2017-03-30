@@ -1,13 +1,19 @@
 package com.wondertek.cpm.domain;
 
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.springframework.data.elasticsearch.annotations.Document;
-
-import javax.persistence.*;
 import java.io.Serializable;
 import java.time.ZonedDateTime;
 import java.util.Objects;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.springframework.data.elasticsearch.annotations.Document;
 
 /**
  * 合同信息
@@ -24,6 +30,7 @@ public class ContractInfo implements Serializable {
 	public static final int STATUS_DELETED = 3;
 	public static final Integer TYPE_INTERNAL = 1;
 	public static final Integer TYPE_EXTERNAL = 2;
+	public static final Integer TYPE_HARDWARE = 3;
 	public static final Integer TYPE_PUBLIC = 4;
 	public static final Integer TYPE_PROJECT = 5;
 	public static final Integer TYPE_EXTEND = 6;
@@ -191,7 +198,7 @@ public class ContractInfo implements Serializable {
     @Column(name = "finish_rate")
     private Double finishRate;
     /**
-     * 状态（1可用/2完成/3删除）
+     * 状态（1可用/2完成/3终止）
      */
     @Column(name = "status_")
     private Integer status;

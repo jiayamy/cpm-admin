@@ -66,15 +66,32 @@ public class UserCost implements Serializable {
 
     @Column(name = "update_time")
     private ZonedDateTime updateTime;
-    
+    /**
+     * 工资
+     */
     @Column(name = "sal_")
     private Double sal;
-    
+    /**
+     * 社保
+     */
+    @Column(name = "social_security")
+    private Double socialSecurity;
+    /**
+     * 公积金
+     */
+    @Column(name = "fund_")
+    private Double fund;
+    /**
+     * 社保公积金，上面的2个合计
+     */
     @Column(name = "social_security_fund")
     private Double socialSecurityFund;
-    
+    /**
+     * 其他费用
+     */
     @Column(name = "other_expense")
     private Double otherExpense;
+    
 
     public Double getSal() {
 		return sal;
@@ -92,7 +109,7 @@ public class UserCost implements Serializable {
 	public Double getSocialSecurityFund() {
 		return socialSecurityFund;
 	}
-	
+
 	public UserCost socialSecurityFund(Double socialSecurityFund) {
         this.socialSecurityFund = socialSecurityFund;
         return this;
@@ -100,6 +117,22 @@ public class UserCost implements Serializable {
 
 	public void setSocialSecurityFund(Double socialSecurityFund) {
 		this.socialSecurityFund = socialSecurityFund;
+	}
+
+	public Double getSocialSecurity() {
+		return socialSecurity;
+	}
+
+	public void setSocialSecurity(Double socialSecurity) {
+		this.socialSecurity = socialSecurity;
+	}
+
+	public Double getFund() {
+		return fund;
+	}
+
+	public void setFund(Double fund) {
+		this.fund = fund;
 	}
 
 	public Double getOtherExpense() {

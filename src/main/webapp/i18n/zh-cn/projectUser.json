@@ -24,7 +24,7 @@
             	"projectIdError":"项目不允许重新选择",
             	"leaveDayError":"已离开的人员不可再次更新或删除",
             	"noPerm":"无权操作",
-            	"projectError" : "项目已经删除或者结项"
+            	"projectError" : "项目已经终止或者结项"
             },
             "projectId": "项目编号",
             "projectName":"项目名称",

@@ -27,7 +27,7 @@
         
         vm.isPrepareds = [{ key: 'false', val: '正式合同'}, { key: 'true', val: '预立合同'}];
         vm.isEpibolics = [{ key: 'true', val: '外部合同'}, { key: 'false', val: '内部合同'}];
-        vm.statuss = [{ key: 1, val: '进行中'}, { key: 2, val: '已完成'}, { key: 3, val: '已删除'}];
+        vm.statuss = [{ key: 1, val: '进行中'}, { key: 2, val: '已完成'}, { key: 3, val: '已终止'}];
         
         for(var j = 0; j < vm.types.length; j++){
         	if(pagingParams.type == vm.types[j].key){

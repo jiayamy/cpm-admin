@@ -150,4 +150,24 @@ public class ContractCostService {
 		
 		return null;
 	}
+	
+	public void saveOrUpdateUploadRecord(List<ContractCost> contractCosts){
+		if(contractCosts != null){
+			ContractCost oldCost = null;
+			for(ContractCost cost : contractCosts){
+				oldCost = contractCostRepository.findByDeptIdAndTypeAndContractIdAndCostDay(cost.getDeptId(), cost.getType(), cost.getContractId(), cost.getCostDay());
+				if(oldCost != null){//不是新增
+					cost.setId(oldCost.getId());
+					cost.setBudgetId(oldCost.getBudgetId());
+					cost.setCreator(oldCost.getCreator());
+					cost.setCreateTime(oldCost.getCreateTime());
+					cost.setUpdateTime(ZonedDateTime.now());
+				}else{//新增
+					cost.setCreateTime(ZonedDateTime.now());
+					cost.setUpdateTime(cost.getCreateTime());
+				}
+			}
+			contractCostRepository.save(contractCosts);
+		}
+	}
 }

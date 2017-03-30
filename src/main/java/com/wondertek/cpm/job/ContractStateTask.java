@@ -311,12 +311,10 @@ public class ContractStateTask {
 									Long costMonth = StringUtil.nullToLong(DateUtil.formatDate("yyyyMM", DateUtil.lastSundayEnd(now)).toString());
 									UserCost userCost = userCostRepository.findMaxByCostMonthAndUserId(costMonth, userTimesheet.getUserId());
 									if(userCost != null){
-										if(contractInfo.getType() == ContractInfo.TYPE_INTERNAL){
+										if(contractInfo.getIsEpibolic() != null && !contractInfo.getIsEpibolic()){
 											projectHumanCost += userTimesheet.getRealInput() * (userCost.getInternalCost()/168);
-										}else if(contractInfo.getType() == ContractInfo.TYPE_EXTERNAL){
-											projectHumanCost += userTimesheet.getRealInput() * StringUtil.nullToDouble((externalQuotationMap.get(userIdGradeMap.get(userTimesheet.getUserId()))));
 										}else{
-											log.error(" no contractType found belong to UserTimesheet : " + userTimesheet.getId());
+											projectHumanCost += userTimesheet.getRealInput() * StringUtil.nullToDouble((externalQuotationMap.get(userIdGradeMap.get(userTimesheet.getUserId()))));
 										}
 									}else{
 										log.error("no UserCost founded belong to User : " + userTimesheet.getUserId() + ":" + userTimesheet.getUserName());
@@ -566,12 +564,10 @@ public class ContractStateTask {
 							if(userTimesheets3 != null && userTimesheets3.size() > 0){
 								for(UserTimesheet userTimesheet : userTimesheets3){
 									UserCost userCost = userCostRepository.findMaxByCostMonthAndUserId(StringUtil.nullToLong(lMonth), userTimesheet.getUserId());
-									if(contractInfo.getType() == ContractInfo.TYPE_INTERNAL){
+									if(contractInfo.getIsEpibolic() != null && !contractInfo.getIsEpibolic()){
 										projectHumanCost += userTimesheet.getRealInput() * (userCost.getInternalCost()/168);
-									}else if(contractInfo.getType() == ContractInfo.TYPE_EXTERNAL){
-										projectHumanCost += userTimesheet.getRealInput() * StringUtil.nullToDouble((externalQuotationMap.get(userIdGradeMap.get(userTimesheet.getUserId()))));
 									}else{
-										log.error(" no contractType found belong to UserTimesheet : " + userTimesheet.getId());
+										projectHumanCost += userTimesheet.getRealInput() * StringUtil.nullToDouble((externalQuotationMap.get(userIdGradeMap.get(userTimesheet.getUserId()))));
 									}
 								}
 							}else{
@@ -645,6 +641,7 @@ public class ContractStateTask {
 				DeptInfo deptInfo2 = deptInfoRepository.findOne(contractInfo.getConsultantsDeptId());
 				contractCost.setDept(deptInfo.getName());
 				Double total = 0D;
+				Double totalHour = 0D;
 				List<UserTimesheet> userTimesheets = new ArrayList<>();
 				if(contractInfo.getType() == ContractInfo.TYPE_PUBLIC){
 					userTimesheets = userTimesheetRepository.findByWorkDayAndNotDeptTypeAndType(workDay, deptInfo2.getType(), UserTimesheet.TYPE_PUBLIC);
@@ -656,26 +653,28 @@ public class ContractStateTask {
 					for(UserTimesheet userTimesheet : userTimesheets){
 						UserCost userCost = userCostRepository.findMaxByCostMonthAndUserId(costMonth, userTimesheet.getUserId());
 						if(userCost != null){
-							if(contractType == ContractInfo.TYPE_INTERNAL){
+							if(contractInfo.getIsEpibolic() != null && !contractInfo.getIsEpibolic()){
 								total += userTimesheet.getRealInput() * (userCost.getInternalCost()/168);
-							}else if(contractType == ContractInfo.TYPE_EXTERNAL){
-								total += userTimesheet.getRealInput() * userTimesheet.getRealInput() * StringUtil.nullToDouble((externalQuotationMap.get(userIdGradeMap.get(userTimesheet.getUserId()))));
 							}else{
-								log.info(" no contractType found belong to UserTimesheet : " + userTimesheet.getId());
+								total += userTimesheet.getRealInput() * userTimesheet.getRealInput() * StringUtil.nullToDouble((externalQuotationMap.get(userIdGradeMap.get(userTimesheet.getUserId()))));
 							}
 						}else{
 							log.error(" no UserCost founded belong to User : " + userTimesheet.getUserId() + ":" + userTimesheet.getUserName());
 						}
-						
+						if(userTimesheet.getRealInput() != null){
+							totalHour += userTimesheet.getRealInput();
+						}
 					}
 				}
 				contractCost.setTotal(total);
+				contractCost.setCostDesc(StringUtil.getScaleDouble(totalHour, 1).toString());
 				//咨询部分
 				ContractCost contractCost2 = new ContractCost();
 				contractCost2.setContractId(contractInfo.getId());
 				contractCost2.setDeptId(contractInfo.getConsultantsDeptId());
 				contractCost2.setDept(deptInfo2.getName());
 				Double total2 = 0D;
+				Double total2Hour = 0D;
 				List<UserTimesheet> userTimesheets2 = new ArrayList<>();
 				if(contractInfo.getType() == ContractInfo.TYPE_PUBLIC){
 					userTimesheets2 = userTimesheetRepository.findByWorkDayAndDeptTypeAndType(workDay, deptInfo2.getType(), UserTimesheet.TYPE_PUBLIC);
@@ -686,23 +685,23 @@ public class ContractStateTask {
 					for(UserTimesheet userTimesheet : userTimesheets2){
 						UserCost userCost = userCostRepository.findMaxByCostMonthAndUserId(costMonth, userTimesheet.getUserId());
 						if(userCost != null){
-							if(contractType == ContractInfo.TYPE_INTERNAL){
+							if(contractInfo.getIsEpibolic() != null && !contractInfo.getIsEpibolic()){
 								total2 += userTimesheet.getRealInput() * (userCost.getInternalCost()/168);
-							}else if(contractType == ContractInfo.TYPE_EXTERNAL){
-								total2 += userTimesheet.getRealInput() * userTimesheet.getRealInput() * StringUtil.nullToDouble((externalQuotationMap.get(userIdGradeMap.get(userTimesheet.getUserId()))));
 							}else{
-								log.info(" no contractType found belong to UserTimesheet : " + userTimesheet.getId());
+								total2 += userTimesheet.getRealInput() * userTimesheet.getRealInput() * StringUtil.nullToDouble((externalQuotationMap.get(userIdGradeMap.get(userTimesheet.getUserId()))));
 							}
 						}else{
 							log.error(" no UserCost Founded belong to User " + userTimesheet.getUserId() +":" +userTimesheet.getUserName());
 						}
-						
+						if(userTimesheet.getRealInput() != null){
+							total2Hour += userTimesheet.getRealInput();
+						}
 					}
 				}
 				contractCost2.setTotal(total2);
+				contractCost.setCostDesc(StringUtil.getScaleDouble(total2Hour, 1).toString());
 				contractCost2.setName(contractInfo.getSerialNum() + "-" +  DateUtil.formatDate("yyyyMMdd", currentDay).toString());
 				contractCost2.setType(ContractCost.TYPE_HUMAN_COST);
-				contractCost2.setCostDesc(DateUtil.formatDate("yyyyMMdd", currentDay).toString());
 				contractCost2.setStatus(1);
 				contractCost2.setCreator("admin");
 				contractCost2.setCreateTime(ZonedDateTime.now());
@@ -733,33 +732,29 @@ public class ContractStateTask {
 					userTimesheets = userTimesheetRepository.findByWorkDayAndObjIdAndType(workDay, contractInfo.getId(), UserTimesheet.TYPE_CONTRACT);
 				}
 				Double total = 0D;
+				Double totalHour = 0D;
 				if(userTimesheets != null && userTimesheets.size() > 0){
 					for(UserTimesheet userTimesheet : userTimesheets){
 						UserCost userCost = userCostRepository.findMaxByCostMonthAndUserId(costMonth, userTimesheet.getUserId());
 						if(userCost != null){
-							if(contractType == ContractInfo.TYPE_INTERNAL){
+							if(contractInfo.getIsEpibolic() != null && !contractInfo.getIsEpibolic()){
 								total += userTimesheet.getRealInput() * (userCost.getInternalCost()/168);
-							}else if(contractType == ContractInfo.TYPE_EXTERNAL){
-								total += userTimesheet.getRealInput() * StringUtil.nullToDouble((externalQuotationMap.get(userIdGradeMap.get(userTimesheet.getUserId()))));
-							}else if (contractType == ContractInfo.TYPE_PUBLIC) {
-								if(contractInfo.getIsEpibolic()){
-									total += userTimesheet.getRealInput() * StringUtil.nullToDouble((externalQuotationMap.get(userIdGradeMap.get(userTimesheet.getUserId()))));
-								}else{
-									total += userTimesheet.getRealInput() * (userCost.getInternalCost()/168);
-								}
 							}else{
-								log.info(" no contractType found belong to UserTimesheet : " + userTimesheet.getId());
+								total += userTimesheet.getRealInput() * StringUtil.nullToDouble((externalQuotationMap.get(userIdGradeMap.get(userTimesheet.getUserId()))));
 							}
 						}else{
 							log.info("no userCost founded belong to User : "+ userTimesheet.getUserId() + ":" + userTimesheet.getUserName());
 						}
+						if(userTimesheet.getRealInput() != null){
+							totalHour += userTimesheet.getRealInput();
+						}
 					}
 				}
 				contractCost.setTotal(total);
+				contractCost.setCostDesc(StringUtil.getScaleDouble(totalHour, 1).toString());
 			}
 			contractCost.setName(contractInfo.getSerialNum() + "-" +  DateUtil.formatDate("yyyyMMdd", currentDay).toString());
 			contractCost.setType(ContractCost.TYPE_HUMAN_COST);
-			contractCost.setCostDesc(DateUtil.formatDate("yyyyMMdd", currentDay).toString());
 			contractCost.setStatus(1);
 			contractCost.setCreator("admin");
 			contractCost.setCreateTime(ZonedDateTime.now());

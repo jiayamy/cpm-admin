@@ -3,11 +3,11 @@
 
     angular
         .module('cpmApp')
-        .controller('UserManagementUploadController', UserManagementUploadController);
+        .controller('ContractInfoImportController', ContractInfoImportController);
 
-    UserManagementUploadController.$inject = ['$state','$rootScope', '$scope','Upload','previousState','AlertService'];
+    ContractInfoImportController.$inject = ['$state','$rootScope', '$scope','ContractInfo','Upload','previousState','AlertService'];
 
-    function UserManagementUploadController ($state,$rootScope, $scope, Upload,previousState,AlertService) {
+    function ContractInfoImportController ($state,$rootScope, $scope, ContractInfo, Upload,previousState,AlertService) {
         var vm = this;
 
         vm.previousState = previousState.name;
@@ -18,14 +18,14 @@
         	var file = document.querySelector('input[type=file]').files;
         	if(file == undefined || file.length < 1){
         		vm.isSaving = false;
-        		AlertService.error("userManagement.import.nonFile");
+        		AlertService.error("cpmApp.contractInfo.upload.nonFile");
         	}else if(file.length>1){
         		vm.isSaving = false;
-        		AlertService.error("userManagement.import.numFile");
+        		AlertService.error("cpmApp.contractInfo.upload.numFile");
         	}else{
         		Upload.upload({
             		method:'POST',
-            		url:"api/users/uploadExcel",
+            		url:"api/contract-infos/uploadExcel",
             		data:{"file":file[0]},
             		headers: {'Content-Type':undefined},
             		transformRequest: angular.identity
@@ -62,12 +62,11 @@
             	});
         	}
         }
-        
         vm.downloadTpl = downloadTpl;
         function downloadTpl(){
         	var url = "api/download-file/downloadXlsxTpl";
 			
-        	url += "?filePath="+encodeURI("importTpl/userImportTpl.xlsx");
+        	url += "?filePath="+encodeURI("importTpl/contractInfoImportTpl.xlsx");
         	
         	window.open(url);
         }

@@ -25,7 +25,7 @@
             	"leaveDayError":"已离开的人员不可再次更新或删除",
             	"noPerm":"无权操作",
             	"dataError":"内部采购单数据错误",
-            	"contractInfoError":"合同已完成或者已删除"
+            	"contractInfoError":"合同已完成或者已终止"
             },
             "contractId": "合同编号",
             "contractName": "合同名称",

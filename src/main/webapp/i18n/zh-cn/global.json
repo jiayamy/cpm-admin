@@ -145,7 +145,8 @@
             "search":"搜索",
             "clear":"重置",
             "export":"导出",
-            "upload":"上传"
+            "upload":"上传",
+            "downloadTpl":"下载模板"
         },
         "detail": {
             "field": "字段",

@@ -4,15 +4,16 @@
             "home": {
                 "title": "合同信息",
                 "createLabel": "新增",
-                "createOrEditLabel": "合同信息"
+                "createOrEditLabel": "合同信息",
+                "import": "导入"
             },
             "created": "新建成功",
             "updated": "更新成功",
-            "deleted": "删除成功",
+            "deleted": "终止成功",
             "delete": {
-                "question": "确定删除编号为{{ id }}的合同信息?",
-                "status2Error":"状态为已完成的不可执行删除操作",
-                "status3Error":"状态为已删除的不可再执行删除操作"
+                "question": "确定终止编号为{{ id }}的合同信息?",
+                "status2Error":"状态为已完成的不可执行终止操作",
+                "status3Error":"状态为已终止的不可再执行终止操作"
             },
             "detail": {
                 "title": "合同基本信息"
@@ -21,7 +22,7 @@
             	"title": "合同完成率信息",
             	"minError":"完成率最小值为0",
             	"maxError":"完成率最大值为100",
-            	"statusError":"状态为已删除或已完成的合同不可修改",
+            	"statusError":"状态为已终止或已完成的合同不可修改",
             	"success":"设置完成率成功"
             },
             "save":{
@@ -30,7 +31,7 @@
             	"endDayError":"结束日期不应在开始日期之前",
             	"existSerialNum":"合同编号已存在",
             	"noPerm":"无权限操作",
-            	"statusError":"已删除或已完成的合同不可更改",
+            	"statusError":"已终止或已完成的合同不可更改",
             	"isPreparedError":"正式合同不可在转为预立合同",
             	"consultantsRateError":"有咨询合同的咨询分润比例不可为空，且必须在0-100之间"
             },
@@ -39,11 +40,27 @@
             	"submit":"完成",
             	"question": "确定完成编号为[ {{ id }}]的合同?",
             	"status2Error":"合同状态为已完成的不可再执行完成操作",
-            	"status3Error":"合同状态为已删除的不可执行完成操作",
+            	"status3Error":"合同状态为已终止的不可执行完成操作",
             	"success":"合同完成成功"
             },
             "required":{
             	"salesmanAndconsultants":"销售和咨询必填一个"
+            },
+            "upload":{
+            	"requiredError":"上传文件数据有误，请重新核对",
+            	"dataError":"第{{sheetNum}}个sheet的第{{rowNum}}行第{{columnNum}}列数据存在问题",
+            	"serialNumError":"第{{sheetNum}}个sheet的第{{rowNum}}行第{{columnNum}}列员工不存在，请添加",
+            	"recordExistError":"第{{sheetNum}}个sheet的第{{rowNum}}行第{{columnNum}}列员工对应年月记录已存在，请勿重复添加",
+            	"typeError":"第{{sheetNum}}个sheet的第{{rowNum}}行第{{columnNum}}列合同信息更新时，类型不能更改",
+            	"isPreparedError":"第{{sheetNum}}个sheet的第{{rowNum}}行第{{columnNum}}列合同信息更新时，正式合同不可在转为预立合同",
+            	"statusError":"第{{sheetNum}}个sheet的第{{rowNum}}行合同信息更新时,已终止或已完成的合同不可更改",
+            	"salesmanAndconsultants":"第{{sheetNum}}个sheet的第{{rowNum}}行,销售和咨询必填一个",
+            	"up": "上传",
+            	"upError": "上传失败",
+            	"nonFile":"文件不能为空！",
+            	"numFile":"选择的文件数量不能大于1！",
+            	"handleError":"处理出错",
+            	"handleSucc":"处理成功"
             },
             "serialNum": "合同编号",
             "name": "合同名称",

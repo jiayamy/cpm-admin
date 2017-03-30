@@ -1,10 +1,11 @@
 package com.wondertek.cpm.repository;
 
-import com.wondertek.cpm.domain.ContractCost;
-
-import org.springframework.data.jpa.repository.*;
-
 import java.util.List;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+
+import com.wondertek.cpm.domain.ContractCost;
 
 /**
  * Spring Data JPA repository for the ContractCost entity.
@@ -22,4 +23,7 @@ public interface ContractCostRepository extends JpaRepository<ContractCost,Long>
 	
 	@Query(" from ContractCost where contractId = ?1 and type = ?2 and status = 1")
 	List<ContractCost> findByContractIdAndType(Long contractId, Integer type);
+	
+	@Query(" from ContractCost where deptId = ?1 and type = ?2 and contractId = ?3 and costDay = ?4 and status = 1")
+	ContractCost findByDeptIdAndTypeAndContractIdAndCostDay(Long deptId, Integer type, Long contractId, Long costDay);
 }

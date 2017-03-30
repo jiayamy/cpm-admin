@@ -5,7 +5,7 @@
 		<div class="row form-horizontal">
 			<div class="form-group">
 				<div class="col-sm-6">
-					<input type="file" nv-file-select name="file" ngf-max-size="20MB" ngf-min-height="100" accept="application/msexcel">
+					<input type="file" nv-file-select name="file" ngf-max-size="20MB" ngf-min-height="100" accept="application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
 				</div>
 			</div>
 		</div>
@@ -17,5 +17,8 @@
     </button>
 	<button type="submit" class="btn btn-primary" ng-click="vm.upload()">
 		<span class="glyphicon glyphicon-open"></span>&nbsp;<span data-translate="entity.action.upload">Upload</span>
+	</button>
+	<button type="button" class="btn btn-primary" ng-click="vm.downloadTpl()">
+		<span class="glyphicon glyphicon-save"></span>&nbsp;<span data-translate="entity.action.downloadTpl">Download</span>
 	</button>
 </form>

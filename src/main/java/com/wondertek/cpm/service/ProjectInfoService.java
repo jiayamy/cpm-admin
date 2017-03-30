@@ -205,14 +205,14 @@ public class ProjectInfoService {
 	 */
 	public int endProjectInfo(Long id) {
 		String updator = SecurityUtils.getCurrentUserLogin();
-		//保存记录
-		ProjectFinishInfo projectFinishInfo = new ProjectFinishInfo();
-		projectFinishInfo.setCreateTime(ZonedDateTime.now());
-		projectFinishInfo.setCreator(updator);
-		projectFinishInfo.setFinishRate(100d);
-		projectFinishInfo.setId(null);
-		projectFinishInfo.setProjectId(id);
-		projectFinishInfoRepository.save(projectFinishInfo);
+//		//保存记录
+//		ProjectFinishInfo projectFinishInfo = new ProjectFinishInfo();
+//		projectFinishInfo.setCreateTime(ZonedDateTime.now());
+//		projectFinishInfo.setCreator(updator);
+//		projectFinishInfo.setFinishRate(100d);
+//		projectFinishInfo.setId(null);
+//		projectFinishInfo.setProjectId(id);
+//		projectFinishInfoRepository.save(projectFinishInfo);
 		
 		//更新项目人员的离开日期
 		long leaveDay = StringUtil.nullToLong(DateUtil.formatDate(DateUtil.DATE_YYYYMMDD_PATTERN, new Date()));

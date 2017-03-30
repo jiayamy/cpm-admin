@@ -411,6 +411,35 @@
                 });
             }]
         })
+        .state('contract-info.import', {
+            parent: 'contract-info',
+            url: '/upload',
+            data: {
+                authorities: ['ROLE_CONTRACT_INFO'],
+            },
+            views: {
+                'content@': {
+                    templateUrl: 'app/contract/contract-info/contract-info-import.html',
+                    controller: 'ContractInfoImportController',
+                    controllerAs: 'vm'
+                }
+            },
+            resolve: {
+            	translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
+                    $translatePartialLoader.addPart('contractInfo');
+                    $translatePartialLoader.addPart('global');
+                    return $translate.refresh();
+                }],
+                previousState: ["$state", function ($state) {
+                	var currentStateData = {
+            			name: $state.current.name || 'contract-info',
+            			params: $state.params,
+            			url: $state.href($state.current.name, $state.params)
+                	};
+                	return currentStateData;
+	            }]
+            }
+        })
         ;
     }
 
