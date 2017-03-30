@@ -4,6 +4,7 @@
             "home": {
                 "title": "合同人员信息",
                 "createLabel": "新建",
+                "importLabel": "导入",
                 "createOrEditLabel": "合同人员信息"
             },
             "created": "新增成功",

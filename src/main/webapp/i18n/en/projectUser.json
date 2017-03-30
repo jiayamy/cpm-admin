@@ -4,6 +4,7 @@
             "home": {
                 "title": "Project User",
                 "createLabel": "Create New",
+                "export": "export",
                 "createOrEditLabel": "Project User"
             },
             "created": "create success",

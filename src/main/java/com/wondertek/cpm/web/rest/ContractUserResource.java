@@ -1,13 +1,25 @@
 package com.wondertek.cpm.web.rest;
 
+import java.io.IOException;
 import java.net.URISyntaxException;
+import java.text.SimpleDateFormat;
 import java.time.ZonedDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
 import javax.inject.Inject;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
+import org.apache.poi.hssf.usermodel.HSSFDataFormat;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFCellStyle;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -26,11 +38,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.codahale.metrics.annotation.Timed;
+import com.wondertek.cpm.ExcelUtil;
+import com.wondertek.cpm.ExcelWrite;
 import com.wondertek.cpm.config.DateUtil;
 import com.wondertek.cpm.config.StringUtil;
 import com.wondertek.cpm.domain.ContractInfo;
 import com.wondertek.cpm.domain.ContractUser;
+import com.wondertek.cpm.domain.ProjectUser;
 import com.wondertek.cpm.domain.vo.ContractUserVo;
+import com.wondertek.cpm.domain.vo.ProjectUserVo;
 import com.wondertek.cpm.repository.ContractInfoRepository;
 import com.wondertek.cpm.security.AuthoritiesConstants;
 import com.wondertek.cpm.security.SecurityUtils;
@@ -192,5 +208,116 @@ public class ContractUserResource {
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
 
+    @GetMapping("/contract-users/exportXls")
+    @Timed
+    @Secured(AuthoritiesConstants.ROLE_PROJECT_USER)
+    public void exportXls(
+	    		HttpServletRequest request, HttpServletResponse response,
+	    		@RequestParam(value="contractId",required = false) Long contractId,
+	    		@RequestParam(value="userId",required = false) Long userId
+    		) throws IOException{
+    	log.debug(SecurityUtils.getCurrentUserLogin()+" REST request to exportXls : contractId:{},userId:{}",contractId,userId);
+    	ContractUser searchParams = new ContractUser();
+        searchParams.setContractId(contractId);
+        searchParams.setUserId(userId);
+        List<ContractUserVo> list = contractUserService.getContractUserList(searchParams);
+    	//拼接sheet数据
+    	//标题
+    	String[] heads = new String[]{
+    			"合同编号",
+    			"合同名称",
+    			"员工",
+    			"部门",
+    			"加盟日",
+    			"离开日"
+    	};
+    	Date date = new Date();
+    	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+    	String now = sdf.format(date);
+    	String fileName = "合同人员信息_"+now+".xlsx";
+    	//写入sheet
+    	ServletOutputStream outputStream = response.getOutputStream();
+    	response.setHeader("Content-Disposition","attachment;filename=" + ExcelUtil.getExportName(request, fileName));
+    	response.setContentType("application/x-msdownload");
+    	response.setCharacterEncoding("UTF-8");
+    	ExcelWrite excelWrite = new ExcelWrite();
+    	//写入标题
+    	excelWrite.createSheetTitle("咨询", 1, heads);
+    	//写入数据
+    	if(list != null){
+    		handleSheetData(list,2,excelWrite);
+    	}
+    	excelWrite.close(outputStream);
+    }
 
+	private void handleSheetData(List<ContractUserVo> list, int startRow, ExcelWrite excelWrite) {
+		Integer[] cellType = new Integer[]{
+    			Cell.CELL_TYPE_STRING,
+    			Cell.CELL_TYPE_STRING,
+    			Cell.CELL_TYPE_STRING,
+    			Cell.CELL_TYPE_STRING,
+    			Cell.CELL_TYPE_STRING,
+    			Cell.CELL_TYPE_STRING,
+    			Cell.CELL_TYPE_STRING
+    	};
+    	XSSFSheet sheet = excelWrite.getCurrentSheet();
+    	XSSFWorkbook wb = excelWrite.getXSSFWorkbook();
+		XSSFRow row = null;
+		XSSFCell cell = null;
+		int i = -1;
+		int j = 0;
+		//百分比格式
+		XSSFCellStyle cellStyle = wb.createCellStyle();  
+		cellStyle.setDataFormat(HSSFDataFormat.getBuiltinFormat("0.00%")); 
+		//数据
+		for(ContractUserVo vo : list){
+			i++;
+			row = sheet.createRow(i + startRow-1);
+			
+			j = 0;
+			cell = row.createCell(j,cellType[j]);
+			if(vo.getContractNum() == null){
+				cell.setCellValue("");
+			}else{
+				cell.setCellValue(vo.getContractNum());
+			}
+			j++;
+			cell = row.createCell(j,cellType[j]);
+			if(vo.getContractName() == null){
+				cell.setCellValue("");
+			}else{
+				cell.setCellValue(vo.getContractName());
+			}
+			j++;
+			cell = row.createCell(j,cellType[j]);
+			if(vo.getUserName() == null){
+				cell.setCellValue("");
+			}else{
+				cell.setCellValue(vo.getUserName());
+			}
+			j++;
+			cell = row.createCell(j,cellType[j]);
+			if(vo.getDept() == null){
+				cell.setCellValue("");
+			}else{
+				cell.setCellValue(vo.getDept());
+			}
+			j++;
+			cell = row.createCell(j,cellType[j]);
+			if(vo.getJoinDay() == null){
+				cell.setCellValue("");
+			}else{
+				cell.setCellValue(vo.getJoinDay());
+			}
+			j++;
+			cell = row.createCell(j,cellType[j]);
+			if(vo.getLeaveDay() == null){
+				cell.setCellValue("");
+			}else{
+				cell.setCellValue(vo.getLeaveDay());
+			}
+			j++;
+		}
+		
+	}
 }

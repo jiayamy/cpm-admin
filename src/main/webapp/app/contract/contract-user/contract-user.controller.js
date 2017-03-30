@@ -22,7 +22,7 @@
         vm.searchQuery.contractId = pagingParams.contractId;
         vm.searchQuery.userId = pagingParams.userId;
         vm.searchQuery.userName = pagingParams.userName;
-        
+        vm.exportXls = exportXls;
         if (!vm.searchQuery.contractId && !vm.searchQuery.userId){
         	vm.haveSearch = null;
         }else{
@@ -115,7 +115,33 @@
             vm.haveSearch = true;
             vm.transition();
         }
-
+        
+        function exportXls(){
+        	var url = "api/contract-users/exportXls";
+        	var c = 0;
+        	var contractId = vm.searchQuery.contractId && vm.searchQuery.contractId.key? vm.searchQuery.contractId.key : vm.searchQuery.contractId;
+        	var userId = vm.searchQuery.userId;
+			if(contractId){
+				if(c == 0){
+					c++;
+					url += "?";
+				}else{
+					url += "&";
+				}
+				url += "contractId="+encodeURI(contractId);
+			}
+			if(userId){
+				if(c == 0){
+					c++;
+					url += "?";
+				}else{
+					url += "&";
+				}
+				url += "userId="+encodeURI(userId);
+			}
+        	window.open(url);
+        }
+        
         function clear() {
             vm.links = null;
             vm.page = 1;

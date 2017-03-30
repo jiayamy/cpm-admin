@@ -4,6 +4,7 @@
             "home": {
                 "title": "项目人员信息",
                 "createLabel": "新增",
+                "export": "导出",
                 "createOrEditLabel": "项目人员信息"
             },
             "created": "新增成功",

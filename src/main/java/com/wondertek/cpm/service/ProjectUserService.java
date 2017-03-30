@@ -135,7 +135,6 @@ public class ProjectUserService {
     	}
     	return null;
 	}
-
 	public boolean checkUserExist(ProjectUser projectUser) {
 		List<ProjectUser> list = projectUserRepository.findByUserId(projectUser.getUserId(),projectUser.getProjectId());
 		if(list != null){
@@ -156,5 +155,17 @@ public class ProjectUserService {
 			}
 		}
 		return false;
+	}
+
+	public List<ProjectUserVo> getProjectUserList(ProjectUser searchParams) {
+		  log.debug("Request to get all ProjectUsers");
+	        List<Object[]> objs = userRepository.findUserInfoByLogin(SecurityUtils.getCurrentUserLogin());
+	    	if(objs != null && !objs.isEmpty()){
+	    		Object[] o = objs.get(0);
+	    		User user = (User) o[0];
+	    		DeptInfo deptInfo = (DeptInfo) o[1];
+	    		return projectUserDao.getProjectUserList(searchParams,user,deptInfo);
+	    	}
+	    	return null;
 	}
 }

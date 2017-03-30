@@ -166,4 +166,18 @@ public class ContractUserService {
 		
 		return false;
 	}
+
+	public List<ContractUserVo> getContractUserList(ContractUser contractUser) {
+		log.debug("Request to get all ContractUsers");
+    	List<Object[]> objs = userRepository.findUserInfoByLogin(SecurityUtils.getCurrentUserLogin());
+    	if(objs != null && !objs.isEmpty()){
+    		Object[] o = objs.get(0);
+    		User user = (User) o[0];
+    		DeptInfo deptInfo = (DeptInfo) o[1];
+    		
+    		return contractUserDao.getUserPage(contractUser,user,deptInfo);
+    	}
+    	
+    	return null;
+	}
 }

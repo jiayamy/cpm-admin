@@ -4,6 +4,7 @@
             "home": {
                 "title": "Contract Users",
                 "createLabel": "Create a new Contract User",
+                "importLabel": "Import Excel",
                 "createOrEditLabel": "Create or edit a Contract User"
             },
             "created": "A Contract User is created",
