@@ -62,5 +62,13 @@
             	});
         	}
         }
+        vm.downloadTpl = downloadTpl;
+        function downloadTpl(){
+        	var url = "api/download-file/downloadXlsxTpl";
+			
+        	url += "?filePath="+encodeURI("importTpl/contractCostImportTpl.xlsx");
+        	
+        	window.open(url);
+        }
     }
 })();

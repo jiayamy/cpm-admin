@@ -124,4 +124,23 @@ public class ProjectCostService {
     	}
     	return null;
 	}
+	
+	public void saveOrUpdateUploadRecord(List<ProjectCost> projectCosts){
+		if(projectCosts != null){
+			ProjectCost oldCost = null;
+			for(ProjectCost cost : projectCosts){
+				oldCost = projectCostRepository.findOneByProjectIdAndCostDayAndType(cost.getProjectId(), cost.getCostDay(), cost.getType());
+				if(oldCost != null){
+					cost.setId(oldCost.getId());
+					cost.setCreator(oldCost.getCreator());
+					cost.setCreateTime(oldCost.getCreateTime());
+					cost.setUpdateTime(ZonedDateTime.now());
+				}else{
+					cost.setCreateTime(ZonedDateTime.now());
+					cost.setUpdateTime(cost.getCreateTime());
+				}
+			}
+			projectCostRepository.save(projectCosts);
+		}
+	}
 }
