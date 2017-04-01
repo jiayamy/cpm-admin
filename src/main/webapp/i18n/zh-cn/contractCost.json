@@ -5,7 +5,8 @@
                 "title": "合同报销",
                 "timesheetTitle":"工时成本",
                 "createLabel": "新增",
-                "createOrEditLabel": "合同报销信息"
+                "createOrEditLabel": "合同报销信息",
+                "import":"导入"
             },
             "created": "创建成功",
             "updated": "修改成功",
@@ -28,6 +29,18 @@
             	"statue2Error":"状态为删除的数据不可编辑",
             	"dataError":"内部采购单数据错误",
             	"contractInfoError":"合同已完成或者已终止"
+            },
+            "upload":{
+            	"requiredError":"上传文件数据有误，请重新核对",
+            	"dataError":"第{{sheetNum}}个sheet的第{{rowNum}}行第{{columnNum}}列数据存在问题",
+            	"serialNumError":"第{{sheetNum}}个sheet的第{{rowNum}}行第{{columnNum}}列合同不存在，请添加",
+            	"recordExistError":"第{{sheetNum}}个sheet的第{{rowNum}}行第{{columnNum}}列合同报销信息已存在，请勿重复添加",
+            	"typeError":"第{{sheetNum}}个sheet的第{{rowNum}}行第{{columnNum}}列成本类型为工时，不能手动操作",
+            	"statusError":"第{{sheetNum}}个sheet的第{{rowNum}}行合同成本,已终止或已完成的合同不可更改",
+            	"nonFile":"文件不能为空！",
+            	"numFile":"选择的文件数量不能大于1！",
+            	"handleError":"处理出错",
+            	"handleSucc":"处理成功"
             },
             "contractId":"合同编号",
             "serialNum": "合同编号",

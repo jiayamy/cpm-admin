@@ -1,0 +1,24 @@
+<h2><span data-translate="cpmApp.projectCost.home.import">Import Excel</span></h2>
+<hr>
+<form name="editForm" role="form" novalidate>
+	<div class="container-fluid">
+		<div class="row form-horizontal">
+			<div class="form-group">
+				<div class="col-sm-6">
+					<input type="file" nv-file-select name="file" ngf-max-size="20MB" ngf-min-height="100" accept="application/msexcel">
+				</div>
+			</div>
+		</div>
+	</div>
+	<jhi-alert></jhi-alert>
+	<jhi-alert-error></jhi-alert-error>
+	<button type="button" class="btn btn-info" ui-sref="{{ vm.previousState }}">
+    	<span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span data-translate="entity.action.back">Back</span>
+    </button>
+	<button type="submit" class="btn btn-primary" ng-click="vm.upload()">
+		<span class="glyphicon glyphicon-open"></span>&nbsp;<span data-translate="entity.action.upload">Upload</span>
+	</button>
+	<button type="button" class="btn btn-primary" ng-click="vm.downloadTpl()">
+		<span class="glyphicon glyphicon-save"></span>&nbsp;<span data-translate="entity.action.downloadTpl">Download</span>
+	</button>
+</form>

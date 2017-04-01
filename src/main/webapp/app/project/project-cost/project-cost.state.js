@@ -314,6 +314,35 @@
                     $state.go('^');
                 });
             }]
+        })
+        .state('project-cost.upload', {
+            parent: 'project-cost',
+            url: '/upload',
+            data: {
+                authorities: ['ROLE_PROJECT_COST'],
+            },
+            views: {
+                'content@': {
+                    templateUrl: 'app/project/project-cost/project-cost-upload.html',
+                    controller: 'ProjectCostUploadController',
+                    controllerAs: 'vm'
+                }
+            },
+            resolve: {
+            	translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
+                    $translatePartialLoader.addPart('projectCost');
+                    $translatePartialLoader.addPart('global');
+                    return $translate.refresh();
+                }],
+                previousState: ["$state", function ($state) {
+                	var currentStateData = {
+            			name: $state.current.name || 'project-cost',
+            			params: $state.params,
+            			url: $state.href($state.current.name, $state.params)
+                	};
+                	return currentStateData;
+	            }]
+            }
         });
     }
 

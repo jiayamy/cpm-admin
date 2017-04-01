@@ -5,7 +5,8 @@
                 "title": "Contract Cost",
                 "timesheetTitle":"TimeSheet",
                 "createLabel": "Create New",
-                "createOrEditLabel": "Contract Cost"
+                "createOrEditLabel": "Contract Cost",
+                "import":"Import Excel"
             },
             "created": "create Success",
             "updated": "update Success!",
@@ -26,6 +27,18 @@
             	"projectIdError":"projectIdError",
             	"type1Error":"type-humanCost can't be deleted",
             	"statue2Error":"status-deleted can't be deleted again"
+            },
+            "upload":{
+            	"requiredError":"upload files's data error, please confirm again",
+            	"dataError":"No.{{sheetNum}}sheet's No.{{rowNum}}row's No.{{columnNum}}column's data error",
+            	"serialNumError":"No.{{sheetNum}}sheet's No.{{rowNum}}row's No.{{columnNum}}column's contract not exist，please add",
+            	"recordExistError":"No.{{sheetNum}}sheet's No.{{rowNum}}row's No.{{columnNum}}column's contract cost record already exist",
+            	"typeError":"No.{{sheetNum}}sheet's No.{{rowNum}}row's No.{{columnNum}}column's cost type,When humancost,Type cannot be modified manually",
+            	"statusError":"No.{{sheetNum}}sheet's No.{{rowNum}}row's No.{{columnNum}}column's contract cost,The deleted or the completed Contract cannot be modified",
+            	"nonFile":"no Files！",
+            	"numFile":"Files uploaded should be less than 1！",
+            	"handleError":"Handle Error",
+            	"handleSucc":"Handle Success"
             },
             "contractId": "Contract Id",
             "serialNum": "SerialNum",

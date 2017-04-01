@@ -5,7 +5,8 @@
                 "title": "项目报销",
                 "timesheetTitle": "工时成本",
                 "createLabel": "新增",
-                "createOrEditLabel": "项目报销信息"
+                "createOrEditLabel": "项目报销信息",
+                "import": "导入Excel"
             },
             "created": "新增成功",
             "updated": "修改成本",
@@ -27,6 +28,18 @@
             	"type1Error":"类型为工时的数据不可编辑",
             	"statue2Error":"状态为删除的数据不可编辑",
             	"projectError" : "项目已经终止或者结项"
+            },
+            "upload":{
+            	"requiredError":"上传文件数据有误，请重新核对",
+            	"dataError":"第{{sheetNum}}个sheet的第{{rowNum}}行第{{columnNum}}列数据存在问题",
+            	"serialNumError":"第{{sheetNum}}个sheet的第{{rowNum}}行第{{columnNum}}列项目不存在，请添加",
+            	"recordExistError":"第{{sheetNum}}个sheet的第{{rowNum}}行第{{columnNum}}列项目报销信息已存在，请勿重复添加",
+            	"typeError":"第{{sheetNum}}个sheet的第{{rowNum}}行第{{columnNum}}列成本类型为工时，不能手动操作",
+            	"statusError":"第{{sheetNum}}个sheet的第{{rowNum}}行项目成本,已终止或已完成的项目不可更改",
+            	"nonFile":"文件不能为空！",
+            	"numFile":"选择的文件数量不能大于1！",
+            	"handleError":"处理出错",
+            	"handleSucc":"处理成功"
             },
             "projectId": "项目编号",
             "projectName":"项目名称",
