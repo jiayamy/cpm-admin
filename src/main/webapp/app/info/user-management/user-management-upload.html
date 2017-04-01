@@ -59,7 +59,7 @@
 			      			<div class="wd-valid-file-row">
 			      				<span>文件:{{f.name}} - 大小: {{f.size}}B</span>
 								<span class="wd-progress" ng-show="f.upload != null">
-									<div style="width:{{f.progress}}%">{{f.progress}}%</div>
+									<div ng-style="f.progreeStyle">{{f.progress}}%</div>
 								</span>
 								<button class="button" ng-click="restart(f)"
 			        				ng-show="!f.uploadFinished && f.upload == null">
