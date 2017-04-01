@@ -173,7 +173,6 @@
             <groupId>commons-fileupload</groupId>
             <artifactId>commons-fileupload</artifactId>
             <version>${commons-fileupload.version}</version>
-            <classifier>sources</classifier>
         </dependency>
         <dependency>
             <groupId>commons-io</groupId>

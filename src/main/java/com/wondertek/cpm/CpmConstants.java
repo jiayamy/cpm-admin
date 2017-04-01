@@ -30,4 +30,6 @@ public class CpmConstants {
 	public static final Integer HOLIDAY_WEEKEND_TYPE = 2;	//正常假日
 	public static final Integer HOLIDAY_ANNUAL_TYPE = 3;	//年假
 	public static final Integer HOLIDAY_NATIONAL_TYPE= 4;	//国家假日
+	
+	public static final String FILE_UPLOAD_SERVLET_BASE_PATH = "/nas/nas_cpm/upload/";
 }
