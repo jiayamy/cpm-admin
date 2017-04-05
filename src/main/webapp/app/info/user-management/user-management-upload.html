@@ -5,7 +5,98 @@
 		<div class="row form-horizontal">
 			<div class="form-group">
 				<div class="col-sm-6">
-					<input type="file" nv-file-select name="file" ngf-max-size="20MB" ngf-min-height="100" accept="application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
+					<div ngf-select ngf-drop ng-model="files" ngf-model-invalid="invalidFiles"
+		                ngf-multiple="true"
+		                ngf-pattern="'.xls,.xlsx'"
+		                ngf-accept="'.xls,.xlsx'"
+		                ng-disabled="false"
+		                ngf-capture="camera"
+		                ngf-duration="durationFn($file, $duration)"
+		                ngf-keep="keep"
+		                ngf-fix-orientation="false"
+		                ngf-max-files="5"
+		                ngf-ignore-invalid="false"
+		                ngf-run-all-validations="false"
+		                ngf-allow-dir="true"
+		                class="wd-selectfile-box" 
+		                ngf-drag-over-class="{accept:'dragover', reject:'dragover-err', pattern:'.xls,.xlsx'}"
+		                ngf-validate="{size: {max: '200MB', min: '1B'}}"
+		                ngf-drop-available="dropAvailable">选择
+              			<span ng-show="dropAvailable">或拖入</span>
+              			文件
+		            </div>
+				</div>
+		     	<div class="col-sm-6">
+		        	<div ngf-drop ng-model="files" ngf-model-invalid="invalidFiles"
+		          		ngf-model-options="{debounce:100}"
+		            	ngf-multiple="true"
+						ngf-pattern="'.xls,.xlsx'"
+						ngf-accept="'.xls,.xlsx'"
+		                ng-disabled="false"
+		                ngf-drag-over-class="{accept:'dragover', reject:'dragover-err', pattern:'.xls,.xlsx'}"
+		                ngf-validate="{size: {max: '200MB', min: '1B'}}"
+		                ngf-resize="{width: 1000, height: 1000, centerCrop: true}"
+		                ngf-keep="keep"
+		                ngf-enable-firefox-paste="true"
+		                ngf-fix-orientation="false"
+		                ngf-max-files="5"
+		                ngf-ignore-invalid="false"
+		                ngf-run-all-validations="false"
+		                ngf-allow-dir="true" class="wd-selectfile-box" ng-show="dropAvailable">
+		              	<span>复制或拖入文件</span>
+		         	</div>
+		    	</div>
+			</div>
+			<div class="form-group">
+				<div class="col-sm-12">
+					<ol style="clear:both;" class="wd-response">
+						<li class="wd-invalid-file" ng-repeat="f in invalidFiles">
+					 		<div>
+					 			<span>无效文件: {{f.name}} - 大小: {{f.size}}B</span>
+					   		</div>
+					   		<div>
+					   			<span>
+					   				&nbsp;&nbsp;&nbsp;
+					   				<span class="wd-handle-fail">{{f.invalidMsg}}</span>
+					   			</span>
+					   		</div>
+    					</li>
+				 		<li ng-repeat="f in files">
+			      			<div>
+			      				<span>文件:{{f.name}} - 大小: {{f.size}}B</span>
+			      			</div>
+			      			<div>
+			      				&nbsp;&nbsp;&nbsp;
+								<span class="wd-progress" ng-show="f.upload != null">
+									<div ng-style="f.progreeStyle">{{f.progress}}%</div>
+								</span>
+								<button class="button" ng-click="restart(f)"
+			        				ng-show="!f.uploadFinished && f.upload == null">
+			          				开始上传
+			        			</button>
+			        			<button class="button" ng-click="f.upload.abort();f.upload.aborted=true"
+			        				ng-show="!f.uploadFinished && f.upload != null && f.progress < 100 && !f.upload.aborted">
+			          				<span ng-show="!isResumeSupported">中断</span>
+			          				<span ng-show="isResumeSupported">暂停</span>
+			        			</button>
+			        			<button class="button" ng-click="upload(f, true);f.upload.aborted=false"
+			        				ng-show="!f.uploadFinished && isResumeSupported && f.upload != null && f.upload.aborted">
+			        				续传
+			        			</button>
+			        			<button class="button" ng-click="restart(f);f.upload.aborted=false"
+			        				ng-show="(!f.uploadFinished || !f.handling) && isResumeSupported && f.upload != null && (f.progress == 100 || f.upload.aborted)">
+			        				重新上传
+			        			</button>
+			      			</div>
+			      			<div>
+			        			<span ng-show="f.uploadFinished">
+			        				&nbsp;&nbsp;&nbsp;
+			        				<span class="wd-handle-succ" ng-show="!f.handleFail">{{f.handleMsg}}</span>
+			        				<span class="wd-handle-fail" ng-show="f.handleFail">{{f.handleMsg}}</span>
+			        			</span>
+			        		</div>
+			    		</li>
+			    	</ol>
 				</div>
 			</div>
 		</div>
@@ -15,7 +106,7 @@
 	<button type="button" class="btn btn-info" ui-sref="{{ vm.previousState }}">
     	<span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span data-translate="entity.action.back">Back</span>
     </button>
-	<button type="submit" class="btn btn-primary" ng-click="vm.upload()">
+	<button type="submit" class="btn btn-primary" ng-click="uploadAll()">
 		<span class="glyphicon glyphicon-open"></span>&nbsp;<span data-translate="entity.action.upload">Upload</span>
 	</button>
 	<button type="button" class="btn btn-primary" ng-click="vm.downloadTpl()">

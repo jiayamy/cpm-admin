@@ -91,8 +91,9 @@
             default:
                 if (httpResponse.data && httpResponse.data.message) {
                     addErrorAlert(httpResponse.data.message);
-                } else {
-                    addErrorAlert(angular.toJson(httpResponse));
+                } else if(httpResponse.config){//文件上传中断的时候会有这方面的提示
+                } else{
+                	addErrorAlert(angular.toJson(httpResponse));
                 }
             }
         });
