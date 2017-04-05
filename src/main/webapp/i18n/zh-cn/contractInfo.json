@@ -4,10 +4,11 @@
             "home": {
                 "title": "合同信息",
                 "createLabel": "新增",
-                "createOrEditLabel": "合同信息"
+                "createOrEditLabel": "合同信息",
+                "outsourcingUserInfos": "外包人员信息"
             },
             "created": "新建成功",
-            "updated": "更新成功",
+            "updated": "合同更新成功",
             "deleted": "删除成功",
             "delete": {
                 "question": "确定删除编号为{{ id }}的合同信息?",
@@ -77,6 +78,11 @@
             "createTime": "创建时间",
             "updator": "更新者",
             "updateTime": "更新时间"
+        },
+        "outsourcing":{
+        	"rank": "级别",
+        	"targetAmount": "目标数量",
+        	"offer": "报价"
         }
     }
 }

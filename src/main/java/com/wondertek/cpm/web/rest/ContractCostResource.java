@@ -74,7 +74,7 @@ public class ContractCostResource {
         if (contractInfo == null) {
         	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.contractReceive.save.dataError", "")).body(null);
 		}
-        if (contractInfo.getStatus() != ContractInfo.STATUS_VALIDABLE) {
+        if (contractInfo.getStatus().intValue() != ContractInfo.STATUS_VALIDABLE) {
         	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.contractReceive.save.contractInfoError", "")).body(null);
 		}
         if (contractCost.getType() == ContractCost.TYPE_HUMAN_COST) {

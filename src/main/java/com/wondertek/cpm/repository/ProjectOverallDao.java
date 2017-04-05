@@ -1,5 +1,7 @@
 package com.wondertek.cpm.repository;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -17,5 +19,8 @@ public interface ProjectOverallDao extends GenericDao<ProjectOverall, Long> {
 
 	public ProjectOverallVo getUserProjectOverall(Long id, User user,
 			DeptInfo deptInfo);
+
+	public List<ProjectOverallVo> getListByParams(User user, DeptInfo deptInfo,
+			ProjectOverall projectOverall);
 
 }

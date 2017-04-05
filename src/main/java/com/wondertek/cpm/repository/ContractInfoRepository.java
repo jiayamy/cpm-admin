@@ -1,11 +1,12 @@
 package com.wondertek.cpm.repository;
 
-import com.wondertek.cpm.domain.ContractInfo;
-
-import org.springframework.data.jpa.repository.*;
-
 import java.time.ZonedDateTime;
 import java.util.List;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+
+import com.wondertek.cpm.domain.ContractInfo;
 
 /**
  * Spring Data JPA repository for the ContractInfo entity.
@@ -20,4 +21,7 @@ public interface ContractInfoRepository extends JpaRepository<ContractInfo,Long>
 	
 	@Query(" from ContractInfo where status = ?1 or updateTime >= ?2")
 	List<ContractInfo> findByStatusOrEndTime(Integer status, ZonedDateTime endTime);
+	
+	@Query(" from ContractInfo where mark = ?1")
+	ContractInfo getOneByMark(String mark);
 }

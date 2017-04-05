@@ -1,0 +1,58 @@
+<div>
+    <h2><span data-translate="cpmApp.outsourcingUser.home.outsourcingUserInfos">Contract Budget</span> {{vm.outsourcingUser.serialNum}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <div class="form-horizontal">
+        <div class="form-group" >
+ 			<div class="col-sm-6">
+ 				<dl class="dl-horizontal jh-entity-details">
+  				<dt><span data-translate="cpmApp.outsourcingUser.serialNum">SerialNum</span></dt>
+			    <dd>
+			        <span>{{vm.outsourcingUser.serialNum}}</span>
+			    </dd> 
+			    <dt><span data-translate="cpmApp.outsourcingUser.contractName">Contract Name</span></dt>
+		        <dd>
+		            <span>{{vm.outsourcingUser.contractName}}</span>
+		        </dd>
+  				<dt><span data-translate="cpmApp.outsourcingUser.rank">Rank</span></dt>
+		        <dd>
+		            <span>{{vm.outsourcingUser.rank}}</span>
+		        </dd>
+        		<dt><span data-translate="cpmApp.outsourcingUser.targetAmount">Target Amount</span></dt>
+     			<dd>
+         			<span>{{vm.outsourcingUser.targetAmount}}</span>
+     			</dd>
+     			</dl>
+ 			</div>
+ 			<div class="col-sm-6">
+ 				<dl class="dl-horizontal jh-entity-details">
+		        <dt><span data-translate="cpmApp.outsourcingUser.offer">Offer</span></dt>
+		        <dd>
+		            <span>{{vm.outsourcingUser.offer}}</span>
+		        </dd>
+		        <dt><span data-translate="cpmApp.outsourcingUser.creator">Creator</span></dt>
+     			<dd>
+         			<span>{{vm.outsourcingUser.creator}}</span>
+     			</dd>
+     			<dt><span data-translate="cpmApp.outsourcingUser.createTime">CreateTime</span></dt>
+     			<dd>
+         			<span>{{vm.outsourcingUser.createTime | date:'medium'}}</span>
+     			</dd>
+		        <dt><span data-translate="cpmApp.outsourcingUser.updator">Updator</span></dt>
+     			<dd>
+         			<span>{{vm.outsourcingUser.updator}}</span>
+     			</dd>
+     			<dt><span data-translate="cpmApp.outsourcingUser.updateTime">UpdateTime</span></dt>
+     			<dd>
+         			<span>{{vm.outsourcingUser.updateTime | date:'medium'}}</span>
+     			</dd>
+     			</dl>
+ 			</div>
+ 		</div>
+ 	</div>
+	<button type="submit"
+	        ui-sref="{{ vm.previousState }}"
+	        class="btn btn-info">
+	    <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span data-translate="entity.action.back"> Back</span>
+	</button>
+</div>
