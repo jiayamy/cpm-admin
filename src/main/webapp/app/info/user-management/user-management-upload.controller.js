@@ -45,11 +45,9 @@
         			}
         			file.handleMsg = $translate.instant(data.msgKey, param);
         			file.handleFail = true;
-//        			AlertService.error(data.msgKey,param);
         		}else if(data.msgKey){
         			file.handleMsg = $translate.instant(data.msgKey);
         			file.handleFail = false;
-//        			AlertService.success(data.msgKey);
         		}
         	}).error(function(data){
         		file.handling = false;
@@ -64,11 +62,9 @@
         			}
         			file.handleMsg = $translate.instant(data.msgKey, param);
         			file.handleFail = true;
-//        			AlertService.error(data.msgKey,param);
         		}else if(data.msgKey){
         			file.handleMsg = $translate.instant(data.msgKey);
         			file.handleFail = false;
-//        			AlertService.success(data.msgKey);
         		}
         	});
         }

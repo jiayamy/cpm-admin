@@ -5,6 +5,7 @@
 	text-align: center;
 	padding: 50px 10px;
 	margin-left: 10px;
+	font-size:15px;
 }
 
 .wd-selectfile-box.dragover {
@@ -14,23 +15,26 @@
 .wd-selectfile-box.dragover-err {
     border: 5px dashed red;
 }
-.wd-progress {
+.wd-response {
+	font-size:15px;
+}
+.wd-response .wd-progress {
     display: inline-block;
     width: 100px;
     border: 3px groove #CCC;
 }
 
-.wd-progress div {
+.wd-response .wd-progress div {
     font-size: smaller;
     background: orange;
     width: 0;
 }
-form .wd-progress {
+form .wd-response .wd-progress {
     line-height: 15px;
 }
-.wd-handle-fail{
+.wd-response .wd-handle-fail{
 	color:red;
 }
-.wd-handle-succ{
+.wd-response .wd-handle-succ{
 	color:green;
 }
