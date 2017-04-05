@@ -44,13 +44,23 @@
 			</div>
 			<div class="form-group">
 				<div class="col-sm-6">
-					<label class="control-label" data-translate="cpmApp.userCost.socialSecurityFund" for="field_socialSecurityFund">Social Security Fund</label>
-            		<input type="number" class="form-control" name="socialSecurityFund" id="field_socialSecurityFund" ng-model="vm.userCost.socialSecurityFund"
+					<label class="control-label" data-translate="cpmApp.userCost.socialSecurity" for="field_socialSecurity">Social Security</label>
+            		<input type="number" class="form-control" name="socialSecurity" id="field_socialSecurity" ng-model="vm.userCost.socialSecurity"
             			   step="0.01" min="0" ng-required="true"/>
-            		<div ng-show="myForm.socialSecurityFund.$dirty&&myForm.socialSecurityFund.$error.min" class="alert alert-danger help-block"> 
+            		<div ng-show="myForm.socialSecurity.$dirty&&myForm.socialSecurity.$error.min" class="alert alert-danger help-block"> 
                 		最小值为0
            			</div>
 				</div>
+				<div class="col-sm-6">
+					<label class="control-label" data-translate="cpmApp.userCost.fund" for="field_fund">Fund</label>
+            		<input type="number" class="form-control" name="fund" id="field_fund" ng-model="vm.userCost.fund"
+            			   step="0.01" min="0" ng-required="true"/>
+            		<div ng-show="myForm.fund.$dirty&&myForm.fund.$error.min" class="alert alert-danger help-block"> 
+                		最小值为0
+           			</div>
+				</div>
+			</div>
+			<div class="form-group">
 				<div class="col-sm-6">
 					<label class="control-label" data-translate="cpmApp.userCost.otherExpense" for="field_otherExpense">Other Expense</label>
             		<input type="number" class="form-control" name="otherExpense" id="field_otherExpense" ng-model="vm.userCost.otherExpense"

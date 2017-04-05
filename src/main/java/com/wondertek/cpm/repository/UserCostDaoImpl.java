@@ -44,7 +44,7 @@ public class UserCostDaoImpl extends GenericDaoImpl<UserCost, Long> implements U
 		StringBuffer orderSql = new StringBuffer();
 		
 		querySql.append("select wuc.id,wuc.user_id,wuc.user_name,wuc.cost_month,wuc.internal_cost,wuc.external_cost,wuc.status_");
-		querySql.append(",wuc.updator_,wuc.update_time,wuc.sal_,wuc.social_security_fund,wuc.other_expense,ju.serial_num");
+		querySql.append(",wuc.updator_,wuc.update_time,wuc.sal_,wuc.social_security,wuc.fund_,wuc.social_security_fund,wuc.other_expense,ju.serial_num");
 		
 		countSql.append("select count(wuc.id)");
 		
@@ -118,9 +118,11 @@ public class UserCostDaoImpl extends GenericDaoImpl<UserCost, Long> implements U
 		vo.setUpdator(StringUtil.null2Str(o[7]));
 		vo.setUpdateTime(DateUtil.getZonedDateTime((Timestamp) o[8]));
 		vo.setSal(StringUtil.nullToDouble(o[9]));
-		vo.setSocialSecurityFund(StringUtil.nullToDouble(o[10]));
-		vo.setOtherExpense(StringUtil.nullToDouble(o[11]));
-		vo.setSerialNum(StringUtil.null2Str(o[12]));
+		vo.setSocialSecurity(StringUtil.nullToDouble(o[10]));
+		vo.setFund(StringUtil.nullToDouble(o[11]));
+		vo.setSocialSecurityFund(StringUtil.nullToDouble(o[12]));
+		vo.setOtherExpense(StringUtil.nullToDouble(o[13]));
+		vo.setSerialNum(StringUtil.null2Str(o[14]));
 		return vo;
 	}
 

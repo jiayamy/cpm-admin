@@ -1,5 +1,8 @@
 package com.wondertek.cpm;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
@@ -108,8 +111,6 @@ public class ExcelUtil {
 	
 	/**
      * 读取 Excel .xlsx,.xls
-     * @param file
-     * @return
      * @throws IOException
      */
     public static List<ExcelValue> readExcel(MultipartFile file, int startNum, int maxSheet, int maxCell) throws IOException {
@@ -130,7 +131,24 @@ public class ExcelUtil {
         }
         return null;
     }
-
+    public static List<ExcelValue> readExcel(File file, int startNum, int maxSheet, int maxCell) throws IOException {
+        if(file == null || file.getName() == null
+        		|| ExcelUtil.EMPTY.equals(file.getName().trim())){
+            return null;
+        }else{
+            String postfix = ExcelUtil.getPostfix(file.getName());
+            if(!ExcelUtil.EMPTY.equals(postfix)){
+                if(ExcelUtil.OFFICE_EXCEL_2003_POSTFIX.equals(postfix)){
+                    return readXls(file,startNum,maxSheet,maxCell);
+                }else if(ExcelUtil.OFFICE_EXCEL_2010_POSTFIX.equals(postfix)){
+                    return readXlsx(file,startNum,maxSheet,maxCell);
+                }else{
+                    return null;
+                }
+            }
+        }
+        return null;
+    }
     /**
      * 读取Excel .xlsx
      * @param file
@@ -138,15 +156,31 @@ public class ExcelUtil {
      */
     public static List<ExcelValue> readXlsx(MultipartFile file, int startNum, int maxSheet, int maxCell){
     	log.debug("readXlsx start for {}:",file.getOriginalFilename());
-        List<ExcelValue> list = new ArrayList<ExcelValue>();
         InputStream input = null;
+    	try {
+			input = file.getInputStream();
+		} catch (IOException e) {
+			return null;
+		}
+    	return readXlsx(input,startNum,maxSheet,maxCell);
+    }
+    public static List<ExcelValue> readXlsx(File file, int startNum, int maxSheet, int maxCell){
+    	log.debug("readXlsx start for {}:",file.getName());
+    	InputStream input = null;
+    	try {
+			input = new FileInputStream(file);
+		} catch (FileNotFoundException e) {
+			return null;
+		}
+    	return readXlsx(input,startNum,maxSheet,maxCell);
+    }
+    public static List<ExcelValue> readXlsx(InputStream input, int startNum, int maxSheet, int maxCell){
+        List<ExcelValue> list = new ArrayList<ExcelValue>();
         XSSFWorkbook wb = null;
         ArrayList<Object> rowList = null;
         int totalRows = 0;	//总行数
         int totalCells = 0;	//总列数
         try {
-        	// IO流读取文件
-            input = file.getInputStream();
             // 创建文档
             wb = new XSSFWorkbook(input);
             //读取sheet(页)
@@ -199,7 +233,6 @@ public class ExcelUtil {
     	list = null;
         return null;
     }
-
     /**
      * 读取 Excel .xls
      * @param file
@@ -207,15 +240,33 @@ public class ExcelUtil {
      */
     public static List<ExcelValue> readXls(MultipartFile file,int startNum, int maxSheet, int maxCell){
     	log.debug("Upload Excel readXls start for {}:",file.getOriginalFilename());
-        List<ExcelValue> list = new ArrayList<ExcelValue>();
         // IO流读取文件
         InputStream input = null;
+		try {
+			input = file.getInputStream();
+		} catch (IOException e) {
+			return null;
+		}
+        return readXls(input,startNum,maxSheet,maxCell);
+    }
+    public static List<ExcelValue> readXls(File file,int startNum, int maxSheet, int maxCell){
+    	log.debug("Upload Excel readXls start for {}:",file.getName());
+    	InputStream input = null;
+		try {
+			input = new FileInputStream(file);
+		} catch (FileNotFoundException e) {
+			return null;
+		}
+    	return readXls(input,startNum,maxSheet,maxCell);
+    }
+    public static List<ExcelValue> readXls(InputStream input,int startNum, int maxSheet, int maxCell){
+        List<ExcelValue> list = new ArrayList<ExcelValue>();
+        // IO流读取文件
         HSSFWorkbook wb = null;
         ArrayList<Object> rowList = null;
         int totalRows = 0;	//总行数
         int totalCells = 0;	//总列数
         try {
-            input = file.getInputStream();
             // 创建文档
             wb = new HSSFWorkbook(input);
             //读取sheet(页)

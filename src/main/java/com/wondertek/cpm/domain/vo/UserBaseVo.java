@@ -25,12 +25,17 @@ public class UserBaseVo implements Serializable {
      * 员工工号
      */
     private String serialNum;
+    /**
+     * 员工部门
+     */
+    private Long deptId;
     
 	public UserBaseVo(User user) {
 		this.id = user.getId();
 		this.lastName = user.getLastName();
 		this.grade = user.getGrade();
 		this.serialNum = user.getSerialNum();
+		this.deptId = user.getDeptId();
 	}
 	public Long getId() {
 		return id;
@@ -55,6 +60,11 @@ public class UserBaseVo implements Serializable {
 	}
 	public void setSerialNum(String serialNum) {
 		this.serialNum = serialNum;
+	}
+	public Long getDeptId() {
+		return deptId;
+	}
+	public void setDeptId(Long deptId) {
+		this.deptId = deptId;
 	}   
-    
 }

@@ -254,4 +254,19 @@ public class DeptInfoService {
 		}
 		return deptInfos;
 	}
+	/**
+	 * 获取所有部门信息
+	 * @return
+	 */
+	@Transactional(readOnly = true)
+	public Map<Long,DeptInfo> getAllDeptInfosMap(){
+		List<DeptInfo> deptInfos = deptInfoRepository.findAll();
+		Map<Long,DeptInfo> returnMap = new HashMap<Long,DeptInfo>();
+		if(deptInfos != null){
+			for(DeptInfo info : deptInfos){
+				returnMap.put(info.getId(), info);
+			}
+		}
+		return returnMap;
+	}
 }

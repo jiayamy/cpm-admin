@@ -12,6 +12,12 @@
         
         vm.contractInfo = entity;
         vm.outsourcingUser = entity;
+        //预立合同可以修改合同编号
+        vm.serialNumDisabled = true;
+        if(vm.contractInfo.id == undefined || vm.contractInfo.isPrepared == true){
+        	vm.serialNumDisabled = false;
+        }
+        
         vm.datePickerOpenStatus = {};
         vm.openCalendar = openCalendar;
         vm.save = save;
@@ -110,7 +116,20 @@
 	        	}
         	); 
         }
-
+        vm.serialNumChanged = serialNumChanged;
+        function serialNumChanged(){
+        	if(vm.contractInfo.serialNum == undefined){
+        		vm.contractInfo.isPrepared = false;
+        	}else{
+        		var s = vm.contractInfo.serialNum.toUpperCase();
+        		if(s.substr(0,2) == "WY"){
+        			vm.contractInfo.isPrepared = true;
+        		}else{
+        			vm.contractInfo.isPrepared = false;
+        		}
+        	}
+        }
+        
         vm.amountChanged = amountChanged;
         vm.taxRateChanged = taxRateChanged;
         vm.taxesChanged = taxesChanged;

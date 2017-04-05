@@ -1,13 +1,19 @@
 package com.wondertek.cpm.domain;
 
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.springframework.data.elasticsearch.annotations.Document;
-
-import javax.persistence.*;
 import java.io.Serializable;
 import java.time.ZonedDateTime;
 import java.util.Objects;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.springframework.data.elasticsearch.annotations.Document;
 
 /**
  * 项目成本
@@ -21,6 +27,9 @@ public class ProjectCost implements Serializable {
     private static final long serialVersionUID = 1L;
     
     public static final Integer TYPE_HUMAN_COST = 1;
+    public static final Integer TYPE_TRAVEL_COST = 2;
+    public static final Integer TYPE_PURCHASE_COST = 3;
+    public static final Integer TYPE_BUSINESS_COST = 4;
     
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

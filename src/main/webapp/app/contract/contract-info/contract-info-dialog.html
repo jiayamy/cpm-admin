@@ -6,8 +6,9 @@
 			<div class="form-group">
 				<div class="col-sm-6">
 					<label class="control-label" data-translate="cpmApp.contractInfo.serialNum" for="field_serialNum">Serial Num</label>
-		            <input type="text" class="form-control" name="serialNum" id="field_serialNum" ng-disabled="vm.contractInfo.id"
-		                    ng-model="vm.contractInfo.serialNum" ng-required="true" ng-minlength="1" ng-maxlength="20"
+		            <input type="text" class="form-control" name="serialNum" id="field_serialNum" ng-change="vm.serialNumChanged()"
+		            	 ng-disabled="vm.serialNumDisabled"
+		                    ng-model="vm.contractInfo.serialNum" ng-required="true" ng-minlength="1" ng-maxlength="20" 
 		                     />
 		             <div ng-show="myForm.serialNum.$dirty&&myForm.serialNum.$error.minlength" class="alert alert-danger help-block"> 
 		                    	合同编号必填
@@ -56,7 +57,7 @@
         			</div>
         			<div class="col-sm-6">
 			      		<label class="control-label" data-translate="cpmApp.contractInfo.isPrepared" for="field_isPrepared"> Is Prepared </label> 
-			 			<input type="checkbox" name="isPrepared" id="field_isPrepared" ng-model="vm.contractInfo.isPrepared"/>
+			 			<input type="checkbox" name="isPrepared" id="field_isPrepared" ng-model="vm.contractInfo.isPrepared" ng-disabled="true"/>
 			        </div>
 			        <div class="col-sm-6">
 			         	<label class="control-label"  data-translate="cpmApp.contractInfo.isEpibolic" for="field_isEpibolic">Is Epibolic </label>

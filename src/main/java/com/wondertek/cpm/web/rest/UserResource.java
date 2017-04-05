@@ -2,6 +2,7 @@ package com.wondertek.cpm.web.rest;
 
 import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -35,12 +36,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.codahale.metrics.annotation.Timed;
+import com.wondertek.cpm.CpmConstants;
 import com.wondertek.cpm.ExcelUtil;
 import com.wondertek.cpm.ExcelValue;
 import com.wondertek.cpm.config.Constants;
+import com.wondertek.cpm.config.FilePathHelper;
 import com.wondertek.cpm.config.StringUtil;
 import com.wondertek.cpm.domain.Authority;
 import com.wondertek.cpm.domain.DeptInfo;
@@ -314,16 +316,24 @@ public class UserResource {
         return new ResponseEntity<>(all, null, HttpStatus.OK);
     }
     
-    @PostMapping("/users/uploadExcel")
+    @GetMapping("/users/uploadExcel")
     @Timed
     @Secured(AuthoritiesConstants.ROLE_INFO_BASIC)
-    public ResponseEntity<CpmResponse> uploadExcel(@RequestParam(value="file",required=false) MultipartFile file)
+    public ResponseEntity<CpmResponse> uploadExcel(@RequestParam(value = "filePath",required=true) String filePath)
             throws URISyntaxException {
-        log.debug(SecurityUtils.getCurrentUserLogin()+" REST request to uploadExcel for file : {}",file.getOriginalFilename());
+        log.debug(SecurityUtils.getCurrentUserLogin()+" REST request to uploadExcel for file : {}",filePath);
         List<User> users = null;
         CpmResponse cpmResponse = new CpmResponse();
+        
 		try {
 			//从第一行读取，最多读取10个sheet，最多读取15列
+			File file = new File(FilePathHelper.joinPath(CpmConstants.FILE_UPLOAD_SERVLET_BASE_PATH,filePath));
+			if(!file.exists() || !file.isFile()){
+				return ResponseEntity.ok()
+						.body(cpmResponse
+								.setSuccess(Boolean.FALSE)
+								.setMsgKey("userManagement.import.requiredError"));
+			}
 			int startNum = 1;
 			List<ExcelValue> lists = ExcelUtil.readExcel(file,startNum,10,15);
 			if(lists == null || lists.isEmpty()){

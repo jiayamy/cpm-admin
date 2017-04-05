@@ -12,7 +12,7 @@
         
         vm.types = [{ key: 1, val: '产品' }, { key: 2, val: '外包' },{ key: 3, val: '硬件' },{ key: 4, val: '公共成本' }
         ,{ key: 5, val: '项目' },{ key: 6, val: '推广' },{ key: 7, val: '其他' }];
-        vm.statuss = [{ key: 1, val: '进行中'}, { key: 2, val: '已完成'}, { key: 3, val: '已删除'}];
+        vm.statuss = [{ key: 1, val: '进行中'}, { key: 2, val: '已完成'}, { key: 3, val: '已终止'}];
 
         vm.contractInfo = handleData(entity);
         
