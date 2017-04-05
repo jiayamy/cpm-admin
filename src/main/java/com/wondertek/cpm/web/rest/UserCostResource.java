@@ -1,5 +1,6 @@
 package com.wondertek.cpm.web.rest;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -37,6 +38,7 @@ import com.wondertek.cpm.CpmConstants;
 import com.wondertek.cpm.ExcelUtil;
 import com.wondertek.cpm.ExcelValue;
 import com.wondertek.cpm.config.DateUtil;
+import com.wondertek.cpm.config.FilePathHelper;
 import com.wondertek.cpm.config.StringUtil;
 import com.wondertek.cpm.domain.ExternalQuotation;
 import com.wondertek.cpm.domain.User;
@@ -277,15 +279,23 @@ public class UserCostResource {
     	return new ResponseEntity<>(userCostVo,HttpStatus.OK);
     }
     
-	@PostMapping("/user-costs/uploadExcel")
+    @GetMapping("/user-costs/uploadExcel")
     @Timed
     @Secured(AuthoritiesConstants.ROLE_INFO_USERCOST)
-    public ResponseEntity<CpmResponse> uploadExcel(@RequestParam(value="file",required=false) MultipartFile file)
+    public ResponseEntity<CpmResponse> uploadExcel(@RequestParam(value = "filePath",required=true) String filePath)
             throws URISyntaxException {
-        log.debug(SecurityUtils.getCurrentUserLogin()+" REST request to uploadExcel for file : {}",file.getOriginalFilename());
+        log.debug(SecurityUtils.getCurrentUserLogin()+" REST request to uploadExcel for filePath : {}",filePath);
         List<UserCost> userCosts = null;
         CpmResponse cpmResponse = new CpmResponse();
         try {
+        	//校验文件是否存在
+			File file = new File(FilePathHelper.joinPath(CpmConstants.FILE_UPLOAD_SERVLET_BASE_PATH,filePath));
+			if(!file.exists() || !file.isFile()){
+				return ResponseEntity.ok()
+						.body(cpmResponse
+								.setSuccess(Boolean.FALSE)
+								.setMsgKey("cpmApp.userCost.upload.requiredError"));
+			}
 			//从第一行读取，最多读取10个sheet，最多读取6列
         	int startNum = 1;
 			List<ExcelValue> lists = ExcelUtil.readExcel(file,startNum,10,7);
