@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.time.ZonedDateTime;
 
 import com.wondertek.cpm.domain.ContractInfo;
-import com.wondertek.cpm.domain.OutsourcingUser;
 
 public class ContractInfoVo implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -59,8 +58,6 @@ public class ContractInfoVo implements Serializable {
     private ZonedDateTime updateTime;
     
     private String mark;
-    
-    private OutsourcingUser outsourcingUser;
     
     private ContractInfo contractInfo;
 
@@ -447,12 +444,6 @@ public class ContractInfoVo implements Serializable {
 	}
 	public void setMark(String mark) {
 		this.mark = mark;
-	}
-	public OutsourcingUser getOutsourcingUser() {
-		return outsourcingUser;
-	}
-	public void setOutsourcingUser(OutsourcingUser outsourcingUser) {
-		this.outsourcingUser = outsourcingUser;
 	}
 	public ContractInfo getContractInfo() {
 		return contractInfo;

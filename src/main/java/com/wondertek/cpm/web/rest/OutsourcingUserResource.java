@@ -31,13 +31,10 @@ import com.wondertek.cpm.config.StringUtil;
 import com.wondertek.cpm.domain.ContractInfo;
 import com.wondertek.cpm.domain.OutsourcingUser;
 import com.wondertek.cpm.domain.vo.OutsourcingUserVo;
-import com.wondertek.cpm.domain.vo.ProjectUserVo;
-import com.wondertek.cpm.domain.vo.PurchaseItemVo;
 import com.wondertek.cpm.repository.ContractInfoRepository;
 import com.wondertek.cpm.repository.OutsourcingUserRepository;
 import com.wondertek.cpm.security.AuthoritiesConstants;
 import com.wondertek.cpm.security.SecurityUtils;
-import com.wondertek.cpm.service.ContractInfoService;
 import com.wondertek.cpm.service.OutsourcingUserService;
 import com.wondertek.cpm.web.rest.util.HeaderUtil;
 
