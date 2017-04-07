@@ -88,9 +88,8 @@ public class ContractInfoResource {
 	@PutMapping("/contract-infos")
     @Timed
     @Secured(AuthoritiesConstants.ROLE_CONTRACT_INFO)
-    public ResponseEntity<Boolean> updateContractInfo(@RequestBody ContractInfoVo isContractInfo) throws URISyntaxException {
-        log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to update ContractInfo : {}", isContractInfo);
-        ContractInfo contractInfo = isContractInfo.getContractInfo();
+    public ResponseEntity<Boolean> updateContractInfo(@RequestBody ContractInfo contractInfo) throws URISyntaxException {
+        log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to update ContractInfo : {}", contractInfo);
         Boolean isNew = contractInfo.getId() == null;
         if(contractInfo.getIsPrepared() == null){
         	contractInfo.setIsPrepared(Boolean.FALSE);
@@ -184,56 +183,26 @@ public class ContractInfoResource {
 		}
         contractInfo.setUpdateTime(updateTime);
         contractInfo.setUpdator(updator);
-        ContractInfo result = contractInfoService.save(isContractInfo);
-        
-        if (contractInfo.getType().intValue() == ContractInfo.TYPE_EXTERNAL) {
-        	OutsourcingUser outsourcingUser = isContractInfo.getOutsourcingUser();
-            if (outsourcingUser == null) {
-            	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.outsourcingUser.save.dataError", "")).body(null);
-    		}
-	        //校验参数
-        	if (outsourcingUser.getId() != null) {
-	        	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.outsourcingUser.save.dataError", "")).body(null);
-			}
-	        if (outsourcingUser.getOffer() == null
-	        		|| outsourcingUser.getRank() == null || outsourcingUser.getTargetAmount() == null) {
-	        	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.outsourcingUser.save.requiedError", "")).body(null);
-			}
-	        
-			if (outsourcingUser.getContractId() == null) {
-				if (StringUtil.isNullStr(outsourcingUser.getMark())) {
-		        	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.outsourcingUser.save.dataError", "")).body(null);
-				}else {
-					String str[] = outsourcingUser.getMark().split("_");
-					String num = str[0];
-					String createTimeD = str[1];
-					if (StringUtil.isNullStr(num) || StringUtil.isNullStr(createTimeD) || StringUtil.nullToCloneLong(num) == null
-							|| StringUtil.nullToCloneLong(createTimeD) == null || StringUtil.nullToInteger(num) < 0
-							|| StringUtil.nullToInteger(num) > 100) {
-			        	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.outsourcingUser.save.dataError", "")).body(null);
+        ContractInfo result = new ContractInfo();
+        if (isNew) {
+        	if (contractInfo.getType().intValue() == ContractInfo.TYPE_EXTERNAL){
+        		List<OutsourcingUser> list = outsourcingUserRepository.findByMark(contractInfo.getMark());
+        		if (list != null && !list.isEmpty()){
+        			 result = contractInfoService.save(contractInfo);
+        			 for (OutsourcingUser outsourcingUser : list) {
+						outsourcingUser.setContractId(contractInfo.getId());
+						outsourcingUserRepository.save(outsourcingUser);
 					}
-					//校验optionTime 
-		           Date optionTime = DateUtil.parseDate(DateUtil.DATE_YYYYMMDD_PATTERN, createTimeD.substring(0,8)); 
-		           if(optionTime == null || !createTimeD.substring(0,8).equals(DateUtil.formatDate(DateUtil.DATE_YYYYMMDD_PATTERN, optionTime))){ 
-			        return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.outsourcingUser.save.dataError", "")).body(null);
-		           }
-		           ContractInfo cInfo = contractInfoRepository.getOneByMark(outsourcingUser.getMark());
-		           outsourcingUser.setContractId(cInfo.getId());
+        		}else {
+    	        	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.outsourcingUser.save.user", "")).body(null);
 				}
-			}else {
-					//判断同个合同是否已经存在该级别
-			        OutsourcingUser outUser = outsourcingUserRepository.findByParams(outsourcingUser.getContractId(),outsourcingUser.getRank());
-			        if (outUser != null) {
-			        	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.outsourcingUser.save.rankHasExit", "")).body(null);
-					}
-				}
-			outsourcingUser.setCreateTime(updateTime);
-			outsourcingUser.setCreator(updator);
-	        outsourcingUser.setUpdateTime(updateTime);
-	        outsourcingUser.setUpdator(updator);
-			outsourcingUserService.save(outsourcingUser);
-			
+        	}else {
+        		 result = contractInfoService.save(contractInfo);	
+			}
+		}else {
+			 result = contractInfoService.save(contractInfo);
 		}
+        
         if(isNew){
         	return ResponseEntity.created(new URI("/api/project-infos/" + result.getId()))
                     .headers(HeaderUtil.createEntityCreationAlert("contractInfo", result.getId().toString()))

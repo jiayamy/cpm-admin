@@ -7,6 +7,8 @@ import com.wondertek.cpm.domain.vo.OutsourcingUserVo;
 
 public interface OutsourcingUserDao extends GenericDao<OutsourcingUser, Long> {
 
-	OutsourcingUserVo findByContactId(Long id, User user, DeptInfo deptInfo);
+	OutsourcingUserVo findById(Long id, User user, DeptInfo deptInfo);
+
+	OutsourcingUserVo choseUser(Long id, User user, DeptInfo deptInfo);
 
 }

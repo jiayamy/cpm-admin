@@ -17,7 +17,8 @@
             	"ranknoChange":"合同级别不可更改",
             	"statusError":"已删除或已完成的合同不可更改",
             	"rankHasExit":"对应的级别已经存在",
-            	"typeError":"合同类型错误"
+            	"typeError":"合同类型错误",
+            	"user": "请添加外包人员"
             },
         	"rank": "级别",
         	"targetAmount": "目标数量",

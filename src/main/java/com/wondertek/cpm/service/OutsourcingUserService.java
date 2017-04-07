@@ -50,13 +50,30 @@ public class OutsourcingUserService {
 	}
 
 
-	public OutsourcingUserVo findByContractId(Long id) {
+	public OutsourcingUserVo findById(Long id) {
 		List<Object[]> objs = this.userRepository.findUserInfoByLogin(SecurityUtils.getCurrentUserLogin());
 		if (objs != null && !objs.isEmpty()) {
 			Object[] o = objs.get(0);
 			User user = (User) o[0];
 			DeptInfo deptInfo = (DeptInfo) o[1];
-			return outsourcingUserDao.findByContactId(id,user,deptInfo);
+			return outsourcingUserDao.findById(id,user,deptInfo);
+		}
+		return null;
+	}
+
+
+	public List<OutsourcingUser> getUserList(String mark) {
+		return outsourcingUserRepository.findByMark(mark);
+	}
+
+
+	public OutsourcingUserVo choseUser(Long id) {
+		List<Object[]> objs = this.userRepository.findUserInfoByLogin(SecurityUtils.getCurrentUserLogin());
+		if (objs != null && !objs.isEmpty()) {
+			Object[] o = objs.get(0);
+			User user = (User) o[0];
+			DeptInfo deptInfo = (DeptInfo) o[1];
+			return outsourcingUserDao.choseUser(id,user,deptInfo);
 		}
 		return null;
 	}

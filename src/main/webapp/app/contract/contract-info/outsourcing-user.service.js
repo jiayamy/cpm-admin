@@ -23,6 +23,23 @@
                     }
                     return data;
                 }
+            },
+            'getUserList':{
+            	url:'api/outsourcing-user/getUserList',
+            	method:'GET',
+            	isArray:true
+            },
+            'choseUser':{
+            	url:'api/outsourcing-user/choseUser',
+            	method:'GET',
+            	transformResponse: function (data) {
+                    if (data) {
+                        data = angular.fromJson(data);
+                        data.createTime = DateUtils.convertDateTimeFromServer(data.createTime);
+                        data.updateTime = DateUtils.convertDateTimeFromServer(data.updateTime);
+                    }
+                    return data;
+                }
             }
         });
     }

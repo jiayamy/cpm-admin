@@ -5,13 +5,13 @@
         .module('cpmApp')
         .controller('OutsourcingUserController', OutsourcingUserController);
 
-    OutsourcingUserController.$inject = ['$timeout','$state', '$scope', '$stateParams', 'entity', 'ContractInfo','previousState'];
+    OutsourcingUserController.$inject = ['$timeout','$state', '$scope', '$stateParams', 'entity', 'ContractInfo','$uibModalInstance','OutsourcingUser','AlertService','$rootScope'];
 
-    function OutsourcingUserController ($timeout,$state, $scope, $stateParams, entity, ContractInfo,previousState) {
+    function OutsourcingUserController ($timeout,$state, $scope, $stateParams, entity, ContractInfo,$uibModalInstance,OutsourcingUser,AlertService,$rootScope) {
         var vm = this;
-        
-        vm.previousState = previousState.name;
+        vm.clear = clear;
         vm.outsourcingUser = entity;
+        
         vm.save = save;
         function save () {
             vm.isSaving = true;
@@ -22,20 +22,24 @@
             outsourcingUser.rank = vm.outsourcingUser.rank;
             outsourcingUser.offer = vm.outsourcingUser.offer;
             outsourcingUser.targetAmount = vm.outsourcingUser.targetAmount;
+            outsourcingUser.mark = vm.outsourcingUser.mark;
             
             ContractInfo.updateOutsourcingUser(outsourcingUser, onSaveSuccess,onSaveError);
         }
         
-        function onSaveSuccess (result,headers) {
-            if(headers("X-cpmApp-alert") == 'cpmApp.outsourcingUser.updated'){
-    			$state.go(vm.previousState);
-    		}
-            vm.isSaving = false;
+	        function onSaveSuccess (result,headers) {
+	        	$scope.$emit('cpmApp:viewRecord',result);
+	            $uibModalInstance.close(result);
+	            
+	            vm.isSaving = false;
         }
 
-        function onSaveError () {
+        function onSaveError (error) {
             vm.isSaving = false;
         }
-
+        
+        function clear () {
+            $uibModalInstance.dismiss('cancel');
+        }
     }
 })();

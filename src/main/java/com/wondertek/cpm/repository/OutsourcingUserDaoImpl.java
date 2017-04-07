@@ -31,7 +31,7 @@ public class OutsourcingUserDaoImpl extends GenericDaoImpl<OutsourcingUser, Long
 	}
 
 	@Override
-	public OutsourcingUserVo findByContactId(Long id, User user,
+	public OutsourcingUserVo findById(Long id, User user,
 			DeptInfo deptInfo) {
 		StringBuffer queryHql = new StringBuffer();
 		List<Object> params = new ArrayList<Object>();
@@ -62,6 +62,41 @@ public class OutsourcingUserDaoImpl extends GenericDaoImpl<OutsourcingUser, Long
 		List<Object[]> list = this.queryAllHql(queryHql.toString(),params.toArray());
 		if(list != null && !list.isEmpty()){
 			return new OutsourcingUserVo((OutsourcingUser) list.get(0)[0],StringUtil.null2Str(list.get(0)[1]),StringUtil.null2Str(list.get(0)[2]));
+		}
+		return null;
+	}
+
+	@Override
+	public OutsourcingUserVo choseUser(Long id, User user, DeptInfo deptInfo) {
+		StringBuffer queryHql = new StringBuffer();
+		List<Object> params = new ArrayList<Object>();
+		int count = 0;//jpa格式 问号后的数组，一定要从0开始
+		
+		queryHql.append("select wosu from OutsourcingUser wosu");
+		queryHql.append(" left join ContractInfo wci on wosu.contractId = wci.id");
+		queryHql.append(" left join DeptInfo wdi on wci.deptId = wdi.id");
+		queryHql.append(" left join DeptInfo wdi2 on wci.consultantsDeptId = wdi2.id");
+		
+		queryHql.append(" where (wci.creator = ?" + (count++) + " or wci.salesmanId = ?" + (count++) + " or wci.consultantsId = ?" + (count++));
+		params.add(user.getLogin());
+		params.add(user.getId());
+		params.add(user.getId());
+		if(user.getIsManager()){
+			queryHql.append(" or wdi.idPath like ?" + (count++) + " or wdi.id = ?" + (count++));
+			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
+			params.add(deptInfo.getId());
+			
+			queryHql.append(" or wdi2.idPath like ?" + (count++) + " or wdi2.id = ?" + (count++));
+			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
+			params.add(deptInfo.getId());
+		}
+		queryHql.append(")");
+		queryHql.append(" and wosu.id = ?" + (count++));
+		params.add(id);
+		
+		List<OutsourcingUser> list = this.queryAllHql(queryHql.toString(),params.toArray());
+		if(list != null && !list.isEmpty()){
+			return new OutsourcingUserVo(list.get(0));
 		}
 		return null;
 	}

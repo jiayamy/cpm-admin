@@ -9,9 +9,12 @@
 
     function ContractInfoDialogController (previousState,$rootScope,$timeout, $scope, $stateParams, entity, ContractInfo, $state,AlertService,ParseLinks,OutsourcingUser) {
         var vm = this;
-        
+        var num = GetRandomNum(1,100);
+    	var randomDate = getNowFormatDate();
+    	var mark = num + "_" + randomDate;
+    	vm.mark = mark;
+    	
         vm.contractInfo = entity;
-        vm.outsourcingUser = entity;
         //预立合同可以修改合同编号
         vm.serialNumDisabled = true;
         if(vm.contractInfo.id == undefined || vm.contractInfo.isPrepared == true){
@@ -34,11 +37,9 @@
         
         //点击外包合同时，给ng-chnage赋值
         if (vm.contractInfo.id != null) {
-        	vm.outsourcingUser.rank = "高级";
-        	vm.outsourcingUser.offer = 1;
-        	vm.outsourcingUser.targetAmount = 1;
         	if (vm.contractInfo.type == 2 || vm.contractInfo.type.key == 2) {
     			vm.showTable = true;
+    			vm.showNewTable = false;
     			ContractInfo.queryOutsourcingUser({
     	    		contractId:entity.id
     	         }, onSuccess, onError);
@@ -50,6 +51,13 @@
                     AlertService.error(error.data.message);
                 }
     		}
+		}else{
+			vm.showTable = false;
+			if (vm.contractInfo.type != null) {
+				if (vm.contractInfo.type == 2 || vm.contractInfo.type.key == 2) {
+					vm.showNewTable = true;
+				}
+			}
 		}
         
         function save () {
@@ -89,32 +97,34 @@
         	contractInfo.linkman = vm.contractInfo.linkman;
         	contractInfo.contactDept = vm.contractInfo.contactDept;
         	contractInfo.telephone = vm.contractInfo.telephone;
-        	
-        	var outsourcingUser = {};
-        	outsourcingUser.rank = vm.outsourcingUser.rank;
-        	outsourcingUser.targetAmount = vm.outsourcingUser.targetAmount;
-        	outsourcingUser.offer = vm.outsourcingUser.offer;
-        	var num = GetRandomNum(1,100);
-        	var randomDate = getNowFormatDate();
-        	contractInfo.mark = num + "_" + randomDate;
-        	outsourcingUser.mark = num + "_" + randomDate;
-        	
-        	var contractInfoVo = {};
-        	contractInfoVo.contractInfo = contractInfo;
-        	if (contractInfo.type == 2) {
-        		contractInfoVo.outsourcingUser = outsourcingUser;
+        	if (vm.contractInfo.mark == null) {
+        		contractInfo.mark = vm.mark;
+			}else{
+				contractInfo.mark = vm.contractInfo.mark;
 			}
-        	ContractInfo.update(contractInfoVo,
-	    		function(data, headers){
-            		vm.isSaving = false;
-            		if(headers("X-cpmApp-alert") == 'cpmApp.contractInfo.updated'){
-            			$state.go(vm.previousState);
-            		}
-	        	},
-	        	function(error){
-	        		vm.isSaving = false;
-	        	}
-        	); 
+        	if (contractInfo.type == 2) {
+        		ContractInfo.update(contractInfo,
+    	    		function(data, headers){
+            			vm.isSaving = false;
+                		$state.go(vm.previousState);
+    	        	},
+    	        	function(error){
+    	        		vm.isSaving = false;
+    	        	}
+            	);
+			}else {
+				ContractInfo.update(contractInfo,
+		    		function(data, headers){
+	        			vm.isSaving = false;
+	            		if(headers("X-cpmApp-alert") == 'cpmApp.contractInfo.updated'){
+	            			$state.go(vm.previousState);
+	            		}
+		        	},
+		        	function(error){
+		        		vm.isSaving = false;
+		        	}
+	        	);
+			}
         }
         vm.serialNumChanged = serialNumChanged;
         function serialNumChanged(){
@@ -207,9 +217,11 @@
         
         function changeType(){
         	if (vm.contractInfo.type.key == 2 && vm.contractInfo.type.val == "外包" && entity.id == null) {
-				vm.showCase = true;
+				vm.showTable = false;
+				vm.showNewTable = true
 			}else {
-				vm.showCase = false;
+				vm.showTable = false;
+				vm.showNewTable = false
 			}
         }
         vm.datePickerOpenStatus.startDay = false;
@@ -232,6 +244,26 @@
         		vm.contractInfo.consultantsDept = result.parentName;
         	}
         });
+        $scope.$on('$destroy', unsubscribe);
+        
+        //弹框关闭数据列表的处理
+        var unsubscribe = $rootScope.$on('cpmApp:viewRecord', function(event, result) {
+    		if (vm.contractInfo.id == null) {
+    			console.log(222);
+    			OutsourcingUser.getUserList({
+    				mark:vm.mark
+    			},onSuccess);
+			}else {
+				console.log(333);
+				ContractInfo.queryOutsourcingUser({
+    				contractId:vm.contractInfo.id
+    			},onSuccess);
+			}
+    		
+    		function onSuccess(data, headers) {
+                vm.outsourcingUsers = data;
+            }
+    	});
         $scope.$on('$destroy', unsubscribe);
         
         //生成唯一标识中的组成部分

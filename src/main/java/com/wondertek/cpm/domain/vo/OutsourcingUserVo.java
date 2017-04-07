@@ -15,14 +15,24 @@ public class OutsourcingUserVo {
 	private Integer targetAmount;
 	private String rank;
 	private Double offer;
+	private String mark;
 	private String creator;
 	private ZonedDateTime createTime;
 	private String updator;
 	private ZonedDateTime updateTime;
 	
 	
-	public OutsourcingUserVo(){
-		
+	public OutsourcingUserVo(OutsourcingUser outsourcingUser){
+		this.id = outsourcingUser.getId();
+		this.contractId = outsourcingUser.getContractId();
+		this.offer = outsourcingUser.getOffer();
+		this.rank = outsourcingUser.getRank();
+		this.targetAmount = outsourcingUser.getTargetAmount();
+		this.creator = outsourcingUser.getCreator();
+		this.createTime = outsourcingUser.getCreateTime();
+		this.updator = outsourcingUser.getUpdator();
+		this.updateTime = outsourcingUser.getUpdateTime();
+		this.mark = outsourcingUser.getMark();
 	}
 	
 	public OutsourcingUserVo(OutsourcingUser outsourcingUser,String contractName,String serialNum){
@@ -35,6 +45,7 @@ public class OutsourcingUserVo {
 		this.createTime = outsourcingUser.getCreateTime();
 		this.updator = outsourcingUser.getUpdator();
 		this.updateTime = outsourcingUser.getUpdateTime();
+		this.mark = outsourcingUser.getMark();
 		
 		this.serialNum = serialNum;
 		this.contractName = contractName;
@@ -95,6 +106,14 @@ public class OutsourcingUserVo {
 
 	public void setOffer(Double offer) {
 		this.offer = offer;
+	}
+	
+	public String getMark() {
+		return mark;
+	}
+
+	public void setMark(String mark) {
+		this.mark = mark;
 	}
 
 	public String getCreator() {

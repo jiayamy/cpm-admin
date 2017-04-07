@@ -14,5 +14,11 @@ public interface OutsourcingUserRepository extends JpaRepository<OutsourcingUser
 
 	@Query(" from OutsourcingUser where contractId = ?1 and rank = ?2")
 	OutsourcingUser findByParams(Long contractId, String rank);
+
+	@Query(" from OutsourcingUser where mark = ?1")
+	List<OutsourcingUser> findByMark(String mark);
+	
+	@Query(" from OutsourcingUser where rank = ?1 and mark = ?2")
+	OutsourcingUser findByRankAndMark(String rank, String mark);
 	
 }

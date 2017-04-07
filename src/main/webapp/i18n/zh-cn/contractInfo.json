@@ -5,12 +5,8 @@
                 "title": "合同信息",
                 "createLabel": "新增",
                 "createOrEditLabel": "合同信息",
+                "import": "导入",
                 "outsourcingUserInfos": "外包人员信息"
-            },
-            "created": "新建成功",
-            "updated": "合同更新成功",
-            "deleted": "删除成功",
-            "import": "导入"
             },
             "created": "新建成功",
             "updated": "更新成功",

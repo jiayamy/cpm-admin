@@ -58,9 +58,8 @@ public class ContractInfoService {
      * @param contractInfoVo the entity to save
      * @return the persisted entity
      */
-    public ContractInfo save(ContractInfoVo contractInfoVo) {
-        log.debug("Request to save ContractInfo : {}", contractInfoVo);
-        ContractInfo contractInfo = contractInfoVo.getContractInfo();
+    public ContractInfo save(ContractInfo contractInfo) {
+        log.debug("Request to save ContractInfo : {}", contractInfo);
         ContractInfo result = contractInfoRepository.save(contractInfo);
         return result;
     }
