@@ -23,4 +23,7 @@ public interface ProjectCostRepository extends JpaRepository<ProjectCost,Long> {
 	
 	@Query(" from ProjectCost where projectId = ?1 and costDay = ?2 and type = ?3 and status=1")
 	ProjectCost findOneByProjectIdAndCostDayAndType(Long projectId, Long costDay, Integer type);
+	
+	@Query("from ProjectCost where projectId = ?1 and type!=?2 and costDay >= ?3 and costDay <= ?4 and status=1")
+	List<ProjectCost> findAllByProjectIdAndNoTypeAndCostDayBetween(Long projectId, Integer type, Long startDay, Long endDay);
 }
