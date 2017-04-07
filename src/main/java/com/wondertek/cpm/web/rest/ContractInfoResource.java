@@ -318,9 +318,9 @@ public class ContractInfoResource {
 								.setSuccess(Boolean.FALSE)
 								.setMsgKey("cpmApp.contractInfo.upload.requiredError"));
 			}
-			//从第一行读取，最多读取10个sheet，最多读取25列
+			//从第一行读取，最多读取10个sheet，最多读取23列
         	int startNum = 1;
-			List<ExcelValue> lists = ExcelUtil.readExcel(file,startNum,10,25);
+			List<ExcelValue> lists = ExcelUtil.readExcel(file,startNum,10,23);
 			if(lists == null || lists.isEmpty()){
 				return ResponseEntity.ok()
 						.body(cpmResponse
