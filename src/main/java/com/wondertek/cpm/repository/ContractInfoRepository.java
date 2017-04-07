@@ -24,4 +24,7 @@ public interface ContractInfoRepository extends JpaRepository<ContractInfo,Long>
 	List<ContractInfo> findByStatusOrEndTime(Integer status, ZonedDateTime endTime);
 	
 	Optional<ContractInfo> findOneBySerialNum(String serialNum);
+	
+	@Query(" from ContractInfo where deptId is not null and (status = ?1 or updateTime >= ?2)")
+	List<ContractInfo> findByDeptIdAndStatusOrEndTime(Integer status, ZonedDateTime endTime);
 }
