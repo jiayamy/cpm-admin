@@ -184,6 +184,12 @@
                                 <span data-translate="global.menu.stat.projectMonthlyStat">Project Monthly Stat</span>
                             </a>
                         </li>
+                        <li ui-sref-active="active" has-authority="ROLE_STAT_CONTRACT">
+                            <a ui-sref="sale-weekly-stat" ng-click="vm.collapseNavbar()">
+                                <span class=" glyphicon glyphicon-info-sign"></span>&nbsp;
+                                <span data-translate="global.menu.stat.saleWeeklyStat">Sale Weekly Stat</span>
+                            </a>
+                        </li>
                         <li ui-sref-active="active" has-authority="ROLE_STAT_INTERNAL_COST">
                             <a ui-sref="sale-purchase-internalCost" ng-click="vm.collapseNavbar()">
                                 <span class=" glyphicon glyphicon-info-sign"></span>&nbsp;
