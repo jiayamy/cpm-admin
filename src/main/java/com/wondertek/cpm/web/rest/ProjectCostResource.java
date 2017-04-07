@@ -1,5 +1,6 @@
 package com.wondertek.cpm.web.rest;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.time.ZonedDateTime;
@@ -23,19 +24,18 @@ import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.codahale.metrics.annotation.Timed;
 import com.wondertek.cpm.CpmConstants;
 import com.wondertek.cpm.ExcelUtil;
 import com.wondertek.cpm.ExcelValue;
 import com.wondertek.cpm.config.DateUtil;
+import com.wondertek.cpm.config.FilePathHelper;
 import com.wondertek.cpm.config.StringUtil;
 import com.wondertek.cpm.domain.ProjectCost;
 import com.wondertek.cpm.domain.ProjectInfo;
@@ -235,14 +235,22 @@ public class ProjectCostResource {
         HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/project-costs");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
-    @PostMapping("/project-costs/uploadExcel")
+    @GetMapping("/project-costs/uploadExcel")
     @Timed
     @Secured(AuthoritiesConstants.ROLE_PROJECT_COST)
-    public ResponseEntity<CpmResponse> uploadExcel(@RequestParam(value="file",required = false) MultipartFile file){
-    	log.debug(SecurityUtils.getCurrentUserLogin()+" REST request to uploadExcel for file : {}",file.getOriginalFilename());
+    public ResponseEntity<CpmResponse> uploadExcel(@RequestParam(value="filePath",required = true) String filePath){
+    	log.debug(SecurityUtils.getCurrentUserLogin()+" REST request to uploadExcel for filePath : {}",filePath);
     	List<ProjectCost> projectCosts = null;
     	CpmResponse cpmResponse = new CpmResponse();
     	try {
+    		//校验文件是否存在
+			File file = new File(FilePathHelper.joinPath(CpmConstants.FILE_UPLOAD_SERVLET_BASE_PATH,filePath));
+			if(!file.exists() || !file.isFile()){
+				return ResponseEntity.ok()
+						.body(cpmResponse
+								.setSuccess(Boolean.FALSE)
+								.setMsgKey("cpmApp.projectCost.upload.requiredError"));
+			}
 			//从第一行读取，最多读取10个sheet，最多读取7列
         	int startNum = 1;
 			List<ExcelValue> lists = ExcelUtil.readExcel(file,startNum,10,7);
@@ -280,7 +288,9 @@ public class ProjectCostResource {
 						ProjectCost projectCost = new ProjectCost();
 						projectCost.setStatus(CpmConstants.STATUS_VALID);
 						projectCost.setCreator(updator);
+						projectCost.setCreateTime(ZonedDateTime.now());
 						projectCost.setUpdator(updator);
+						projectCost.setUpdateTime(projectCost.getCreateTime());
 						//校验第一列 项目编号
 						columnNum = 0;
 						val = ls.get(columnNum);
@@ -367,15 +377,15 @@ public class ProjectCostResource {
 									.setMsgParam(excelValue.getSheet() + "," + rowNum +","+(columnNum+1)));
 						}
 						
-						//校验记录是否存在
-						String key = projectCost.getProjectId() + "_" + projectCost.getType() + "_" + projectCost.getCostDay();
-						if(existMap.containsKey(key)){
-							return ResponseEntity.ok().body(cpmResponse
-									.setSuccess(Boolean.FALSE)
-									.setMsgKey("cpmApp.projectCost.upload.recordExistError")
-									.setMsgParam(excelValue.getSheet() + "," + rowNum +","+(columnNum+1)));
-						}
-						existMap.put(key, 1);
+//						//校验记录是否存在
+//						String key = projectCost.getProjectId() + "_" + projectCost.getType() + "_" + projectCost.getCostDay();
+//						if(existMap.containsKey(key)){
+//							return ResponseEntity.ok().body(cpmResponse
+//									.setSuccess(Boolean.FALSE)
+//									.setMsgKey("cpmApp.projectCost.upload.recordExistError")
+//									.setMsgParam(excelValue.getSheet() + "," + rowNum +","+(columnNum+1)));
+//						}
+//						existMap.put(key, 1);
 						
 						//校验第六列 报销金额
 						columnNum++;
