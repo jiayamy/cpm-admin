@@ -136,5 +136,12 @@ public class SalesAnnualIndex implements Serializable{
 	public void setAnnualIndex(Double annualIndex) {
 		this.annualIndex = annualIndex;
 	}
+
+	@Override
+	public String toString() {
+		return "SalesAnnualIndex [id=" + id + ", userId=" + userId + ", userName=" + userName + ", statYear=" + statYear
+				+ ", annualIndex=" + annualIndex + ", creator=" + creator + ", createTime=" + createTime + ", updator="
+				+ updator + ", updateTime=" + updateTime + "]";
+	}
 	
 }
