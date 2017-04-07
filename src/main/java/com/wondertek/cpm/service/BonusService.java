@@ -77,4 +77,17 @@ public class BonusService {
 			return new PageImpl<BonusVo>(new ArrayList<BonusVo>(),pageable,0);
 		}
 	}
+
+	public List<BonusVo> searchList(Bonus bonus) {
+		List<Object[]> objs = userRepository.findUserInfoByLogin(SecurityUtils.getCurrentUserLogin());
+		if(objs != null && !objs.isEmpty()){
+			Object[] o = objs.get(0);
+    		User user = (User) o[0];
+    		DeptInfo deptInfo = (DeptInfo) o[1];
+    		List<BonusVo> page = bonusDao.getBonusListl(bonus,user,deptInfo);
+			return page;
+		}else {
+			return null;
+		}
+	}
 }

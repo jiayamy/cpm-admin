@@ -142,8 +142,7 @@ public class BonusResource {
     public void exportXls(
     		HttpServletRequest request,HttpServletResponse response,
     		@RequestParam(value = "statWeek",required=false) Long statWeek,
-    		@RequestParam(value = "contractId",required=false) Long contractId,
-    		@ApiParam Pageable pageable)
+    		@RequestParam(value = "contractId",required=false) Long contractId)
     	throws URISyntaxException, IOException  {
     	log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to get a page of exportXls  statWeek:{},contractId:{}",statWeek,contractId);
     	Date now = new Date();
@@ -162,11 +161,7 @@ public class BonusResource {
          			DateUtil.formatDate(DateUtil.DATE_YYYYMMDD_PATTERN, 
          					DateUtil.getSundayOfDay(DateUtil.parseDate(DateUtil.DATE_YYYYMMDD_PATTERN,""+bonus.getStatWeek())))));
 		}
-		Page<BonusVo> page = bonusService.searchPage(bonus,pageable);
-		List<BonusVo> list = new ArrayList<BonusVo>();
-		for (BonusVo bonusVo : page.getContent()) {
-			list.add(bonusVo);
-		}
+		List<BonusVo> page = bonusService.searchList(bonus);
 		
 		//拼接sheet数据
 		//标题
@@ -190,8 +185,8 @@ public class BonusResource {
     	ExcelWrite excelWrite = new ExcelWrite();
     	excelWrite.createSheetTitle("奖金总表", 1, heads);
     	//写入数据
-    	if (list != null) {
-    		handleSheetData(list,2,excelWrite);
+    	if (page != null) {
+    		handleSheetData(page,2,excelWrite);
 		}
     	excelWrite.close(outputStream);
     }

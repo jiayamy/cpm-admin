@@ -56,6 +56,10 @@ public class ContractInfoVo implements Serializable {
     private String updator;
 
     private ZonedDateTime updateTime;
+    
+    private String mark;
+    
+    private ContractInfo contractInfo;
 
     public ContractInfoVo() {
 	}
@@ -98,6 +102,7 @@ public class ContractInfoVo implements Serializable {
 		this.createTime = contractInfo.getCreateTime();
 		this.updator = contractInfo.getUpdator();
 		this.updateTime = contractInfo.getUpdateTime();
+		this.mark = contractInfo.getMark();
 	}
     //列表页使用
 	public ContractInfoVo(ContractInfo contractInfo, Integer key) {
@@ -433,6 +438,18 @@ public class ContractInfoVo implements Serializable {
 	public void setConsultantsShareRate(Double consultantsShareRate) {
 		this.consultantsShareRate = consultantsShareRate;
 	}
-
+	
+	public String getMark() {
+		return mark;
+	}
+	public void setMark(String mark) {
+		this.mark = mark;
+	}
+	public ContractInfo getContractInfo() {
+		return contractInfo;
+	}
+	public void setContractInfo(ContractInfo contractInfo) {
+		this.contractInfo = contractInfo;
+	}
 }
 

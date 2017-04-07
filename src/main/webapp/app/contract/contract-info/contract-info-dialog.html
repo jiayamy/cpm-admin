@@ -43,6 +43,7 @@
 					<label class="control-label" data-translate="cpmApp.contractInfo.type" for="field_type">Type</label>
 		           	<select class="form-control" name="type" ng-model="vm.contractInfo.type" ng-required="true"
 		           		ng-disabled="vm.contractInfo.id"
+		           		ng-change="vm.changeType()"
 						ng-options="type.val for type in vm.types track by type.key">
 					</select>
 					<div class="help-block"
@@ -333,6 +334,114 @@
 		          	</div>
         		</div>
         	</div>
+        	<div class="form-group" ng-show="vm.showCase">
+        		<div class="col-sm-6">
+					<div style="width:300px;height:30px; float:left;border-bottom:2px solid #ccc">
+		    			<span style="width:65px;height:30px; float:left; border-bottom:2px solid #06f; margin-bottom:-2px; line-height:35px">外包人员</span>
+					</div>
+        		</div>
+        	</div>
+        	<div class="form-group" ng-show="vm.showTable">
+        		<div class="col-sm-6">
+					<div style="width:300px;height:30px; float:left;border-bottom:2px solid #ccc">
+		    			<span style="width:65px;height:30px; float:left; border-bottom:2px solid #06f; margin-bottom:-2px; line-height:35px"></span>
+					</div>
+        		</div>
+        	</div>
+        	<div class="form-group" ng-show="vm.showTable">
+	        	<div class="col-sm-6">
+	        		<div class="table-header" data-translate="cpmApp.contractInfo.home.outsourcingUserInfos" style="font-weight:bold;"> OutSourcing User Infos </div>
+		       		<div class="form-group">
+		       			<div class="col-xs-12">
+				            <button type="submit"
+			                        ui-sref="contract-info.edit.creatOutsourcingUser"
+			                        class="btn btn-success btn-sm">
+			                    <span class="glyphicon glyphicon-plus"></span>
+			                    <span class="ng-scope" data-translate="cpmApp.contractInfo.home.createLabel">Create new Contract Info</span>
+			                </button>
+		               	</div>
+		       		</div>
+		        	<div class="table-responsive">
+					    <table class="table table-striped table-bordered table-hover">
+					        <thead>
+					            <tr jh-sort="vm.predicate" ascending="vm.reverse" callback="vm.transition()">
+									<th style="text-align:center;"><span data-translate="cpmApp.outsourcing.rank">Rank</span></th>
+									<th style="text-align:center;"><span data-translate="cpmApp.outsourcing.targetAmount">Target Amount</span></th>
+									<th style="text-align:center;"><span data-translate="cpmApp.outsourcing.offer">Offer</span></th>
+									<th></th>
+					            </tr>
+					        </thead>
+					        <tbody>
+					            <tr ng-repeat="outsourcingUsers in vm.outsourcingUsers track by outsourcingUsers.id">
+					                <td style="text-align:center;">{{outsourcingUsers.rank}}</td>
+					                <td style="text-align:center;">{{outsourcingUsers.targetAmount}}</td>
+					                <td style="text-align:center;">{{outsourcingUsers.offer}}</td>
+					                <td class="text-right">
+					                    <div class="btn-group flex-btn-group-container">
+					                        <button type="submit"
+					                                  ui-sref="contract-info.edit.changeOutsourcingUser({infoId:outsourcingUsers.id})"
+					                                  class="btn btn-primary btn-sm">
+					                            <span class="glyphicon glyphicon-pencil"></span>
+					                        </button>
+					                    </div>
+					                </td>
+					            </tr>
+					        </tbody>
+					    </table>
+		    		</div>	
+				</div>
+	        </div>
+	        <!-- 添加 -->
+	        <div class="form-group" ng-show="vm.showNewTable">
+        		<div class="col-sm-6">
+					<div style="width:300px;height:30px; float:left;border-bottom:2px solid #ccc">
+		    			<span style="width:65px;height:30px; float:left; border-bottom:2px solid #06f; margin-bottom:-2px; line-height:35px"></span>
+					</div>
+        		</div>
+        	</div>
+        	<div class="form-group" ng-show="vm.showNewTable">
+	        	<div class="col-sm-12">
+	        		<div class="table-header" data-translate="cpmApp.contractInfo.home.outsourcingUserInfos" style="font-weight:bold;"> OutSourcing User Infos </div>
+		       		<div class="form-group">
+		       			<div class="col-xs-6">
+				            <button type="submit"
+			                        ui-sref="contract-info.new.creatOutsourcingUser({mark:vm.mark})"
+			                        class="btn btn-success btn-sm">
+			                    <span class="glyphicon glyphicon-plus"></span>
+			                    <span class="ng-scope" data-translate="cpmApp.contractInfo.home.createLabel">Create new Contract Info</span>
+			                </button>
+		               	</div>
+		       		</div>
+		        	<div class="table-responsive">
+					    <table class="table table-striped table-bordered table-hover">
+					        <thead>
+					            <tr jh-sort="vm.predicate" ascending="vm.reverse" callback="vm.transition()">
+									<th style="text-align:center;"><span data-translate="cpmApp.outsourcing.rank">Rank</span></th>
+									<th style="text-align:center;"><span data-translate="cpmApp.outsourcing.targetAmount">Target Amount</span></th>
+									<th style="text-align:center;"><span data-translate="cpmApp.outsourcing.offer">Offer</span></th>
+									<th></th>
+					            </tr>
+					        </thead>
+					        <tbody>
+					            <tr ng-repeat="outsourcingUsers in vm.outsourcingUsers track by outsourcingUsers.id">
+					                <td style="text-align:center;">{{outsourcingUsers.rank}}</td>
+					                <td style="text-align:center;">{{outsourcingUsers.targetAmount}}</td>
+					                <td style="text-align:center;">{{outsourcingUsers.offer}}</td>
+					                <td class="text-right">
+					                    <div class="btn-group flex-btn-group-container">
+					                        <button type="submit"
+					                                  ui-sref="contract-info.new.changeOutsourcingUser({id:outsourcingUsers.id})"
+					                                  class="btn btn-primary btn-sm">
+					                            <span class="glyphicon glyphicon-pencil"></span>
+					                        </button>
+					                    </div>
+					                </td>
+					            </tr>
+					        </tbody>
+					    </table>
+		    		</div>	
+				</div>
+	        </div>
         </div>
     </div>
     <hr>

@@ -81,4 +81,17 @@ public class ProjectOverallService {
 		return null;
 	}
 
+	public List<ProjectOverallVo> searchList(ProjectOverall projectOverall) {
+		List<Object[]> objs = userRepository.findUserInfoByLogin(SecurityUtils.getCurrentUserLogin());
+		if(objs != null && !objs.isEmpty()){
+			Object[] o = objs.get(0);
+    		User user = (User) o[0];
+    		DeptInfo deptInfo = (DeptInfo) o[1];
+    		
+    		List<ProjectOverallVo> page = projectOverallDao.getListByParams(user,deptInfo,projectOverall);
+    		return page;
+		}
+		return null;
+	}
+
 }

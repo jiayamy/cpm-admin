@@ -1,5 +1,7 @@
 package com.wondertek.cpm.web.rest;
 
+import io.swagger.annotations.ApiParam;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
@@ -36,23 +38,26 @@ import com.codahale.metrics.annotation.Timed;
 import com.wondertek.cpm.CpmConstants;
 import com.wondertek.cpm.ExcelUtil;
 import com.wondertek.cpm.ExcelValue;
+import com.wondertek.cpm.config.DateUtil;
 import com.wondertek.cpm.config.FilePathHelper;
 import com.wondertek.cpm.config.StringUtil;
 import com.wondertek.cpm.domain.ContractInfo;
 import com.wondertek.cpm.domain.DeptInfo;
+import com.wondertek.cpm.domain.OutsourcingUser;
 import com.wondertek.cpm.domain.vo.ContractInfoVo;
 import com.wondertek.cpm.domain.vo.LongValue;
 import com.wondertek.cpm.domain.vo.UserBaseVo;
+import com.wondertek.cpm.repository.ContractInfoRepository;
+import com.wondertek.cpm.repository.OutsourcingUserRepository;
 import com.wondertek.cpm.security.AuthoritiesConstants;
 import com.wondertek.cpm.security.SecurityUtils;
 import com.wondertek.cpm.service.ContractInfoService;
 import com.wondertek.cpm.service.DeptInfoService;
+import com.wondertek.cpm.service.OutsourcingUserService;
 import com.wondertek.cpm.service.UserService;
 import com.wondertek.cpm.web.rest.errors.CpmResponse;
 import com.wondertek.cpm.web.rest.util.HeaderUtil;
 import com.wondertek.cpm.web.rest.util.PaginationUtil;
-
-import io.swagger.annotations.ApiParam;
 
 /**
  * REST controller for managing ContractInfo.
@@ -65,6 +70,16 @@ public class ContractInfoResource {
 
 	@Inject
 	private ContractInfoService contractInfoService;
+	
+	@Inject
+	private ContractInfoRepository contractInfoRepository;
+	
+	@Inject
+	private OutsourcingUserService outsourcingUserService;
+	
+	@Inject
+	private OutsourcingUserRepository outsourcingUserRepository;
+	
 	@Inject
     private UserService userService;
 	@Inject
@@ -140,6 +155,25 @@ public class ContractInfoResource {
         	contractInfo.setReceiveTotal(contractInfoVo.getReceiveTotal());
         	contractInfo.setFinishRate(contractInfoVo.getFinishRate());
 		}else {
+			if (contractInfo.getType().intValue() == ContractInfo.TYPE_EXTERNAL) {
+				if (StringUtil.isNullStr(contractInfo.getMark())) {
+		        	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.outsourcingUser.save.dataError", "")).body(null);
+				}else {
+					String str[] = contractInfo.getMark().split("_");
+					String num = str[0];
+					String createTimeD = str[1];
+					if (StringUtil.isNullStr(num) || StringUtil.isNullStr(createTimeD) || StringUtil.nullToCloneLong(num) == null
+							|| StringUtil.nullToCloneLong(createTimeD) == null || StringUtil.nullToInteger(num) < 0
+							|| StringUtil.nullToInteger(num) > 100) {
+			        	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.outsourcingUser.save.dataError", "")).body(null);
+					}
+					//校验optionTime 
+		           Date optionTime = DateUtil.parseDate(DateUtil.DATE_YYYYMMDD_PATTERN, createTimeD.substring(0,8)); 
+		           if(optionTime == null || !createTimeD.substring(0,8).equals(DateUtil.formatDate(DateUtil.DATE_YYYYMMDD_PATTERN, optionTime))){ 
+			        return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.outsourcingUser.save.dataError", "")).body(null);
+		           }
+				}
+			}
 			contractInfo.setCreateTime(updateTime);
 			contractInfo.setCreator(updator);
 			contractInfo.setStatus(ContractInfo.STATUS_VALIDABLE);
@@ -149,7 +183,26 @@ public class ContractInfoResource {
 		}
         contractInfo.setUpdateTime(updateTime);
         contractInfo.setUpdator(updator);
-        ContractInfo result = contractInfoService.save(contractInfo);
+        ContractInfo result = new ContractInfo();
+        if (isNew) {
+        	if (contractInfo.getType().intValue() == ContractInfo.TYPE_EXTERNAL){
+        		List<OutsourcingUser> list = outsourcingUserRepository.findByMark(contractInfo.getMark());
+        		if (list != null && !list.isEmpty()){
+        			 result = contractInfoService.save(contractInfo);
+        			 for (OutsourcingUser outsourcingUser : list) {
+						outsourcingUser.setContractId(contractInfo.getId());
+						outsourcingUserRepository.save(outsourcingUser);
+					}
+        		}else {
+    	        	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.outsourcingUser.save.user", "")).body(null);
+				}
+        	}else {
+        		 result = contractInfoService.save(contractInfo);	
+			}
+		}else {
+			 result = contractInfoService.save(contractInfo);
+		}
+        
         if(isNew){
         	return ResponseEntity.created(new URI("/api/project-infos/" + result.getId()))
                     .headers(HeaderUtil.createEntityCreationAlert("contractInfo", result.getId().toString()))

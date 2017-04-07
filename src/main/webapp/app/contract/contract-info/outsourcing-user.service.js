@@ -2,16 +2,15 @@
     'use strict';
     angular
         .module('cpmApp')
-        .factory('ContractInfo', ContractInfo);
+        .factory('OutsourcingUser', OutsourcingUser);
 
-    ContractInfo.$inject = ['$resource', 'DateUtils'];
+    OutsourcingUser.$inject = ['$resource', 'DateUtils'];
 
-    function ContractInfo ($resource, DateUtils,$http) {
+    function OutsourcingUser ($resource, DateUtils,$http) {
     	
-        var resourceUrl =  'api/contract-infos/:id';
+        var resourceUrl =  'api/outsourcing-user/:infoId';
 
         return $resource(resourceUrl, {}, {
-            'query': { method: 'GET', isArray: true},
             'get': {
                 method: 'GET',
                 transformResponse: function (data) {
@@ -25,28 +24,15 @@
                     return data;
                 }
             },
-            'update': { method:'PUT' },
-            'queryContractInfo':{
-            	url:'api/contract-infos/queryUserContract',
+            'getUserList':{
+            	url:'api/outsourcing-user/getUserList',
             	method:'GET',
             	isArray:true
             },
-            'finish': { method:'PUT',url:'api/contract-infos/finish' },
-            'end':{
-            	url:'api/contract-infos/end',
+            'choseUser':{
+            	url:'api/outsourcing-user/choseUser',
             	method:'GET',
-            	isArray:true
-            },
-            'queryOutsourcingUser':{
-            	url:'api/contract-infos/queryOutsourcingUser',
-            	method:'GET',
-            	isArray:true
-            },
-            'updateOutsourcingUser': { method:'PUT',url:'api/contract-infos/updateOutsourcingUser' },
-            'getOutsourcingUser': {
-                method: 'GET',
-                url:'api/contract-infos/getOutsourcingUserVo/id',
-                transformResponse: function (data) {
+            	transformResponse: function (data) {
                     if (data) {
                         data = angular.fromJson(data);
                         data.createTime = DateUtils.convertDateTimeFromServer(data.createTime);

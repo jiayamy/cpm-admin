@@ -23,6 +23,9 @@ public interface ContractInfoRepository extends JpaRepository<ContractInfo,Long>
 	@Query(" from ContractInfo where status = ?1 or updateTime >= ?2")
 	List<ContractInfo> findByStatusOrEndTime(Integer status, ZonedDateTime endTime);
 	
+	@Query(" from ContractInfo where mark = ?1")
+	ContractInfo getOneByMark(String mark);
+
 	Optional<ContractInfo> findOneBySerialNum(String serialNum);
 	
 	@Query(" from ContractInfo where deptId is not null and (status = ?1 or updateTime >= ?2)")
