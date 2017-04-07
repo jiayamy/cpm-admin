@@ -2,6 +2,7 @@ package com.wondertek.cpm.web.rest;
 
 import io.swagger.annotations.ApiParam;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -27,19 +28,18 @@ import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.codahale.metrics.annotation.Timed;
 import com.wondertek.cpm.CpmConstants;
 import com.wondertek.cpm.ExcelUtil;
 import com.wondertek.cpm.ExcelValue;
 import com.wondertek.cpm.config.DateUtil;
+import com.wondertek.cpm.config.FilePathHelper;
 import com.wondertek.cpm.config.StringUtil;
 import com.wondertek.cpm.domain.ContractInfo;
 import com.wondertek.cpm.domain.DeptInfo;
@@ -354,18 +354,26 @@ public class ContractInfoResource {
     			.body(null);
     }
 	
-	@PostMapping("/contract-infos/uploadExcel")
+	@GetMapping("/contract-infos/uploadExcel")
     @Timed
     @Secured(AuthoritiesConstants.ROLE_CONTRACT_INFO)
-    public ResponseEntity<CpmResponse> uploadExcel(@RequestParam(value="file",required=false) MultipartFile file)
+    public ResponseEntity<CpmResponse> uploadExcel(@RequestParam(value="filePath",required=true) String filePath)
             throws URISyntaxException {
-        log.debug(SecurityUtils.getCurrentUserLogin()+" REST request to uploadExcel for file : {}",file.getOriginalFilename());
+        log.debug(SecurityUtils.getCurrentUserLogin()+" REST request to uploadExcel for filePath : {}",filePath);
         List<ContractInfo> contractInfos = null;
         CpmResponse cpmResponse = new CpmResponse();
         try {
-			//从第一行读取，最多读取10个sheet，最多读取25列
+        	//校验文件是否存在
+			File file = new File(FilePathHelper.joinPath(CpmConstants.FILE_UPLOAD_SERVLET_BASE_PATH,filePath));
+			if(!file.exists() || !file.isFile()){
+				return ResponseEntity.ok()
+						.body(cpmResponse
+								.setSuccess(Boolean.FALSE)
+								.setMsgKey("cpmApp.contractInfo.upload.requiredError"));
+			}
+			//从第一行读取，最多读取10个sheet，最多读取23列
         	int startNum = 1;
-			List<ExcelValue> lists = ExcelUtil.readExcel(file,startNum,10,25);
+			List<ExcelValue> lists = ExcelUtil.readExcel(file,startNum,10,23);
 			if(lists == null || lists.isEmpty()){
 				return ResponseEntity.ok()
 						.body(cpmResponse
@@ -398,7 +406,7 @@ public class ContractInfoResource {
 					}
 					try {
 						ContractInfo contractInfo = new ContractInfo();
-						contractInfo.setStatus(CpmConstants.STATUS_VALID);
+						contractInfo.setStatus(ContractInfo.STATUS_VALIDABLE);
 						contractInfo.setCreator(updator);
 						contractInfo.setCreateTime(updateTime);
 						contractInfo.setUpdator(updator);
@@ -415,11 +423,11 @@ public class ContractInfoResource {
 						contractInfo.setSerialNum(val.toString());
 						//检验是否新增合同
 						Boolean isExistSerialnum = contractInfoMap.containsKey(contractInfo.getSerialNum());
-						//更新合同信息时，只有status-开发中 才允许更新
-						if(isExistSerialnum && contractInfoMap.get(contractInfo.getSerialNum()).getStatus() != 1){
+						//上传合同信息时，只添加不更新
+						if(isExistSerialnum){	//如果合同已存在，前端提示存在错误
 							return ResponseEntity.ok().body(cpmResponse
 									.setSuccess(Boolean.FALSE)
-									.setMsgKey("cpmApp.contractInfo.upload.statusError")
+									.setMsgKey("cpmApp.contractInfo.upload.existError")
 									.setMsgParam(excelValue.getSheet() + "," + rowNum));
 						}
 						
@@ -458,41 +466,46 @@ public class ContractInfoResource {
 						} else {
 							contractInfo.setType(ContractInfo.TYPE_OTHER);
 						}
-						if (isExistSerialnum && contractInfoMap.get(contractInfo.getSerialNum()).getType() != contractInfo.getType()) {
+						//填充是否 预立合同(根据合同编号判断是否预立合同)
+						//columnNum ++;
+						//val = ls.get(columnNum);
+						Boolean isMatched = contractInfo.getSerialNum().substring(0, 2).equalsIgnoreCase("WY");
+						if(isMatched){
+							contractInfo.setIsPrepared(Boolean.TRUE);
+						}else{
+							contractInfo.setIsPrepared(Boolean.FALSE);
+						}
+//						else if(val.equals("预立合同")){//更新时，正式合同不能更改为预立合同
+//							if(isExistSerialnum && !contractInfoMap.get(contractInfo.getSerialNum()).getIsPrepared()){
+//								return ResponseEntity.ok()
+//										.body(cpmResponse.setSuccess(Boolean.FALSE)
+//												.setMsgKey("cpmApp.contractInfo.upload.isPreparedError").setMsgParam(
+//														excelValue.getSheet() + "," + rowNum + "," + (columnNum + 1)));
+//							}
+//							contractInfo.setIsPrepared(Boolean.TRUE);
+//						}
+						
+						//检验第四列 外部合同
+						columnNum ++;
+						val = ls.get(columnNum);
+						if(val == null){
+							//contractInfo.setIsEpibolic(Boolean.FALSE);
 							return ResponseEntity.ok()
 									.body(cpmResponse.setSuccess(Boolean.FALSE)
-											.setMsgKey("cpmApp.contractInfo.upload.typeError").setMsgParam(
+											.setMsgKey("cpmApp.contractInfo.upload.dataError").setMsgParam(
+													excelValue.getSheet() + "," + rowNum + "," + (columnNum + 1)));
+						}else if(val.equals("外包合同")){
+							contractInfo.setIsEpibolic(Boolean.TRUE);
+						}else if(val.equals("内部合同")){
+							contractInfo.setIsEpibolic(Boolean.FALSE);
+						}else{
+							return ResponseEntity.ok()
+									.body(cpmResponse.setSuccess(Boolean.FALSE)
+											.setMsgKey("cpmApp.contractInfo.upload.dataError").setMsgParam(
 													excelValue.getSheet() + "," + rowNum + "," + (columnNum + 1)));
 						}
-						//检验第四列 预立合同
-						columnNum ++;
-						val = ls.get(columnNum);
-						if(val == null){
-							contractInfo.setIsPrepared(Boolean.FALSE);
-						}else if(val.equals("正式合同")){
-							contractInfo.setIsPrepared(Boolean.FALSE);
-						}else if(val.equals("预立合同")){//更新时，正式合同不能更改为预立合同
-							if(isExistSerialnum && !contractInfoMap.get(contractInfo.getSerialNum()).getIsPrepared()){
-								return ResponseEntity.ok()
-										.body(cpmResponse.setSuccess(Boolean.FALSE)
-												.setMsgKey("cpmApp.contractInfo.upload.isPreparedError").setMsgParam(
-														excelValue.getSheet() + "," + rowNum + "," + (columnNum + 1)));
-							}
-							contractInfo.setIsPrepared(Boolean.TRUE);
-						}
 						
-						//检验第五列 外部合同
-						columnNum ++;
-						val = ls.get(columnNum);
-						if(val == null){
-							contractInfo.setIsEpibolic(Boolean.FALSE);
-						}else if(val.equals("外部合同")){
-							contractInfo.setIsEpibolic(Boolean.TRUE);
-						}else{
-							contractInfo.setIsEpibolic(Boolean.FALSE);
-						}
-						
-						//检验第六列 销售人员工号
+						//检验第五列 销售人员工号
 						columnNum ++;
 						val = ls.get(columnNum);
 						UserBaseVo salemanVo = null;
@@ -509,7 +522,7 @@ public class ContractInfoResource {
 							contractInfo.setSalesmanId(null);
 						}
 						
-						//检验第七列 销售人员姓名(人员工号为空时，此为空)
+						//检验第六列 销售人员姓名(人员工号为空时，此为空)
 						columnNum ++;
 						if(contractInfo.getSalesmanId() == null){
 							contractInfo.setSalesman(null);
@@ -517,8 +530,7 @@ public class ContractInfoResource {
 							contractInfo.setSalesman(salemanVo.getLastName());
 						}
 						
-						//检验第八列  销售部门(人员工号为空时，此为空)
-						columnNum ++;
+						//填充 销售部门(人员工号为空时，此为空)
 						if(contractInfo.getSalesmanId() == null){
 							contractInfo.setDeptId(null);
 							contractInfo.setDept(null);
@@ -527,7 +539,7 @@ public class ContractInfoResource {
 							contractInfo.setDept(deptInfoMap.get(salemanVo.getDeptId()).getName());
 						}
 						
-						//检验第九列 咨询人员工号
+						//检验第七列 咨询人员工号
 						columnNum ++;
 						val = ls.get(columnNum);
 						UserBaseVo consultantVo = null;
@@ -550,15 +562,14 @@ public class ContractInfoResource {
 									.setMsgKey("cpmApp.contractInfo.upload.salesmanAndconsultants")
 									.setMsgParam(excelValue.getSheet() + "," + rowNum));
 						}
-						//检验第十列 咨询人员姓名(人员工号为空时，此为空)
+						//检验第八列 咨询人员姓名(人员工号为空时，此为空)
 						columnNum ++;
 						if (contractInfo.getConsultantsId() == null) {
 							contractInfo.setConsultants(null);
 						}else{
 							contractInfo.setConsultants(consultantVo.getLastName());
 						}
-						//检验第十一列 咨询部门(人员工号为空时，此为空)
-						columnNum ++;
+						//填充 咨询部门(人员工号为空时，此为空)
 						if(contractInfo.getConsultantsId() == null){
 							contractInfo.setConsultantsDeptId(null);
 							contractInfo.setConsultantsDept(null);
@@ -567,7 +578,7 @@ public class ContractInfoResource {
 							contractInfo.setConsultantsDept(deptInfoMap.get(consultantVo.getDeptId()).getName());
 						}
 						
-						//检验第十二列 咨询分润比率(人员工号为空时，此为空)
+						//检验第九列 咨询分润比率(人员工号为空时，此为空)
 						columnNum ++;
 						val = ls.get(columnNum);
 						if(contractInfo.getConsultantsId() == null){
@@ -589,7 +600,7 @@ public class ContractInfoResource {
 							}
 						}
 						
-						//检验第十三列 开始日期 
+						//检验第十列 开始日期 
 						columnNum ++;
 						val = ls.get(columnNum);
 						if(val == null){
@@ -606,7 +617,7 @@ public class ContractInfoResource {
 									.setMsgParam(excelValue.getSheet() + "," + rowNum +","+(columnNum+1)));
 						}
 						
-						//检验第十四列 结束日期 
+						//检验第十一列 结束日期 
 						columnNum ++;
 						val = ls.get(columnNum);
 						if(val == null){
@@ -623,7 +634,7 @@ public class ContractInfoResource {
 									.setMsgParam(excelValue.getSheet() + "," + rowNum +","+(columnNum+1)));
 						}
 						
-						//检验第十五列 合同金额 
+						//检验第十二列 合同金额 
 						columnNum ++;
 						val = ls.get(columnNum);
 						if(val == null){
@@ -643,12 +654,12 @@ public class ContractInfoResource {
 							}
 						}
 						
-						//检验第十六列 付款方式
+						//检验第十三列 付款方式
 						columnNum ++;
 						val = ls.get(columnNum);
 						contractInfo.setPaymentWay(StringUtil.nullToString(val));
 						
-						//检验第十七列  税率
+						//检验第十四列  税率
 						columnNum ++;
 						val = ls.get(columnNum);
 						if(val == null){
@@ -668,11 +679,11 @@ public class ContractInfoResource {
 							}
 						}
 						
-						//检验第十八列 税费
+						//检验第十五列 税费
 						columnNum ++;
 						contractInfo.setTaxes(contractInfo.getAmount() * contractInfo.getTaxRate() / 100);
 						
-						//检验第十九列 公摊比例
+						//检验第十六列 公摊比例
 						columnNum ++;
 						val = ls.get(columnNum);
 						if(val == null){
@@ -692,10 +703,11 @@ public class ContractInfoResource {
 							}
 						}
 						
-						//公摊成本
+						//第十七列 公摊成本
+						columnNum ++;
 						contractInfo.setShareCost(contractInfo.getAmount() * contractInfo.getShareRate() / 100);
 						
-						//检验第二十列 合同方公司
+						//检验第十八列 合同方公司
 						columnNum ++;
 						if(ls.size() > columnNum){
 							val = ls.get(columnNum);
@@ -705,7 +717,7 @@ public class ContractInfoResource {
 							}
 						}
 						
-						//检验第二十一列 合同方联系人
+						//检验第十九列 合同方联系人
 						columnNum ++;
 						if(ls.size() > columnNum){
 							val = ls.get(columnNum);
@@ -715,7 +727,7 @@ public class ContractInfoResource {
 							}
 						}
 						
-						//检验第二十二列 合同方联系部门
+						//检验第二十列 合同方联系部门
 						columnNum ++;
 						if (ls.size() > columnNum) {
 							val = ls.get(columnNum);
@@ -724,7 +736,7 @@ public class ContractInfoResource {
 								contractInfo.setContactDept(StringUtil.nullToString(val));
 							} 
 						}
-						//检验第二十三列 合同方电话
+						//检验第二十一列 合同方电话
 						columnNum ++;
 						if (ls.size() > columnNum) {
 							val = ls.get(columnNum);
@@ -733,7 +745,7 @@ public class ContractInfoResource {
 								contractInfo.setTelephone(StringUtil.nullToString(val));
 							} 
 						}
-						//检验第二十四列 合同方通信地址
+						//检验第二十二列 合同方通信地址
 						columnNum ++;
 						if (ls.size() > columnNum) {
 							val = ls.get(columnNum);
@@ -742,7 +754,7 @@ public class ContractInfoResource {
 								contractInfo.setAddress(StringUtil.nullToString(val));
 							} 
 						}
-						//检验第二十五列 合同方邮编
+						//检验第二十三列 合同方邮编
 						columnNum ++;
 						if (ls.size() > columnNum) {
 							val = ls.get(columnNum);
@@ -758,8 +770,6 @@ public class ContractInfoResource {
 						contractInfo.setFinishTotal(0d);
 						//完成率
 						contractInfo.setFinishRate(0d);
-						//状态
-						contractInfo.setStatus(ContractInfo.STATUS_VALIDABLE);
 						//校验记录是否存在
 						String key = contractInfo.getSerialNum();
 						if(existMap.containsKey(key)){

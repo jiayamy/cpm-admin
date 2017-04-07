@@ -26,4 +26,10 @@ public interface ContractCostRepository extends JpaRepository<ContractCost,Long>
 	
 	@Query(" from ContractCost where deptId = ?1 and type = ?2 and contractId = ?3 and costDay = ?4 and status = 1")
 	ContractCost findByDeptIdAndTypeAndContractIdAndCostDay(Long deptId, Integer type, Long contractId, Long costDay);
+	
+	@Query(" from ContractCost where deptId = ?1 and type = ?2 and contractId = ?3 and costDay >= ?4 and costDay <= ?5 and status = 1")
+	List<ContractCost> findByDeptIdAndTypeAndContractIdAndCostDayBetween(Long deptId,Integer type, Long contractId, Long beginTime, Long endTime);
+	
+	@Query(" from ContractCost where deptId = ?1 and type != ?2 and contractId = ?3 and costDay >= ?4 and costDay <= ?5 and status = 1")
+	List<ContractCost> findByDeptIdAndNoTypeAndContractIdAndCostDayBetween(Long deptId,Integer type, Long contractId, Long beginTime, Long endTime);
 }

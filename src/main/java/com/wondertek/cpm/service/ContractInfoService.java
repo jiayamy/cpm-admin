@@ -6,7 +6,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import javax.inject.Inject;
 
@@ -55,7 +54,7 @@ public class ContractInfoService {
     /**
      * Save a contractInfo.
      *
-     * @param contractInfoVo the entity to save
+     * @param contractInfo the entity to save
      * @return the persisted entity
      */
     public ContractInfo save(ContractInfo contractInfo) {
@@ -215,15 +214,6 @@ public class ContractInfoService {
 	 */
 	public void saveOrUpdateUploadRecord(List<ContractInfo> contractInfos){
 		if(contractInfos != null){
-			Optional<ContractInfo> oldInfo = null;
-			for(ContractInfo contractInfo : contractInfos){
-				oldInfo = contractInfoRepository.findOneBySerialNum(contractInfo.getSerialNum());
-				if(oldInfo.isPresent()){//修改
-					contractInfo.setId(oldInfo.get().getId());
-					contractInfo.setCreator(oldInfo.get().getCreator());
-					contractInfo.setCreateTime(oldInfo.get().getCreateTime());
-				}
-			}
 			contractInfoRepository.save(contractInfos);
 		}
 	}

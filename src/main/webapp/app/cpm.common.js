@@ -11,7 +11,7 @@
         	    		$scope.usingFlash = FileAPI && FileAPI.upload != null;
         	    		$scope.files = [];
         	    		$scope.invalidFiles = [];
-        	    		$scope.chunkSize = 10240;//支持续传的一次传输多大，单位B
+        	    		$scope.chunkSize = 102400;//支持续传的一次传输多大，单位B
         	    		$scope.randomNum = getRandomNum(0,100);
         	    		$scope.fileUploadUrl="cpmservlet/uploadFile"//上传url
         	    		$scope.type = $scope.type || '1';//上传文件类型

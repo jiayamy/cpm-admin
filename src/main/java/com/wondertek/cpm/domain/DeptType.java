@@ -35,6 +35,8 @@ public class DeptType implements Serializable {
      */
     public static final Long PROJECT_IMPLEMENTATION = 5L;
     
+    public static final int TYPE_DEPT_SALE = 2;
+    
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
