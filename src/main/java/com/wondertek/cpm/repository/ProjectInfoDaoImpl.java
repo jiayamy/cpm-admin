@@ -368,8 +368,9 @@ public class ProjectInfoDaoImpl extends GenericDaoImpl<ProjectInfo, Long> implem
 		StringBuffer querySql = new StringBuffer();
 		List<Object> params = new ArrayList<Object>();
 		
-		querySql.append(" select wpi.id,wpi.serial_num,wpi.name_ from w_project_info wpi");
+		querySql.append(" select wpi.id,wpi.serial_num,wpi.name_,wci.type_,wci.id as p1 from w_project_info wpi");
 		querySql.append(" left join w_dept_info wdi on wpi.dept_id = wdi.id");
+		querySql.append(" left join w_contract_info wci on wci.id = wpi.contract_id");
 		
 		querySql.append(" where (wpi.pm_id = ? or wpi.creator_ = ?");
 		params.add(user.getId());
@@ -388,7 +389,7 @@ public class ProjectInfoDaoImpl extends GenericDaoImpl<ProjectInfo, Long> implem
 		List<LongValue> returnList = new ArrayList<LongValue>();
 		if(list != null){
 			for(Object[] o : list){
-				returnList.add(new LongValue(StringUtil.nullToLong(o[0]),StringUtil.null2Str(o[1]) + ":" + StringUtil.null2Str(o[2])));
+				returnList.add(new LongValue(StringUtil.nullToLong(o[0]),StringUtil.nullToInteger(o[3]),StringUtil.null2Str(o[1]) + ":" + StringUtil.null2Str(o[2]),StringUtil.nullToLong(o[4])));
 			}
 		}
 		return returnList;

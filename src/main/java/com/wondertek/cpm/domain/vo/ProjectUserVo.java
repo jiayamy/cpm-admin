@@ -10,12 +10,16 @@ public class ProjectUserVo {
     private Long projectId;
     private String projectNum;
     private String projectName;
+    private Integer type;
+    private Long contractId;
+    private Long outsourcingUserId;
     
     private Long userId;
     private String userName;
     private String userRole;
     private Long joinDay;
     private Long leaveDay;
+    private String rank;
     private String creator;
     private ZonedDateTime createTime;
     private String updator;
@@ -24,7 +28,7 @@ public class ProjectUserVo {
     
 	public ProjectUserVo() {
 	}
-	public ProjectUserVo(ProjectUser projectUser, String projectNum, String projectName) {
+	public ProjectUserVo(ProjectUser projectUser, String projectNum, String projectName,Integer type,Long contractId,Long outsourcingUserId) {
 		this.id = projectUser.getId();
 		this.projectId = projectUser.getProjectId();
 		this.userId = projectUser.getUserId();
@@ -32,6 +36,7 @@ public class ProjectUserVo {
 		this.userRole = projectUser.getUserRole();
 		this.joinDay = projectUser.getJoinDay();
 		this.leaveDay = projectUser.getLeaveDay();
+		this.rank = projectUser.getRank();
 		this.creator = projectUser.getCreator();
 		this.createTime = projectUser.getCreateTime();
 		this.updator = projectUser.getUpdator();
@@ -39,6 +44,9 @@ public class ProjectUserVo {
 		
 		this.projectNum = projectNum;
 		this.projectName = projectName;
+		this.type = type;
+		this.contractId = contractId;
+		this.outsourcingUserId = outsourcingUserId;
 	}
 	
 	public String getProjectName() {
@@ -64,6 +72,24 @@ public class ProjectUserVo {
 	}
 	public void setProjectNum(String projectNum) {
 		this.projectNum = projectNum;
+	}
+	public Integer getType() {
+		return type;
+	}
+	public void setType(Integer type) {
+		this.type = type;
+	}
+	public Long getContractId() {
+		return contractId;
+	}
+	public void setContractId(Long contractId) {
+		this.contractId = contractId;
+	}
+	public Long getOutsourcingUserId() {
+		return outsourcingUserId;
+	}
+	public void setOutsourcingUserId(Long outsourcingUserId) {
+		this.outsourcingUserId = outsourcingUserId;
 	}
 	public Long getUserId() {
 		return userId;
@@ -94,6 +120,12 @@ public class ProjectUserVo {
 	}
 	public void setLeaveDay(Long leaveDay) {
 		this.leaveDay = leaveDay;
+	}
+	public String getRank() {
+		return rank;
+	}
+	public void setRank(String rank) {
+		this.rank = rank;
 	}
 	public String getCreator() {
 		return creator;

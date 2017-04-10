@@ -4,6 +4,7 @@ import io.swagger.annotations.ApiParam;
 
 import java.net.URISyntaxException;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -30,6 +31,7 @@ import com.wondertek.cpm.config.DateUtil;
 import com.wondertek.cpm.config.StringUtil;
 import com.wondertek.cpm.domain.ContractInfo;
 import com.wondertek.cpm.domain.OutsourcingUser;
+import com.wondertek.cpm.domain.vo.LongValue;
 import com.wondertek.cpm.domain.vo.OutsourcingUserVo;
 import com.wondertek.cpm.repository.ContractInfoRepository;
 import com.wondertek.cpm.repository.OutsourcingUserRepository;
@@ -56,20 +58,6 @@ public class OutsourcingUserResource {
 	@Inject
 	private OutsourcingUserRepository outsourcingUserRepository;
 
-	@GetMapping("/contract-infos/queryOutsourcingUser")
-    @Timed
-    @Secured(AuthoritiesConstants.ROLE_CONTRACT_PURCHASE)
-    public ResponseEntity<List<OutsourcingUser>> getOutsourcingUser(
-    		@RequestParam(value = "contractId",required=true) Long contractId,
-    		@ApiParam Pageable pageable)
-    	throws URISyntaxException{
-    	log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to get a page of OutsourcingUser  contractId:{}",contractId);
-    	 List<OutsourcingUser> page = outsourcingUserService.searchUserList(contractId);
-    	 for (OutsourcingUser outsourcingUser : page) {
-			outsourcingUser.setOffer(StringUtil.getScaleDouble(outsourcingUser.getOffer(), 2));
-		}
-         return new ResponseEntity<>(page,new HttpHeaders(),HttpStatus.OK);
-    }
 	@PutMapping("/contract-infos/updateOutsourcingUser")
     @Timed
     @Secured(AuthoritiesConstants.ROLE_CONTRACT_PURCHASE)
@@ -100,7 +88,7 @@ public class OutsourcingUserResource {
         		}
 			}
         	
-			OutsourcingUser oldOutsourcingUser = this.outsourcingUserService.findOneById(outsourcingUser.getId());
+			OutsourcingUser oldOutsourcingUser = this.outsourcingUserRepository.findOne(outsourcingUser.getId());
 			if (oldOutsourcingUser == null ) {
         		return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.outsourcingUser.save.idNone", "")).body(null);
 			}else if (!oldOutsourcingUser.getRank().equals(outsourcingUser.getRank())) {
@@ -169,40 +157,34 @@ public class OutsourcingUserResource {
                 HttpStatus.OK))
             .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
-	@PutMapping("/outsourcing-user/createContractInfoAndUser")
-	@Timed
-    @Secured(AuthoritiesConstants.ROLE_PROJECT_USER)
-	public ResponseEntity<Boolean> creacteOutsourcingUser(@RequestBody OutsourcingUser outsourcingUser){
-		log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to create OutsourcingUser at time creacte contractInfo : {}", outsourcingUser);
-		if (outsourcingUser.getId() != null) {
-        	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.outsourcingUser.save.dataError", "")).body(null);
-		}
-		return null;
-	}
 	@GetMapping("/outsourcing-user/getUserList")
     @Timed
     @Secured(AuthoritiesConstants.ROLE_CONTRACT_PURCHASE)
     public ResponseEntity<List<OutsourcingUser>> getUserList(
-    		@RequestParam(value = "mark",required=true) String mark,
+    		@RequestParam(value = "mark",required=false) String mark,
+    		@RequestParam(value = "contractId",required=false) Long contractId,
     		@ApiParam Pageable pageable)
     	throws URISyntaxException{
-    	log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to get a page of mark  contractId:{}",mark);
-    	 List<OutsourcingUser> page = outsourcingUserService.getUserList(mark);
-    	 for (OutsourcingUser outsourcingUser : page) {
+    	log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to get a list of outsourcingUser mark:{},contractId:{}",mark,contractId);
+    	//校验参数
+    	if (StringUtil.isNullStr(mark) && StringUtil.isNullStr(contractId)) {
+    		return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.outsourcingUser.save.requiedError", "")).body(null);
+		}
+    	List<OutsourcingUser> page = outsourcingUserRepository.findByMarkOrContractId(mark, contractId);
+		for (OutsourcingUser outsourcingUser : page) {
 			outsourcingUser.setOffer(StringUtil.getScaleDouble(outsourcingUser.getOffer(), 2));
 		}
          return new ResponseEntity<>(page,new HttpHeaders(),HttpStatus.OK);
     }
-	@GetMapping("/outsourcing-user/choseUser")
+	/**
+     * 获取项目经理能看到的员工等级
+     */
+    @GetMapping("/outsourcing-user/queryUserRank")
     @Timed
-    @Secured(AuthoritiesConstants.ROLE_CONTRACT_PURCHASE)
-    public ResponseEntity<OutsourcingUserVo> choseUser(@RequestParam(value = "id",required=true) Long id) {
-        log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to get OutsourcingUser : {}", id);
-        OutsourcingUserVo outsourcingUser = outsourcingUserService.choseUser(id);
-        return Optional.ofNullable(outsourcingUser)
-            .map(result -> new ResponseEntity<>(
-                result,
-                HttpStatus.OK))
-            .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    @Secured(AuthoritiesConstants.USER)
+    public ResponseEntity<List<LongValue>> queryUserRank(@RequestParam(value = "contractId") Long contractId) throws URISyntaxException {
+        log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to queryUserRank");
+        List<LongValue> list = outsourcingUserService.queryUserRank(contractId);
+        return new ResponseEntity<>(list, null, HttpStatus.OK);
     }
 }

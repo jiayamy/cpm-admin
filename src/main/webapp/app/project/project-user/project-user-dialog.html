@@ -10,11 +10,22 @@
 				<div class="col-sm-6">
 			        <label class="control-label" data-translate="cpmApp.projectUser.projectId" for="field_projectId">Project Id</label>
 	            	<select class="form-control" name="projectId" ng-model="vm.projectUser.projectId" id="field_projectId"
-	            		ng-required="true" ng-disabled="vm.projectUser.id"
+	            		ng-required="true" ng-disabled="vm.projectUser.id" ng-change="vm.changeProject()"
 		            	ng-options="projectInfo.val for projectInfo in vm.projectInfos track by projectInfo.key">
 		            </select>
 		            <div class="help-block"
 	                   ng-show="myForm.projectId.$error.required" data-translate="entity.validation.required" style="color:red">
+	                    This field is required.
+	                </div>
+			    </div>
+			    <div class="col-sm-6" ng-show="vm.isOutsourcing">
+			        <label class="control-label" data-translate="cpmApp.projectUser.rank" for="field_rank">Rank</label>
+	            	<select class="form-control" name="rank"  id="field_rank"
+	            		ng-required="vm.isRank" ng-model="vm.projectUser.rank"
+		            	ng-options="rank.val for rank in vm.ranks track by rank.key">
+		            </select>
+		            <div class="help-block"
+	                   ng-show="myForm.rank.$error.required" data-translate="entity.validation.required" style="color:red">
 	                    This field is required.
 	                </div>
 			    </div>
