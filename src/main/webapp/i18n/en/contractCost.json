@@ -35,6 +35,8 @@
             	"recordExistError":"No.{{sheetNum}}sheet's No.{{rowNum}}row's No.{{columnNum}}column's contract cost record already exist",
             	"typeError":"No.{{sheetNum}}sheet's No.{{rowNum}}row's No.{{columnNum}}column's cost type,When humancost,Type cannot be modified manually",
             	"statusError":"No.{{sheetNum}}sheet's No.{{rowNum}}row's No.{{columnNum}}column's contract cost,The deleted or the completed Contract cannot be modified",
+            	"dataNotExist":"No.{{sheetNum}}sheet's No.{{rowNum}}row's No.{{columnNum}}column's user not exist，plz add",
+            	"deptNotExist":"No.{{sheetNum}}sheet's No.{{rowNum}}row's No.{{columnNum}}column's Dept not matched，plz confirm",
             	"nonFile":"no Files！",
             	"numFile":"Files uploaded should be less than 1！",
             	"handleError":"Handle Error",

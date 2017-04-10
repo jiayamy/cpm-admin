@@ -79,4 +79,19 @@ public class ProjectSupportBonusService {
 		return null;
 	}
 
+	public List<ProjectSupportBonusVo> searchList(
+			ProjectSupportBonus projectSupportBonus) {
+		List<Object[]> objs = userRepository.findUserInfoByLogin(SecurityUtils.getCurrentUserLogin());
+		if(objs != null && !objs.isEmpty()){
+			Object[] o = objs.get(0);
+    		User user = (User) o[0];
+    		DeptInfo deptInfo = (DeptInfo) o[1];
+    		
+			List<ProjectSupportBonusVo> page = projectSupportBonusDao.geListByParams(user,deptInfo,projectSupportBonus);
+			return page;
+		}else {
+			return null;
+		}
+	}
+
 }

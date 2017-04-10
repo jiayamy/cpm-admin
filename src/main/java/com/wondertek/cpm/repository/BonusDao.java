@@ -1,5 +1,7 @@
 package com.wondertek.cpm.repository;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -15,5 +17,7 @@ public interface BonusDao extends GenericDao<Bonus, Long> {
 	public Page<BonusVo> getPageDetail(Long contractId,User user,DeptInfo deptInfo,Pageable pageable);
 
 	public BonusVo getUserBonus(Long id, User user, DeptInfo deptInfo);
+
+	public List<BonusVo> getBonusListl(Bonus bonus, User user, DeptInfo deptInfo);
 
 }

@@ -200,44 +200,21 @@
             resolve: {
             	 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                      $translatePartialLoader.addPart('contractInfo');
+                     $translatePartialLoader.addPart('outsourcingUser');
                      $translatePartialLoader.addPart('deptInfo');
                      $translatePartialLoader.addPart('global');
                      return $translate.refresh();
                  }],
-                entity: function () {
-                    return {
-                        serialNum: null,
-                        name: null,
-                        amount: null,
-                        type: null,
-                        isPrepared: null,
-                        isEpibolic: null,
-                        startDay: null,
-                        endDay: null,
-                        taxRate: null,
-                        taxes: null,
-                        shareRate: null,
-                        shareCost: null,
-                        paymentWay: null,
-                        contractor: null,
-                        address: null,
-                        postcode: null,
-                        linkman: null,
-                        contactDept: null,
-                        telephone: null,
-                        receiveTotal: null,
-                        finishRate: null,
-                        status: null,
-                        creator: null,
-                        createTime: null,
-                        updator: null,
-                        updateTime: null,
-                        id: null
-                    };
-                },
+                 entity: ['$stateParams', function($stateParams) {
+                     return {
+                    	 mark: $stateParams.mark
+                     }
+                 }],
                 previousState: ["$state", function ($state) {
                     var currentStateData = {
                     	queryDept:'contract-info.new.queryDept',
+                    	creatOutsourcingUser:'contract-info.new.creatOutsourcingUser',
+                    	changeOutsourcingUser:'contract-info.new.changeOutsourcingUser',
                         name: $state.current.name || 'contract-info',
                         params: $state.params,
                         url: $state.href($state.current.name, $state.params)
@@ -245,6 +222,90 @@
                     return currentStateData;
                 }]
             }
+        })
+        .state('contract-info.new.creatOutsourcingUser',{
+        	parent:'contract-info.new',
+        	url:'/creatOutsourcingUser/{mark}',
+        	data:{
+        		authorities: ['ROLE_CONTRACT_INFO']
+        	},
+//        	views:{
+//        		'content@':{
+//        			templateUrl: 'app/contract/contract-info/outsourcing-user-dialog.html',
+//        			controller: 'OutsourcingUserController',
+//        			controllerAs: 'vm',
+//        		}
+//        	},
+//        	resolve:{
+//        		 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
+//                     $translatePartialLoader.addPart('contractInfo');
+//                     $translatePartialLoader.addPart('outsourcingUser');
+//                     $translatePartialLoader.addPart('global');
+//                     return $translate.refresh();
+//                 }],
+//                 entity: ['$stateParams',function($stateParams) {
+//                     return {
+//                    	 mark: $stateParams.mark
+//                     }
+//                 }],
+//                 previousState: ["$state", function ($state) {
+//                     var currentStateData = {
+//                         name: $state.current.name || 'contract-info.new',
+//                         params: $state.params,
+//                         url: $state.href($state.current.name, $state.params)
+//                     };
+//                     return currentStateData;
+//                 }]
+//                 
+//        	}
+        	onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
+                $uibModal.open({
+                	templateUrl: 'app/contract/contract-info/outsourcing-user-dialog.html',
+                	controller: 'OutsourcingUserController',
+                    controllerAs: 'vm',
+                    backdrop: 'static',
+                    size: 'lg',
+                    params: {
+                    	mark: null
+            		},
+                    resolve: {
+                        entity: function() {
+                            return {
+                            	mark : $stateParams.mark
+                            }
+                        }
+                    }
+                }).result.then(function() {
+                    $state.go('^', {}, { reload: false});
+                }, function() {
+                    $state.go('^');
+                });
+            }]
+        })
+        .state('contract-info.new.changeOutsourcingUser',{
+        	parent:'contract-info.new',
+        	url:'/changeOutsourcingUser/{id}',
+        	data:{
+        		authorities: ['ROLE_CONTRACT_INFO']
+        	},
+        	onEnter: ['$stateParams', '$state', '$uibModal','OutsourcingUser',function($stateParams, $state, $uibModal,OutsourcingUser) {
+                $uibModal.open({
+        			templateUrl: 'app/contract/contract-info/outsourcing-user-dialog.html',
+                	controller: 'OutsourcingUserController',
+                    controllerAs: 'vm',
+                    backdrop: 'static',
+                    size: 'lg',
+                    resolve: {
+                        entity: function() {
+                        	return OutsourcingUser.choseUser({id : $stateParams.id}).$promise;
+                        }
+                    }
+                }).result.then(function() {
+                    $state.go('^', {}, { reload: false});
+                }, function() {
+                    $state.go('^');
+                });
+            }]
         })
         .state('contract-info.new.queryDept', {
             parent: 'contract-info.new',
@@ -291,6 +352,7 @@
         	resolve:{
         		 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                      $translatePartialLoader.addPart('contractInfo');
+                     $translatePartialLoader.addPart('outsourcingUser');
                      $translatePartialLoader.addPart('deptInfo');
                      $translatePartialLoader.addPart('global');
                      return $translate.refresh();
@@ -300,7 +362,8 @@
                  }],
                  previousState: ["$state", function ($state) {
                      var currentStateData = {
-                     	queryDept:'contract-info.edit.queryDept',
+                    	 queryDept:'contract-info.edit.queryDept',
+                    	 changeOutsourcingUser: 'contract-info.edit.changeOutsourcingUser',
                          name: $state.current.name || 'contract-info',
                          params: $state.params,
                          url: $state.href($state.current.name, $state.params)
@@ -309,6 +372,36 @@
                  }]
                  
         	}
+        })
+        .state('contract-info.edit.creatOutsourcingUser',{
+        	parent:'contract-info.edit',
+        	url:'/creatOutsourcingUser',
+        	data:{
+        		authorities: ['ROLE_CONTRACT_INFO']
+        	},
+        	onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
+                $uibModal.open({
+        			templateUrl: 'app/contract/contract-info/outsourcing-user-dialog.html',
+                	controller: 'OutsourcingUserController',
+                    controllerAs: 'vm',
+                    backdrop: 'static',
+                    size: 'lg',
+                    params: {
+                    	contractId: null
+            		},
+                    resolve: {
+                        entity: function() {
+                            return {
+                            	contractId : $stateParams.id
+                            }
+                        }
+                    }
+                }).result.then(function() {
+                    $state.go('^', {}, { reload: false});
+                }, function() {
+                    $state.go('^');
+                });
+            }]
         })
         .state('contract-info.edit.queryDept', {
             parent: 'contract-info.edit',
@@ -406,6 +499,31 @@
                     }
                 }).result.then(function() {
                     $state.go('contract-info', null, { reload: 'contract-info' });
+                }, function() {
+                    $state.go('^');
+                });
+            }]
+        })
+        .state('contract-info.edit.changeOutsourcingUser',{
+        	parent:'contract-info.edit',
+        	url:'/changeOutsourcingUser/{infoId}',
+        	data:{
+        		authorities: ['ROLE_CONTRACT_INFO']
+        	},
+        	onEnter: ['$stateParams', '$state', '$uibModal','OutsourcingUser',function($stateParams, $state, $uibModal,OutsourcingUser) {
+                $uibModal.open({
+        			templateUrl: 'app/contract/contract-info/outsourcing-user-dialog.html',
+                	controller: 'OutsourcingUserController',
+                    controllerAs: 'vm',
+                    backdrop: 'static',
+                    size: 'lg',
+                    resolve: {
+                        entity: function() {
+                        	return OutsourcingUser.get({infoId : $stateParams.infoId}).$promise;
+                        }
+                    }
+                }).result.then(function() {
+                    $state.go('^', {}, { reload: false});
                 }, function() {
                     $state.go('^');
                 });

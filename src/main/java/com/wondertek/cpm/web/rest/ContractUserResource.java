@@ -115,8 +115,8 @@ public class ContractUserResource {
         if (contractInfo == null) {
         	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.contractUser.save.dataError", "")).body(null);
 		}
-        if (contractInfo.getStatus() != ContractInfo.STATUS_VALIDABLE) {
-        	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.contractUser.save.contractInfoError", "")).body(null);
+        if (contractInfo.getStatus().intValue() != ContractInfo.STATUS_VALIDABLE) {
+        	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.contractReceive.save.contractInfoError", "")).body(null);
 		}
         if(contractUser.getLeaveDay() != null && contractUser.getLeaveDay().longValue() < contractUser.getJoinDay()){
         	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.contractUser.save.dayError", "")).body(null);

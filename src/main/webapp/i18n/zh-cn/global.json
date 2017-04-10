@@ -53,7 +53,8 @@
                 "projectMonthlyStat": "项目月统计",
                 "bonus": "奖金总表",
                 "salePurchaseInternalCost": "销售内部采购成本",
-                "projectSupportBonus": "项目支撑奖金"
+                "projectSupportBonus": "项目支撑奖金",
+                "saleWeeklyStat": "销售部门周统计"
             },
             "entities": {
                 "main": "数据",

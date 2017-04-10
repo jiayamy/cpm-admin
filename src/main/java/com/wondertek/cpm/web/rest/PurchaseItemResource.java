@@ -90,7 +90,7 @@ public class PurchaseItemResource {
         if (contractInfo == null || contractBudget == null) {
         	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.purchaseItem.save.dataError", "")).body(null);
 		}
-        if (contractInfo.getStatus() != ContractInfo.STATUS_VALIDABLE || contractBudget.getStatus() != ContractBudget.STATUS_VALIDABLE) {
+        if (contractInfo.getStatus().intValue() != ContractInfo.STATUS_VALIDABLE || contractBudget.getStatus().intValue() != ContractBudget.STATUS_VALIDABLE) {
         	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.purchaseItem.save.statusUnvalidable", "")).body(null);
 		}
         String updator = SecurityUtils.getCurrentUserLogin();

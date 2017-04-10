@@ -224,4 +224,68 @@ public class BonusDaoImpl extends GenericDaoImpl<Bonus, Long> implements BonusDa
 		return null;
 	}
 
+	@Override
+	public List<BonusVo> getBonusListl(Bonus bonus, User user, DeptInfo deptInfo) {
+		StringBuffer querySql = new StringBuffer();
+		
+		StringBuffer whereSql = new StringBuffer();
+		List<Object> params = new ArrayList<Object>();
+		
+		querySql.append("select wci.serial_num,wbs.id,wbs.stat_week,wbs.contract_id,wbs.sales_bonus,wbs.project_bonus,wm.implemtationBonus,wm.academicBonus,wbs.consultants_bonus,wbs.bonus_total,wbs.creator_,wbs.create_time,wbs.contract_amount");
+		
+		whereSql.append(" from w_bonus wbs");
+		whereSql.append(" inner join ");
+		whereSql.append("(");
+		whereSql.append("select max(wbs1.id) as id,wbs1.contract_id from w_bonus wbs1 where wbs1.stat_week <= ? group by wbs1.contract_id");
+		whereSql.append(")");
+		whereSql.append(" b on wbs.id = b.id");
+		whereSql.append(" inner join w_contract_info wci on wci.id = wbs.contract_id");
+		whereSql.append(" left join (select a.contract_id,wcpb1.bonus_ as implemtationBonus,wcpb2.bonus_ as academicBonus from");
+		whereSql.append("(select wcpb.contract_id,max(case when wcpb.dept_type = ? then wcpb.id end) as dept_type_5,");
+		whereSql.append(" max(case when wcpb.dept_type = ? then wcpb.id end) as dept_type_4 from w_contract_project_bonus wcpb where wcpb.stat_week <= ? group by wcpb.contract_id) a");
+		whereSql.append(" left join w_contract_project_bonus wcpb1 on wcpb1.id = a.dept_type_5");
+		whereSql.append(" left join w_contract_project_bonus wcpb2 on wcpb2.id = a.dept_type_4) wm");
+		whereSql.append(" on wbs.contract_id = wm.contract_id");
+		whereSql.append(" left join w_dept_info wdi on wci.dept_id = wdi.id");
+		whereSql.append(" left join w_dept_info wdi2 on wci.consultants_dept_id = wdi2.id");
+		//
+		params.add(bonus.getStatWeek());
+		params.add(DeptType.PROJECT_IMPLEMENTATION);
+		params.add(DeptType.PRODUCT_DEVELOPMENT);
+		params.add(bonus.getStatWeek());
+		//权限
+		whereSql.append(" where (wci.creator_ = ? or wci.sales_man_id = ? or wci.consultants_id = ?");
+		params.add(user.getLogin());
+		params.add(user.getId());
+		params.add(user.getId());
+		if(user.getIsManager()){
+			whereSql.append(" or wdi.id_path like ? or wdi.id = ?");
+			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
+			params.add(deptInfo.getId());
+			
+			whereSql.append(" or wdi2.id_path like ? or wdi2.id = ?");
+			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
+			params.add(deptInfo.getId());
+		}
+		whereSql.append(")");
+		
+		//查询条件
+		if (bonus.getContractId() != null) {
+			whereSql.append(" and wbs.contract_id = ?");
+			params.add(bonus.getContractId());
+		}
+		querySql.append(whereSql.toString());
+		querySql.append(" order by wbs.stat_week desc");
+		whereSql.setLength(0);
+		whereSql = null;
+		List<Object[]> page = this.queryAllSql(querySql.toString(),params.toArray());
+		List<BonusVo> returnList = new ArrayList<BonusVo>();
+		if(page != null){
+			for(Object[] o : page){
+				returnList.add(transBonusVo(o));
+			}
+		}
+		return returnList;
+	}
+
 }

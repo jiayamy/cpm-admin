@@ -131,8 +131,7 @@ public class ProjectSupportBonusResource {
     		HttpServletRequest request, HttpServletResponse response,
     		@RequestParam(value = "statWeek",required=false) Long statWeek,
     		@RequestParam(value = "contractId",required=false) Long contractId,
-    		@RequestParam(value = "deptType",required=false) Long deptType,
-    		@ApiParam Pageable pageable)
+    		@RequestParam(value = "deptType",required=false) Long deptType)
 		throws URISyntaxException, IOException {
     	log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to get a page of exportXls  statWeek:{},contractId:{},deptType:{}",statWeek,contractId,deptType);
     	Date now = new Date();
@@ -152,11 +151,7 @@ public class ProjectSupportBonusResource {
          			DateUtil.formatDate(DateUtil.DATE_YYYYMMDD_PATTERN, 
          					DateUtil.getSundayOfDay(DateUtil.parseDate(DateUtil.DATE_YYYYMMDD_PATTERN,""+projectSupportBonus.getStatWeek())))));
 		}
-    	 Page<ProjectSupportBonusVo> page = projectSupportBonusService.searchPage(projectSupportBonus,pageable);
-         List<ProjectSupportBonusVo> list = new ArrayList<ProjectSupportBonusVo>();
-         for (ProjectSupportBonusVo projectSupportBonusVo : page.getContent()) {
- 			list.add(projectSupportBonusVo);
- 		}
+    	 List<ProjectSupportBonusVo> list = projectSupportBonusService.searchList(projectSupportBonus);
 
          //拼接sheet数据
      	//标题

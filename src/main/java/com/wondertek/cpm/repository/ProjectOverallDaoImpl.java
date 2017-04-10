@@ -264,4 +264,71 @@ public class ProjectOverallDaoImpl extends GenericDaoImpl<ProjectOverall, Long> 
 		}
 		return null;
 	}
+	
+	@Override
+	public List<ProjectOverallVo> getListByParams(User user,DeptInfo deptInfo,ProjectOverall projectOverall) {
+		StringBuffer querySql = new StringBuffer();
+		
+		StringBuffer whereSql = new StringBuffer();
+		List<Object> params = new ArrayList<Object>();
+		
+		querySql.append("select wpo.id,wpo.contract_response,wpo.contract_id,wpo.contract_amount,wpo.tax_rate,wpo.identifiable_income,wpo.contract_finish_rate,wpo.acceptance_income,wpo.receive_total,wpo.receivable_account,wpo.share_cost,wpo.third_party_purchase,wpo.internal_purchase,wpo.bonus_,wpo.gross_profit,wpo.gross_profit_rate,wci.serial_num,wci.sales_man,wci.consultants_,c.ta1,c.ta2,wpo.stat_week,wpo.create_time");
+		
+		whereSql.append(" from w_project_overall wpo");
+		whereSql.append(" inner join ");
+		whereSql.append("(");
+		whereSql.append("select max(wpo1.id) as id,wpo1.contract_id from w_project_overall wpo1 where wpo1.stat_week <= ? group by wpo1.contract_id");
+		whereSql.append(")");
+		whereSql.append(" b on wpo.id = b.id");
+		whereSql.append(" inner join w_contract_info wci on wci.id = wpo.contract_id");
+		whereSql.append(" left join (select a.contract_id,wcip1.total_amount as ta1,wcip2.total_amount as ta2 from");
+		whereSql.append("(select wcip.contract_id,max(case when wcip.dept_type = " + DeptType.PROJECT_IMPLEMENTATION + " then wcip.id end) as dept_type_5,");
+		whereSql.append(" max(case when wcip.dept_type = " +DeptType.PRODUCT_DEVELOPMENT + " then wcip.id end) as dept_type_4 from w_contract_internal_purchase wcip where wcip.stat_week <= ? group by wcip.contract_id) a");
+		whereSql.append(" left join w_contract_internal_purchase wcip1 on wcip1.id = a.dept_type_5");
+		whereSql.append(" left join w_contract_internal_purchase wcip2 on wcip2.id = a.dept_type_4) c");
+		whereSql.append(" on wpo.contract_id = c.contract_id");
+		whereSql.append(" left join w_dept_info wdi on wci.dept_id = wdi.id");
+		whereSql.append(" left join w_dept_info wdi2 on wci.consultants_dept_id = wdi2.id");
+		//
+		params.add(projectOverall.getStatWeek());
+		params.add(projectOverall.getStatWeek());
+		//权限
+		whereSql.append(" where (wci.creator_ = ? or wci.sales_man_id = ? or wci.consultants_id = ?");
+		params.add(user.getLogin());
+		params.add(user.getId());
+		params.add(user.getId());
+		if(user.getIsManager()){
+			whereSql.append(" or wdi.id_path like ? or wdi.id = ?");
+			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
+			params.add(deptInfo.getId());
+			
+			whereSql.append(" or wdi2.id_path like ? or wdi2.id = ?");
+			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
+			params.add(deptInfo.getId());
+		}
+		whereSql.append(")");
+		
+		//查询条件
+		if (projectOverall.getContractId() != null) {
+			whereSql.append(" and wpo.contract_id = ?");
+			params.add(projectOverall.getContractId());
+		}
+		if (projectOverall.getContractResponse() != null) {
+			whereSql.append(" and wpo.contract_response = ?");
+			params.add(projectOverall.getContractResponse());
+		}
+		querySql.append(whereSql.toString());
+		querySql.append(" order by wpo.id desc");
+		whereSql.setLength(0);
+		whereSql = null;
+		
+		List<Object[]> page = this.queryAllSql(querySql.toString(),params.toArray());
+		List<ProjectOverallVo> returnList = new ArrayList<ProjectOverallVo>();
+		if(page != null){
+			for(Object[] o : page){
+				returnList.add(transProjectOverallVo(o));
+			}
+		}
+		return returnList;
+	}
 }

@@ -86,7 +86,7 @@ public class ContractBudgetResource {
         if (contractInfo == null) {
         	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.contractBudget.save.dataError", "")).body(null);
 		}
-        if (contractInfo.getStatus() != ContractInfo.STATUS_VALIDABLE) {
+        if (contractInfo.getStatus().intValue() != ContractInfo.STATUS_VALIDABLE) {
         	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.contractBudget.save.contractInfoError", "")).body(null);
 		}
         Boolean flag = Boolean.FALSE;

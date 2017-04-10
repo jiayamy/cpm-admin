@@ -36,6 +36,24 @@
             	url:'api/contract-infos/end',
             	method:'GET',
             	isArray:true
+            },
+            'queryOutsourcingUser':{
+            	url:'api/contract-infos/queryOutsourcingUser',
+            	method:'GET',
+            	isArray:true
+            },
+            'updateOutsourcingUser': { method:'PUT',url:'api/contract-infos/updateOutsourcingUser' },
+            'getOutsourcingUser': {
+                method: 'GET',
+                url:'api/contract-infos/getOutsourcingUserVo/id',
+                transformResponse: function (data) {
+                    if (data) {
+                        data = angular.fromJson(data);
+                        data.createTime = DateUtils.convertDateTimeFromServer(data.createTime);
+                        data.updateTime = DateUtils.convertDateTimeFromServer(data.updateTime);
+                    }
+                    return data;
+                }
             }
         });
     }
