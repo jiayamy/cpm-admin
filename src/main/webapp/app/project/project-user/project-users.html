@@ -11,6 +11,12 @@
 	                        Create new Project User
 	                    </span>
 	                </button>
+	                <button class="btn btn-primary" ui-sref="project-user.upload" >
+	                    <span class="glyphicon glyphicon-import"></span>
+	                    <span data-translate="cpmApp.projectUser.home.importLabel">
+	                        Import Excel
+	                    </span>
+	                </button>
 	            </div>
 	       	</div>
 		</div>
@@ -42,7 +48,7 @@
 	            	<div class="col-sm-4">
 	            		&nbsp;
 	            	</div>
-	            	<div class="col-sm-8" >
+	            	<div class="col-sm-12" >
 		            	<span  class="width-min" >
 	                        <button class="btn btn-info" ng-click="vm.search()">
 	                            <span class="glyphicon glyphicon-search"></span>
@@ -55,6 +61,12 @@
 	                            <span data-translate="entity.action.clear"></span>
 	                        </button>
 	                    </span>
+	                    <span class="width-min">
+								<button class="btn btn-info" ng-click="vm.exportXls()">
+									<span class="glyphicon glyphicon-save"></span> 
+									<span data-translate="entity.action.export"></span>
+								</button>
+						</span>
 	            	</div>
 	            </div>
             </div>

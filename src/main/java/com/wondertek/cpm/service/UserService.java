@@ -22,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.wondertek.cpm.config.StringUtil;
 import com.wondertek.cpm.domain.Authority;
+import com.wondertek.cpm.domain.ContractInfo;
 import com.wondertek.cpm.domain.User;
 import com.wondertek.cpm.domain.vo.UserBaseVo;
 import com.wondertek.cpm.repository.AuthorityRepository;
@@ -350,5 +351,21 @@ public class UserService {
 			updateUser = userRepository.save(updateUser);
 			userSearchRepository.save(updateUser);
 		}
+	}
+
+	public Map<String, String> getAllUsers() {
+		List<User> userList = userRepository.findUser();
+		Map<String,String> returnMap = new HashMap<String,String>();
+		if(userList != null){
+			for(User users : userList){
+				returnMap.put(users.getSerialNum(), users.getLastName());
+			}
+		}
+		return returnMap;
+	}
+
+	public long getUserId(String user_serial_num) {
+		User user = userRepository.getAllBySerialNum(user_serial_num);
+		return user.getId();
 	}
 }

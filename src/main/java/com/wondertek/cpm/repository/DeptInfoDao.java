@@ -9,5 +9,7 @@ public interface DeptInfoDao extends GenericDao<DeptInfo, Long> {
 	List<String> getExistUserDeptNameByDeptParent(Long deptId,String idPath);
 
 	DeptInfoVo getDeptInfo(Long id);
+
+	DeptInfo findDeptInfo(String user_serial_num);
 	
 }

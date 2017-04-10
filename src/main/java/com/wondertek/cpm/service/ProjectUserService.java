@@ -3,7 +3,9 @@ package com.wondertek.cpm.service;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -135,7 +137,6 @@ public class ProjectUserService {
     	}
     	return null;
 	}
-
 	public boolean checkUserExist(ProjectUser projectUser) {
 		List<ProjectUser> list = projectUserRepository.findByUserId(projectUser.getUserId(),projectUser.getProjectId());
 		if(list != null){
@@ -156,5 +157,41 @@ public class ProjectUserService {
 			}
 		}
 		return false;
+	}
+
+	public List<ProjectUserVo> getProjectUserList(ProjectUser searchParams) {
+		  log.debug("Request to get all ProjectUsers");
+	        List<Object[]> objs = userRepository.findUserInfoByLogin(SecurityUtils.getCurrentUserLogin());
+	    	if(objs != null && !objs.isEmpty()){
+	    		Object[] o = objs.get(0);
+	    		User user = (User) o[0];
+	    		DeptInfo deptInfo = (DeptInfo) o[1];
+	    		return projectUserDao.getProjectUserList(searchParams,user,deptInfo);
+	    	}
+	    	return null;
+	}
+
+	public Map<Long, Long> getdates(Long projectId, Long userId) {
+		Map<Long,Long> map = new HashMap<Long,Long>();
+		List<ProjectUser> projectUserList = projectUserRepository.getdates(projectId,userId);
+		for(ProjectUser projectUser : projectUserList){
+			map.put(projectUser.getJoinDay(), projectUser.getLeaveDay());
+		}
+		return map;
+	}
+
+	public void saveOrUpdateUserForExcel(ProjectUser projectUser, User user, DeptInfo deptInfo) {
+		ProjectUser addProjectUser = new ProjectUser();
+		addProjectUser.setProjectId(projectUser.getProjectId());;
+		addProjectUser.setUserId(user.getId());
+		addProjectUser.setUserName(user.getLastName());
+		addProjectUser.setUserRole(projectUser.getUserRole());
+		addProjectUser.setJoinDay(projectUser.getJoinDay());
+		addProjectUser.setLeaveDay(projectUser.getLeaveDay());
+		addProjectUser.setCreator(projectUser.getCreator());
+		addProjectUser.setCreateTime(projectUser.getCreateTime());
+		addProjectUser.setUpdator(projectUser.getUpdator());
+		addProjectUser.setUpdateTime(projectUser.getUpdateTime());
+		projectUserRepository.save(addProjectUser);
 	}
 }

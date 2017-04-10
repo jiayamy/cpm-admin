@@ -4,12 +4,14 @@ import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import com.wondertek.cpm.domain.ContractInfo;
 import com.wondertek.cpm.domain.ContractUser;
 import com.wondertek.cpm.domain.DeptInfo;
 import com.wondertek.cpm.domain.User;
 import com.wondertek.cpm.domain.vo.ContractUserVo;
 import com.wondertek.cpm.domain.vo.LongValue;
 import com.wondertek.cpm.domain.vo.ParticipateInfo;
+import com.wondertek.cpm.domain.vo.ProjectUserVo;
 
 public interface ContractUserDao extends GenericDao<ContractUser, Long> {
 	/**
@@ -32,5 +34,10 @@ public interface ContractUserDao extends GenericDao<ContractUser, Long> {
 	 * @return
 	 */
 	int updateLeaveDayByContract(Long contractId, long leaveDay, String updator);
+	/**
+	 * 导出合同人员信息的Excel格式
+	 * @return
+	 */
+	List<ContractUserVo> getContractUserData(ContractUser contractUser, User user, DeptInfo deptInfo);
 
 }

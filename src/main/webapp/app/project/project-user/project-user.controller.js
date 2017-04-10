@@ -23,6 +23,7 @@
         vm.searchQuery.userId = pagingParams.userId;
         vm.searchQuery.userName = pagingParams.userName;
         
+        vm.exportXls = exportXls;
         
         if (!vm.searchQuery.projectId && !vm.searchQuery.userId){
         	vm.haveSearch = null;
@@ -115,6 +116,32 @@
             vm.transition();
         }
 
+        function exportXls(){
+        	var url = "api/project-user/exportXls";
+        	var c = 0;
+        	var projectId = vm.searchQuery.projectId && vm.searchQuery.projectId.key? vm.searchQuery.projectId.key : vm.searchQuery.projectId;
+        	var userId = vm.searchQuery.userId;
+			if(projectId){
+				if(c == 0){
+					c++;
+					url += "?";
+				}else{
+					url += "&";
+				}
+				url += "projectId="+encodeURI(projectId);
+			}
+			if(userId){
+				if(c == 0){
+					c++;
+					url += "?";
+				}else{
+					url += "&";
+				}
+				url += "userId="+encodeURI(userId);
+			}
+        	window.open(url);
+        }
+        
         function clear() {
             vm.links = null;
             vm.page = 1;

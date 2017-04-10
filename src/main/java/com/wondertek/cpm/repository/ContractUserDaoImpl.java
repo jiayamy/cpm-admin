@@ -17,6 +17,7 @@ import org.springframework.stereotype.Repository;
 import com.wondertek.cpm.CpmConstants;
 import com.wondertek.cpm.config.DateUtil;
 import com.wondertek.cpm.config.StringUtil;
+import com.wondertek.cpm.domain.ContractInfo;
 import com.wondertek.cpm.domain.ContractUser;
 import com.wondertek.cpm.domain.DeptInfo;
 import com.wondertek.cpm.domain.User;
@@ -24,6 +25,7 @@ import com.wondertek.cpm.domain.UserTimesheet;
 import com.wondertek.cpm.domain.vo.ContractUserVo;
 import com.wondertek.cpm.domain.vo.LongValue;
 import com.wondertek.cpm.domain.vo.ParticipateInfo;
+import com.wondertek.cpm.domain.vo.ProjectUserVo;
 @Repository("contractUserDao")
 public class ContractUserDaoImpl extends GenericDaoImpl<ContractUser, Long> implements ContractUserDao  {
 	
@@ -243,7 +245,6 @@ public class ContractUserDaoImpl extends GenericDaoImpl<ContractUser, Long> impl
 		}
 		queryHql.append(") and wcu.id = ?" + (count++));
 		params.add(id);
-		
 		List<Object[]> list = this.queryAllHql(queryHql.toString(),params.toArray());
 		if(list != null && !list.isEmpty()){
 			return new ContractUserVo((ContractUser)list.get(0)[0],StringUtil.null2Str(list.get(0)[1]),StringUtil.null2Str(list.get(0)[2]));
@@ -255,5 +256,60 @@ public class ContractUserDaoImpl extends GenericDaoImpl<ContractUser, Long> impl
 	public int updateLeaveDayByContract(Long contractId, long leaveDay, String updator) {
 		return this.excuteHql("update ContractUser set leaveDay = ?0 , updator = ?1, updateTime = ?2 where (leaveDay is null or leaveDay > ?3) and contractId = ?4", 
 				new Object[]{leaveDay,updator,ZonedDateTime.now(),leaveDay,contractId});
+	}
+
+	@Override
+	public List<ContractUserVo> getContractUserData(ContractUser contractUser, User user, DeptInfo deptInfo) {
+		StringBuffer querySql = new StringBuffer();
+		
+		StringBuffer whereSql = new StringBuffer();
+		List<Object> params = new ArrayList<Object>();
+		
+		querySql.append("select wcu.id,wcu.contract_id,wcu.user_id,wcu.user_name,wcu.dept_id,wcu.dept_,wcu.join_day,wcu.leave_day,wcu.creator_,wcu.create_time,wcu.updator_,wcu.update_time");
+		querySql.append(",wci.serial_num,wci.name_");
+		
+		
+		whereSql.append(" from w_contract_user wcu");
+		whereSql.append(" left join w_contract_info wci on wci.id = wcu.contract_id");
+		whereSql.append(" left join w_dept_info wdi on wci.dept_id = wdi.id");
+		whereSql.append(" left join w_dept_info wdi2 on wci.consultants_dept_id = wdi2.id");
+		whereSql.append(" where (wci.sales_man_id = ? or wci.consultants_id = ? or wci.creator_ = ?");
+		params.add(user.getId());
+		params.add(user.getId());
+		params.add(user.getLogin());
+		
+		if (user.getIsManager()) {
+			whereSql.append(" or wdi.id_path like ? or wdi.id = ?");
+			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
+			params.add(deptInfo.getId());
+			
+			whereSql.append(" or wdi2.id_path like ? or wdi2.id = ?");
+			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
+			params.add(deptInfo.getId());
+			
+		}
+		whereSql.append(")");
+		
+		//查询条件
+		if (contractUser.getContractId() != null) {
+			whereSql.append(" and wcu.contract_id = ?");
+			params.add(contractUser.getContractId());
+		}
+		if (contractUser.getUserId() != null) {
+			whereSql.append(" and wcu.user_id = ?");
+			params.add(contractUser.getUserId());
+		}
+		querySql.append(whereSql.toString());
+		whereSql.setLength(0);
+		whereSql = null;
+		
+		List<Object[]> page = this.queryAllSql(querySql.toString(),params.toArray());
+		List<ContractUserVo> returnList = new ArrayList<ContractUserVo>();
+		if (page!= null) {
+			for (Object[] o : page) {
+				returnList.add(transContractUserVo(o));
+			}
+		}
+		return returnList;
 	}
 }

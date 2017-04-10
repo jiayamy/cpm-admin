@@ -217,4 +217,16 @@ public class ContractInfoService {
 			contractInfoRepository.save(contractInfos);
 		}
 	}
+
+	public Map<String, Long> getContractInfo() {
+		List<ContractInfo> infos = contractInfoRepository.findContractInfo();
+		Map<String,Long> returnMap = new HashMap<String,Long>();
+		if(infos != null){
+			for(ContractInfo contractInfo : infos){
+				returnMap.put(contractInfo.getSerialNum(), contractInfo.getId());
+			}
+		}
+		return returnMap;
+	}
+
 }
