@@ -269,4 +269,9 @@ public class DeptInfoService {
 		}
 		return returnMap;
 	}
+
+	public DeptInfo findDeptInfo(String user_serial_num) {
+		
+		return deptInfoDao.findDeptInfo(user_serial_num);
+	}
 }

@@ -44,6 +44,7 @@ public interface ContractInfoDao extends GenericDao<ContractInfo, Long>{
 	 * @return
 	 */
 	public int endContractInfo(Long id, String updator);
+
 	
 	
 }

@@ -17,6 +17,15 @@
                 "title": "合同人员信息"
             },
             "save":{
+            	"requiredError":"上传文件数据有误，请重新核对",
+        		"dataIsError":"第{{sheetNum}}个sheet的第{{rowNum}}行第{{columnNum}}列是必填字段，不能为空",
+        		"dataNotExist":"第{{sheetNum}}个sheet的第{{rowNum}}行第{{columnNum}}列数据不存在，请确认",
+        		"importSuccess":"导入成功",
+        		"importError":"导入失败",
+        		"dateLengthError":"输入的日期格式不正确，应为：20110101",
+        		"monthStyleError":"输入的日期年份不能超过12月",
+        		"dayStyleError":"输入的日期天数不正确",
+        		
             	"paramNone":"必填字段为空",
             	"dayError":"离开日应不早于加盟日",
             	"userIdError":"在加盟日至离开日时间内，该用户已经被安排到该合同中，勿重复添加",
@@ -26,6 +35,7 @@
             	"noPerm":"无权操作",
             	"dataError":"内部采购单数据错误",
             	"contractInfoError":"合同已完成或者已终止"
+            	
             },
             "contractId": "合同编号",
             "contractName": "合同名称",

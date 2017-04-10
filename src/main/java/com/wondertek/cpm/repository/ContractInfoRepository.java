@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import com.wondertek.cpm.domain.ContractInfo;
+import com.wondertek.cpm.domain.DeptInfo;
 
 /**
  * Spring Data JPA repository for the ContractInfo entity.
@@ -24,4 +25,10 @@ public interface ContractInfoRepository extends JpaRepository<ContractInfo,Long>
 	List<ContractInfo> findByStatusOrEndTime(Integer status, ZonedDateTime endTime);
 	
 	Optional<ContractInfo> findOneBySerialNum(String serialNum);
+	
+	@Query(" from ContractInfo")
+	List<ContractInfo> findContractInfo();
+	
+	@Query(" from ContractInfo where serialNum= ?1")
+	ContractInfo getAllBySerialNum(String serialNum);
 }

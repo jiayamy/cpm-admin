@@ -14,5 +14,7 @@ import com.wondertek.cpm.domain.ContractUser;
 public interface ContractUserRepository extends JpaRepository<ContractUser,Long> {
 	@Query("from ContractUser cu where cu.userId = ?1 and cu.contractId = ?2")
 	List<ContractUser> findByUserId(Long userId, Long contractId);
+	@Query("from ContractUser cu where cu.contractId = ?1 and cu.userId = ?2")
+	List<ContractUser> getdatesByContractIdAndUserId(Long contractId, Long userId);
 
 }

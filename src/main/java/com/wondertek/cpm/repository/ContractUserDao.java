@@ -4,6 +4,7 @@ import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import com.wondertek.cpm.domain.ContractInfo;
 import com.wondertek.cpm.domain.ContractUser;
 import com.wondertek.cpm.domain.DeptInfo;
 import com.wondertek.cpm.domain.User;
@@ -37,6 +38,6 @@ public interface ContractUserDao extends GenericDao<ContractUser, Long> {
 	 * 导出合同人员信息的Excel格式
 	 * @return
 	 */
-	List<ContractUserVo> getUserPage(ContractUser contractUser, User user, DeptInfo deptInfo);
+	List<ContractUserVo> getContractUserData(ContractUser contractUser, User user, DeptInfo deptInfo);
 
 }

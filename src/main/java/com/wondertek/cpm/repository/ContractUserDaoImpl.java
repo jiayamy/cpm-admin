@@ -17,6 +17,7 @@ import org.springframework.stereotype.Repository;
 import com.wondertek.cpm.CpmConstants;
 import com.wondertek.cpm.config.DateUtil;
 import com.wondertek.cpm.config.StringUtil;
+import com.wondertek.cpm.domain.ContractInfo;
 import com.wondertek.cpm.domain.ContractUser;
 import com.wondertek.cpm.domain.DeptInfo;
 import com.wondertek.cpm.domain.User;
@@ -244,7 +245,6 @@ public class ContractUserDaoImpl extends GenericDaoImpl<ContractUser, Long> impl
 		}
 		queryHql.append(") and wcu.id = ?" + (count++));
 		params.add(id);
-		
 		List<Object[]> list = this.queryAllHql(queryHql.toString(),params.toArray());
 		if(list != null && !list.isEmpty()){
 			return new ContractUserVo((ContractUser)list.get(0)[0],StringUtil.null2Str(list.get(0)[1]),StringUtil.null2Str(list.get(0)[2]));
@@ -259,7 +259,7 @@ public class ContractUserDaoImpl extends GenericDaoImpl<ContractUser, Long> impl
 	}
 
 	@Override
-	public List<ContractUserVo> getUserPage(ContractUser contractUser, User user, DeptInfo deptInfo) {
+	public List<ContractUserVo> getContractUserData(ContractUser contractUser, User user, DeptInfo deptInfo) {
 		StringBuffer querySql = new StringBuffer();
 		
 		StringBuffer whereSql = new StringBuffer();

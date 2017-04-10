@@ -341,6 +341,35 @@
                     $state.go('^');
                 });
             }]
+        })
+         .state('project-user.upload', {
+        	parent: 'project-user',
+        	url: '/upload',
+        	data: {
+        		authorities: ['ROLE_PROJECT_USER']
+        	},
+        	views:{
+        		'content@': {
+	            	templateUrl: 'app/project/project-user/project-user-upload.html',
+	            	controller: 'ProjectUserUploadController',
+	                controllerAs: 'vm'
+                }
+        	},
+        	 resolve:{
+                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
+                     $translatePartialLoader.addPart('projectUser');
+                     $translatePartialLoader.addPart('global');
+                     return $translate.refresh();
+                 }],
+                 previousState: ["$state", function ($state) {
+                     var currentStateData = {
+                         name: $state.current.name || 'project-user',
+                         params: $state.params,
+                         url: $state.href($state.current.name, $state.params)
+                     };
+                     return currentStateData;
+                 }]
+             }
         });
     }
 

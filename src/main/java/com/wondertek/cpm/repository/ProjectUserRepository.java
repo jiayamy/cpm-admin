@@ -17,4 +17,7 @@ public interface ProjectUserRepository extends JpaRepository<ProjectUser,Long> {
 	@Query("from ProjectUser where projectId = ?1")
 	List<ProjectUser> findByProjectId(Long projectId);
 	
+	@Query("from ProjectUser pu where pu.projectId = ?1 and pu.userId = ?2")
+	List<ProjectUser> getdates(Long projectId, Long userId);
+	
 }

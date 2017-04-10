@@ -1,5 +1,6 @@
 package com.wondertek.cpm.repository;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -59,6 +60,24 @@ public class DeptInfoDaoImpl extends GenericDaoImpl<DeptInfo, Long> implements D
 		if(list != null && !list.isEmpty()){
 			Object[] o = list.get(0);
 			return new DeptInfoVo((DeptInfo)o[0],StringUtil.null2Str(o[1]),StringUtil.null2Str(o[2]));
+		}
+		return null;
+	}
+	/**
+	 * 根据合同人员的编号得到人员相应的部门名称。
+	 */
+	@Override
+	public DeptInfo findDeptInfo(String user_serial_num) {
+		DeptInfo deptInfo = new DeptInfo();
+		StringBuffer querySql = new StringBuffer();
+		querySql.append("select wdi.name from DeptInfo wdi");
+		querySql.append(" inner join User u on u.deptId = wdi.id");
+		querySql.append(" where u.serialNum = ?0");
+		List list =this.queryAllHql(querySql.toString(), new Object[]{user_serial_num});
+		if(list !=null && !list.isEmpty()){
+			Object o = list.get(0);
+			deptInfo.setName(StringUtil.null2Str(o));
+			return deptInfo;
 		}
 		return null;
 	}

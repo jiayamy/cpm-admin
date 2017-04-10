@@ -3,7 +3,9 @@ package com.wondertek.cpm.service;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -17,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.wondertek.cpm.config.DateUtil;
 import com.wondertek.cpm.config.StringUtil;
+import com.wondertek.cpm.domain.ContractInfo;
 import com.wondertek.cpm.domain.ContractUser;
 import com.wondertek.cpm.domain.DeptInfo;
 import com.wondertek.cpm.domain.User;
@@ -175,9 +178,35 @@ public class ContractUserService {
     		User user = (User) o[0];
     		DeptInfo deptInfo = (DeptInfo) o[1];
     		
-    		return contractUserDao.getUserPage(contractUser,user,deptInfo);
+    		return contractUserDao.getContractUserData(contractUser,user,deptInfo);
     	}
     	
     	return null;
 	}
+
+	public void saveOrUpdateUserForExcel(ContractUser contractUser,ContractInfo contractInfo,User user,DeptInfo deptInfo) {
+		
+		ContractUser contractUsers = new ContractUser();
+		contractUsers.setContractId(contractInfo.getId());
+		contractUsers.setCreateTime(contractUser.getCreateTime());
+		contractUsers.setCreator(contractUser.getCreator());
+		contractUsers.setJoinDay(contractUser.getJoinDay());
+		contractUsers.setLeaveDay(contractUser.getLeaveDay());
+		contractUsers.setUpdateTime(contractUser.getUpdateTime());
+		contractUsers.setUpdator(contractUser.getUpdator());
+		contractUsers.setUserId(user.getId());
+		contractUsers.setUserName(user.getLastName());
+		contractUsers.setDept(deptInfo.getName());
+		contractUserRepository.save(contractUsers);
+	}
+
+	public Map<Long, Long> getdates(Long contractId, Long userId) {
+		Map<Long,Long> map = new HashMap<Long,Long>();
+		List<ContractUser> contractUserList = contractUserRepository.getdatesByContractIdAndUserId(contractId,userId);
+		for(ContractUser contractUser : contractUserList){
+			map.put(contractUser.getJoinDay(), contractUser.getLeaveDay());
+		}
+		return map;
+	}
+
 }
