@@ -102,7 +102,8 @@
         		ContractInfo.update(contractInfo,
     	    		function(data, headers){
             			vm.isSaving = false;
-                		$state.go(vm.previousState);
+//                		$state.go(vm.previousState);
+            			vm.outsourcingUsers = {};
     	        	},
     	        	function(error){
     	        		vm.isSaving = false;
