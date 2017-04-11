@@ -72,12 +72,6 @@ public class ContractInfoResource {
 	private ContractInfoService contractInfoService;
 	
 	@Inject
-	private ContractInfoRepository contractInfoRepository;
-	
-	@Inject
-	private OutsourcingUserService outsourcingUserService;
-	
-	@Inject
 	private OutsourcingUserRepository outsourcingUserRepository;
 	
 	@Inject

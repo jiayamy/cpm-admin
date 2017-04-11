@@ -88,8 +88,10 @@ public class OutsourcingUserResource {
 			OutsourcingUser oldOutsourcingUser = this.outsourcingUserRepository.findOne(outsourcingUser.getId());
 			if (oldOutsourcingUser == null ) {
         		return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.outsourcingUser.save.idNone", "")).body(null);
-			}else if (!oldOutsourcingUser.getRank().equals(outsourcingUser.getRank())) {
-				return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.outsourcingUser.save.ranknoChange", "")).body(null);
+			}else if(oldOutsourcingUser.getContractId() != null){
+				if (!oldOutsourcingUser.getRank().equals(outsourcingUser.getRank())) {
+					return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.outsourcingUser.save.ranknoChange", "")).body(null);
+				}
 			}
 			outsourcingUser.setCreateTime(oldOutsourcingUser.getCreateTime());
 			outsourcingUser.setCreator(oldOutsourcingUser.getCreator());
