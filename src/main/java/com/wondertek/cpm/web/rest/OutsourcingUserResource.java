@@ -68,25 +68,23 @@ public class OutsourcingUserResource {
         		|| outsourcingUser.getRank() == null || outsourcingUser.getTargetAmount() == null) {
         	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.outsourcingUser.save.requiedError", "")).body(null);
 		}
-        
+        //判断合同状态是否可用（合同可能存在可能不存在）
+    	if (outsourcingUser.getContractId() != null) {
+    		ContractInfo contractInfo = contractInfoRepository.findOne(outsourcingUser.getContractId());
+        	if (contractInfo == null) {
+        		return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.outsourcingUser.save.dataError", "")).body(null);
+        	}
+            if (contractInfo.getStatus().intValue() != ContractInfo.STATUS_VALIDABLE) {
+            	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.outsourcingUser.save.statusUnvalidable", "")).body(null);
+    		}
+          //判断合同是否是外包类型
+            if (contractInfo.getType().intValue() != ContractInfo.TYPE_EXTERNAL) {
+            	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.outsourcingUser.save.typeError", "")).body(null);
+    		}
+		}
         String updator = SecurityUtils.getCurrentUserLogin();
         ZonedDateTime updateTime = ZonedDateTime.now();
         if (!isNew) {
-        	//判断合同状态是否可用（合同可能存在可能不存在）
-        	if (outsourcingUser.getContractId() != null) {
-        		ContractInfo contractInfo = contractInfoRepository.findOne(outsourcingUser.getContractId());
-            	if (contractInfo == null) {
-            		return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.outsourcingUser.save.dataError", "")).body(null);
-            	}
-                if (contractInfo.getStatus().intValue() != ContractInfo.STATUS_VALIDABLE) {
-                	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.outsourcingUser.save.statusUnvalidable", "")).body(null);
-        		}
-              //判断合同是否是外包类型
-                if (contractInfo.getType().intValue() != ContractInfo.TYPE_EXTERNAL) {
-                	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.outsourcingUser.save.typeError", "")).body(null);
-        		}
-			}
-        	
 			OutsourcingUser oldOutsourcingUser = this.outsourcingUserRepository.findOne(outsourcingUser.getId());
 			if (oldOutsourcingUser == null ) {
         		return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.outsourcingUser.save.idNone", "")).body(null);
@@ -114,7 +112,7 @@ public class OutsourcingUserResource {
 		           if(optionTime == null || !createTimeD.substring(0,8).equals(DateUtil.formatDate(DateUtil.DATE_YYYYMMDD_PATTERN, optionTime))){ 
 		        	   return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.outsourcingUser.save.dataError", "")).body(null);
 		           }
-		           //判断同一个标识下的合同级别是否有相同的情况
+		           //判断同一个标识下的人员级别是否有相同的情况
 		           OutsourcingUser judgeUser = outsourcingUserRepository.findByRankAndMark(outsourcingUser.getRank(),outsourcingUser.getMark());
 		           if (judgeUser != null) {
 		        	   return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.outsourcingUser.save.rankHasExit", "")).body(null);
@@ -184,6 +182,9 @@ public class OutsourcingUserResource {
     public ResponseEntity<List<LongValue>> queryUserRank(@RequestParam(value = "contractId") Long contractId) throws URISyntaxException {
         log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to queryUserRank");
         List<LongValue> list = outsourcingUserService.queryUserRank(contractId);
+        if (list.size() < 1) {
+        	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.outsourcingUser.save.haveNoUser", "")).body(null);
+		}
         return new ResponseEntity<>(list, null, HttpStatus.OK);
     }
 }
