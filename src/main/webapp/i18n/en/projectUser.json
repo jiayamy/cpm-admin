@@ -45,7 +45,8 @@
             "creator": "Creator",
             "createTime": "Create Time",
             "updator": "Updator",
-            "updateTime": "Update Time"
+            "updateTime": "Update Time",
+            "rank": "Rank"
         }
     }
 }

@@ -26,6 +26,8 @@
         vm.save = save;
         vm.previousState = previousState.name;
         vm.queryDept = previousState.queryDept;
+        vm.creatOutsourcingUser = previousState.creatOutsourcingUser;
+        vm.changeOutsourcingUser = previousState.changeOutsourcingUser;
         vm.types = [{ key: 1, val: '产品' }, { key: 2, val: '外包' },{ key: 3, val: '硬件' },{ key: 4, val: '公共成本' }
         ,{ key: 5, val: '项目' },{ key: 6, val: '推广' },{ key: 7, val: '其他' }];
         
@@ -35,12 +37,11 @@
         	}
         }
         
-        //点击外包合同时，给ng-chnage赋值
+        //点击外包合同时，给ng-show赋值
         if (vm.contractInfo.id != null) {
         	if (vm.contractInfo.type == 2 || vm.contractInfo.type.key == 2) {
     			vm.showTable = true;
-    			vm.showNewTable = false;
-    			ContractInfo.queryOutsourcingUser({
+    			OutsourcingUser.getUserList({
     	    		contractId:entity.id
     	         }, onSuccess, onError);
     			
@@ -53,11 +54,6 @@
     		}
 		}else{
 			vm.showTable = false;
-			if (vm.contractInfo.type != null) {
-				if (vm.contractInfo.type == 2 || vm.contractInfo.type.key == 2) {
-					vm.showNewTable = true;
-				}
-			}
 		}
         
         function save () {
@@ -217,11 +213,9 @@
         
         function changeType(){
         	if (vm.contractInfo.type.key == 2 && vm.contractInfo.type.val == "外包" && entity.id == null) {
-				vm.showTable = false;
-				vm.showNewTable = true
+				vm.showTable = true;
 			}else {
 				vm.showTable = false;
-				vm.showNewTable = false
 			}
         }
         vm.datePickerOpenStatus.startDay = false;
@@ -248,17 +242,10 @@
         
         //弹框关闭数据列表的处理
         var unsubscribe = $rootScope.$on('cpmApp:viewRecord', function(event, result) {
-    		if (vm.contractInfo.id == null) {
-    			console.log(222);
-    			OutsourcingUser.getUserList({
-    				mark:vm.mark
-    			},onSuccess);
-			}else {
-				console.log(333);
-				ContractInfo.queryOutsourcingUser({
-    				contractId:vm.contractInfo.id
-    			},onSuccess);
-			}
+        	OutsourcingUser.getUserList({
+        		mark:vm.mark,
+        		contractId:vm.contractInfo.id
+        	},onSuccess);
     		
     		function onSuccess(data, headers) {
                 vm.outsourcingUsers = data;

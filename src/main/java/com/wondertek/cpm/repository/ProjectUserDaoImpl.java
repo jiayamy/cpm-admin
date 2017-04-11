@@ -214,9 +214,11 @@ public class ProjectUserDaoImpl extends GenericDaoImpl<ProjectUser, Long> implem
 		List<Object> params = new ArrayList<Object>();
 		int count = 0;//jpa格式 问号后的数组，一定要从0开始
 		
-		queryHql.append("select wpu,wpi.serialNum,wpi.name");
+		queryHql.append("select wpu,wpi.serialNum,wpi.name,wci.type,wci.id,wosu.id");
 		queryHql.append(" from ProjectUser wpu");
 		queryHql.append(" left join ProjectInfo wpi on wpi.id = wpu.projectId ");
+		queryHql.append(" left join ContractInfo wci on wci.id = wpi.contractId");
+		queryHql.append(" left join OutsourcingUser wosu on wci.id = wosu.contractId");
 		queryHql.append(" left join DeptInfo wdi on wdi.id = wpi.deptId");
 		queryHql.append(" where (wpi.pmId = ?" + (count++) + " or wpi.creator = ?" + (count++));
 		params.add(user.getId());
@@ -232,7 +234,7 @@ public class ProjectUserDaoImpl extends GenericDaoImpl<ProjectUser, Long> implem
 		
 		List<Object[]> list = this.queryAllHql(queryHql.toString(),params.toArray());
 		if(list != null && !list.isEmpty()){
-			return new ProjectUserVo((ProjectUser)list.get(0)[0],StringUtil.null2Str(list.get(0)[1]),StringUtil.null2Str(list.get(0)[2]));
+			return new ProjectUserVo((ProjectUser)list.get(0)[0],StringUtil.null2Str(list.get(0)[1]),StringUtil.null2Str(list.get(0)[2]),StringUtil.nullToInteger(list.get(0)[3]),StringUtil.nullToLong(list.get(0)[4]),StringUtil.nullToLong(list.get(0)[5]));
 		}
 		return null;
 	}

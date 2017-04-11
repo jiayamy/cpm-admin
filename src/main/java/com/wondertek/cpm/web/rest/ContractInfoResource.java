@@ -194,7 +194,7 @@ public class ContractInfoResource {
 						outsourcingUserRepository.save(outsourcingUser);
 					}
         		}else {
-    	        	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.outsourcingUser.save.user", "")).body(null);
+    	        	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.outsourcingUser.save.userCannotEmpty", "")).body(null);
 				}
         	}else {
         		 result = contractInfoService.save(contractInfo);	

@@ -30,6 +30,7 @@ import com.wondertek.cpm.config.DateUtil;
 import com.wondertek.cpm.config.StringUtil;
 import com.wondertek.cpm.domain.ContractInfo;
 import com.wondertek.cpm.domain.OutsourcingUser;
+import com.wondertek.cpm.domain.vo.LongValue;
 import com.wondertek.cpm.domain.vo.OutsourcingUserVo;
 import com.wondertek.cpm.repository.ContractInfoRepository;
 import com.wondertek.cpm.repository.OutsourcingUserRepository;
@@ -56,20 +57,6 @@ public class OutsourcingUserResource {
 	@Inject
 	private OutsourcingUserRepository outsourcingUserRepository;
 
-	@GetMapping("/contract-infos/queryOutsourcingUser")
-    @Timed
-    @Secured(AuthoritiesConstants.ROLE_CONTRACT_PURCHASE)
-    public ResponseEntity<List<OutsourcingUser>> getOutsourcingUser(
-    		@RequestParam(value = "contractId",required=true) Long contractId,
-    		@ApiParam Pageable pageable)
-    	throws URISyntaxException{
-    	log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to get a page of OutsourcingUser  contractId:{}",contractId);
-    	 List<OutsourcingUser> page = outsourcingUserService.searchUserList(contractId);
-    	 for (OutsourcingUser outsourcingUser : page) {
-			outsourcingUser.setOffer(StringUtil.getScaleDouble(outsourcingUser.getOffer(), 2));
-		}
-         return new ResponseEntity<>(page,new HttpHeaders(),HttpStatus.OK);
-    }
 	@PutMapping("/contract-infos/updateOutsourcingUser")
     @Timed
     @Secured(AuthoritiesConstants.ROLE_CONTRACT_PURCHASE)
@@ -81,26 +68,24 @@ public class OutsourcingUserResource {
         		|| outsourcingUser.getRank() == null || outsourcingUser.getTargetAmount() == null) {
         	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.outsourcingUser.save.requiedError", "")).body(null);
 		}
-        
+        //判断合同状态是否可用（合同可能存在可能不存在）
+    	if (outsourcingUser.getContractId() != null) {
+    		ContractInfo contractInfo = contractInfoRepository.findOne(outsourcingUser.getContractId());
+        	if (contractInfo == null) {
+        		return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.outsourcingUser.save.dataError", "")).body(null);
+        	}
+            if (contractInfo.getStatus().intValue() != ContractInfo.STATUS_VALIDABLE) {
+            	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.outsourcingUser.save.statusUnvalidable", "")).body(null);
+    		}
+          //判断合同是否是外包类型
+            if (contractInfo.getType().intValue() != ContractInfo.TYPE_EXTERNAL) {
+            	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.outsourcingUser.save.typeError", "")).body(null);
+    		}
+		}
         String updator = SecurityUtils.getCurrentUserLogin();
         ZonedDateTime updateTime = ZonedDateTime.now();
         if (!isNew) {
-        	//判断合同状态是否可用（合同可能存在可能不存在）
-        	if (outsourcingUser.getContractId() != null) {
-        		ContractInfo contractInfo = contractInfoRepository.findOne(outsourcingUser.getContractId());
-            	if (contractInfo == null) {
-            		return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.outsourcingUser.save.dataError", "")).body(null);
-            	}
-                if (contractInfo.getStatus().intValue() != ContractInfo.STATUS_VALIDABLE) {
-                	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.outsourcingUser.save.statusUnvalidable", "")).body(null);
-        		}
-              //判断合同是否是外包类型
-                if (contractInfo.getType().intValue() != ContractInfo.TYPE_EXTERNAL) {
-                	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.outsourcingUser.save.typeError", "")).body(null);
-        		}
-			}
-        	
-			OutsourcingUser oldOutsourcingUser = this.outsourcingUserService.findOneById(outsourcingUser.getId());
+			OutsourcingUser oldOutsourcingUser = this.outsourcingUserRepository.findOne(outsourcingUser.getId());
 			if (oldOutsourcingUser == null ) {
         		return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.outsourcingUser.save.idNone", "")).body(null);
 			}else if (!oldOutsourcingUser.getRank().equals(outsourcingUser.getRank())) {
@@ -127,7 +112,7 @@ public class OutsourcingUserResource {
 		           if(optionTime == null || !createTimeD.substring(0,8).equals(DateUtil.formatDate(DateUtil.DATE_YYYYMMDD_PATTERN, optionTime))){ 
 		        	   return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.outsourcingUser.save.dataError", "")).body(null);
 		           }
-		           //判断同一个标识下的合同级别是否有相同的情况
+		           //判断同一个标识下的人员级别是否有相同的情况
 		           OutsourcingUser judgeUser = outsourcingUserRepository.findByRankAndMark(outsourcingUser.getRank(),outsourcingUser.getMark());
 		           if (judgeUser != null) {
 		        	   return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.outsourcingUser.save.rankHasExit", "")).body(null);
@@ -169,40 +154,37 @@ public class OutsourcingUserResource {
                 HttpStatus.OK))
             .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
-	@PutMapping("/outsourcing-user/createContractInfoAndUser")
-	@Timed
-    @Secured(AuthoritiesConstants.ROLE_PROJECT_USER)
-	public ResponseEntity<Boolean> creacteOutsourcingUser(@RequestBody OutsourcingUser outsourcingUser){
-		log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to create OutsourcingUser at time creacte contractInfo : {}", outsourcingUser);
-		if (outsourcingUser.getId() != null) {
-        	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.outsourcingUser.save.dataError", "")).body(null);
-		}
-		return null;
-	}
 	@GetMapping("/outsourcing-user/getUserList")
     @Timed
     @Secured(AuthoritiesConstants.ROLE_CONTRACT_PURCHASE)
     public ResponseEntity<List<OutsourcingUser>> getUserList(
-    		@RequestParam(value = "mark",required=true) String mark,
+    		@RequestParam(value = "mark",required=false) String mark,
+    		@RequestParam(value = "contractId",required=false) Long contractId,
     		@ApiParam Pageable pageable)
     	throws URISyntaxException{
-    	log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to get a page of mark  contractId:{}",mark);
-    	 List<OutsourcingUser> page = outsourcingUserService.getUserList(mark);
-    	 for (OutsourcingUser outsourcingUser : page) {
+    	log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to get a list of outsourcingUser mark:{},contractId:{}",mark,contractId);
+    	//校验参数
+    	if (StringUtil.isNullStr(mark) && StringUtil.isNullStr(contractId)) {
+    		return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.outsourcingUser.save.requiedError", "")).body(null);
+		}
+    	List<OutsourcingUser> page = outsourcingUserRepository.findByMarkOrContractId(mark, contractId);
+		for (OutsourcingUser outsourcingUser : page) {
 			outsourcingUser.setOffer(StringUtil.getScaleDouble(outsourcingUser.getOffer(), 2));
 		}
          return new ResponseEntity<>(page,new HttpHeaders(),HttpStatus.OK);
     }
-	@GetMapping("/outsourcing-user/choseUser")
+	/**
+     * 获取项目经理能看到的员工等级
+     */
+    @GetMapping("/outsourcing-user/queryUserRank")
     @Timed
-    @Secured(AuthoritiesConstants.ROLE_CONTRACT_PURCHASE)
-    public ResponseEntity<OutsourcingUserVo> choseUser(@RequestParam(value = "id",required=true) Long id) {
-        log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to get OutsourcingUser : {}", id);
-        OutsourcingUserVo outsourcingUser = outsourcingUserService.choseUser(id);
-        return Optional.ofNullable(outsourcingUser)
-            .map(result -> new ResponseEntity<>(
-                result,
-                HttpStatus.OK))
-            .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    @Secured(AuthoritiesConstants.USER)
+    public ResponseEntity<List<LongValue>> queryUserRank(@RequestParam(value = "contractId") Long contractId) throws URISyntaxException {
+        log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to queryUserRank");
+        List<LongValue> list = outsourcingUserService.queryUserRank(contractId);
+        if (list.size() < 1) {
+        	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.outsourcingUser.save.haveNoUser", "")).body(null);
+		}
+        return new ResponseEntity<>(list, null, HttpStatus.OK);
     }
 }

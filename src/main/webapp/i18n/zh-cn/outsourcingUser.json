@@ -13,12 +13,13 @@
             "save":{
             	"requiedError":"必填字段为空",
             	"dataError":"数据异常",
-            	"statusUnvalidable":"合同状态不可用",
-            	"ranknoChange":"合同级别不可更改",
+            	"statusUnvalidable":"已删除或已完成的合同不可更改外包人员信息",
+            	"ranknoChange":"外包人员级别不可更改",
             	"statusError":"已删除或已完成的合同不可更改",
             	"rankHasExit":"对应的级别已经存在",
             	"typeError":"合同类型错误",
-            	"user": "请添加外包人员"
+            	"userCannotEmpty": "请添加外包人员",
+            	"haveNoUser": "外包合同没有外包人员"
             },
         	"rank": "级别",
         	"targetAmount": "目标数量",
