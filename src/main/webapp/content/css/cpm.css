@@ -64,3 +64,12 @@ form .wd-response .wd-progress {
   background: linear-gradient(to right, #ff0000, #eee); 
   right: 2px;
 }
+@media (max-width : 480px){
+	.wd-title:before, .wd-title:after{
+		content: "";
+  		width: 25%;
+  		height: 1px;
+  		position: absolute;
+  		top: 50%; 
+	}	
+}
