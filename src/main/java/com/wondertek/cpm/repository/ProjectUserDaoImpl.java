@@ -17,6 +17,7 @@ import org.springframework.stereotype.Repository;
 import com.wondertek.cpm.CpmConstants;
 import com.wondertek.cpm.config.DateUtil;
 import com.wondertek.cpm.config.StringUtil;
+import com.wondertek.cpm.domain.ContractInfo;
 import com.wondertek.cpm.domain.DeptInfo;
 import com.wondertek.cpm.domain.ProjectUser;
 import com.wondertek.cpm.domain.User;
@@ -290,6 +291,27 @@ public class ProjectUserDaoImpl extends GenericDaoImpl<ProjectUser, Long> implem
 			}
 		}
 		return returnList;
+	}
+
+	@Override
+	public long getContractType(Long projectId) {
+		StringBuffer sql = new StringBuffer();
+		List<Object> params = new ArrayList<Object>();
+		sql.append("select wci.type_ "
+				+ "from w_project_info wpi "
+				+ "left join "
+				+ "w_contract_info wci "
+				+ "on wpi.contract_id =wci.id "
+				+ " where wpi.id = ?");
+		params.add(projectId);
+		List<Object> list = this.queryAllSql(sql.toString(),params.toArray());
+		ContractInfo contractInfo = new ContractInfo();
+		for(Object o : list){
+			System.out.println("****************contractType=="+o);
+			contractInfo =(ContractInfo)o;
+			return contractInfo.getType();
+		}
+		return 0;
 	}
 	
 }

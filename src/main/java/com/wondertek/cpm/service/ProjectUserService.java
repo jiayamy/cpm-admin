@@ -194,4 +194,8 @@ public class ProjectUserService {
 		addProjectUser.setUpdateTime(projectUser.getUpdateTime());
 		projectUserRepository.save(addProjectUser);
 	}
+
+	public long getContractType(Long projectId) {
+		return projectUserDao.getContractType(projectId);
+	}
 }

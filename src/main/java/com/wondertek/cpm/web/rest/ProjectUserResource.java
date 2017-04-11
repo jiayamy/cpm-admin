@@ -51,6 +51,7 @@ import com.wondertek.cpm.ExcelWrite;
 import com.wondertek.cpm.config.DateUtil;
 import com.wondertek.cpm.config.FilePathHelper;
 import com.wondertek.cpm.config.StringUtil;
+import com.wondertek.cpm.domain.ContractInfo;
 import com.wondertek.cpm.domain.DeptInfo;
 import com.wondertek.cpm.domain.ProjectInfo;
 import com.wondertek.cpm.domain.ProjectUser;
@@ -469,7 +470,7 @@ public class ProjectUserResource {
 											.setMsgParam(excelValue.getSheet() + "," + rowNum + "," + (columnNum + 1)));
 						}
 						projectUser.setUserName(StringUtil.null2Str(val));
-
+						
 						// 校验第五列，角色
 						columnNum++;
 						val = ls.get(columnNum);
@@ -480,6 +481,25 @@ public class ProjectUserResource {
 											.setMsgParam(excelValue.getSheet() + "," + rowNum + "," + (columnNum + 1)));
 						}
 						projectUser.setUserRole(StringUtil.null2Str(val));
+						
+						//校验级别
+						columnNum++;
+						val = ls.get(columnNum);
+						//根据项目id得到项目所属的合同是否是外包
+						long type = projectUserService.getContractType(projectId);
+						if(type == ContractInfo.TYPE_EXTERNAL){
+							if(val == null){
+								return ResponseEntity.ok().body(cpmResponse.setSuccess(Boolean.FALSE)
+										.setMsgKey("合同为外包合同，人员的等级必须填写"));
+							}else{
+								
+							}
+						}else{
+							
+						}
+						
+						
+						
 						// 校验第六列，加盟日
 						columnNum++;
 						val = ls.get(columnNum);
