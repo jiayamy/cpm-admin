@@ -176,7 +176,7 @@ public class OutsourcingUserResource {
          return new ResponseEntity<>(page,new HttpHeaders(),HttpStatus.OK);
     }
 	/**
-     * 获取项目经理能看到的员工等级
+     * 加载项目人员的等级下拉框
      */
     @GetMapping("/outsourcing-user/queryUserRank")
     @Timed
