@@ -5,9 +5,9 @@
         .module('cpmApp')
         .controller('OutsourcingUserController', OutsourcingUserController);
 
-    OutsourcingUserController.$inject = ['$timeout','$state', '$scope', '$stateParams', 'entity', 'ContractInfo','$uibModalInstance','OutsourcingUser','AlertService','$rootScope'];
+    OutsourcingUserController.$inject = ['$timeout','$state', '$scope', '$stateParams', 'entity', 'ContractInfo','$uibModalInstance','OutsourcingUser'];
 
-    function OutsourcingUserController ($timeout,$state, $scope, $stateParams, entity, ContractInfo,$uibModalInstance,OutsourcingUser,AlertService,$rootScope) {
+    function OutsourcingUserController ($timeout,$state, $scope, $stateParams, entity, ContractInfo,$uibModalInstance,OutsourcingUser) {
         var vm = this;
         vm.clear = clear;
         vm.outsourcingUser = entity;
