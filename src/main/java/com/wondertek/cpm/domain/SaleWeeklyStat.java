@@ -27,6 +27,8 @@ public class SaleWeeklyStat implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 	
+	public static final Long TYPE_DEPT_SALE = 2L;	//销售部门
+	
 	/**
 	 * 主键
 	 */

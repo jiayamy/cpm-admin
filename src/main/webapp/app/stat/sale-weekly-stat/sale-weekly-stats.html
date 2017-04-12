@@ -5,58 +5,39 @@
     	<div class="row">
     		<form name="searchForm" class="form-horizontal">
 				<div class="form-group">
-           			<!-- <div class="col-sm-4">
-           				<label class="col-sm-4 control-label" data-translate="cpmApp.saleWeeklyStat.serialNum">Serial Num</label>
-                  		<div class="col-sm-8">
-	     					<select class="form-control" ng-model="vm.searchQuery.contractId"
-				            	ng-options="contractInfo.val for contractInfo in vm.contractInfos track by contractInfo.key">
-				            	<option value="">--合同编号--</option>
-				            </select>
-     					</div> 
-           			</div>
-           			<div class="col-sm-4">
-		          		<label class="col-sm-4 control-label" data-translate="cpmApp.saleWeeklyStat.dept">Dept</label>
-			            <div class="col-sm-8">
-			                <select class="form-control" name="type" ng-model="vm.searchQuery.deptType"
-				            	ng-options="type.val for type in vm.deptTypes track by type.key">
-				            	<option value="">--选择部门--</option>
-				            </select>
-			            </div>
-	       			</div> -->
-		       			<div class="col-sm-4">
-			            	<label class="col-sm-4 control-label" data-translate="cpmApp.saleWeeklyStat.dept">Dept Name</label>
-		                    <div class="col-sm-8" >
-			                   	<div class="input-group">
-					          		<input type="text" class="form-control" name="dept"
-					                  	ng-model="vm.searchQuery.deptName" readonly
-				                   	/>
-				                   	<span class="input-group-btn">
-				                     	<button type="button" class="btn btn-default" ui-sref="sale-weekly-stat.queryDept({selectType:2,showChild:true,showUser:false})"><i class="glyphicon glyphicon-home"></i></button>
-				                 	</span>
-				            	</div>
-		                    </div>
+	       			<div class="col-sm-4">
+		            	<label class="col-sm-4 control-label" data-translate="cpmApp.saleWeeklyStat.dept">Dept Name</label>
+	                    <div class="col-sm-8" >
+		                   	<div class="input-group">
+				          		<input type="text" class="form-control" name="dept"
+				                  	ng-model="vm.searchQuery.deptName" readonly
+			                   	/>
+			                   	<span class="input-group-btn">
+			                     	<button type="button" class="btn btn-default" ui-sref="sale-weekly-stat.queryDept({selectType:2,showChild:true,showUser:false})"><i class="glyphicon glyphicon-home"></i></button>
+			                 	</span>
+			            	</div>
+	                    </div>
+	            	</div>
+	            	<div class="col-sm-4 pull-right">
+		            	<div class="col-sm-4">
+		            		&nbsp;
 		            	</div>
-		            	<div class="col-sm-4 pull-right">
-			            	<div class="col-sm-4">
-			            		&nbsp;
-			            	</div>
-			            	<div class="col-sm-8">
-			            		 <span  class="width-min" >
-			                        <button class="btn btn-info" ng-click="vm.search()">
-			                            <span class="glyphicon glyphicon-search"></span>
-			                            <span data-translate="entity.action.search"></span>
-			                        </button>
-			                    </span>
-			                    <span class="width-min" ng-if="vm.haveSearch">
-			                        <button class="btn btn-info" ng-click="vm.clear()">
-			                            <span class="glyphicon glyphicon-trash"></span>
-			                            <span data-translate="entity.action.clear"></span>
-			                        </button>
-			                    </span>
-			            	</div>
-			            </div>
-           			</div>
-	            </div>
+		            	<div class="col-sm-8">
+		            		 <span  class="width-min" >
+		                        <button class="btn btn-info" ng-click="vm.search()">
+		                            <span class="glyphicon glyphicon-search"></span>
+		                            <span data-translate="entity.action.search"></span>
+		                        </button>
+		                    </span>
+		                    <span class="width-min" ng-if="vm.haveSearch">
+		                        <button class="btn btn-info" ng-click="vm.clear()">
+		                            <span class="glyphicon glyphicon-trash"></span>
+		                            <span data-translate="entity.action.clear"></span>
+		                        </button>
+		                    </span>
+		            	</div>
+		            </div>
+           		</div>
 			</form>
     	</div>
     </div>
@@ -67,7 +48,7 @@
                 <tr jh-sort="vm.predicate" ascending="vm.reverse" callback="vm.transition()">
                 	<th jh-sort-by="s.originYear"><span data-translate="cpmApp.saleWeeklyStat.originYear">Origin Year</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="s.annualIndex"><span data-translate="cpmApp.saleWeeklyStat.annualIndex">Contract annualIndex</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="i.finishTotal"><span data-translate="cpmApp.saleWeeklyStat.finishTotal">Contract finishTotal</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="s.finishTotal"><span data-translate="cpmApp.saleWeeklyStat.finishTotal">Contract finishTotal</span> <span class="glyphicon glyphicon-sort"></span></th>
                 	<th jh-sort-by="s.deptId"><span data-translate="cpmApp.saleWeeklyStat.saleDept">Sale Dept</span> <span class="glyphicon glyphicon-sort"></span></th>
                 	<th jh-sort-by="s.receiveTotal"><span data-translate="cpmApp.saleWeeklyStat.receiveTotal">Receive Total</span> <span class="glyphicon glyphicon-sort"></span></th>
                 	<th jh-sort-by="s.costTotal"><span data-translate="cpmApp.saleWeeklyStat.costTotal">Cost Total</span> <span class="glyphicon glyphicon-sort"></span></th>
@@ -80,7 +61,7 @@
                 <tr ng-repeat="saleWeeklyStat in vm.saleWeeklyStats track by saleWeeklyStat.id">
                     <td><a ui-sref="sale-weekly-stat-detail({id:saleWeeklyStat.id})">{{saleWeeklyStat.originYear}}</a></td>
                     <td>{{saleWeeklyStat.annualIndex}}</td>
-                    <td>{{saleWeeklyStat.finishTotal}}%</td>
+                    <td>{{saleWeeklyStat.finishTotal}}</td>
                     <td>{{saleWeeklyStat.dept}}</td>
                     <td>{{saleWeeklyStat.receiveTotal}}</td>
                     <td>{{saleWeeklyStat.costTotal}}</td>
@@ -94,7 +75,7 @@
                                 <span class="glyphicon glyphicon-eye-open"></span>
                                 <span class="hidden-xs hidden-sm" data-translate="cpmApp.saleWeeklyStat.transDetail"></span>
                             </button>
-							<button type="button" ui-sref="sale-weekly-stat-detail.chart({id:saleWeeklyStat.id})" class="btn btn-primary btn-sm">
+							<button type="button" ui-sref="sale-weekly-stat-chart({id:saleWeeklyStat.id})" class="btn btn-primary btn-sm">
 						        <span class="glyphicon glyphicon-pencil"></span>
 						        <span class="hidden-xs hidden-sm" data-translate="cpmApp.saleWeeklyStat.transChart"> Edit</span>
 						    </button>

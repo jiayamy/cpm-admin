@@ -27,7 +27,7 @@
             "serialNum" : "合同编号",
             "contractName" : "合同名称",
             "annualIndex": "合同年指标",
-            "finishTotal": "合同累计完成金额",
+            "finishTotal": "合同累计完成金额(万)",
             "receiveTotal": "收款总额(万)",
             "costTotal": "当年新增所有成本(万)",
             "salesHumanCost": "当年销售人工成本(万)",
