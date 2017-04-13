@@ -1,0 +1,90 @@
+<div>
+    <h2><span data-translate="cpmApp.saleWeeklyStat.detail.title">Sale WeeklyStat Stat</span> : {{vm.saleWeeklyStat.dept}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <div class="form-horizontal">
+        <div class="form-group" >
+ 			<div class="col-sm-6">
+ 				<dl class="dl-horizontal jh-entity-details">
+  				<dt><span data-translate="cpmApp.saleWeeklyStat.originYear">Origin Year</span></dt>
+		        <dd>
+		            <span>{{vm.saleWeeklyStat.originYear}}</span>
+		        </dd>
+		        <dt><span data-translate="cpmApp.saleWeeklyStat.dept">Dept Name</span></dt>
+		        <dd>
+		            <span>{{vm.saleWeeklyStat.dept}}</span>
+		        </dd>
+		        <dt><span data-translate="cpmApp.saleWeeklyStat.annualIndex">Annual Index</span></dt>
+		        <dd>
+		            <span>{{vm.saleWeeklyStat.annualIndex}}</span>
+		        </dd>
+		        <dt><span data-translate="cpmApp.saleWeeklyStat.finishTotal">Finish Total</span></dt>
+		        <dd>
+		            <span>{{vm.saleWeeklyStat.finishTotal}}</span>
+		        </dd>
+		        <dt><span data-translate="cpmApp.saleWeeklyStat.receiveTotal">Receive Total</span></dt>
+		        <dd>
+		            <span>{{vm.saleWeeklyStat.receiveTotal}}</span>
+		        </dd>
+		        <dt><span data-translate="cpmApp.saleWeeklyStat.costTotal">Cost Total</span></dt>
+		        <dd>
+		            <span>{{vm.saleWeeklyStat.costTotal}}</span>
+		        </dd>
+		        <dt><span data-translate="cpmApp.saleWeeklyStat.salesHumanCost">Sales Human Cost</span></dt>
+		        <dd>
+		            <span>{{vm.saleWeeklyStat.salesHumanCost}}</span>
+		        </dd>
+		        <dt><span data-translate="cpmApp.saleWeeklyStat.salesPayment">Sales Payment</span></dt>
+		        <dd>
+		            <span>{{vm.saleWeeklyStat.salesPayment}}</span>
+		        </dd>
+     			</dl>
+ 			</div>
+ 			<div class="col-sm-6">
+ 				<dl class="dl-horizontal jh-entity-details">
+  				<dt><span data-translate="cpmApp.saleWeeklyStat.consultHumanCost">Consult Human Cost</span></dt>
+		        <dd>
+		            <span>{{vm.saleWeeklyStat.consultHumanCost}}</span>
+		        </dd>
+		        <dt><span data-translate="cpmApp.saleWeeklyStat.consultPayment">Consult Payment</span></dt>
+		        <dd>
+		            <span>{{vm.saleWeeklyStat.consultPayment}}</span>
+		        </dd>
+		        <dt><span data-translate="cpmApp.saleWeeklyStat.hardwarePurchase">Hardware Purchase</span></dt>
+		        <dd>
+		            <span>{{vm.saleWeeklyStat.hardwarePurchase}}</span>
+		        </dd>
+		        <dt><span data-translate="cpmApp.saleWeeklyStat.externalSoftware">External Software</span></dt>
+		        <dd>
+		            <span>{{vm.saleWeeklyStat.externalSoftware}}</span>
+		        </dd>
+		        <dt><span data-translate="cpmApp.saleWeeklyStat.internalSoftware">Internal Software</span></dt>
+		        <dd>
+		            <span>{{vm.saleWeeklyStat.internalSoftware}}</span>
+		        </dd>
+		        <dt><span data-translate="cpmApp.saleWeeklyStat.projectHumanCost">Project HumanCost</span></dt>
+		        <dd>
+		            <span>{{vm.saleWeeklyStat.projectHumanCost}}</span>
+		        </dd>
+		        <dt><span data-translate="cpmApp.saleWeeklyStat.projectPayment">Project Payment</span></dt>
+		        <dd>
+		            <span>{{vm.saleWeeklyStat.projectPayment}}</span>
+		        </dd>
+		        <dt><span data-translate="cpmApp.saleWeeklyStat.statWeek">Stat Week</span></dt>
+		        <dd>
+		            <span>{{vm.saleWeeklyStat.statWeek}}</span>
+		        </dd>
+		        <dt><span data-translate="cpmApp.saleWeeklyStat.createTime">Create Time</span></dt>
+		        <dd>
+		            <span>{{vm.saleWeeklyStat.createTime | date:'medium'}}</span>
+		        </dd>
+     			</dl>
+ 			</div>
+ 		</div>
+ 	</div>
+    <button type="submit"
+            ui-sref="{{ vm.previousState }}"
+            class="btn btn-info">
+        <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span data-translate="entity.action.back"> Back</span>
+    </button>
+</div>

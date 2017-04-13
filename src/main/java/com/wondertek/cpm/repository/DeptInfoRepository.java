@@ -33,4 +33,7 @@ public interface DeptInfoRepository extends JpaRepository<DeptInfo,Long> {
 	List<DeptInfo> findCompanyByParentId();
 	@Query("from DeptInfo where status = 1 and idPath like ?1 order by id asc")
 	List<DeptInfo> findByIdPath(String idPath);
+	
+	@Query(" from DeptInfo where status = 1 and type = ?1 order by idPath asc")
+	List<DeptInfo> findDeptInfosByType(Long type);
 }

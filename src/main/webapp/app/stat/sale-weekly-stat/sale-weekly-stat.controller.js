@@ -63,8 +63,8 @@
            
             function sort() {
                 var result = [vm.predicate + ',' + (vm.reverse ? 'asc' : 'desc')];
-                if (vm.predicate !== 'm.id') {
-                    result.push('m.id');
+                if (vm.predicate !== 's.id') {
+                    result.push('s.id');
                 }
                 return result;
             }

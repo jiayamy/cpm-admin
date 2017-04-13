@@ -1,7 +1,5 @@
 package com.wondertek.cpm.web.rest;
 
-import io.swagger.annotations.ApiParam;
-
 import java.net.URISyntaxException;
 import java.time.ZonedDateTime;
 import java.util.Date;
@@ -38,6 +36,8 @@ import com.wondertek.cpm.security.AuthoritiesConstants;
 import com.wondertek.cpm.security.SecurityUtils;
 import com.wondertek.cpm.service.OutsourcingUserService;
 import com.wondertek.cpm.web.rest.util.HeaderUtil;
+
+import io.swagger.annotations.ApiParam;
 
 /**
  * REST controller for managing ContractInfo.
