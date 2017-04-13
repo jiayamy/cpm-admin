@@ -8,6 +8,7 @@ import java.text.SimpleDateFormat;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -51,7 +52,6 @@ import com.wondertek.cpm.ExcelWrite;
 import com.wondertek.cpm.config.DateUtil;
 import com.wondertek.cpm.config.FilePathHelper;
 import com.wondertek.cpm.config.StringUtil;
-import com.wondertek.cpm.domain.DeptInfo;
 import com.wondertek.cpm.domain.ProjectInfo;
 import com.wondertek.cpm.domain.ProjectUser;
 import com.wondertek.cpm.domain.User;
@@ -60,6 +60,7 @@ import com.wondertek.cpm.repository.UserRepository;
 import com.wondertek.cpm.security.AuthoritiesConstants;
 import com.wondertek.cpm.security.SecurityUtils;
 import com.wondertek.cpm.service.DeptInfoService;
+import com.wondertek.cpm.service.OutsourcingUserService;
 import com.wondertek.cpm.service.ProjectInfoService;
 import com.wondertek.cpm.service.ProjectUserService;
 import com.wondertek.cpm.service.UserService;
@@ -92,6 +93,9 @@ public class ProjectUserResource {
 
 	@Inject
 	private UserRepository userRepository;
+	
+	@Inject
+	private OutsourcingUserService outSourcingUserService;
 
 	/**
 	 * PUT /project-users : Updates an existing projectUser.
@@ -369,9 +373,9 @@ public class ProjectUserResource {
 				return ResponseEntity.ok()
 						.body(cpmResponse.setSuccess(Boolean.FALSE).setMsgKey("cpmApp.projectUser.save.requiredError"));
 			}
-			// 从第一行读取，最多读取10个sheet，最多读取7列
+			// 从第一行读取，最多读取10个sheet，最多读取8列
 			int startNum = 1;
-			List<ExcelValue> lists = ExcelUtil.readExcel(file, startNum, 10, 7);
+			List<ExcelValue> lists = ExcelUtil.readExcel(file, startNum, 10, 8);
 			if (lists == null || lists.isEmpty()) {
 				return ResponseEntity.ok()
 						.body(cpmResponse.setSuccess(Boolean.FALSE).setMsgKey("cpmApp.projectUser.save.requiredError"));
@@ -380,7 +384,7 @@ public class ProjectUserResource {
 			// 得到项目编号和项目ID
 			Map<String, Long> projectInfos = projectInfoService.getProjectInfo();
 			// 得到员工编号员工ID
-			Map<String, String> allUser = userService.getAllUsers();
+			Map<String, User> allUser = userService.getAllUsers();
 			// 其他信息
 			users = new ArrayList<ProjectUser>();
 			String updator = SecurityUtils.getCurrentUserLogin();
@@ -390,12 +394,14 @@ public class ProjectUserResource {
 			Object val = null;
 			Long projectId = null;
 			User user = null;
-			DeptInfo deptInfo = null;
+			Map<String,Map<Long,Long>> userProjects = new HashMap<String,Map<Long,Long>>();
 			for (ExcelValue excelValue : lists) {
 				if (excelValue.getVals() == null || excelValue.getVals().isEmpty()) {// 每个sheet也可能没有数据，空sheet
 					continue;
 				}
 				rowNum = 1;// 都是从第一行读取的。
+				List<Long> projectIds = new ArrayList<Long>();//该sheet里面所有的项目ID
+				Map<Long,Map<Integer,String>> projectIdRowRanks = new HashMap<Long,Map<Integer,String>>();//项目里面所有对应行里面的级别
 				for (List<Object> ls : excelValue.getVals()) {
 					rowNum++;
 					if (ls == null) {// 每个sheet里面也可能有空行。
@@ -411,14 +417,19 @@ public class ProjectUserResource {
 						// 校验第一列，项目编号， 查看导入的列是否在数据库中存在。
 						columnNum = 0;
 						val = ls.get(columnNum);
+						String project_serial_num = null;
 						if (val == null || StringUtil.isNullStr(val)) {
 							return ResponseEntity.ok()
 									.body(cpmResponse.setSuccess(Boolean.FALSE)
-											.setMsgKey("cpmApp.projectUser.save.dataIsError")
-											.setMsgParam(excelValue.getSheet() + "," + rowNum + "," + (columnNum + 1)));
+										.setMsgKey("cpmApp.projectUser.save.dataIsError")
+										.setMsgParam(excelValue.getSheet() + "," + rowNum + "," + (columnNum + 1)));
+						}else if(val instanceof Double){//double
+							project_serial_num = ((Double)val).longValue() +"";
+						}else{//String
+							project_serial_num = StringUtil.null2Str(val);
 						}
 						// 根据项目编号得到项目id
-						projectId = projectInfos.get(val);
+						projectId = projectInfos.get(project_serial_num);
 						// 校验项目编号是否存在。
 						if (projectId == null) {
 							return ResponseEntity.ok()
@@ -426,50 +437,35 @@ public class ProjectUserResource {
 											.setMsgKey("cpmApp.projectUser.save.dataNotExist")
 											.setMsgParam(excelValue.getSheet() + "," + rowNum + "," + (columnNum + 1)));
 						}
-						projectUser.setProjectId(projectInfos.get(StringUtil.nullToString(val)));
+						projectUser.setProjectId(projectId);
 						// 项目名称，可以不填写，不用校验
 						columnNum++;
 						// 校验第三列，员工编号，查看导入的员工编号是否存在。
 						columnNum++;
 						val = ls.get(columnNum);
+						String serial_num = StringUtil.null2Str(val);
 						if (val == null || StringUtil.isNullStr(val)) {
 							return ResponseEntity.ok()
 									.body(cpmResponse.setSuccess(Boolean.FALSE)
 											.setMsgKey("cpmApp.projectUser.save.dataIsError")
 											.setMsgParam(excelValue.getSheet() + "," + rowNum + "," + (columnNum + 1)));
+						}else if(val instanceof Double){//double
+							serial_num = ((Double)val).longValue() +"";
+						}else{//String
+							serial_num = StringUtil.null2Str(val);
 						}
-						if (!allUser.containsKey(val)) {
+						user = allUser.get(serial_num);
+						if (user == null) {
 							return ResponseEntity.ok()
 									.body(cpmResponse.setSuccess(Boolean.FALSE)
 											.setMsgKey("cpmApp.projectUser.save.dataNotExist")
 											.setMsgParam(excelValue.getSheet() + "," + rowNum + "," + (columnNum + 1)));
 						}
-						// 员工编号转为字符串user_serial_num
-						String user_serial_num = (String) val;
 						// 根据员工编号得到员工id
-						long userIdBySerialNum = userService.getUserId(user_serial_num);
-						projectUser.setUserId(userIdBySerialNum);
-						// 根据员工编号得到对应的员工所在的部门信息
-						deptInfo = deptInfoService.findDeptInfo(user_serial_num);
-						// 校验第四列，员工姓名,查看在数据库中员工编号是否与员工姓名相对应。
+						projectUser.setUserId(user.getId());
+						projectUser.setUserName(user.getLastName());
+						// 校验第四列，员工姓名，可以不填写，不用校验。
 						columnNum++;
-						val = ls.get(columnNum);
-						// 对员工姓名进行字符编码的转化
-						val = new String(val.toString().getBytes(), "gbk");
-						if (val == null || StringUtil.isNullStr(val)) {
-							return ResponseEntity.ok()
-									.body(cpmResponse.setSuccess(Boolean.FALSE)
-											.setMsgKey("cpmApp.projectUser.save.dataIsError")
-											.setMsgParam(excelValue.getSheet() + "," + rowNum + "," + (columnNum + 1)));
-						}
-						if (!allUser.get(user_serial_num).equals(val)) {
-							return ResponseEntity.ok()
-									.body(cpmResponse.setSuccess(Boolean.FALSE)
-											.setMsgKey("cpmApp.projectUser.save.dataNotExist")
-											.setMsgParam(excelValue.getSheet() + "," + rowNum + "," + (columnNum + 1)));
-						}
-						projectUser.setUserName(StringUtil.null2Str(val));
-
 						// 校验第五列，角色
 						columnNum++;
 						val = ls.get(columnNum);
@@ -480,7 +476,15 @@ public class ProjectUserResource {
 											.setMsgParam(excelValue.getSheet() + "," + rowNum + "," + (columnNum + 1)));
 						}
 						projectUser.setUserRole(StringUtil.null2Str(val));
-						// 校验第六列，加盟日
+						//第六列，级别
+						columnNum++;
+						val = ls.get(columnNum);
+						//根据项目id得到项目所属的合同是否是外包
+						if(val == null){
+						}else{
+							projectUser.setRank(StringUtil.null2Str(val));
+						}
+						// 校验第七列，加盟日 
 						columnNum++;
 						val = ls.get(columnNum);
 						if (val == null || StringUtil.isNullStr(val)) {
@@ -492,117 +496,53 @@ public class ProjectUserResource {
 						// 对从Excel传来的数据进行处理。
 						DecimalFormat df = new DecimalFormat("0");
 						String value = df.format(val);
-						if (value.length() != 8) {
+						if(value==null){
 							return ResponseEntity.ok()
-									.body(cpmResponse.setSuccess(Boolean.FALSE).setMsgKey("cpmApp.projectUser.save.dateLengthError"));
-						} else {
-							if (Integer.parseInt(value.substring(4, 6)) > 12) {
-				
+									.body(cpmResponse.setSuccess(Boolean.FALSE).setMsgKey("cpmApp.projectUser.save.joinDayStyleError")	
+											.setMsgParam(excelValue.getSheet() + "," + rowNum + "," + (columnNum + 1)));
+						}else{
+							if (value.length() != 8) {
 								return ResponseEntity.ok()
-										.body(cpmResponse.setSuccess(Boolean.FALSE).setMsgKey("cpmApp.projectUser.save.monthStyleError"));
+										.body(cpmResponse.setSuccess(Boolean.FALSE).setMsgKey("cpmApp.projectUser.save.dateLengthError")
+												.setMsgParam(excelValue.getSheet() + "," + rowNum + "," + (columnNum + 1)));
 							} else {
-								if (Integer.parseInt(value.substring(4, 6)) == 1
-										|| Integer.parseInt(value.substring(4, 6)) == 3
-										|| Integer.parseInt(value.substring(4, 6)) == 5
-										|| Integer.parseInt(value.substring(4, 6)) == 7
-										|| Integer.parseInt(value.substring(4, 6)) == 8
-										|| Integer.parseInt(value.substring(4, 6)) == 10
-										|| Integer.parseInt(value.substring(4, 6)) == 12) {
-									if (Integer.parseInt(value.substring(6, 8)) > 31) {
-										return ResponseEntity.ok().body(cpmResponse.setSuccess(Boolean.FALSE)
-												.setMsgKey("cpmApp.projectUser.save.dayStyleError"));
-									}
-								}
-								if (Integer.parseInt(value.substring(4, 6)) == 4
-										|| Integer.parseInt(value.substring(4, 6)) == 6
-										|| Integer.parseInt(value.substring(4, 6)) == 9
-										|| Integer.parseInt(value.substring(4, 6)) == 11) {
-									if (Integer.parseInt(value.substring(6, 8)) > 30) {
-										return ResponseEntity.ok().body(cpmResponse.setSuccess(Boolean.FALSE)
-												.setMsgKey("cpmApp.projectUser.save.dayStyleError"));
-									}
-								}
-								if (Integer.parseInt(value.substring(0, 4)) % 4 == 0
-										&& Integer.parseInt(value.substring(0, 4)) % 100 != 0
-										|| Integer.parseInt(value.substring(0, 4)) % 400 == 0) {
-									if (Integer.parseInt(value.substring(4, 6)) == 2) {
-										if (Integer.parseInt(value.substring(6, 8)) > 28) {
-											return ResponseEntity.ok()
-													.body(cpmResponse.setSuccess(Boolean.FALSE).setMsgKey("cpmApp.projectUser.save.dayStyleError"));
-										}
-									}
-								} else {
-									if (Integer.parseInt(value.substring(4, 6)) == 2) {
-										if (Integer.parseInt(value.substring(6, 8)) > 29) {
-											return ResponseEntity.ok()
-													.body(cpmResponse.setSuccess(Boolean.FALSE).setMsgKey("cpmApp.projectUser.save.dayStyleError"));
-										}
-									}
+								String startDay = DateUtil.formatDate(DateUtil.DATE_YYYYMMDD_PATTERN,DateUtil.parseDate(DateUtil.DATE_YYYYMMDD_PATTERN, value));
+								if(!value.equals(startDay)){
+									return ResponseEntity.ok()
+											.body(cpmResponse.setSuccess(Boolean.FALSE).setMsgKey("cpmApp.projectUser.save.joinDayStyleError")	
+													.setMsgParam(excelValue.getSheet() + "," + rowNum + "," + (columnNum + 1)));
 								}
 							}
-
 						}
-
+						
 						long joinDay = Long.parseLong(value);
 						projectUser.setJoinDay(joinDay);
 
-						// 校验第七列，离开日。
+						// 校验第八列，离开日。
 						columnNum++;
 						long leaveDay = 0;
-						if (ls.size() > columnNum) {
-							val = ls.get(columnNum);
+						val = ls.get(columnNum);
+						if(!StringUtil.isNullStr(val)){
 							String ld = df.format(val);
-							
-							if (ld.length() != 8) {
+							if(ld==null){
 								return ResponseEntity.ok()
-										.body(cpmResponse.setSuccess(Boolean.FALSE).setMsgKey("cpmApp.projectUser.save.dateLengthError"));
-							} else {
-								if (Integer.parseInt(ld.substring(4, 6)) > 12) {
-					
+										.body(cpmResponse.setSuccess(Boolean.FALSE).setMsgKey("cpmApp.projectUser.save.joinDayStyleError")	
+												.setMsgParam(excelValue.getSheet() + "," + rowNum + "," + (columnNum + 1)));
+							}else{
+								if (ld.length() != 8) {
 									return ResponseEntity.ok()
-											.body(cpmResponse.setSuccess(Boolean.FALSE).setMsgKey("cpmApp.projectUser.save.monthStyleError"));
+											.body(cpmResponse.setSuccess(Boolean.FALSE).setMsgKey("cpmApp.projectUser.save.dateLengthError")
+													.setMsgParam(excelValue.getSheet() + "," + rowNum + "," + (columnNum + 1)));
 								} else {
-									if (Integer.parseInt(ld.substring(4, 6)) == 1
-											|| Integer.parseInt(ld.substring(4, 6)) == 3
-											|| Integer.parseInt(ld.substring(4, 6)) == 5
-											|| Integer.parseInt(ld.substring(4, 6)) == 7
-											|| Integer.parseInt(ld.substring(4, 6)) == 8
-											|| Integer.parseInt(ld.substring(4, 6)) == 10
-											|| Integer.parseInt(ld.substring(4, 6)) == 12) {
-										if (Integer.parseInt(ld.substring(6, 8)) > 31) {
-											return ResponseEntity.ok().body(cpmResponse.setSuccess(Boolean.FALSE)
-													.setMsgKey("cpmApp.projectUser.save.dayStyleError"));
-										}
-									}
-									if (Integer.parseInt(ld.substring(4, 6)) == 4
-											|| Integer.parseInt(ld.substring(4, 6)) == 6
-											|| Integer.parseInt(ld.substring(4, 6)) == 9
-											|| Integer.parseInt(ld.substring(4, 6)) == 11) {
-										if (Integer.parseInt(ld.substring(6, 8)) > 30) {
-											return ResponseEntity.ok().body(cpmResponse.setSuccess(Boolean.FALSE)
-													.setMsgKey("cpmApp.projectUser.save.dayStyleError"));
-										}
-									}
-									if (Integer.parseInt(ld.substring(0, 4)) % 4 == 0
-											&& Integer.parseInt(ld.substring(0, 4)) % 100 != 0
-											|| Integer.parseInt(ld.substring(0, 4)) % 400 == 0) {
-										if (Integer.parseInt(ld.substring(4, 6)) == 2) {
-											if (Integer.parseInt(ld.substring(6, 8)) > 28) {
-												return ResponseEntity.ok()
-														.body(cpmResponse.setSuccess(Boolean.FALSE).setMsgKey("cpmApp.projectUser.save.dayStyleError"));
-											}
-										}
-									} else {
-										if (Integer.parseInt(ld.substring(4, 6)) == 2) {
-											if (Integer.parseInt(ld.substring(6, 8)) > 29) {
-												return ResponseEntity.ok()
-														.body(cpmResponse.setSuccess(Boolean.FALSE).setMsgKey("cpmApp.projectUser.save.dayStyleError"));
-											}
-										}
+									String endDay = DateUtil.formatDate(DateUtil.DATE_YYYYMMDD_PATTERN,DateUtil.parseDate(DateUtil.DATE_YYYYMMDD_PATTERN, ld));
+									if(!ld.equals(endDay)){
+										return ResponseEntity.ok()
+												.body(cpmResponse.setSuccess(Boolean.FALSE).setMsgKey("cpmApp.projectUser.save.leaveDayStyleError")
+														.setMsgParam(excelValue.getSheet() + "," + rowNum + "," + (columnNum + 1)));
 									}
 								}
-
 							}
+							
 							leaveDay = Long.parseLong(ld);
 							if (leaveDay < joinDay) {
 								return ResponseEntity.badRequest()
@@ -612,65 +552,113 @@ public class ProjectUserResource {
 							projectUser.setLeaveDay(leaveDay);
 						}
 						// 根据项目id和员工编号查看w_project_user表中的加盟日和离开日
-						Map<Long, Long> date = projectUserService.getdates(projectId, userIdBySerialNum);
-						if (date != null) {
-							Set<Entry<Long, Long>> entryLong = date.entrySet();
-							for (Entry<Long, Long> entry : entryLong) {
-								if (entry.getValue() == null) {
-									if (leaveDay >= entry.getKey() || leaveDay == 0) {
-										return ResponseEntity
-												.badRequest().headers(HeaderUtil
+						String key = projectId + "_" + user.getId();
+						if(!userProjects.containsKey(key)){
+							Map<Long, Long> date = projectUserService.getdates(projectId, user.getId());
+							userProjects.put(key, date);
+						}
+						
+						Set<Entry<Long, Long>> entryLong = userProjects.get(key).entrySet();
+						for (Entry<Long, Long> entry : entryLong) {
+							if (entry.getValue() == null) {
+								if (leaveDay >= entry.getKey() || leaveDay == 0) {
+									return ResponseEntity
+											.badRequest().headers(HeaderUtil
+													.createError("cpmApp.projectUser.save.userIdError", ""))
+											.body(null);
+								}
+							} else {
+								if (leaveDay == 0) {
+									if (joinDay <= entry.getValue()) {
+										return ResponseEntity.badRequest()
+												.headers(HeaderUtil
 														.createError("cpmApp.projectUser.save.userIdError", ""))
 												.body(null);
 									}
 								} else {
-									if (leaveDay == 0) {
-										if (joinDay <= entry.getValue()) {
-											return ResponseEntity.badRequest()
-													.headers(HeaderUtil
-															.createError("cpmApp.projectUser.save.userIdError", ""))
-													.body(null);
-										}
-									} else {
-										if (leaveDay >= entry.getKey() && joinDay <= entry.getKey()) {
-											return ResponseEntity.badRequest()
-													.headers(HeaderUtil
-															.createError("cpmApp.projectUser.save.userIdError", ""))
-													.body(null);
-										}
-										if (joinDay >= entry.getKey() && leaveDay <= entry.getValue()) {
-											return ResponseEntity.badRequest()
-													.headers(HeaderUtil
-															.createError("cpmApp.projectUser.save.userIdError", ""))
-													.body(null);
-										}
-										if (joinDay <= entry.getValue() && leaveDay >= entry.getValue()) {
-											return ResponseEntity.badRequest()
-													.headers(HeaderUtil
-															.createError("cpmApp.projectUser.save.userIdError", ""))
-													.body(null);
-										}
+									if(!(leaveDay < entry.getKey() || entry.getValue() < joinDay)){
+										return ResponseEntity.badRequest()
+												.headers(HeaderUtil
+														.createError("cpmApp.projectUser.save.userIdError", ""))
+												.body(null);
 									}
 								}
-
 							}
+
 						}
-						// 根据员工编号得到员工信息
-						user = userRepository.getAllBySerialNum(user_serial_num);
+						userProjects.get(key).put(joinDay, leaveDay == 0 ? null : leaveDay);
+						
+						//添加项目
+						if(!projectIds.contains(projectId)){
+							projectIds.add(projectId);
+						}
+						//添加该条记录
+						if(!projectIdRowRanks.containsKey(projectId)){
+							projectIdRowRanks.put(projectId, new HashMap<Integer,String>());
+						}
+						projectIdRowRanks.get(projectId).put(rowNum, projectUser.getRank());
+						
 						users.add(projectUser);
 					} catch (Exception e) {
 						log.error("校验excel数据出错，msg:" + e.getMessage(), e);
 						return ResponseEntity.ok()
 								.body(cpmResponse.setSuccess(Boolean.FALSE)
-										.setMsgKey("cpmApp.projectUser.save.dataIsError")
+										.setMsgKey("cpmApp.projectUser.save.dataError")
 										.setMsgParam(excelValue.getSheet() + "," + rowNum + "," + (columnNum + 1)));
+					}
+				}
+				
+				//校验级别
+				if(!projectIds.isEmpty()){
+					//缓存项目对应合同的类型是外包的，所有级别
+					Map<Long,List<String>> projectRanks = outSourcingUserService.getType(projectIds);
+					Map<Long,List<String>> projectRanks1 = new HashMap<Long,List<String>>();//项目ID-所有的级别
+					Map<Integer, String> ranks = null;//记录里面的级别
+					List<String> contractRanks = null;//单个外包合同的所有级别
+					String rank = null;
+					
+					for(Long key : projectRanks.keySet()){
+						//得到项目Id下的所有的级别
+						contractRanks = projectRanks.get(key);
+						ranks = projectIdRowRanks.get(key);
+						//校验该记录中的
+						for(Integer tmp : ranks.keySet()){
+							//tmp是rowNum，不可能为空，但是val为空
+							rank = ranks.get(tmp);
+							if(rank == null){
+								return ResponseEntity.ok()
+										.body(cpmResponse.setSuccess(Boolean.FALSE)
+												.setMsgKey("cpmApp.projectUser.save.rankNoneError")
+												.setMsgParam(excelValue.getSheet() + "," + tmp + ",6"));
+							}else if(!contractRanks.contains(rank)){
+								return ResponseEntity.ok()
+										.body(cpmResponse.setSuccess(Boolean.FALSE)
+												.setMsgKey("cpmApp.projectUser.save.rankNotExitsError")
+												.setMsgParam(excelValue.getSheet() + "," + tmp + ",6")); 
+							}
+						}
+						projectIdRowRanks.remove(key);
+					}
+					//校验所有不是外包合同的记录信息是否包含级别信息，包含则提示错误
+					for(Long key : projectIdRowRanks.keySet()){
+						ranks = projectIdRowRanks.get(key);
+						//校验该记录中的
+						for(Integer tmp : ranks.keySet()){
+							rank = ranks.get(tmp);
+							if(!StringUtil.isNullStr(rank)){//不是外包合同，但是sheet里面有
+								return ResponseEntity.ok()
+										.body(cpmResponse.setSuccess(Boolean.FALSE)
+												.setMsgKey("cpmApp.projectUser.save.rankNotNeedError")
+											 	.setMsgParam(excelValue.getSheet() + "," + tmp + ",6"));
+							}
+						}
 					}
 				}
 			}
 			// 入库
 			if (users != null) {
-				for (ProjectUser projectUser : users) {
-					projectUserService.saveOrUpdateUserForExcel(projectUser, user, deptInfo);
+				for(ProjectUser projectUser : users){
+					projectUserService.saveAll(projectUser);
 				}
 			}
 			return ResponseEntity.ok()

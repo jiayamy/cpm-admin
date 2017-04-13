@@ -2,6 +2,7 @@ package com.wondertek.cpm.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -52,7 +53,11 @@ public class OutsourcingUserService {
 
 	public List<LongValue> queryUserRank(Long contractId) {
 		List<LongValue> returnList = new ArrayList<LongValue>();
-    	returnList = outsourcingUserDao.queryUserRank(contractId);
-    	return returnList;
-    }
+		returnList = outsourcingUserDao.queryUserRank(contractId);
+		return returnList;
+	}
+
+	public Map<Long,List<String>> getType(List<Long> projectIds) {
+		return outsourcingUserDao.getType(projectIds);
+	}
 }

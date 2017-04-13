@@ -43,7 +43,4 @@ public interface UserRepository extends JpaRepository<User, Long> {
 	
 	@Query("from User")
 	List<User> findUser();
-	
-	@Query("from User where serialNum = ?1")
-	User getAllBySerialNum(String serial_num);
 }

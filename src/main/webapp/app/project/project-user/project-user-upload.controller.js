@@ -41,6 +41,7 @@
         				var obj = data.msgParam.split(",");
         				param.sheetNum = obj[0];
         				param.rowNum = obj[1];
+        				param.tmp = obj[1];
         				param.columnNum = obj[2];
         			}
         			file.handleMsg = $translate.instant(data.msgKey, param);
