@@ -480,8 +480,7 @@ public class ProjectUserResource {
 						columnNum++;
 						val = ls.get(columnNum);
 						//根据项目id得到项目所属的合同是否是外包
-						if(val == null){
-						}else{
+						if(val != null){
 							projectUser.setRank(StringUtil.null2Str(val));
 						}
 						// 校验第七列，加盟日 
