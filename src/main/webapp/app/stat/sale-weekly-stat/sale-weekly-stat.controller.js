@@ -5,9 +5,9 @@
         .module('cpmApp')
         .controller('SaleWeeklyStatController', SaleWeeklyStatController);
 
-    SaleWeeklyStatController.$inject = ['$rootScope', '$scope', '$state', 'DateUtils','SaleWeeklyStat', 'ParseLinks', 'AlertService', 'paginationConstants', 'pagingParams'];
+    SaleWeeklyStatController.$inject = ['$rootScope', '$scope', '$state', 'DateUtils','SaleWeeklyStat','DeptInfo', 'ParseLinks', 'AlertService', 'paginationConstants', 'pagingParams'];
 
-    function SaleWeeklyStatController ($rootScope, $scope, $state,DateUtils, SaleWeeklyStat, ParseLinks, AlertService, paginationConstants, pagingParams) {
+    function SaleWeeklyStatController ($rootScope, $scope, $state,DateUtils, SaleWeeklyStat, DeptInfo, ParseLinks, AlertService, paginationConstants, pagingParams) {
         var vm = this;
 
         vm.loadPage = loadPage;
@@ -18,41 +18,40 @@
         vm.clear = clear;
         vm.search = search;
         vm.loadAll = loadAll;
+        vm.loadSaleDept = loadSaleDept;
         vm.searchQuery = {};
         vm.searchQuery.deptId = pagingParams.deptId;
         vm.searchQuery.deptName = pagingParams.deptName;
-//        vm.searchQuery.contractId= pagingParams.contractId;
-//        vm.contractInfos = [];
         if (!vm.searchQuery.deptId){
         	vm.haveSearch = null;
         }else{
         	vm.haveSearch = true;
         }
-//        loadContract();
-//        function loadContract(){
-//        	ContractInfo.queryContractInfo({
-//        		
-//        	},
-//        	function(data, headers){
-//        		vm.contractInfos = data;
-//        		if(vm.contractInfos && vm.contractInfos.length > 0){
-//        			for(var i = 0; i < vm.contractInfos.length; i++){
-//        				if(pagingParams.contractId == vm.contractInfos[i].key){
-//        					vm.searchQuery.contractId = vm.contractInfos[i];
-//        				}
-//        			}
-//        		}
-//        	},
-//        	function(error){
-//        		AlertService.error(error.data.message);
-//        	});
-//        }
+        loadSaleDept();
+        function loadSaleDept(){
+        	DeptInfo.getPrimarySaleDepts({
+        		
+        	},
+        	function(data, headers){
+        		vm.saleDeptInfos = data;
+        		if(vm.saleDeptInfos && vm.saleDeptInfos.length > 0){
+        			for(var i = 0; i < vm.saleDeptInfos.length; i++){
+        				if(pagingParams.deptId == vm.saleDeptInfos[i].id){
+        					vm.searchQuery.deptId = vm.saleDeptInfos[i];
+        				}
+        			}
+        		}
+        	},
+        	function(error){
+        		AlertService.error(error.data.message);
+        	});
+        }
         
         loadAll();
 
         function loadAll () {
-        	if(pagingParams.contractId == undefined){
-        		pagingParams.contractId = "";
+        	if(pagingParams.deptId == undefined){
+        		pagingParams.deptId = "";
         	}
         	SaleWeeklyStat.query({
                 page: pagingParams.page - 1,
@@ -89,8 +88,7 @@
             $state.transitionTo($state.$current, {
                 page: vm.page,
                 sort: vm.predicate + ',' + (vm.reverse ? 'asc' : 'desc'),
-                deptId:vm.searchQuery.deptId,
-                deptName:vm.searchQuery.deptName
+                deptId:vm.searchQuery.deptId?vm.searchQuery.deptId.id:""
             });
         }
 
@@ -115,11 +113,5 @@
             vm.haveSearch = null;
             vm.transition();
         }
-        
-        var unsubscribe = $rootScope.$on('cpmApp:deptInfoSelected', function(event, result) {
-        	vm.searchQuery.deptId = result.objId;
-        	vm.searchQuery.deptName = result.name;
-        });
-        $scope.$on('$destroy', unsubscribe);
     }
 })();

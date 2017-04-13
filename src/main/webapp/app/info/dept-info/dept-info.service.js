@@ -32,6 +32,11 @@
             	method: 'GET',
             	url:'api/dept-infos/getDeptTree',
             	isArray: true
+            },
+            'getPrimarySaleDepts': {
+            	method: 'GET',
+            	url:'api/dept-infos/getPrimarySaleDepts',
+            	isArray: true
             }
         });
     }
