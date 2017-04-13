@@ -12,6 +12,12 @@ public class LongValue {
 		this.type = type;
 		this.val = val;
 	}
+	public LongValue(Long key, Integer type, String val,Long p1) {
+		this.key = key;
+		this.type = type;
+		this.val = val;
+		this.p1 = p1;
+	}
 	public LongValue(Long key,String val) {
 		this.key = key;
 		this.val = val;

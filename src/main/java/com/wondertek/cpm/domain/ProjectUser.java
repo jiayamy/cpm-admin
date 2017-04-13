@@ -59,7 +59,12 @@ public class ProjectUser implements Serializable {
      */
     @Column(name = "leave_day")
     private Long leaveDay;
-
+    /**
+     * 级别
+     */
+    @Column(name = "rank_")
+    private String rank;
+    
     @Column(name = "creator_")
     private String creator;
 
@@ -154,6 +159,14 @@ public class ProjectUser implements Serializable {
 
 	public void setLeaveDay(Long leaveDay) {
 		this.leaveDay = leaveDay;
+	}
+	
+	public String getRank() {
+		return rank;
+	}
+
+	public void setRank(String rank) {
+		this.rank = rank;
 	}
 
 	public String getCreator() {

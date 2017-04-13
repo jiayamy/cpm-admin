@@ -1,13 +1,31 @@
 package com.wondertek.cpm.web.rest;
 
+import java.io.File;
+import java.io.IOException;
 import java.net.URISyntaxException;
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
+import java.util.Set;
 
 import javax.inject.Inject;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
+import org.apache.poi.hssf.usermodel.HSSFDataFormat;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFCellStyle;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -26,15 +44,28 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.codahale.metrics.annotation.Timed;
+import com.wondertek.cpm.CpmConstants;
+import com.wondertek.cpm.ExcelUtil;
+import com.wondertek.cpm.ExcelValue;
+import com.wondertek.cpm.ExcelWrite;
 import com.wondertek.cpm.config.DateUtil;
+import com.wondertek.cpm.config.FilePathHelper;
 import com.wondertek.cpm.config.StringUtil;
 import com.wondertek.cpm.domain.ContractInfo;
 import com.wondertek.cpm.domain.ContractUser;
+import com.wondertek.cpm.domain.DeptInfo;
+import com.wondertek.cpm.domain.User;
 import com.wondertek.cpm.domain.vo.ContractUserVo;
 import com.wondertek.cpm.repository.ContractInfoRepository;
+import com.wondertek.cpm.repository.ContractUserRepository;
+import com.wondertek.cpm.repository.UserRepository;
 import com.wondertek.cpm.security.AuthoritiesConstants;
 import com.wondertek.cpm.security.SecurityUtils;
+import com.wondertek.cpm.service.ContractInfoService;
 import com.wondertek.cpm.service.ContractUserService;
+import com.wondertek.cpm.service.DeptInfoService;
+import com.wondertek.cpm.service.UserService;
+import com.wondertek.cpm.web.rest.errors.CpmResponse;
 import com.wondertek.cpm.web.rest.util.HeaderUtil;
 import com.wondertek.cpm.web.rest.util.PaginationUtil;
 
@@ -54,8 +85,19 @@ public class ContractUserResource {
     
     @Inject
     private ContractInfoRepository contractInfoRepository;
-
-
+    
+    @Inject
+    private ContractInfoService contractInfoService;
+    
+    @Inject
+    private UserService userService;
+    
+    @Inject
+    private UserRepository userRepository;
+    
+    @Inject
+    private DeptInfoService deptInfoService;
+    
     @PutMapping("/contract-users")
     @Timed
     @Secured(AuthoritiesConstants.ROLE_CONTRACT_USER)
@@ -192,5 +234,426 @@ public class ContractUserResource {
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
 
+    @GetMapping("/contract-users/exportXls")
+    @Timed
+    @Secured(AuthoritiesConstants.ROLE_PROJECT_USER)
+    public void exportXls(
+	    		HttpServletRequest request, HttpServletResponse response,
+	    		@RequestParam(value="contractId",required = false) Long contractId,
+	    		@RequestParam(value="userId",required = false) Long userId
+    		) throws IOException{
+    	log.debug(SecurityUtils.getCurrentUserLogin()+" REST request to exportXls : contractId:{},userId:{}",contractId,userId);
+    	ContractUser searchParams = new ContractUser();
+        searchParams.setContractId(contractId);
+        searchParams.setUserId(userId);
+        List<ContractUserVo> list = contractUserService.getContractUserList(searchParams);
+    	//拼接sheet数据
+    	//标题
+    	String[] heads = new String[]{
+    			"合同编号",
+    			"合同名称",
+    			"员工",
+    			"部门",
+    			"加盟日",
+    			"离开日"
+    	};
+    	Date date = new Date();
+    	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+    	String now = sdf.format(date);
+    	String fileName = "合同人员信息_"+now+".xlsx";
+    	//写入sheet
+    	ServletOutputStream outputStream = response.getOutputStream();
+    	response.setHeader("Content-Disposition","attachment;filename=" + ExcelUtil.getExportName(request, fileName));
+    	response.setContentType("application/x-msdownload");
+    	response.setCharacterEncoding("UTF-8");
+    	ExcelWrite excelWrite = new ExcelWrite();
+    	//写入标题
+    	excelWrite.createSheetTitle("咨询", 1, heads);
+    	//写入数据
+    	if(list != null){
+    		handleSheetData(list,2,excelWrite);
+    	}
+    	excelWrite.close(outputStream);
+    }
 
+	private void handleSheetData(List<ContractUserVo> list, int startRow, ExcelWrite excelWrite) {
+		Integer[] cellType = new Integer[]{
+    			Cell.CELL_TYPE_STRING,
+    			Cell.CELL_TYPE_STRING,
+    			Cell.CELL_TYPE_STRING,
+    			Cell.CELL_TYPE_STRING,
+    			Cell.CELL_TYPE_STRING,
+    			Cell.CELL_TYPE_STRING,
+    			Cell.CELL_TYPE_STRING
+    	};
+    	XSSFSheet sheet = excelWrite.getCurrentSheet();
+    	XSSFWorkbook wb = excelWrite.getXSSFWorkbook();
+		XSSFRow row = null;
+		XSSFCell cell = null;
+		int i = -1;
+		int j = 0;
+		//百分比格式
+		XSSFCellStyle cellStyle = wb.createCellStyle();  
+		cellStyle.setDataFormat(HSSFDataFormat.getBuiltinFormat("0.00%")); 
+		//数据
+		for(ContractUserVo vo : list){
+			i++;
+			row = sheet.createRow(i + startRow-1);
+			
+			j = 0;
+			cell = row.createCell(j,cellType[j]);
+			if(vo.getContractNum() == null){
+				cell.setCellValue("");
+			}else{
+				cell.setCellValue(vo.getContractNum());
+			}
+			j++;
+			cell = row.createCell(j,cellType[j]);
+			if(vo.getContractName() == null){
+				cell.setCellValue("");
+			}else{
+				cell.setCellValue(vo.getContractName());
+			}
+			j++;
+			cell = row.createCell(j,cellType[j]);
+			if(vo.getUserName() == null){
+				cell.setCellValue("");
+			}else{
+				cell.setCellValue(vo.getUserName());
+			}
+			j++;
+			cell = row.createCell(j,cellType[j]);
+			if(vo.getDept() == null){
+				cell.setCellValue("");
+			}else{
+				cell.setCellValue(vo.getDept());
+			}
+			j++;
+			cell = row.createCell(j,cellType[j]);
+			if(vo.getJoinDay() == null){
+				cell.setCellValue("");
+			}else{
+				cell.setCellValue(vo.getJoinDay());
+			}
+			j++;
+			cell = row.createCell(j,cellType[j]);
+			if(vo.getLeaveDay() == null){
+				cell.setCellValue("");
+			}else{
+				cell.setCellValue(vo.getLeaveDay());
+			}
+			j++;
+		}
+		
+	}
+	
+	@GetMapping("/contract-users/uploadExcel")
+    @Timed
+    @Secured(AuthoritiesConstants.ROLE_CONTRACT_USER)
+    public ResponseEntity<CpmResponse> uploadExcel(@RequestParam(value = "filePath",required=true) String filePath)
+            throws URISyntaxException {
+        log.debug(SecurityUtils.getCurrentUserLogin()+" REST request to uploadExcel for file : {}",filePath);
+        List<ContractUser> users = null;
+        CpmResponse cpmResponse = new CpmResponse();
+		try {
+			//校验文件是否存在
+			File file = new File(FilePathHelper.joinPath(CpmConstants.FILE_UPLOAD_SERVLET_BASE_PATH,filePath));
+			if(!file.exists() || !file.isFile()){
+				return ResponseEntity.ok()
+						.body(cpmResponse
+								.setSuccess(Boolean.FALSE)
+								.setMsgKey("cpmApp.contractUser.save.requiredError"));
+			}
+			//从第一行读取，最多读取10个sheet，最多读取6列
+			int startNum = 1;
+			List<ExcelValue> lists = ExcelUtil.readExcel(file,startNum,10,6);
+			if(lists == null || lists.isEmpty()){
+				return ResponseEntity.ok()
+						.body(cpmResponse
+								.setSuccess(Boolean.FALSE)
+								.setMsgKey("cpmApp.contractUser.save.requiredError"));
+			}
+			//初始信息
+			//合同编号
+			Map<String,Long> contractInfos = contractInfoService.getContractInfo();
+			//员工姓名
+			Map<String, String> allUser = userService.getAllUsers();
+			//其他信息
+			users = new ArrayList<ContractUser>();
+			String updator = SecurityUtils.getCurrentUserLogin();
+			ZonedDateTime updateTime = ZonedDateTime.now();
+			int columnNum = 0;
+			int rowNum = 0;
+			Object val = null;
+			Long contractId = null;
+			ContractInfo contractInfoAll = null;
+			User user = null;
+			DeptInfo deptInfo = null;
+			for (ExcelValue excelValue : lists) {
+				if (excelValue.getVals() == null || excelValue.getVals().isEmpty()) {//每个sheet也可能没有数据，空sheet
+					continue;
+				}
+				rowNum = 1;//都是从第一行读取的。
+				for(List<Object> ls : excelValue.getVals()){
+					rowNum ++;
+					if(ls == null){//每个sheet里面也可能有空行。
+						continue;
+					}
+					try {
+						ContractUser contractUser = new ContractUser();
+						contractUser.setUpdator(updator);
+						contractUser.setUpdateTime(updateTime);
+						contractUser.setCreateTime(updateTime);
+						contractUser.setCreator(updator);
+				        //校验第一列，合同编号， 查看导入的列是否在数据库中存在。
+						columnNum = 0;
+						val = ls.get(columnNum);
+						if(val == null || StringUtil.isNullStr(val)){
+							return ResponseEntity.ok().body(cpmResponse
+											.setSuccess(Boolean.FALSE)
+											.setMsgKey("cpmApp.contractUser.save.dataIsError")
+											.setMsgParam(excelValue.getSheet() + "," + rowNum +","+(columnNum+1)));
+						}
+						//根据合同编号得到合同id
+						contractId = contractInfos.get(StringUtil.null2Str(val));
+						//校验合同编号是否存在。
+						if(contractId==null){
+							return ResponseEntity.ok().body(cpmResponse
+									.setSuccess(Boolean.FALSE)
+									.setMsgKey("cpmApp.contractUser.save.dataNotExist")
+									.setMsgParam(excelValue.getSheet() + "," + rowNum +","+(columnNum+1)));
+						}
+						contractUser.setContractId(contractInfos.get(StringUtil.null2Str(val)));
+						contractInfoAll = contractInfoRepository.getAllBySerialNum(val.toString());
+						//合同姓名，可以不填写，不用校验
+						columnNum++;
+						//校验第二列，员工编号，查看导入的员工编号是否存在。
+						columnNum++;
+						val = ls.get(columnNum);
+						if(val == null || StringUtil.isNullStr(val)){
+							return ResponseEntity.ok().body(cpmResponse
+											.setSuccess(Boolean.FALSE)
+											.setMsgKey("cpmApp.contractUser.save.dataIsError")
+											.setMsgParam(excelValue.getSheet() + "," + rowNum +","+(columnNum+1)));
+						}
+						if(!allUser.containsKey(val)){
+							return ResponseEntity.ok().body(cpmResponse
+									.setSuccess(Boolean.FALSE)
+									.setMsgKey("cpmApp.contractUser.save.dataNotExist")
+									.setMsgParam(excelValue.getSheet() + "," + rowNum +","+(columnNum+1)));
+						}
+						//员工编号转为字符串user_serial_num
+						String user_serial_num = (String)val;
+						//根据员工编号得到员工id
+						long userIdBySerialNum = userService.getUserId(user_serial_num);
+						contractUser.setUserId(userIdBySerialNum);
+						//根据员工编号得到对应的员工所在的部门信息
+						deptInfo = deptInfoService.findDeptInfo(user_serial_num);
+						//校验第三列，员工姓名,查看在数据库中员工编号是否与员工姓名相对应。
+						columnNum++;
+						val = ls.get(columnNum);
+						//对员工姓名进行字符编码的转化
+						val = new String(val.toString().getBytes(), "gbk");
+						if(val == null || StringUtil.isNullStr(val)){
+							return ResponseEntity.ok().body(cpmResponse
+											.setSuccess(Boolean.FALSE)
+											.setMsgKey("cpmApp.contractUser.save.dataIsError")
+											.setMsgParam(excelValue.getSheet() + "," + rowNum +","+(columnNum+1)));
+						}
+						if(!allUser.get(user_serial_num).equals(val)){
+							return ResponseEntity.ok().body(cpmResponse
+									.setSuccess(Boolean.FALSE)
+									.setMsgKey("cpmApp.contractUser.save.dataNotExist")
+									.setMsgParam(excelValue.getSheet() + "," + rowNum +","+(columnNum+1)));
+						}
+						contractUser.setUserName(StringUtil.null2Str(val));
+						//校验第四列，加盟日
+						columnNum++;
+						val = ls.get(columnNum);
+						if(val == null || StringUtil.isNullStr(val)){
+							return ResponseEntity.ok().body(cpmResponse
+											.setSuccess(Boolean.FALSE)
+											.setMsgKey("cpmApp.contractUser.save.dataIsError")
+											.setMsgParam(excelValue.getSheet() + "," + rowNum +","+(columnNum+1)));
+						}
+						//对从Excel传来的数据进行处理。
+						DecimalFormat df = new DecimalFormat("0"); 
+						String value = df.format(val);
+						if (value.length() != 8) {
+							return ResponseEntity.ok()
+									.body(cpmResponse.setSuccess(Boolean.FALSE).setMsgKey("cpmApp.contractUser.save.dateLengthError"));
+						} else {
+							if (Integer.parseInt(value.substring(4, 6)) > 12) {
+				
+								return ResponseEntity.ok()
+										.body(cpmResponse.setSuccess(Boolean.FALSE).setMsgKey("cpmApp.contractUser.save.monthStyleError"));
+							} else {
+								if (Integer.parseInt(value.substring(4, 6)) == 1
+										|| Integer.parseInt(value.substring(4, 6)) == 3
+										|| Integer.parseInt(value.substring(4, 6)) == 5
+										|| Integer.parseInt(value.substring(4, 6)) == 7
+										|| Integer.parseInt(value.substring(4, 6)) == 8
+										|| Integer.parseInt(value.substring(4, 6)) == 10
+										|| Integer.parseInt(value.substring(4, 6)) == 12) {
+									if (Integer.parseInt(value.substring(6, 8)) > 31) {
+										return ResponseEntity.ok().body(cpmResponse.setSuccess(Boolean.FALSE)
+												.setMsgKey("cpmApp.contractUser.save.dayStyleError"));
+									}
+								}
+								if (Integer.parseInt(value.substring(4, 6)) == 4
+										|| Integer.parseInt(value.substring(4, 6)) == 6
+										|| Integer.parseInt(value.substring(4, 6)) == 9
+										|| Integer.parseInt(value.substring(4, 6)) == 11) {
+									if (Integer.parseInt(value.substring(6, 8)) > 30) {
+										return ResponseEntity.ok().body(cpmResponse.setSuccess(Boolean.FALSE)
+												.setMsgKey("cpmApp.contractUser.save.dayStyleError"));
+									}
+								}
+								if (Integer.parseInt(value.substring(0, 4)) % 4 == 0
+										&& Integer.parseInt(value.substring(0, 4)) % 100 != 0
+										|| Integer.parseInt(value.substring(0, 4)) % 400 == 0) {
+									if (Integer.parseInt(value.substring(4, 6)) == 2) {
+										if (Integer.parseInt(value.substring(6, 8)) > 28) {
+											return ResponseEntity.ok()
+													.body(cpmResponse.setSuccess(Boolean.FALSE).setMsgKey("cpmApp.contractUser.save.dayStyleError"));
+										}
+									}
+								} else {
+									if (Integer.parseInt(value.substring(4, 6)) == 2) {
+										if (Integer.parseInt(value.substring(6, 8)) > 29) {
+											return ResponseEntity.ok()
+													.body(cpmResponse.setSuccess(Boolean.FALSE).setMsgKey("cpmApp.contractUser.save.dayStyleError"));
+										}
+									}
+								}
+							}
+
+						}
+						
+						
+						
+						long joinDay = Long.parseLong(value);
+						contractUser.setJoinDay(joinDay);	
+						//校验第五列，离开日。
+						columnNum++;
+						long leaveDay = 0;
+						if(ls.size() > columnNum){
+							val = ls.get(columnNum);
+							String ld = df.format(val);
+							if (ld.length() != 8) {
+								return ResponseEntity.ok()
+										.body(cpmResponse.setSuccess(Boolean.FALSE).setMsgKey("cpmApp.contractUser.save.dateLengthError"));
+							} else {
+								if (Integer.parseInt(ld.substring(4, 6)) > 12) {
+					
+									return ResponseEntity.ok()
+											.body(cpmResponse.setSuccess(Boolean.FALSE).setMsgKey("cpmApp.contractUser.save.monthStyleError"));
+								} else {
+									if (Integer.parseInt(ld.substring(4, 6)) == 1
+											|| Integer.parseInt(ld.substring(4, 6)) == 3
+											|| Integer.parseInt(ld.substring(4, 6)) == 5
+											|| Integer.parseInt(ld.substring(4, 6)) == 7
+											|| Integer.parseInt(ld.substring(4, 6)) == 8
+											|| Integer.parseInt(ld.substring(4, 6)) == 10
+											|| Integer.parseInt(ld.substring(4, 6)) == 12) {
+										if (Integer.parseInt(ld.substring(6, 8)) > 31) {
+											return ResponseEntity.ok().body(cpmResponse.setSuccess(Boolean.FALSE)
+													.setMsgKey("cpmApp.contractUser.save.dayStyleError"));
+										}
+									}
+									if (Integer.parseInt(ld.substring(4, 6)) == 4
+											|| Integer.parseInt(ld.substring(4, 6)) == 6
+											|| Integer.parseInt(ld.substring(4, 6)) == 9
+											|| Integer.parseInt(ld.substring(4, 6)) == 11) {
+										if (Integer.parseInt(ld.substring(6, 8)) > 30) {
+											return ResponseEntity.ok().body(cpmResponse.setSuccess(Boolean.FALSE)
+													.setMsgKey("cpmApp.contractUser.save.dayStyleError"));
+										}
+									}
+									if (Integer.parseInt(ld.substring(0, 4)) % 4 == 0
+											&& Integer.parseInt(ld.substring(0, 4)) % 100 != 0
+											|| Integer.parseInt(ld.substring(0, 4)) % 400 == 0) {
+										if (Integer.parseInt(ld.substring(4, 6)) == 2) {
+											if (Integer.parseInt(ld.substring(6, 8)) > 28) {
+												return ResponseEntity.ok()
+														.body(cpmResponse.setSuccess(Boolean.FALSE).setMsgKey("15输入的日期天数不正确")
+																.setMsgKey("cpmApp.contractUser.save.dayStyleError"));
+											}
+										}
+									} else {
+										if (Integer.parseInt(ld.substring(4, 6)) == 2) {
+											if (Integer.parseInt(ld.substring(6, 8)) > 29) {
+												return ResponseEntity.ok()
+														.body(cpmResponse.setSuccess(Boolean.FALSE).setMsgKey("16输入的日期天数不正确")
+																.setMsgKey("cpmApp.contractUser.save.dayStyleError"));
+											}
+										}
+									}
+								}
+
+							}
+							
+							leaveDay = Long.parseLong(ld);
+							if(leaveDay<joinDay){
+								return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.contractUser.save.dayError", "")).body(null);
+							}
+							contractUser.setLeaveDay(leaveDay);
+						}
+						//根据合同id和员工编号查看w_contract_user表中的加盟日和离开日
+						Map<Long,Long> date = contractUserService.getdates(contractId,userIdBySerialNum);
+						if(date!=null){
+							Set<Entry<Long,Long>> entryLong = date.entrySet();
+							for(Entry<Long,Long> entry : entryLong){
+		 						if(entry.getValue() == null){
+		 							if(leaveDay>=entry.getKey()||leaveDay==0){
+		 						     	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.contractUser.save.userIdError", "")).body(null);
+		 							}
+		 						}else {
+		 							if(leaveDay == 0){
+		 								if(joinDay<=entry.getValue()){
+		 									return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.contractUser.save.userIdError", "")).body(null);
+		 								}
+		 							}else {
+		 								if(leaveDay>=entry.getKey()&&joinDay<=entry.getKey()){
+			 								return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.contractUser.save.userIdError", "")).body(null);
+			 							}
+		 								if(joinDay>=entry.getKey()&&leaveDay<=entry.getValue()){
+			 								return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.contractUser.save.userIdError", "")).body(null);
+			 							}
+		 								if(joinDay<=entry.getValue()&&leaveDay>=entry.getValue()){
+			 								return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.contractUser.save.userIdError", "")).body(null);
+			 							}
+		 							}
+		 						}
+								
+							}
+						}
+						user = userRepository.getAllBySerialNum(user_serial_num);
+						users.add(contractUser);
+					} catch (Exception e) {
+						log.error("校验excel数据出错，msg:"+e.getMessage(),e);
+						return ResponseEntity.ok().body(cpmResponse
+									.setSuccess(Boolean.FALSE)
+									.setMsgKey("cpmApp.contractUser.save.dataIsError")
+									.setMsgParam(excelValue.getSheet() + "," + rowNum +","+(columnNum+1)));
+					}
+				}
+			}
+			//入库
+			if(users != null ){
+				for(ContractUser contractUser : users){
+					contractUserService.saveOrUpdateUserForExcel(contractUser,contractInfoAll,user,deptInfo);
+				}
+			}
+			return ResponseEntity.ok().body(cpmResponse
+					.setSuccess(Boolean.TRUE)
+					.setMsgKey("cpmApp.contractUser.save.importSuccess"));
+		} catch (IOException e) {
+			log.error("msg:" + e.getMessage(),e);
+			return ResponseEntity.ok().body(cpmResponse
+						.setSuccess(Boolean.FALSE)
+						.setMsgKey("cpmApp.contractUser.save.importError"));
+		}
+		
+    }
 }

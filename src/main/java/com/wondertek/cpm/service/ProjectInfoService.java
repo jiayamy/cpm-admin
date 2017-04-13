@@ -3,7 +3,9 @@ package com.wondertek.cpm.service;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -232,5 +234,14 @@ public class ProjectInfoService {
     		returnList = projectInfoDao.queryUserProject(user,deptInfo);
     	}
 		return returnList;
+	}
+
+	public Map<String, Long> getProjectInfo() {
+		List<ProjectInfo> projectInfos =  projectInfoRepository.getProjectInfo();
+		Map<String,Long> map = new HashMap<String,Long>();
+		for(ProjectInfo pi : projectInfos){
+			map.put(pi.getSerialNum(), pi.getId());
+		}
+		return map;
 	}
 }

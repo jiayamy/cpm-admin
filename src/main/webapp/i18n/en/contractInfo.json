@@ -5,7 +5,9 @@
                 "title": "Contract Info",
                 "createLabel": "Create a new Contract Info",
                 "createOrEditLabel": "Create or edit a Contract Info",
-                "import": "Import Excel"
+                "import": "Import Excel",
+                "outsourcingUserInfos": "Outsourcing User Infos",
+                "contractBasicInfo": "Contract Basic Info"
             },
             "created": "A Contract Info is created",
             "updated": "A Contract Info is updated",
@@ -84,6 +86,11 @@
             "createTime": "Create Time",
             "updator": "Updator",
             "updateTime": "Update Time"
+        },
+        "outsourcing":{
+        	"rank": "Rank",
+        	"targetAmount": "Target Amount",
+        	"offer": "Offer"
         }
     }
 }

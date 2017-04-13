@@ -912,5 +912,22 @@ ALTER TABLE w_user_cost ADD (fund_ DOUBLE(15,2) DEFAULT '0');
 --UPDATE W_USER_COST SET social_security = ( social_security_fund * 37 /44 );
 --UPDATE W_USER_COST SET FUND_ = ( social_security_fund * 7 /44 );
 
+--20170407
+CREATE TABLE `w_outsourcing_user` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键、',
+  `contract_id` bigint(20) DEFAULT NULL COMMENT '合同主键、',
+  `rank_` varchar(100) DEFAULT NULL COMMENT '奖金合计（销售+项目+咨询奖金）',
+  `offer_` double(15,2) DEFAULT NULL COMMENT '合同金额、',
+  `target_amount` int(11) DEFAULT NULL COMMENT '产品单位（同采购子项）',
+  `mark_` varchar(100) DEFAULT NULL COMMENT '唯一标识',
+  `updator_` varchar(100) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
+  `update_time` timestamp NULL DEFAULT NULL,
+  `creator_` varchar(100) COLLATE utf8_bin DEFAULT NULL,
+  `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1426 DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='外包人员信息表';
 
+ALTER TABLE w_contract_info ADD (mark_ varchar(100) DEFAULT NULL);
+
+ALTER TABLE w_project_user ADD (rank_ varchar(100) DEFAULT NULL);
     

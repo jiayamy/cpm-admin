@@ -213,9 +213,11 @@ public class ProjectUserDaoImpl extends GenericDaoImpl<ProjectUser, Long> implem
 		List<Object> params = new ArrayList<Object>();
 		int count = 0;//jpa格式 问号后的数组，一定要从0开始
 		
-		queryHql.append("select wpu,wpi.serialNum,wpi.name");
+		queryHql.append("select wpu,wpi.serialNum,wpi.name,wci.type,wci.id,wosu.id");
 		queryHql.append(" from ProjectUser wpu");
 		queryHql.append(" left join ProjectInfo wpi on wpi.id = wpu.projectId ");
+		queryHql.append(" left join ContractInfo wci on wci.id = wpi.contractId");
+		queryHql.append(" left join OutsourcingUser wosu on wci.id = wosu.contractId");
 		queryHql.append(" left join DeptInfo wdi on wdi.id = wpi.deptId");
 		queryHql.append(" where (wpi.pmId = ?" + (count++) + " or wpi.creator = ?" + (count++));
 		params.add(user.getId());
@@ -231,7 +233,7 @@ public class ProjectUserDaoImpl extends GenericDaoImpl<ProjectUser, Long> implem
 		
 		List<Object[]> list = this.queryAllHql(queryHql.toString(),params.toArray());
 		if(list != null && !list.isEmpty()){
-			return new ProjectUserVo((ProjectUser)list.get(0)[0],StringUtil.null2Str(list.get(0)[1]),StringUtil.null2Str(list.get(0)[2]));
+			return new ProjectUserVo((ProjectUser)list.get(0)[0],StringUtil.null2Str(list.get(0)[1]),StringUtil.null2Str(list.get(0)[2]),StringUtil.nullToInteger(list.get(0)[3]),StringUtil.nullToLong(list.get(0)[4]),StringUtil.nullToLong(list.get(0)[5]));
 		}
 		return null;
 	}
@@ -240,6 +242,56 @@ public class ProjectUserDaoImpl extends GenericDaoImpl<ProjectUser, Long> implem
 	public int updateLeaveDayByProject(Long projectId, long leaveDay, String updator) {
 		return this.excuteHql("update ProjectUser set leaveDay = ?0 , updator = ?1, updateTime = ?2 where (leaveDay is null or leaveDay > ?3) and projectId = ?4", 
 				new Object[]{leaveDay,updator,ZonedDateTime.now(),leaveDay,projectId});
+	}
+	
+	@Override
+	public List<ProjectUserVo> getProjectUserList(ProjectUser projectUser,User user, DeptInfo deptInfo) {
+		StringBuffer querySql = new StringBuffer();
+		
+		StringBuffer whereSql = new StringBuffer();
+		List<Object> params = new ArrayList<Object>();
+		
+		querySql.append("select wpu.id,wpu.project_id,wpu.user_id,wpu.user_name,wpu.user_role,wpu.join_day,wpu.leave_day,wpu.creator_,wpu.create_time,wpu.updator_,wpu.update_time");
+		querySql.append(",wpi.serial_num,wpi.name_");
+		
+		
+		whereSql.append(" from w_project_user wpu");
+		whereSql.append(" left join w_project_info wpi on wpi.id = wpu.project_id");
+		whereSql.append(" left join w_dept_info wdi on wpi.dept_id = wdi.id");
+		
+		whereSql.append(" where (wpi.pm_id = ? or wpi.creator_ = ?");
+		params.add(user.getId());
+		params.add(user.getLogin());
+		if(user.getIsManager()){
+			whereSql.append(" or wdi.id_path like ? or wdi.id = ?");
+			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
+			params.add(deptInfo.getId());
+		}
+		whereSql.append(")");
+		
+		//查询条件
+		if(projectUser.getProjectId() != null){
+			whereSql.append(" and wpu.project_id = ?");
+			params.add(projectUser.getProjectId());
+		}
+		if(projectUser.getUserId() != null){
+			whereSql.append(" and wpu.user_id = ?");
+			params.add(projectUser.getUserId());
+		}
+		
+		querySql.append(whereSql.toString());
+		whereSql.setLength(0);
+		whereSql = null;
+		
+		List<Object[]> page = this.queryAllSql(querySql.toString(),params.toArray());
+		
+		List<ProjectUserVo> returnList = new ArrayList<ProjectUserVo>();
+		if(page!= null){
+			for(Object[] o : page){
+				returnList.add(transProjectUserVo(o));
+			}
+		}
+		return returnList;
 	}
 	
 }

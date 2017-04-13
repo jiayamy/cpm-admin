@@ -1,0 +1,35 @@
+{
+    "cpmApp": {
+        "outsourcingUser" : {
+            "home": {
+                "createLabel": "Create a new Outsourcing User",
+                "outsourcingUserInfos": "Outsourcing User Infos"
+            },
+            "created": "A Outsourcing User is created",
+            "updated": "A Outsourcing User is updated",
+            "detail": {
+                "title": "Outsourcing User Infos"
+            },
+            "save":{
+            	"requiedError":"Mandatory parameter is empty",
+            	"dataError":"Data exception",
+            	"statusUnvalidable":"The contract status is unavailable",
+            	"ranknoChange":"Outsourcing staff level cannot be changed",
+            	"statusError":"Has been deleted or the completed contract cannot be changed",
+            	"rankHasExit":"The corresponding level already exists",
+            	"typeError":"The contract type error",
+            	"userCannotEmpty": "Please add outsourcing staff",
+            	"haveNoUser": "Outsourcing contract may have outsourcing staff"
+            },
+        	"rank": "Rank",
+        	"targetAmount": "Target Amount",
+        	"offer": "Offer",
+        	"serialNum": "SerialNum",
+        	"contractName": "Contract Name",
+        	"updator": "Updator",
+        	"updateTime": "Update Time",
+        	"creator": "Creator",
+        	"createTime": "Creator Time"
+        }
+    }
+}

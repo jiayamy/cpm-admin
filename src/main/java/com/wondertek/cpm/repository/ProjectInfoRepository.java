@@ -32,4 +32,7 @@ public interface ProjectInfoRepository extends JpaRepository<ProjectInfo,Long> {
 	
 	@Query(" from ProjectInfo where contractId = ?1 order by id desc")
 	List<ProjectInfo> findAllByContractId(Long contractId);
+
+	@Query(" from ProjectInfo")
+	List<ProjectInfo> getProjectInfo();
 }

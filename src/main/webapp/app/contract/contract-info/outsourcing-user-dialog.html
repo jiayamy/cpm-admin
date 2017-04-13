@@ -14,7 +14,7 @@
 					<div class="col-sm-6">
 				        <label class="control-label" data-translate="cpmApp.outsourcing.rank" for="field_rank">Rank</label>
 		            	<input type="text" class="form-control" name="rank" ng-model="vm.outsourcingUser.rank" id="field_rank"
-		            		ng-required="true" ng-disabled="vm.outsourcingUser.id"
+		            		ng-required="true" ng-disabled="vm.outsourcingUser.contractId && vm.outsourcingUser.id"
 			            </>
 			            <div ng-show="editForm.rank.$invalid">
 			                <p class="help-block"

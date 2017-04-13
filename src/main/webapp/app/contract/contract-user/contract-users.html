@@ -11,6 +11,12 @@
 	                        Create new Contract User
 	                    </span>
 	                </button>
+	                <button class="btn btn-primary" ui-sref="contract-user.upload" >
+	                    <span class="glyphicon glyphicon-import"></span>
+	                    <span data-translate="cpmApp.contractUser.home.importLabel">
+	                        Import Excel
+	                    </span>
+	                </button>
 	            </div>
 	       	</div>
 		</div>
@@ -42,7 +48,7 @@
 	            	<div class="col-sm-4">
 	            		&nbsp;
 	            	</div>
-	            	<div class="col-sm-8" >
+	            	<div class="col-sm-12" >
 		            	<span  class="width-min" >
 	                        <button class="btn btn-info" ng-click="vm.search()">
 	                            <span class="glyphicon glyphicon-search"></span>
@@ -55,6 +61,12 @@
 	                            <span data-translate="entity.action.clear"></span>
 	                        </button>
 	                    </span>
+	                     <span class="width-min">
+								<button class="btn btn-info" ng-click="vm.exportXls()">
+									<span class="glyphicon glyphicon-save"></span> 
+									<span data-translate="entity.action.export"></span>
+								</button>
+						</span>
 	            	</div>
 	            </div>
             </div>
@@ -77,9 +89,9 @@
             </thead>
             <tbody>
                 <tr ng-repeat="contractUser in vm.contractUsers track by contractUser.id">
-                    <td><a ui-sref="contract-user-detail({id:contractUser.id})">{{contractUser.userName}}</a></td>
                     <td>{{contractUser.contractNum}}</td>
                     <td>{{contractUser.contractName}}</td>
+                    <td><a ui-sref="contract-user-detail({id:contractUser.id})">{{contractUser.userName}}</a></td>
                     <td>{{contractUser.dept}}</td>
                     <td>{{contractUser.joinDay }}</td>
                     <td>{{contractUser.leaveDay}}</td>

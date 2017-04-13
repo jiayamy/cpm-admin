@@ -31,4 +31,10 @@ public interface ProjectUserDao extends GenericDao<ProjectUser, Long> {
 	 * 更新项目的人员离开日
 	 */
 	int updateLeaveDayByProject(Long projectId, long leaveDay, String updator);
+	
+	
+	/**
+	 * 导Excel
+	 */
+	public List<ProjectUserVo> getProjectUserList(ProjectUser searchParams,User user, DeptInfo deptInfo);
 }

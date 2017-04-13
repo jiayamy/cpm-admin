@@ -4,6 +4,8 @@
             "home": {
                 "title": "项目人员信息",
                 "createLabel": "新增",
+                "importLabel": "导入",
+                "export": "导出",
                 "createOrEditLabel": "项目人员信息"
             },
             "created": "新增成功",
@@ -16,6 +18,15 @@
                 "title": "项目人员信息"
             },
             "save":{
+            	"requiredError":"上传文件数据有误，请重新核对",
+        		"dataIsError":"第{{sheetNum}}个sheet的第{{rowNum}}行第{{columnNum}}列是必填字段，不能为空",
+        		"dataNotExist":"第{{sheetNum}}个sheet的第{{rowNum}}行第{{columnNum}}列数据不存在，请确认",
+        		"importSuccess":"导入成功",
+        		"importError":"导入失败",
+        		"dateLengthError":"输入的日期格式不正确，应为：20110101",
+        		"monthStyleError":"输入的日期年份不能超过12月",
+        		"dayStyleError":"输入的日期天数不正确",
+            
             	"paramNone":"必填字段为空",
             	"dayError":"离开日应不早于加盟日",
             	"userIdError":"在加盟日至离开日时间内，该用户已经被安排到该项目中，勿重复添加",
@@ -35,7 +46,8 @@
             "creator": "创建者",
             "createTime": "创建时间",
             "updator": "更新者",
-            "updateTime": "更新时间"
+            "updateTime": "更新时间",
+            "rank": "级别"
         }
     }
 }

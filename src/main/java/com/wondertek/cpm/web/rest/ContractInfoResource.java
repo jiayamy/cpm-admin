@@ -47,13 +47,11 @@ import com.wondertek.cpm.domain.OutsourcingUser;
 import com.wondertek.cpm.domain.vo.ContractInfoVo;
 import com.wondertek.cpm.domain.vo.LongValue;
 import com.wondertek.cpm.domain.vo.UserBaseVo;
-import com.wondertek.cpm.repository.ContractInfoRepository;
 import com.wondertek.cpm.repository.OutsourcingUserRepository;
 import com.wondertek.cpm.security.AuthoritiesConstants;
 import com.wondertek.cpm.security.SecurityUtils;
 import com.wondertek.cpm.service.ContractInfoService;
 import com.wondertek.cpm.service.DeptInfoService;
-import com.wondertek.cpm.service.OutsourcingUserService;
 import com.wondertek.cpm.service.UserService;
 import com.wondertek.cpm.web.rest.errors.CpmResponse;
 import com.wondertek.cpm.web.rest.util.HeaderUtil;
@@ -70,12 +68,6 @@ public class ContractInfoResource {
 
 	@Inject
 	private ContractInfoService contractInfoService;
-	
-	@Inject
-	private ContractInfoRepository contractInfoRepository;
-	
-	@Inject
-	private OutsourcingUserService outsourcingUserService;
 	
 	@Inject
 	private OutsourcingUserRepository outsourcingUserRepository;
@@ -191,10 +183,11 @@ public class ContractInfoResource {
         			 result = contractInfoService.save(contractInfo);
         			 for (OutsourcingUser outsourcingUser : list) {
 						outsourcingUser.setContractId(contractInfo.getId());
+						outsourcingUser.setMark(null);
 						outsourcingUserRepository.save(outsourcingUser);
 					}
         		}else {
-    	        	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.outsourcingUser.save.user", "")).body(null);
+    	        	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.outsourcingUser.save.userCannotEmpty", "")).body(null);
 				}
         	}else {
         		 result = contractInfoService.save(contractInfo);	

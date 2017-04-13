@@ -38,3 +38,38 @@ form .wd-response .wd-progress {
 .wd-response .wd-handle-succ{
 	color:green;
 }
+
+.wd-title{
+  position:relative;
+  text-align:center;
+}
+.wd-title:before, .wd-title:after {
+  content: "";
+  width: 40%;
+  height: 1px;
+  position: absolute;
+  top: 50%; 
+}
+.wd-title:before {
+  background: -webkit-linear-gradient(right, #ff0000 , #eee); 
+  background: -o-linear-gradient(left, #ff0000, #eee); 
+  background: -moz-linear-gradient(left,#ff0000, #eee);
+  background: linear-gradient(to left, #ff0000, #eee); 
+  left: 2px;
+}
+.wd-title:after {
+  background: -webkit-linear-gradient(left, #ff0000, #eee); 
+  background: -o-linear-gradient(right, #ff0000, #eee); 
+  background: -moz-linear-gradient(right,#ff0000, #eee);
+  background: linear-gradient(to right, #ff0000, #eee); 
+  right: 2px;
+}
+@media (max-width : 480px){
+	.wd-title:before, .wd-title:after{
+		content: "";
+  		width: 25%;
+  		height: 1px;
+  		position: absolute;
+  		top: 50%; 
+	}	
+}
