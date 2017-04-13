@@ -22,10 +22,9 @@
                 }
             },
             'update': { method:'PUT' },
-            'queryUserContract':{
-            	url:'api/contract-weekly-stats/queryUserContract',
-            	method:'GET',
-            	isArray:true
+            'queryChart':{
+            	url:'api/sale-weekly-stats/queryChart',
+            	method:'GET'
             }
         });
     }

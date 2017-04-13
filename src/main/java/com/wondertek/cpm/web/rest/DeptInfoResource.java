@@ -26,6 +26,7 @@ import com.codahale.metrics.annotation.Timed;
 import com.wondertek.cpm.CpmConstants;
 import com.wondertek.cpm.config.StringUtil;
 import com.wondertek.cpm.domain.DeptInfo;
+import com.wondertek.cpm.domain.DeptType;
 import com.wondertek.cpm.domain.vo.DeptInfoVo;
 import com.wondertek.cpm.domain.vo.DeptTree;
 import com.wondertek.cpm.security.AuthoritiesConstants;
@@ -194,5 +195,18 @@ public class DeptInfoResource {
         log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to get a page of getDeptAndUserTree");
         List<DeptTree> list = deptInfoService.getDeptAndUserTree(DeptTree.SELECTTYPE_NONE,Boolean.TRUE,Boolean.FALSE);
         return new ResponseEntity<>(list, null, HttpStatus.OK);
+    }
+    
+    /**
+     * 获取销售部门下的所有一级部门
+     * @return
+     */
+    @GetMapping("/dept-infos/getPrimarySaleDepts")
+    @Timed
+    @Secured(AuthoritiesConstants.USER)
+    public ResponseEntity<List<DeptInfo>> getPrimarySaleDepts(){
+    	log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to get deptInfos of getPrimarySaleDepts");
+    	List<DeptInfo> list = deptInfoService.getPrimaryDeptInfosByType((long)DeptType.TYPE_DEPT_SALE);
+    	return new ResponseEntity<>(list, null, HttpStatus.OK);
     }
 }

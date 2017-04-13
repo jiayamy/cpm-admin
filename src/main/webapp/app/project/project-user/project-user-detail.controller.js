@@ -11,6 +11,9 @@
         var vm = this;
 
         vm.projectUser = entity;
+        if (vm.projectUser.type == 2) {
+			vm.isRank = true;
+		}
         vm.previousState = previousState.name;
 
         var unsubscribe = $rootScope.$on('cpmApp:projectUserUpdate', function(event, result) {

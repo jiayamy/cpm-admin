@@ -47,13 +47,11 @@ import com.wondertek.cpm.domain.OutsourcingUser;
 import com.wondertek.cpm.domain.vo.ContractInfoVo;
 import com.wondertek.cpm.domain.vo.LongValue;
 import com.wondertek.cpm.domain.vo.UserBaseVo;
-import com.wondertek.cpm.repository.ContractInfoRepository;
 import com.wondertek.cpm.repository.OutsourcingUserRepository;
 import com.wondertek.cpm.security.AuthoritiesConstants;
 import com.wondertek.cpm.security.SecurityUtils;
 import com.wondertek.cpm.service.ContractInfoService;
 import com.wondertek.cpm.service.DeptInfoService;
-import com.wondertek.cpm.service.OutsourcingUserService;
 import com.wondertek.cpm.service.UserService;
 import com.wondertek.cpm.web.rest.errors.CpmResponse;
 import com.wondertek.cpm.web.rest.util.HeaderUtil;
@@ -70,12 +68,6 @@ public class ContractInfoResource {
 
 	@Inject
 	private ContractInfoService contractInfoService;
-	
-	@Inject
-	private ContractInfoRepository contractInfoRepository;
-	
-	@Inject
-	private OutsourcingUserService outsourcingUserService;
 	
 	@Inject
 	private OutsourcingUserRepository outsourcingUserRepository;
@@ -170,7 +162,7 @@ public class ContractInfoResource {
 					//校验optionTime 
 		           Date optionTime = DateUtil.parseDate(DateUtil.DATE_YYYYMMDD_PATTERN, createTimeD.substring(0,8)); 
 		           if(optionTime == null || !createTimeD.substring(0,8).equals(DateUtil.formatDate(DateUtil.DATE_YYYYMMDD_PATTERN, optionTime))){ 
-			        return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.outsourcingUser.save.dataError", "")).body(null);
+		        	   return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.outsourcingUser.save.dataError", "")).body(null);
 		           }
 				}
 			}
@@ -184,25 +176,22 @@ public class ContractInfoResource {
         contractInfo.setUpdateTime(updateTime);
         contractInfo.setUpdator(updator);
         ContractInfo result = new ContractInfo();
-        if (isNew) {
-        	if (contractInfo.getType().intValue() == ContractInfo.TYPE_EXTERNAL){
-        		List<OutsourcingUser> list = outsourcingUserRepository.findByMark(contractInfo.getMark());
-        		if (list != null && !list.isEmpty()){
-        			 result = contractInfoService.save(contractInfo);
-        			 for (OutsourcingUser outsourcingUser : list) {
-						outsourcingUser.setContractId(contractInfo.getId());
-						outsourcingUserRepository.save(outsourcingUser);
-					}
-        		}else {
-    	        	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.outsourcingUser.save.userCannotEmpty", "")).body(null);
-				}
-        	}else {
-        		 result = contractInfoService.save(contractInfo);	
+        if (isNew && contractInfo.getType().intValue() == ContractInfo.TYPE_EXTERNAL) {
+    		List<OutsourcingUser> list = outsourcingUserRepository.findByMark(contractInfo.getMark());
+    		if (list != null && !list.isEmpty()){
+    			 result = contractInfoService.save(contractInfo);
+    			 for (OutsourcingUser outsourcingUser : list) {
+    				outsourcingUser.setContractId(contractInfo.getId());
+ 					outsourcingUser.setMark(null);
+ 					outsourcingUserRepository.save(outsourcingUser);
+    			 }
+    		}else {
+	        	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.outsourcingUser.save.userCannotEmpty", "")).body(null);
 			}
-		}else {
-			 result = contractInfoService.save(contractInfo);
-		}
-        
+        }else {
+   			result = contractInfoService.save(contractInfo);
+    	}
+		
         if(isNew){
         	return ResponseEntity.created(new URI("/api/project-infos/" + result.getId()))
                     .headers(HeaderUtil.createEntityCreationAlert("contractInfo", result.getId().toString()))

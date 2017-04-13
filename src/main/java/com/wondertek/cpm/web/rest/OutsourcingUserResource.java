@@ -1,7 +1,5 @@
 package com.wondertek.cpm.web.rest;
 
-import io.swagger.annotations.ApiParam;
-
 import java.net.URISyntaxException;
 import java.time.ZonedDateTime;
 import java.util.Date;
@@ -38,6 +36,8 @@ import com.wondertek.cpm.security.AuthoritiesConstants;
 import com.wondertek.cpm.security.SecurityUtils;
 import com.wondertek.cpm.service.OutsourcingUserService;
 import com.wondertek.cpm.web.rest.util.HeaderUtil;
+
+import io.swagger.annotations.ApiParam;
 
 /**
  * REST controller for managing ContractInfo.
@@ -88,8 +88,10 @@ public class OutsourcingUserResource {
 			OutsourcingUser oldOutsourcingUser = this.outsourcingUserRepository.findOne(outsourcingUser.getId());
 			if (oldOutsourcingUser == null ) {
         		return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.outsourcingUser.save.idNone", "")).body(null);
-			}else if (!oldOutsourcingUser.getRank().equals(outsourcingUser.getRank())) {
-				return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.outsourcingUser.save.ranknoChange", "")).body(null);
+			}else if(oldOutsourcingUser.getContractId() != null){
+				if (!oldOutsourcingUser.getRank().equals(outsourcingUser.getRank())) {
+					return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.outsourcingUser.save.ranknoChange", "")).body(null);
+				}
 			}
 			outsourcingUser.setCreateTime(oldOutsourcingUser.getCreateTime());
 			outsourcingUser.setCreator(oldOutsourcingUser.getCreator());
@@ -174,7 +176,7 @@ public class OutsourcingUserResource {
          return new ResponseEntity<>(page,new HttpHeaders(),HttpStatus.OK);
     }
 	/**
-     * 获取项目经理能看到的员工等级
+     * 加载项目人员的等级下拉框
      */
     @GetMapping("/outsourcing-user/queryUserRank")
     @Timed

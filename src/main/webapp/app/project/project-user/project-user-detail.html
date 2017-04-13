@@ -26,6 +26,10 @@
 		        <dd>
 		            <span>{{vm.projectUser.joinDay}}</span>
 		        </dd>
+		        <dt ng-show="vm.isRank"><span data-translate="cpmApp.projectUser.rank">Rank</span></dt>
+		        <dd ng-show="vm.isRank">
+		            <span>{{vm.projectUser.rank}}</span>
+		        </dd>
      			</dl>
  			</div>
  			<div class="col-sm-6">

@@ -11,15 +11,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.wondertek.cpm.domain.DeptInfo;
 import com.wondertek.cpm.domain.OutsourcingUser;
-import com.wondertek.cpm.domain.User;
 import com.wondertek.cpm.domain.vo.LongValue;
 import com.wondertek.cpm.domain.vo.OutsourcingUserVo;
 import com.wondertek.cpm.repository.OutsourcingUserDao;
 import com.wondertek.cpm.repository.OutsourcingUserRepository;
 import com.wondertek.cpm.repository.UserRepository;
-import com.wondertek.cpm.security.SecurityUtils;
 
 /**
  * Service Implementation for managing ContractInfo.
@@ -56,14 +53,7 @@ public class OutsourcingUserService {
 
 	public List<LongValue> queryUserRank(Long contractId) {
 		List<LongValue> returnList = new ArrayList<LongValue>();
-    	List<Object[]> objs = userRepository.findUserInfoByLogin(SecurityUtils.getCurrentUserLogin());
-    	if(objs != null && !objs.isEmpty()){
-    		Object[] o = objs.get(0);
-    		User user = (User) o[0];
-    		DeptInfo deptInfo = (DeptInfo) o[1];
-    		
-    		returnList = outsourcingUserDao.queryUserRank(contractId,user,deptInfo);
-    	}
+		returnList = outsourcingUserDao.queryUserRank(contractId);
 		return returnList;
 	}
 

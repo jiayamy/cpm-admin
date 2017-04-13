@@ -64,7 +64,7 @@ public class SaleWeeklyStatDaoImpl extends GenericDaoImpl<SaleWeeklyStat, Long> 
 //		params.add(user.getId());
 //		params.add(user.getId());
 		if(user.getIsManager()){
-			sb.append(" or wdi.idPath like ?" + (count++) + " or wdi.id = ?" + (count++));
+			sb.append(" and ( wdi.idPath like ?" + (count++) + " or wdi.id = ?" + (count++) + " )");
 			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
 			params.add(deptInfo.getId());
 			
@@ -72,7 +72,7 @@ public class SaleWeeklyStatDaoImpl extends GenericDaoImpl<SaleWeeklyStat, Long> 
 //			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
 //			params.add(deptInfo.getId());
 		}
-    	sb.append(" )");
+    	//sb.append(" )");
     	StringBuffer orderHql = new StringBuffer();
     	if(pageable.getSort() != null){//页面都会有个默认排序
     		for (Order order : pageable.getSort()) {
@@ -132,8 +132,76 @@ public class SaleWeeklyStatDaoImpl extends GenericDaoImpl<SaleWeeklyStat, Long> 
 	}
 
 	@Override
-	public SaleWeeklyStatVo getById(Long contractId, User user, DeptInfo deptInfo) {
-		// TODO Auto-generated method stub
+	public SaleWeeklyStatVo getById(Long id, User user, DeptInfo deptInfo) {
+		StringBuffer sb = new StringBuffer();
+		StringBuffer querysql = new StringBuffer();
+		StringBuffer countsql = new StringBuffer();
+		int count = 0;//jpa格式 问号后的数组，一定要从0开始
+		
+		querysql.append(" select s.id, s.originYear, s.deptId, s.annualIndex, s.finishTotal, s.receiveTotal, s.costTotal,"
+				+ "s.salesHumanCost ,s.salesPayment, s.consultHumanCost ,s.consultPayment ,s.hardwarePurchase ,s.externalSoftware ,s.internalSoftware ,s.projectHumanCost ,"
+				+ "s.projectPayment ,s.statWeek ,s.createTime ,wdi.name");
+		sb.append(" from SaleWeeklyStat s");
+		sb.append(" left join DeptInfo wdi on s.deptId = wdi.id");
+		List<Object> params = new ArrayList<Object>();
+    	sb.append(" where 1 = 1 ");
+    	if(id != null){
+    		sb.append(" and s.id = ?" + (count++));
+    		params.add(id);
+    	}
+		if(user.getIsManager()){
+			sb.append(" and ( wdi.idPath like ?" + (count++) + " or wdi.id = ?" + (count++) + " )");
+			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
+			params.add(deptInfo.getId());
+		}
+    	//sb.append(" )");
+    	StringBuffer orderHql = new StringBuffer();
+    	List<Object[]> list = this.queryAllHql(
+    			querysql.toString() + sb.toString() + orderHql.toString(), 
+    			params.toArray()
+    		);
+    	if(list != null && !list.isEmpty()){
+    		return transSaleWeeklyStatVo(list.get(0));
+		}
+    	return null;
+	}
+
+	@Override
+	public SaleWeeklyStatVo getByStatWeekAndDeptId(Long statWeek, Long deptId, User user, DeptInfo deptInfo) {
+		StringBuffer sb = new StringBuffer();
+		StringBuffer querysql = new StringBuffer();
+		StringBuffer countsql = new StringBuffer();
+		int count = 0;//jpa格式 问号后的数组，一定要从0开始
+		
+		querysql.append(" select s.id, s.originYear, s.deptId, s.annualIndex, s.finishTotal, s.receiveTotal, s.costTotal,"
+				+ "s.salesHumanCost ,s.salesPayment, s.consultHumanCost ,s.consultPayment ,s.hardwarePurchase ,s.externalSoftware ,s.internalSoftware ,s.projectHumanCost ,"
+				+ "s.projectPayment ,s.statWeek ,s.createTime ,wdi.name");
+		sb.append(" from SaleWeeklyStat s");
+		sb.append(" left join DeptInfo wdi on s.deptId = wdi.id");
+		List<Object> params = new ArrayList<Object>();
+    	sb.append(" where 1 = 1 ");
+    	if(deptId != null){
+    		sb.append(" and s.deptId = ?" + (count++));
+    		params.add(deptId);
+    	}
+    	if(statWeek != null){
+    		sb.append(" and s.statWeek = ?" + (count++));
+    		params.add(statWeek);
+    	}
+		if(user.getIsManager()){
+			sb.append(" and ( wdi.idPath like ?" + (count++) + " or wdi.id = ?" + (count++) + " )");
+			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
+			params.add(deptInfo.getId());
+		}
+    	//sb.append(" )");
+    	StringBuffer orderHql = new StringBuffer();
+    	List<Object[]> list = this.queryAllHql(
+    			querysql.toString() + sb.toString() + orderHql.toString(), 
+    			params.toArray()
+    		);
+    	if(list != null && !list.isEmpty()){
+    		return transSaleWeeklyStatVo(list.get(0));
+		}
 		return null;
 	}
 

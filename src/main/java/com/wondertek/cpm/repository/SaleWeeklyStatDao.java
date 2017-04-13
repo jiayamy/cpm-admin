@@ -12,5 +12,7 @@ public interface SaleWeeklyStatDao extends GenericDao<SaleWeeklyStat, Long> {
 
 	public Page<SaleWeeklyStatVo> getUserPage(String deptId,Pageable pageable,User user, DeptInfo deptInfo);
 	
-	public SaleWeeklyStatVo getById(Long deptId, User user, DeptInfo deptInfo);
+	public SaleWeeklyStatVo getById(Long id, User user, DeptInfo deptInfo);
+	
+	public SaleWeeklyStatVo getByStatWeekAndDeptId(Long statWeek,Long deptId,User user,DeptInfo deptInfo);
 }

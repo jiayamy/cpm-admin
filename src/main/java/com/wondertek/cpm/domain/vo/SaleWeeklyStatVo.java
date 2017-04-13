@@ -203,4 +203,16 @@ public class SaleWeeklyStatVo {
 	public void setDept(String dept) {
 		this.dept = dept;
 	}
+
+	@Override
+	public String toString() {
+		return "SaleWeeklyStatVo [id=" + id + ", originYear=" + originYear + ", deptId=" + deptId + ", annualIndex="
+				+ annualIndex + ", finishTotal=" + finishTotal + ", receiveTotal=" + receiveTotal + ", costTotal="
+				+ costTotal + ", salesHumanCost=" + salesHumanCost + ", salesPayment=" + salesPayment
+				+ ", consultHumanCost=" + consultHumanCost + ", consultPayment=" + consultPayment
+				+ ", hardwarePurchase=" + hardwarePurchase + ", externalSoftware=" + externalSoftware
+				+ ", internalSoftware=" + internalSoftware + ", projectHumanCost=" + projectHumanCost
+				+ ", projectPayment=" + projectPayment + ", statWeek=" + statWeek + ", createTime=" + createTime
+				+ ", dept=" + dept + "]";
+	}
 }

@@ -13,9 +13,7 @@ import org.springframework.stereotype.Repository;
 
 import com.wondertek.cpm.config.StringUtil;
 import com.wondertek.cpm.domain.ContractInfo;
-import com.wondertek.cpm.domain.DeptInfo;
 import com.wondertek.cpm.domain.OutsourcingUser;
-import com.wondertek.cpm.domain.User;
 import com.wondertek.cpm.domain.vo.LongValue;
 import com.wondertek.cpm.domain.vo.OutsourcingUserVo;
 @Repository("outsourcingUserDao")
@@ -54,7 +52,7 @@ public class OutsourcingUserDaoImpl extends GenericDaoImpl<OutsourcingUser, Long
 	}
 
 	@Override
-	public List<LongValue> queryUserRank(Long contractId,User user, DeptInfo deptInfo) {
+	public List<LongValue> queryUserRank(Long contractId) {
 
 		StringBuffer querySql = new StringBuffer();
 		List<Object> params = new ArrayList<Object>();
