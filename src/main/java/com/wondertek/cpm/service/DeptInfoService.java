@@ -274,4 +274,17 @@ public class DeptInfoService {
 		
 		return deptInfoDao.findDeptInfo(user_serial_num);
 	}
+	
+	/**
+	 * 获取销售部门下的所有一级部门
+	 * @param type
+	 * @return
+	 */
+	@Transactional(readOnly = true)
+	public List<DeptInfo> getPrimaryDeptInfosByType(Long type){
+		List<DeptInfo> deptInfos = deptInfoRepository.findDeptInfosByType(type);
+		//大销售部门下的一级部门
+		List<DeptInfo> primaryDeptInfos = deptInfoRepository.findByIdPath(deptInfos.get(0).getIdPath() + deptInfos.get(0).getId() + "/");
+		return primaryDeptInfos;
+	}
 }

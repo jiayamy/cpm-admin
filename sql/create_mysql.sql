@@ -930,4 +930,30 @@ CREATE TABLE `w_outsourcing_user` (
 ALTER TABLE w_contract_info ADD (mark_ varchar(100) DEFAULT NULL);
 
 ALTER TABLE w_project_user ADD (rank_ varchar(100) DEFAULT NULL);
+
+--20170413
+CREATE TABLE
+    w_sale_weekly_stat
+    (
+        id bigint NOT NULL AUTO_INCREMENT COMMENT '主键',
+        origin_year bigint COMMENT '年份',
+        dept_id bigint COMMENT '销售部门',
+        annual_index DOUBLE(15,2) COMMENT '合同年指标（该销售部门（包括子部门）该年的所有销售年指标之和）、',
+        finish_total DOUBLE(15,2) COMMENT '合同累计完成金额（该销售部门（包括子部门）该年新增的合同金额总和）、',
+        receive_total DOUBLE(15,2) COMMENT '当年收款金额（归属于该销售部门（包括子部门）的所有合同（包括历年合同）的该年收款的金额总和）',
+        cost_total DOUBLE(15,2) COMMENT ' 当年新增所有成本、（归属于该销售部门（包括子部门）的所有合同（包括历年合同）的该年以下所有成本之和）',
+        sales_human_cost DOUBLE(15,2) COMMENT '当年销售人工成本、（归属于该销售部门（包括子部门）的所有合同（包括历年合同）的该年人工成本之和、以下雷同）',
+        sales_payment DOUBLE(15,2) COMMENT '当年销售报销成本',
+        consult_human_cost DOUBLE(15,2) COMMENT '当年咨询人工成本',
+        consult_payment DOUBLE(15,2) COMMENT '当年咨询报销成本',
+        hardware_purchase DOUBLE(15,2) COMMENT '当年硬件成本',
+        external_software DOUBLE(15,2) COMMENT '当年外部软件成本',
+        internal_software DOUBLE(15,2) COMMENT '当年内部软件成本',
+        project_human_cost DOUBLE(15,2) COMMENT '当年项目人工成本',
+        project_payment DOUBLE(15,2) COMMENT '当年项目报销成本',
+        stat_week bigint COMMENT '统计周',
+        CREATE_time TIMESTAMP NULL COMMENT '统计日期',
+        PRIMARY KEY (id)
+    )
+    ENGINE=InnoDB DEFAULT CHARSET=utf8;
     
