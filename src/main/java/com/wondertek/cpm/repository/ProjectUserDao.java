@@ -35,10 +35,4 @@ public interface ProjectUserDao extends GenericDao<ProjectUser, Long> {
 	 * 导Excel
 	 */
 	public List<ProjectUserVo> getProjectUserList(ProjectUser searchParams,User user, DeptInfo deptInfo);
-	/**
-	 * 根据项目id得到其所属合同的类型
-	 * @param projectId
-	 * @return
-	 */
-	long getContractType(Long projectId);
 }

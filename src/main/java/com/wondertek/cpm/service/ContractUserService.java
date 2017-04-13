@@ -184,21 +184,6 @@ public class ContractUserService {
     	return null;
 	}
 
-	public void saveOrUpdateUserForExcel(ContractUser contractUser,ContractInfo contractInfo,User user,DeptInfo deptInfo) {
-		
-		ContractUser contractUsers = new ContractUser();
-		contractUsers.setContractId(contractInfo.getId());
-		contractUsers.setCreateTime(contractUser.getCreateTime());
-		contractUsers.setCreator(contractUser.getCreator());
-		contractUsers.setJoinDay(contractUser.getJoinDay());
-		contractUsers.setLeaveDay(contractUser.getLeaveDay());
-		contractUsers.setUpdateTime(contractUser.getUpdateTime());
-		contractUsers.setUpdator(contractUser.getUpdator());
-		contractUsers.setUserId(user.getId());
-		contractUsers.setUserName(user.getLastName());
-		contractUsers.setDept(deptInfo.getName());
-		contractUserRepository.save(contractUsers);
-	}
 
 	public Map<Long, Long> getdates(Long contractId, Long userId) {
 		Map<Long,Long> map = new HashMap<Long,Long>();
@@ -207,6 +192,10 @@ public class ContractUserService {
 			map.put(contractUser.getJoinDay(), contractUser.getLeaveDay());
 		}
 		return map;
+	}
+
+	public void saveAll(ContractUser contractUser) {
+		contractUserRepository.save(contractUser);
 	}
 
 }

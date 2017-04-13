@@ -20,12 +20,19 @@
             "save":{
             	"requiredError":"upload files's data error, plz confirm again",
         		"dataIsError":"No.{{sheetNum}}sheet's No.{{rowNum}}row's No.{{columnNum}}column's data error",
-        		"dataNotExist":"No.{{sheetNum}}sheet's No.{{rowNum}}row's No.{{columnNum}}column's user not exist，plz add",
+        		"dataNotExist":"No.{{sheetNum}}sheet's No.{{rowNum}}row's No.{{columnNum}}column's data not exist，plz add",
+        		"dataError":"No.{{sheetNum}}sheet's No.{{rowNum}}row's No.{{columnNum}}column's data error",
         		"importSuccess":"import successfully",
         		"importError":"import Error",
-        		"dateLengthError":"import data length exits errors, for example:20110101",
-        		"monthStyleError":"year donnot greater than 12",
-        		"dayStyleError":"day exits errors",
+        		"dateLengthError":"No.{{sheetNum}}sheet's No.{{rowNum}}row's No.{{columnNum}}column's import data length exits errors, for example:20110101",
+        		"joinDayStyleError":"No.{{sheetNum}}sheet's No.{{rowNum}}row's No.{{columnNum}}column's import joinDay date style exits errors",
+        		"leaveDayStyleError":"No.{{sheetNum}}sheet's No.{{rowNum}}row's No.{{columnNum}}column's import leaveDay date style exits errors",
+        		"rankNoneError":"No.{{sheetNum}}sheet's No.{{tmp}}row's No.6 column's, person rank is not null",
+        		"rankNotNeedError":"No.{{sheetNum}}sheet's No.{{tmp}}row's No.6 column's,person rank should not exits",
+        		"rankNotExitsError":"No.{{sheetNum}}sheet's No.{{tmp}}row's No.6 column's,person rank donnot exits",
+        		
+        		"typeHasMust":"outer pack contract must has type for outer pack person",
+        		"typeError":"it's not outer pack contract,so donnot has type for person",
             
             	"paramNone":"Params Required",
             	"dayError":"leave day should beyond join day",
