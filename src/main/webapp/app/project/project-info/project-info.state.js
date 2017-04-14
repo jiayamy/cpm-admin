@@ -372,6 +372,35 @@
                     $state.go('^');
                 });
             }]
+        })
+        .state('project-info.import', {
+            parent: 'project-info',
+            url: '/upload',
+            data: {
+                authorities: ['ROLE_PROJECT_INFO'],
+            },
+            views: {
+                'content@': {
+                    templateUrl: 'app/project/project-info/project-info-upload.html',
+                    controller: 'ProjectInfoUploadController',
+                    controllerAs: 'vm'
+                }
+            },
+            resolve: {
+            	translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
+                    $translatePartialLoader.addPart('projectInfo');
+                    $translatePartialLoader.addPart('global');
+                    return $translate.refresh();
+                }],
+                previousState: ["$state", function ($state) {
+                	var currentStateData = {
+            			name: $state.current.name || 'project-info',
+            			params: $state.params,
+            			url: $state.href($state.current.name, $state.params)
+                	};
+                	return currentStateData;
+	            }]
+            }
         });
     }
 
