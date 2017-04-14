@@ -384,11 +384,9 @@ public class ContractUserResource {
 			int columnNum = 0;
 			int rowNum = 0;
 			Object val = null;
-			
 			Long contractId = null;
 			User user = null;
 			DeptInfo deptInfo = null;
-			
 			Map<String,Map<Long,Long>> userProjects = new HashMap<String,Map<Long,Long>>();
 			for (ExcelValue excelValue : lists) {
 				if (excelValue.getVals() == null || excelValue.getVals().isEmpty()) {//每个sheet也可能没有数据，空sheet
@@ -409,19 +407,19 @@ public class ContractUserResource {
 				        //校验第一列，合同编号， 查看导入的列是否在数据库中存在。
 						columnNum = 0;
 						val = ls.get(columnNum);
-						String contract_serial_num = null;
+						String contractSerialNum = null;
 						if(val == null || StringUtil.isNullStr(val)){
 							return ResponseEntity.ok().body(cpmResponse
 											.setSuccess(Boolean.FALSE)
 											.setMsgKey("cpmApp.contractUser.save.dataIsError")
 											.setMsgParam(excelValue.getSheet() + "," + rowNum +","+(columnNum+1)));
 						}else if(val instanceof Double){//double
-							contract_serial_num = ((Double)val).longValue() +"";
+							contractSerialNum = ((Double)val).longValue() +"";
 						}else{//String
-							contract_serial_num = StringUtil.null2Str(val);
+							contractSerialNum = StringUtil.null2Str(val);
 						}
 						//根据合同编号得到合同id
-						contractId = contractInfos.get(contract_serial_num);
+						contractId = contractInfos.get(contractSerialNum);
 						//校验合同编号是否存在。
 						if(contractId==null){
 							return ResponseEntity.ok().body(cpmResponse
@@ -438,18 +436,18 @@ public class ContractUserResource {
 						// 校验第三列，员工编号，查看导入的员工编号是否存在。
 						columnNum++;
 						val = ls.get(columnNum);
-						String serial_num = StringUtil.null2Str(val);
+						String userSerialNum = StringUtil.null2Str(val);
 						if (val == null || StringUtil.isNullStr(val)) {
 							return ResponseEntity.ok()
 									.body(cpmResponse.setSuccess(Boolean.FALSE)
 											.setMsgKey("cpmApp.contractUser.save.dataIsError")
 											.setMsgParam(excelValue.getSheet() + "," + rowNum + "," + (columnNum + 1)));
 						}else if(val instanceof Double){//double
-							serial_num = ((Double)val).longValue() +"";
+							userSerialNum = ((Double)val).longValue() +"";
 						}else{//String
-							serial_num = StringUtil.null2Str(val);
+							userSerialNum = StringUtil.null2Str(val);
 						}
-						user = allUser.get(serial_num);
+						user = allUser.get(userSerialNum);
 						if (user == null) {
 							return ResponseEntity.ok()
 									.body(cpmResponse.setSuccess(Boolean.FALSE)

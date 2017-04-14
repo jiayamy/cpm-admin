@@ -636,8 +636,8 @@ public class ContractStateTask {
 	/**
 	 * 每周 汇总大销售部门下的子销售部门下面 一年内所有销售的合同情况。
 	 */
-	@Scheduled(cron = "0 59 23 ? * MON")
-//	@Scheduled(cron = "0 25 17 ? * WED")
+//	@Scheduled(cron = "0 59 23 ? * MON")
+	@Scheduled(cron = "0 03 14 ? * THU")
 	protected void generateSaleContractWeeklyStat(){
 		Date now = new Date();
 		generateSaleContractWeeklyStat(now);

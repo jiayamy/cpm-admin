@@ -1,11 +1,15 @@
 package com.wondertek.cpm.web.rest;
 
-import io.swagger.annotations.ApiParam;
-
+import java.io.File;
 import java.net.URISyntaxException;
+import java.text.DecimalFormat;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import javax.inject.Inject;
@@ -28,17 +32,31 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.codahale.metrics.annotation.Timed;
+import com.wondertek.cpm.CpmConstants;
+import com.wondertek.cpm.ExcelUtil;
+import com.wondertek.cpm.ExcelValue;
+import com.wondertek.cpm.config.FilePathHelper;
 import com.wondertek.cpm.config.StringUtil;
 import com.wondertek.cpm.domain.ContractBudget;
+import com.wondertek.cpm.domain.ContractInfo;
+import com.wondertek.cpm.domain.DeptInfo;
 import com.wondertek.cpm.domain.ProjectInfo;
 import com.wondertek.cpm.domain.vo.LongValue;
 import com.wondertek.cpm.domain.vo.ProjectInfoVo;
+import com.wondertek.cpm.domain.vo.UserBaseVo;
 import com.wondertek.cpm.repository.ContractBudgetRepository;
 import com.wondertek.cpm.security.AuthoritiesConstants;
 import com.wondertek.cpm.security.SecurityUtils;
+import com.wondertek.cpm.service.ContractBudgetService;
+import com.wondertek.cpm.service.ContractInfoService;
+import com.wondertek.cpm.service.DeptInfoService;
 import com.wondertek.cpm.service.ProjectInfoService;
+import com.wondertek.cpm.service.UserService;
+import com.wondertek.cpm.web.rest.errors.CpmResponse;
 import com.wondertek.cpm.web.rest.util.HeaderUtil;
 import com.wondertek.cpm.web.rest.util.PaginationUtil;
+
+import io.swagger.annotations.ApiParam;
 
 /**
  * REST controller for managing ProjectInfo.
@@ -54,6 +72,18 @@ public class ProjectInfoResource {
     
     @Inject
     private ContractBudgetRepository contractBudgetRepository;
+    
+    @Inject
+    private ContractInfoService contractInfoService;
+    
+    @Inject
+    private UserService userService;
+    
+    @Inject
+    private DeptInfoService deptInfoService;
+    
+    @Inject
+    private ContractBudgetService contractBudgetService;
 
     @PutMapping("/project-infos")
     @Timed
@@ -311,5 +341,270 @@ public class ProjectInfoResource {
         log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to queryUserContract");
         List<LongValue> list = projectInfoService.queryUserProject();
         return new ResponseEntity<>(list, null, HttpStatus.OK);
+    }
+    
+    @GetMapping("/project-infos/uploadExcel")
+    @Timed
+    @Secured(AuthoritiesConstants.ROLE_PROJECT_INFO)
+    public ResponseEntity<CpmResponse> uploadExcel(@RequestParam(value="filePath",required=true) String filePath){
+    	log.debug(SecurityUtils.getCurrentUserLogin()+" REST request to uploadExcel for filePath : {}",filePath);
+    	List<ProjectInfo> projectInfos = null;
+    	CpmResponse cpmResponse = new CpmResponse();
+    	try {
+    		//检验文件是否存在
+    		File file = new File(FilePathHelper.joinPath(CpmConstants.FILE_UPLOAD_SERVLET_BASE_PATH,filePath));
+    		if(!file.exists() || !file.isFile()){
+    			return ResponseEntity.ok()
+						.body(cpmResponse
+								.setSuccess(Boolean.FALSE)
+								.setMsgKey("cpmApp.projectInfo.upload.requiredError"));
+    		}
+    		//从第一行读取，最多读取10个sheet，最多读取8列
+    		int startNum = 1;
+    		List<ExcelValue> lists = ExcelUtil.readExcel(file, startNum, 10, 8);
+    		if(lists == null || lists.isEmpty()){
+    			return ResponseEntity.ok()
+						.body(cpmResponse
+								.setSuccess(Boolean.FALSE)
+								.setMsgKey("cpmApp.projectInfo.upload.requiredError"));
+    		}
+    		//初始化
+    		//初始化合同信息
+    		Map<String,ContractInfo> contractInfosMap = contractInfoService.getContractInfoMapBySerialnum();
+    		//初始化项目信息
+    		Map<String,Long> projectInfosMap = projectInfoService.getProjectInfo();
+    		//初始化人员信息
+    		Map<String,UserBaseVo> userBaseVoMap = userService.getAllUser();
+    		//初始化部门信息
+    		Map<Long,DeptInfo> deptInfosMap = deptInfoService.getAllDeptInfosMap();
+    		//其它信息
+    		projectInfos = new ArrayList<ProjectInfo>();
+    		String updator = SecurityUtils.getCurrentUserLogin();
+			int columnNum = 0;
+			int rowNum = 0;
+			Object val = null;
+			Map<String,Integer> existMap = new HashMap<String,Integer>();
+			for(ExcelValue excelValue : lists){
+				if (excelValue.getVals() == null || excelValue.getVals().isEmpty()) {//每个sheet也可能没有数据，空sheet
+					continue;
+				}
+				rowNum = 1;//都是从第一行读取的
+				for(List<Object> ls : excelValue.getVals()){
+					rowNum ++;
+					if(ls == null){
+						continue;
+					}
+					try {
+						ProjectInfo projectInfo = new ProjectInfo();
+						projectInfo.setStatus(ProjectInfo.STATUS_ADD);
+						projectInfo.setFinishRate(0D);
+						projectInfo.setCreator(updator);
+						projectInfo.setCreateTime(ZonedDateTime.now());
+						projectInfo.setUpdator(updator);
+						projectInfo.setUpdateTime(projectInfo.getCreateTime());
+						//检验第一列  项目编号
+						columnNum = 0;
+						val = ls.get(columnNum);
+						if(val == null || StringUtil.isNullStr(val)){
+							return ResponseEntity.ok().body(cpmResponse
+									.setSuccess(Boolean.FALSE)
+									.setMsgKey("cpmApp.projectInfo.upload.dataError")
+									.setMsgParam(excelValue.getSheet() + "," + rowNum +","+(columnNum+1)));
+						}else if(val instanceof Double){
+							DecimalFormat format = new DecimalFormat("0");
+							projectInfo.setSerialNum(format.format(val));
+						}else{//String
+							projectInfo.setSerialNum(StringUtil.nullToString(val));
+						}
+						if(projectInfosMap.containsKey(projectInfo.getSerialNum())){//检验是否已存在项目编号
+							return ResponseEntity.ok().body(cpmResponse
+									.setSuccess(Boolean.FALSE)
+									.setMsgKey("cpmApp.projectInfo.upload.serialNumExist")
+									.setMsgParam(excelValue.getSheet() + "," + rowNum +","+(columnNum+1)));
+						}
+						//检查导入表中是否有重复的记录
+						if(existMap.containsKey(projectInfo.getSerialNum())){
+							return ResponseEntity.ok().body(cpmResponse
+									.setSuccess(Boolean.FALSE)
+									.setMsgKey("cpmApp.projectInfo.upload.recordExistError")
+									.setMsgParam(excelValue.getSheet() + "," + rowNum +","+(columnNum+1)));
+						}
+						existMap.put(projectInfo.getSerialNum(), 1);
+						
+						//检验第二列  项目名称
+						columnNum ++;
+						val = ls.get(columnNum);
+						if(val == null || StringUtil.isNullStr(val)){
+							return ResponseEntity.ok().body(cpmResponse
+									.setSuccess(Boolean.FALSE)
+									.setMsgKey("cpmApp.projectInfo.upload.dataError")
+									.setMsgParam(excelValue.getSheet() + "," + rowNum +","+(columnNum+1)));
+						}
+						projectInfo.setName(val.toString());
+						
+						//检验第三列  合同编号
+						columnNum ++;
+						val = ls.get(columnNum);
+						if(val == null || StringUtil.isNullStr(val)){
+							return ResponseEntity.ok().body(cpmResponse
+									.setSuccess(Boolean.FALSE)
+									.setMsgKey("cpmApp.projectInfo.upload.dataError")
+									.setMsgParam(excelValue.getSheet() + "," + rowNum +","+(columnNum+1)));
+						}else if(val instanceof Double){
+							DecimalFormat format = new DecimalFormat("0");
+							val = format.format(val);
+						}
+						if(!contractInfosMap.containsKey(StringUtil.nullToString(val))){
+							return ResponseEntity.ok().body(cpmResponse
+									.setSuccess(Boolean.FALSE)
+									.setMsgKey("cpmApp.projectInfo.upload.serialNumError")
+									.setMsgParam(excelValue.getSheet() + "," + rowNum +","+(columnNum+1)));
+						}
+						projectInfo.setContractId(contractInfosMap.get(StringUtil.nullToString(val)).getId());
+						
+						//检验第四列  项目经理工号
+						columnNum ++;
+						val = ls.get(columnNum);
+						if(val == null || StringUtil.isNullStr(val)){
+							return ResponseEntity.ok().body(cpmResponse
+									.setSuccess(Boolean.FALSE)
+									.setMsgKey("cpmApp.projectInfo.upload.dataError")
+									.setMsgParam(excelValue.getSheet() + "," + rowNum +","+(columnNum+1)));
+						}else if(val instanceof Double){
+							DecimalFormat format = new DecimalFormat("0");
+							val = format.format(val);
+						}
+						String userSerialNum = StringUtil.nullToString(val);
+						if(!userBaseVoMap.containsKey(userSerialNum)){
+							return ResponseEntity.ok().body(cpmResponse
+									.setSuccess(Boolean.FALSE)
+									.setMsgKey("cpmApp.projectInfo.upload.serialNumError")
+									.setMsgParam(excelValue.getSheet() + "," + rowNum +","+(columnNum+1)));
+						}else if(userBaseVoMap.get(userSerialNum).getDeptId() == null){
+							return ResponseEntity.ok().body(cpmResponse
+									.setSuccess(Boolean.FALSE)
+									.setMsgKey("cpmApp.projectInfo.upload.userDeptNoExist")
+									.setMsgParam(excelValue.getSheet() + "," + rowNum +","+(columnNum+1)));
+						}else if(!deptInfosMap.containsKey(userBaseVoMap.get(userSerialNum).getDeptId())){
+							return ResponseEntity.ok().body(cpmResponse
+									.setSuccess(Boolean.FALSE)
+									.setMsgKey("cpmApp.projectInfo.upload.userDeptNoExist")
+									.setMsgParam(excelValue.getSheet() + "," + rowNum +","+(columnNum+1)));
+						}
+						//填充项目经理id
+						projectInfo.setPmId(userBaseVoMap.get(userSerialNum).getId());
+						//第五列 填充项目经理(不用检验，根据userBase走)
+						columnNum ++;
+						projectInfo.setPm(userBaseVoMap.get(userSerialNum).getLastName());
+						//填充项目经理所属部门id
+						projectInfo.setDeptId(userBaseVoMap.get(userSerialNum).getDeptId());
+						//填充项目经理所属部门
+						projectInfo.setDept(deptInfosMap.get(projectInfo.getDeptId()).getName());
+						
+						//检验第六列  开始日期
+						columnNum ++;
+						val = ls.get(columnNum);
+						if(val == null || StringUtil.isNullStr(val)){
+							return ResponseEntity.ok().body(cpmResponse
+									.setSuccess(Boolean.FALSE)
+									.setMsgKey("cpmApp.projectInfo.upload.dataError")
+									.setMsgParam(excelValue.getSheet() + "," + rowNum +","+(columnNum+1)));
+						}else if(val instanceof Date){
+							projectInfo.setStartDay(((Date)val).toInstant().atZone(ZoneId.systemDefault()));
+						}else {
+							return ResponseEntity.ok().body(cpmResponse
+									.setSuccess(Boolean.FALSE)
+									.setMsgKey("cpmApp.projectInfo.upload.dataError")
+									.setMsgParam(excelValue.getSheet() + "," + rowNum +","+(columnNum+1)));
+						}
+						
+						//检验第七列  结束日期
+						columnNum ++;
+						val = ls.get(columnNum);
+						if(val == null || StringUtil.isNullStr(val)){
+							return ResponseEntity.ok().body(cpmResponse
+									.setSuccess(Boolean.FALSE)
+									.setMsgKey("cpmApp.projectInfo.upload.dataError")
+									.setMsgParam(excelValue.getSheet() + "," + rowNum +","+(columnNum+1)));
+						}else if(val instanceof Date){
+							projectInfo.setEndDay(((Date)val).toInstant().atZone(ZoneId.systemDefault()));
+						}else {
+							return ResponseEntity.ok().body(cpmResponse
+									.setSuccess(Boolean.FALSE)
+									.setMsgKey("cpmApp.projectInfo.upload.dataError")
+									.setMsgParam(excelValue.getSheet() + "," + rowNum +","+(columnNum+1)));
+						}
+						
+						if(Date.from(projectInfo.getEndDay().toInstant()).getTime() < Date.from(projectInfo.getStartDay().toInstant()).getTime()){
+							return ResponseEntity.ok().body(cpmResponse
+									.setSuccess(Boolean.FALSE)
+									.setMsgKey("cpmApp.projectInfo.upload.dataError")
+									.setMsgParam(excelValue.getSheet() + "," + rowNum +","+(columnNum+1)));
+						}
+						
+						//检验第八列  预算金额
+						columnNum ++;
+						val = ls.get(columnNum);
+						if(val == null || StringUtil.isNullStr(val)){
+							return ResponseEntity.ok().body(cpmResponse
+									.setSuccess(Boolean.FALSE)
+									.setMsgKey("cpmApp.projectInfo.upload.dataError")
+									.setMsgParam(excelValue.getSheet() + "," + rowNum +","+(columnNum+1)));
+						}else if(val instanceof Double){
+							projectInfo.setBudgetTotal((Double)val);
+						}else{//String
+							projectInfo.setBudgetTotal(StringUtil.nullToDouble(val));
+						}
+						
+						projectInfos.add(projectInfo);
+					} catch (Exception e) {
+						log.error("校验excel数据出错，msg:"+e.getMessage(),e);
+						return ResponseEntity.ok().body(cpmResponse
+									.setSuccess(Boolean.FALSE)
+									.setMsgKey("cpmApp.projectInfo.upload.dataError")
+									.setMsgParam(excelValue.getSheet() + "," + rowNum +","+(columnNum+1)));
+					}
+				}
+			}
+			//校验完毕后，入库处理
+			//先新增内部采购单
+			ContractBudget contractBudget = null;
+			ContractBudget result = null;
+			for(ProjectInfo info : projectInfos){
+				//填充合同预算主键前需先新增内部采购单
+				contractBudget = new ContractBudget();
+				contractBudget.setContractId(info.getContractId());
+				contractBudget.setType(ContractBudget.TYPE_PURCHASE);
+				contractBudget.setUserId(info.getPmId());
+				contractBudget.setUserName(info.getPm());
+				contractBudget.setDeptId(info.getDeptId());
+				contractBudget.setDept(info.getDept());
+				contractBudget.setPurchaseType(ContractBudget.PURCHASETYPE_SERVICE);
+				contractBudget.setBudgetTotal(info.getBudgetTotal());
+				contractBudget.setStatus(ContractBudget.STATUS_VALIDABLE);
+				contractBudget.setCreator(updator);
+				contractBudget.setCreateTime(info.getCreateTime());
+				contractBudget.setUpdator(updator);
+				contractBudget.setUpdateTime(contractBudget.getCreateTime());
+				contractBudget.setName(info.getSerialNum() + "_内部采购单");
+				result = contractBudgetService.save(contractBudget);
+				if(result == null || result.getId() == null){
+					return ResponseEntity.ok().body(cpmResponse
+							.setSuccess(Boolean.FALSE)
+							.setMsgKey("cpmApp.projectInfo.upload.dataBaseError"));
+				}
+				info.setBudgetId(result.getId());
+				projectInfoService.save(info);
+			}
+			return ResponseEntity.ok().body(cpmResponse
+					.setSuccess(Boolean.TRUE)
+					.setMsgKey("cpmApp.projectInfo.upload.handleSucc"));
+			
+		} catch (Exception e) {
+			log.error("msg:" + e.getMessage(),e);
+			return ResponseEntity.ok().body(cpmResponse
+						.setSuccess(Boolean.FALSE)
+						.setMsgKey("cpmApp.projectInfo.upload.handleError"));
+		}
     }
 }

@@ -4,7 +4,8 @@
             "home": {
                 "title": "项目信息",
                 "createLabel": "新增",
-                "createOrEditLabel": "项目信息"
+                "createOrEditLabel": "项目信息",
+                "import": "导入Excel"
             },
             "created": "新建成功",
             "updated": "修改成功",
@@ -47,6 +48,19 @@
             	"maxError":"完成率最大值为100",
             	"statusError":"项目状态为已结项或已终止的不可修改完成率",
             	"success":"设置完成率成功"
+            },
+            "upload":{
+            	"requiredError":"上传文件数据有误，请重新核对",
+            	"dataError":"第{{sheetNum}}个sheet的第{{rowNum}}行第{{columnNum}}列数据存在问题",
+            	"serialNumExist":"第{{sheetNum}}个sheet的第{{rowNum}}行第{{columnNum}}列项目编号已存在",
+            	"serialNumError":"第{{sheetNum}}个sheet的第{{rowNum}}行第{{columnNum}}列不存在，请核对",
+            	"recordExistError":"第{{sheetNum}}个sheet的第{{rowNum}}行第{{columnNum}}列项目报销信息在导入文件中已存在，请勿重复添加",
+            	"userDeptNoExist":"第{{sheetNum}}个sheet的第{{rowNum}}行第{{columnNum}}列找不到项目经理对应的部门信息",
+            	"dataBaseError":"内部错误",
+            	"nonFile":"文件不能为空！",
+            	"numFile":"选择的文件数量不能大于1！",
+            	"handleError":"处理出错",
+            	"handleSucc":"处理成功"
             },
             "serialNum": "项目编号",
             "contractId": "合同编号",
