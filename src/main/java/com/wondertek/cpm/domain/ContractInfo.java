@@ -205,11 +205,6 @@ public class ContractInfo implements Serializable {
      */
     @Column(name = "status_")
     private Integer status;
-    /**
-     * 唯一标识
-     */
-    @Transient
-    private String mark;
     
     @Column(name = "creator_")
     private String creator;
@@ -592,14 +587,6 @@ public class ContractInfo implements Serializable {
     public void setStatus(Integer status) {
         this.status = status;
     }
-    @Transient
-    public String getMark() {
-		return mark;
-	}
-
-	public void setMark(String mark) {
-		this.mark = mark;
-	}
 
 	public String getCreator() {
         return creator;

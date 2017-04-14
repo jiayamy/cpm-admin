@@ -102,7 +102,6 @@ public class ContractInfoVo implements Serializable {
 		this.createTime = contractInfo.getCreateTime();
 		this.updator = contractInfo.getUpdator();
 		this.updateTime = contractInfo.getUpdateTime();
-		this.mark = contractInfo.getMark();
 	}
     //列表页使用
 	public ContractInfoVo(ContractInfo contractInfo, Integer key) {
