@@ -144,7 +144,7 @@ public class ContractInfoVo implements Serializable {
 		this.updator = contractInfo.getUpdator();
 		this.updateTime = contractInfo.getUpdateTime();
 	}
-
+	
 	public Long getId() {
 		return id;
 	}

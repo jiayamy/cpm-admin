@@ -80,51 +80,51 @@ public class ContractInfoResource {
 	@PutMapping("/contract-infos")
     @Timed
     @Secured(AuthoritiesConstants.ROLE_CONTRACT_INFO)
-    public ResponseEntity<Boolean> updateContractInfo(@RequestBody ContractInfo contractInfo) throws URISyntaxException {
-        log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to update ContractInfo : {}", contractInfo);
-        Boolean isNew = contractInfo.getId() == null;
-        if(contractInfo.getIsPrepared() == null){
-        	contractInfo.setIsPrepared(Boolean.FALSE);
+    public ResponseEntity<Boolean> updateContractInfo(@RequestBody ContractInfoVo contractInfoVo1) throws URISyntaxException {
+        log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to update ContractInfo : {}", contractInfoVo1);
+        Boolean isNew = contractInfoVo1.getId() == null;
+        if(contractInfoVo1.getIsPrepared() == null){
+        	contractInfoVo1.setIsPrepared(Boolean.FALSE);
         }
-        if(contractInfo.getIsEpibolic() == null){
-        	contractInfo.setIsEpibolic(Boolean.FALSE);
+        if(contractInfoVo1.getIsEpibolic() == null){
+        	contractInfoVo1.setIsEpibolic(Boolean.FALSE);
         }
         //基本校验
-        if(contractInfo.getSalesmanId() == null && contractInfo.getConsultantsId() == null){
+        if(contractInfoVo1.getSalesmanId() == null && contractInfoVo1.getConsultantsId() == null){
         	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.contractInfo.save.manallnone", "")).body(null);
         }
-        if(contractInfo.getSalesmanId() != null){//销售不为空
-        	if(StringUtil.isNullStr(contractInfo.getSalesman())
-            		|| contractInfo.getDeptId() == null || StringUtil.isNullStr(contractInfo.getDept())){
+        if(contractInfoVo1.getSalesmanId() != null){//销售不为空
+        	if(StringUtil.isNullStr(contractInfoVo1.getSalesman())
+            		|| contractInfoVo1.getDeptId() == null || StringUtil.isNullStr(contractInfoVo1.getDept())){
         		return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.contractInfo.save.requiedError", "")).body(null);
         	}
         }
-        if(contractInfo.getConsultantsId() != null){//咨询不为空
-        	if(StringUtil.isNullStr(contractInfo.getConsultants())
-            		|| contractInfo.getConsultantsDeptId() == null || StringUtil.isNullStr(contractInfo.getConsultantsDept())){
+        if(contractInfoVo1.getConsultantsId() != null){//咨询不为空
+        	if(StringUtil.isNullStr(contractInfoVo1.getConsultants())
+            		|| contractInfoVo1.getConsultantsDeptId() == null || StringUtil.isNullStr(contractInfoVo1.getConsultantsDept())){
         		return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.contractInfo.save.requiedError", "")).body(null);
         	}
-        	if(contractInfo.getConsultantsShareRate() == null){//咨询分润比例
+        	if(contractInfoVo1.getConsultantsShareRate() == null){//咨询分润比例
         		return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.contractInfo.save.consultantsRateError", "")).body(null);
-        	}else if(contractInfo.getConsultantsShareRate() < 0d || contractInfo.getConsultantsShareRate() > 100d){
+        	}else if(contractInfoVo1.getConsultantsShareRate() < 0d || contractInfoVo1.getConsultantsShareRate() > 100d){
         		return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.contractInfo.save.consultantsRateError", "")).body(null);
         	}
         }else{//咨询分润比例，没咨询不需要咨询分润比例
-        	contractInfo.setConsultantsShareRate(null);
+        	contractInfoVo1.setConsultantsShareRate(null);
         }
-        if (StringUtil.isNullStr(contractInfo.getSerialNum()) || StringUtil.isNullStr(contractInfo.getName())
-        		|| contractInfo.getAmount() == null || contractInfo.getType() == null
-        		|| contractInfo.getStartDay() == null || contractInfo.getEndDay() == null
-        		|| contractInfo.getTaxRate() == null || contractInfo.getTaxes() == null 
-        		|| contractInfo.getShareRate() == null || contractInfo.getShareCost() == null) {
+        if (StringUtil.isNullStr(contractInfoVo1.getSerialNum()) || StringUtil.isNullStr(contractInfoVo1.getName())
+        		|| contractInfoVo1.getAmount() == null || contractInfoVo1.getType() == null
+        		|| contractInfoVo1.getStartDay() == null || contractInfoVo1.getEndDay() == null
+        		|| contractInfoVo1.getTaxRate() == null || contractInfoVo1.getTaxes() == null 
+        		|| contractInfoVo1.getShareRate() == null || contractInfoVo1.getShareCost() == null) {
         	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.contractInfo.save.requiedError", "")).body(null);
 		}
         //结束时间校验
-        if (contractInfo.getEndDay() != null && contractInfo.getEndDay().isBefore(contractInfo.getStartDay())) {
+        if (contractInfoVo1.getEndDay() != null && contractInfoVo1.getEndDay().isBefore(contractInfoVo1.getStartDay())) {
         	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.contractInfo.save.endDayError", "")).body(null);
 		}
         //查看合同是否是唯一
-        boolean isExist = contractInfoService.checkByContract(contractInfo.getSerialNum(),contractInfo.getId());
+        boolean isExist = contractInfoService.checkByContract(contractInfoVo1.getSerialNum(),contractInfoVo1.getId());
         if (isExist) {
         	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.contractInfo.save.existSerialNum" ,"")).body(null);
 		}
@@ -132,28 +132,26 @@ public class ContractInfoResource {
         ZonedDateTime updateTime = ZonedDateTime.now();
         if (!isNew) {
         	//查看该用户是否有修改的权限
-        	ContractInfoVo contractInfoVo = contractInfoService.getUserContractInfo(contractInfo.getId());
+        	ContractInfoVo contractInfoVo = contractInfoService.getUserContractInfo(contractInfoVo1.getId());
         	if(contractInfoVo == null){
         		return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.contractInfo.save.noPerm" ,"")).body(null);
         	}else if(contractInfoVo.getStatus() == ContractInfo.STATU_FINISH || contractInfoVo.getStatus() == ContractInfo.STATUS_DELETED){
         		return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.contractInfo.save.statusError" ,"")).body(null);
-        	}else if(contractInfoVo.getIsPrepared() == false && contractInfo.getIsPrepared() == true){
+        	}else if(contractInfoVo.getIsPrepared() == false && contractInfoVo1.getIsPrepared() == true){
         		return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.contractInfo.save.isPreparedError" ,"")).body(null);
         	}
-        	contractInfo.setCreateTime(contractInfoVo.getCreateTime());
-        	contractInfo.setCreator(contractInfoVo.getCreator());
-        	contractInfo.setStatus(contractInfoVo.getStatus());
-        	contractInfo.setFinishTotal(contractInfoVo.getFinishTotal());
-        	contractInfo.setReceiveTotal(contractInfoVo.getReceiveTotal());
-        	contractInfo.setFinishRate(contractInfoVo.getFinishRate());
+        	contractInfoVo1.setCreateTime(contractInfoVo.getCreateTime());
+        	contractInfoVo1.setCreator(contractInfoVo.getCreator());
+        	contractInfoVo1.setStatus(contractInfoVo.getStatus());
+        	contractInfoVo1.setFinishTotal(contractInfoVo.getFinishTotal());
+        	contractInfoVo1.setReceiveTotal(contractInfoVo.getReceiveTotal());
+        	contractInfoVo1.setFinishRate(contractInfoVo.getFinishRate());
 		}else {
-			if (contractInfo.getType().intValue() == ContractInfo.TYPE_EXTERNAL) {
-				if (StringUtil.isNullStr(contractInfo.getMark())) {
-					System.out.println("================== "+contractInfo.getMark() +"=========================");
+			if (contractInfoVo1.getType().intValue() == ContractInfo.TYPE_EXTERNAL) {
+				if (StringUtil.isNullStr(contractInfoVo1.getMark())) {
 		        	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.outsourcingUser.save.dataError", "")).body(null);
 				}else {
-					System.out.println("wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww");
-					String str[] = contractInfo.getMark().split("_");
+					String str[] = contractInfoVo1.getMark().split("_");
 					String num = str[0];
 					String createTimeD = str[1];
 					if (StringUtil.isNullStr(num) || StringUtil.isNullStr(createTimeD) || StringUtil.nullToCloneLong(num) == null
@@ -168,22 +166,22 @@ public class ContractInfoResource {
 		           }
 				}
 			}
-			contractInfo.setCreateTime(updateTime);
-			contractInfo.setCreator(updator);
-			contractInfo.setStatus(ContractInfo.STATUS_VALIDABLE);
-			contractInfo.setFinishTotal(0d);
-        	contractInfo.setReceiveTotal(0d);
-			contractInfo.setFinishRate(0d);
+			contractInfoVo1.setCreateTime(updateTime);
+			contractInfoVo1.setCreator(updator);
+			contractInfoVo1.setStatus(ContractInfo.STATUS_VALIDABLE);
+			contractInfoVo1.setFinishTotal(0d);
+			contractInfoVo1.setReceiveTotal(0d);
+			contractInfoVo1.setFinishRate(0d);
 		}
-        contractInfo.setUpdateTime(updateTime);
-        contractInfo.setUpdator(updator);
+        contractInfoVo1.setUpdateTime(updateTime);
+        contractInfoVo1.setUpdator(updator);
         ContractInfo result = new ContractInfo();
-        if (isNew && contractInfo.getType().intValue() == ContractInfo.TYPE_EXTERNAL) {
-    		List<OutsourcingUser> list = outsourcingUserRepository.findByMark(contractInfo.getMark());
+        if (isNew && contractInfoVo1.getType().intValue() == ContractInfo.TYPE_EXTERNAL) {
+    		List<OutsourcingUser> list = outsourcingUserRepository.findByMark(contractInfoVo1.getMark());
     		if (list != null && !list.isEmpty()){
-    			 result = contractInfoService.save(contractInfo);
+    			 result = contractInfoService.save(new ContractInfo(contractInfoVo1));
     			 for (OutsourcingUser outsourcingUser : list) {
-    				outsourcingUser.setContractId(contractInfo.getId());
+    				outsourcingUser.setContractId(result.getId());
  					outsourcingUser.setMark(null);
  					outsourcingUserRepository.save(outsourcingUser);
     			 }
@@ -191,7 +189,7 @@ public class ContractInfoResource {
 	        	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.outsourcingUser.save.userCannotEmpty", "")).body(null);
 			}
         }else {
-   			result = contractInfoService.save(contractInfo);
+   			result = contractInfoService.save(new ContractInfo(contractInfoVo1));
     	}
 		
         if(isNew){
@@ -200,7 +198,7 @@ public class ContractInfoResource {
                     .body(true);
         }else{
         	return ResponseEntity.ok()
-        			.headers(HeaderUtil.createEntityUpdateAlert("contractInfo", contractInfo.getId().toString()))
+        			.headers(HeaderUtil.createEntityUpdateAlert("contractInfo", contractInfoVo1.getId().toString()))
         			.body(false);
         }
         

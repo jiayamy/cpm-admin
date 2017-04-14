@@ -16,6 +16,8 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.springframework.data.elasticsearch.annotations.Document;
 
+import com.wondertek.cpm.domain.vo.ContractInfoVo;
+
 /**
  * 合同信息
  */
@@ -220,6 +222,50 @@ public class ContractInfo implements Serializable {
 
     @Column(name = "update_time")
     private ZonedDateTime updateTime;
+    
+    public ContractInfo(){
+    	
+    }
+    
+    public ContractInfo(ContractInfoVo contractInfoVo){
+    	this.id = contractInfoVo.getId();
+		this.serialNum = contractInfoVo.getSerialNum();
+		this.name = contractInfoVo.getName();
+		this.amount = contractInfoVo.getAmount();
+		this.type = contractInfoVo.getType();
+		this.isPrepared = contractInfoVo.getIsPrepared();
+		this.isEpibolic = contractInfoVo.getIsEpibolic();
+		this.salesmanId = contractInfoVo.getSalesmanId();
+		this.salesman = contractInfoVo.getSalesman();
+		this.dept = contractInfoVo.getDept();
+		this.deptId = contractInfoVo.getDeptId();
+		this.consultants = contractInfoVo.getConsultants();
+		this.consultantsId = contractInfoVo.getConsultantsId();
+		this.consultantsDept = contractInfoVo.getConsultantsDept();
+		this.consultantsDeptId = contractInfoVo.getConsultantsDeptId();
+		this.consultantsShareRate = contractInfoVo.getConsultantsShareRate();
+		this.startDay = contractInfoVo.getStartDay();
+		this.endDay = contractInfoVo.getEndDay();
+		this.taxRate = contractInfoVo.getTaxRate();
+		this.taxes = contractInfoVo.getTaxes();
+		this.shareRate = contractInfoVo.getShareRate();
+		this.shareCost = contractInfoVo.getShareCost();
+		this.paymentWay = contractInfoVo.getPaymentWay();
+		this.contractor = contractInfoVo.getContractor();
+		this.address = contractInfoVo.getAddress();
+		this.postcode = contractInfoVo.getPostcode();
+		this.linkman = contractInfoVo.getLinkman();
+		this.contactDept = contractInfoVo.getContactDept();
+		this.telephone = contractInfoVo.getTelephone();
+		this.receiveTotal = contractInfoVo.getReceiveTotal();
+		this.finishTotal = contractInfoVo.getFinishTotal();
+		this.finishRate = contractInfoVo.getFinishRate();
+		this.status = contractInfoVo.getStatus();
+		this.creator = contractInfoVo.getCreator();
+		this.createTime = contractInfoVo.getCreateTime();
+		this.updator = contractInfoVo.getUpdator();
+		this.updateTime = contractInfoVo.getUpdateTime();
+    }
 
     public Long getId() {
         return id;
@@ -546,7 +592,7 @@ public class ContractInfo implements Serializable {
     public void setStatus(Integer status) {
         this.status = status;
     }
-
+    @Transient
     public String getMark() {
 		return mark;
 	}
