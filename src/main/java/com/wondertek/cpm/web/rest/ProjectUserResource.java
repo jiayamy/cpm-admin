@@ -56,10 +56,8 @@ import com.wondertek.cpm.domain.ProjectInfo;
 import com.wondertek.cpm.domain.ProjectUser;
 import com.wondertek.cpm.domain.User;
 import com.wondertek.cpm.domain.vo.ProjectUserVo;
-import com.wondertek.cpm.repository.UserRepository;
 import com.wondertek.cpm.security.AuthoritiesConstants;
 import com.wondertek.cpm.security.SecurityUtils;
-import com.wondertek.cpm.service.DeptInfoService;
 import com.wondertek.cpm.service.OutsourcingUserService;
 import com.wondertek.cpm.service.ProjectInfoService;
 import com.wondertek.cpm.service.ProjectUserService;
@@ -87,12 +85,6 @@ public class ProjectUserResource {
 
 	@Inject
 	private UserService userService;
-
-	@Inject
-	private DeptInfoService deptInfoService;
-
-	@Inject
-	private UserRepository userRepository;
 	
 	@Inject
 	private OutsourcingUserService outSourcingUserService;
@@ -417,19 +409,19 @@ public class ProjectUserResource {
 						// 校验第一列，项目编号， 查看导入的列是否在数据库中存在。
 						columnNum = 0;
 						val = ls.get(columnNum);
-						String project_serial_num = null;
+						String projectSerialNum = null;
 						if (val == null || StringUtil.isNullStr(val)) {
 							return ResponseEntity.ok()
 									.body(cpmResponse.setSuccess(Boolean.FALSE)
 										.setMsgKey("cpmApp.projectUser.save.dataIsError")
 										.setMsgParam(excelValue.getSheet() + "," + rowNum + "," + (columnNum + 1)));
 						}else if(val instanceof Double){//double
-							project_serial_num = ((Double)val).longValue() +"";
+							projectSerialNum = ((Double)val).longValue() +"";
 						}else{//String
-							project_serial_num = StringUtil.null2Str(val);
+							projectSerialNum = StringUtil.null2Str(val);
 						}
 						// 根据项目编号得到项目id
-						projectId = projectInfos.get(project_serial_num);
+						projectId = projectInfos.get(projectSerialNum);
 						// 校验项目编号是否存在。
 						if (projectId == null) {
 							return ResponseEntity.ok()
@@ -443,18 +435,18 @@ public class ProjectUserResource {
 						// 校验第三列，员工编号，查看导入的员工编号是否存在。
 						columnNum++;
 						val = ls.get(columnNum);
-						String serial_num = StringUtil.null2Str(val);
+						String userSerialNum = StringUtil.null2Str(val);
 						if (val == null || StringUtil.isNullStr(val)) {
 							return ResponseEntity.ok()
 									.body(cpmResponse.setSuccess(Boolean.FALSE)
 											.setMsgKey("cpmApp.projectUser.save.dataIsError")
 											.setMsgParam(excelValue.getSheet() + "," + rowNum + "," + (columnNum + 1)));
 						}else if(val instanceof Double){//double
-							serial_num = ((Double)val).longValue() +"";
+							userSerialNum = ((Double)val).longValue() +"";
 						}else{//String
-							serial_num = StringUtil.null2Str(val);
+							userSerialNum = StringUtil.null2Str(val);
 						}
-						user = allUser.get(serial_num);
+						user = allUser.get(userSerialNum);
 						if (user == null) {
 							return ResponseEntity.ok()
 									.body(cpmResponse.setSuccess(Boolean.FALSE)
@@ -607,8 +599,7 @@ public class ProjectUserResource {
 				//校验级别
 				if(!projectIds.isEmpty()){
 					//缓存项目对应合同的类型是外包的，所有级别
-					Map<Long,List<String>> projectRanks = outSourcingUserService.getType(projectIds);
-					Map<Long,List<String>> projectRanks1 = new HashMap<Long,List<String>>();//项目ID-所有的级别
+					Map<Long,List<String>> projectRanks = outSourcingUserService.getType(projectIds);//项目ID-所有的级别
 					Map<Integer, String> ranks = null;//记录里面的级别
 					List<String> contractRanks = null;//单个外包合同的所有级别
 					String rank = null;
