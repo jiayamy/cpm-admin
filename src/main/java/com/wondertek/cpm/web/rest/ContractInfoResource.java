@@ -149,8 +149,10 @@ public class ContractInfoResource {
 		}else {
 			if (contractInfo.getType().intValue() == ContractInfo.TYPE_EXTERNAL) {
 				if (StringUtil.isNullStr(contractInfo.getMark())) {
+					System.out.println("================== "+contractInfo.getMark() +"=========================");
 		        	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.outsourcingUser.save.dataError", "")).body(null);
 				}else {
+					System.out.println("wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww");
 					String str[] = contractInfo.getMark().split("_");
 					String num = str[0];
 					String createTimeD = str[1];

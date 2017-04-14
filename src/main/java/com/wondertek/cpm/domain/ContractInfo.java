@@ -10,6 +10,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -205,8 +206,9 @@ public class ContractInfo implements Serializable {
     /**
      * 唯一标识
      */
-    @Column(name = "mark_")
+    @Transient
     private String mark;
+    
     @Column(name = "creator_")
     private String creator;
 
