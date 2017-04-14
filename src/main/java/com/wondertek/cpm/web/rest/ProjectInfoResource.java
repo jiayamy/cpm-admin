@@ -474,28 +474,30 @@ public class ProjectInfoResource {
 							DecimalFormat format = new DecimalFormat("0");
 							val = format.format(val);
 						}
-						if(!userBaseVoMap.containsKey(StringUtil.nullToString(val))){
+						String userSerialNum = StringUtil.nullToString(val);
+						if(!userBaseVoMap.containsKey(userSerialNum)){
 							return ResponseEntity.ok().body(cpmResponse
 									.setSuccess(Boolean.FALSE)
 									.setMsgKey("cpmApp.projectInfo.upload.serialNumError")
 									.setMsgParam(excelValue.getSheet() + "," + rowNum +","+(columnNum+1)));
-						}else if(userBaseVoMap.get(StringUtil.nullToString(val)).getDeptId() == null){
+						}else if(userBaseVoMap.get(userSerialNum).getDeptId() == null){
 							return ResponseEntity.ok().body(cpmResponse
 									.setSuccess(Boolean.FALSE)
 									.setMsgKey("cpmApp.projectInfo.upload.userDeptNoExist")
 									.setMsgParam(excelValue.getSheet() + "," + rowNum +","+(columnNum+1)));
-						}else if(!deptInfosMap.containsKey(userBaseVoMap.get(StringUtil.nullToString(val)).getDeptId())){
+						}else if(!deptInfosMap.containsKey(userBaseVoMap.get(userSerialNum).getDeptId())){
 							return ResponseEntity.ok().body(cpmResponse
 									.setSuccess(Boolean.FALSE)
 									.setMsgKey("cpmApp.projectInfo.upload.userDeptNoExist")
 									.setMsgParam(excelValue.getSheet() + "," + rowNum +","+(columnNum+1)));
 						}
 						//填充项目经理id
-						projectInfo.setPmId(userBaseVoMap.get(StringUtil.nullToString(val)).getId());
+						projectInfo.setPmId(userBaseVoMap.get(userSerialNum).getId());
 						//第五列 填充项目经理(不用检验，根据userBase走)
-						projectInfo.setPm(userBaseVoMap.get(StringUtil.nullToString(val)).getLastName());
+						columnNum ++;
+						projectInfo.setPm(userBaseVoMap.get(userSerialNum).getLastName());
 						//填充项目经理所属部门id
-						projectInfo.setDeptId(userBaseVoMap.get(projectInfo.getPmId()).getDeptId());
+						projectInfo.setDeptId(userBaseVoMap.get(userSerialNum).getDeptId());
 						//填充项目经理所属部门
 						projectInfo.setDept(deptInfosMap.get(projectInfo.getDeptId()).getName());
 						
@@ -559,7 +561,7 @@ public class ProjectInfoResource {
 						log.error("校验excel数据出错，msg:"+e.getMessage(),e);
 						return ResponseEntity.ok().body(cpmResponse
 									.setSuccess(Boolean.FALSE)
-									.setMsgKey("cpmApp.projectCost.upload.dataError")
+									.setMsgKey("cpmApp.projectInfo.upload.dataError")
 									.setMsgParam(excelValue.getSheet() + "," + rowNum +","+(columnNum+1)));
 					}
 				}

@@ -1,11 +1,10 @@
 package com.wondertek.cpm.web.rest;
 
-import io.swagger.annotations.ApiParam;
-
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.text.DecimalFormat;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
@@ -56,6 +55,8 @@ import com.wondertek.cpm.service.UserService;
 import com.wondertek.cpm.web.rest.errors.CpmResponse;
 import com.wondertek.cpm.web.rest.util.HeaderUtil;
 import com.wondertek.cpm.web.rest.util.PaginationUtil;
+
+import io.swagger.annotations.ApiParam;
 
 /**
  * REST controller for managing ContractInfo.
@@ -410,6 +411,9 @@ public class ContractInfoResource {
 											.setSuccess(Boolean.FALSE)
 											.setMsgKey("cpmApp.contractInfo.upload.dataError")
 											.setMsgParam(excelValue.getSheet() + "," + rowNum +","+(columnNum+1)));
+						}else if(val instanceof Double){
+							DecimalFormat format = new DecimalFormat("0");
+							val = format.format((Double)val);
 						}
 						contractInfo.setSerialNum(val.toString());
 						//检验是否新增合同
