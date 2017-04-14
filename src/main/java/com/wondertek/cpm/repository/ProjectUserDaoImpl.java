@@ -17,6 +17,7 @@ import org.springframework.stereotype.Repository;
 import com.wondertek.cpm.CpmConstants;
 import com.wondertek.cpm.config.DateUtil;
 import com.wondertek.cpm.config.StringUtil;
+import com.wondertek.cpm.domain.ContractInfo;
 import com.wondertek.cpm.domain.DeptInfo;
 import com.wondertek.cpm.domain.ProjectUser;
 import com.wondertek.cpm.domain.User;
@@ -293,5 +294,4 @@ public class ProjectUserDaoImpl extends GenericDaoImpl<ProjectUser, Long> implem
 		}
 		return returnList;
 	}
-	
 }

@@ -198,6 +198,7 @@
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                     $translatePartialLoader.addPart('projectUser');
                     $translatePartialLoader.addPart('deptInfo');
+                    $translatePartialLoader.addPart('outsourcingUser');
                     $translatePartialLoader.addPart('global');
                     return $translate.refresh();
                 }],
@@ -273,6 +274,7 @@
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                     $translatePartialLoader.addPart('projectUser');
                     $translatePartialLoader.addPart('deptInfo');
+                    $translatePartialLoader.addPart('outsourcingUser');
                     $translatePartialLoader.addPart('global');
                     return $translate.refresh();
                 }],

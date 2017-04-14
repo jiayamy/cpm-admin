@@ -353,19 +353,14 @@ public class UserService {
 		}
 	}
 
-	public Map<String, String> getAllUsers() {
+	public Map<String, User> getAllUsers() {
 		List<User> userList = userRepository.findUser();
-		Map<String,String> returnMap = new HashMap<String,String>();
+		Map<String,User> returnMap = new HashMap<String,User>();
 		if(userList != null){
 			for(User users : userList){
-				returnMap.put(users.getSerialNum(), users.getLastName());
+				returnMap.put(users.getSerialNum(), users);
 			}
 		}
 		return returnMap;
-	}
-
-	public long getUserId(String user_serial_num) {
-		User user = userRepository.getAllBySerialNum(user_serial_num);
-		return user.getId();
 	}
 }

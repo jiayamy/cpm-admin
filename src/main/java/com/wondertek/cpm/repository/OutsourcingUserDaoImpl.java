@@ -2,7 +2,9 @@ package com.wondertek.cpm.repository;
 
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.persistence.EntityManager;
 
@@ -10,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.wondertek.cpm.config.StringUtil;
+import com.wondertek.cpm.domain.ContractInfo;
 import com.wondertek.cpm.domain.OutsourcingUser;
 import com.wondertek.cpm.domain.vo.LongValue;
 import com.wondertek.cpm.domain.vo.OutsourcingUserVo;
@@ -70,5 +73,33 @@ public class OutsourcingUserDaoImpl extends GenericDaoImpl<OutsourcingUser, Long
 			}
 		}
 		return returnList;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public Map<Long,List<String>> getType(List<Long> projectIds) {
+		StringBuffer hql = new StringBuffer();
+		Map<String, Object> paramNameList = new HashMap<String, Object>();
+		hql.append("select distinct wpi.id,wou.rank");
+		hql.append(" from OutsourcingUser wou,ContractInfo wci,ProjectInfo wpi");
+		hql.append(" where wou.contractId = wci.id and wci.id = wpi.contractId and wci.type = ?0 and wpi.id in (:projectIds)");
+		
+		paramNameList.put("projectIds", projectIds);
+		
+		List<Object[]> list = this.queryAllHql(hql.toString(), new Object[]{ContractInfo.TYPE_EXTERNAL}, paramNameList);
+		Map<Long,List<String>> returnMap = new HashMap<Long,List<String>>();
+		if(list != null){
+			Long projectId = null;
+			String rank = null;
+			for(Object[] o : list){
+				projectId = StringUtil.nullToLong(o[0]);
+				rank = StringUtil.null2Str(o[1]);
+				if(!returnMap.containsKey(projectId)){
+					returnMap.put(projectId, new ArrayList<String>());
+				}
+				returnMap.get(projectId).add(rank);
+			}
+		}
+		return returnMap;
 	}
 }

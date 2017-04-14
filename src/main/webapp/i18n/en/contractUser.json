@@ -20,22 +20,21 @@
            	 	"requiredError":"upload files's data error, plz confirm again",
         		"dataIsError":"No.{{sheetNum}}sheet's No.{{rowNum}}row's No.{{columnNum}}column's data error",
         		"dataNotExist":"No.{{sheetNum}}sheet's No.{{rowNum}}row's No.{{columnNum}}column's user not exist，plz add",
+        		"dataErrors":"No.{{sheetNum}}sheet's No.{{rowNum}}row's No.{{columnNum}}column's data error",
+        		"timeQuantumError":"No.{{sheetNum}}sheet's No.{{rowNum}}row's user Id already exist in Project between join day and leave day",
+        		"improtTimeExitsError":"No.{{sheetNum}}sheet's No.{{rowNum}}row's you import leave day should beyond join day",
         		"importSuccess":"import successfully",
         		"importError":"import Error",
-        		"dateLengthError":"import data length exits errors, for example:20110101",
-        		"monthStyleError":"year donnot greater than 12",
-        		"dayStyleError":"day exits errors",
-        		
+        		"dateLengthError":"No.{{sheetNum}}sheet's No.{{rowNum}}row's No.{{columnNum}}column's import data length exits errors, for example:20110101",
+        		"joinDayStyleError":"No.{{sheetNum}}sheet's No.{{rowNum}}row's No.{{columnNum}}column's import joinDay date style exits errors",
+        		"leaveDayStyleError":"No.{{sheetNum}}sheet's No.{{rowNum}}row's No.{{columnNum}}column's import leaveDay date style exits errors",
             	"paramNone":"Mandatory parameter is empty",
             	"dayError":"Leave Day should not before Join Day",
             	"userIdError":"the user has been arranged to the Contract from Join Day to Leave Day, do not repeat to add",
             	"idNone":"Data error, please refresh after operation",
             	"contractIdError":"The contract does not allow to change",
             	"noPerm":"No permission operation"
-            	
-            	
             },
-
             "contractId": "Contract Id",
             "contractName": "Contract Name",
             "userId": "User Id",

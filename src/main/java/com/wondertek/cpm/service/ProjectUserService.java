@@ -180,18 +180,8 @@ public class ProjectUserService {
 		return map;
 	}
 
-	public void saveOrUpdateUserForExcel(ProjectUser projectUser, User user, DeptInfo deptInfo) {
-		ProjectUser addProjectUser = new ProjectUser();
-		addProjectUser.setProjectId(projectUser.getProjectId());;
-		addProjectUser.setUserId(user.getId());
-		addProjectUser.setUserName(user.getLastName());
-		addProjectUser.setUserRole(projectUser.getUserRole());
-		addProjectUser.setJoinDay(projectUser.getJoinDay());
-		addProjectUser.setLeaveDay(projectUser.getLeaveDay());
-		addProjectUser.setCreator(projectUser.getCreator());
-		addProjectUser.setCreateTime(projectUser.getCreateTime());
-		addProjectUser.setUpdator(projectUser.getUpdator());
-		addProjectUser.setUpdateTime(projectUser.getUpdateTime());
-		projectUserRepository.save(addProjectUser);
+	public void saveAll(ProjectUser projectUser) {
+		projectUserRepository.save(projectUser);
+		
 	}
 }

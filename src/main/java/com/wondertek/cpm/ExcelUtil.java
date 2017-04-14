@@ -201,7 +201,7 @@ public class ExcelUtil {
                         rowList = new ArrayList<Object>();
                         totalCells = xssfRow.getLastCellNum();
                         //读取列，从第一列开始
-                        for(int c = 0; c < totalCells && c < maxCell; c++){
+                        for(int c = 0; c < maxCell; c++){
                             XSSFCell cell = xssfRow.getCell(c);
                             if(cell == null){
                                 rowList.add(null);
@@ -287,7 +287,7 @@ public class ExcelUtil {
                         rowList = new ArrayList<Object>();
                         totalCells = hssfRow.getLastCellNum();
                         //读取列，从第一列开始
-                        for(int c = 0; c < totalCells && c < maxCell; c++){
+                        for(int c = 0; c < maxCell; c++){
                             HSSFCell cell = hssfRow.getCell(c);
                             if(cell==null){
                                 rowList.add(null);
