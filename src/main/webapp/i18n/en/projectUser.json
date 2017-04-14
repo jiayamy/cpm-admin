@@ -27,13 +27,13 @@
         		"dateLengthError":"No.{{sheetNum}}sheet's No.{{rowNum}}row's No.{{columnNum}}column's import data length exits errors, for example:20110101",
         		"joinDayStyleError":"No.{{sheetNum}}sheet's No.{{rowNum}}row's No.{{columnNum}}column's import joinDay date style exits errors",
         		"leaveDayStyleError":"No.{{sheetNum}}sheet's No.{{rowNum}}row's No.{{columnNum}}column's import leaveDay date style exits errors",
+        		"timeQuantumError":"No.{{sheetNum}}sheet's No.{{rowNum}}row's user Id already exist in Project between join day and leave day",
+        		"improtTimeExitsError":"No.{{sheetNum}}sheet's No.{{rowNum}}row's you import leave day should beyond join day",
         		"rankNoneError":"No.{{sheetNum}}sheet's No.{{tmp}}row's No.6 column's, person rank is not null",
         		"rankNotNeedError":"No.{{sheetNum}}sheet's No.{{tmp}}row's No.6 column's,person rank should not exits",
         		"rankNotExitsError":"No.{{sheetNum}}sheet's No.{{tmp}}row's No.6 column's,person rank donnot exits",
-        		
         		"typeHasMust":"outer pack contract must has type for outer pack person",
         		"typeError":"it's not outer pack contract,so donnot has type for person",
-            
             	"paramNone":"Params Required",
             	"dayError":"leave day should beyond join day",
             	"userIdError":"user Id already exist in Project between join day and leave day",

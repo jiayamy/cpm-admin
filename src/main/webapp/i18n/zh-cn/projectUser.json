@@ -27,13 +27,13 @@
         		"dateLengthError":"第{{sheetNum}}个sheet的第{{rowNum}}行第{{columnNum}}列输入的日期格式不正确，应为：20110101",
         		"joinDayStyleError":"第{{sheetNum}}个sheet的第{{rowNum}}行第{{columnNum}}列输入的加盟日日期格式不正确",
         		"leaveDayStyleError":"第{{sheetNum}}个sheet的第{{rowNum}}行第{{columnNum}}列输入的离开日的日期格式不正确",
+        		"timeQuantumError":"第{{sheetNum}}个sheet的第{{rowNum}}行，在加盟日至离开日时间内，该用户已经被安排到该项目中，勿重复添加",
+        		"improtTimeExitsError":"第{{sheetNum}}个sheet的第{{rowNum}}行，输入的离开日应不早于加盟日",
         		"rankNoneError":"第{{sheetNum}}个sheet的第{{tmp}}行第6列,该项目属于外包合同,人员等级不能为空",
         		"rankNotNeedError":"第{{sheetNum}}个sheet的第{{tmp}}行第6列,该项目不属于外包合同,不存在人员等级",
         		"rankNotExitsError":"第{{sheetNum}}个sheet的第{{tmp}}行第6列,人员等级不存在",
-        		
         		"typeHasMust":"外包合同必须有外包人员等级",
         		"typeError":"非外包合同不能有外包人员等级",
-            
             	"paramNone":"必填字段为空",
             	"dayError":"离开日应不早于加盟日",
             	"userIdError":"在加盟日至离开日时间内，该用户已经被安排到该项目中，勿重复添加",

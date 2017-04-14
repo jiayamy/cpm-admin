@@ -528,9 +528,9 @@ public class ContractUserResource {
 							
 							leaveDay = Long.parseLong(ld);
 							if (leaveDay < joinDay) {
-								return ResponseEntity.badRequest()
-										.headers(HeaderUtil.createError("cpmApp.contractUser.save.dayError", ""))
-										.body(null);
+								return ResponseEntity.ok()
+										.body(cpmResponse.setSuccess(Boolean.FALSE).setMsgKey("cpmApp.contractUser.save.improtTimeExitsError")
+												.setMsgParam(excelValue.getSheet() + "," + rowNum));
 							}
 							contractUser.setLeaveDay(leaveDay);
 						}
@@ -545,25 +545,22 @@ public class ContractUserResource {
 						for (Entry<Long, Long> entry : entryLong) {
 							if (entry.getValue() == null) {
 								if (leaveDay >= entry.getKey() || leaveDay == 0) {
-									return ResponseEntity
-											.badRequest().headers(HeaderUtil
-													.createError("cpmApp.contractUser.save.userIdError", ""))
-											.body(null);
+									return ResponseEntity.ok()
+											.body(cpmResponse.setSuccess(Boolean.FALSE).setMsgKey("cpmApp.contractUser.save.timeQuantumError")
+													.setMsgParam(excelValue.getSheet() + "," + rowNum));
 								}
 							} else {
 								if (leaveDay == 0) {
 									if (joinDay <= entry.getValue()) {
-										return ResponseEntity.badRequest()
-												.headers(HeaderUtil
-														.createError("cpmApp.contractUser.save.userIdError", ""))
-												.body(null);
+										return ResponseEntity.ok()
+												.body(cpmResponse.setSuccess(Boolean.FALSE).setMsgKey("cpmApp.contractUser.save.timeQuantumError")
+														.setMsgParam(excelValue.getSheet() + "," + rowNum));
 									}
 								} else {
 									if(!(leaveDay < entry.getKey() || entry.getValue() < joinDay)){
-										return ResponseEntity.badRequest()
-												.headers(HeaderUtil
-														.createError("cpmApp.contractUser.save.userIdError", ""))
-												.body(null);
+										return ResponseEntity.ok()
+												.body(cpmResponse.setSuccess(Boolean.FALSE).setMsgKey("cpmApp.contractUser.save.timeQuantumError")
+														.setMsgParam(excelValue.getSheet() + "," + rowNum));
 									}
 								}
 							}

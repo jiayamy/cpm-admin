@@ -544,9 +544,9 @@ public class ProjectUserResource {
 							
 							leaveDay = Long.parseLong(ld);
 							if (leaveDay < joinDay) {
-								return ResponseEntity.badRequest()
-										.headers(HeaderUtil.createError("cpmApp.projectUser.save.dayError", ""))
-										.body(null);
+								return ResponseEntity.ok()
+										.body(cpmResponse.setSuccess(Boolean.FALSE).setMsgKey("cpmApp.projectUser.save.improtTimeExitsError")
+												.setMsgParam(excelValue.getSheet() + "," + rowNum));
 							}
 							projectUser.setLeaveDay(leaveDay);
 						}
@@ -561,25 +561,22 @@ public class ProjectUserResource {
 						for (Entry<Long, Long> entry : entryLong) {
 							if (entry.getValue() == null) {
 								if (leaveDay >= entry.getKey() || leaveDay == 0) {
-									return ResponseEntity
-											.badRequest().headers(HeaderUtil
-													.createError("cpmApp.projectUser.save.userIdError", ""))
-											.body(null);
+									return ResponseEntity.ok()
+											.body(cpmResponse.setSuccess(Boolean.FALSE).setMsgKey("cpmApp.projectUser.save.timeQuantumError")
+													.setMsgParam(excelValue.getSheet() + "," + rowNum));
 								}
 							} else {
 								if (leaveDay == 0) {
 									if (joinDay <= entry.getValue()) {
-										return ResponseEntity.badRequest()
-												.headers(HeaderUtil
-														.createError("cpmApp.projectUser.save.userIdError", ""))
-												.body(null);
+										return ResponseEntity.ok()
+												.body(cpmResponse.setSuccess(Boolean.FALSE).setMsgKey("cpmApp.projectUser.save.timeQuantumError")
+														.setMsgParam(excelValue.getSheet() + "," + rowNum));
 									}
 								} else {
 									if(!(leaveDay < entry.getKey() || entry.getValue() < joinDay)){
-										return ResponseEntity.badRequest()
-												.headers(HeaderUtil
-														.createError("cpmApp.projectUser.save.userIdError", ""))
-												.body(null);
+										return ResponseEntity.ok()
+												.body(cpmResponse.setSuccess(Boolean.FALSE).setMsgKey("cpmApp.projectUser.save.timeQuantumError")
+														.setMsgParam(excelValue.getSheet() + "," + rowNum));
 									}
 								}
 							}
