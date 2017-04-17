@@ -365,6 +365,7 @@ public class ProjectUserResource {
 				return ResponseEntity.ok()
 						.body(cpmResponse.setSuccess(Boolean.FALSE).setMsgKey("cpmApp.projectUser.save.requiredError"));
 			}
+			
 			// 从第一行读取，最多读取10个sheet，最多读取8列
 			int startNum = 1;
 			List<ExcelValue> lists = ExcelUtil.readExcel(file, startNum, 10, 8);
@@ -372,10 +373,11 @@ public class ProjectUserResource {
 				return ResponseEntity.ok()
 						.body(cpmResponse.setSuccess(Boolean.FALSE).setMsgKey("cpmApp.projectUser.save.requiredError"));
 			}
+			
 			// 初始信息
 			// 得到项目编号和项目ID
 			Map<String, Long> projectInfos = projectInfoService.getProjectInfo();
-			// 得到员工编号员工ID
+			// 得到员工信息
 			Map<String, User> allUser = userService.getAllUsers();
 			// 其他信息
 			users = new ArrayList<ProjectUser>();
@@ -386,7 +388,9 @@ public class ProjectUserResource {
 			Object val = null;
 			Long projectId = null;
 			User user = null;
+			
 			Map<String,Map<Long,Long>> userProjects = new HashMap<String,Map<Long,Long>>();
+			
 			for (ExcelValue excelValue : lists) {
 				if (excelValue.getVals() == null || excelValue.getVals().isEmpty()) {// 每个sheet也可能没有数据，空sheet
 					continue;
@@ -401,12 +405,12 @@ public class ProjectUserResource {
 					}
 					try {
 						ProjectUser projectUser = new ProjectUser();
-
 						projectUser.setUpdator(updator);
 						projectUser.setUpdateTime(updateTime);
 						projectUser.setCreateTime(updateTime);
 						projectUser.setCreator(updator);
-						// 校验第一列，项目编号， 查看导入的列是否在数据库中存在。
+						
+						// 校验第一列，项目编号， 查看导入的项目编号是否在数据库中存在。
 						columnNum = 0;
 						val = ls.get(columnNum);
 						String projectSerialNum = null;
@@ -430,7 +434,8 @@ public class ProjectUserResource {
 											.setMsgParam(excelValue.getSheet() + "," + rowNum + "," + (columnNum + 1)));
 						}
 						projectUser.setProjectId(projectId);
-						// 项目名称，可以不填写，不用校验
+						
+						// 第二列，项目名称，可以不填写，不用校验
 						columnNum++;
 						// 校验第三列，员工编号，查看导入的员工编号是否存在。
 						columnNum++;
@@ -453,9 +458,11 @@ public class ProjectUserResource {
 											.setMsgKey("cpmApp.projectUser.save.dataNotExist")
 											.setMsgParam(excelValue.getSheet() + "," + rowNum + "," + (columnNum + 1)));
 						}
+						
 						// 根据员工编号得到员工id
 						projectUser.setUserId(user.getId());
 						projectUser.setUserName(user.getLastName());
+						
 						// 校验第四列，员工姓名，可以不填写，不用校验。
 						columnNum++;
 						// 校验第五列，角色
@@ -468,13 +475,14 @@ public class ProjectUserResource {
 											.setMsgParam(excelValue.getSheet() + "," + rowNum + "," + (columnNum + 1)));
 						}
 						projectUser.setUserRole(StringUtil.null2Str(val));
+						
 						//第六列，级别
 						columnNum++;
 						val = ls.get(columnNum);
-						//根据项目id得到项目所属的合同是否是外包
 						if(val != null){
 							projectUser.setRank(StringUtil.null2Str(val));
 						}
+						
 						// 校验第七列，加盟日 
 						columnNum++;
 						val = ls.get(columnNum);
@@ -505,7 +513,6 @@ public class ProjectUserResource {
 								}
 							}
 						}
-						
 						long joinDay = Long.parseLong(value);
 						projectUser.setJoinDay(joinDay);
 
@@ -533,7 +540,7 @@ public class ProjectUserResource {
 									}
 								}
 							}
-							
+
 							leaveDay = Long.parseLong(ld);
 							if (leaveDay < joinDay) {
 								return ResponseEntity.ok()
@@ -642,6 +649,7 @@ public class ProjectUserResource {
 					}
 				}
 			}
+			
 			// 入库
 			if (users != null) {
 				for(ProjectUser projectUser : users){

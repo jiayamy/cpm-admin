@@ -70,13 +70,19 @@ public class DeptInfoDaoImpl extends GenericDaoImpl<DeptInfo, Long> implements D
 	public DeptInfo findDeptInfo(String user_serial_num) {
 		DeptInfo deptInfo = new DeptInfo();
 		StringBuffer querySql = new StringBuffer();
-		querySql.append("select wdi.name from DeptInfo wdi");
+		querySql.append("select wdi.name,wdi.id from DeptInfo wdi");
 		querySql.append(" inner join User u on u.deptId = wdi.id");
 		querySql.append(" where u.serialNum = ?0");
-		List<Object> list =this.queryAllHql(querySql.toString(), new Object[]{user_serial_num});
+		List<Object[]> list =this.queryAllHql(querySql.toString(), new Object[]{user_serial_num});
 		if(list !=null && !list.isEmpty()){
-			Object o = list.get(0);
-			deptInfo.setName(StringUtil.null2Str(o));
+			String deptName = null;
+			Long deptId = null;
+			for(Object[] o : list){
+				deptName = StringUtil.null2Str(o[0]);
+				deptId = StringUtil.nullToLong(o[1]);
+			}
+			deptInfo.setName(deptName);
+			deptInfo.setId(deptId);
 			return deptInfo;
 		}
 		return null;

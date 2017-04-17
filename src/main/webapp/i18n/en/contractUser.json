@@ -21,7 +21,7 @@
         		"dataIsError":"No.{{sheetNum}}sheet's No.{{rowNum}}row's No.{{columnNum}}column's data error",
         		"dataNotExist":"No.{{sheetNum}}sheet's No.{{rowNum}}row's No.{{columnNum}}column's user not exist，plz add",
         		"dataErrors":"No.{{sheetNum}}sheet's No.{{rowNum}}row's No.{{columnNum}}column's data error",
-        		"timeQuantumError":"No.{{sheetNum}}sheet's No.{{rowNum}}row's user Id already exist in Project between join day and leave day",
+        		"timeQuantumError":"No.{{sheetNum}}sheet's No.{{rowNum}}row's user Id already exist in Contract between join day and leave day",
         		"improtTimeExitsError":"No.{{sheetNum}}sheet's No.{{rowNum}}row's you import leave day should beyond join day",
         		"importSuccess":"import successfully",
         		"importError":"import Error",
