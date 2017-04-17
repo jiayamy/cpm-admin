@@ -11,7 +11,6 @@
         var vm = this;
 
         vm.previousState = previousState.name;
-        vm.upload = upload;
         
         vm.downloadTpl = downloadTpl;
         function downloadTpl(){
