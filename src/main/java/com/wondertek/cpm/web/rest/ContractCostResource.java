@@ -249,7 +249,7 @@ public class ContractCostResource {
 			Long companyId = null;
 			List<DeptInfo> primaryDeptInfos = null;	//一级部门
 			List<DeptInfo> secondaryDeptInfos = null;	//二级部门
-//			Map<String,Integer> existMap = new HashMap<String,Integer>();
+			//Map<String,Integer> existMap = new HashMap<String,Integer>();
 			for (ExcelValue excelValue : lists) {
 				if (excelValue.getVals() == null || excelValue.getVals().isEmpty()) {//每个sheet也可能没有数据，空sheet
 					continue;
@@ -304,21 +304,6 @@ public class ContractCostResource {
 						//校验第三列 公司名 系统设置-部门信息中的顶级部门名称。方便获取下面的一级部门和二级部门
 						columnNum++;
 						val = ls.get(columnNum);
-//						if(val == null){
-//							return ResponseEntity.ok().body(cpmResponse
-//									.setSuccess(Boolean.FALSE)
-//									.setMsgKey("cpmApp.contractCost.upload.dataError")
-//									.setMsgParam(excelValue.getSheet() + "," + rowNum +","+(columnNum+1)));
-//						}
-//						if(deptInfoMap.containsKey(val.toString())){
-//							contractCost.setDeptId(deptInfoMap.get(val.toString()).getId());
-//							contractCost.setDept(val.toString());
-//						}else{
-//							return ResponseEntity.ok().body(cpmResponse
-//									.setSuccess(Boolean.FALSE)
-//									.setMsgKey("cpmApp.contractCost.upload.dataError")
-//									.setMsgParam(excelValue.getSheet() + "," + rowNum +","+(columnNum+1)));
-//						}
 						if(val == null || StringUtil.isNullStr(val)){
 							return ResponseEntity.ok().body(cpmResponse
 									.setSuccess(Boolean.FALSE)
@@ -429,17 +414,6 @@ public class ContractCostResource {
 									.setMsgKey("cpmApp.contractCost.upload.dataError")
 									.setMsgParam(excelValue.getSheet() + "," + rowNum +","+(columnNum+1)));
 						}
-						
-//						//校验记录是否存在
-//						String key = contractCost.getContractId() + "_" + contractCost.getDeptId() + "_" + 
-//										contractCost.getType() + "_" + contractCost.getCostDay();
-//						if(existMap.containsKey(key)){
-//							return ResponseEntity.ok().body(cpmResponse
-//									.setSuccess(Boolean.FALSE)
-//									.setMsgKey("cpmApp.contractCost.upload.recordExistError")
-//									.setMsgParam(excelValue.getSheet() + "," + rowNum +","+(columnNum+1)));
-//						}
-//						existMap.put(key, 1);
 						
 						//校验第八列 成本金额
 						columnNum++;

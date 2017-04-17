@@ -41,7 +41,7 @@
             "upload":{
             	"requiredError":"upload files's data error, please confirm again",
             	"dataError":"No.{{sheetNum}}sheet's No.{{rowNum}}row's No.{{columnNum}}column's data error",
-            	"serialNumError":"No.{{sheetNum}}sheet's No.{{rowNum}}row's No.{{columnNum}}column's Contract Info not exist，please add",
+            	"serialNumError":"No.{{sheetNum}}sheet's No.{{rowNum}}row's No.{{columnNum}}column's data error",
             	"recordExistError":"No.{{sheetNum}}sheet's No.{{rowNum}}row's No.{{columnNum}}column's Contract Info record already exist in uploaded file",
             	"typeError":"No.{{sheetNum}}sheet's No.{{rowNum}}row's No.{{columnNum}}column's Contract Info,When updated,Type cannot be modified",
             	"isPreparedError":"No.{{sheetNum}}sheet's No.{{rowNum}}row's No.{{columnNum}}column's Contract Info,When updated,The formal Contract cannot be change to the prepared Contract",

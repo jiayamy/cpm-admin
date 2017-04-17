@@ -273,7 +273,6 @@ public class ProjectCostResource {
 			int columnNum = 0;
 			int rowNum = 0;
 			Object val = null;
-			Map<String,Integer> existMap = new HashMap<String,Integer>();
 			for (ExcelValue excelValue : lists) {
 				if (excelValue.getVals() == null || excelValue.getVals().isEmpty()) {//每个sheet也可能没有数据，空sheet
 					continue;
@@ -376,16 +375,6 @@ public class ProjectCostResource {
 									.setMsgKey("cpmApp.projectCost.upload.dataError")
 									.setMsgParam(excelValue.getSheet() + "," + rowNum +","+(columnNum+1)));
 						}
-						
-//						//校验记录是否存在
-//						String key = projectCost.getProjectId() + "_" + projectCost.getType() + "_" + projectCost.getCostDay();
-//						if(existMap.containsKey(key)){
-//							return ResponseEntity.ok().body(cpmResponse
-//									.setSuccess(Boolean.FALSE)
-//									.setMsgKey("cpmApp.projectCost.upload.recordExistError")
-//									.setMsgParam(excelValue.getSheet() + "," + rowNum +","+(columnNum+1)));
-//						}
-//						existMap.put(key, 1);
 						
 						//校验第六列 报销金额
 						columnNum++;

@@ -460,23 +460,12 @@ public class ContractInfoResource {
 							contractInfo.setType(ContractInfo.TYPE_OTHER);
 						}
 						//填充是否 预立合同(根据合同编号判断是否预立合同)
-						//columnNum ++;
-						//val = ls.get(columnNum);
 						Boolean isMatched = contractInfo.getSerialNum().substring(0, 2).equalsIgnoreCase("WY");
 						if(isMatched){
 							contractInfo.setIsPrepared(Boolean.TRUE);
 						}else{
 							contractInfo.setIsPrepared(Boolean.FALSE);
 						}
-//						else if(val.equals("预立合同")){//更新时，正式合同不能更改为预立合同
-//							if(isExistSerialnum && !contractInfoMap.get(contractInfo.getSerialNum()).getIsPrepared()){
-//								return ResponseEntity.ok()
-//										.body(cpmResponse.setSuccess(Boolean.FALSE)
-//												.setMsgKey("cpmApp.contractInfo.upload.isPreparedError").setMsgParam(
-//														excelValue.getSheet() + "," + rowNum + "," + (columnNum + 1)));
-//							}
-//							contractInfo.setIsPrepared(Boolean.TRUE);
-//						}
 						
 						//检验第四列 外部合同
 						columnNum ++;
@@ -624,6 +613,13 @@ public class ContractInfoResource {
 							return ResponseEntity.ok().body(cpmResponse
 									.setSuccess(Boolean.FALSE)
 									.setMsgKey("cpmApp.contractInfo.upload.dataError")
+									.setMsgParam(excelValue.getSheet() + "," + rowNum +","+(columnNum+1)));
+						}
+						
+						if(Date.from(contractInfo.getEndDay().toInstant()).getTime() < Date.from(contractInfo.getStartDay().toInstant()).getTime()){
+							return ResponseEntity.ok().body(cpmResponse
+									.setSuccess(Boolean.FALSE)
+									.setMsgKey("cpmApp.contractInfo.upload.dateError")
 									.setMsgParam(excelValue.getSheet() + "," + rowNum +","+(columnNum+1)));
 						}
 						
