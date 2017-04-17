@@ -21,7 +21,7 @@
         		"dataIsError":"第{{sheetNum}}个sheet的第{{rowNum}}行第{{columnNum}}列是必填字段，不能为空",
         		"dataNotExist":"第{{sheetNum}}个sheet的第{{rowNum}}行第{{columnNum}}列数据不存在，请确认",
         		"dataErrors":"第{{sheetNum}}个sheet的第{{rowNum}}行第{{columnNum}}列数据存在问题",
-        		"timeQuantumError":"第{{sheetNum}}个sheet的第{{rowNum}}行，在加盟日至离开日时间内，该用户已经被安排到该项目中，勿重复添加",
+        		"timeQuantumError":"第{{sheetNum}}个sheet的第{{rowNum}}行，在加盟日至离开日时间内，该用户已经被安排到该合同中，勿重复添加",
         		"improtTimeExitsError":"第{{sheetNum}}个sheet的第{{rowNum}}行，输入的离开日应不早于加盟日",
         		"importSuccess":"导入成功",
         		"importError":"导入失败",

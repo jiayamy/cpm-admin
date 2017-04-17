@@ -371,9 +371,9 @@ public class ContractUserResource {
 								.setMsgKey("cpmApp.contractUser.save.requiredError"));
 			}
 			//初始信息
-			//合同编号
+			//合同信息
 			Map<String,Long> contractInfos = contractInfoService.getContractInfo();
-			//员工姓名
+			//员工信息
 			Map<String, User> allUser = userService.getAllUsers();
 			
 			//其他信息
@@ -404,7 +404,8 @@ public class ContractUserResource {
 						contractUser.setUpdateTime(updateTime);
 						contractUser.setCreateTime(updateTime);
 						contractUser.setCreator(updator);
-				        //校验第一列，合同编号， 查看导入的列是否在数据库中存在。
+						
+				        //校验第一列，合同编号， 查看导入的合同编号是否在数据库中存在。
 						columnNum = 0;
 						val = ls.get(columnNum);
 						String contractSerialNum = null;
@@ -429,10 +430,8 @@ public class ContractUserResource {
 						}
 						contractUser.setContractId(contractId);
 						
-						//合同姓名，可以不填写，不用校验
+						//第二列，合同姓名，可以不填写，不用校验
 						columnNum++;
-						
-						
 						// 校验第三列，员工编号，查看导入的员工编号是否存在。
 						columnNum++;
 						val = ls.get(columnNum);
@@ -454,18 +453,17 @@ public class ContractUserResource {
 											.setMsgKey("cpmApp.contractUser.save.dataNotExist")
 											.setMsgParam(excelValue.getSheet() + "," + rowNum + "," + (columnNum + 1)));
 						}
-						// 根据员工编号得到员工id
+						
 						contractUser.setUserId(user.getId());
 						contractUser.setUserName(user.getLastName());
 						//根据员工编号得到对应的员工所在的部门信息
 						deptInfo = deptInfoService.findDeptInfo(user.getSerialNum());
 						contractUser.setDeptId(deptInfo.getId());
 						contractUser.setDept(deptInfo.getName());
-						
-						//校验第四列，员工姓名,查看在数据库中员工编号是否与员工姓名相对应。
+						//第四列，员工姓名,可以不填写，不用校验。
 						columnNum++;
 						
-						// 校验第七列，加盟日 
+						// 校验第五列，加盟日 
 						columnNum++;
 						val = ls.get(columnNum);
 						if (val == null || StringUtil.isNullStr(val)) {
@@ -499,7 +497,7 @@ public class ContractUserResource {
 						long joinDay = Long.parseLong(value);
 						contractUser.setJoinDay(joinDay);
 
-						// 校验第八列，离开日。
+						// 校验第六列，离开日。
 						columnNum++;
 						long leaveDay = 0;
 						val = ls.get(columnNum);
@@ -532,13 +530,11 @@ public class ContractUserResource {
 							}
 							contractUser.setLeaveDay(leaveDay);
 						}
-						// 根据项目id和员工编号查看w_project_user表中的加盟日和离开日
 						String key = contractId + "_" + user.getId();
 						if(!userProjects.containsKey(key)){
 							Map<Long, Long> date = contractUserService.getdates(contractId, user.getId());
 							userProjects.put(key, date);
 						}
-						
 						Set<Entry<Long, Long>> entryLong = userProjects.get(key).entrySet();
 						for (Entry<Long, Long> entry : entryLong) {
 							if (entry.getValue() == null) {
