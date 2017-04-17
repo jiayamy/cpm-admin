@@ -64,6 +64,7 @@ public class SaleWeeklyStatResource {
 		log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to get a page of SaleWeeklyStats by deptId : {}", deptId);
 		Page<SaleWeeklyStatVo> page = saleWeeklyStatService.getStatPage(deptId, pageable);
         for (SaleWeeklyStatVo saleWeeklyStatVo : page.getContent()) {
+        	saleWeeklyStatVo.setAnnualIndex(StringUtil.getScaleDouble(saleWeeklyStatVo.getAnnualIndex(), 10000d,2));
 			saleWeeklyStatVo.setReceiveTotal(StringUtil.getScaleDouble(saleWeeklyStatVo.getReceiveTotal(), 10000d, 2));
 			saleWeeklyStatVo.setCostTotal(StringUtil.getScaleDouble(saleWeeklyStatVo.getCostTotal(), 10000d, 2));
 			saleWeeklyStatVo.setHardwarePurchase(StringUtil.getScaleDouble(saleWeeklyStatVo.getHardwarePurchase(), 10000d, 2));
