@@ -57,7 +57,7 @@ public class SaleWeeklyStatResource {
      */
 	@GetMapping("/sale-weekly-stats")
 	@Timed
-	@Secured(AuthoritiesConstants.ROLE_STAT_CONTRACT)
+	@Secured(AuthoritiesConstants.ROLE_STAT_SALE)
 	public ResponseEntity<List<SaleWeeklyStatVo>> getAllSaleWeeklyStats(
 				@ApiParam(value = "deptId") @RequestParam(value = "deptId",required = false) String deptId,
 				@ApiParam Pageable pageable) throws URISyntaxException{
@@ -75,7 +75,7 @@ public class SaleWeeklyStatResource {
 	
 	@GetMapping("/sale-weekly-stats/{id}")
 	@Timed
-	@Secured(AuthoritiesConstants.ROLE_STAT_CONTRACT)
+	@Secured(AuthoritiesConstants.ROLE_STAT_SALE)
 	public ResponseEntity<SaleWeeklyStatVo> getSaleWeeklyStat(@PathVariable Long id){
 		log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to get a detail of SaleWeeklyStats by id : {}", id);
 		SaleWeeklyStatVo saleWeeklyStatVo = saleWeeklyStatService.findOne(id);
@@ -101,7 +101,7 @@ public class SaleWeeklyStatResource {
 	
 	@GetMapping("/sale-weekly-stats/queryChart")
 	@Timed
-	@Secured(AuthoritiesConstants.ROLE_STAT_CONTRACT)
+	@Secured(AuthoritiesConstants.ROLE_STAT_SALE)
 	public ResponseEntity<ChartReportVo> queryChart(
 			@ApiParam(value="fromDate") @RequestParam(value="fromDate") String fromDate,
     		@ApiParam(value="toDate") @RequestParam(value="toDate") String toDate,

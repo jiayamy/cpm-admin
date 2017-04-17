@@ -637,7 +637,7 @@ public class ContractStateTask {
 	 * 每周 汇总大销售部门下的子销售部门下面 一年内所有销售的合同情况。
 	 */
 	@Scheduled(cron = "0 59 23 ? * MON")
-//	@Scheduled(cron = "0 03 14 ? * THU")
+//	@Scheduled(cron = "0 30 16 ? * MON")
 	protected void generateSaleContractWeeklyStat(){
 		Date now = new Date();
 		generateSaleContractWeeklyStat(now);
@@ -664,7 +664,7 @@ public class ContractStateTask {
 		ZonedDateTime firstDayOfYear = DateUtil.getZonedDateTime(calendar.getTime().getTime());
 		
 		//归属于销售部门下的合同
-		List<ContractInfo> contractInfos = contractInfoRepository.findByDeptIdAndEndTime(StringUtil.nullToLong(DeptType.TYPE_DEPT_SALE), firstDayOfYear);
+		List<ContractInfo> contractInfos = contractInfoRepository.findByDeptTypeAndStatusOrTime(StringUtil.nullToLong(DeptType.TYPE_DEPT_SALE),ContractInfo.STATUS_VALIDABLE, firstDayOfYear);
 		if(contractInfos != null && contractInfos.size() > 0){
 			//初始上周stat
 			List<SaleWeeklyStat> saleWeeklyStats = saleWeeklyStatRepository.findByStatWeek(statWeek);
@@ -709,7 +709,7 @@ public class ContractStateTask {
 				}
 			}
 			
-			Map<Long,SaleWeeklyStat> saleWeeklyStatsMap = new HashMap<Long,SaleWeeklyStat>();
+			Map<Long,SaleWeeklyStat> saleWeeklyStatsMap = new HashMap<Long,SaleWeeklyStat>();//key:一级部门id
 			
 			for(ContractInfo contractInfo : contractInfos){
 				log.info("=========begin generate Sale Contract : "+contractInfo.getSerialNum()+"=========");
@@ -774,7 +774,6 @@ public class ContractStateTask {
 					Long salesDeptId = contractInfo.getDeptId();
 					if(salesDeptId != null && salesDeptId != 0){
 						DeptInfo deptInfo = deptInfoRepository.findOne(salesDeptId);
-						//List<Long> deptIds = deptInfoRepository.findIdsByType(StringUtil.nullToLong(deptInfo.getType()));
 						if(deptInfo != null){
 							List<ContractCost> contractCosts = contractCostRepository.findByDeptIdAndTypeAndContractIdAndCostDayBetween(
 									salesDeptId,ContractCost.TYPE_HUMAN_COST, contractId, StringUtil.nullToLong(saleWeeklyStat.getOriginYear() + "0101"), statWeek);

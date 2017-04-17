@@ -105,6 +105,10 @@ public final class AuthoritiesConstants {
 	 */
     public static final String ROLE_STAT_BONUS = "ROLE_STAT_BONUS";
     /**
+     * 销售部门统计
+     */
+    public static final String ROLE_STAT_SALE = "ROLE_STAT_SALE";
+    /**
 	 * 咨询项目信息权限
 	 */
     public static final String ROLE_STAT_CONSULTANT_BONUS = "ROLE_STAT_CONSULTANT_BONUS";

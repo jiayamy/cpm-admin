@@ -6,7 +6,7 @@
                 "timesheetTitle": "工时成本",
                 "createLabel": "新增",
                 "createOrEditLabel": "项目报销信息",
-                "import": "导入Excel"
+                "import": "导入"
             },
             "created": "新增成功",
             "updated": "修改成本",

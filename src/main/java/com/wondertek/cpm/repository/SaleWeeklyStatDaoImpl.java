@@ -16,6 +16,7 @@ import org.springframework.stereotype.Repository;
 import com.wondertek.cpm.CpmConstants;
 import com.wondertek.cpm.config.StringUtil;
 import com.wondertek.cpm.domain.DeptInfo;
+import com.wondertek.cpm.domain.DeptType;
 import com.wondertek.cpm.domain.SaleWeeklyStat;
 import com.wondertek.cpm.domain.User;
 import com.wondertek.cpm.domain.vo.SaleWeeklyStatVo;
@@ -48,9 +49,8 @@ public class SaleWeeklyStatDaoImpl extends GenericDaoImpl<SaleWeeklyStat, Long> 
 				+ "s.projectPayment ,s.statWeek ,s.createTime ,wdi.name");
 		countsql.append(" select count(s.id)");
 		sb.append(" from SaleWeeklyStat s");
-//		sb.append(" left join ContractInfo i on m.contractId = i.id");
 		sb.append(" left join DeptInfo wdi on s.deptId = wdi.id");
-//		sb.append(" left join DeptInfo wdi2 on i.consultantsDeptId = wdi2.id");
+		sb.append(" left join User u on wdi.id = u.deptId");
 		List<Object> params = new ArrayList<Object>();
     	sb.append(" where s.id in (select max(id) from SaleWeeklyStat where 1=1 ");
     	if(!StringUtil.isNullStr(deptId)){
@@ -59,20 +59,14 @@ public class SaleWeeklyStatDaoImpl extends GenericDaoImpl<SaleWeeklyStat, Long> 
     	}
     	sb.append(" group by deptId");
     	sb.append(" )");
-//    	sb.append(" and ( i.creator = ?" + (count++) + " or i.salesmanId = ?" + (count++) + " or i.consultantsId = ?" + (count++) + " ");
-//    	params.add(user.getLogin());
-//		params.add(user.getId());
-//		params.add(user.getId());
+    	sb.append(" and ( wdi.type = ?" + (count++) + " ");
+    	params.add(StringUtil.nullToLong(DeptType.TYPE_DEPT_SALE));
 		if(user.getIsManager()){
-			sb.append(" and ( wdi.idPath like ?" + (count++) + " or wdi.id = ?" + (count++) + " )");
+			sb.append(" or wdi.idPath like ?" + (count++) + " or wdi.id = ?" + (count++) + " )");
 			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
 			params.add(deptInfo.getId());
-			
-//			sb.append(" or wdi2.idPath like ?" + (count++) + " or wdi2.id = ?" + (count++));
-//			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
-//			params.add(deptInfo.getId());
 		}
-    	//sb.append(" )");
+    	sb.append(" )");
     	StringBuffer orderHql = new StringBuffer();
     	if(pageable.getSort() != null){//页面都会有个默认排序
     		for (Order order : pageable.getSort()) {
@@ -143,18 +137,21 @@ public class SaleWeeklyStatDaoImpl extends GenericDaoImpl<SaleWeeklyStat, Long> 
 				+ "s.projectPayment ,s.statWeek ,s.createTime ,wdi.name");
 		sb.append(" from SaleWeeklyStat s");
 		sb.append(" left join DeptInfo wdi on s.deptId = wdi.id");
+		sb.append(" left join User u on wdi.id = u.deptId");
 		List<Object> params = new ArrayList<Object>();
     	sb.append(" where 1 = 1 ");
     	if(id != null){
     		sb.append(" and s.id = ?" + (count++));
     		params.add(id);
     	}
+    	sb.append(" and ( wdi.type = ?" + (count++) + " ");
+    	params.add(StringUtil.nullToLong(DeptType.TYPE_DEPT_SALE));
 		if(user.getIsManager()){
-			sb.append(" and ( wdi.idPath like ?" + (count++) + " or wdi.id = ?" + (count++) + " )");
+			sb.append(" or wdi.idPath like ?" + (count++) + " or wdi.id = ?" + (count++) + " )");
 			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
 			params.add(deptInfo.getId());
 		}
-    	//sb.append(" )");
+    	sb.append(" )");
     	StringBuffer orderHql = new StringBuffer();
     	List<Object[]> list = this.queryAllHql(
     			querysql.toString() + sb.toString() + orderHql.toString(), 
@@ -178,6 +175,7 @@ public class SaleWeeklyStatDaoImpl extends GenericDaoImpl<SaleWeeklyStat, Long> 
 				+ "s.projectPayment ,s.statWeek ,s.createTime ,wdi.name");
 		sb.append(" from SaleWeeklyStat s");
 		sb.append(" left join DeptInfo wdi on s.deptId = wdi.id");
+		sb.append(" left join User u on wdi.id = u.deptId");
 		List<Object> params = new ArrayList<Object>();
     	sb.append(" where 1 = 1 ");
     	if(deptId != null){
@@ -188,12 +186,14 @@ public class SaleWeeklyStatDaoImpl extends GenericDaoImpl<SaleWeeklyStat, Long> 
     		sb.append(" and s.statWeek = ?" + (count++));
     		params.add(statWeek);
     	}
+    	sb.append(" and ( wdi.type = ?" + (count++) + " ");
+    	params.add(StringUtil.nullToLong(DeptType.TYPE_DEPT_SALE));
 		if(user.getIsManager()){
-			sb.append(" and ( wdi.idPath like ?" + (count++) + " or wdi.id = ?" + (count++) + " )");
+			sb.append(" or wdi.idPath like ?" + (count++) + " or wdi.id = ?" + (count++) + " )");
 			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
 			params.add(deptInfo.getId());
 		}
-    	//sb.append(" )");
+    	sb.append(" )");
     	StringBuffer orderHql = new StringBuffer();
     	List<Object[]> list = this.queryAllHql(
     			querysql.toString() + sb.toString() + orderHql.toString(), 

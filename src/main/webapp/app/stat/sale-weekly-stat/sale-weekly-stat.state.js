@@ -13,7 +13,7 @@
             parent: 'stat',
             url: '/sale-weekly-stat?page&deptId',
             data: {
-                authorities: ['ROLE_STAT_CONTRACT'],
+                authorities: ['ROLE_STAT_SALE'],
                 pageTitle: 'cpmApp.saleWeeklyStat.home.title'
             },
             views: {
@@ -56,7 +56,7 @@
         	parent: 'sale-weekly-stat',
         	url: '/detail/{id}',
         	data: {
-                authorities: ['ROLE_STAT_CONTRACT'],
+                authorities: ['ROLE_STAT_SALE'],
                 pageTitle: 'cpmApp.saleWeeklyStat.detail.title'
             },
             views: {
@@ -89,7 +89,7 @@
             parent: 'sale-weekly-stat',
             url: '/chart/{id}/queryChart?fromDate&toDate',
             data: {
-                authorities: ['ROLE_STAT_CONTRACT'],
+                authorities: ['ROLE_STAT_SALE'],
                 pageTitle: 'cpmApp.saleWeeklyStat.detail.title'
             },
             views: {

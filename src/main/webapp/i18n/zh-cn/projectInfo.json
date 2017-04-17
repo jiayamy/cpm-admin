@@ -5,7 +5,7 @@
                 "title": "项目信息",
                 "createLabel": "新增",
                 "createOrEditLabel": "项目信息",
-                "import": "导入Excel"
+                "import": "导入"
             },
             "created": "新建成功",
             "updated": "修改成功",
