@@ -538,7 +538,7 @@ public class ProjectInfoResource {
 						if(Date.from(projectInfo.getEndDay().toInstant()).getTime() < Date.from(projectInfo.getStartDay().toInstant()).getTime()){
 							return ResponseEntity.ok().body(cpmResponse
 									.setSuccess(Boolean.FALSE)
-									.setMsgKey("cpmApp.projectInfo.upload.dataError")
+									.setMsgKey("cpmApp.projectInfo.upload.dateError")
 									.setMsgParam(excelValue.getSheet() + "," + rowNum +","+(columnNum+1)));
 						}
 						

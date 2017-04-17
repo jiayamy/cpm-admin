@@ -56,6 +56,7 @@
             	"serialNumError":"第{{sheetNum}}个sheet的第{{rowNum}}行第{{columnNum}}列不存在，请核对",
             	"recordExistError":"第{{sheetNum}}个sheet的第{{rowNum}}行第{{columnNum}}列项目报销信息在导入文件中已存在，请勿重复添加",
             	"userDeptNoExist":"第{{sheetNum}}个sheet的第{{rowNum}}行第{{columnNum}}列找不到项目经理对应的部门信息",
+            	"dateError":"第{{sheetNum}}个sheet的第{{rowNum}}行第{{columnNum}}列结束日期应不小于开始日期",
             	"dataBaseError":"内部错误",
             	"nonFile":"文件不能为空！",
             	"numFile":"选择的文件数量不能大于1！",
