@@ -50,6 +50,8 @@
             	"dateError":"No.{{sheetNum}}sheet's No.{{rowNum}}row's the End Day should not less than the Start Day",
             	"rankError":"No.{{sheetNum}}sheet's No.{{rowNum}}row's,not English symbol or data error",
             	"rankError1":"No.{{sheetNum}}sheet's No.{{rowNum}}row's rank should not be the same",
+            	"noEmptyError":"No.{{sheetNum}}sheet's No.{{rowNum}}row's external contract user rank cannot be empty",
+            	"emptyError":"No.{{sheetNum}}sheet's No.{{rowNum}}row's not external contract，user rank should be empty",
             	"up": "upload",
             	"upError": "upload failed",
             	"nonFile":"no Files！",

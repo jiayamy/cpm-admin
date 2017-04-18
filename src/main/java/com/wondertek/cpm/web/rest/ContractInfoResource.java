@@ -490,7 +490,7 @@ public class ContractInfoResource {
 													excelValue.getSheet() + "," + rowNum + "," + (columnNum + 1)));
 						}
 						
-						//检验第五列  合同级别信息
+						//检验第五列  人员级别信息
 						columnNum ++;
 						val = ls.get(columnNum);
 						if(contractInfo.getType() == ContractInfo.TYPE_EXTERNAL){
