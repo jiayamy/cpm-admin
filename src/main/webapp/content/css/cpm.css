@@ -64,7 +64,7 @@ form .wd-response .wd-progress {
   background: linear-gradient(to right, #ff0000, #eee); 
   right: 2px;
 }
-@media (max-width : 480px){
+@media (max-width : 767px){
 	.wd-title:before, .wd-title:after{
 		content: "";
   		width: 25%;
