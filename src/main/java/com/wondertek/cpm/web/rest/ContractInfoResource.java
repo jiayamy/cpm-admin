@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Random;
 
 import javax.inject.Inject;
 
@@ -378,6 +379,8 @@ public class ContractInfoResource {
 			Map<String,ContractInfo> contractInfoMap = contractInfoService.getContractInfoMapBySerialnum();
 			//其他信息
 			contractInfos = new ArrayList<ContractInfo>();
+			//List<OutsourcingUser> outsourcingUsers = new ArrayList<OutsourcingUser>();
+			Map<String,List<OutsourcingUser>> outsourcingUsersMap = new HashMap<String,List<OutsourcingUser>>();//key:合同编号
 			String updator = SecurityUtils.getCurrentUserLogin();
 			ZonedDateTime updateTime = ZonedDateTime.now();
 			int columnNum = 0;
@@ -487,7 +490,62 @@ public class ContractInfoResource {
 													excelValue.getSheet() + "," + rowNum + "," + (columnNum + 1)));
 						}
 						
-						//检验第五列 销售人员工号
+						//检验第五列  合同级别信息
+						columnNum ++;
+						val = ls.get(columnNum);
+						if(contractInfo.getIsEpibolic()){
+							if(val == null){
+								return ResponseEntity.ok()
+										.body(cpmResponse.setSuccess(Boolean.FALSE)
+												.setMsgKey("cpmApp.contractInfo.upload.dataError").setMsgParam(
+														excelValue.getSheet() + "," + rowNum + "," + (columnNum + 1)));
+							}
+							outsourcingUsersMap.put(contractInfo.getSerialNum(), new ArrayList<OutsourcingUser>());
+							String[] rank = StringUtil.nullToString(val).split("\\|");
+							for(String str : rank){
+								String[] temp = str.split(",");
+								if(temp.length != 3 || StringUtil.nullToString(temp[0]) == null || 
+										!StringUtil.isNumber(temp[1].trim()) || !StringUtil.isNumber(temp[2].trim())){
+									return ResponseEntity.ok()
+											.body(cpmResponse.setSuccess(Boolean.FALSE)
+													.setMsgKey("cpmApp.contractInfo.upload.rankError").setMsgParam(
+															excelValue.getSheet() + "," + rowNum + "," + (columnNum + 1)));
+								}
+								//外包人员信息
+								OutsourcingUser outsourcingUser = new OutsourcingUser();
+								outsourcingUser.setUpdator(updator);
+								outsourcingUser.setUpdateTime(updateTime);
+								outsourcingUser.setCreator(updator);
+								outsourcingUser.setCreateTime(updateTime);
+								outsourcingUser.setRank(temp[0]);
+								outsourcingUser.setTargetAmount(StringUtil.nullToDouble(temp[1].trim()).intValue());
+								outsourcingUser.setOffer(StringUtil.nullToDouble(temp[2].trim()));
+								String mark = new Random().nextInt(100) + "_" + 
+								DateUtil.formatDate(DateUtil.DATE_TIME_NO_SPACE_MS_PATTERN, DateUtil.convertZonedDateTime(ZonedDateTime.now()));
+								outsourcingUser.setMark(mark);
+								if(outsourcingUsersMap.get(contractInfo.getSerialNum()).size() > 0){
+									for(OutsourcingUser outs : outsourcingUsersMap.get(contractInfo.getSerialNum())){
+										if(outsourcingUser.getRank().equals(outs.getRank())){
+											return ResponseEntity.ok()
+													.body(cpmResponse.setSuccess(Boolean.FALSE)
+															.setMsgKey("cpmApp.contractInfo.upload.rankError1").setMsgParam(
+																	excelValue.getSheet() + "," + rowNum + "," + (columnNum + 1)));
+										}
+									}
+								}
+								outsourcingUsersMap.get(contractInfo.getSerialNum()).add(outsourcingUser);
+							}
+							
+						}else{
+							if(val != null){
+								return ResponseEntity.ok()
+										.body(cpmResponse.setSuccess(Boolean.FALSE)
+												.setMsgKey("cpmApp.contractInfo.upload.dataError").setMsgParam(
+														excelValue.getSheet() + "," + rowNum + "," + (columnNum + 1)));
+							}
+						}
+						
+						//检验第六列 销售人员工号
 						columnNum ++;
 						val = ls.get(columnNum);
 						UserBaseVo salemanVo = null;
@@ -504,7 +562,7 @@ public class ContractInfoResource {
 							contractInfo.setSalesmanId(null);
 						}
 						
-						//检验第六列 销售人员姓名(人员工号为空时，此为空)
+						//检验第七列 销售人员姓名(人员工号为空时，此为空)
 						columnNum ++;
 						if(contractInfo.getSalesmanId() == null){
 							contractInfo.setSalesman(null);
@@ -521,7 +579,7 @@ public class ContractInfoResource {
 							contractInfo.setDept(deptInfoMap.get(salemanVo.getDeptId()).getName());
 						}
 						
-						//检验第七列 咨询人员工号
+						//检验第八列 咨询人员工号
 						columnNum ++;
 						val = ls.get(columnNum);
 						UserBaseVo consultantVo = null;
@@ -544,7 +602,7 @@ public class ContractInfoResource {
 									.setMsgKey("cpmApp.contractInfo.upload.salesmanAndconsultants")
 									.setMsgParam(excelValue.getSheet() + "," + rowNum));
 						}
-						//检验第八列 咨询人员姓名(人员工号为空时，此为空)
+						//检验第九列 咨询人员姓名(人员工号为空时，此为空)
 						columnNum ++;
 						if (contractInfo.getConsultantsId() == null) {
 							contractInfo.setConsultants(null);
@@ -560,7 +618,7 @@ public class ContractInfoResource {
 							contractInfo.setConsultantsDept(deptInfoMap.get(consultantVo.getDeptId()).getName());
 						}
 						
-						//检验第九列 咨询分润比率(人员工号为空时，此为空)
+						//检验第十列 咨询分润比率(人员工号为空时，此为空)
 						columnNum ++;
 						val = ls.get(columnNum);
 						if(contractInfo.getConsultantsId() == null){
@@ -582,7 +640,7 @@ public class ContractInfoResource {
 							}
 						}
 						
-						//检验第十列 开始日期 
+						//检验第十一列 开始日期 
 						columnNum ++;
 						val = ls.get(columnNum);
 						if(val == null){
@@ -599,7 +657,7 @@ public class ContractInfoResource {
 									.setMsgParam(excelValue.getSheet() + "," + rowNum +","+(columnNum+1)));
 						}
 						
-						//检验第十一列 结束日期 
+						//检验第十二列 结束日期 
 						columnNum ++;
 						val = ls.get(columnNum);
 						if(val == null){
@@ -623,7 +681,7 @@ public class ContractInfoResource {
 									.setMsgParam(excelValue.getSheet() + "," + rowNum +","+(columnNum+1)));
 						}
 						
-						//检验第十二列 合同金额 
+						//检验第十三列 合同金额 
 						columnNum ++;
 						val = ls.get(columnNum);
 						if(val == null){
@@ -643,12 +701,12 @@ public class ContractInfoResource {
 							}
 						}
 						
-						//检验第十三列 付款方式
+						//检验第十四列 付款方式
 						columnNum ++;
 						val = ls.get(columnNum);
 						contractInfo.setPaymentWay(StringUtil.nullToString(val));
 						
-						//检验第十四列  税率
+						//检验第十五列  税率
 						columnNum ++;
 						val = ls.get(columnNum);
 						if(val == null){
@@ -668,11 +726,11 @@ public class ContractInfoResource {
 							}
 						}
 						
-						//检验第十五列 税费
+						//检验第十六列 税费
 						columnNum ++;
 						contractInfo.setTaxes(contractInfo.getAmount() * contractInfo.getTaxRate() / 100);
 						
-						//检验第十六列 公摊比例
+						//检验第十七列 公摊比例
 						columnNum ++;
 						val = ls.get(columnNum);
 						if(val == null){
@@ -692,11 +750,11 @@ public class ContractInfoResource {
 							}
 						}
 						
-						//第十七列 公摊成本
+						//第十八列 公摊成本
 						columnNum ++;
 						contractInfo.setShareCost(contractInfo.getAmount() * contractInfo.getShareRate() / 100);
 						
-						//检验第十八列 合同方公司
+						//检验第十九列 合同方公司
 						columnNum ++;
 						if(ls.size() > columnNum){
 							val = ls.get(columnNum);
@@ -706,7 +764,7 @@ public class ContractInfoResource {
 							}
 						}
 						
-						//检验第十九列 合同方联系人
+						//检验第二十列 合同方联系人
 						columnNum ++;
 						if(ls.size() > columnNum){
 							val = ls.get(columnNum);
@@ -716,7 +774,7 @@ public class ContractInfoResource {
 							}
 						}
 						
-						//检验第二十列 合同方联系部门
+						//检验第二十一列 合同方联系部门
 						columnNum ++;
 						if (ls.size() > columnNum) {
 							val = ls.get(columnNum);
@@ -725,7 +783,7 @@ public class ContractInfoResource {
 								contractInfo.setContactDept(StringUtil.nullToString(val));
 							} 
 						}
-						//检验第二十一列 合同方电话
+						//检验第二十二列 合同方电话
 						columnNum ++;
 						if (ls.size() > columnNum) {
 							val = ls.get(columnNum);
@@ -734,7 +792,7 @@ public class ContractInfoResource {
 								contractInfo.setTelephone(StringUtil.nullToString(val));
 							} 
 						}
-						//检验第二十二列 合同方通信地址
+						//检验第二十三列 合同方通信地址
 						columnNum ++;
 						if (ls.size() > columnNum) {
 							val = ls.get(columnNum);
@@ -743,7 +801,7 @@ public class ContractInfoResource {
 								contractInfo.setAddress(StringUtil.nullToString(val));
 							} 
 						}
-						//检验第二十三列 合同方邮编
+						//检验第二十四列 合同方邮编
 						columnNum ++;
 						if (ls.size() > columnNum) {
 							val = ls.get(columnNum);
@@ -781,6 +839,14 @@ public class ContractInfoResource {
 			}
 			//校验完成后，入库处理
 			contractInfoService.saveOrUpdateUploadRecord(contractInfos);
+			//为了获取新增的合同信息id，重新初始化合同信息
+			contractInfoMap = contractInfoService.getContractInfoMapBySerialnum();
+			for(String keySerialNum : outsourcingUsersMap.keySet()){
+				for(OutsourcingUser input : outsourcingUsersMap.get(keySerialNum)){//填充外包人员信息的contractId
+					input.setContractId(contractInfoMap.get(keySerialNum).getId());
+				}
+				outsourcingUserRepository.save(outsourcingUsersMap.get(keySerialNum));
+			}
 			return ResponseEntity.ok().body(cpmResponse
 						.setSuccess(Boolean.TRUE)
 						.setMsgKey("cpmApp.contractInfo.upload.handleSucc"));

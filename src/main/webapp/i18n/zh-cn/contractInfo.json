@@ -58,6 +58,8 @@
             	"existError":"第{{sheetNum}}个sheet的第{{rowNum}}行合同信息已存在",
             	"salesmanAndconsultants":"第{{sheetNum}}个sheet的第{{rowNum}}行,销售和咨询必填一个",
             	"dateError":"第{{sheetNum}}个sheet的第{{rowNum}}行第{{columnNum}}列结束日期不能小于开始日期",
+            	"rankError":"第{{sheetNum}}个sheet的第{{rowNum}}行第{{columnNum}}列,不是英文分隔符或数据有误",
+            	"rankError1":"第{{sheetNum}}个sheet的第{{rowNum}}行第{{columnNum}}列等级不能重复",
             	"up": "上传",
             	"upError": "上传失败",
             	"nonFile":"文件不能为空！",
