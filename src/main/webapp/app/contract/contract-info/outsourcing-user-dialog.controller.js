@@ -29,7 +29,9 @@
         
 	        function onSaveSuccess (result,headers) {
 	        	$scope.$emit('cpmApp:viewRecord',result);
-	            $uibModalInstance.close(result);
+	        	if(headers("X-cpmApp-alert") == 'cpmApp.outsourcingUser.updated'){
+	        		 $uibModalInstance.close(result);
+        		}
 	            
 	            vm.isSaving = false;
         }

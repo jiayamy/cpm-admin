@@ -36,7 +36,6 @@
 	        		}
 	    		},
 	    		function(error){
-	    			AlertService.error(error.data.message);
 	    			vm.ranks = [];
 	    		}
         	);
