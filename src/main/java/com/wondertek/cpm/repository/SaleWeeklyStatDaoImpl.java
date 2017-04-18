@@ -66,7 +66,6 @@ public class SaleWeeklyStatDaoImpl extends GenericDaoImpl<SaleWeeklyStat, Long> 
 			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
 			params.add(deptInfo.getId());
 		}
-    	sb.append(" )");
     	StringBuffer orderHql = new StringBuffer();
     	if(pageable.getSort() != null){//页面都会有个默认排序
     		for (Order order : pageable.getSort()) {
