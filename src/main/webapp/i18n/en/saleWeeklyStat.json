@@ -1,0 +1,46 @@
+{
+    "cpmApp": {
+        "saleWeeklyStat" : {
+            "home": {
+                "title": "Sale Weekly Stat"
+            },
+            "detail": {
+                "title": "Sale Weekly Stat",
+                "transChart": "Translate Chart"
+            },
+            "echarts":{
+            	"fromDate" : "Create Date From",
+            	"toDate" : "Create Date End",
+            	"title": "Contract Weekly Stat",
+            	"transDetail" : "Translate Detail"
+            },
+            "fromDate" : "Create Date From",
+            "toDate" : "Create Date End",
+            "statDate" : "Stat Week",
+            "transChart": "Chart",
+            "transDetail" : "Detail",
+            "contractSerialNum" : "Contract SerialNum",
+            "dept":"Sale Dept",
+            "contractId": "Contract Id",
+            "originYear": "Origin Year",
+            "saleDept": "Sale Dept",
+            "serialNum" : "serial Num",
+            "contractName" : "Contract Name",
+            "annualIndex": "Contract Annual Index(Ten Thousand)",
+            "finishTotal": "Contract Finish Total(Ten Thousand)",
+            "receiveTotal": "Receive Total(Ten Thousand)",
+            "costTotal": "Cost Total(Ten Thousand)",
+            "salesHumanCost": "Sales Human Cost(Ten Thousand)",
+            "salesPayment": "Sales Payment(Ten Thousand)",
+            "consultHumanCost": "Consult Human Cost(Ten Thousand)",
+            "consultPayment": "Consult Payment(Ten Thousand)",
+            "hardwarePurchase": "Hardware Purchase(Ten Thousand)",
+            "externalSoftware": "External Software(Ten Thousand)",
+            "internalSoftware": "Internal Software(Ten Thousand)",
+            "projectHumanCost": "Project Human Cost(Ten Thousand)",
+            "projectPayment": "Project Payment(Ten Thousand)",
+            "statWeek": "Stat Week",
+            "createTime": "Create Time"
+        }
+    }
+}

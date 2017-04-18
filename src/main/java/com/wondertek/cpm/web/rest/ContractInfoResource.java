@@ -493,11 +493,11 @@ public class ContractInfoResource {
 						//检验第五列  合同级别信息
 						columnNum ++;
 						val = ls.get(columnNum);
-						if(contractInfo.getIsEpibolic()){
+						if(contractInfo.getType() == ContractInfo.TYPE_EXTERNAL){
 							if(val == null){
 								return ResponseEntity.ok()
 										.body(cpmResponse.setSuccess(Boolean.FALSE)
-												.setMsgKey("cpmApp.contractInfo.upload.dataError").setMsgParam(
+												.setMsgKey("cpmApp.contractInfo.upload.noEmptyError").setMsgParam(
 														excelValue.getSheet() + "," + rowNum + "," + (columnNum + 1)));
 							}
 							outsourcingUsersMap.put(contractInfo.getSerialNum(), new ArrayList<OutsourcingUser>());
@@ -540,7 +540,7 @@ public class ContractInfoResource {
 							if(val != null){
 								return ResponseEntity.ok()
 										.body(cpmResponse.setSuccess(Boolean.FALSE)
-												.setMsgKey("cpmApp.contractInfo.upload.dataError").setMsgParam(
+												.setMsgKey("cpmApp.contractInfo.upload.emptyError").setMsgParam(
 														excelValue.getSheet() + "," + rowNum + "," + (columnNum + 1)));
 							}
 						}
