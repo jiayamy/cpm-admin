@@ -107,7 +107,7 @@
             vm.links = null;
             vm.page = 1;
             vm.predicate = 'm.id';
-            vm.reverse = true;
+            vm.reverse = false;
             vm.searchQuery = {};
             vm.haveSearch = null;
             vm.transition();

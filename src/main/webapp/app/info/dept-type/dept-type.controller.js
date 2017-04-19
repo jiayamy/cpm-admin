@@ -86,7 +86,7 @@
             vm.links = null;
             vm.page = 1;
             vm.predicate = 'id';
-            vm.reverse = true;
+            vm.reverse = false;
             vm.currentSearch = null;
             vm.transition();
         }

@@ -59,7 +59,7 @@ public class OutsourcingUserResource {
 
 	@PutMapping("/contract-infos/updateOutsourcingUser")
     @Timed
-    @Secured(AuthoritiesConstants.ROLE_CONTRACT_PURCHASE)
+    @Secured(AuthoritiesConstants.ROLE_CONTRACT_INFO)
     public ResponseEntity<Boolean> updateOutsourcingUser(@RequestBody OutsourcingUser outsourcingUser) throws URISyntaxException {
         log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to update OutsourcingUser : {}", outsourcingUser);
         Boolean isNew = outsourcingUser.getId() == null;
@@ -146,7 +146,7 @@ public class OutsourcingUserResource {
     }
 	@GetMapping("/outsourcing-user/{infoId}")
     @Timed
-    @Secured(AuthoritiesConstants.ROLE_PROJECT_USER)
+    @Secured(AuthoritiesConstants.ROLE_CONTRACT_INFO)
     public ResponseEntity<OutsourcingUserVo> getOutsourcingUser(@PathVariable Long infoId) {
         log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to get OutsourcingUser : {}", infoId);
         OutsourcingUserVo outsourcingUser = outsourcingUserService.findById(infoId);
@@ -158,7 +158,7 @@ public class OutsourcingUserResource {
     }
 	@GetMapping("/outsourcing-user/getUserList")
     @Timed
-    @Secured(AuthoritiesConstants.ROLE_CONTRACT_PURCHASE)
+    @Secured(AuthoritiesConstants.ROLE_CONTRACT_INFO)
     public ResponseEntity<List<OutsourcingUser>> getUserList(
     		@RequestParam(value = "mark",required=false) String mark,
     		@RequestParam(value = "contractId",required=false) Long contractId,
@@ -180,7 +180,7 @@ public class OutsourcingUserResource {
      */
     @GetMapping("/outsourcing-user/queryUserRank")
     @Timed
-    @Secured(AuthoritiesConstants.USER)
+    @Secured(AuthoritiesConstants.ROLE_PROJECT_USER)
     public ResponseEntity<List<LongValue>> queryUserRank(@RequestParam(value = "contractId") Long contractId) throws URISyntaxException {
         log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to queryUserRank");
         List<LongValue> list = outsourcingUserService.queryUserRank(contractId);

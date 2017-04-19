@@ -114,7 +114,7 @@
             vm.links = null;
             vm.page = 1;
             vm.predicate = 'wuc.id';
-            vm.reverse = true;
+            vm.reverse = false;
             vm.haveSearch = false;
             vm.searchQuery = {};
             vm.transition();

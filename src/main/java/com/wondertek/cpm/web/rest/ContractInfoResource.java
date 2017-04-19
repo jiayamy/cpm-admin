@@ -478,7 +478,7 @@ public class ContractInfoResource {
 									.body(cpmResponse.setSuccess(Boolean.FALSE)
 											.setMsgKey("cpmApp.contractInfo.upload.dataError").setMsgParam(
 													excelValue.getSheet() + "," + rowNum + "," + (columnNum + 1)));
-						}else if(val.equals("外包合同")){
+						}else if(val.equals("外部合同")){
 							contractInfo.setIsEpibolic(Boolean.TRUE);
 						}else if(val.equals("内部合同")){
 							contractInfo.setIsEpibolic(Boolean.FALSE);

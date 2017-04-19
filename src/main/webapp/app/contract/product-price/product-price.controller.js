@@ -136,7 +136,7 @@
             vm.links = null;
             vm.page = 1;
             vm.predicate = 'wpp.id';
-            vm.reverse = true;
+            vm.reverse = false;
             vm.currentSearch = {};
             vm.currentSearch.haveSearch = null;
             vm.transition();

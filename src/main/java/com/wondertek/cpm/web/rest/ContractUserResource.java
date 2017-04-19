@@ -233,7 +233,7 @@ public class ContractUserResource {
 
     @GetMapping("/contract-users/exportXls")
     @Timed
-    @Secured(AuthoritiesConstants.ROLE_PROJECT_USER)
+    @Secured(AuthoritiesConstants.ROLE_CONTRACT_USER)
     public void exportXls(
 	    		HttpServletRequest request, HttpServletResponse response,
 	    		@RequestParam(value="contractId",required = false) Long contractId,
