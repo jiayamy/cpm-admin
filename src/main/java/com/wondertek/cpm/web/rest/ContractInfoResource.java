@@ -13,7 +13,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Random;
 
 import javax.inject.Inject;
 
@@ -520,9 +519,9 @@ public class ContractInfoResource {
 								outsourcingUser.setRank(temp[0]);
 								outsourcingUser.setTargetAmount(StringUtil.nullToDouble(temp[1].trim()).intValue());
 								outsourcingUser.setOffer(StringUtil.nullToDouble(temp[2].trim()));
-								String mark = new Random().nextInt(100) + "_" + 
-								DateUtil.formatDate(DateUtil.DATE_TIME_NO_SPACE_MS_PATTERN, DateUtil.convertZonedDateTime(ZonedDateTime.now()));
-								outsourcingUser.setMark(mark);
+								//String mark = new Random().nextInt(100) + "_" + 
+								//DateUtil.formatDate(DateUtil.DATE_TIME_NO_SPACE_MS_PATTERN, DateUtil.convertZonedDateTime(ZonedDateTime.now()));
+								//outsourcingUser.setMark(mark);
 								if(outsourcingUsersMap.get(contractInfo.getSerialNum()).size() > 0){
 									for(OutsourcingUser outs : outsourcingUsersMap.get(contractInfo.getSerialNum())){
 										if(outsourcingUser.getRank().equals(outs.getRank())){
