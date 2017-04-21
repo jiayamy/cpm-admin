@@ -1,0 +1,17 @@
+{
+    "cpmApp": {
+        "systemConfig" : {
+            "home": {
+                "title": "系统参数",
+                "editLable": "编辑系统参数",
+                "search": "搜索"
+            },
+            "detail": {
+                "title": "系统参数信息"
+            },
+            "key": "键",
+            "value": "键值",
+            "description": "键值描述"
+        }
+    }
+}

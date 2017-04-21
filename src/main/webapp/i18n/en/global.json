@@ -20,7 +20,8 @@
                 "bonusRate":"Bonus Rate",
                 "externalQuotation":"External Quotation",
                 "salesAnnualIndex":"Sales Annual Index",
-                "shareCostRate":"Share Cost Rate"
+                "shareCostRate":"Share Cost Rate",
+                "systemConfig":"System Config"
 	        },
 	        "contract":{
 	        	"main":"Contract",

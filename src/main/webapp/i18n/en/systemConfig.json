@@ -1,0 +1,17 @@
+{
+    "cpmApp": {
+        "systemConfig" : {
+            "home": {
+                "title": "System Config",
+                "editLable": "Edit a System Config",
+                "search": "Search for System Config"
+            },
+            "detail": {
+                "title": "System Config Information"
+            },
+            "key": "key",
+            "value": "value",
+            "description": "description"
+        }
+    }
+}
