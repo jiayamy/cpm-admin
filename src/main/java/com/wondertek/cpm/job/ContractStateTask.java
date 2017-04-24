@@ -16,6 +16,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import com.wondertek.cpm.CpmConstants;
 import com.wondertek.cpm.config.DateUtil;
 import com.wondertek.cpm.config.StringUtil;
 import com.wondertek.cpm.domain.ContractCost;
@@ -33,6 +34,7 @@ import com.wondertek.cpm.domain.PurchaseItem;
 import com.wondertek.cpm.domain.SaleWeeklyStat;
 import com.wondertek.cpm.domain.SalesAnnualIndex;
 import com.wondertek.cpm.domain.StatIdentify;
+import com.wondertek.cpm.domain.SystemConfig;
 import com.wondertek.cpm.domain.User;
 import com.wondertek.cpm.domain.UserCost;
 import com.wondertek.cpm.domain.UserTimesheet;
@@ -50,6 +52,7 @@ import com.wondertek.cpm.repository.PurchaseItemRepository;
 import com.wondertek.cpm.repository.SaleWeeklyStatRepository;
 import com.wondertek.cpm.repository.SalesAnnualIndexRepository;
 import com.wondertek.cpm.repository.StatIdentifyRepository;
+import com.wondertek.cpm.repository.SystemConfigRepository;
 import com.wondertek.cpm.repository.UserCostRepository;
 import com.wondertek.cpm.repository.UserRepository;
 import com.wondertek.cpm.repository.UserTimesheetRepository;
@@ -114,6 +117,9 @@ public class ContractStateTask {
 	
 	@Inject
 	private SalesAnnualIndexRepository salesAnnualIndexRepository;
+	
+	@Inject
+	private SystemConfigRepository systemConfigRepository;
 	
 	private void init(){
 		List<ExternalQuotation> externalQuotations = externalQuotationRepository.findAll();
@@ -637,7 +643,6 @@ public class ContractStateTask {
 	 * 每周 汇总大销售部门下的子销售部门下面 一年内所有销售的合同情况。
 	 */
 	@Scheduled(cron = "0 59 23 ? * MON")
-//	@Scheduled(cron = "0 51 13 ? * MON")
 	protected void generateSaleContractWeeklyStat(){
 		Date now = new Date();
 		generateSaleContractWeeklyStat(now);
@@ -682,9 +687,14 @@ public class ContractStateTask {
 				} 
 			}
 			//所有的顶级销售部门id
-			//TODO 从系统配置获取顶级部门id
-			String saleId = "36,";
-			List<Long> topSaleDeptIds = StringUtil.stringToLongArray(saleId);
+			List<Long> topSaleDeptIds = null;
+			SystemConfig systemConfig = systemConfigRepository.findByKey(CpmConstants.DEFAULT_Dept_SALE_TOPID);
+			if(systemConfig == null){
+				log.error("=====Top sale dept is not found=====");
+			}else{
+				String saleId = systemConfig.getValue();
+				topSaleDeptIds = StringUtil.stringToLongArray(saleId);
+			}
 			
 			//各个顶级销售部门下的一级销售部门id
 			Map<Long,List<Long>> primarySaleDeptIdsMap = new HashMap<Long,List<Long>>();//key:顶级销售部门id,value:该顶级部门下的一级销售部门id
@@ -694,17 +704,20 @@ public class ContractStateTask {
 			List<Long> primarySaleDeptIdsList = new ArrayList<Long>();
 			
 			List<DeptInfo> primarySaleDeptInfos = null;
-			for(Long topId : topSaleDeptIds){
-				primarySaleDeptInfos = deptInfoRepository.findByIdPath(saleDeptInfosMap.get(topId).getIdPath() + saleDeptInfosMap.get(topId).getId() + "/");
-				if (primarySaleDeptInfos != null) {
-					for (DeptInfo info : primarySaleDeptInfos) {
-						if(primarySaleDeptIdsMap.get(topId) == null){
-							primarySaleDeptIdsMap.put(topId, new ArrayList<Long>());
+			if (topSaleDeptIds != null) {
+				for (Long topId : topSaleDeptIds) {
+					primarySaleDeptInfos = deptInfoRepository.findByIdPath(
+							saleDeptInfosMap.get(topId).getIdPath() + saleDeptInfosMap.get(topId).getId() + "/");
+					if (primarySaleDeptInfos != null) {
+						for (DeptInfo info : primarySaleDeptInfos) {
+							if (primarySaleDeptIdsMap.get(topId) == null) {
+								primarySaleDeptIdsMap.put(topId, new ArrayList<Long>());
+							}
+							primarySaleDeptIdsMap.get(topId).add(info.getId());
+							primarySaleDeptIdsList.add(info.getId());
 						}
-						primarySaleDeptIdsMap.get(topId).add(info.getId());
-						primarySaleDeptIdsList.add(info.getId());
 					}
-				}
+				} 
 			}
 			//每个一级部门下的所有子销售部门id
 			Map<Long,List<Long>> childrenSaleDeptIdsMap = new HashMap<Long,List<Long>>();//key:一级销售部门id,value:该一级下的所有子销售部门id

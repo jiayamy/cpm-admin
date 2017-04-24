@@ -20,6 +20,10 @@ public class CpmConstants {
 	 * 用户默认组织，顶级部门的默认父部门ID
 	 */
 	public static final Long DEFAULT_DEPT_TOPID = 0l;
+	/**
+	 * 顶级销售部门ID
+	 */
+	public static final String DEFAULT_Dept_SALE_TOPID = "dept.sale.topId";
 
 	public static final String DEFAULT_BLANK = "";
 	

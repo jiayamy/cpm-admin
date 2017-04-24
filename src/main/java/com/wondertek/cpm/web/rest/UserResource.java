@@ -142,11 +142,11 @@ public class UserResource {
             return ResponseEntity.badRequest()
                 .headers(HeaderUtil.createFailureAlert("userManagement", "userexists", "Login already in use"))
                 .body(null);
-        } else if (userRepository.findOneByEmail(managedUserVM.getEmail()).isPresent()) {
+        }/* else if (userRepository.findOneByEmail(managedUserVM.getEmail()).isPresent()) {
             return ResponseEntity.badRequest()
                 .headers(HeaderUtil.createFailureAlert("userManagement", "emailexists", "Email already in use"))
                 .body(null);
-        } else if (userRepository.findOneBySerialNum(managedUserVM.getSerialNum()).isPresent()) {
+        }*/ else if (userRepository.findOneBySerialNum(managedUserVM.getSerialNum()).isPresent()) {
             return ResponseEntity.badRequest()
                     .headers(HeaderUtil.createFailureAlert("userManagement", "serialNumexists", "Serial num already in use"))
                     .body(null);
@@ -155,7 +155,9 @@ public class UserResource {
         		managedUserVM.setIsManager(Boolean.FALSE);
         	}
             User newUser = userService.createUser(managedUserVM);
-            mailService.sendCreationEmail(newUser);
+            if(!StringUtil.isNullStr(newUser.getEmail())){
+            	mailService.sendCreationEmail(newUser);
+            }
             return ResponseEntity.created(new URI("/api/users/" + newUser.getLogin()))
                 .headers(HeaderUtil.createAlert( "userManagement.created", newUser.getLogin()))
                 .body(newUser);
@@ -175,11 +177,11 @@ public class UserResource {
     @Secured(AuthoritiesConstants.ROLE_INFO_BASIC)
     public ResponseEntity<ManagedUserVM> updateUser(@RequestBody ManagedUserVM managedUserVM) {
         log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to update User : {}", managedUserVM);
-        Optional<User> existingUser = userRepository.findOneByEmail(managedUserVM.getEmail());
+        Optional<User> /*existingUser = userRepository.findOneByEmail(managedUserVM.getEmail());
         if (existingUser.isPresent() && (!existingUser.get().getId().equals(managedUserVM.getId()))) {
             return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("userManagement", "emailexists", "E-mail already in use")).body(null);
         }
-        existingUser = userRepository.findOneByLogin(managedUserVM.getLogin().toLowerCase());
+        */existingUser = userRepository.findOneByLogin(managedUserVM.getLogin().toLowerCase());
         if (existingUser.isPresent() && (!existingUser.get().getId().equals(managedUserVM.getId()))) {
             return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("userManagement", "userexists", "Login already in use")).body(null);
         }
@@ -403,8 +405,11 @@ public class UserResource {
 											.setSuccess(Boolean.FALSE)
 											.setMsgKey("userManagement.import.dataError")
 											.setMsgParam(excelValue.getSheet() + "," + rowNum +","+(columnNum+1)));
+						}else if (val instanceof Double) {
+							user.setSerialNum(((Double)val).longValue() +"");
+						}else {
+							user.setSerialNum(StringUtil.null2Str(val));
 						}
-						user.setSerialNum(StringUtil.null2Str(val));
 						//记录中是否存在同一工号
 						if(serialNumExistMap.containsKey(user.getSerialNum())){
 							return ResponseEntity.ok().body(cpmResponse

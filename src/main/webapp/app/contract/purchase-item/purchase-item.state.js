@@ -134,7 +134,7 @@
             parent: 'purchase-item.edit',
             url: '/queryDept?selectType&showChild&showUser',
             data: {
-                authorities: ['ROLE_INFO_BASIC']
+                authorities: ['ROLE_CONTRACT_PURCHASE']
             },
             onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
                 $uibModal.open({

@@ -40,11 +40,25 @@
             
             function onSuccess(data, headers) {
             	vm.deptInfos = data;
+            	//第四级先不展开
             	for(var i = 0; i < vm.deptInfos.length; i++){
                     if(vm.deptInfos[i].children && vm.deptInfos[i].children.length !=0){
                     	vm.deptInfos[i].showChild = true;
+                    	hiddenSpecifiedNode(vm.deptInfos[i].children,1,4);
                     }
                 }
+            }
+            //4级以后的都隐藏
+            function hiddenSpecifiedNode(node,currDeptIndex,showDeptIndex){
+            	var nextDept = currDeptIndex + 1;
+        		for(var i = 0; i < node.length; i++){
+        			if(currDeptIndex >= 4){
+        				node[i].showChild = false;
+        			}
+        			if(node[i].children && node[i].children.length !=0){
+        				hiddenSpecifiedNode(node[i].children,nextDept,showDeptIndex);
+        			}
+        		}
             }
             function onError(error) {
                 AlertService.error(error.data.message);
@@ -58,14 +72,14 @@
             return;
         }
         function isChildShowed(node){
-        	if(node.children && node.children.length != 0 && node.showChild){
+        	if(node.children && node.showChild){
                 return true;
             }
             return false;
         }
         
         function showOrHiddenChild(node){
-        	if(node.children && node.children.length != 0){
+        	if(node.children){
                 node.showChild = !node.showChild;
             }
         	return;

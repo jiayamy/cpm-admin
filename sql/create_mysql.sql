@@ -957,4 +957,19 @@ CREATE TABLE
     
 --20170420
     insert into jhi_authority (name, detail_) values ('ROLE_STAT_SALE', '统计报表-销售部门统计');
+    --20170420
+    CREATE
+    TABLE w_system_config
+    (
+        id bigint NOT NULL AUTO_INCREMENT,
+        key_ VARCHAR(200) NOT NULL COMMENT '参数名称',
+        value_ varchar(200) NOT NULL COMMENT '参数值,是以逗号分隔的数字',
+        description_ VARCHAR(200) NOT NULL COMMENT COMMENT '描述',
+        updator_ varchar(100) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
+	  	update_time timestamp NULL DEFAULT NULL,
+	  	creator_ varchar(100) COLLATE utf8_bin DEFAULT NULL,
+	  	create_time timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+        PRIMARY KEY (id,key_)
+    )
+    ENGINE=InnoDB DEFAULT CHARSET=utf8;
     
