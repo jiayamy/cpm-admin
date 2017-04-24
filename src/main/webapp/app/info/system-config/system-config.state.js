@@ -66,11 +66,11 @@
                     size: 'lg',
                     resolve: {
                     	entity: ['$stateParams','SystemConfig', function($stateParams,SystemConfig) {
-                           return SystemConfig.get({id : $stateParams.id}).$promise;
+                    		return SystemConfig.get({id : $stateParams.id}).$promise;
                         }]
                     }
                 }).result.then(function() {
-                    $state.go('system-config', null, { reload: 'system-config' });
+                	$state.go('^', {}, { reload: false });
                 }, function() {
                     $state.go('^');
                 });
