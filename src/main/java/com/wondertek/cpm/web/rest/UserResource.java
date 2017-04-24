@@ -405,8 +405,11 @@ public class UserResource {
 											.setSuccess(Boolean.FALSE)
 											.setMsgKey("userManagement.import.dataError")
 											.setMsgParam(excelValue.getSheet() + "," + rowNum +","+(columnNum+1)));
+						}else if (val instanceof Double) {
+							user.setSerialNum(((Double)val).longValue() +"");
+						}else {
+							user.setSerialNum(StringUtil.null2Str(val));
 						}
-						user.setSerialNum(StringUtil.null2Str(val));
 						//记录中是否存在同一工号
 						if(serialNumExistMap.containsKey(user.getSerialNum())){
 							return ResponseEntity.ok().body(cpmResponse
