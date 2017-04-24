@@ -18,7 +18,7 @@
         vm.clear = clear;
         vm.search = search;
         vm.loadAll = loadAll;
-        vm.loadSaleDept = loadSaleDept;
+//        vm.loadSaleDept = loadSaleDept;
         vm.searchQuery = {};
         vm.searchQuery.deptId = pagingParams.deptId;
         vm.searchQuery.deptName = pagingParams.deptName;
@@ -27,32 +27,32 @@
         }else{
         	vm.haveSearch = true;
         }
-        loadSaleDept();
-        function loadSaleDept(){
-        	DeptInfo.getPrimarySaleDepts({
-        		
-        	},
-        	function(data, headers){
-        		vm.saleDeptInfos = data;
-        		if(vm.saleDeptInfos && vm.saleDeptInfos.length > 0){
-        			for(var i = 0; i < vm.saleDeptInfos.length; i++){
-        				if(pagingParams.deptId == vm.saleDeptInfos[i].id){
-        					vm.searchQuery.deptId = vm.saleDeptInfos[i];
-        				}
-        			}
-        		}
-        	},
-        	function(error){
-        		AlertService.error(error.data.message);
-        	});
-        }
+//        loadSaleDept();
+//        function loadSaleDept(){
+//        	DeptInfo.getPrimarySaleDepts({
+//        		
+//        	},
+//        	function(data, headers){
+//        		vm.saleDeptInfos = data;
+//        		if(vm.saleDeptInfos && vm.saleDeptInfos.length > 0){
+//        			for(var i = 0; i < vm.saleDeptInfos.length; i++){
+//        				if(pagingParams.deptId == vm.saleDeptInfos[i].id){
+//        					vm.searchQuery.deptId = vm.saleDeptInfos[i];
+//        				}
+//        			}
+//        		}
+//        	},
+//        	function(error){
+//        		AlertService.error(error.data.message);
+//        	});
+//        }
         
         loadAll();
 
         function loadAll () {
-        	if(pagingParams.deptId == undefined){
-        		pagingParams.deptId = "";
-        	}
+//        	if(pagingParams.deptId == undefined){
+//        		pagingParams.deptId = "";
+//        	}
         	SaleWeeklyStat.query({
                 page: pagingParams.page - 1,
                 size: vm.itemsPerPage,
@@ -88,11 +88,15 @@
             $state.transitionTo($state.$current, {
                 page: vm.page,
                 sort: vm.predicate + ',' + (vm.reverse ? 'asc' : 'desc'),
-                deptId:vm.searchQuery.deptId?vm.searchQuery.deptId.id:""
+                //deptId:vm.searchQuery.deptId?vm.searchQuery.deptId.id:""
+                //deptId:vm.searchQuery.deptId?vm.searchQuery.deptId:"",
+                //deptName:vm.searchQuery.deptName?vm.searchQuery.deptName:""
+                deptId:vm.searchQuery.deptId,
+                deptName:vm.searchQuery.deptName
             });
         }
 
-        function search(searchQuery) {
+        function search() {
         	if (!vm.searchQuery.deptId){
                 return vm.clear();
             }
@@ -113,5 +117,11 @@
             vm.haveSearch = null;
             vm.transition();
         }
+        
+        var unsubscribe = $rootScope.$on('cpmApp:deptInfoSelected', function(event, result) {
+        	vm.searchQuery.deptId = result.objId;
+        	vm.searchQuery.deptName = result.name;
+        });
+        $scope.$on('$destroy', unsubscribe);
     }
 })();
