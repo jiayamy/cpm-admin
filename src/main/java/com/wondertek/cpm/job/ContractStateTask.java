@@ -706,6 +706,9 @@ public class ContractStateTask {
 			List<DeptInfo> primarySaleDeptInfos = null;
 			if (topSaleDeptIds != null) {
 				for (Long topId : topSaleDeptIds) {
+					if(!saleDeptInfosMap.containsKey(topId)){
+						continue;
+					}
 					primarySaleDeptInfos = deptInfoRepository.findByIdPath(
 							saleDeptInfosMap.get(topId).getIdPath() + saleDeptInfosMap.get(topId).getId() + "/");
 					if (primarySaleDeptInfos != null) {
