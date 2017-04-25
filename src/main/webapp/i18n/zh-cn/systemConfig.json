@@ -11,6 +11,7 @@
                 "title": "系统参数信息"
             },
             "save":{
+            	"valueError":"键值里面不能包含0",
             	"paramNone":"必填字段为空",
             	"styleError":"值的形式不对，应类似于1,2,3"
             },

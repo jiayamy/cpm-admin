@@ -2,12 +2,10 @@ package com.wondertek.cpm.web.rest;
 
 import java.net.URISyntaxException;
 import java.time.ZonedDateTime;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
 import javax.inject.Inject;
-import javax.validation.Valid;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,18 +24,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.codahale.metrics.annotation.Timed;
-import com.wondertek.cpm.config.DateUtil;
-import com.wondertek.cpm.config.StringUtil;
-import com.wondertek.cpm.domain.ContractInfo;
-import com.wondertek.cpm.domain.ContractUser;
-import com.wondertek.cpm.domain.DeptType;
 import com.wondertek.cpm.domain.SystemConfig;
-import com.wondertek.cpm.domain.WorkArea;
-import com.wondertek.cpm.domain.vo.ContractUserVo;
 import com.wondertek.cpm.security.AuthoritiesConstants;
 import com.wondertek.cpm.security.SecurityUtils;
 import com.wondertek.cpm.service.SystemConfigService;
-import com.wondertek.cpm.web.rest.errors.CpmResponse;
 import com.wondertek.cpm.web.rest.util.HeaderUtil;
 import com.wondertek.cpm.web.rest.util.PaginationUtil;
 
@@ -103,7 +93,11 @@ public class SystemConfigResource {
 			String[] strings = value.split(",");
 			for (String string : strings) {
 				try {
-					Integer.parseInt(string);
+					int parseInt = Integer.parseInt(string);
+					if(parseInt==0){
+						return ResponseEntity.badRequest()
+								.headers(HeaderUtil.createError("cpmApp.systemConfig.save.valueError", "")).body(null);
+					}
 				} catch (Exception e) {
 					if (e != null) {
 						return ResponseEntity.badRequest()

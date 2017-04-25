@@ -26,9 +26,7 @@
             vm.isSaving = true;
             if (vm.systemConfig.id !== null) {
                 SystemConfig.update(vm.systemConfig, onSaveSuccess, onSaveError);
-            } else {
-            	SystemConfig.save(vm.systemConfig, onSaveSuccess, onSaveError);
-            }
+            } 
         }
 
         function onSaveSuccess (result) {

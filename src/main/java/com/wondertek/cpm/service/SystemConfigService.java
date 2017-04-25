@@ -13,7 +13,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.wondertek.cpm.domain.ContractUser;
 import com.wondertek.cpm.domain.SystemConfig;
 import com.wondertek.cpm.repository.SystemConfigDao;
 import com.wondertek.cpm.repository.SystemConfigRepository;

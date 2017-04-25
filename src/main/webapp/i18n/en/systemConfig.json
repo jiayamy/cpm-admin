@@ -9,6 +9,7 @@
             "updated": "A System Config is updated",
             "save":{
             	"paramNone":"Mandatory parameter is empty",
+            	"valueError":"value donnot contains 0",
             	"styleError":"the style of value exits error,for example:1,2,3"
             },
             "detail": {
