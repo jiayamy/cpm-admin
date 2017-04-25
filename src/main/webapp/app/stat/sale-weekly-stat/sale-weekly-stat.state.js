@@ -11,7 +11,7 @@
         $stateProvider
         .state('sale-weekly-stat', {
             parent: 'stat',
-            url: '/sale-weekly-stat?page&deptId&deptName',
+            url: '/sale-weekly-stat?page&deptId',
             data: {
                 authorities: ['ROLE_STAT_SALE'],
                 pageTitle: 'cpmApp.saleWeeklyStat.home.title'
@@ -32,8 +32,7 @@
                     value: 's.id,desc',
                     squash: true
                 },
-                deptId : null,
-                deptName : null
+                deptId : null
             },
             resolve: {
                 pagingParams: ['$stateParams', 'PaginationUtil', function ($stateParams, PaginationUtil) {
@@ -42,8 +41,8 @@
                         sort: $stateParams.sort,
                         predicate: PaginationUtil.parsePredicate($stateParams.sort),
                         ascending: PaginationUtil.parseAscending($stateParams.sort),
-                        deptId: $stateParams.deptId,
-                        deptName: $stateParams.deptName
+                        deptId: $stateParams.deptId
+                        //deptName: $stateParams.deptName
                     };
                 }],
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {

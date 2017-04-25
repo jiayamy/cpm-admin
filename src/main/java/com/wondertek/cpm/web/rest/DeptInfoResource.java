@@ -204,9 +204,9 @@ public class DeptInfoResource {
     @GetMapping("/dept-infos/getPrimarySaleDepts")
     @Timed
     @Secured(AuthoritiesConstants.USER)
-    public ResponseEntity<List<DeptInfo>> getPrimarySaleDepts(){
+    public ResponseEntity<List<DeptInfoVo>> getPrimarySaleDepts(){
     	log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to get deptInfos of getPrimarySaleDepts");
-    	List<DeptInfo> list = deptInfoService.getPrimaryDeptInfosByType((long)DeptType.TYPE_DEPT_SALE);
+    	List<DeptInfoVo> list = deptInfoService.getPrimaryDeptInfosByType((long)DeptType.TYPE_DEPT_SALE);
     	return new ResponseEntity<>(list, null, HttpStatus.OK);
     }
 }

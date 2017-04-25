@@ -18,12 +18,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.wondertek.cpm.CpmConstants;
+import com.wondertek.cpm.config.StringUtil;
 import com.wondertek.cpm.domain.DeptInfo;
+import com.wondertek.cpm.domain.SystemConfig;
 import com.wondertek.cpm.domain.User;
 import com.wondertek.cpm.domain.vo.DeptInfoVo;
 import com.wondertek.cpm.domain.vo.DeptTree;
 import com.wondertek.cpm.repository.DeptInfoDao;
 import com.wondertek.cpm.repository.DeptInfoRepository;
+import com.wondertek.cpm.repository.SystemConfigRepository;
 import com.wondertek.cpm.repository.UserRepository;
 import com.wondertek.cpm.security.SecurityUtils;
 
@@ -44,6 +47,9 @@ public class DeptInfoService {
     
     @Inject
     private UserRepository userRepository;
+    
+    @Inject
+    private SystemConfigRepository systemConfigRepository;
     /**
      * Save a deptInfo.
      *
@@ -281,10 +287,40 @@ public class DeptInfoService {
 	 * @return
 	 */
 	@Transactional(readOnly = true)
-	public List<DeptInfo> getPrimaryDeptInfosByType(Long type){
-		List<DeptInfo> deptInfos = deptInfoRepository.findDeptInfosByType(type);
-		//大销售部门下的一级部门
-		List<DeptInfo> primaryDeptInfos = deptInfoRepository.findByIdPath(deptInfos.get(0).getIdPath() + deptInfos.get(0).getId() + "/");
-		return primaryDeptInfos;
+	public List<DeptInfoVo> getPrimaryDeptInfosByType(Long type){
+		List<DeptInfo> deptInfos = deptInfoRepository.findDeptInfosByType(type);	//所有的销售部门信息
+		Map<Long,DeptInfo> deptInfosMap = new HashMap<Long,DeptInfo>();				//所有销售部门Map--key:deptId
+		if(deptInfos == null){
+			return null;
+		}
+		for(DeptInfo info : deptInfos){
+			deptInfosMap.put(info.getId(), info);
+		}
+		//根据系统配置获取顶级销售部门id
+		List<Long> topSaleDeptIds = new ArrayList<Long>();
+		SystemConfig systemConfig = systemConfigRepository.findByKey(CpmConstants.DEFAULT_Dept_SALE_TOPID);
+		if(systemConfig != null){
+			topSaleDeptIds = StringUtil.stringToLongArray(systemConfig.getValue());
+		}else{//系统配置没找到
+			topSaleDeptIds.add(deptInfos.get(0).getId());
+			String tempIdPath = deptInfos.get(0).getIdPath();
+			for(int i = 1;i<deptInfos.size();i++){
+				if(tempIdPath.equals(deptInfos.get(i).getIdPath())){
+					topSaleDeptIds.add(deptInfos.get(i).getId());
+				}
+			}
+		}
+		
+		//各个顶级销售部门下的一级部门
+		List<DeptInfoVo> primaryDeptInfoVos = new ArrayList<DeptInfoVo>();
+		for(Long topId : topSaleDeptIds){
+			List<DeptInfo> primaryDeptInfos = deptInfoRepository.findByIdPath(deptInfosMap.get(topId).getIdPath() + topId + "/");
+			if (primaryDeptInfos != null) {
+				for(DeptInfo info : primaryDeptInfos){
+					primaryDeptInfoVos.add(new DeptInfoVo(info, deptInfosMap.get(topId).getName(), null));
+				}
+			}
+		}
+		return primaryDeptInfoVos;
 	}
 }
