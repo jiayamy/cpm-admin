@@ -314,6 +314,9 @@ public class DeptInfoService {
 		//各个顶级销售部门下的一级部门
 		List<DeptInfoVo> primaryDeptInfoVos = new ArrayList<DeptInfoVo>();
 		for(Long topId : topSaleDeptIds){
+			if(!deptInfosMap.containsKey(topId)){
+				continue;
+			}
 			List<DeptInfo> primaryDeptInfos = deptInfoRepository.findByIdPath(deptInfosMap.get(topId).getIdPath() + topId + "/");
 			if (primaryDeptInfos != null) {
 				for(DeptInfo info : primaryDeptInfos){
