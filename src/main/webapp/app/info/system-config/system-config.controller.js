@@ -42,7 +42,6 @@
                 vm.totalItems = headers('X-Total-Count');
                 vm.queryCount = vm.totalItems;
                 vm.systemConfig = data;
-                console.log(data);
                 vm.page = pagingParams.page;
             }
             function onError(error) {

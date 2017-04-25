@@ -13,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.wondertek.cpm.domain.ContractUser;
 import com.wondertek.cpm.domain.SystemConfig;
 import com.wondertek.cpm.repository.SystemConfigDao;
 import com.wondertek.cpm.repository.SystemConfigRepository;
@@ -48,5 +49,11 @@ public class SystemConfigService {
 		log.debug("Request to get SystemConfig : {}", id);
         SystemConfig systemConfig = systemConfigRepository.findOne(id);
         return systemConfig;
+	}
+
+	public SystemConfig save(SystemConfig systemConfig) {
+		log.debug("Request to save SystemConfig : {}", systemConfig);
+		SystemConfig result = systemConfigRepository.save(systemConfig);
+        return result;
 	}
 }

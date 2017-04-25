@@ -5,35 +5,42 @@
         .module('cpmApp')
         .controller('SystemConfigDialogController', SystemConfigDialogController);
 
-    SystemConfigDialogController.$inject = ['previousState', '$stateParams', '$state', 'entity', 'SystemConfig'];
+    SystemConfigDialogController.$inject = ['$timeout', '$scope', '$stateParams', '$uibModalInstance', 'entity', 'SystemConfig'];
 
-    function SystemConfigDialogController (previousState, $stateParams, $state, entity, SystemConfig) {
+    function SystemConfigDialogController ($timeout, $scope, $stateParams, $uibModalInstance, entity, SystemConfig) {
         var vm = this;
-        vm.previousState = previousState.name;
-        
+
         vm.systemConfig = entity;
+        vm.clear = clear;
         vm.save = save;
-        
+
+        $timeout(function (){
+            angular.element('.form-group:eq(1)>input').focus();
+        });
+
+        function clear () {
+            $uibModalInstance.dismiss('cancel');
+        }
+
         function save () {
             vm.isSaving = true;
-            var systemConfig ={};
-            
-            systemConfig.id = vm.systemConfig.id;
-            systemConfig.key = vm.systemConfig.key;
-            systemConfig.value = vm.systemConfig.value;
-            systemConfig.description = vm.systemConfig.description;
-            
-            SystemConfig.update(systemConfig, 
-        		function(data, headers){
-            		vm.isSaving = false;
-            		if(headers("X-cpmApp-alert") == 'cpmApp.systemConfig.updated'){
-            			$state.go(vm.previousState);
-            		}
-	        	},
-	        	function(error){
-	        		vm.isSaving = false;
-	        	}
-            );
+            if (vm.systemConfig.id !== null) {
+                SystemConfig.update(vm.systemConfig, onSaveSuccess, onSaveError);
+            } else {
+            	SystemConfig.save(vm.systemConfig, onSaveSuccess, onSaveError);
+            }
         }
+
+        function onSaveSuccess (result) {
+            $scope.$emit('cpmApp:systemConfigUpdate', result);
+            $uibModalInstance.close(result);
+            vm.isSaving = false;
+        }
+
+        function onSaveError () {
+            vm.isSaving = false;
+        }
+
+
     }
 })();

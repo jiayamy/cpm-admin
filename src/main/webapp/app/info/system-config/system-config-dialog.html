@@ -11,14 +11,14 @@
         <div class="form-group">
             <label for="id" data-translate="cpmApp.systemConfig.key">Key</label>
             <input type="text" class="form-control" id="key" name="key"
-                    ng-model="vm.systemConfig.key" ng-required="true" />
+                    ng-model="vm.systemConfig.key" ng-required="true" disabled/>
         </div>
         <div class="help-block"
            ng-show="myForm.key.$error.required" data-translate="entity.validation.required" style="color:red">
             	This field is required.
         </div>
         <div class="form-group">
-            <label class="control-label" data-translate="vm.systemConfig.value" for="field_value">Value</label>
+            <label class="control-label" data-translate="cpmApp.systemConfig.value" for="field_value">Value</label>
             <input type="text" class="form-control" name="value" id="field_value"
                     ng-model="vm.systemConfig.value" ng-required="true"
                      />
@@ -28,7 +28,7 @@
             	This field is required.
         </div>
         <div class="form-group">
-            <label class="control-label" data-translate="vm.systemConfig.description" for="field_description">Description</label>
+            <label class="control-label" data-translate="cpmApp.systemConfig.description" for="field_description">Description</label>
             <input type="text" class="form-control" name="description" id="field_description"
                     ng-model="vm.systemConfig.description" ng-required="true"
                      />
