@@ -16,7 +16,6 @@ import org.springframework.stereotype.Repository;
 import com.wondertek.cpm.CpmConstants;
 import com.wondertek.cpm.config.StringUtil;
 import com.wondertek.cpm.domain.DeptInfo;
-import com.wondertek.cpm.domain.DeptType;
 import com.wondertek.cpm.domain.SaleWeeklyStat;
 import com.wondertek.cpm.domain.User;
 import com.wondertek.cpm.domain.vo.SaleWeeklyStatVo;
@@ -40,17 +39,17 @@ public class SaleWeeklyStatDaoImpl extends GenericDaoImpl<SaleWeeklyStat, Long> 
 	@Override
 	public Page<SaleWeeklyStatVo> getUserPage(String deptId, Pageable pageable, User user, DeptInfo deptInfo) {
 		StringBuffer sb = new StringBuffer();
-		StringBuffer querysql = new StringBuffer();
-		StringBuffer countsql = new StringBuffer();
+		StringBuffer queryHql = new StringBuffer();
+		StringBuffer countHql = new StringBuffer();
 		int count = 0;//jpa格式 问号后的数组，一定要从0开始
 		
-		querysql.append(" select s.id, s.originYear, s.deptId, s.annualIndex, s.finishTotal, s.receiveTotal, s.costTotal,"
+		queryHql.append(" select s.id, s.originYear, s.deptId, s.annualIndex, s.finishTotal, s.receiveTotal, s.costTotal,"
 				+ "s.salesHumanCost ,s.salesPayment, s.consultHumanCost ,s.consultPayment ,s.hardwarePurchase ,s.externalSoftware ,s.internalSoftware ,s.projectHumanCost ,"
 				+ "s.projectPayment ,s.statWeek ,s.createTime ,wdi.name");
-		countsql.append(" select count(s.id)");
+		countHql.append(" select count(s.id)");
 		sb.append(" from SaleWeeklyStat s");
 		sb.append(" left join DeptInfo wdi on s.deptId = wdi.id");
-		sb.append(" left join User u on wdi.id = u.deptId");
+		//sb.append(" left join User u on wdi.id = u.deptId");
 		List<Object> params = new ArrayList<Object>();
     	sb.append(" where s.id in (select max(id) from SaleWeeklyStat where 1=1 ");
     	if(!StringUtil.isNullStr(deptId)){
@@ -59,13 +58,13 @@ public class SaleWeeklyStatDaoImpl extends GenericDaoImpl<SaleWeeklyStat, Long> 
     	}
     	sb.append(" group by deptId");
     	sb.append(" )");
-    	sb.append(" and ( wdi.type = ?" + (count++) + " ");
-    	params.add(StringUtil.nullToLong(DeptType.TYPE_DEPT_SALE));
+    	sb.append(" and ( 1 = 2 ");
 		if(user.getIsManager()){
-			sb.append(" or wdi.idPath like ?" + (count++) + " or wdi.id = ?" + (count++) + " )");
+			sb.append(" or wdi.idPath like ?" + (count++) + " or wdi.id = ?" + (count++));
 			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
 			params.add(deptInfo.getId());
 		}
+		sb.append(" )");
     	StringBuffer orderHql = new StringBuffer();
     	if(pageable.getSort() != null){//页面都会有个默认排序
     		for (Order order : pageable.getSort()) {
@@ -85,8 +84,8 @@ public class SaleWeeklyStatDaoImpl extends GenericDaoImpl<SaleWeeklyStat, Long> 
     		}
     	}
     	Page<Object[]> page = this.queryHqlPage(
-    			querysql.toString() + sb.toString() + orderHql.toString(), 
-    			countsql.toString() + sb.toString(), 
+    			queryHql.toString() + sb.toString() + orderHql.toString(), 
+    			countHql.toString() + sb.toString(), 
     			params.toArray(), 
     			pageable
     		);
@@ -136,21 +135,20 @@ public class SaleWeeklyStatDaoImpl extends GenericDaoImpl<SaleWeeklyStat, Long> 
 				+ "s.projectPayment ,s.statWeek ,s.createTime ,wdi.name");
 		sb.append(" from SaleWeeklyStat s");
 		sb.append(" left join DeptInfo wdi on s.deptId = wdi.id");
-		sb.append(" left join User u on wdi.id = u.deptId");
 		List<Object> params = new ArrayList<Object>();
     	sb.append(" where 1 = 1 ");
     	if(id != null){
     		sb.append(" and s.id = ?" + (count++));
     		params.add(id);
     	}
-    	sb.append(" and ( wdi.type = ?" + (count++) + " ");
-    	params.add(StringUtil.nullToLong(DeptType.TYPE_DEPT_SALE));
+    	sb.append(" and ( 1 = 2 ");
 		if(user.getIsManager()){
-			sb.append(" or wdi.idPath like ?" + (count++) + " or wdi.id = ?" + (count++) + " )");
+			sb.append(" or wdi.idPath like ?" + (count++) + " or wdi.id = ?" + (count++));
 			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
 			params.add(deptInfo.getId());
 		}
     	sb.append(" )");
+
     	StringBuffer orderHql = new StringBuffer();
     	List<Object[]> list = this.queryAllHql(
     			querysql.toString() + sb.toString() + orderHql.toString(), 
@@ -185,14 +183,14 @@ public class SaleWeeklyStatDaoImpl extends GenericDaoImpl<SaleWeeklyStat, Long> 
     		sb.append(" and s.statWeek = ?" + (count++));
     		params.add(statWeek);
     	}
-    	sb.append(" and ( wdi.type = ?" + (count++) + " ");
-    	params.add(StringUtil.nullToLong(DeptType.TYPE_DEPT_SALE));
+    	sb.append(" and ( 1 = 2 ");
 		if(user.getIsManager()){
-			sb.append(" or wdi.idPath like ?" + (count++) + " or wdi.id = ?" + (count++) + " )");
+			sb.append(" or wdi.idPath like ?" + (count++) + " or wdi.id = ?" + (count++));
 			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
 			params.add(deptInfo.getId());
 		}
     	sb.append(" )");
+    	
     	StringBuffer orderHql = new StringBuffer();
     	List<Object[]> list = this.queryAllHql(
     			querysql.toString() + sb.toString() + orderHql.toString(), 

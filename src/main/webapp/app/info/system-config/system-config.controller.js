@@ -24,18 +24,16 @@
         loadAll();
 
         function loadAll () {
-            if (pagingParams.search) {
-                SystemConfig.query({
-                    query: pagingParams.search,
-                    page: pagingParams.page - 1,
-                    size: vm.itemsPerPage,
-                    sort: sort()
-                }, onSuccess, onError);
-            } 
+            SystemConfig.query({
+                query: pagingParams.search,
+                page: pagingParams.page - 1,
+                size: vm.itemsPerPage,
+                sort: sort()
+            }, onSuccess, onError);
             function sort() {
                 var result = [vm.predicate + ',' + (vm.reverse ? 'asc' : 'desc')];
-                if (vm.predicate !== 'id') {
-                    result.push('id');
+                if (vm.predicate !== 'sc.id') {
+                    result.push('sc.id');
                 }
                 return result;
             }
@@ -79,7 +77,7 @@
         function clear() {
             vm.links = null;
             vm.page = 1;
-            vm.predicate = 'id';
+            vm.predicate = 'sc.id';
             vm.reverse = true;
             vm.currentSearch = null;
             vm.transition();
