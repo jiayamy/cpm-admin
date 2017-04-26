@@ -1,7 +1,9 @@
 package com.wondertek.cpm.repository;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.persistence.EntityManager;
 
@@ -13,6 +15,7 @@ import org.springframework.stereotype.Repository;
 
 import com.wondertek.cpm.CpmConstants;
 import com.wondertek.cpm.config.StringUtil;
+import com.wondertek.cpm.domain.ContractInfo;
 import com.wondertek.cpm.domain.DeptInfo;
 import com.wondertek.cpm.domain.User;
 import com.wondertek.cpm.domain.UserTimesheet;
@@ -233,7 +236,13 @@ public class UserTimesheetDaoImpl extends GenericDaoImpl<UserTimesheet, Long> im
 	}
 
 	@Override
-	public void saveByUser(List<UserTimesheet> saveList,List<UserTimesheet> updateList) {
+	public void saveByUser(List<UserTimesheet> saveList,List<UserTimesheet> updateList,List<ContractInfo> changeAmountList) {
+		if (changeAmountList != null && !changeAmountList.isEmpty()) {
+			for (ContractInfo contractInfo : changeAmountList) {
+				this.excuteHql("update ContractInfo set amount = amount + ?0 where id = ?1", 
+						new Object[]{contractInfo.getAmount(),contractInfo.getId()});
+			}
+		}
 		if(saveList != null && !saveList.isEmpty()){
 			for(UserTimesheet userTimesheet : saveList){
 				this.save(userTimesheet);
@@ -246,6 +255,7 @@ public class UserTimesheetDaoImpl extends GenericDaoImpl<UserTimesheet, Long> im
 								userTimesheet.getUpdator(),userTimesheet.getUpdateTime(),
 								userTimesheet.getRealInput(),userTimesheet.getWorkArea(),
 								userTimesheet.getId()});
+				//gengx
 			}
 		}
 	}
@@ -312,6 +322,7 @@ public class UserTimesheetDaoImpl extends GenericDaoImpl<UserTimesheet, Long> im
     	}
     	return null;
 	}
+	
 	@Override
 	public List<UserTimesheet> getByWorkDayAndObjType(Long startDay, Long endDay, Long objId, Integer type){
 		return this.queryAllHql("from UserTimesheet where workDay >= ?0 and workDay <= ?1 and status = ?2 and objId = ?3 and type = ?4 order by workDay asc,id asc",
@@ -329,6 +340,53 @@ public class UserTimesheetDaoImpl extends GenericDaoImpl<UserTimesheet, Long> im
 								userTimesheet.getUserId(),userTimesheet.getObjId(),userTimesheet.getType(),
 								userTimesheet.getId()});
 			}
+		}
+	}
+
+
+	@Override
+	public List<Object> getOffer(Long userId, Long objId, Long workDay) {
+		StringBuffer hql = new StringBuffer();
+		List<Object> params = new ArrayList<Object>();
+		int count = 0;
+		hql.append("select wci.id, wou.offer from ProjectInfo wpi");
+		hql.append(" inner join ContractInfo wci on wci.id = wpi.contractId");
+		hql.append(" and wci.type = ?" + (count++));
+		params.add(ContractInfo.TYPE_EXTERNAL);
+		
+		hql.append(" left join OutsourcingUser wou on wou.contractId = wci.id");
+		hql.append(" left join ProjectUser wpu on wpu.projectId = wpi.id");
+		hql.append(" and wpu.userId = ?" + (count++));
+		params.add(userId);
+		
+		hql.append(" and wpu.rank = wou.rank");
+		hql.append(" where wpi.id = ?" + (count++));
+		params.add(objId);
+		
+		hql.append(" and wpu.id is not null");
+		hql.append(" and wpu.joinDay <= ?" + (count++));
+		params.add(workDay);
+		
+		hql.append(" order by wpu.joinDay desc,wpu.id desc");
+		
+		List<Object[]> list = this.queryAllHql(hql.toString(), params.toArray());
+		if (list != null && !list.isEmpty()) {
+			List<Object> returnList = new ArrayList<Object>();
+			returnList.add(list.get(0)[0]);
+			returnList.add(list.get(0)[1]);
+			return returnList;
+		}
+		return null;
+	}
+
+	@Override
+	public void saveByDelete(UserTimesheet userTimesheet, ContractInfo contractInfo) {
+		if (userTimesheet != null) {
+			this.save(userTimesheet);
+		}
+		if (contractInfo != null) {
+			this.excuteHql("update ContractInfo set amount = amount + ?0 where id = ?1", 
+					new Object[]{contractInfo.getAmount(),contractInfo.getId()});
 		}
 	}
 }

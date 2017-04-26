@@ -1,9 +1,11 @@
 package com.wondertek.cpm.repository;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import com.wondertek.cpm.domain.ContractInfo;
 import com.wondertek.cpm.domain.DeptInfo;
 import com.wondertek.cpm.domain.User;
 import com.wondertek.cpm.domain.UserTimesheet;
@@ -28,7 +30,7 @@ public interface UserTimesheetDao extends GenericDao<UserTimesheet, Long> {
 	/**
 	 * 用户自己新增修改的
 	 */
-	public void saveByUser(List<UserTimesheet> saveList, List<UserTimesheet> updateList);
+	public void saveByUser(List<UserTimesheet> saveList, List<UserTimesheet> updateList,List<ContractInfo> changeAmountList);
 	/**
 	 * 合同工时中查看日报信息
 	 */
@@ -45,4 +47,13 @@ public interface UserTimesheetDao extends GenericDao<UserTimesheet, Long> {
 	 * 更新认可工时
 	 */
 	public void updateAcceptInput(List<UserTimesheet> updateList);
+	/**
+	 * 查找该员工在这个项目中的报价
+	 */
+	public List<Object> getOffer(Long userId,Long objId,Long workDay);
+	/**
+	 * 删除时的保存合同金额
+	 */
+	public void saveByDelete(UserTimesheet userTimesheet, ContractInfo contractInfo);
+	
 }
