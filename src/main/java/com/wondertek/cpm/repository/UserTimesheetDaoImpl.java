@@ -248,7 +248,7 @@ public class UserTimesheetDaoImpl extends GenericDaoImpl<UserTimesheet, Long> im
 				Integer contractType = getContractType(userTimesheet.getObjId());
 				if (userTimesheet.getType().intValue() == UserTimesheet.TYPE_PROJECT && contractType.intValue() == ContractInfo.TYPE_EXTERNAL) {
 					offerList = getOffer(userTimesheet.getUserId(), userTimesheet.getObjId(), userTimesheet.getWorkDay());
-					if (offerList != null) {
+					if (offerList != null && !offerList.isEmpty()) {
 						changeAmount = (Double)offerList.get(1) * userTimesheet.getRealInput() / 8;
 						this.excuteHql("update ContractInfo set amount = amount + ?0 where id = ?1",
 								new Object[]{changeAmount,(Long)offerList.get(0)});
@@ -264,7 +264,7 @@ public class UserTimesheetDaoImpl extends GenericDaoImpl<UserTimesheet, Long> im
 					updateWorkTime = userTimesheetRepository.findRealInputById(userTimesheet.getId());
 					if (userTimesheet.getRealInput().doubleValue() != updateWorkTime) {
 						offerList = getOffer(userTimesheet.getUserId(), userTimesheet.getObjId(), userTimesheet.getWorkDay());
-						if (offerList != null) {
+						if (offerList != null && !offerList.isEmpty()) {
 							changeAmount = (Double)offerList.get(1) * (userTimesheet.getRealInput() - updateWorkTime) / 8;
 							this.excuteHql("update ContractInfo set amount = amount + ?0 where id = ?1",
 									new Object[]{changeAmount,(Long)offerList.get(0)});
