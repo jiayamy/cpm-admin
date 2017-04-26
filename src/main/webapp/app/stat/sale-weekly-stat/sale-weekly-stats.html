@@ -6,24 +6,24 @@
     		<form name="searchForm" class="form-horizontal">
 				<div class="form-group">
 	       			<div class="col-sm-4">
-		            	<!-- <label class="col-sm-4 control-label" data-translate="cpmApp.saleWeeklyStat.dept">Dept Name</label>
+		            	<label class="col-sm-4 control-label" data-translate="cpmApp.saleWeeklyStat.dept">Dept Name</label>
 		            	<div class="col-sm-8">
 			            	<select class="form-control" ng-model="vm.searchQuery.deptId" name="deptId"
-				            	ng-options="saleDeptInfo.name for saleDeptInfo in vm.saleDeptInfos track by saleDeptInfo.id">
-				            	<option value="">--销售部门列表--</option>
+				            	ng-options="saleDeptInfo.name group by saleDeptInfo.parentName for saleDeptInfo in vm.saleDeptInfos track by saleDeptInfo.id">
+				            	<option value=""></option>
 				            </select>
-			            </div> -->
-				        <label class="col-sm-4 control-label" data-translate="cpmApp.saleWeeklyStat.dept">Dept</label>
+			            </div>
+				        <!-- <label class="col-sm-4 control-label" data-translate="cpmApp.saleWeeklyStat.dept">Dept</label>
 		     			<div class="col-sm-8">
 		     				<div class="input-group">
 		     					<input type="text" class="form-control" name="deptName"
 			                  	ng-model="vm.searchQuery.deptName" ng-required="true" readOnly="true"
 			                   	/>
 			                   	<span class="input-group-btn">
-			                     	<button type="button" class="btn btn-default" ui-sref="sale-weekly-stat.queryDept({selectType:2,showChild:true,showUser:false})"><i class="glyphicon glyphicon-home"></i></button>
+			                     	<button type="button" class="btn btn-default" ui-sref="sale-weekly-stat.queryDept({selectType:2,showChild:false,showUser:false})"><i class="glyphicon glyphicon-home"></i></button>
 			                 	</span>
 		     				</div>
-		     			</div>
+		     			</div> -->
 	            	</div>
 	            	<div class="col-sm-4 pull-right">
 		            	<div class="col-sm-4">
