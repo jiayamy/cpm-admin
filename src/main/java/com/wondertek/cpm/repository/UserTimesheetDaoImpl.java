@@ -389,4 +389,19 @@ public class UserTimesheetDaoImpl extends GenericDaoImpl<UserTimesheet, Long> im
 					new Object[]{contractInfo.getAmount(),contractInfo.getId()});
 		}
 	}
+
+	@Override
+	public Integer getContractType(Long objId) {
+		StringBuffer hql = new StringBuffer();
+		List<Object> params = new ArrayList<Object>();
+		hql.append("select wci.type from ContractInfo wci");
+		hql.append(" left join ProjectInfo wpi on wci.id = wpi.contractId");
+		hql.append(" where wpi.id = ?0");
+		params.add(objId);
+		List<Object> list = this.queryAllHql(hql.toString(), params.toArray());
+		if (list != null && !list.isEmpty()) {
+			return (Integer) list.get(0);
+		}
+		return null;
+	}
 }

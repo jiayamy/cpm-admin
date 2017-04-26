@@ -56,4 +56,6 @@ public interface UserTimesheetDao extends GenericDao<UserTimesheet, Long> {
 	 */
 	public void saveByDelete(UserTimesheet userTimesheet, ContractInfo contractInfo);
 	
+	public Integer getContractType(Long objId);
+	
 }

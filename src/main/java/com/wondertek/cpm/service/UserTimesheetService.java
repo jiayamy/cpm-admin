@@ -757,7 +757,8 @@ public class UserTimesheetService {
 			Double changeAmount = 0d;
     		for(int i = 2; i < userTimesheetForUsers.size(); i++){
     			UserTimesheetForUser userData = userTimesheetForUsers.get(i);
-    			if (userData.getType().intValue() != UserTimesheet.TYPE_PROJECT) {
+    			Integer contractType = userTimesheetDao.getContractType(userData.getObjId());
+    			if (userData.getType().intValue() != UserTimesheet.TYPE_PROJECT || contractType != ContractInfo.TYPE_EXTERNAL) {
 					continue;
 				}
     			ContractInfo contractInfo = new ContractInfo();
