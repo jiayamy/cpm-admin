@@ -955,6 +955,8 @@ CREATE TABLE
     )
     ENGINE=InnoDB DEFAULT CHARSET=utf8;
     
+--20170420
+    insert into jhi_authority (name, detail_) values ('ROLE_STAT_SALE', '统计报表-销售部门统计');
     --20170420
     CREATE
     TABLE w_system_config

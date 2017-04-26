@@ -64,10 +64,19 @@ public class SaleWeeklyStatResource {
 		log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to get a page of SaleWeeklyStats by deptId : {}", deptId);
 		Page<SaleWeeklyStatVo> page = saleWeeklyStatService.getStatPage(deptId, pageable);
         for (SaleWeeklyStatVo saleWeeklyStatVo : page.getContent()) {
-        	saleWeeklyStatVo.setAnnualIndex(StringUtil.getScaleDouble(saleWeeklyStatVo.getAnnualIndex(), 10000d,2));
+        	saleWeeklyStatVo.setAnnualIndex(StringUtil.getScaleDouble(saleWeeklyStatVo.getAnnualIndex(), 10000d, 2));
+			saleWeeklyStatVo.setFinishTotal(StringUtil.getScaleDouble(saleWeeklyStatVo.getFinishTotal(), 10000d, 2));
 			saleWeeklyStatVo.setReceiveTotal(StringUtil.getScaleDouble(saleWeeklyStatVo.getReceiveTotal(), 10000d, 2));
 			saleWeeklyStatVo.setCostTotal(StringUtil.getScaleDouble(saleWeeklyStatVo.getCostTotal(), 10000d, 2));
+			saleWeeklyStatVo.setSalesHumanCost(StringUtil.getScaleDouble(saleWeeklyStatVo.getSalesHumanCost(), 10000d, 2));
+			saleWeeklyStatVo.setSalesPayment(StringUtil.getScaleDouble(saleWeeklyStatVo.getSalesPayment(), 10000d, 2));
+			saleWeeklyStatVo.setConsultHumanCost(StringUtil.getScaleDouble(saleWeeklyStatVo.getConsultHumanCost(), 10000d, 2));
+			saleWeeklyStatVo.setConsultPayment(StringUtil.getScaleDouble(saleWeeklyStatVo.getConsultPayment(), 10000d, 2));
 			saleWeeklyStatVo.setHardwarePurchase(StringUtil.getScaleDouble(saleWeeklyStatVo.getHardwarePurchase(), 10000d, 2));
+			saleWeeklyStatVo.setExternalSoftware(StringUtil.getScaleDouble(saleWeeklyStatVo.getExternalSoftware(), 10000d, 2));
+			saleWeeklyStatVo.setInternalSoftware(StringUtil.getScaleDouble(saleWeeklyStatVo.getInternalSoftware(), 10000d, 2));
+			saleWeeklyStatVo.setProjectHumanCost(StringUtil.getScaleDouble(saleWeeklyStatVo.getProjectHumanCost(), 10000d, 2));
+			saleWeeklyStatVo.setProjectPayment(StringUtil.getScaleDouble(saleWeeklyStatVo.getProjectPayment(), 10000d, 2));
 		}
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/sale-weekly-stats");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);

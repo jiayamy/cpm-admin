@@ -16,6 +16,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import com.wondertek.cpm.CpmConstants;
 import com.wondertek.cpm.config.DateUtil;
 import com.wondertek.cpm.config.StringUtil;
 import com.wondertek.cpm.domain.ContractCost;
@@ -33,6 +34,7 @@ import com.wondertek.cpm.domain.PurchaseItem;
 import com.wondertek.cpm.domain.SaleWeeklyStat;
 import com.wondertek.cpm.domain.SalesAnnualIndex;
 import com.wondertek.cpm.domain.StatIdentify;
+import com.wondertek.cpm.domain.SystemConfig;
 import com.wondertek.cpm.domain.User;
 import com.wondertek.cpm.domain.UserCost;
 import com.wondertek.cpm.domain.UserTimesheet;
@@ -50,6 +52,7 @@ import com.wondertek.cpm.repository.PurchaseItemRepository;
 import com.wondertek.cpm.repository.SaleWeeklyStatRepository;
 import com.wondertek.cpm.repository.SalesAnnualIndexRepository;
 import com.wondertek.cpm.repository.StatIdentifyRepository;
+import com.wondertek.cpm.repository.SystemConfigRepository;
 import com.wondertek.cpm.repository.UserCostRepository;
 import com.wondertek.cpm.repository.UserRepository;
 import com.wondertek.cpm.repository.UserTimesheetRepository;
@@ -114,6 +117,9 @@ public class ContractStateTask {
 	
 	@Inject
 	private SalesAnnualIndexRepository salesAnnualIndexRepository;
+	
+	@Inject
+	private SystemConfigRepository systemConfigRepository;
 	
 	private void init(){
 		List<ExternalQuotation> externalQuotations = externalQuotationRepository.findAll();
@@ -637,7 +643,6 @@ public class ContractStateTask {
 	 * 每周 汇总大销售部门下的子销售部门下面 一年内所有销售的合同情况。
 	 */
 	@Scheduled(cron = "0 59 23 ? * MON")
-//	@Scheduled(cron = "0 30 16 ? * MON")
 	protected void generateSaleContractWeeklyStat(){
 		Date now = new Date();
 		generateSaleContractWeeklyStat(now);
@@ -671,9 +676,9 @@ public class ContractStateTask {
 			if(saleWeeklyStats != null){
 				saleWeeklyStatRepository.delete(saleWeeklyStats);
 			}
-			//销售部门id
+			//所有销售部门id
 			List<Long> saleDeptIds = deptInfoRepository.findIdsByType(StringUtil.nullToLong(DeptType.TYPE_DEPT_SALE));
-			//所有销售部门
+			//所有销售部门信息
 			List<DeptInfo> saleDeptInfos = deptInfoRepository.findDeptInfosByType(StringUtil.nullToLong(DeptType.TYPE_DEPT_SALE));
 			Map<Long,DeptInfo> saleDeptInfosMap = new HashMap<Long,DeptInfo>();
 			if (saleDeptInfos != null) {
@@ -681,30 +686,50 @@ public class ContractStateTask {
 					saleDeptInfosMap.put(info.getId(), info);
 				} 
 			}
-			//大销售部门下的一级销售部门
-			List<DeptInfo> primarySaleDeptInfos = deptInfoRepository.findByIdPath(saleDeptInfos.get(0).getIdPath() + saleDeptInfos.get(0).getId() + "/");
-			Map<Long,DeptInfo> primarySaleDeptInfosMap = new HashMap<Long,DeptInfo>();
-			if (primarySaleDeptInfos != null) {
-				for (DeptInfo info : primarySaleDeptInfos) {
-					primarySaleDeptInfosMap.put(info.getId(), info);
+			//所有的顶级销售部门id
+			List<Long> topSaleDeptIds = null;
+			SystemConfig systemConfig = systemConfigRepository.findByKey(CpmConstants.DEFAULT_Dept_SALE_TOPID);
+			if(systemConfig == null){
+				log.error("=====Top sale dept is not found=====");
+			}else{
+				String saleId = systemConfig.getValue();
+				topSaleDeptIds = StringUtil.stringToLongArray(saleId);
+			}
+			
+			//各个顶级销售部门下的一级销售部门id
+			Map<Long,List<Long>> primarySaleDeptIdsMap = new HashMap<Long,List<Long>>();//key:顶级销售部门id,value:该顶级部门下的一级销售部门id
+			//Map<Long,DeptInfo> primarySaleDeptInfosMap = new HashMap<Long,DeptInfo>();
+			
+			//所有的一级销售部门id(包括各个顶级销售部门下的一级部门)
+			List<Long> primarySaleDeptIdsList = new ArrayList<Long>();
+			
+			List<DeptInfo> primarySaleDeptInfos = null;
+			if (topSaleDeptIds != null) {
+				for (Long topId : topSaleDeptIds) {
+					primarySaleDeptInfos = deptInfoRepository.findByIdPath(
+							saleDeptInfosMap.get(topId).getIdPath() + saleDeptInfosMap.get(topId).getId() + "/");
+					if (primarySaleDeptInfos != null) {
+						for (DeptInfo info : primarySaleDeptInfos) {
+							if (primarySaleDeptIdsMap.get(topId) == null) {
+								primarySaleDeptIdsMap.put(topId, new ArrayList<Long>());
+							}
+							primarySaleDeptIdsMap.get(topId).add(info.getId());
+							primarySaleDeptIdsList.add(info.getId());
+						}
+					}
 				} 
 			}
-			//每个一级部门下的所有子销售部门
-			Map<Long,List<DeptInfo>> childrenSaleDeptInfosMap = new HashMap<Long,List<DeptInfo>>();
-			Map<Long,List<Long>> childrenSaleDeptIdsMap = new HashMap<Long,List<Long>>();
-			for(Long key : primarySaleDeptInfosMap.keySet()){
-				List<DeptInfo> childrenSaleDeptInfos = deptInfoRepository.findByIdPath(primarySaleDeptInfosMap.get(key).getIdPath() + primarySaleDeptInfosMap.get(key).getId() + "/%");
+			//每个一级部门下的所有子销售部门id
+			Map<Long,List<Long>> childrenSaleDeptIdsMap = new HashMap<Long,List<Long>>();//key:一级销售部门id,value:该一级下的所有子销售部门id
+			List<DeptInfo> childrenSaleDeptInfos = null;
+			for(Long primaryId : primarySaleDeptIdsList){
+				childrenSaleDeptInfos = deptInfoRepository.findByIdPath(saleDeptInfosMap.get(primaryId).getIdPath() + saleDeptInfosMap.get(primaryId).getId() + "/%");
 				if(childrenSaleDeptInfos != null){
-					childrenSaleDeptInfosMap.put(key, childrenSaleDeptInfos);
 					for(DeptInfo info : childrenSaleDeptInfos){
-						if(childrenSaleDeptIdsMap.keySet().contains(key)){
-							childrenSaleDeptIdsMap.get(key).add(info.getId());
-							childrenSaleDeptIdsMap.put(key, childrenSaleDeptIdsMap.get(key));
-						}else{
-							List<Long> list = new ArrayList<Long>();
-							list.add(info.getId());
-							childrenSaleDeptIdsMap.put(key, list);
+						if(childrenSaleDeptIdsMap.get(primaryId) == null){
+							childrenSaleDeptIdsMap.put(primaryId, new ArrayList<Long>());
 						}
+						childrenSaleDeptIdsMap.get(primaryId).add(info.getId());
 					}
 				}
 			}
@@ -776,14 +801,16 @@ public class ContractStateTask {
 						DeptInfo deptInfo = deptInfoRepository.findOne(salesDeptId);
 						if(deptInfo != null){
 							List<ContractCost> contractCosts = contractCostRepository.findByDeptIdAndTypeAndContractIdAndCostDayBetween(
-									salesDeptId,ContractCost.TYPE_HUMAN_COST, contractId, StringUtil.nullToLong(saleWeeklyStat.getOriginYear() + "0101"), statWeek);
+									salesDeptId,ContractCost.TYPE_HUMAN_COST, contractId, 
+									StringUtil.stringToLong(DateUtil.formatDate(DateUtil.DATE_YYYYMMDD_PATTERN, DateUtil.convertZonedDateTime(firstDayOfYear))), statWeek);
 							if(contractCosts != null && contractCosts.size() > 0){
 								for(ContractCost contractCost : contractCosts){
 									salesHumanCost += contractCost.getTotal();
 								}
 							}
 							List<ContractCost> contractCosts2 = contractCostRepository.findByDeptIdAndNoTypeAndContractIdAndCostDayBetween(
-									salesDeptId, ContractCost.TYPE_HUMAN_COST, contractId,StringUtil.nullToLong(saleWeeklyStat.getOriginYear() + "0101"), statWeek);
+									salesDeptId, ContractCost.TYPE_HUMAN_COST, contractId,
+									StringUtil.stringToLong(DateUtil.formatDate(DateUtil.DATE_YYYYMMDD_PATTERN, DateUtil.convertZonedDateTime(firstDayOfYear))), statWeek);
 							if(contractCosts2 != null && contractCosts2.size() >0){
 								for(ContractCost contractCost : contractCosts2){
 									salesPayment += contractCost.getTotal();
@@ -804,14 +831,16 @@ public class ContractStateTask {
 						DeptInfo consultDeptInfo = deptInfoRepository.findOne(consultDeptId);
 						if(consultDeptInfo != null){
 							List<ContractCost> contractCosts = contractCostRepository.findByDeptIdAndTypeAndContractIdAndCostDayBetween(
-									consultDeptId,ContractCost.TYPE_HUMAN_COST, contractId, StringUtil.nullToLong(saleWeeklyStat.getOriginYear() + "0101"), statWeek);
+									consultDeptId,ContractCost.TYPE_HUMAN_COST, contractId, 
+									StringUtil.stringToLong(DateUtil.formatDate(DateUtil.DATE_YYYYMMDD_PATTERN, DateUtil.convertZonedDateTime(firstDayOfYear))), statWeek);
 							if(contractCosts != null && contractCosts.size() > 0){
 								for(ContractCost contractCost : contractCosts){
 									consultHumanCost += contractCost.getTotal();
 								}
 							}
 							List<ContractCost> contractCosts2 = contractCostRepository.findByDeptIdAndNoTypeAndContractIdAndCostDayBetween(
-									consultDeptId, ContractCost.TYPE_HUMAN_COST, contractId, StringUtil.nullToLong(saleWeeklyStat.getOriginYear() + "0101"), statWeek);
+									consultDeptId, ContractCost.TYPE_HUMAN_COST, contractId, 
+									StringUtil.stringToLong(DateUtil.formatDate(DateUtil.DATE_YYYYMMDD_PATTERN, DateUtil.convertZonedDateTime(firstDayOfYear))), statWeek);
 							if(contractCosts2 != null && contractCosts2.size() >0){
 								for(ContractCost contractCost : contractCosts2){
 									consultPayment += contractCost.getTotal();
@@ -846,7 +875,8 @@ public class ContractStateTask {
 					}
 					saleWeeklyStat.setExternalSoftware(externalSoftware);
 					//内部软件采购成本
-					List<PurchaseItem> purchaseItems3 = purchaseItemRepository.findByContractIdAndSourceAndTypeAndUpdateBetween(contractId, PurchaseItem.SOURCE_INTERNAL, PurchaseItem.TYPE_SOFTWARE, firstDayOfYear, endTime);
+					List<PurchaseItem> purchaseItems3 = purchaseItemRepository.findByContractIdAndSourceAndTypeAndUpdateBetween(
+							contractId, PurchaseItem.SOURCE_INTERNAL, PurchaseItem.TYPE_SOFTWARE, firstDayOfYear, endTime);
 					Double internalSoftware = 0D;
 					if(purchaseItems3 != null && purchaseItems3.size() > 0){
 						for(PurchaseItem purchaseItem : purchaseItems3){
@@ -864,8 +894,8 @@ public class ContractStateTask {
 					if(projectInfos != null && projectInfos.size() > 0){
 						for(ProjectInfo projectInfo : projectInfos){
 							//人工成本
-							List<UserTimesheet> userTimesheets3 = userTimesheetRepository.
-									findByObjIdAndTypeAndWordDayBetween(projectInfo.getId(), UserTimesheet.TYPE_PROJECT, StringUtil.nullToLong(saleWeeklyStat.getOriginYear() + "0101"), statWeek);
+							List<UserTimesheet> userTimesheets3 = userTimesheetRepository.findByObjIdAndTypeAndWordDayBetween(projectInfo.getId(), UserTimesheet.TYPE_PROJECT, 
+									StringUtil.stringToLong(DateUtil.formatDate(DateUtil.DATE_YYYYMMDD_PATTERN, DateUtil.convertZonedDateTime(firstDayOfYear))), statWeek);
 							if(userTimesheets3 != null && userTimesheets3.size() > 0){
 								for(UserTimesheet userTimesheet : userTimesheets3){
 									Long costMonth = StringUtil.nullToLong(DateUtil.formatDate("yyyyMM", DateUtil.lastSundayEnd(now)).toString());
@@ -885,7 +915,8 @@ public class ContractStateTask {
 								log.error(" no user Timesheets founded for project human cost belong to " + contractInfo.getSerialNum());
 							}
 							//报销成本
-							List<ProjectCost> projectCosts2 = projectCostRepository.findAllByProjectIdAndNoTypeAndCostDayBetween(projectInfo.getId(), ProjectCost.TYPE_HUMAN_COST, StringUtil.nullToLong(saleWeeklyStat.getOriginYear() + "0101"), statWeek);
+							List<ProjectCost> projectCosts2 = projectCostRepository.findAllByProjectIdAndNoTypeAndCostDayBetween(projectInfo.getId(), ProjectCost.TYPE_HUMAN_COST, 
+									StringUtil.stringToLong(DateUtil.formatDate(DateUtil.DATE_YYYYMMDD_PATTERN, DateUtil.convertZonedDateTime(firstDayOfYear))), statWeek);
 							if(projectCosts2 != null && projectCosts2.size() > 0){
 								for(ProjectCost projectCost : projectCosts2){
 									projectPayment += projectCost.getTotal();
@@ -904,7 +935,8 @@ public class ContractStateTask {
 				}else{ //公共合同
 					//项目人工成本
 					Double projectHumanCost = 0D;
-					List<ContractCost> contractCosts = contractCostRepository.findByContractIdAndTypeAndDeptIdAndCostDayBetween(contractId, ContractCost.TYPE_HUMAN_COST,saleWeeklyStat.getDeptId(), StringUtil.nullToLong(saleWeeklyStat.getOriginYear() + "0101"), statWeek);
+					List<ContractCost> contractCosts = contractCostRepository.findByContractIdAndTypeAndDeptIdAndCostDayBetween(contractId, ContractCost.TYPE_HUMAN_COST,
+							saleWeeklyStat.getDeptId(), StringUtil.stringToLong(DateUtil.formatDate(DateUtil.DATE_YYYYMMDD_PATTERN, DateUtil.convertZonedDateTime(firstDayOfYear))), statWeek);
 					for(ContractCost contractCost : contractCosts){
 						projectHumanCost += contractCost.getTotal();
 					}
@@ -918,7 +950,7 @@ public class ContractStateTask {
 				saleWeeklyStat.setCreateTime(ZonedDateTime.now());
 				//归属于同一级的部门合并一起
 				Long primaryKey = null;
-				if(primarySaleDeptInfosMap.containsKey(saleWeeklyStat.getDeptId())){//找到对应的一级部门
+				if(primarySaleDeptIdsList.contains(saleWeeklyStat.getDeptId())){
 					primaryKey = saleWeeklyStat.getDeptId();
 				}else{
 					for(Long key : childrenSaleDeptIdsMap.keySet()){
@@ -952,8 +984,8 @@ public class ContractStateTask {
 				}
 			}
 			//填充其余销售部门
-			for(Long deptId : saleWeeklyStatsMap.keySet()){
-				if(!primarySaleDeptInfosMap.keySet().contains(deptId)){
+			for(Long deptId : primarySaleDeptIdsList){
+				if(!saleWeeklyStatsMap.keySet().contains(deptId)){
 					SaleWeeklyStat saleWeeklyStat = new SaleWeeklyStat();
 					saleWeeklyStat.setOriginYear((long)firstDayOfYear.getYear());
 					saleWeeklyStat.setDeptId(deptId);

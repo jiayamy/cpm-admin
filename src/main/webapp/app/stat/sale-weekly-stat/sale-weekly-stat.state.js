@@ -11,7 +11,7 @@
         $stateProvider
         .state('sale-weekly-stat', {
             parent: 'stat',
-            url: '/sale-weekly-stat?page&deptId',
+            url: '/sale-weekly-stat?page&deptId&deptName',
             data: {
                 authorities: ['ROLE_STAT_SALE'],
                 pageTitle: 'cpmApp.saleWeeklyStat.home.title'
@@ -32,7 +32,8 @@
                     value: 's.id,desc',
                     squash: true
                 },
-                deptId : null
+                deptId : null,
+                deptName : null
             },
             resolve: {
                 pagingParams: ['$stateParams', 'PaginationUtil', function ($stateParams, PaginationUtil) {
@@ -41,7 +42,8 @@
                         sort: $stateParams.sort,
                         predicate: PaginationUtil.parsePredicate($stateParams.sort),
                         ascending: PaginationUtil.parseAscending($stateParams.sort),
-                        deptId: $stateParams.deptId
+                        deptId: $stateParams.deptId,
+                        deptName: $stateParams.deptName
                     };
                 }],
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
@@ -51,6 +53,35 @@
                     return $translate.refresh();
                 }]
             }
+        })
+        .state('sale-weekly-stat.queryDept', {
+            parent: 'sale-weekly-stat',
+            url: '/queryDept?selectType&showChild&showUser',
+            data: {
+                authorities: ['ROLE_STAT_SALE']
+            },
+            onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
+                $uibModal.open({
+                    templateUrl: 'app/info/dept-info/dept-info-query.html',
+                    controller: 'DeptInfoQueryController',
+                    controllerAs: 'vm',
+                    backdrop: 'static',
+                    size: 'lg',
+                    resolve: {
+                        entity: function() {
+                            return {
+                            	selectType : $stateParams.selectType,
+                            	showChild : $stateParams.showChild,
+                            	showUser : $stateParams.showUser
+                            }
+                        }
+                    }
+                }).result.then(function() {
+                    $state.go('^', {}, { reload: false });
+                }, function() {
+                    $state.go('^');
+                });
+            }]
         })
         .state('sale-weekly-stat-detail', {
         	parent: 'sale-weekly-stat',
