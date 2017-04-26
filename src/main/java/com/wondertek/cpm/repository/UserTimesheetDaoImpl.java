@@ -24,6 +24,9 @@ public class UserTimesheetDaoImpl extends GenericDaoImpl<UserTimesheet, Long> im
 	
 	@Autowired
 	private EntityManager entityManager;
+	
+	@Autowired
+	private UserTimesheetRepository userTimesheetRepository;
 
 	@Override
 	public Class<UserTimesheet> getDomainClass() {
@@ -236,20 +239,38 @@ public class UserTimesheetDaoImpl extends GenericDaoImpl<UserTimesheet, Long> im
 	}
 
 	@Override
-	public void saveByUser(List<UserTimesheet> saveList,List<UserTimesheet> updateList,List<ContractInfo> changeAmountList) {
-		if (changeAmountList != null && !changeAmountList.isEmpty()) {
-			for (ContractInfo contractInfo : changeAmountList) {
-				this.excuteHql("update ContractInfo set amount = amount + ?0 where id = ?1", 
-						new Object[]{contractInfo.getAmount(),contractInfo.getId()});
-			}
-		}
+	public void saveByUser(List<UserTimesheet> saveList,List<UserTimesheet> updateList) {
+		Double changeAmount = 0d;
+		Double updateWorkTime = 0d;
+		List<Object> offerList = new ArrayList<Object>();
 		if(saveList != null && !saveList.isEmpty()){
 			for(UserTimesheet userTimesheet : saveList){
+				Integer contractType = getContractType(userTimesheet.getObjId());
+				if (userTimesheet.getType().intValue() == UserTimesheet.TYPE_PROJECT && contractType.intValue() == ContractInfo.TYPE_EXTERNAL) {
+					offerList = getOffer(userTimesheet.getUserId(), userTimesheet.getObjId(), userTimesheet.getWorkDay());
+					if (offerList != null) {
+						changeAmount = (Double)offerList.get(1) * userTimesheet.getRealInput() / 8;
+						this.excuteHql("update ContractInfo set amount = amount + ?0 where id = ?1",
+								new Object[]{changeAmount,(Long)offerList.get(0)});
+					}
+				}
 				this.save(userTimesheet);
 			}
 		}
 		if(updateList != null && !updateList.isEmpty()){
 			for(UserTimesheet userTimesheet : updateList){
+				Integer contractType = getContractType(userTimesheet.getObjId());
+				if (userTimesheet.getType() == userTimesheet.TYPE_PROJECT && contractType.intValue() == ContractInfo.TYPE_EXTERNAL) {
+					updateWorkTime = userTimesheetRepository.findRealInputById(userTimesheet.getId());
+					if (userTimesheet.getRealInput().doubleValue() != updateWorkTime) {
+						offerList = getOffer(userTimesheet.getUserId(), userTimesheet.getObjId(), userTimesheet.getWorkDay());
+						if (offerList != null) {
+							changeAmount = (Double)offerList.get(1) * (userTimesheet.getRealInput() - updateWorkTime) / 8;
+							this.excuteHql("update ContractInfo set amount = amount + ?0 where id = ?1",
+									new Object[]{changeAmount,(Long)offerList.get(0)});
+						}
+					}
+				}
 				this.excuteHql("update UserTimesheet set realInput = ?0,status = ?1,workArea = ?2,updator = ?3,updateTime = ?4 where (realInput != ?5 or workArea != ?6) and id = ?7",
 						new Object[]{userTimesheet.getRealInput(),userTimesheet.getStatus(),userTimesheet.getWorkArea(),
 								userTimesheet.getUpdator(),userTimesheet.getUpdateTime(),

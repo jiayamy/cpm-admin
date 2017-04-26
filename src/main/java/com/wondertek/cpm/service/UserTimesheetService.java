@@ -124,22 +124,20 @@ public class UserTimesheetService {
         	userTimesheet.setUpdator(SecurityUtils.getCurrentUserLogin());
         	//更新对应的合同金额
         	if(userTimesheet.getType().intValue() == UserTimesheet.TYPE_PROJECT){
-        		//查找人员工时工资所需要的字段
-        		//项目对应的合同信息以及级别信息
         		//知道该员工在此项目中的报价
         		List<Object> offerList = userTimesheetDao.getOffer(userTimesheet.getUserId(),userTimesheet.getObjId(),userTimesheet.getWorkDay());
-        		System.out.println("=============" + offerList.get(0) + "#########" + offerList.get(0));
-        		Double changeAmount =  - userTimesheet.getRealInput() * (Double)offerList.get(1) / 8;
-        		ContractInfo contractInfo = new ContractInfo();
-        		if (changeAmount.doubleValue() != 0) {
-        			contractInfo.setAmount(changeAmount);
-        			contractInfo.setId((Long)offerList.get(0));
+        		if (offerList != null && !offerList.isEmpty()) {
+        			Double changeAmount =  - userTimesheet.getRealInput() * (Double)offerList.get(1) / 8;
+            		ContractInfo contractInfo = new ContractInfo();
+            		if (changeAmount.doubleValue() != 0) {
+            			contractInfo.setAmount(changeAmount);
+            			contractInfo.setId((Long)offerList.get(0));
+    				}
+            		userTimesheetDao.saveByDelete(userTimesheet,contractInfo);
 				}
-        		userTimesheetDao.saveByDelete(userTimesheet,contractInfo);
         	}else {
 				userTimesheetRepository.save(userTimesheet);
 			}
-//        	userTimesheetDao.saveByUser(saveList, updateList);
         }
     }
     
@@ -747,99 +745,8 @@ public class UserTimesheetService {
     		if(count > 0){
     			return "cpmApp.userTimesheet.save.dataChanged";
     		}
-    		//当前员工在改项目下的工资以及对应的合同ID
-			List<Object> offerList = new ArrayList<Object>();
-			List<ContractInfo> userOffer = new ArrayList<ContractInfo>();
-			List<ContractInfo> changeAmountList = new ArrayList<ContractInfo>();
-			//未更新前的工时
-			Double beforUpdate = 0d;
-			//改变的金额
-			Double changeAmount = 0d;
-    		for(int i = 2; i < userTimesheetForUsers.size(); i++){
-    			UserTimesheetForUser userData = userTimesheetForUsers.get(i);
-    			Integer contractType = userTimesheetDao.getContractType(userData.getObjId());
-    			if (userData.getType().intValue() != UserTimesheet.TYPE_PROJECT || contractType != ContractInfo.TYPE_EXTERNAL) {
-					continue;
-				}
-    			ContractInfo contractInfo = new ContractInfo();
-    			if (userData != null) {
-        			//每条日报记录对应员工的报价
-        			for(int j = 0; j < lds.length; j++){
-        				offerList = userTimesheetDao.getOffer(userId, userData.getObjId(), lds[j]);
-        				contractInfo.setId((Long) offerList.get(0));
-        				contractInfo.setAmount((Double) offerList.get(1));
-        				userOffer.add(contractInfo);
-        			}
-        			if (userData.getId1() != null) {
-    					//查找之前对应的工时
-        				beforUpdate = userTimesheetRepository.findRealInputById(userData.getId1());
-        				changeAmount += userOffer.get(0).getAmount() * (StringUtil.nullToDouble(userData.getData1()) - beforUpdate) / 8;
-    				}else if (userData.getId1() == null && StringUtil.nullToDouble(userData.getData1()).doubleValue() != 0) {
-						//完全增加的工时
-    					changeAmount += userOffer.get(0).getAmount() * StringUtil.nullToDouble(userData.getData1()) / 8;
-					}
-        			if (userData.getId2() != null) {
-    					//查找之前对应的工时
-        				beforUpdate = userTimesheetRepository.findRealInputById(userData.getId2());
-        				changeAmount += userOffer.get(1).getAmount() * (StringUtil.nullToDouble(userData.getData2()) - beforUpdate) / 8;
-    				}else if (userData.getId2() == null && StringUtil.nullToDouble(userData.getData2()).doubleValue() != 0) {
-						//完全增加的工时
-    					changeAmount += userOffer.get(1).getAmount() * StringUtil.nullToDouble(userData.getData2()) / 8;
-					}
-        			if (userData.getId3() != null) {
-    					//查找之前对应的工时
-        				beforUpdate = userTimesheetRepository.findRealInputById(userData.getId3());
-        				changeAmount += userOffer.get(2).getAmount() * (StringUtil.nullToDouble(userData.getData3()) - beforUpdate) / 8;
-    				}else if (userData.getId3() == null && StringUtil.nullToDouble(userData.getData3()).doubleValue() != 0) {
-						//完全增加的工时
-    					changeAmount += userOffer.get(2).getAmount() * StringUtil.nullToDouble(userData.getData3()) / 8;
-					}
-        			if (userData.getId4() != null) {
-    					//查找之前对应的工时
-        				beforUpdate = userTimesheetRepository.findRealInputById(userData.getId4());
-        				changeAmount += userOffer.get(3).getAmount() * (StringUtil.nullToDouble(userData.getData4()) - beforUpdate) / 8;
-    				}else if (userData.getId4() == null && StringUtil.nullToDouble(userData.getData4()).doubleValue() != 0) {
-						//完全增加的工时
-    					changeAmount += userOffer.get(3).getAmount() * StringUtil.nullToDouble(userData.getData4()) / 8;
-					}
-        			if (userData.getId5() != null) {
-    					//查找之前对应的工时
-        				beforUpdate = userTimesheetRepository.findRealInputById(userData.getId5());
-        				changeAmount += userOffer.get(4).getAmount() * (StringUtil.nullToDouble(userData.getData5()) - beforUpdate) / 8;
-    				}else if (userData.getId5() == null && StringUtil.nullToDouble(userData.getData5()).doubleValue() != 0) {
-						//完全增加的工时
-    					changeAmount += userOffer.get(4).getAmount() * StringUtil.nullToDouble(userData.getData5()) / 8;
-					}
-        			if (userData.getId6() != null) {
-    					//查找之前对应的工时
-        				beforUpdate = userTimesheetRepository.findRealInputById(userData.getId6());
-        				changeAmount += userOffer.get(5).getAmount() * (StringUtil.nullToDouble(userData.getData6()) - beforUpdate) / 8;
-    				}else if (userData.getId6() == null && StringUtil.nullToDouble(userData.getData6()).doubleValue() != 0) {
-						//完全增加的工时
-    					changeAmount += userOffer.get(5).getAmount() * StringUtil.nullToDouble(userData.getData6()) / 8;
-					}
-        			if (userData.getId7() != null) {
-    					//查找之前对应的工时
-        				beforUpdate = userTimesheetRepository.findRealInputById(userData.getId7());
-        				changeAmount += userOffer.get(6).getAmount() * (StringUtil.nullToDouble(userData.getData7()) - beforUpdate) / 8;
-    				}else if (userData.getId7() == null && StringUtil.nullToDouble(userData.getData7()).doubleValue() != 0) {
-						//完全增加的工时
-    					changeAmount += userOffer.get(6).getAmount() * StringUtil.nullToDouble(userData.getData7()) / 8;
-					}
-				}
-    			contractInfo.setId(userOffer.get(0).getId());
-    			contractInfo.setAmount(changeAmount);
-    			changeAmountList.add(contractInfo);
-    			
-    			offerList.clear();
-    			userOffer.clear(); 
-    			beforUpdate = 0d;
-    			changeAmount = 0d;
-    		}
-    		System.out.println("%%%%%%%%%%%%%%%%%" + changeAmountList.get(1).getId() + "   " + changeAmountList.get(1).getAmount());
-			System.out.println("%%%%%%%%%%%%%%%%%" + changeAmountList.get(0).getId() + "   " + changeAmountList.get(0).getAmount());
     		//保存记录
-    		userTimesheetDao.saveByUser(saveList,updateList,changeAmountList);
+    		userTimesheetDao.saveByUser(saveList,updateList);
     		return "cpmApp.userTimesheet.save.success";
     	}else{
     		return "cpmApp.userTimesheet.save.paramError";

@@ -30,7 +30,7 @@ public interface UserTimesheetDao extends GenericDao<UserTimesheet, Long> {
 	/**
 	 * 用户自己新增修改的
 	 */
-	public void saveByUser(List<UserTimesheet> saveList, List<UserTimesheet> updateList,List<ContractInfo> changeAmountList);
+	public void saveByUser(List<UserTimesheet> saveList, List<UserTimesheet> updateList);
 	/**
 	 * 合同工时中查看日报信息
 	 */
