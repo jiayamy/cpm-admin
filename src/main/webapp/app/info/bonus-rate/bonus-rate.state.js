@@ -36,6 +36,9 @@
                 contractType: null
             },
             resolve: {
+            	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
+                    return $ocLazyLoad.load(['app/info/bonus-rate/bonus-rate.service.js','app/info/bonus-rate/bonus-rate.controller.js'])
+                }],
                 pagingParams: ['$stateParams', 'PaginationUtil', function ($stateParams, PaginationUtil) {
                     return {
                         page: PaginationUtil.parsePage($stateParams.page),
@@ -67,6 +70,9 @@
             	}
             },
             resolve: {
+            	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
+                    return $ocLazyLoad.load('app/info/bonus-rate/bonus-rate-dialog.controller.js')
+                }],
             	 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                      $translatePartialLoader.addPart('bonusRate');
                      $translatePartialLoader.addPart('global');
@@ -108,6 +114,9 @@
                 }
             },
             resolve: {
+            	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
+            		return $ocLazyLoad.load('app/info/bonus-rate/bonus-rate-dialog.controller.js')
+                }],
             	translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
 	                $translatePartialLoader.addPart('bonusRate');
 	                $translatePartialLoader.addPart('global');
@@ -139,6 +148,9 @@
                     controllerAs: 'vm',
                     size: 'md',
                     resolve: {
+                    	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
+                    		return $ocLazyLoad.load('app/info/bonus-rate/bonus-rate-delete-dialog.controller.js')
+                        }],
                         entity: ['BonusRate', function(BonusRate) {
                             return BonusRate.get({id : $stateParams.id}).$promise;
                         }]
