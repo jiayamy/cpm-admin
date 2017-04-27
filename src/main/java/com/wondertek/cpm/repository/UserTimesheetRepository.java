@@ -68,10 +68,4 @@ public interface UserTimesheetRepository extends JpaRepository<UserTimesheet,Lon
 
 	@Query("select wut.realInput from UserTimesheet wut where wut.id = ?1")
 	public Double findRealInputById(Long id1);
-	
-	@Query("select wpu.joinDay from ProjectUser wpu where wpu.id = ?1")
-	public List<Long> findJoinDayByUserId(Long userId);
-	
-//	@Query("select joinDay from UserTimesheet where userId = ?1 and objId = ?2 order by joinDay desc")
-//	public List<Long> getJoinDay(Long userId, Long projectId);
 }
