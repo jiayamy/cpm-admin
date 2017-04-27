@@ -298,7 +298,7 @@ public class UserTimesheetDaoImpl extends GenericDaoImpl<UserTimesheet, Long> im
 						if (!amountMap.containsKey((Long)offerList.get(0))) {
 							amountMap.put((Long)offerList.get(0), changeAmount);
 						}else {
-							amountMap.put((Long)offerList.get(0), amountMap.get((Long)offerList.get(0) + changeAmount));
+							amountMap.put((Long)offerList.get(0), amountMap.get((Long)offerList.get(0)) + changeAmount);
 						}
 					}
 				}
@@ -332,7 +332,7 @@ public class UserTimesheetDaoImpl extends GenericDaoImpl<UserTimesheet, Long> im
 				if (entry.getKey() != null && entry.getValue() != null) {
 					this.excuteHql("update ContractInfo set amount = amount + ?0 where id = ?1",
 							new Object[]{entry.getValue(),entry.getKey()});
-					this.excuteHql("update ContractInfo set taxes = amount * taxRate,shareCost = amount * shareRate where id = ?0",
+					this.excuteHql("update ContractInfo set taxes = amount * taxRate / 100,shareCost = amount * shareRate / 100 where id = ?0",
 							new Object[]{entry.getKey()});
 				}
 			}
@@ -464,7 +464,7 @@ public class UserTimesheetDaoImpl extends GenericDaoImpl<UserTimesheet, Long> im
 		if (contractInfo != null) {
 			this.excuteHql("update ContractInfo set amount = amount + ?0 where id = ?1", 
 					new Object[]{contractInfo.getAmount(),contractInfo.getId()});
-			this.excuteHql("update ContractInfo set taxes = amount * taxRate,shareCost = amount * shareRate where id = ?0",
+			this.excuteHql("update ContractInfo set taxes = amount * taxRate / 100,shareCost = amount * shareRate / 100 where id = ?0",
 					new Object[]{contractInfo.getId()});
 		}
 	}
