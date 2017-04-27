@@ -25,7 +25,6 @@ import com.wondertek.cpm.config.StringUtil;
 import com.wondertek.cpm.domain.ContractInfo;
 import com.wondertek.cpm.domain.DeptInfo;
 import com.wondertek.cpm.domain.HolidayInfo;
-import com.wondertek.cpm.domain.ProjectInfo;
 import com.wondertek.cpm.domain.User;
 import com.wondertek.cpm.domain.UserTimesheet;
 import com.wondertek.cpm.domain.vo.ContractInfoVo;
@@ -556,8 +555,7 @@ public class UserTimesheetService {
     		List<UserTimesheet> saveList = new ArrayList<UserTimesheet>();
     		List<UserTimesheet> updateList = new ArrayList<UserTimesheet>();
     		List<Long> ids = new ArrayList<Long>();
-    		//得到该日报对应的项目ID
-    		Long objId = 0L;
+    		
     		for(int i = 2; i < userTimesheetForUsers.size(); i++){
     			//一条记录就是一个项目或者合同或者公共成本
     			UserTimesheetForUser userTimesheetForUser = userTimesheetForUsers.get(i);
@@ -594,7 +592,6 @@ public class UserTimesheetService {
         		//校验用户在该项目中是否可以填数据
         		if(userTimesheetForUser.getType() == UserTimesheet.TYPE_CONTRACT || userTimesheetForUser.getType() == UserTimesheet.TYPE_PROJECT){
         			String result = checkParticipate(participateInfos,userTimesheetForUser,lds,d1,d2,d3,d4,d5,d6,d7);
-        			objId = userTimesheetForUser.getObjId();
         			if(result != null){
         				return "cpmApp.userTimesheet.save.objId#"+result;
         			}

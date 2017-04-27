@@ -238,20 +238,68 @@ public class UserTimesheetDaoImpl extends GenericDaoImpl<UserTimesheet, Long> im
 				new Object[]{startDay,endDay,CpmConstants.STATUS_VALID,userId});
 	}
 
+//	@Override
+//	public void saveByUser(List<UserTimesheet> saveList,List<UserTimesheet> updateList) {
+//		Double changeAmount = 0d;
+//		Double updateWorkTime = 0d;
+//		List<Object> offerList = new ArrayList<Object>();
+//		if(saveList != null && !saveList.isEmpty()){
+//			for(UserTimesheet userTimesheet : saveList){
+//				if (userTimesheet.getType().intValue() == UserTimesheet.TYPE_PROJECT) {
+//					offerList = getOffer(userTimesheet.getUserId(), userTimesheet.getObjId(), userTimesheet.getWorkDay());
+//					if (offerList != null && !offerList.isEmpty()) {
+//						changeAmount = (Double)offerList.get(1) * userTimesheet.getRealInput() / 8;
+//						this.excuteHql("update ContractInfo set amount = amount + ?0 where id = ?1",
+//								new Object[]{changeAmount,(Long)offerList.get(0)});
+//						this.excuteHql("update ContractInfo set taxes = amount * taxRate,shareCost = amount * shareRate where id = ?0",
+//								new Object[]{(Long)offerList.get(0)});
+//					}
+//				}
+//				this.save(userTimesheet);
+//			}
+//		}
+//		if(updateList != null && !updateList.isEmpty()){
+//			for(UserTimesheet userTimesheet : updateList){
+//				if (userTimesheet.getType() == userTimesheet.TYPE_PROJECT) {
+//					updateWorkTime = userTimesheetRepository.findRealInputById(userTimesheet.getId());
+//					if (userTimesheet.getRealInput().doubleValue() != updateWorkTime) {
+//						offerList = getOffer(userTimesheet.getUserId(), userTimesheet.getObjId(), userTimesheet.getWorkDay());
+//						if (offerList != null && !offerList.isEmpty()) {
+//							changeAmount = (Double)offerList.get(1) * (userTimesheet.getRealInput() - updateWorkTime) / 8;
+//							this.excuteHql("update ContractInfo set amount = amount + ?0 where id = ?1",
+//									new Object[]{changeAmount,(Long)offerList.get(0)});
+//							this.excuteHql("update ContractInfo set taxes = amount * taxRate,shareCost = amount * shareRate where id = ?0",
+//									new Object[]{(Long)offerList.get(0)});
+//						}
+//					}
+//				}
+//				this.excuteHql("update UserTimesheet set realInput = ?0,status = ?1,workArea = ?2,updator = ?3,updateTime = ?4 where (realInput != ?5 or workArea != ?6) and id = ?7",
+//						new Object[]{userTimesheet.getRealInput(),userTimesheet.getStatus(),userTimesheet.getWorkArea(),
+//								userTimesheet.getUpdator(),userTimesheet.getUpdateTime(),
+//								userTimesheet.getRealInput(),userTimesheet.getWorkArea(),
+//								userTimesheet.getId()});
+//				//gengx
+//			}
+//		}
+//	}
+	
 	@Override
 	public void saveByUser(List<UserTimesheet> saveList,List<UserTimesheet> updateList) {
 		Double changeAmount = 0d;
 		Double updateWorkTime = 0d;
 		List<Object> offerList = new ArrayList<Object>();
+		Map<Long, Double> amountMap = new HashMap<Long, Double>();
 		if(saveList != null && !saveList.isEmpty()){
 			for(UserTimesheet userTimesheet : saveList){
-				Integer contractType = getContractType(userTimesheet.getObjId());
-				if (userTimesheet.getType().intValue() == UserTimesheet.TYPE_PROJECT && contractType.intValue() == ContractInfo.TYPE_EXTERNAL) {
+				if (userTimesheet.getType().intValue() == UserTimesheet.TYPE_PROJECT) {
 					offerList = getOffer(userTimesheet.getUserId(), userTimesheet.getObjId(), userTimesheet.getWorkDay());
 					if (offerList != null && !offerList.isEmpty()) {
 						changeAmount = (Double)offerList.get(1) * userTimesheet.getRealInput() / 8;
-						this.excuteHql("update ContractInfo set amount = amount + ?0 where id = ?1",
-								new Object[]{changeAmount,(Long)offerList.get(0)});
+						if (!amountMap.containsKey((Long)offerList.get(0))) {
+							amountMap.put((Long)offerList.get(0), changeAmount);
+						}else {
+							amountMap.put((Long)offerList.get(0), amountMap.get((Long)offerList.get(0) + changeAmount));
+						}
 					}
 				}
 				this.save(userTimesheet);
@@ -259,15 +307,17 @@ public class UserTimesheetDaoImpl extends GenericDaoImpl<UserTimesheet, Long> im
 		}
 		if(updateList != null && !updateList.isEmpty()){
 			for(UserTimesheet userTimesheet : updateList){
-				Integer contractType = getContractType(userTimesheet.getObjId());
-				if (userTimesheet.getType() == userTimesheet.TYPE_PROJECT && contractType.intValue() == ContractInfo.TYPE_EXTERNAL) {
+				if (userTimesheet.getType() == userTimesheet.TYPE_PROJECT) {
 					updateWorkTime = userTimesheetRepository.findRealInputById(userTimesheet.getId());
 					if (userTimesheet.getRealInput().doubleValue() != updateWorkTime) {
 						offerList = getOffer(userTimesheet.getUserId(), userTimesheet.getObjId(), userTimesheet.getWorkDay());
 						if (offerList != null && !offerList.isEmpty()) {
 							changeAmount = (Double)offerList.get(1) * (userTimesheet.getRealInput() - updateWorkTime) / 8;
-							this.excuteHql("update ContractInfo set amount = amount + ?0 where id = ?1",
-									new Object[]{changeAmount,(Long)offerList.get(0)});
+							if (!amountMap.containsKey((Long)offerList.get(0))) {
+								amountMap.put((Long)offerList.get(0), changeAmount);
+							}else {
+								amountMap.put((Long)offerList.get(0), amountMap.get((Long)offerList.get(0)) + changeAmount);
+							}
 						}
 					}
 				}
@@ -278,9 +328,16 @@ public class UserTimesheetDaoImpl extends GenericDaoImpl<UserTimesheet, Long> im
 								userTimesheet.getId()});
 				//gengx
 			}
+			for (Map.Entry<Long, Double> entry : amountMap.entrySet()) {
+				if (entry.getKey() != null && entry.getValue() != null) {
+					this.excuteHql("update ContractInfo set amount = amount + ?0 where id = ?1",
+							new Object[]{entry.getValue(),entry.getKey()});
+					this.excuteHql("update ContractInfo set taxes = amount * taxRate,shareCost = amount * shareRate where id = ?0",
+							new Object[]{entry.getKey()});
+				}
+			}
 		}
 	}
-	
 	@Override
 	public UserTimesheet getUserTimesheetForContract(Long id, User user, DeptInfo deptInfo){
 		StringBuffer sb = new StringBuffer();
@@ -364,7 +421,6 @@ public class UserTimesheetDaoImpl extends GenericDaoImpl<UserTimesheet, Long> im
 		}
 	}
 
-
 	@Override
 	public List<Object> getOffer(Long userId, Long objId, Long workDay) {
 		StringBuffer hql = new StringBuffer();
@@ -408,21 +464,8 @@ public class UserTimesheetDaoImpl extends GenericDaoImpl<UserTimesheet, Long> im
 		if (contractInfo != null) {
 			this.excuteHql("update ContractInfo set amount = amount + ?0 where id = ?1", 
 					new Object[]{contractInfo.getAmount(),contractInfo.getId()});
+			this.excuteHql("update ContractInfo set taxes = amount * taxRate,shareCost = amount * shareRate where id = ?0",
+					new Object[]{contractInfo.getId()});
 		}
-	}
-
-	@Override
-	public Integer getContractType(Long objId) {
-		StringBuffer hql = new StringBuffer();
-		List<Object> params = new ArrayList<Object>();
-		hql.append("select wci.type from ContractInfo wci");
-		hql.append(" left join ProjectInfo wpi on wci.id = wpi.contractId");
-		hql.append(" where wpi.id = ?0");
-		params.add(objId);
-		List<Object> list = this.queryAllHql(hql.toString(), params.toArray());
-		if (list != null && !list.isEmpty()) {
-			return (Integer) list.get(0);
-		}
-		return null;
 	}
 }
