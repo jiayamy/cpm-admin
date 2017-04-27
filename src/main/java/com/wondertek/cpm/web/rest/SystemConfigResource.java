@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.codahale.metrics.annotation.Timed;
+import com.wondertek.cpm.config.StringUtil;
 import com.wondertek.cpm.domain.SystemConfig;
 import com.wondertek.cpm.security.AuthoritiesConstants;
 import com.wondertek.cpm.security.SecurityUtils;
@@ -92,16 +93,14 @@ public class SystemConfigResource {
 			}
 			String[] strings = value.split(",");
 			for (String string : strings) {
-				try {
+				if(!StringUtil.isNumber(value)){
+					return ResponseEntity.badRequest()
+							.headers(HeaderUtil.createError("cpmApp.systemConfig.save.styleError", "")).body(null);
+				}else{
 					int parseInt = Integer.parseInt(string);
 					if(parseInt==0){
 						return ResponseEntity.badRequest()
 								.headers(HeaderUtil.createError("cpmApp.systemConfig.save.valueError", "")).body(null);
-					}
-				} catch (Exception e) {
-					if (e != null) {
-						return ResponseEntity.badRequest()
-								.headers(HeaderUtil.createError("cpmApp.systemConfig.save.styleError", "")).body(null);
 					}
 				}
 			}
