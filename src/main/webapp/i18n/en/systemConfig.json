@@ -1,0 +1,23 @@
+{
+    "cpmApp": {
+        "systemConfig" : {
+            "home": {
+                "title": "System Config",
+                "editLable": "Edit a System Config",
+                "search": "Search for System Config"
+            },
+            "updated": "A System Config is updated",
+            "save":{
+            	"paramNone":"Mandatory parameter is empty",
+            	"valueError":"value donnot contains 0",
+            	"styleError":"the style of value exits error,for example:1,2,3"
+            },
+            "detail": {
+                "title": "System Config Information"
+            },
+            "key": "key",
+            "value": "value",
+            "description": "description"
+        }
+    }
+}

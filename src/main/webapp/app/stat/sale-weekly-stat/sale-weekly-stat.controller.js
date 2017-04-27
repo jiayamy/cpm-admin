@@ -21,7 +21,7 @@
         vm.loadSaleDept = loadSaleDept;
         vm.searchQuery = {};
         vm.searchQuery.deptId = pagingParams.deptId;
-        vm.searchQuery.deptName = pagingParams.deptName;
+        //vm.searchQuery.deptName = pagingParams.deptName;
         if (!vm.searchQuery.deptId){
         	vm.haveSearch = null;
         }else{
@@ -50,9 +50,6 @@
         loadAll();
 
         function loadAll () {
-        	if(pagingParams.deptId == undefined){
-        		pagingParams.deptId = "";
-        	}
         	SaleWeeklyStat.query({
                 page: pagingParams.page - 1,
                 size: vm.itemsPerPage,
@@ -88,11 +85,13 @@
             $state.transitionTo($state.$current, {
                 page: vm.page,
                 sort: vm.predicate + ',' + (vm.reverse ? 'asc' : 'desc'),
-                deptId:vm.searchQuery.deptId?vm.searchQuery.deptId.id:""
+                deptId:vm.searchQuery.deptId ? vm.searchQuery.deptId.id : ""
+                //deptId:vm.searchQuery.deptId,
+                //deptName:vm.searchQuery.deptName
             });
         }
 
-        function search(searchQuery) {
+        function search() {
         	if (!vm.searchQuery.deptId){
                 return vm.clear();
             }
@@ -113,5 +112,11 @@
             vm.haveSearch = null;
             vm.transition();
         }
+        
+//        var unsubscribe = $rootScope.$on('cpmApp:deptInfoSelected', function(event, result) {
+//        	vm.searchQuery.deptId = result.objId;
+//        	vm.searchQuery.deptName = result.name;
+//        });
+//        $scope.$on('$destroy', unsubscribe);
     }
 })();

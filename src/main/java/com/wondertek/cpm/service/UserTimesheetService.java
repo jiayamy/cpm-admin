@@ -22,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.wondertek.cpm.CpmConstants;
 import com.wondertek.cpm.config.DateUtil;
 import com.wondertek.cpm.config.StringUtil;
+import com.wondertek.cpm.domain.ContractInfo;
 import com.wondertek.cpm.domain.DeptInfo;
 import com.wondertek.cpm.domain.HolidayInfo;
 import com.wondertek.cpm.domain.User;
@@ -120,10 +121,25 @@ public class UserTimesheetService {
         	userTimesheet.setStatus(CpmConstants.STATUS_DELETED);
         	userTimesheet.setUpdateTime(ZonedDateTime.now());
         	userTimesheet.setUpdator(SecurityUtils.getCurrentUserLogin());
-        	userTimesheetRepository.save(userTimesheet);
+        	//更新对应的合同金额
+        	if(userTimesheet.getType().intValue() == UserTimesheet.TYPE_PROJECT){
+        		//知道该员工在此项目中的报价
+        		List<Object> offerList = userTimesheetDao.getOffer(userTimesheet.getUserId(),userTimesheet.getObjId(),userTimesheet.getWorkDay());
+        		if (offerList != null && !offerList.isEmpty()) {
+        			Double changeAmount =  - userTimesheet.getRealInput() * (Double)offerList.get(1) / 8;
+            		ContractInfo contractInfo = new ContractInfo();
+            		if (changeAmount.doubleValue() != 0) {
+            			contractInfo.setAmount(changeAmount);
+            			contractInfo.setId((Long)offerList.get(0));
+    				}
+            		userTimesheetDao.saveByDelete(userTimesheet,contractInfo);
+				}
+        	}else {
+				userTimesheetRepository.save(userTimesheet);
+			}
         }
     }
-
+    
     /**
      * Search for the userTimesheet corresponding to the query.
      *
@@ -539,6 +555,7 @@ public class UserTimesheetService {
     		List<UserTimesheet> saveList = new ArrayList<UserTimesheet>();
     		List<UserTimesheet> updateList = new ArrayList<UserTimesheet>();
     		List<Long> ids = new ArrayList<Long>();
+    		
     		for(int i = 2; i < userTimesheetForUsers.size(); i++){
     			//一条记录就是一个项目或者合同或者公共成本
     			UserTimesheetForUser userTimesheetForUser = userTimesheetForUsers.get(i);

@@ -20,7 +20,8 @@
                 "bonusRate":"奖金提成比例",
                 "externalQuotation":"外部报价",
                 "salesAnnualIndex":"销售年指标",
-                "shareCostRate":"公摊成本比例"
+                "shareCostRate":"公摊成本比例",
+                "systemConfig":"系统参数"
 	        },
             "contract":{
             	"main":"合同管理",

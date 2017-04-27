@@ -19,6 +19,6 @@ public interface ContractFinishInfoRepository extends JpaRepository<ContractFini
 	@Query(" from ContractFinishInfo where id in (select max(id) from ContractFinishInfo where contractId = ?1 and createTime <= ?2)")
 	ContractFinishInfo findMaxByContractIdAndCreateTimeBefore(Long contractId, ZonedDateTime createTime);
 	
-	@Query(" from ContractFinishInfo where contractId = ?1 and createTime > ?2 and createTime <?3 order by createTime asc")
+	@Query(" from ContractFinishInfo where contractId = ?1 and createTime > ?2 and createTime <= ?3 order by createTime asc")
 	List<ContractFinishInfo> findAllByContractIdAndCreateTimeBetween(Long contractId, ZonedDateTime beginTime, ZonedDateTime endTime);
 }
