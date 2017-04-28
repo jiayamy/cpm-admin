@@ -298,8 +298,10 @@ public class ProjectCostResource {
 											.setSuccess(Boolean.FALSE)
 											.setMsgKey("cpmApp.projectCost.upload.dataError")
 											.setMsgParam(excelValue.getSheet() + "," + rowNum +","+(columnNum+1)));
+						}else if(val instanceof Double){
+							val = ((Double)val).longValue();
 						}
-						ProjectInfo info = projectInfoMap.get(val.toString());
+						ProjectInfo info = projectInfoMap.get(StringUtil.nullToString(val.toString()));
 						if(info == null){
 							return ResponseEntity.ok().body(cpmResponse
 									.setSuccess(Boolean.FALSE)
@@ -324,6 +326,8 @@ public class ProjectCostResource {
 									.setSuccess(Boolean.FALSE)
 									.setMsgKey("cpmApp.projectCost.upload.dataError")
 									.setMsgParam(excelValue.getSheet() + "," + rowNum +","+(columnNum+1)));
+						}else if(val instanceof Double){
+							val = ((Double)val).longValue();
 						}
 						projectCost.setName(val.toString());
 						
@@ -364,12 +368,7 @@ public class ProjectCostResource {
 									.setMsgParam(excelValue.getSheet() + "," + rowNum +","+(columnNum+1)));
 						}else if(val instanceof Date){//date
 							projectCost.setCostDay(StringUtil.nullToLong(DateUtil.formatDate(DateUtil.DATE_YYYYMMDD_PATTERN, (Date)val)));
-						}else if(val instanceof Double){//double
-							projectCost.setCostDay(((Double)val).longValue());
-						}else{//String
-							projectCost.setCostDay(StringUtil.nullToLong(val));
-						}
-						if(projectCost.getCostDay() == 0){
+						}else{
 							return ResponseEntity.ok().body(cpmResponse
 									.setSuccess(Boolean.FALSE)
 									.setMsgKey("cpmApp.projectCost.upload.dataError")
@@ -400,9 +399,10 @@ public class ProjectCostResource {
 						columnNum++;
 						if (ls.size() > columnNum) {
 							val = ls.get(columnNum);
-							if(val != null){
-								projectCost.setCostDesc(val.toString());
+							if(val != null && val instanceof Double){
+								val = ((Double)val).longValue();
 							}
+							projectCost.setCostDesc(StringUtil.nullToString(val));
 						}
 						projectCosts.add(projectCost);
 					} catch (Exception e) {

@@ -301,16 +301,7 @@ public class DeptInfoService {
 		SystemConfig systemConfig = systemConfigRepository.findByKey(CpmConstants.DEFAULT_Dept_SALE_TOPID);
 		if(systemConfig != null){
 			topSaleDeptIds = StringUtil.stringToLongArray(systemConfig.getValue());
-		}else{//系统配置没找到
-			topSaleDeptIds.add(deptInfos.get(0).getId());
-			String tempIdPath = deptInfos.get(0).getIdPath();
-			for(int i = 1;i<deptInfos.size();i++){
-				if(tempIdPath.equals(deptInfos.get(i).getIdPath())){
-					topSaleDeptIds.add(deptInfos.get(i).getId());
-				}
-			}
 		}
-		
 		//各个顶级销售部门下的一级部门
 		List<DeptInfoVo> primaryDeptInfoVos = new ArrayList<DeptInfoVo>();
 		for(Long topId : topSaleDeptIds){

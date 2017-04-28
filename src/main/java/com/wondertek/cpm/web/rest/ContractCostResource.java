@@ -275,8 +275,10 @@ public class ContractCostResource {
 											.setSuccess(Boolean.FALSE)
 											.setMsgKey("cpmApp.contractCost.upload.dataError")
 											.setMsgParam(excelValue.getSheet() + "," + rowNum +","+(columnNum+1)));
+						}else if(val instanceof Double){
+							val = ((Double)val).longValue();
 						}
-						ContractInfo info = contractInfoMap.get(val.toString());
+						ContractInfo info = contractInfoMap.get(val.toString().trim());
 						if(info == null){
 							return ResponseEntity.ok().body(cpmResponse
 									.setSuccess(Boolean.FALSE)
@@ -298,6 +300,8 @@ public class ContractCostResource {
 											.setSuccess(Boolean.FALSE)
 											.setMsgKey("cpmApp.contractCost.upload.dataError")
 											.setMsgParam(excelValue.getSheet() + "," + rowNum +","+(columnNum+1)));
+						}else if(val instanceof Double){
+							val = ((Double)val).longValue();
 						}
 						contractCost.setName(StringUtil.nullToString(val));
 						
@@ -309,8 +313,10 @@ public class ContractCostResource {
 									.setSuccess(Boolean.FALSE)
 									.setMsgKey("cpmApp.contractCost.upload.dataError")
 									.setMsgParam(excelValue.getSheet() + "," + rowNum +","+(columnNum+1)));
+						}else if(val instanceof Double){
+							val = ((Double)val).longValue();
 						}
-						companyId = companys.get(StringUtil.null2Str(val));
+						companyId = companys.get(StringUtil.nullToString(val.toString()));
 						if(companyId == null){
 							return ResponseEntity.ok().body(cpmResponse
 									.setSuccess(Boolean.FALSE)
@@ -326,8 +332,10 @@ public class ContractCostResource {
 									.setSuccess(Boolean.FALSE)
 									.setMsgKey("cpmApp.contractCost.upload.dataError")
 									.setMsgParam(excelValue.getSheet() + "," + rowNum +","+(columnNum+1)));
+						}else if(val instanceof Double){
+							val = ((Double)val).longValue();
 						}
-						primaryDeptInfos = deptInfos.get(companyId + "_" + StringUtil.null2Str(val));
+						primaryDeptInfos = deptInfos.get(companyId + "_" + StringUtil.nullToString(val.toString()));
 						if(primaryDeptInfos == null || primaryDeptInfos.isEmpty()){
 							return ResponseEntity.ok().body(cpmResponse
 									.setSuccess(Boolean.FALSE)
@@ -344,7 +352,11 @@ public class ContractCostResource {
 						columnNum++;
 						val = ls.get(columnNum);
 						if(!StringUtil.isNullStr(val)){//校验二级部门是否存在
-							secondaryDeptInfos = deptInfos.get(companyId + "_" + StringUtil.null2Str(val));
+							if(val instanceof Double){
+								val = ((Double)val).longValue();
+							}
+							val = val.toString().trim();
+							secondaryDeptInfos = deptInfos.get(companyId + "_" + StringUtil.nullToString(val));
 							if(secondaryDeptInfos == null || secondaryDeptInfos.isEmpty()){
 								return ResponseEntity.ok().body(cpmResponse
 										.setSuccess(Boolean.FALSE)
@@ -353,7 +365,7 @@ public class ContractCostResource {
 							}									
 						}
 						
-						Long deptId = getUserDeptFromDeptInfos(deptInfos,companyId,primaryDeptInfos.get(0),StringUtil.null2Str(val));
+						Long deptId = getUserDeptFromDeptInfos(deptInfos,companyId,primaryDeptInfos.get(0),StringUtil.nullToString(val));
 						if(deptId < 0){
 							return ResponseEntity.ok().body(cpmResponse
 									.setSuccess(Boolean.FALSE)
@@ -403,12 +415,7 @@ public class ContractCostResource {
 									.setMsgParam(excelValue.getSheet() + "," + rowNum +","+(columnNum+1)));
 						}else if(val instanceof Date){//date
 							contractCost.setCostDay(StringUtil.nullToLong(DateUtil.formatDate(DateUtil.DATE_YYYYMMDD_PATTERN, (Date)val)));
-						}else if(val instanceof Double){//double
-							contractCost.setCostDay(((Double)val).longValue());
-						}else{//String
-							contractCost.setCostDay(StringUtil.nullToLong(val));
-						}
-						if(contractCost.getCostDay() == 0){
+						}else{
 							return ResponseEntity.ok().body(cpmResponse
 									.setSuccess(Boolean.FALSE)
 									.setMsgKey("cpmApp.contractCost.upload.dataError")
@@ -439,9 +446,10 @@ public class ContractCostResource {
 						columnNum++;
 						if (ls.size() > columnNum) {
 							val = ls.get(columnNum);
-							if(val != null){
-								contractCost.setCostDesc(val.toString());
+							if(val != null && val instanceof Double){
+								val = ((Double)val).longValue();
 							}
+							contractCost.setCostDesc(StringUtil.nullToString(val));
 						}
 						contractCosts.add(contractCost);
 					} catch (Exception e) {

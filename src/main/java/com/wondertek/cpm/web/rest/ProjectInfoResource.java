@@ -414,7 +414,7 @@ public class ProjectInfoResource {
 							DecimalFormat format = new DecimalFormat("0");
 							projectInfo.setSerialNum(format.format(val));
 						}else{//String
-							projectInfo.setSerialNum(StringUtil.nullToString(val));
+							projectInfo.setSerialNum(StringUtil.nullToString(val.toString()));
 						}
 						if(projectInfosMap.containsKey(projectInfo.getSerialNum())){//检验是否已存在项目编号
 							return ResponseEntity.ok().body(cpmResponse
@@ -439,6 +439,8 @@ public class ProjectInfoResource {
 									.setSuccess(Boolean.FALSE)
 									.setMsgKey("cpmApp.projectInfo.upload.dataError")
 									.setMsgParam(excelValue.getSheet() + "," + rowNum +","+(columnNum+1)));
+						}else if(val instanceof Double){
+							val = ((Double)val).longValue();
 						}
 						projectInfo.setName(val.toString());
 						
@@ -454,13 +456,13 @@ public class ProjectInfoResource {
 							DecimalFormat format = new DecimalFormat("0");
 							val = format.format(val);
 						}
-						if(!contractInfosMap.containsKey(StringUtil.nullToString(val))){
+						if(!contractInfosMap.containsKey(StringUtil.nullToString(val.toString()))){
 							return ResponseEntity.ok().body(cpmResponse
 									.setSuccess(Boolean.FALSE)
 									.setMsgKey("cpmApp.projectInfo.upload.serialNumError")
 									.setMsgParam(excelValue.getSheet() + "," + rowNum +","+(columnNum+1)));
 						}
-						projectInfo.setContractId(contractInfosMap.get(StringUtil.nullToString(val)).getId());
+						projectInfo.setContractId(contractInfosMap.get(StringUtil.nullToString(val.toString())).getId());
 						
 						//检验第四列  项目经理工号
 						columnNum ++;
@@ -474,7 +476,7 @@ public class ProjectInfoResource {
 							DecimalFormat format = new DecimalFormat("0");
 							val = format.format(val);
 						}
-						String userSerialNum = StringUtil.nullToString(val);
+						String userSerialNum = StringUtil.nullToString(val.toString());
 						if(!userBaseVoMap.containsKey(userSerialNum)){
 							return ResponseEntity.ok().body(cpmResponse
 									.setSuccess(Boolean.FALSE)

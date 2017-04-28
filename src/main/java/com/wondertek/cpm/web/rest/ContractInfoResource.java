@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.text.DecimalFormat;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
@@ -361,9 +360,9 @@ public class ContractInfoResource {
 								.setSuccess(Boolean.FALSE)
 								.setMsgKey("cpmApp.contractInfo.upload.requiredError"));
 			}
-			//从第一行读取，最多读取10个sheet，最多读取23列
+			//从第一行读取，最多读取10个sheet，最多读取24列
         	int startNum = 1;
-			List<ExcelValue> lists = ExcelUtil.readExcel(file,startNum,10,23);
+			List<ExcelValue> lists = ExcelUtil.readExcel(file,startNum,10,24);
 			if(lists == null || lists.isEmpty()){
 				return ResponseEntity.ok()
 						.body(cpmResponse
@@ -412,10 +411,9 @@ public class ContractInfoResource {
 											.setMsgKey("cpmApp.contractInfo.upload.dataError")
 											.setMsgParam(excelValue.getSheet() + "," + rowNum +","+(columnNum+1)));
 						}else if(val instanceof Double){
-							DecimalFormat format = new DecimalFormat("0");
-							val = format.format((Double)val);
+							val = ((Double)val).longValue();
 						}
-						contractInfo.setSerialNum(val.toString());
+						contractInfo.setSerialNum(val.toString().trim());
 						//检验是否新增合同
 						Boolean isExistSerialnum = contractInfoMap.containsKey(contractInfo.getSerialNum());
 						//上传合同信息时，只添加不更新
@@ -434,6 +432,8 @@ public class ContractInfoResource {
 									.setSuccess(Boolean.FALSE)
 									.setMsgKey("cpmApp.contractInfo.upload.dataError")
 									.setMsgParam(excelValue.getSheet() + "," + rowNum + "," + (columnNum+1)));
+						}else if(val instanceof Double){
+							val = ((Double)val).longValue();
 						}
 						contractInfo.setName(val.toString());
 						
@@ -489,7 +489,7 @@ public class ContractInfoResource {
 													excelValue.getSheet() + "," + rowNum + "," + (columnNum + 1)));
 						}
 						
-						//检验第五列  人员级别信息
+						//检验第五列  外包人员信息
 						columnNum ++;
 						val = ls.get(columnNum);
 						if(contractInfo.getType() == ContractInfo.TYPE_EXTERNAL){
@@ -519,9 +519,6 @@ public class ContractInfoResource {
 								outsourcingUser.setRank(temp[0]);
 								outsourcingUser.setTargetAmount(StringUtil.nullToDouble(temp[1].trim()).intValue());
 								outsourcingUser.setOffer(StringUtil.nullToDouble(temp[2].trim()));
-								//String mark = new Random().nextInt(100) + "_" + 
-								//DateUtil.formatDate(DateUtil.DATE_TIME_NO_SPACE_MS_PATTERN, DateUtil.convertZonedDateTime(ZonedDateTime.now()));
-								//outsourcingUser.setMark(mark);
 								if(outsourcingUsersMap.get(contractInfo.getSerialNum()).size() > 0){
 									for(OutsourcingUser outs : outsourcingUsersMap.get(contractInfo.getSerialNum())){
 										if(outsourcingUser.getRank().equals(outs.getRank())){
@@ -549,7 +546,10 @@ public class ContractInfoResource {
 						val = ls.get(columnNum);
 						UserBaseVo salemanVo = null;
 						if(!StringUtil.isNullStr(val)){
-							salemanVo = userMap.get(val.toString());
+							if(val instanceof Double){
+								val = ((Double)val).longValue();
+							}
+							salemanVo = userMap.get(StringUtil.nullToString(val.toString()));
 							if(salemanVo == null){
 								return ResponseEntity.ok().body(cpmResponse
 										.setSuccess(Boolean.FALSE)
@@ -583,7 +583,10 @@ public class ContractInfoResource {
 						val = ls.get(columnNum);
 						UserBaseVo consultantVo = null;
 						if(!StringUtil.isNullStr(val)){
-							consultantVo = userMap.get(val.toString());
+							if(val instanceof Double){
+								val = ((Double)val).longValue();
+							}
+							consultantVo = userMap.get(StringUtil.nullToString(val.toString()));
 							if(consultantVo == null){
 								return ResponseEntity.ok().body(cpmResponse
 										.setSuccess(Boolean.FALSE)
@@ -703,6 +706,9 @@ public class ContractInfoResource {
 						//检验第十四列 付款方式
 						columnNum ++;
 						val = ls.get(columnNum);
+						if(!StringUtil.isNullStr(val) && val instanceof Double){
+							val = ((Double)val).longValue();
+						}
 						contractInfo.setPaymentWay(StringUtil.nullToString(val));
 						
 						//检验第十五列  税率
@@ -757,8 +763,10 @@ public class ContractInfoResource {
 						columnNum ++;
 						if(ls.size() > columnNum){
 							val = ls.get(columnNum);
-							if(val == null){
-							}else{
+							if(val != null){
+								if(val instanceof Double){
+									val = ((Double)val).longValue();
+								}
 								contractInfo.setContractor(StringUtil.nullToString(val));
 							}
 						}
@@ -767,8 +775,10 @@ public class ContractInfoResource {
 						columnNum ++;
 						if(ls.size() > columnNum){
 							val = ls.get(columnNum);
-							if(val == null){
-							}else{
+							if(val != null){
+								if(val instanceof Double){
+									val = ((Double)val).longValue();
+								}
 								contractInfo.setLinkman(StringUtil.nullToString(val));
 							}
 						}
@@ -777,8 +787,10 @@ public class ContractInfoResource {
 						columnNum ++;
 						if (ls.size() > columnNum) {
 							val = ls.get(columnNum);
-							if (val == null) {
-							} else {
+							if (val != null) {
+								if(val instanceof Double){
+									val = ((Double)val).longValue();
+								}
 								contractInfo.setContactDept(StringUtil.nullToString(val));
 							} 
 						}
@@ -786,8 +798,10 @@ public class ContractInfoResource {
 						columnNum ++;
 						if (ls.size() > columnNum) {
 							val = ls.get(columnNum);
-							if (val == null) {
-							} else {
+							if (val != null) {
+								if(val instanceof Double){
+									val = ((Double)val).longValue();
+								}
 								contractInfo.setTelephone(StringUtil.nullToString(val));
 							} 
 						}
@@ -795,8 +809,10 @@ public class ContractInfoResource {
 						columnNum ++;
 						if (ls.size() > columnNum) {
 							val = ls.get(columnNum);
-							if (val == null) {
-							} else {
+							if (val != null) {
+								if(val instanceof Double){
+									val = ((Double)val).longValue();
+								}
 								contractInfo.setAddress(StringUtil.nullToString(val));
 							} 
 						}
@@ -804,8 +820,10 @@ public class ContractInfoResource {
 						columnNum ++;
 						if (ls.size() > columnNum) {
 							val = ls.get(columnNum);
-							if (val == null) {
-							} else {
+							if (val != null) {
+								if(val instanceof Double){
+									val = ((Double)val).longValue();
+								}
 								contractInfo.setPostcode(StringUtil.nullToString(val));
 							} 
 						}
