@@ -35,6 +35,11 @@
                 grade: null
             },
             resolve: {
+            	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
+                    return $ocLazyLoad.load([
+                                             'app/info/external-quotation/external-quotation.service.js',
+                                             'app/info/external-quotation/external-quotation.controller.js']);
+                }],
                 pagingParams: ['$stateParams', 'PaginationUtil', function ($stateParams, PaginationUtil) {
                     return {
                         page: PaginationUtil.parsePage($stateParams.page),
@@ -66,6 +71,9 @@
                 }
             },
             resolve: {
+            	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
+                    return $ocLazyLoad.load('app/info/external-quotation/external-quotation-dialog.controller.js');
+                }],
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                 	$translatePartialLoader.addPart('externalQuotation');
                 	$translatePartialLoader.addPart('global');
@@ -107,13 +115,20 @@
                 }
             },
             resolve: {
+            	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
+                    return $ocLazyLoad.load('app/info/external-quotation/external-quotation-dialog.controller.js');
+                }],
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                 	$translatePartialLoader.addPart('externalQuotation');
                 	$translatePartialLoader.addPart('global');
                     return $translate.refresh();
                 }],
-                entity: ['ExternalQuotation','$stateParams', function(ExternalQuotation,$stateParams) {
-                    return ExternalQuotation.get({id : $stateParams.id}).$promise;
+                entity: ['$stateParams', '$ocLazyLoad','$injector', function($stateParams, $ocLazyLoad,$injector) {
+                	return $ocLazyLoad.load('app/info/external-quotation/external-quotation.service.js').then(
+                			function(){
+                				return $injector.get('ExternalQuotation').get({id : $stateParams.id}).$promise;
+                			}
+                	);
                 }],
                 previousState: ["$state", function ($state) {
                     var currentStateData = {

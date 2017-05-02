@@ -31,6 +31,13 @@
                 deptType : null
             },
             resolve: {
+            	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
+                    return $ocLazyLoad.load([
+                                             'app/stat/sale-purchase-internalCost/sale-purchase-internalCost.service.js',
+                                             'app/stat/sale-purchase-internalCost/sale-purchase-internalCost.controller.js',
+                                             'app/project/project-info/project-info.service.js',
+                                             'app/info/dept-type/dept-type.service.js']);
+                }],
                 pagingParams: ['$stateParams', 'PaginationUtil', function ($stateParams, PaginationUtil) {
                     return {
                         contractId: $stateParams.contractId,
@@ -62,6 +69,12 @@
                     backdrop: 'static',
                     size: 'lg',
                     resolve: {
+                    	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
+                            return $ocLazyLoad.load([
+                                                     'app/info/dept-info/dept-info-query.controller.js',
+                                                     'app/info/dept-info/dept-info.service.js'
+                                                     ]);
+                        }],
                         entity: function() {
                             return {
                             	selectType : $stateParams.selectType,
@@ -107,6 +120,9 @@
                 deptType : null
             },
             resolve: {
+            	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
+                    return $ocLazyLoad.load('app/stat/sale-purchase-internalCost/sale-purchase-internalCost-detail.controller.js');
+                }],
                 pagingParams: ['$stateParams', 'PaginationUtil', function ($stateParams, PaginationUtil) {
                     return {
                         page: PaginationUtil.parsePage($stateParams.page),

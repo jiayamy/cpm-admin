@@ -32,6 +32,12 @@
                 contractId: null
             },
             resolve: {
+            	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
+                    return $ocLazyLoad.load([
+                                             'app/stat/bonus/bonus.service.js',
+                                             'app/stat/bonus/bonus.controller.js',
+                                             'app/contract/contract-info/contract-info.service.js']);
+                }],
                 pagingParams: ['$stateParams','PaginationUtil',function ($stateParams,PaginationUtil) {
                     return {
                     	page: PaginationUtil.parsePage($stateParams.page),
@@ -61,13 +67,20 @@
                 }
             },
             resolve: {
+            	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
+                    return $ocLazyLoad.load('app/stat/bonus/bonus-detail.controller.js');
+                }],
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                     $translatePartialLoader.addPart('bonus');
                     $translatePartialLoader.addPart('global');
                     return $translate.refresh();
                 }],
-                entity: ['$stateParams', 'Bonus', function($stateParams, Bonus) {
-                    return Bonus.get({id : $stateParams.id}).$promise;
+                entity: ['$stateParams', '$ocLazyLoad','$injector', function($stateParams, $ocLazyLoad,$injector) {
+                	return $ocLazyLoad.load('app/stat/bonus/bonus.service.js').then(
+                			function(){
+                				return $injector.get('Bonus').get({id : $stateParams.id}).$promise;
+                			}
+                	);
                 }],
                 previousState: ["$state", function ($state) {
                     var currentStateData = {

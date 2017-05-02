@@ -33,6 +33,13 @@
                 deptType: null
             },
             resolve: {
+            	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
+                    return $ocLazyLoad.load([
+                                             'app/stat/project-support-bonus/project-support-bonus.service.js',
+                                             'app/stat/project-support-bonus/project-support-bonus.controller.js',
+                                             'app/project/project-info/project-info.service.js',
+                                             'app/info/dept-type/dept-type.service.js']);
+                }],
                 pagingParams: ['$stateParams','PaginationUtil',function ($stateParams,PaginationUtil) {
                     return {
                     	page: PaginationUtil.parsePage($stateParams.page),
@@ -63,6 +70,9 @@
                 }
             },
             resolve: {
+            	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
+                    return $ocLazyLoad.load('app/stat/project-support-bonus/project-support-bonus-detail.controller.js');
+                }],
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                     $translatePartialLoader.addPart('projectSupportBonus');
                     $translatePartialLoader.addPart('global');

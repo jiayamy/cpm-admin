@@ -37,6 +37,12 @@
                 userName: null
             },
             resolve: {
+            	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
+                    return $ocLazyLoad.load([
+                                             'app/info/sales-annualIndex/sales-annualIndex.service.js',
+                                             'app/info/sales-annualIndex/sales-annualIndex.controller.js'
+                                             ]);
+                }],
                 pagingParams: ['$stateParams', 'PaginationUtil', function ($stateParams, PaginationUtil) {
                     return {
                         page: PaginationUtil.parsePage($stateParams.page),
@@ -70,6 +76,12 @@
                     backdrop: 'static',
                     size: 'lg',
                     resolve: {
+                    	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
+                            return $ocLazyLoad.load([
+                                                     'app/info/dept-info/dept-info-query.controller.js',
+                                                     'app/info/dept-info/dept-info.service.js'
+                                                     ]);
+                        }],
                         entity: function() {
                             return {
                             	selectType : $stateParams.selectType,
@@ -100,6 +112,9 @@
                 }
             },
             resolve: {
+            	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
+                    return $ocLazyLoad.load('app/info/sales-annualIndex/sales-annualIndex-dialog.controller.js');
+                }],
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                 	$translatePartialLoader.addPart('salesAnnualIndex');
                 	$translatePartialLoader.addPart('deptInfo');
@@ -142,6 +157,12 @@
                     backdrop: 'static',
                     size: 'lg',
                     resolve: {
+                    	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
+                            return $ocLazyLoad.load([
+                                                     'app/info/dept-info/dept-info-query.controller.js',
+                                                     'app/info/dept-info/dept-info.service.js'
+                                                     ]);
+                        }],
                         entity: function() {
                             return {
                             	selectType : $stateParams.selectType,
@@ -172,14 +193,21 @@
                 }
             },
             resolve: {
+            	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
+                    return $ocLazyLoad.load('app/info/sales-annualIndex/sales-annualIndex-dialog.controller.js');
+                }],
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                 	$translatePartialLoader.addPart('salesAnnualIndex');
                 	$translatePartialLoader.addPart('deptInfo');
                 	$translatePartialLoader.addPart('global');
                     return $translate.refresh();
                 }],
-                entity: ['SalesAnnualIndex','$stateParams', function(SalesAnnualIndex,$stateParams) {
-                    return SalesAnnualIndex.get({id : $stateParams.id}).$promise;
+                entity: ['$stateParams', '$ocLazyLoad','$injector', function($stateParams, $ocLazyLoad,$injector) {
+                	return $ocLazyLoad.load('app/info/sales-annualIndex/sales-annualIndex.service.js').then(
+                			function(){
+                				return $injector.get('SalesAnnualIndex').get({id : $stateParams.id}).$promise;
+                			}
+                	);
                 }],
                 previousState: ["$state", function ($state) {
                     var currentStateData = {

@@ -35,6 +35,12 @@
                 search: null
             },
             resolve: {
+            	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
+                    return $ocLazyLoad.load([
+                                             'app/info/dept-type/dept-type.service.js',
+                                             'app/info/dept-type/dept-type.search.service.js',
+                                             'app/info/dept-type/dept-type.controller.js']);
+                }],
                 pagingParams: ['$stateParams', 'PaginationUtil', function ($stateParams, PaginationUtil) {
                     return {
                         page: PaginationUtil.parsePage($stateParams.page),
@@ -66,13 +72,20 @@
                 }
             },
             resolve: {
+            	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
+                    return $ocLazyLoad.load('app/info/dept-type/dept-type-detail.controller.js');
+                }],
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                     $translatePartialLoader.addPart('deptType');
                     $translatePartialLoader.addPart('global');
                     return $translate.refresh();
                 }],
-                entity: ['$stateParams', 'DeptType', function($stateParams, DeptType) {
-                    return DeptType.get({id : $stateParams.id}).$promise;
+                entity: ['$stateParams', '$ocLazyLoad','$injector', function($stateParams, $ocLazyLoad, $injector) {
+                	return $ocLazyLoad.load('app/info/dept-type/dept-type.service.js').then(
+                			function(){
+                				return $injector.get('DeptType').get({id : $stateParams.id}).$promise;
+                			}
+                	);
                 }],
                 previousState: ["$state", function ($state) {
                     var currentStateData = {
@@ -98,6 +111,9 @@
                     backdrop: 'static',
                     size: 'lg',
                     resolve: {
+                    	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
+                            return $ocLazyLoad.load('app/info/dept-type/dept-type-dialog.controller.js');
+                        }],
                         entity: ['DeptType', function(DeptType) {
                             return DeptType.get({id : $stateParams.id}).$promise;
                         }]
@@ -123,6 +139,9 @@
                     backdrop: 'static',
                     size: 'lg',
                     resolve: {
+                    	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
+                            return $ocLazyLoad.load('app/info/dept-type/dept-type-dialog.controller.js');
+                        }],
                         entity: function () {
                             return {
                                 name: null,
@@ -151,6 +170,9 @@
                     backdrop: 'static',
                     size: 'lg',
                     resolve: {
+                    	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
+                            return $ocLazyLoad.load('app/info/dept-type/dept-type-dialog.controller.js');
+                        }],
                         entity: ['DeptType', function(DeptType) {
                             return DeptType.get({id : $stateParams.id}).$promise;
                         }]
@@ -175,6 +197,9 @@
                     controllerAs: 'vm',
                     size: 'md',
                     resolve: {
+                    	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
+                            return $ocLazyLoad.load('app/info/dept-type/dept-type-delete-dialog.controller.js');
+                        }],
                         entity: ['DeptType', function(DeptType) {
                             return DeptType.get({id : $stateParams.id}).$promise;
                         }]

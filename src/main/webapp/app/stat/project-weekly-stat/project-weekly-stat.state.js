@@ -35,6 +35,12 @@
                 projectId: null
             },
             resolve: {
+            	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
+                    return $ocLazyLoad.load([
+                                             'app/stat/project-weekly-stat/project-weekly-stat.service.js',
+                                             'app/stat/project-weekly-stat/project-weekly-stat.controller.js',
+                                             'app/project/project-info/project-info.service.js']);
+                }],
                 pagingParams: ['$stateParams', 'PaginationUtil', function ($stateParams, PaginationUtil) {
                     return {
                         page: PaginationUtil.parsePage($stateParams.page),
@@ -66,13 +72,20 @@
                 }
             },
             resolve: {
+            	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
+                    return $ocLazyLoad.load('app/stat/project-weekly-stat/project-weekly-stat-detail.controller.js');
+                }],
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                     $translatePartialLoader.addPart('projectWeeklyStat');
                     $translatePartialLoader.addPart('global');
                     return $translate.refresh();
                 }],
-                entity: ['$stateParams', 'ProjectWeeklyStat', function($stateParams, ProjectWeeklyStat) {
-                    return ProjectWeeklyStat.get({id : $stateParams.id}).$promise;
+                entity: ['$stateParams', '$ocLazyLoad','$injector', function($stateParams, $ocLazyLoad,$injector) {
+                	return $ocLazyLoad.load('app/stat/project-weekly-stat/project-weekly-stat.service.js').then(
+                			function(){
+                				return $injector.get('ProjectWeeklyStat').get({id : $stateParams.id}).$promise;
+                			}
+                	);
                 }],
                 previousState: ["$state", function ($state) {
                     var currentStateData = {
@@ -104,6 +117,10 @@
                 id : null
             },
             resolve: {
+            	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
+                    return $ocLazyLoad.load(['app/stat/project-weekly-stat/project-weekly-stat-chart.controller.js',
+                                             'app/stat/project-weekly-stat/project-weekly-stat-chart.service.js']);
+                }],
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                 	$translatePartialLoader.addPart('projectWeeklyStat');
                     $translatePartialLoader.addPart('global');
