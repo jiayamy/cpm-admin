@@ -209,7 +209,11 @@
 	                return $translate.refresh();
 	            }],
 	            entity: ['$stateParams', 'UserTimesheet', function($stateParams, UserTimesheet) {
-	            	return UserTimesheet.get({id : $stateParams.id}).$promise;
+	            	return $ocLazyLoad.load('app/timesheet/user-timesheet/user-timesheet.service.js').then(
+                			function(){
+                				return $injector.get('UserTimesheet').get({id : $stateParams.id}).$promise;
+                			}
+                		);
 	            }],
 	            previousState: ["$state", function ($state) {
 	                var currentStateData = {
