@@ -38,6 +38,10 @@
                 status:null
             },
             resolve: {
+            	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
+                    return $ocLazyLoad.load(['app/info/user-cost/user-cost.controller.js',
+                                             'app/info/user-cost/user-cost.service.js']);
+                }],
                 pagingParams: ['$stateParams', 'PaginationUtil', function ($stateParams, PaginationUtil) {
                     return {
                         page: PaginationUtil.parsePage($stateParams.page),
@@ -72,14 +76,21 @@
                 }
             },
             resolve: {
+            	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
+                    return $ocLazyLoad.load(['app/info/user-cost/user-cost-detail.controller.js']);
+                }],
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                     $translatePartialLoader.addPart('userCost');
                     $translatePartialLoader.addPart('deptInfo');
                     $translatePartialLoader.addPart('global');
                     return $translate.refresh();
                 }],
-                entity: ['$stateParams', 'UserCost', function($stateParams, UserCost) {
-                    return UserCost.get({id : $stateParams.id}).$promise;
+                entity: ['$stateParams', '$ocLazyLoad','$injector', function($stateParams, $ocLazyLoad,$injector) {
+                	return $ocLazyLoad.load('app/info/user-cost/user-cost.service.js').then(
+                			function(){
+                				return $injector.get('UserCost').get({id : $stateParams.id}).$promise;
+                			}
+                	);
                 }],
                 previousState: ["$state", function ($state) {
                     var currentStateData = {
@@ -105,14 +116,21 @@
                 }
             },
             resolve: {
+            	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
+                    return $ocLazyLoad.load('app/info/user-cost/user-cost-dialog.controller.js');
+                }],
 	            translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
 	                $translatePartialLoader.addPart('userCost');
 	                $translatePartialLoader.addPart('deptInfo');
 	                $translatePartialLoader.addPart('global');
 	                return $translate.refresh();
 	            }],
-	            entity: ['$stateParams', 'UserCost', function($stateParams, UserCost) {
-	                return UserCost.get({id : $stateParams.id}).$promise;
+	            entity: ['$stateParams', '$ocLazyLoad','$injector', function($stateParams, $ocLazyLoad,$injector) {
+	            	return $ocLazyLoad.load('app/info/user-cost/user-cost.service.js').then(
+	            			function(){
+	            				return $injector.get('UserCost').get({id : $stateParams.id}).$promise;
+	            			}
+	            	);
 	            }],
 	            previousState: ["$state", function ($state) {
 	                var currentStateData = {
@@ -139,6 +157,12 @@
                     backdrop: 'static',
                     size: 'lg',
                     resolve: {
+                    	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
+                            return $ocLazyLoad.load([
+                                                     'app/info/dept-info/dept-info-query.controller.js',
+                                                     'app/info/dept-info/dept-info.service.js'
+                                                     ]);
+                        }],
                         entity: function() {
                             return {
                             	selectType : $stateParams.selectType,
@@ -168,6 +192,9 @@
                 }
             },
             resolve: {
+            	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
+                    return $ocLazyLoad.load('app/info/user-cost/user-cost-dialog.controller.js');
+                }],
             	translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                     $translatePartialLoader.addPart('userCost');
                     $translatePartialLoader.addPart('deptInfo');
@@ -213,6 +240,12 @@
                     backdrop: 'static',
                     size: 'lg',
                     resolve: {
+                    	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
+                            return $ocLazyLoad.load([
+                                                     'app/info/dept-info/dept-info-query.controller.js',
+                                                     'app/info/dept-info/dept-info.service.js'
+                                                     ]);
+                        }],
                         entity: function() {
                             return {
                             	selectType : $stateParams.selectType,
@@ -241,19 +274,26 @@
                 }
             },
             resolve: {
+            	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
+                    return $ocLazyLoad.load('app/info/user-cost/user-cost-dialog.controller.js');
+                }],
             	translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                     $translatePartialLoader.addPart('userCost');
                     $translatePartialLoader.addPart('deptInfo');
                     $translatePartialLoader.addPart('global');
                     return $translate.refresh();
                 }],
-                entity: ['$stateParams','UserCost', function($stateParams,UserCost) {
-                  return UserCost.get({id : $stateParams.id}).$promise;
-                  }],
+                entity: ['$stateParams', '$ocLazyLoad','$injector', function($stateParams, $ocLazyLoad,$injector) {
+	            	return $ocLazyLoad.load('app/info/user-cost/user-cost.service.js').then(
+	            			function(){
+	            				return $injector.get('UserCost').get({id : $stateParams.id}).$promise;
+	            			}
+	            	);
+	            }],
                 previousState: ["$state", function ($state) {
                 	var currentStateData = {
                 		queryDept:'user-cost.edit.queryDept',
-            			name: $state.current.name || 'user-cost-detail',
+            			name: $state.current.name || 'user-cost',
             			params: $state.params,
             			url: $state.href($state.current.name, $state.params)
                 	};
@@ -275,6 +315,12 @@
                     backdrop: 'static',
                     size: 'lg',
                     resolve: {
+                    	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
+                            return $ocLazyLoad.load([
+                                                     'app/info/dept-info/dept-info-query.controller.js',
+                                                     'app/info/dept-info/dept-info.service.js'
+                                                     ]);
+                        }],
                         entity: function() {
                             return {
                             	selectType : $stateParams.selectType,
@@ -302,6 +348,9 @@
                     controllerAs: 'vm',
                     size: 'md',
                     resolve: {
+                    	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
+                            return $ocLazyLoad.load('app/info/user-cost/user-cost-delete-dialog.controller.js');
+                        }],
                         entity: ['UserCost', function(UserCost) {
                             return UserCost.get({id : $stateParams.id}).$promise;
                         }]
@@ -327,6 +376,9 @@
                 }
             },
             resolve: {
+            	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
+                    return $ocLazyLoad.load('app/info/user-cost/user-cost-upload.controller.js');
+                }],
             	translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                     $translatePartialLoader.addPart('userCost');
                     $translatePartialLoader.addPart('global');

@@ -35,6 +35,12 @@
                 deptId : null
             },
             resolve: {
+            	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
+                    return $ocLazyLoad.load([
+                                             'app/stat/sale-weekly-stat/sale-weekly-stat.service.js',
+                                             'app/stat/sale-weekly-stat/sale-weekly-stat.controller.js',
+                                             'app/info/dept-info/dept-info.service.js']);
+                }],
                 pagingParams: ['$stateParams', 'PaginationUtil', function ($stateParams, PaginationUtil) {
                     return {
                         page: PaginationUtil.parsePage($stateParams.page),
@@ -67,6 +73,12 @@
                     backdrop: 'static',
                     size: 'lg',
                     resolve: {
+                    	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
+                            return $ocLazyLoad.load([
+                                                     'app/info/dept-info/dept-info-query.controller.js',
+                                                     'app/info/dept-info/dept-info.service.js'
+                                                     ]);
+                        }],
                         entity: function() {
                             return {
                             	selectType : $stateParams.selectType,
@@ -97,14 +109,21 @@
                 }
             },
             resolve: {
+            	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
+                    return $ocLazyLoad.load('app/stat/sale-weekly-stat/sale-weekly-stat-detail.controller.js');
+                }],
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                     $translatePartialLoader.addPart('saleWeeklyStat');
                     $translatePartialLoader.addPart('global');
                     return $translate.refresh();
                 }],
-	            entity: ['$stateParams', 'SaleWeeklyStat', function($stateParams, SaleWeeklyStat) {
-	                return SaleWeeklyStat.get({id : $stateParams.id}).$promise;
-	            }],
+	            entity: ['$stateParams', '$ocLazyLoad','$injector', function($stateParams, $ocLazyLoad,$injector) {
+                	return $ocLazyLoad.load('app/stat/sale-weekly-stat/sale-weekly-stat.service.js').then(
+                			function(){
+                				return $injector.get('SaleWeeklyStat').get({id : $stateParams.id}).$promise;
+                			}
+                	);
+                }],
 	            previousState: ["$state", function ($state) {
 	                var currentStateData = {
 	                    name: $state.current.name || 'sale-weekly-stat',
@@ -135,6 +154,9 @@
                 id : null
             },
             resolve: {
+            	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
+                    return $ocLazyLoad.load('app/stat/sale-weekly-stat/sale-weekly-stat-chart.controller.js');
+                }],
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                 	$translatePartialLoader.addPart('saleWeeklyStat');
                     $translatePartialLoader.addPart('global');

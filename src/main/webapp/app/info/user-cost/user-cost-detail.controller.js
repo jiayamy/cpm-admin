@@ -8,8 +8,8 @@
     UserCostDetailController.$inject = ['$scope', '$rootScope', '$stateParams', 'previousState', 'entity', 'UserCost'];
 
     function UserCostDetailController($scope, $rootScope, $stateParams, previousState, entity, UserCost) {
-        var vm = this;
-
+    	var vm = this;
+        
         vm.userCost = entity;
         vm.previousState = previousState.name;
         

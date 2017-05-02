@@ -35,6 +35,11 @@
                 search: null
             },
             resolve: {
+            	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
+                    return $ocLazyLoad.load([
+                                             'app/info/dept-info/dept-info.service.js',
+                                             'app/info/dept-info/dept-info.controller.js']);
+                }],
                 pagingParams: ['$stateParams', 'PaginationUtil', function ($stateParams, PaginationUtil) {
                     return {
                         page: PaginationUtil.parsePage($stateParams.page),
@@ -66,6 +71,9 @@
                     backdrop: 'static',
                     size: 'lg',
                     resolve: {
+                    	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
+                            return $ocLazyLoad.load('app/info/dept-info/dept-info-detail.controller.js');
+                        }],
                         entity: ['DeptInfo', function(DeptInfo) {
                             return DeptInfo.get({id : $stateParams.id}).$promise;
                         }]
@@ -91,6 +99,10 @@
                     backdrop: 'static',
                     size: 'lg',
                     resolve: {
+                    	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
+                            return $ocLazyLoad.load(['app/info/dept-info/dept-info-dialog.controller.js',
+                                                     'app/info/dept-type/dept-type.service.js']);
+                        }],
                     	entity:function(){
                         	return {
                         		parentId:$stateParams.id
@@ -121,6 +133,10 @@
                     backdrop: 'static',
                     size: 'lg',
                     resolve: {
+                    	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
+                            return $ocLazyLoad.load(['app/info/dept-info/dept-info-dialog.controller.js',
+                                                     'app/info/dept-type/dept-type.service.js']);
+                        }],
                         entity: ['DeptInfo', function(DeptInfo) {
                             return DeptInfo.get({id : $stateParams.id}).$promise;
                         }],
@@ -148,6 +164,9 @@
                     controllerAs: 'vm',
                     size: 'md',
                     resolve: {
+                    	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
+                            return $ocLazyLoad.load('app/info/dept-info/dept-info-delete-dialog.controller.js');
+                        }],
                         entity: ['DeptInfo', function(DeptInfo) {
                             return DeptInfo.get({id : $stateParams.id}).$promise;
                         }]

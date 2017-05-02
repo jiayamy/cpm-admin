@@ -5,9 +5,9 @@
         .module('cpmApp')
         .controller('UserManagementDialogController',UserManagementDialogController);
 
-    UserManagementDialogController.$inject = ['$scope','$rootScope','$state','$stateParams',  'entity', 'User', 'JhiLanguageService','DeptInfo','previousState','WorkArea'];
+    UserManagementDialogController.$inject = ['$scope','$rootScope','$state','$stateParams',  'entity', 'User', 'JhiLanguageService','previousState','WorkArea'];
 
-    function UserManagementDialogController ($scope,$rootScope,$state,$stateParams, entity, User, JhiLanguageService,DeptInfo,previousState,WorkArea) {
+    function UserManagementDialogController ($scope,$rootScope,$state,$stateParams, entity, User, JhiLanguageService,previousState,WorkArea) {
         var vm = this;
         
         vm.previousState = previousState.name;

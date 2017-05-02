@@ -36,6 +36,11 @@
                 toCurrDay: null
             },
             resolve: {
+            	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
+                    return $ocLazyLoad.load([
+                                             'app/info/holiday-info/holiday-info.service.js',
+                                             'app/info/holiday-info/holiday-info.controller.js']);
+                }],
                 pagingParams: ['$stateParams', 'PaginationUtil', function ($stateParams, PaginationUtil) {
                     return {
                         page: PaginationUtil.parsePage($stateParams.page),
@@ -68,13 +73,20 @@
                 }
             },
             resolve: {
+            	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
+                    return $ocLazyLoad.load('app/info/holiday-info/holiday-info-detail.controller.js');
+                }],
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                     $translatePartialLoader.addPart('holidayInfo');
                     $translatePartialLoader.addPart('global');
                     return $translate.refresh();
                 }],
-                entity: ['$stateParams', 'HolidayInfo', function($stateParams, HolidayInfo) {
-                    return HolidayInfo.get({id : $stateParams.id}).$promise;
+                entity: ['$stateParams', '$ocLazyLoad','$injector', function($stateParams, $ocLazyLoad, $injector) {
+                	return $ocLazyLoad.load('app/info/holiday-info/holiday-info.service.js').then(
+                			function(){
+                				return $injector.get('HolidayInfo').get({id : $stateParams.id}).$promise;
+                			}
+                	);
                 }],
                 previousState: ["$state", function ($state) {
                     var currentStateData = {
@@ -100,14 +112,21 @@
                 }
             },
             resolve: {
+            	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
+                    return $ocLazyLoad.load('app/info/holiday-info/holiday-info-dialog.controller.js');
+                }],
 	            translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
 	                $translatePartialLoader.addPart('holidayInfo');
 	                $translatePartialLoader.addPart('global');
 	                return $translate.refresh();
 	            }],
-	            entity: ['$stateParams', 'HolidayInfo', function($stateParams, HolidayInfo) {
-	                return HolidayInfo.get({id : $stateParams.id}).$promise;
-	            }],
+	            entity: ['$stateParams', '$ocLazyLoad','$injector', function($stateParams, $ocLazyLoad, $injector) {
+                	return $ocLazyLoad.load('app/info/holiday-info/holiday-info.service.js').then(
+                			function(){
+                				return $injector.get('HolidayInfo').get({id : $stateParams.id}).$promise;
+                			}
+                	);
+                }],
 	            previousState: ["$state", function ($state) {
 	                var currentStateData = {
 	                    name: $state.current.name || 'holiday-info-detail',
@@ -133,6 +152,9 @@
                 }
             },
             resolve: {
+            	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
+                    return $ocLazyLoad.load('app/info/holiday-info/holiday-info-dialog.controller.js');
+                }],
             	translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                     $translatePartialLoader.addPart('holidayInfo');
                     $translatePartialLoader.addPart('global');
@@ -165,14 +187,21 @@
                 }
             },
             resolve: {
+            	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
+                    return $ocLazyLoad.load('app/info/holiday-info/holiday-info-dialog.controller.js');
+                }],
 	            translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
 	                $translatePartialLoader.addPart('holidayInfo');
 	                $translatePartialLoader.addPart('global');
 	                return $translate.refresh();
 	            }],
-	            entity: ['$stateParams', 'HolidayInfo', function($stateParams, HolidayInfo) {
-	                return HolidayInfo.get({id : $stateParams.id}).$promise;
-	            }],
+	            entity: ['$stateParams', '$ocLazyLoad','$injector', function($stateParams, $ocLazyLoad, $injector) {
+                	return $ocLazyLoad.load('app/info/holiday-info/holiday-info.service.js').then(
+                			function(){
+                				return $injector.get('HolidayInfo').get({id : $stateParams.id}).$promise;
+                			}
+                	);
+                }],
 	            previousState: ["$state", function ($state) {
 	                var currentStateData = {
 	                    name: $state.current.name || 'holiday-info-detail',
@@ -196,6 +225,9 @@
                     controllerAs: 'vm',
                     size: 'md',
                     resolve: {
+                    	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
+                            return $ocLazyLoad.load('app/info/holiday-info/holiday-info-delete-dialog.controller.js');
+                        }],
                         entity: ['HolidayInfo', function(HolidayInfo) {
                             return HolidayInfo.get({id : $stateParams.id}).$promise;
                         }]

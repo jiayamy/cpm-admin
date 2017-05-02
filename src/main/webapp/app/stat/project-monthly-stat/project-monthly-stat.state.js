@@ -35,6 +35,12 @@
                 projectId: null
             },
             resolve: {
+            	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
+                    return $ocLazyLoad.load([
+                                             'app/stat/project-monthly-stat/project-monthly-stat.service.js',
+                                             'app/stat/project-monthly-stat/project-monthly-stat.controller.js',
+                                             'app/project/project-info/project-info.service.js']);
+                }],
                 pagingParams: ['$stateParams', 'PaginationUtil', function ($stateParams, PaginationUtil) {
                     return {
                         page: PaginationUtil.parsePage($stateParams.page),
@@ -66,13 +72,20 @@
                 }
             },
             resolve: {
+            	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
+                    return $ocLazyLoad.load('app/stat/project-monthly-stat/project-monthly-stat-detail.controller.js');
+                }],
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                 	$translatePartialLoader.addPart('projectMonthlyStat');
                     $translatePartialLoader.addPart('global');
                     return $translate.refresh();
                 }],
-                entity: ['$stateParams', 'ProjectMonthlyStat', function($stateParams, ProjectMonthlyStat) {
-                    return ProjectMonthlyStat.get({id : $stateParams.id}).$promise;
+                entity: ['$stateParams', '$ocLazyLoad','$injector', function($stateParams, $ocLazyLoad,$injector) {
+                	return $ocLazyLoad.load('app/stat/project-monthly-stat/project-monthly-stat.service.js').then(
+                			function(){
+                				return $injector.get('ProjectMonthlyStat').get({id : $stateParams.id}).$promise;
+                			}
+                	);
                 }],
                 previousState: ["$state", function ($state) {
                 	var currentStateData = {
@@ -124,6 +137,12 @@
                 id : null
             },
             resolve: {
+            	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
+                    return $ocLazyLoad.load([
+                                             'app/stat/project-monthly-stat/project-monthly-stat-chart.service.js',
+                                             'app/stat/project-monthly-stat/project-monthly-stat-chart.controller.js'
+                                             ]);
+                }],
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                 	$translatePartialLoader.addPart('projectMonthlyStat');
                     $translatePartialLoader.addPart('global');

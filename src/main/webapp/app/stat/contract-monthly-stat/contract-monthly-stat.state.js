@@ -35,6 +35,12 @@
                 contractId : null
             },
             resolve: {
+            	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
+                    return $ocLazyLoad.load([
+                                             'app/stat/contract-monthly-stat/contract-monthly-stat.service.js',
+                                             'app/stat/contract-monthly-stat/contract-monthly-stat.controller.js',
+                                             'app/contract/contract-info/contract-info.service.js']);
+                }],
                 pagingParams: ['$stateParams', 'PaginationUtil', function ($stateParams, PaginationUtil) {
                     return {
                         page: PaginationUtil.parsePage($stateParams.page),
@@ -66,13 +72,20 @@
                 }
             },
             resolve: {
+            	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
+                    return $ocLazyLoad.load('app/stat/contract-monthly-stat/contract-monthly-stat-detail.controller.js');
+                }],
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                 	$translatePartialLoader.addPart('contractMonthlyStat');
                     $translatePartialLoader.addPart('global');
                     return $translate.refresh();
                 }],
-                entity: ['$stateParams', 'ContractMonthlyStat', function($stateParams, ContractMonthlyStat) {
-                    return ContractMonthlyStat.get({id : $stateParams.id}).$promise;
+                entity: ['$stateParams', '$ocLazyLoad','$injector', function($stateParams, $ocLazyLoad,$injector) {
+                	return $ocLazyLoad.load('app/stat/contract-monthly-stat/contract-monthly-stat.service.js').then(
+                			function(){
+                				return $injector.get('ContractMonthlyStat').get({id : $stateParams.id}).$promise;
+                			}
+                	);
                 }],
                 previousState: ["$state", function ($state) {
                 	var currentStateData = {
@@ -123,6 +136,10 @@
                 id : null
             },
             resolve: {
+            	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
+                    return $ocLazyLoad.load(['app/stat/contract-monthly-stat/contract-monthly-stat-chart.controller.js',
+                                             'app/stat/contract-monthly-stat/contract-monthly-stat-chart.service.js']);
+                }],
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                 	$translatePartialLoader.addPart('contractMonthlyStat');
                     $translatePartialLoader.addPart('global');
