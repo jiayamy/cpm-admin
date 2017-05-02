@@ -72,6 +72,7 @@ public class SystemConfigResource {
 	public ResponseEntity<Boolean> updateContractUser(@RequestBody SystemConfig systemConfig)
 			throws URISyntaxException {
 		log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to update SystemConfig : {}", systemConfig);
+		System.out.println("*********"+systemConfig.getDescription());
 		boolean isNew = systemConfig.getId() == null;
 		SystemConfig sc = new SystemConfig();
 		String updator = SecurityUtils.getCurrentUserLogin();
@@ -82,7 +83,7 @@ public class SystemConfigResource {
 		sc.setKey(systemConfig.getKey());
 		
 		String value = systemConfig.getValue();
-		if (value == null) {
+		if (value == null || StringUtil.isNullStr(value)) {
 			return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.systemConfig.save.paramNone", ""))
 					.body(null);
 		} else {
@@ -108,7 +109,7 @@ public class SystemConfigResource {
 		sc.setValue(value);
 
 		String description = systemConfig.getDescription();
-		if (description == null) {
+		if (description == null || StringUtil.isNullStr(description)) {
 			return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.systemConfig.save.paramNone", ""))
 					.body(null);
 		}
