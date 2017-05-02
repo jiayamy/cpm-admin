@@ -27,6 +27,9 @@ public class UserTimesheetDaoImpl extends GenericDaoImpl<UserTimesheet, Long> im
 	
 	@Autowired
 	private UserTimesheetRepository userTimesheetRepository;
+	
+	@Autowired
+	private SystemConfigRepository systemConfigRepository;
 
 	@Override
 	public Class<UserTimesheet> getDomainClass() {
@@ -289,12 +292,14 @@ public class UserTimesheetDaoImpl extends GenericDaoImpl<UserTimesheet, Long> im
 		Double updateWorkTime = 0d;
 		List<Object> offerList = new ArrayList<Object>();
 		Map<Long, Double> amountMap = new HashMap<Long, Double>();
+		//查询出外包合同月对应的工作日
+		Double monthWorkDay = StringUtil.nullToDouble(systemConfigRepository.findValueByKey("contract.external.month.day"));
 		if(saveList != null && !saveList.isEmpty()){
 			for(UserTimesheet userTimesheet : saveList){
 				if (userTimesheet.getType().intValue() == UserTimesheet.TYPE_PROJECT) {
 					offerList = getOffer(userTimesheet.getUserId(), userTimesheet.getObjId(), userTimesheet.getWorkDay());
 					if (offerList != null && !offerList.isEmpty()) {
-						changeAmount = (Double)offerList.get(1) * userTimesheet.getRealInput() / 8;
+						changeAmount = (Double)offerList.get(1) / monthWorkDay * userTimesheet.getRealInput() / 8;
 						if (!amountMap.containsKey((Long)offerList.get(0))) {
 							amountMap.put((Long)offerList.get(0), changeAmount);
 						}else {
@@ -312,7 +317,7 @@ public class UserTimesheetDaoImpl extends GenericDaoImpl<UserTimesheet, Long> im
 					if (userTimesheet.getRealInput().doubleValue() != updateWorkTime) {
 						offerList = getOffer(userTimesheet.getUserId(), userTimesheet.getObjId(), userTimesheet.getWorkDay());
 						if (offerList != null && !offerList.isEmpty()) {
-							changeAmount = (Double)offerList.get(1) * (userTimesheet.getRealInput() - updateWorkTime) / 8;
+							changeAmount = (Double)offerList.get(1) / monthWorkDay * (userTimesheet.getRealInput() - updateWorkTime) / 8;
 							if (!amountMap.containsKey((Long)offerList.get(0))) {
 								amountMap.put((Long)offerList.get(0), changeAmount);
 							}else {

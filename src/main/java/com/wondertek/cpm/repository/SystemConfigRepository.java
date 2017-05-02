@@ -23,4 +23,7 @@ public interface SystemConfigRepository extends JpaRepository<SystemConfig,Long>
 	
 	@Query(" from SystemConfig where key = ?1")
 	public SystemConfig findByKey(String configKey);
+	
+	@Query("select wsc.value from SystemConfig wsc where key = ?1")
+	public Double findValueByKey(String key);
 }
