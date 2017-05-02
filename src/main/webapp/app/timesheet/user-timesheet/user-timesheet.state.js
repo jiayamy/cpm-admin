@@ -42,7 +42,9 @@
                                              'app/timesheet/user-timesheet/user-timesheet.search.service.js',
                                              'app/info/dept-info/dept-info.service.js',
                                              'app/timesheet/user-timesheet/user-timesheet.service.js',
-                                             'app/timesheet/user-timesheet/user-timesheet.controller.js']);
+                                             'app/timesheet/user-timesheet/user-timesheet.controller.js',
+                                             'app/timesheet/user-timesheet/user-timesheet.search.service.js',
+                                             "app/info/work-area/work-area.service.js"]);
                 }],
                 pagingParams: ["$state",'$stateParams', 'PaginationUtil', function ($state,$stateParams, PaginationUtil) {
                     return {
