@@ -39,6 +39,8 @@
             resolve: {
             	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
                     return $ocLazyLoad.load([
+                                             'app/info/dept-info/dept-info.service.js',
+                                             "app/contract/contract-info/outsourcing-user.service.js",
                                              'app/project/project-info/project-info.service.js',
                                              'app/project/project-user/project-user.service.js',
                                              'app/project/project-user/project-user.controller.js']);

@@ -37,6 +37,12 @@
                 name: null
             },
             resolve: {
+            	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
+                    return $ocLazyLoad.load([
+                                             'app/project/project-info/project-info.service.js',
+                                             'app/project/project-cost/project-cost.service.js',
+                                             'app/project/project-cost/project-cost.controller.js']);
+                }],
                 pagingParams: ['$stateParams', 'PaginationUtil', function ($stateParams, PaginationUtil) {
                     return {
                         page: PaginationUtil.parsePage($stateParams.page),
@@ -86,6 +92,12 @@
                 name: null
             },
             resolve: {
+            	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
+                    return $ocLazyLoad.load([
+                                             'app/project/project-info/project-info.service.js',
+                                             'app/project/project-cost/project-cost.service.js',
+                                             'app/project/project-cost/project-cost.controller.js']);
+                }],
                 pagingParams: ['$stateParams', 'PaginationUtil', function ($stateParams, PaginationUtil) {
                     return {
                         page: PaginationUtil.parsePage($stateParams.page),
@@ -122,6 +134,9 @@
                 }
             },
             resolve: {
+            	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
+            		return $ocLazyLoad.load('app/project/project-cost/project-cost-detail.controller.js');
+                }],
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                     $translatePartialLoader.addPart('projectCost');
                     $translatePartialLoader.addPart('global');
@@ -158,6 +173,9 @@
                 }
             },
             resolve: {
+            	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
+            		return $ocLazyLoad.load('app/project/project-cost/project-cost-detail.controller.js');
+                }],
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                     $translatePartialLoader.addPart('projectCost');
                     $translatePartialLoader.addPart('global');
@@ -194,6 +212,9 @@
                 }
             },
             resolve: {
+            	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
+            		return $ocLazyLoad.load('app/project/project-cost/project-cost-dialog.controller.js');
+                }],
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                     $translatePartialLoader.addPart('projectCost');
                     $translatePartialLoader.addPart('global');
@@ -227,6 +248,9 @@
                 }
             },
             resolve: {
+            	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
+            		return $ocLazyLoad.load('app/project/project-cost/project-cost-dialog.controller.js');
+                }],
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                     $translatePartialLoader.addPart('projectCost');
                     $translatePartialLoader.addPart('global');
@@ -273,6 +297,9 @@
                 }
             },
             resolve: {
+            	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
+            		return $ocLazyLoad.load('app/project/project-cost/project-cost-dialog.controller.js');
+                }],
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                     $translatePartialLoader.addPart('projectCost');
                     $translatePartialLoader.addPart('global');
@@ -304,6 +331,9 @@
                     controllerAs: 'vm',
                     size: 'md',
                     resolve: {
+                    	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
+                    		return $ocLazyLoad.load('app/project/project-cost/project-cost-delete-dialog.controller.js');
+                        }],
                         entity: ['ProjectCost', function(ProjectCost) {
                             return ProjectCost.get({id : $stateParams.id}).$promise;
                         }]
@@ -329,6 +359,9 @@
                 }
             },
             resolve: {
+            	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
+            		return $ocLazyLoad.load('app/project/project-cost/project-cost-upload.controller.js');
+                }],
             	translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                     $translatePartialLoader.addPart('projectCost');
                     $translatePartialLoader.addPart('global');

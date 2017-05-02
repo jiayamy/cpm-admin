@@ -37,6 +37,14 @@
                 name: null
             },
             resolve: {
+            	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
+                    return $ocLazyLoad.load([
+                                             'app/info/dept-info/dept-info.service.js',
+                                             'app/contract/contract-budget/contract-budget.service.js',
+                                             'app/contract/contract-info/contract-info.service.js',
+                                             'app/contract/contract-cost/contract-cost.service.js',
+                                             'app/contract/contract-cost/contract-cost.controller.js']);
+                }],
                 pagingParams: ['$stateParams', 'PaginationUtil', function ($stateParams, PaginationUtil) {
                     return {
                         page: PaginationUtil.parsePage($stateParams.page),
@@ -87,6 +95,12 @@
                 name: null
             },
             resolve: {
+            	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
+                    return $ocLazyLoad.load([
+                                             'app/contract/contract-info/contract-info.service.js',
+                                             'app/contract/contract-cost/contract-cost.service.js',
+                                             'app/contract/contract-cost/contract-cost.controller.js']);
+                }],
                 pagingParams: ['$stateParams', 'PaginationUtil', function ($stateParams, PaginationUtil) {
                     return {
                         page: PaginationUtil.parsePage($stateParams.page),
@@ -124,6 +138,9 @@
                 }
             },
             resolve: {
+            	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
+            		return $ocLazyLoad.load('app/contract/contract-cost/contract-cost-detail.controller.js');
+                }],
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                     $translatePartialLoader.addPart('contractCost');
                     $translatePartialLoader.addPart('global');
@@ -160,6 +177,9 @@
                 }
             },
             resolve: {
+            	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
+            		return $ocLazyLoad.load('app/contract/contract-cost/contract-cost-detail.controller.js');
+                }],
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                     $translatePartialLoader.addPart('contractCost');
                     $translatePartialLoader.addPart('global');
@@ -195,6 +215,9 @@
             	}
             },
             resolve:{
+            	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
+            		return $ocLazyLoad.load('app/contract/contract-cost/contract-cost-detail.controller.js');
+                }],
             	translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                     $translatePartialLoader.addPart('contractCost');
                     $translatePartialLoader.addPart('deptInfo');
@@ -229,6 +252,9 @@
                     backdrop: 'static',
                     size: 'lg',
                     resolve: {
+                    	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
+                    		return $ocLazyLoad.load('app/info/dept-info/dept-info-query.controller.js');
+                        }],
                         entity: function() {
                             return {
                             	selectType : $stateParams.selectType,
@@ -258,6 +284,9 @@
             	}
             },
         	resolve:{
+        		loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
+            		return $ocLazyLoad.load('app/contract/contract-cost/contract-cost-dialog.controller.js');
+                }],
         		 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                      $translatePartialLoader.addPart('contractCost');
                      $translatePartialLoader.addPart('deptInfo');
@@ -308,6 +337,9 @@
                     backdrop: 'static',
                     size: 'lg',
                     resolve: {
+                    	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
+                    		return $ocLazyLoad.load('app/info/dept-info/dept-info-query.controller.js');
+                        }],
                         entity: function() {
                             return {
                             	selectType : $stateParams.selectType,
@@ -337,6 +369,9 @@
             	}
             },
             resolve:{
+            	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
+            		return $ocLazyLoad.load('app/contract/contract-cost/contract-cost-dialog.controller.js');
+                }],
             	translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                     $translatePartialLoader.addPart('contractCost');
                     $translatePartialLoader.addPart('deptInfo');
@@ -371,6 +406,9 @@
                     backdrop: 'static',
                     size: 'lg',
                     resolve: {
+                    	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
+                    		return $ocLazyLoad.load('app/info/dept-info/dept-info-query.controller.js');
+                        }],
                         entity: function() {
                             return {
                             	selectType : $stateParams.selectType,
@@ -399,6 +437,9 @@
                     controllerAs: 'vm',
                     size: 'md',
                     resolve: {
+                    	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
+                    		return $ocLazyLoad.load('app/contract/contract-cost/contract-cost-delete-dialog.controller.js');
+                        }],
                         entity: ['ContractCost', function(ContractCost) {
                             return ContractCost.get({id : $stateParams.id}).$promise;
                         }]
@@ -424,6 +465,9 @@
                 }
             },
             resolve: {
+            	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
+            		return $ocLazyLoad.load('app/contract/contract-cost/contract-cost-import.controller.js');
+                }],
             	translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                     $translatePartialLoader.addPart('contractCost');
                     $translatePartialLoader.addPart('global');

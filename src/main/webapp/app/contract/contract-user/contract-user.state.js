@@ -37,6 +37,13 @@
                 userName:null
             },
             resolve: {
+            	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
+                    return $ocLazyLoad.load([
+                                             'app/info/dept-info/dept-info.service.js',
+                                             'app/contract/contract-info/contract-info.service.js',
+                                             'app/contract/contract-user/contract-user.service.js',
+                                             'app/contract/contract-user/contract-user.controller.js']);
+                }],
                 pagingParams: ['$stateParams', 'PaginationUtil', function ($stateParams, PaginationUtil) {
                     return {
                         page: PaginationUtil.parsePage($stateParams.page),
@@ -70,6 +77,9 @@
                     backdrop: 'static',
                     size: 'lg',
                     resolve: {
+                    	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
+                    		return $ocLazyLoad.load('app/info/dept-info/dept-info-query.controller.js');
+                        }],
                         entity: function() {
                             return {
                             	selectType : $stateParams.selectType,
@@ -99,6 +109,9 @@
                 }
             },
             resolve: {
+            	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
+            		return $ocLazyLoad.load('app/contract/contract-user/contract-user-detail.controller.js');
+                }],
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                     $translatePartialLoader.addPart('contractUser');
                     $translatePartialLoader.addPart('global');
@@ -132,6 +145,9 @@
                 }
             },
             resolve: {
+            	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
+            		return $ocLazyLoad.load('app/contract/contract-user/contract-user-dialog.controller.js');
+                }],
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                 	$translatePartialLoader.addPart('contractUser');
                     $translatePartialLoader.addPart('deptInfo');
@@ -143,7 +159,7 @@
                 }],
                 previousState: ["$state", function ($state) {
                     var currentStateData = {
-                        name: $state.current.name || 'contract-user',
+                        name: $state.current.name || 'contract-user-detail',
                         queryDept:'contract-user-detail.edit.queryDept',
                         params: $state.params,
                         url: $state.href($state.current.name, $state.params)
@@ -166,6 +182,9 @@
                     backdrop: 'static',
                     size: 'lg',
                     resolve: {
+                    	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
+                    		return $ocLazyLoad.load('app/info/dept-info/dept-info-query.controller.js');
+                        }],
                         entity: function() {
                             return {
                             	selectType : $stateParams.selectType,
@@ -195,6 +214,9 @@
                 }
             },
             resolve: {
+            	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
+            		return $ocLazyLoad.load('app/contract/contract-user/contract-user-dialog.controller.js');
+                }],
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                 	$translatePartialLoader.addPart('contractUser');
                     $translatePartialLoader.addPart('deptInfo');
@@ -241,6 +263,9 @@
                     backdrop: 'static',
                     size: 'lg',
                     resolve: {
+                    	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
+                    		return $ocLazyLoad.load('app/info/dept-info/dept-info-query.controller.js');
+                        }],
                         entity: function() {
                             return {
                             	selectType : $stateParams.selectType,
@@ -270,6 +295,9 @@
                 }
             },
             resolve: {
+            	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
+            		return $ocLazyLoad.load('app/contract/contract-user/contract-user-dialog.controller.js');
+                }],
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                 	$translatePartialLoader.addPart('contractUser');
                     $translatePartialLoader.addPart('deptInfo');
@@ -304,6 +332,9 @@
                     backdrop: 'static',
                     size: 'lg',
                     resolve: {
+                    	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
+                    		return $ocLazyLoad.load('app/info/dept-info/dept-info-query.controller.js');
+                        }],
                         entity: function() {
                             return {
                             	selectType : $stateParams.selectType,
@@ -331,6 +362,9 @@
                     controllerAs: 'vm',
                     size: 'md',
                     resolve: {
+                    	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
+                    		return $ocLazyLoad.load('app/contract/contract-user/contract-user-delete-dialog.controller.js');
+                        }],
                         entity: ['ContractUser', function(ContractUser) {
                             return ContractUser.get({id : $stateParams.id}).$promise;
                         }]
@@ -356,6 +390,9 @@
                 }
         	},
         	 resolve:{
+        		 loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
+             		return $ocLazyLoad.load('app/contract/contract-user/contract-user-upload.controller.js');
+                 }],
                  translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                      $translatePartialLoader.addPart('contractUser');
                      $translatePartialLoader.addPart('global');

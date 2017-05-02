@@ -38,6 +38,13 @@
                 userName: null
             },
             resolve: {
+            	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
+                    return $ocLazyLoad.load([
+                                             'app/project/project-info/project-info.service.js',
+                                             'app/info/dept-info/dept-info.service.js',
+                                             'app/project/project-timesheet/project-timesheet.service.js',
+                                             'app/project/project-timesheet/project-timesheet.controller.js']);
+                }],
                 pagingParams: ['$stateParams', 'PaginationUtil', function ($stateParams, PaginationUtil) {
                     return {
                         page: PaginationUtil.parsePage($stateParams.page),
@@ -73,6 +80,9 @@
                     backdrop: 'static',
                     size: 'lg',
                     resolve: {
+                    	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
+                    		return $ocLazyLoad.load('app/info/dept-info/dept-info-query.controller.js');
+                        }],
                         entity: function() {
                             return {
                             	selectType : $stateParams.selectType,
@@ -102,6 +112,9 @@
                 }
             },
             resolve: {
+            	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
+            		return $ocLazyLoad.load('app/project/project-timesheet/project-timesheet-detail.controller.js');
+                }],
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                     $translatePartialLoader.addPart('projectTimesheet');
                     $translatePartialLoader.addPart('global');
@@ -134,6 +147,9 @@
                 }
             },
             resolve: {
+            	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
+            		return $ocLazyLoad.load('app/project/project-timesheet/project-timesheet-dialog.controller.js');
+                }],
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                     $translatePartialLoader.addPart('projectTimesheet');
                     $translatePartialLoader.addPart('contractTimesheet');
@@ -169,6 +185,9 @@
                 }
             },
             resolve: {
+            	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
+            		return $ocLazyLoad.load('app/project/project-timesheet/project-timesheet-dialog.controller.js');
+                }],
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                 	$translatePartialLoader.addPart('projectTimesheet');
                     $translatePartialLoader.addPart('contractTimesheet');

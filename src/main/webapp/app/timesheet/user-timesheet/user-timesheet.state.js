@@ -37,6 +37,13 @@
                 objName:null
             },
             resolve: {
+            	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
+                    return $ocLazyLoad.load([
+                                             'app/timesheet/user-timesheet/user-timesheet.search.service.js',
+                                             'app/info/dept-info/dept-info.service.js',
+                                             'app/timesheet/user-timesheet/user-timesheet.service.js',
+                                             'app/timesheet/user-timesheet/user-timesheet.controller.js']);
+                }],
                 pagingParams: ["$state",'$stateParams', 'PaginationUtil', function ($state,$stateParams, PaginationUtil) {
                     return {
                         page: PaginationUtil.parsePage($stateParams.page),
@@ -70,6 +77,9 @@
                 }
             },
             resolve: {
+            	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
+            		return $ocLazyLoad.load('app/timesheet/user-timesheet/user-timesheet-detail.controller.js');
+                }],
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                     $translatePartialLoader.addPart('userTimesheet');
                     $translatePartialLoader.addPart('global');
@@ -102,6 +112,9 @@
                 }
             },
             resolve: {
+            	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
+            		return $ocLazyLoad.load('app/timesheet/user-timesheet/user-timesheet-dialog.controller.js');
+                }],
 	            translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
 	                $translatePartialLoader.addPart('userTimesheet');
 	                $translatePartialLoader.addPart('global');
@@ -134,6 +147,9 @@
                 }
             },
             resolve: {
+            	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
+            		return $ocLazyLoad.load('app/timesheet/user-timesheet/user-timesheet-dialog.controller.js');
+                }],
 	            translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
 	                $translatePartialLoader.addPart('userTimesheet');
 	                $translatePartialLoader.addPart('global');
@@ -180,6 +196,9 @@
                 }
             },
             resolve: {
+            	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
+            		return $ocLazyLoad.load('app/timesheet/user-timesheet/user-timesheet-dialog.controller.js');
+                }],
 	            translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
 	                $translatePartialLoader.addPart('userTimesheet');
 	                $translatePartialLoader.addPart('global');
@@ -211,6 +230,9 @@
                     controllerAs: 'vm',
                     size: 'md',
                     resolve: {
+                    	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
+                    		return $ocLazyLoad.load('app/timesheet/user-timesheet/user-timesheet-delete-dialog.controller.js');
+                        }],
                         entity: ['UserTimesheet', function(UserTimesheet) {
                             return UserTimesheet.get({id : $stateParams.id}).$promise;
                         }]

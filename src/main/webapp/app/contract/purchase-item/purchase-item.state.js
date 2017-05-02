@@ -38,6 +38,13 @@
                 ppType: null
             },
             resolve: {
+            	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
+                    return $ocLazyLoad.load([
+                                             "app/contract/contract-budget/contract-budget.service.js",  
+                                             'app/info/dept-info/dept-info.service.js',
+                                             'app/contract/purchase-item/purchase-item.service.js',
+                                             'app/contract/purchase-item/purchase-item.controller.js']);
+                }],
                 pagingParams: ['$stateParams', 'PaginationUtil', function ($stateParams, PaginationUtil) {
                     return {
                         page: PaginationUtil.parsePage($stateParams.page),
@@ -72,6 +79,9 @@
                 }
             },
             resolve: {
+            	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
+            		return $ocLazyLoad.load('app/contract/purchase-item/purchase-item-detail.controller.js');
+                }],
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                     $translatePartialLoader.addPart('purchaseItem');
                     $translatePartialLoader.addPart('global');
@@ -105,6 +115,9 @@
             	}
             },
             resolve: {
+            	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
+            		return $ocLazyLoad.load('app/contract/purchase-item/purchase-item-dialog.controller.js');
+                }],
             	translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
             		$translatePartialLoader.addPart('purchaseItem');
             		$translatePartialLoader.addPart('productPrice');
@@ -144,6 +157,9 @@
                     backdrop: 'static',
                     size: 'lg',
                     resolve: {
+                    	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
+                    		return $ocLazyLoad.load('app/info/dept-info/dept-info-query.controller.js');
+                        }],
                         entity: function() {
                             return {
                             	selectType : $stateParams.selectType,
@@ -177,6 +193,9 @@
             			type: null
             		},
             		resolve: {
+            			loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
+                    		return $ocLazyLoad.load('app/contract/purchase-item/purchase-item-choseProject.controller.js');
+                        }],
             			entity:function () {
             				return {
             					type: $stateParams.type
@@ -203,6 +222,9 @@
                     controllerAs: 'vm',
                     size: 'md',
                     resolve: {
+                    	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
+                    		return $ocLazyLoad.load('app/contract/purchase-item/purchase-item-delete-dialog.controller.js');
+                        }],
                         entity: ['PurchaseItem', function(PurchaseItem) {
                             return PurchaseItem.get({id : $stateParams.id}).$promise;
                         }]

@@ -37,6 +37,11 @@
                 name: null
             },
             resolve: {
+            	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
+                    return $ocLazyLoad.load([
+                                             'app/contract/product-price/product-price.service.js',
+                                             'app/contract/product-price/product-price.controller.js']);
+                }],
                 pagingParams: ["$state",'$stateParams', 'PaginationUtil', function ($state,$stateParams, PaginationUtil) {
                     return {
                         page: PaginationUtil.parsePage($stateParams.page),
@@ -70,6 +75,9 @@
                 }
             },
             resolve: {
+            	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
+            		return $ocLazyLoad.load('app/contract/product-price/product-price-detail.controller.js');
+                }],
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                     $translatePartialLoader.addPart('productPrice');
                     $translatePartialLoader.addPart('global');
@@ -102,6 +110,9 @@
             	}       
             },
             resolve: {
+            	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
+            		return $ocLazyLoad.load('app/contract/product-price/product-price-dialog.controller.js');
+                }],
             	translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                     $translatePartialLoader.addPart('productPrice');
                     $translatePartialLoader.addPart('global');
@@ -134,6 +145,9 @@
             	}
             },       
             resolve: {
+            	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
+            		return $ocLazyLoad.load('app/contract/product-price/product-price-dialog.controller.js');
+                }],
             	translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                     $translatePartialLoader.addPart('productPrice');
                     $translatePartialLoader.addPart('global');
@@ -177,6 +191,9 @@
             	}
             },  
             resolve: {
+            	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
+            		return $ocLazyLoad.load('app/contract/product-price/product-price-dialog.controller.js');
+                }],
             	translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
             		$translatePartialLoader.addPart('productPrice');
             		$translatePartialLoader.addPart('global');
@@ -208,6 +225,9 @@
                     controllerAs: 'vm',
                     size: 'md',
                     resolve: {
+                    	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
+                    		return $ocLazyLoad.load('app/contract/product-price/product-price-delete-dialog.controller.js');
+                        }],
                         entity: ['ProductPrice', function(ProductPrice) {
                             return ProductPrice.get({id : $stateParams.id}).$promise;
                         }]

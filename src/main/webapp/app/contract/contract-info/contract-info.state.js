@@ -39,6 +39,14 @@
                 isEpibolic:null
             },
             resolve: {
+            	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
+            		return $ocLazyLoad.load([
+            		                         'app/info/dept-info/dept-info.service.js',
+            		                         'app/contract/contract-info/outsourcing-user.service.js',
+            		                         'app/contract/contract-info/contract-info.service.js',
+            		                         'app/contract/contract-info/contract-info.controller.js'
+            		                        ]);
+                }],
                 pagingParams: ['$state','$stateParams', 'PaginationUtil', function ($state,$stateParams, PaginationUtil) {
                     return {
                         page: PaginationUtil.parsePage($stateParams.page),
@@ -74,6 +82,9 @@
                     backdrop: 'static',
                     size: 'lg',
                     resolve: {
+                    	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
+                    		return $ocLazyLoad.load('app/info/dept-info/dept-info-query.controller.js');
+                        }],
                         entity: function() {
                             return {
                             	selectType : $stateParams.selectType,
@@ -103,6 +114,9 @@
                 }
             },
             resolve: {
+            	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
+            		return $ocLazyLoad.load('app/contract/contract-info/contract-info-detail.controller.js');
+                }],
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                     $translatePartialLoader.addPart('contractInfo');
                     $translatePartialLoader.addPart('global');
@@ -135,6 +149,9 @@
         		}
         	},
         	resolve:{
+        		loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
+            		return $ocLazyLoad.load('app/contract/contract-info/contract-info-dialog.controller.js');
+                }],
         		 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                      $translatePartialLoader.addPart('contractInfo');
                      $translatePartialLoader.addPart('deptInfo');
@@ -169,6 +186,9 @@
                     backdrop: 'static',
                     size: 'lg',
                     resolve: {
+                    	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
+                    		return $ocLazyLoad.load('app/info/dept-info/dept-info-query.controller.js');
+                        }],
                         entity: function() {
                             return {
                             	selectType : $stateParams.selectType,
@@ -198,6 +218,9 @@
             	}
             },
             resolve: {
+            	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
+            		return $ocLazyLoad.load('app/contract/contract-info/contract-info-dialog.controller.js');
+                }],
             	 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                      $translatePartialLoader.addPart('contractInfo');
                      $translatePartialLoader.addPart('outsourcingUser');
@@ -241,6 +264,9 @@
                     	contractId: null
             		},
                     resolve: {
+                    	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
+                    		return $ocLazyLoad.load('app/contract/contract-info/outsourcing-user-dialog.controller.js');
+                        }],
                         entity: function() {
                             return {
                             	mark : $stateParams.mark,
@@ -269,6 +295,9 @@
                     backdrop: 'static',
                     size: 'lg',
                     resolve: {
+                    	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
+                    		return $ocLazyLoad.load('app/contract/contract-info/outsourcing-user-dialog.controller.js');
+                        }],
                         entity: function() {
                         	return OutsourcingUser.get({infoId: $stateParams.infoId}).$promise;
                         }
@@ -294,6 +323,9 @@
                     backdrop: 'static',
                     size: 'lg',
                     resolve: {
+                    	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
+                    		return $ocLazyLoad.load('app/info/dept-info/dept-info-query.controller.js');
+                        }],
                         entity: function() {
                             return {
                             	selectType : $stateParams.selectType,
@@ -323,6 +355,9 @@
         		}
         	},
         	resolve:{
+        		loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
+            		return $ocLazyLoad.load('app/contract/contract-info/contract-info-dialog.controller.js');
+                }],
         		 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                      $translatePartialLoader.addPart('contractInfo');
                      $translatePartialLoader.addPart('outsourcingUser');
@@ -364,6 +399,9 @@
                     	contractId: null
             		},
                     resolve: {
+                    	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
+                    		return $ocLazyLoad.load('app/contract/contract-info/outsourcing-user-dialog.controller.js');
+                        }],
                         entity: function() {
                             return {
                             	contractId : $stateParams.id
@@ -391,6 +429,9 @@
                     backdrop: 'static',
                     size: 'lg',
                     resolve: {
+                    	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
+                    		return $ocLazyLoad.load('app/info/dept-info/dept-info-query.controller.js');
+                        }],
                         entity: function() {
                             return {
                             	selectType : $stateParams.selectType,
@@ -420,6 +461,9 @@
         		}
         	},
         	resolve:{
+        		loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
+            		return $ocLazyLoad.load('app/contract/contract-info/contract-info-finRate.controller.js');
+                }],
         		 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                      $translatePartialLoader.addPart('contractInfo');
                      $translatePartialLoader.addPart('global');
@@ -443,6 +487,9 @@
                     controllerAs: 'vm',
                     size: 'md',
                     resolve: {
+                    	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
+                    		return $ocLazyLoad.load('app/contract/contract-info/contract-info-end-dialog.controller.js');
+                        }],
                         entity: ['ContractInfo', function(ContractInfo) {
                             return ContractInfo.get({id : $stateParams.id}).$promise;
                         }]
@@ -467,6 +514,9 @@
                     controllerAs: 'vm',
                     size: 'md',
                     resolve: {
+                    	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
+                    		return $ocLazyLoad.load('app/contract/contract-info/contract-info-delete-dialog.controller.js');
+                        }],
                         entity: ['ContractInfo', function(ContractInfo) {
                             return ContractInfo.get({id : $stateParams.id}).$promise;
                         }]
@@ -492,6 +542,9 @@
                     backdrop: 'static',
                     size: 'lg',
                     resolve: {
+                    	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
+                    		return $ocLazyLoad.load('app/contract/contract-info/outsourcing-user-dialog.controller.js');
+                        }],
                         entity: function() {
                         	return OutsourcingUser.get({infoId : $stateParams.infoId}).$promise;
                         }
@@ -517,6 +570,9 @@
                 }
             },
             resolve: {
+            	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
+            		return $ocLazyLoad.load('app/contract/contract-info/contract-info-import.controller.js');
+                }],
             	translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                     $translatePartialLoader.addPart('contractInfo');
                     $translatePartialLoader.addPart('global');
