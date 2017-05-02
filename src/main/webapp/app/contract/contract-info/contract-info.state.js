@@ -121,69 +121,6 @@
                 }]
             }
         })
-       .state('contract-info-detail.edit',{
-        	parent:'contract-info-detail',
-        	url:'/edit',
-        	data:{
-        		authorities: ['ROLE_CONTRACT_INFO']
-        	},
-        	views:{
-        		'content@':{
-        			templateUrl: 'app/contract/contract-info/contract-info-dialog.html',
-        			controller: 'ContractInfoDialogController',
-        			controllerAs: 'vm'
-        		}
-        	},
-        	resolve:{
-        		 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
-                     $translatePartialLoader.addPart('contractInfo');
-                     $translatePartialLoader.addPart('deptInfo');
-                     $translatePartialLoader.addPart('global');
-                     return $translate.refresh();
-                 }],
-                 entity: ['$stateParams', 'ContractInfo', function($stateParams, ContractInfo) {
-                     return ContractInfo.get({id : $stateParams.id}).$promise;
-                 }],
-                 previousState: ["$state", function ($state) {
-                     var currentStateData = {
-                         queryDept:'contract-info-detail.edit.queryDept',
-                         name: $state.current.name || 'contract-info-detail',
-                         params: $state.params,
-                         url: $state.href($state.current.name, $state.params)
-                     };
-                     return currentStateData;
-                 }]
-        	}
-        })
-        .state('contract-info-detail.edit.queryDept', {
-            parent: 'contract-info-detail.edit',
-            url: '/queryDept?selectType&showChild&dataType',
-            data: {
-                authorities: ['ROLE_CONTRACT_INFO']
-            },
-            onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
-                $uibModal.open({
-                    templateUrl: 'app/info/dept-info/dept-info-query.html',
-                    controller: 'DeptInfoQueryController',
-                    controllerAs: 'vm',
-                    backdrop: 'static',
-                    size: 'lg',
-                    resolve: {
-                        entity: function() {
-                            return {
-                            	selectType : $stateParams.selectType,
-                            	showChild : $stateParams.showChild,
-                            	dataType:$stateParams.dataType
-                            }
-                        }
-                    }
-                }).result.then(function() {
-                    $state.go('^', {}, { reload: false });
-                }, function() {
-                    $state.go('^');
-                });
-            }]
-        })
         .state('contract-info.new',{
         	parent: 'contract-info',
             url: '/new',
