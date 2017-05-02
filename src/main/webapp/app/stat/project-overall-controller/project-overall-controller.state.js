@@ -38,6 +38,12 @@
                 userName: null
             },
             resolve: {
+            	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
+                    return $ocLazyLoad.load([
+                                             'app/stat/project-overall-controller/project-overall-controller.service.js',
+                                             'app/stat/project-overall-controller/project-overall-controller.controller.js',
+                                             'app/contract/contract-info/contract-info.service.js']);
+                }],
                 pagingParams: ['$stateParams', 'PaginationUtil', function ($stateParams, PaginationUtil) {
                     return {
                         page: PaginationUtil.parsePage($stateParams.page),
@@ -72,6 +78,12 @@
                     backdrop: 'static',
                     size: 'lg',
                     resolve: {
+                    	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
+                            return $ocLazyLoad.load([
+                                                     'app/info/dept-info/dept-info-query.controller.js',
+                                                     'app/info/dept-info/dept-info.service.js'
+                                                     ]);
+                        }],
                         entity: function() {
                             return {
                             	selectType : $stateParams.selectType,
@@ -101,13 +113,20 @@
                 }
             },
             resolve: {
+            	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
+                    return $ocLazyLoad.load('app/stat/project-overall-controller/project-overall-detail.controller.js');
+                }],
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                     $translatePartialLoader.addPart('projectOverallController');
                     $translatePartialLoader.addPart('global');
                     return $translate.refresh();
                 }],
-                entity: ['$stateParams', 'ProjectOverall', function($stateParams, ProjectOverall) {
-                    return ProjectOverall.get({id : $stateParams.id}).$promise;
+                entity: ['$stateParams', '$ocLazyLoad','$injector', function($stateParams, $ocLazyLoad,$injector) {
+                	return $ocLazyLoad.load('app/stat/project-overall-controller/project-overall-controller.service.js').then(
+                			function(){
+                				return $injector.get('ProjectOverall').get({id : $stateParams.id}).$promise;
+                			}
+                	);
                 }],
                 previousState: ["$state", function ($state) {
                     var currentStateData = {

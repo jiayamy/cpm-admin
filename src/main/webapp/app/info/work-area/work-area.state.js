@@ -35,6 +35,12 @@
                 search: null
             },
             resolve: {
+            	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
+                    return $ocLazyLoad.load([
+                                             'app/info/work-area/work-area.service.js',
+                                             'app/info/work-area/work-area.search.service.js',
+                                             'app/info/work-area/work-area.controller.js']);
+                }],
                 pagingParams: ['$stateParams', 'PaginationUtil', function ($stateParams, PaginationUtil) {
                     return {
                         page: PaginationUtil.parsePage($stateParams.page),
@@ -66,13 +72,20 @@
                 }
             },
             resolve: {
+            	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
+                    return $ocLazyLoad.load('app/info/work-area/work-area-detail.controller.js');
+                }],
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                     $translatePartialLoader.addPart('workArea');
                     $translatePartialLoader.addPart('global');
                     return $translate.refresh();
                 }],
-                entity: ['$stateParams', 'WorkArea', function($stateParams, WorkArea) {
-                    return WorkArea.get({id : $stateParams.id}).$promise;
+                entity: ['$stateParams', '$ocLazyLoad','$injector', function($stateParams, $ocLazyLoad, $injector) {
+                	return $ocLazyLoad.load('app/info/work-area/work-area.service.js').then(
+                			function(){
+                				return $injector.get('WorkArea').get({id : $stateParams.id}).$promise;
+                			}
+                	);
                 }],
                 previousState: ["$state", function ($state) {
                     var currentStateData = {
@@ -98,6 +111,9 @@
                     backdrop: 'static',
                     size: 'lg',
                     resolve: {
+                    	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
+                            return $ocLazyLoad.load('app/info/work-area/work-area-dialog.controller.js');
+                        }],
                         entity: function () {
                             return {
                                 name: null,
@@ -125,6 +141,9 @@
                     controllerAs: 'vm',
                     size: 'md',
                     resolve: {
+                    	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
+                            return $ocLazyLoad.load('app/info/work-area/work-area-delete-dialog.controller.js');
+                        }],
                         entity: ['WorkArea', function(WorkArea) {
                             return WorkArea.get({id : $stateParams.id}).$promise;
                         }]

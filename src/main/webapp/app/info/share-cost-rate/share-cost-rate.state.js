@@ -36,6 +36,13 @@
                 contractType: null
             },
             resolve: {
+            	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
+                    return $ocLazyLoad.load([
+                                             'app/info/share-cost-rate/share-cost-rate.service.js',
+                                             'app/info/share-cost-rate/share-cost-rate.controller.js',
+                                             'app/info/dept-type/dept-type.service.js'
+                                             ]);
+                }],
                 pagingParams: ['$stateParams', 'PaginationUtil', function ($stateParams, PaginationUtil) {
                     return {
                         page: PaginationUtil.parsePage($stateParams.page),
@@ -67,6 +74,12 @@
             	}
             },
             resolve: {
+            	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
+                    return $ocLazyLoad.load([
+                                             'app/info/share-cost-rate/share-cost-rate-dialog.controller.js',
+                                             'app/info/dept-type/dept-type.service.js'
+                                             ]);
+                }],
             	 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                      $translatePartialLoader.addPart('shareCostRate');
                      $translatePartialLoader.addPart('global');
@@ -108,14 +121,24 @@
                 }
             },
             resolve: {
+            	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
+                    return $ocLazyLoad.load([
+                                             'app/info/share-cost-rate/share-cost-rate-dialog.controller.js',
+                                             'app/info/dept-type/dept-type.service.js'
+                                             ]);
+                }],
             	translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
 	                $translatePartialLoader.addPart('shareCostRate');
 	                $translatePartialLoader.addPart('global');
 	                return $translate.refresh();
                 }],
-                entity: ['$stateParams','ShareCostRate', function($stateParams,ShareCostRate) {
-                    return ShareCostRate.get({id : $stateParams.id}).$promise;
-                 }],
+                entity: ['$stateParams', '$ocLazyLoad','$injector', function($stateParams, $ocLazyLoad,$injector) {
+                	return $ocLazyLoad.load('app/info/share-cost-rate/share-cost-rate.service.js').then(
+                			function(){
+                				return $injector.get('ShareCostRate').get({id : $stateParams.id}).$promise;
+                			}
+                	);
+                }],
                  previousState: ["$state", function ($state) {
  	                var currentStateData = {
  	                    name: $state.current.name || 'share-cost-rate',
@@ -139,6 +162,9 @@
                     controllerAs: 'vm',
                     size: 'md',
                     resolve: {
+                    	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
+                            return $ocLazyLoad.load('app/info/share-cost-rate/share-cost-rate-delete-dialog.controller.js');
+                        }],
                         entity: ['ShareCostRate', function(ShareCostRate) {
                             return ShareCostRate.get({id : $stateParams.id}).$promise;
                         }]

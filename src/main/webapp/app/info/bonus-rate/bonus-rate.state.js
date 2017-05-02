@@ -37,7 +37,9 @@
             },
             resolve: {
             	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
-                    return $ocLazyLoad.load(['app/info/bonus-rate/bonus-rate.service.js','app/info/bonus-rate/bonus-rate.controller.js'])
+                    return $ocLazyLoad.load(['app/info/dept-type/dept-type.service.js',
+                                             'app/info/bonus-rate/bonus-rate.service.js',
+                                             'app/info/bonus-rate/bonus-rate.controller.js'])
                 }],
                 pagingParams: ['$stateParams', 'PaginationUtil', function ($stateParams, PaginationUtil) {
                     return {
@@ -122,9 +124,13 @@
 	                $translatePartialLoader.addPart('global');
 	                return $translate.refresh();
                 }],
-                entity: ['$stateParams','BonusRate', function($stateParams,BonusRate) {
-                    return BonusRate.get({id : $stateParams.id}).$promise;
-                 }],
+                entity: ['$stateParams', '$ocLazyLoad','$injector', function($stateParams, $ocLazyLoad,$injector) {
+                	return $ocLazyLoad.load('app/info/bonus-rate/bonus-rate.service.js').then(
+                			function(){
+                				return $injector.get('BonusRate').get({id : $stateParams.id}).$promise;
+                			}
+                	);
+                }],
                  previousState: ["$state", function ($state) {
  	                var currentStateData = {
  	                    name: $state.current.name || 'bonus-rate',

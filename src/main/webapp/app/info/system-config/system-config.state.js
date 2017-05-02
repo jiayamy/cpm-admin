@@ -35,6 +35,12 @@
                 search: null
             },
             resolve: {
+            	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
+                    return $ocLazyLoad.load([
+                                             'app/info/system-config/system-config.service.js',
+                                             'app/info/system-config/system-config.controller.js'
+                                             ]);
+                }],
                 pagingParams: ['$stateParams', 'PaginationUtil', function ($stateParams, PaginationUtil) {
                     return {
                         page: PaginationUtil.parsePage($stateParams.page),
@@ -65,6 +71,9 @@
                     backdrop: 'static',
                     size: 'lg',
                     resolve: {
+                    	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
+                            return $ocLazyLoad.load('app/info/system-config/system-config-dialog.controller.js');
+                        }],
 		                entity: ['SystemConfig', function(SystemConfig) {
 		                    return SystemConfig.get({id : $stateParams.id}).$promise;
 		                }]
