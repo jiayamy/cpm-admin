@@ -36,6 +36,7 @@ import com.wondertek.cpm.domain.vo.UserTimesheetForUser;
 import com.wondertek.cpm.repository.ContractUserDao;
 import com.wondertek.cpm.repository.HolidayInfoRepository;
 import com.wondertek.cpm.repository.ProjectUserDao;
+import com.wondertek.cpm.repository.SystemConfigRepository;
 import com.wondertek.cpm.repository.UserRepository;
 import com.wondertek.cpm.repository.UserTimesheetDao;
 import com.wondertek.cpm.repository.UserTimesheetRepository;
@@ -64,7 +65,8 @@ public class UserTimesheetService {
     private ProjectInfoService projectInfoService;
     @Inject
     private ContractInfoService contractInfoService;
-    
+    @Inject
+    private SystemConfigRepository systemConfigRepository;
     @Autowired
     private ProjectUserDao projectUserDao;
     
@@ -123,10 +125,12 @@ public class UserTimesheetService {
         	userTimesheet.setUpdator(SecurityUtils.getCurrentUserLogin());
         	//更新对应的合同金额
         	if(userTimesheet.getType().intValue() == UserTimesheet.TYPE_PROJECT){
+        		//查询出外包合同月对应的工作日
+        		Double monthWorkDay = StringUtil.nullToDouble(systemConfigRepository.findValueByKey("contract.external.month.day"));
         		//知道该员工在此项目中的报价
         		List<Object> offerList = userTimesheetDao.getOffer(userTimesheet.getUserId(),userTimesheet.getObjId(),userTimesheet.getWorkDay());
         		if (offerList != null && !offerList.isEmpty()) {
-        			Double changeAmount =  - userTimesheet.getRealInput() * (Double)offerList.get(1) / 8;
+        			Double changeAmount =  - userTimesheet.getRealInput() * (Double)offerList.get(1) / monthWorkDay / 8;
             		ContractInfo contractInfo = new ContractInfo();
             		if (changeAmount.doubleValue() != 0) {
             			contractInfo.setAmount(changeAmount);
