@@ -87,8 +87,12 @@
                     $translatePartialLoader.addPart('global');
                     return $translate.refresh();
                 }],
-                entity: ['$stateParams', 'PurchaseItem', function($stateParams, PurchaseItem) {
-                    return PurchaseItem.get({id : $stateParams.id}).$promise;
+                entity: ['$stateParams', '$ocLazyLoad','$injector', function($stateParams, $ocLazyLoad,$injector) {
+                	return $ocLazyLoad.load('app/contract/purchase-item/purchase-item.service.js').then(
+                			function(){
+                				return $injector.get('PurchaseItem').get({id : $stateParams.id}).$promise;
+                			}
+                	);
                 }],
                 previousState: ["$state", function ($state) {
                     var currentStateData = {
@@ -125,8 +129,12 @@
             		$translatePartialLoader.addPart('global');
                     return $translate.refresh();
                 }],
-                entity: ['PurchaseItem','$stateParams', function(PurchaseItem,$stateParams) {
-                	return PurchaseItem.get({id : $stateParams.id}).$promise;
+                entity: ['$stateParams', '$ocLazyLoad','$injector', function($stateParams, $ocLazyLoad,$injector) {
+                	return $ocLazyLoad.load('app/contract/purchase-item/purchase-item.service.js').then(
+                			function(){
+                				return $injector.get('PurchaseItem').get({id : $stateParams.id}).$promise;
+                			}
+                	);
                 }],
                 budgetEntity:function(){
                 	return null;

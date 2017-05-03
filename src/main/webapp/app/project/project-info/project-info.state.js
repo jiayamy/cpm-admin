@@ -82,8 +82,12 @@
                     $translatePartialLoader.addPart('global');
                     return $translate.refresh();
                 }],
-                entity: ['$stateParams', 'ProjectInfo', function($stateParams, ProjectInfo) {
-                    return ProjectInfo.get({id : $stateParams.id}).$promise;
+                entity: ['$stateParams', '$ocLazyLoad','$injector', function($stateParams, $ocLazyLoad,$injector) {
+                	return $ocLazyLoad.load('app/project/project-info/project-info.service.js').then(
+                			function(){
+                				return $injector.get('ProjectInfo').get({id : $stateParams.id}).$promise;
+                			}
+                	);
                 }],
                 previousState: ["$state", function ($state) {
                     var currentStateData = {
@@ -119,8 +123,12 @@
                     $translatePartialLoader.addPart('global');
                     return $translate.refresh();
                 }],
-                entity: ['ProjectInfo','$stateParams', function(ProjectInfo,$stateParams) {
-                    return ProjectInfo.get({id : $stateParams.id}).$promise;
+                entity: ['$stateParams', '$ocLazyLoad','$injector', function($stateParams, $ocLazyLoad,$injector) {
+                	return $ocLazyLoad.load('app/project/project-info/project-info.service.js').then(
+                			function(){
+                				return $injector.get('ProjectInfo').get({id : $stateParams.id}).$promise;
+                			}
+                	);
                 }],
                 budgetEntity:function(){
                 	return null;
@@ -280,8 +288,12 @@
                     $translatePartialLoader.addPart('global');
                     return $translate.refresh();
                 }],
-                entity: ['ProjectInfo','$stateParams', function(ProjectInfo,$stateParams) {
-                    return ProjectInfo.get({id : $stateParams.id}).$promise;
+                entity: ['$stateParams', '$ocLazyLoad','$injector', function($stateParams, $ocLazyLoad,$injector) {
+                	return $ocLazyLoad.load('app/project/project-info/project-info.service.js').then(
+                			function(){
+                				return $injector.get('ProjectInfo').get({id : $stateParams.id}).$promise;
+                			}
+                	);
                 }],
                 budgetEntity:function(){
                 	return null;

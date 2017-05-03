@@ -72,7 +72,6 @@ public class SystemConfigResource {
 	public ResponseEntity<Boolean> updateContractUser(@RequestBody SystemConfig systemConfig)
 			throws URISyntaxException {
 		log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to update SystemConfig : {}", systemConfig);
-		System.out.println("*********"+systemConfig.getDescription());
 		boolean isNew = systemConfig.getId() == null;
 		SystemConfig sc = new SystemConfig();
 		String updator = SecurityUtils.getCurrentUserLogin();

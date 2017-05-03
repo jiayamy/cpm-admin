@@ -87,8 +87,12 @@
                     $translatePartialLoader.addPart('global');
                     return $translate.refresh();
                 }],
-                entity: ['$stateParams', 'ContractBudget', function($stateParams, ContractBudget) {
-                    return ContractBudget.get({id : $stateParams.id}).$promise;
+                entity: ['$stateParams', '$ocLazyLoad','$injector', function($stateParams, $ocLazyLoad,$injector) {
+                	return $ocLazyLoad.load('app/contract/contract-budget/contract-budget.service.js').then(
+                			function(){
+                				return $injector.get('ContractBudget').get({id : $stateParams.id}).$promise;
+                			}
+                	);
                 }],
                 previousState: ["$state", function ($state) {
                     var currentStateData = {
@@ -123,9 +127,13 @@
                     $translatePartialLoader.addPart('global');
                     return $translate.refresh();
                 }],
-            	entity: ['ContractBudget','$stateParams', function(ContractBudget,$stateParams) {
-            		return ContractBudget.get({id : $stateParams.id}).$promise;
-            	}],
+                entity: ['$stateParams', '$ocLazyLoad','$injector', function($stateParams, $ocLazyLoad,$injector) {
+                	return $ocLazyLoad.load('app/contract/contract-budget/contract-budget.service.js').then(
+                			function(){
+                				return $injector.get('ContractBudget').get({id : $stateParams.id}).$promise;
+                			}
+                	);
+                }],
             	 previousState: ["$state", function ($state) {
                      var currentStateData = {
                      	queryDept:'contract-budget-detail.edit.queryDept',
@@ -268,9 +276,13 @@
 	                $translatePartialLoader.addPart('global');
 	                return $translate.refresh();
                 }],
-                entity: ['$stateParams','ContractBudget', function($stateParams,ContractBudget) {
-                    return ContractBudget.get({id : $stateParams.id}).$promise;
-                 }],
+                entity: ['$stateParams', '$ocLazyLoad','$injector', function($stateParams, $ocLazyLoad,$injector) {
+                	return $ocLazyLoad.load('app/contract/contract-budget/contract-budget.service.js').then(
+                			function(){
+                				return $injector.get('ContractBudget').get({id : $stateParams.id}).$promise;
+                			}
+                	);
+                }],
                  previousState: ["$state", function ($state) {
  	                var currentStateData = {
  	                	queryDept:'contract-budget.edit.queryDept',

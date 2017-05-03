@@ -83,8 +83,12 @@
                     $translatePartialLoader.addPart('global');
                     return $translate.refresh();
                 }],
-                entity: ['$stateParams', 'ProductPrice', function($stateParams, ProductPrice) {
-                    return ProductPrice.get({id : $stateParams.id}).$promise;
+                entity: ['$stateParams', '$ocLazyLoad','$injector', function($stateParams, $ocLazyLoad,$injector) {
+                	return $ocLazyLoad.load('app/contract/product-price/product-price.service.js').then(
+                			function(){
+                				return $injector.get('ProductPrice').get({id : $stateParams.id}).$promise;
+                			}
+                	);
                 }],
                 previousState: ["$state", function ($state) {
                     var currentStateData = {
@@ -118,8 +122,12 @@
                     $translatePartialLoader.addPart('global');
                     return $translate.refresh();
                 }],
-                entity: ['ProductPrice','$stateParams', function(ProductPrice,$stateParams) {
-                    return ProductPrice.get({id : $stateParams.id}).$promise;
+                entity: ['$stateParams', '$ocLazyLoad','$injector', function($stateParams, $ocLazyLoad,$injector) {
+                	return $ocLazyLoad.load('app/contract/product-price/product-price.service.js').then(
+                			function(){
+                				return $injector.get('ProductPrice').get({id : $stateParams.id}).$promise;
+                			}
+                	);
                 }],
                 previousState: ["$state", function ($state) {
                     var currentStateData = {
@@ -199,8 +207,12 @@
             		$translatePartialLoader.addPart('global');
 	                return $translate.refresh();
             	}],
-                entity: ['ProductPrice','$stateParams', function(ProductPrice,$stateParams) {
-                    return ProductPrice.get({id : $stateParams.id}).$promise;
+            	entity: ['$stateParams', '$ocLazyLoad','$injector', function($stateParams, $ocLazyLoad,$injector) {
+                	return $ocLazyLoad.load('app/contract/product-price/product-price.service.js').then(
+                			function(){
+                				return $injector.get('ProductPrice').get({id : $stateParams.id}).$promise;
+                			}
+                	);
                 }],
                 previousState: ["$state", function ($state) {
  	                var currentStateData = {

@@ -142,8 +142,12 @@
                     $translatePartialLoader.addPart('global');
                     return $translate.refresh();
                 }],
-                entity: ['$stateParams', 'ProjectCost', function($stateParams, ProjectCost) {
-                    return ProjectCost.get({id : $stateParams.id}).$promise;
+                entity: ['$stateParams', '$ocLazyLoad','$injector', function($stateParams, $ocLazyLoad,$injector) {
+                	return $ocLazyLoad.load('app/project/project-cost/project-cost.service.js').then(
+                			function(){
+                				return $injector.get('ProjectCost').get({id : $stateParams.id}).$promise;
+                			}
+                	);
                 }],
                 pageType:function(){
                 	return 2;
@@ -181,8 +185,12 @@
                     $translatePartialLoader.addPart('global');
                     return $translate.refresh();
                 }],
-                entity: ['$stateParams', 'ProjectCost', function($stateParams, ProjectCost) {
-                    return ProjectCost.get({id : $stateParams.id}).$promise;
+                entity: ['$stateParams', '$ocLazyLoad','$injector', function($stateParams, $ocLazyLoad,$injector) {
+                	return $ocLazyLoad.load('app/project/project-cost/project-cost.service.js').then(
+                			function(){
+                				return $injector.get('ProjectCost').get({id : $stateParams.id}).$promise;
+                			}
+                	);
                 }],
                 pageType:function(){
                 	return 1;
@@ -220,8 +228,12 @@
                     $translatePartialLoader.addPart('global');
                     return $translate.refresh();
                 }],
-                entity: ['$stateParams', 'ProjectCost', function($stateParams, ProjectCost) {
-                    return ProjectCost.get({id : $stateParams.id}).$promise;
+                entity: ['$stateParams', '$ocLazyLoad','$injector', function($stateParams, $ocLazyLoad,$injector) {
+                	return $ocLazyLoad.load('app/project/project-cost/project-cost.service.js').then(
+                			function(){
+                				return $injector.get('ProjectCost').get({id : $stateParams.id}).$promise;
+                			}
+                	);
                 }],
                 previousState: ["$state", function ($state) {
                     var currentStateData = {
@@ -305,8 +317,12 @@
                     $translatePartialLoader.addPart('global');
                     return $translate.refresh();
                 }],
-                entity: ['$stateParams', 'ProjectCost', function($stateParams, ProjectCost) {
-                    return ProjectCost.get({id : $stateParams.id}).$promise;
+                entity: ['$stateParams', '$ocLazyLoad','$injector', function($stateParams, $ocLazyLoad,$injector) {
+                	return $ocLazyLoad.load('app/project/project-cost/project-cost.service.js').then(
+                			function(){
+                				return $injector.get('ProjectCost').get({id : $stateParams.id}).$promise;
+                			}
+                	);
                 }],
                 previousState: ["$state", function ($state) {
                     var currentStateData = {

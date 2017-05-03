@@ -146,8 +146,12 @@
                     $translatePartialLoader.addPart('global');
                     return $translate.refresh();
                 }],
-                entity: ['$stateParams', 'ContractCost', function($stateParams, ContractCost) {
-                    return ContractCost.get({id : $stateParams.id}).$promise;
+                entity: ['$stateParams', '$ocLazyLoad','$injector', function($stateParams, $ocLazyLoad,$injector) {
+                	return $ocLazyLoad.load('app/contract/contract-cost/contract-cost.service.js').then(
+                			function(){
+                				return $injector.get('ContractCost').get({id : $stateParams.id}).$promise;
+                			}
+                	);
                 }],
                 pageType:function(){
                 	return 2;
@@ -185,8 +189,12 @@
                     $translatePartialLoader.addPart('global');
                     return $translate.refresh();
                 }],
-                entity: ['$stateParams', 'ContractCost', function($stateParams, ContractCost) {
-                    return ContractCost.get({id : $stateParams.id}).$promise;
+                entity: ['$stateParams', '$ocLazyLoad','$injector', function($stateParams, $ocLazyLoad,$injector) {
+                	return $ocLazyLoad.load('app/contract/contract-cost/contract-cost.service.js').then(
+                			function(){
+                				return $injector.get('ContractCost').get({id : $stateParams.id}).$promise;
+                			}
+                	);
                 }],
                 pageType:function(){
                 	return 1;
@@ -216,7 +224,7 @@
             },
             resolve:{
             	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
-            		return $ocLazyLoad.load('app/contract/contract-cost/contract-cost-detail.controller.js');
+            		return $ocLazyLoad.load('app/contract/contract-cost/contract-cost-dialog.controller.js');
                 }],
             	translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                     $translatePartialLoader.addPart('contractCost');
@@ -224,8 +232,12 @@
                     $translatePartialLoader.addPart('global');
                     return $translate.refresh();
                 }],
-                entity: ['$stateParams', 'ContractCost', function($stateParams, ContractCost) {
-                    return ContractCost.get({id : $stateParams.id}).$promise;
+                entity: ['$stateParams', '$ocLazyLoad','$injector', function($stateParams, $ocLazyLoad,$injector) {
+                	return $ocLazyLoad.load('app/contract/contract-cost/contract-cost.service.js').then(
+                			function(){
+                				return $injector.get('ContractCost').get({id : $stateParams.id}).$promise;
+                			}
+                	);
                 }],
                 previousState: ["$state", function ($state) {
                     var currentStateData = {
@@ -378,8 +390,12 @@
                     $translatePartialLoader.addPart('global');
                     return $translate.refresh();
                 }],
-                entity: ['$stateParams', 'ContractCost', function($stateParams, ContractCost) {
-                    return ContractCost.get({id : $stateParams.id}).$promise;
+                entity: ['$stateParams', '$ocLazyLoad','$injector', function($stateParams, $ocLazyLoad,$injector) {
+                	return $ocLazyLoad.load('app/contract/contract-cost/contract-cost.service.js').then(
+                			function(){
+                				return $injector.get('ContractCost').get({id : $stateParams.id}).$promise;
+                			}
+                	);
                 }],
                 previousState: ["$state", function ($state) {
                     var currentStateData = {

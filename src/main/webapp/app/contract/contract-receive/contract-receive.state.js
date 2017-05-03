@@ -81,8 +81,12 @@
                     $translatePartialLoader.addPart('global');
                     return $translate.refresh();
                 }],
-                entity: ['$stateParams', 'ContractReceive', function($stateParams, ContractReceive) {
-                    return ContractReceive.get({id : $stateParams.id}).$promise;
+                entity: ['$stateParams', '$ocLazyLoad','$injector', function($stateParams, $ocLazyLoad,$injector) {
+                	return $ocLazyLoad.load('app/contract/contract-receive/contract-receive.service.js').then(
+                			function(){
+                				return $injector.get('ContractReceive').get({id : $stateParams.id}).$promise;
+                			}
+                	);
                 }],
                 previousState: ["$state", function ($state) {
                     var currentStateData = {
@@ -118,8 +122,12 @@
                      $translatePartialLoader.addPart('global');
                      return $translate.refresh();
                  }],
-                 entity: ['$stateParams', 'ContractReceive', function($stateParams, ContractReceive) {
-                     return ContractReceive.get({id : $stateParams.id}).$promise;
+                 entity: ['$stateParams', '$ocLazyLoad','$injector', function($stateParams, $ocLazyLoad,$injector) {
+                 	return $ocLazyLoad.load('app/contract/contract-receive/contract-receive.service.js').then(
+                 			function(){
+                 				return $injector.get('ContractReceive').get({id : $stateParams.id}).$promise;
+                 			}
+                 	);
                  }],
                  previousState: ["$state", function ($state) {
                      var currentStateData = {
@@ -269,8 +277,12 @@
                     $translatePartialLoader.addPart('global');
                     return $translate.refresh();
                 }],
-                entity: ['$stateParams', 'ContractReceive', function($stateParams, ContractReceive) {
-                    return ContractReceive.get({id : $stateParams.id}).$promise;
+                entity: ['$stateParams', '$ocLazyLoad','$injector', function($stateParams, $ocLazyLoad,$injector) {
+                	return $ocLazyLoad.load('app/contract/contract-receive/contract-receive.service.js').then(
+                			function(){
+                				return $injector.get('ContractReceive').get({id : $stateParams.id}).$promise;
+                			}
+                	);
                 }],
                 previousState: ["$state", function ($state) {
                     var currentStateData = {
