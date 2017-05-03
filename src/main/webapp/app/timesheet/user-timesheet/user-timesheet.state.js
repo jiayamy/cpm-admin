@@ -39,8 +39,6 @@
             resolve: {
             	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
                     return $ocLazyLoad.load([
-                                             'app/timesheet/user-timesheet/user-timesheet.search.service.js',
-                                             'app/info/dept-info/dept-info.service.js',
                                              'app/timesheet/user-timesheet/user-timesheet.service.js',
                                              'app/timesheet/user-timesheet/user-timesheet.controller.js',
                                              'app/timesheet/user-timesheet/user-timesheet.search.service.js',
@@ -88,7 +86,7 @@
                     return $translate.refresh();
                 }],
                 entity: ['$stateParams', '$ocLazyLoad','$injector', function($stateParams, $ocLazyLoad,$injector) {
-                	return $ocLazyLoad.load('app/timesheet/user-timesheet/user-timesheet.search.service.js').then(
+                	return $ocLazyLoad.load('app/timesheet/user-timesheet/user-timesheet.service.js').then(
                 			function(){
                 				return $injector.get('UserTimesheet').get({id : $stateParams.id}).$promise;
                 			}
@@ -127,7 +125,7 @@
 	                return $translate.refresh();
 	            }],
 	            entity: ['$stateParams', '$ocLazyLoad','$injector', function($stateParams, $ocLazyLoad,$injector) {
-                	return $ocLazyLoad.load('app/timesheet/user-timesheet/user-timesheet.search.service.js').then(
+                	return $ocLazyLoad.load('app/timesheet/user-timesheet/user-timesheet.service.js').then(
                 			function(){
                 				return $injector.get('UserTimesheet').get({id : $stateParams.id}).$promise;
                 			}
@@ -215,7 +213,7 @@
 	                return $translate.refresh();
 	            }],
 	            entity: ['$stateParams', '$ocLazyLoad','$injector', function($stateParams, $ocLazyLoad,$injector) {
-                	return $ocLazyLoad.load('app/timesheet/user-timesheet/user-timesheet.search.service.js').then(
+                	return $ocLazyLoad.load('app/timesheet/user-timesheet/user-timesheet.service.js').then(
                 			function(){
                 				return $injector.get('UserTimesheet').get({id : $stateParams.id}).$promise;
                 			}
