@@ -294,12 +294,10 @@ public class UserTimesheetDaoImpl extends GenericDaoImpl<UserTimesheet, Long> im
 		Map<Long, Double> amountMap = new HashMap<Long, Double>();
 		//查询出外包合同月对应的工作日
 		Double monthWorkDay = StringUtil.nullToDouble(systemConfigRepository.findValueByKey("contract.external.month.day"));
-		System.out.println("*************************" + monthWorkDay );
 		if(saveList != null && !saveList.isEmpty()){
 			for(UserTimesheet userTimesheet : saveList){
 				if (userTimesheet.getType().intValue() == UserTimesheet.TYPE_PROJECT) {
 					offerList = getOffer(userTimesheet.getUserId(), userTimesheet.getObjId(), userTimesheet.getWorkDay());
-					System.out.println("%%%%%%%%%%%%%%%%%%%%" + (Double)offerList.get(1));
 					if (offerList != null && !offerList.isEmpty()) {
 						changeAmount = (Double)offerList.get(1) / monthWorkDay * userTimesheet.getRealInput() / 8;
 						if (!amountMap.containsKey((Long)offerList.get(0))) {
@@ -338,7 +336,6 @@ public class UserTimesheetDaoImpl extends GenericDaoImpl<UserTimesheet, Long> im
 		}
 		for (Map.Entry<Long, Double> entry : amountMap.entrySet()) {
 			if (entry.getKey() != null && entry.getValue() != null) {
-				System.out.println("&&&&&&&&&" + entry.getValue());
 				this.excuteHql("update ContractInfo set amount = amount + ?0 where id = ?1",
 						new Object[]{entry.getValue(),entry.getKey()});
 				this.excuteHql("update ContractInfo set taxes = amount * taxRate / 100,shareCost = amount * shareRate / 100 where id = ?0",
