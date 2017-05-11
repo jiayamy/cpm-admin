@@ -963,13 +963,15 @@ CREATE TABLE
     (
         id bigint NOT NULL AUTO_INCREMENT,
         key_ VARCHAR(200) NOT NULL COMMENT '参数名称',
-        value_ varchar(200) NOT NULL COMMENT '参数值,是以逗号分隔的数字',
-        description_ VARCHAR(200) NOT NULL COMMENT COMMENT '描述',
-        updator_ varchar(100) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-	  	update_time timestamp NULL DEFAULT NULL,
-	  	creator_ varchar(100) COLLATE utf8_bin DEFAULT NULL,
-	  	create_time timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-        PRIMARY KEY (id,key_)
+        value_ VARCHAR(200) NOT NULL COMMENT '参数值,是以逗号分隔的数字',
+        description_ VARCHAR(200) NOT NULL COMMENT '父级ID路径，到“父IDPATH/父ID/”。。顶层默认是“/”',
+        creator_ VARCHAR(100) COLLATE utf8_bin,
+        create_time TIMESTAMP NULL,
+        updator_ VARCHAR(100) COLLATE utf8_bin,
+        update_time TIMESTAMP NULL,
+        PRIMARY KEY (id, key_)
     )
     ENGINE=InnoDB DEFAULT CHARSET=utf8;
     
+    insert into w_system_config (id, key_, value_, description_, creator_, create_time, updator_, update_time) values (1, 'dept.sale.topId', '36', '顶级销售部门ID', null, null, 'zhangjun', '2017-04-26 17:48:24');
+insert into w_system_config (id, key_, value_, description_, creator_, create_time, updator_, update_time) values (22, 'contract.external.month.day', '22', '外包合同一个月有效工作日', null, null, 'admin', '2017-05-02 15:48:37');
