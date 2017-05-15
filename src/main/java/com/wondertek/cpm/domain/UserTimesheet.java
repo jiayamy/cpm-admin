@@ -1,13 +1,19 @@
 package com.wondertek.cpm.domain;
 
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.springframework.data.elasticsearch.annotations.Document;
-
-import javax.persistence.*;
 import java.io.Serializable;
 import java.time.ZonedDateTime;
 import java.util.Objects;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.springframework.data.elasticsearch.annotations.Document;
 
 /**
  * 用户工时统计/员工日报
@@ -25,6 +31,9 @@ public class UserTimesheet implements Serializable {
     public static final Integer TYPE_PUBLIC = 1;
     public static final Integer TYPE_CONTRACT = 2;
     public static final Integer TYPE_PROJECT = 3;
+    
+    public static final String TYPE_INPUT_NORMAL = "正常工时";
+    public static final String TYPE_INPUT_EXTRA = "加班工时";
     
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -91,6 +100,18 @@ public class UserTimesheet implements Serializable {
 
     @Column(name = "update_time")
     private ZonedDateTime updateTime;
+    
+    /**
+     * 加班工时
+     */
+    @Column(name = "extra_input")
+    private Double extraInput;
+    
+    /**
+     * 认可加班工时
+     */
+    @Column(name = "accept_extra_input")
+    private Double acceptExtraInput;
 
     public Long getId() {
         return id;
@@ -271,8 +292,25 @@ public class UserTimesheet implements Serializable {
     public void setUpdateTime(ZonedDateTime updateTime) {
         this.updateTime = updateTime;
     }
+    
 
-    @Override
+    public Double getExtraInput() {
+		return extraInput;
+	}
+
+	public void setExtraInput(Double extraInput) {
+		this.extraInput = extraInput;
+	}
+
+	public Double getAcceptExtraInput() {
+		return acceptExtraInput;
+	}
+
+	public void setAcceptExtraInput(Double acceptExtraInput) {
+		this.acceptExtraInput = acceptExtraInput;
+	}
+
+	@Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -292,22 +330,13 @@ public class UserTimesheet implements Serializable {
         return Objects.hashCode(id);
     }
 
-    @Override
-    public String toString() {
-        return "UserTimesheet{" +
-            "id=" + id +
-            ", workDay='" + workDay + "'" +
-            ", userId='" + userId + "'" +
-            ", type='" + type + "'" +
-            ", objId='" + objId + "'" +
-            ", objName='" + objName + "'" +
-            ", realInput='" + realInput + "'" +
-            ", acceptInput='" + acceptInput + "'" +
-            ", status='" + status + "'" +
-            ", creator='" + creator + "'" +
-            ", createTime='" + createTime + "'" +
-            ", updator='" + updator + "'" +
-            ", updateTime='" + updateTime + "'" +
-            '}';
-    }
+	@Override
+	public String toString() {
+		return "UserTimesheet [id=" + id + ", workDay=" + workDay + ", userId=" + userId + ", userName=" + userName
+				+ ", type=" + type + ", objId=" + objId + ", objName=" + objName + ", realInput=" + realInput
+				+ ", acceptInput=" + acceptInput + ", status=" + status + ", workArea=" + workArea + ", creator="
+				+ creator + ", createTime=" + createTime + ", updator=" + updator + ", updateTime=" + updateTime
+				+ ", extraInput=" + extraInput + ", acceptExtraInput=" + acceptExtraInput + "]";
+	}
+
 }

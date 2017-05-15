@@ -20,6 +20,8 @@ public class UserTimesheetVo {
 	private ZonedDateTime createTime;
 	private String updator;
 	private ZonedDateTime updateTime;
+	private Double extraInput;			//加班工时
+	private Double acceptExtraInput;	//认可加班工时
 	/**
 	 * 查看所有的
 	 */
@@ -39,6 +41,8 @@ public class UserTimesheetVo {
 		this.createTime = userTimesheet.getCreateTime();
 		this.updator = userTimesheet.getUpdator();
 		this.updateTime = userTimesheet.getUpdateTime();
+		this.extraInput = userTimesheet.getExtraInput();
+		this.acceptExtraInput = userTimesheet.getAcceptExtraInput();
 	}
 	/**
 	 * 用户访问的，部分数据不给用户看
@@ -58,6 +62,7 @@ public class UserTimesheetVo {
 		this.createTime = userTimesheet.getCreateTime();
 		this.updator = userTimesheet.getUpdator();
 		this.updateTime = userTimesheet.getUpdateTime();
+		this.extraInput = userTimesheet.getExtraInput();
 	}
 
 	public Long getId() {
@@ -178,5 +183,21 @@ public class UserTimesheetVo {
 
 	public void setUpdateTime(ZonedDateTime updateTime) {
 		this.updateTime = updateTime;
+	}
+	
+	public Double getExtraInput() {
+		return extraInput;
+	}
+	
+	public void setExtraInput(Double extraInput) {
+		this.extraInput = extraInput;
+	}
+	
+	public Double getAcceptExtraInput() {
+		return acceptExtraInput;
+	}
+	
+	public void setAcceptExtraInput(Double acceptExtraInput) {
+		this.acceptExtraInput = acceptExtraInput;
 	}
 }
