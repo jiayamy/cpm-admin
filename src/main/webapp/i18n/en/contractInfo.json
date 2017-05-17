@@ -36,7 +36,8 @@
             	"consultantsRateError":"The Consultants Share Rate of The Contract having Consultants cannot be empty, and must be between 0-100"
             },
             "required":{
-            	"salesmanAndconsultants":"Must fill out a Sales Man or a Consultants"
+            	"salesmanAndconsultants":"Must fill out a Sales Man or a Consultants",
+            	"serialNum": "This field is required.Contract starting with WY is the prepared Contract"
             },
             "upload":{
             	"requiredError":"upload files's data error, please confirm again",

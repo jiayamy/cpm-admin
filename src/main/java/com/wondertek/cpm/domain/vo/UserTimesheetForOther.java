@@ -7,6 +7,8 @@ public class UserTimesheetForOther {
 	
 	private Long objId;			//	对象ID（项目或者合同ID）
 	
+	private String inputType;	//		工时类型(正常工时/加班工时)
+	
 	private String data1;		//	可能为工时投入或者日期
 	private String check1;		//	认可工时
 	private Long id1;			//		对应的ID
@@ -79,6 +81,14 @@ public class UserTimesheetForOther {
 
 	public void setObjId(Long objId) {
 		this.objId = objId;
+	}
+	
+	public String getInputType() {
+		return inputType;
+	}
+
+	public void setInputType(String inputType) {
+		this.inputType = inputType;
 	}
 
 	public String getData1() {

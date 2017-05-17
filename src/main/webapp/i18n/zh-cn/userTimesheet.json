@@ -21,10 +21,13 @@
             	"dataNull":"工时不可为空",
             	"dataError":"工时只能为0到8之间的小数，且最多精切到小数点后1位",
             	"dayDataMax":"每天的工时不可大于8",
+            	"dayExtraDataMax":"每天的加班工时不可大于8",
             	"dataChanged":"数据已变更，请重新打开后在执行保存操作",
-            	"holiday":"假期[{{ param }}]的工时只能为0",
+            	"holiday":"假期[{{ param }}]的工时与加班工时只能为0",
             	"objId":"用户在对象名称为“{{param}}”未参与，工时只能为0",
-            	"overDay":"明天及以后的工时只能为0"
+            	"overDay":"明天及以后的工时或者加班工时只能为0",
+            	"extraError":"无具体项目的加班工时只能为0",
+            	"extraDataError":"加班工时只能为2到8之间的小数，且最多精切到小数点后1位"
             },
             "detail": {
                 "title": "日报详情"
@@ -35,8 +38,10 @@
             "type": "类型",
             "objId": "对象ID",
             "objName": "对象名称",
-            "realInput": "工时投入",
+            "realInput": "正常工时",
             "acceptInput": "工时产出",
+            "extraInput": "加班工时",
+            "inputType": "工时类型",
             "status": "状态",
             "creator": "创建者",
             "createTime": "创建时间",

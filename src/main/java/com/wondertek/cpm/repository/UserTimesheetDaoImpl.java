@@ -299,7 +299,7 @@ public class UserTimesheetDaoImpl extends GenericDaoImpl<UserTimesheet, Long> im
 				if (userTimesheet.getType().intValue() == UserTimesheet.TYPE_PROJECT) {
 					offerList = getOffer(userTimesheet.getUserId(), userTimesheet.getObjId(), userTimesheet.getWorkDay());
 					if (offerList != null && !offerList.isEmpty()) {
-						changeAmount = (Double)offerList.get(1) / monthWorkDay * userTimesheet.getRealInput() / 8;
+						changeAmount = (Double)offerList.get(1) / monthWorkDay * StringUtil.nullToDouble(userTimesheet.getRealInput()) / 8;
 						if (!amountMap.containsKey((Long)offerList.get(0))) {
 							amountMap.put((Long)offerList.get(0), changeAmount);
 						}else {
@@ -310,14 +310,15 @@ public class UserTimesheetDaoImpl extends GenericDaoImpl<UserTimesheet, Long> im
 				this.save(userTimesheet);
 			}
 		}
+		UserTimesheet oldUserTimesheet = null;
 		if(updateList != null && !updateList.isEmpty()){
 			for(UserTimesheet userTimesheet : updateList){
 				if (userTimesheet.getType() == userTimesheet.TYPE_PROJECT) {
 					updateWorkTime = userTimesheetRepository.findRealInputById(userTimesheet.getId());
-					if (userTimesheet.getRealInput().doubleValue() != updateWorkTime) {
+					if (StringUtil.nullToDouble(userTimesheet.getRealInput()).doubleValue() != StringUtil.nullToDouble(updateWorkTime)) {
 						offerList = getOffer(userTimesheet.getUserId(), userTimesheet.getObjId(), userTimesheet.getWorkDay());
 						if (offerList != null && !offerList.isEmpty()) {
-							changeAmount = (Double)offerList.get(1) / monthWorkDay * (userTimesheet.getRealInput() - updateWorkTime) / 8;
+							changeAmount = (Double)offerList.get(1) / monthWorkDay * (StringUtil.nullToDouble(userTimesheet.getRealInput()) - StringUtil.nullToDouble(updateWorkTime)) / 8;
 							if (!amountMap.containsKey((Long)offerList.get(0))) {
 								amountMap.put((Long)offerList.get(0), changeAmount);
 							}else {
@@ -326,12 +327,87 @@ public class UserTimesheetDaoImpl extends GenericDaoImpl<UserTimesheet, Long> im
 						}
 					}
 				}
-				this.excuteHql("update UserTimesheet set realInput = ?0,status = ?1,workArea = ?2,updator = ?3,updateTime = ?4 where (realInput != ?5 or workArea != ?6) and id = ?7",
-						new Object[]{userTimesheet.getRealInput(),userTimesheet.getStatus(),userTimesheet.getWorkArea(),
-								userTimesheet.getUpdator(),userTimesheet.getUpdateTime(),
-								userTimesheet.getRealInput(),userTimesheet.getWorkArea(),
-								userTimesheet.getId()});
-				//gengx
+				oldUserTimesheet = userTimesheetRepository.findOne(userTimesheet.getId());
+				if(oldUserTimesheet != null){//入库检验认可工时是否大于工时，认可加班工时是否大于加班工时
+					if(StringUtil.nullToDouble(oldUserTimesheet.getAcceptInput()) > StringUtil.nullToDouble(userTimesheet.getRealInput()) && 
+							StringUtil.nullToDouble(oldUserTimesheet.getAcceptExtraInput()) > StringUtil.nullToDouble(userTimesheet.getExtraInput())){
+						this.excuteHql("update UserTimesheet set realInput = ?0,status = ?1,workArea = ?2,updator = ?3,updateTime = ?4,extraInput = ?5,acceptInput = ?6,acceptExtraInput = ?7 where (realInput != ?8 or workArea != ?9 or extraInput != ?10) and id = ?11",
+								new Object[]{userTimesheet.getRealInput(),userTimesheet.getStatus(),userTimesheet.getWorkArea(),
+										userTimesheet.getUpdator(),userTimesheet.getUpdateTime(),userTimesheet.getExtraInput(),
+										userTimesheet.getRealInput(),userTimesheet.getExtraInput(),userTimesheet.getRealInput(),
+										userTimesheet.getWorkArea(),userTimesheet.getExtraInput(),userTimesheet.getId()});
+					}else if(StringUtil.nullToDouble(oldUserTimesheet.getAcceptExtraInput()) > StringUtil.nullToDouble(userTimesheet.getExtraInput())){
+						if(oldUserTimesheet.getAcceptInput() != null){
+							this.excuteHql("update UserTimesheet set realInput = ?0,status = ?1,workArea = ?2,updator = ?3,updateTime = ?4,extraInput = ?5,acceptExtraInput = ?6 where (realInput != ?7 or workArea != ?8 or extraInput != ?9) and id = ?10",
+									new Object[]{userTimesheet.getRealInput(),userTimesheet.getStatus(),userTimesheet.getWorkArea(),
+											userTimesheet.getUpdator(),userTimesheet.getUpdateTime(),userTimesheet.getExtraInput(),userTimesheet.getExtraInput(),
+											userTimesheet.getRealInput(),userTimesheet.getWorkArea(),userTimesheet.getExtraInput(),userTimesheet.getId()});
+						}else if(StringUtil.nullToDouble(userTimesheet.getAcceptInput()) > 0){
+							this.excuteHql("update UserTimesheet set realInput = ?0,status = ?1,workArea = ?2,updator = ?3,updateTime = ?4,extraInput = ?5,acceptExtraInput = ?6,acceptInput = ?7 where (realInput != ?8 or acceptInput is null or workArea != ?9 or extraInput != ?10) and id = ?11",
+									new Object[]{userTimesheet.getRealInput(),userTimesheet.getStatus(),userTimesheet.getWorkArea(),
+											userTimesheet.getUpdator(),userTimesheet.getUpdateTime(),userTimesheet.getExtraInput(),userTimesheet.getExtraInput(),userTimesheet.getRealInput(),
+											userTimesheet.getRealInput(),userTimesheet.getWorkArea(),userTimesheet.getExtraInput(),userTimesheet.getId()});
+						}else{
+							this.excuteHql("update UserTimesheet set status = ?0,workArea = ?1,updator = ?2,updateTime = ?3,extraInput = ?4,acceptExtraInput = ?5 where (workArea != ?6 or extraInput != ?7) and id = ?8",
+									new Object[]{userTimesheet.getStatus(),userTimesheet.getWorkArea(),
+											userTimesheet.getUpdator(),userTimesheet.getUpdateTime(),userTimesheet.getExtraInput(),userTimesheet.getExtraInput(),
+											userTimesheet.getWorkArea(),userTimesheet.getExtraInput(),userTimesheet.getId()});
+						}
+					}else if(StringUtil.nullToDouble(oldUserTimesheet.getAcceptInput()) > StringUtil.nullToDouble(userTimesheet.getRealInput())){
+						if(oldUserTimesheet.getAcceptExtraInput() != null){
+							this.excuteHql("update UserTimesheet set realInput = ?0,status = ?1,workArea = ?2,updator = ?3,updateTime = ?4,extraInput = ?5,acceptInput = ?6 where (realInput != ?7 or workArea != ?8 or extraInput != ?9) and id = ?10",
+									new Object[]{userTimesheet.getRealInput(),userTimesheet.getStatus(),userTimesheet.getWorkArea(),
+											userTimesheet.getUpdator(),userTimesheet.getUpdateTime(),userTimesheet.getExtraInput(),
+											userTimesheet.getRealInput(),userTimesheet.getRealInput(),userTimesheet.getWorkArea(),
+											userTimesheet.getExtraInput(),userTimesheet.getId()});
+						}else if(StringUtil.nullToDouble(userTimesheet.getAcceptExtraInput()) > 0){
+							this.excuteHql("update UserTimesheet set realInput = ?0,status = ?1,workArea = ?2,updator = ?3,updateTime = ?4,extraInput = ?5,acceptInput = ?6,acceptExtraInput=?7 where (realInput != ?8 or acceptExtraInput is null or workArea != ?9 or extraInput != ?10) and id = ?11",
+									new Object[]{userTimesheet.getRealInput(),userTimesheet.getStatus(),userTimesheet.getWorkArea(),
+											userTimesheet.getUpdator(),userTimesheet.getUpdateTime(),userTimesheet.getExtraInput(),
+											userTimesheet.getRealInput(),userTimesheet.getExtraInput(),userTimesheet.getRealInput(),userTimesheet.getWorkArea(),
+											userTimesheet.getExtraInput(),userTimesheet.getId()});
+						}else{
+							this.excuteHql("update UserTimesheet set realInput = ?0,status = ?1,workArea = ?2,updator = ?3,updateTime = ?4,acceptInput = ?5 where (realInput != ?6 or workArea != ?7) and id = ?8",
+									new Object[]{userTimesheet.getRealInput(),userTimesheet.getStatus(),userTimesheet.getWorkArea(),
+											userTimesheet.getUpdator(),userTimesheet.getUpdateTime(),userTimesheet.getRealInput(),
+											userTimesheet.getRealInput(),userTimesheet.getWorkArea(),userTimesheet.getId()});
+						}
+					}else{
+						if(oldUserTimesheet.getAcceptInput() == null){
+							if(StringUtil.nullToDouble(userTimesheet.getAcceptInput()) > 0){
+								this.excuteHql("update UserTimesheet set realInput = ?0,status = ?1,workArea = ?2,updator = ?3,updateTime = ?4,extraInput = ?5,acceptInput = ?6 where (realInput != ?7 or acceptInput is null or workArea != ?8 or extraInput != ?9) and id = ?10",
+										new Object[]{userTimesheet.getRealInput(),userTimesheet.getStatus(),userTimesheet.getWorkArea(),
+												userTimesheet.getUpdator(),userTimesheet.getUpdateTime(),userTimesheet.getExtraInput(),userTimesheet.getRealInput(),
+												userTimesheet.getRealInput(),userTimesheet.getWorkArea(),userTimesheet.getExtraInput(),userTimesheet.getId()});
+							}else{
+								this.excuteHql("update UserTimesheet set status = ?0,workArea = ?1,updator = ?2,updateTime = ?3,extraInput = ?4 where (workArea != ?5 or extraInput != ?6) and id = ?7",
+										new Object[]{userTimesheet.getStatus(),userTimesheet.getWorkArea(),
+												userTimesheet.getUpdator(),userTimesheet.getUpdateTime(),userTimesheet.getExtraInput(),
+												userTimesheet.getWorkArea(),userTimesheet.getExtraInput(),userTimesheet.getId()});
+							}
+						}else if(oldUserTimesheet.getAcceptExtraInput() == null){
+							if(StringUtil.nullToDouble(userTimesheet.getAcceptExtraInput()) > 0){
+								this.excuteHql("update UserTimesheet set realInput = ?0,status = ?1,workArea = ?2,updator = ?3,updateTime = ?4,extraInput = ?5,acceptExtraInput=?6 where (realInput != ?7 or acceptExtraInput is null or workArea != ?8 or extraInput != ?9) and id = ?10",
+										new Object[]{userTimesheet.getRealInput(),userTimesheet.getStatus(),userTimesheet.getWorkArea(),
+												userTimesheet.getUpdator(),userTimesheet.getUpdateTime(),userTimesheet.getExtraInput(),
+												userTimesheet.getExtraInput(),userTimesheet.getRealInput(),userTimesheet.getWorkArea(),
+												userTimesheet.getExtraInput(),userTimesheet.getId()});
+							}else{
+								this.excuteHql("update UserTimesheet set realInput = ?0,status = ?1,workArea = ?2,updator = ?3,updateTime = ?4 where (realInput != ?5 or workArea != ?6) and id = ?7",
+										new Object[]{userTimesheet.getRealInput(),userTimesheet.getStatus(),userTimesheet.getWorkArea(),
+												userTimesheet.getUpdator(),userTimesheet.getUpdateTime(),
+												userTimesheet.getRealInput(),userTimesheet.getWorkArea(),
+												userTimesheet.getId()});
+							}
+						}else{
+							this.excuteHql("update UserTimesheet set realInput = ?0,status = ?1,workArea = ?2,updator = ?3,updateTime = ?4,extraInput = ?5 where (realInput != ?6 or workArea != ?7 or extraInput != ?8) and id = ?9",
+									new Object[]{userTimesheet.getRealInput(),userTimesheet.getStatus(),userTimesheet.getWorkArea(),
+											userTimesheet.getUpdator(),userTimesheet.getUpdateTime(),userTimesheet.getExtraInput(),
+											userTimesheet.getRealInput(),userTimesheet.getWorkArea(),userTimesheet.getExtraInput(),
+											userTimesheet.getId()});
+						}
+					}
+				}
 			}
 		}
 		for (Map.Entry<Long, Double> entry : amountMap.entrySet()) {
@@ -415,13 +491,49 @@ public class UserTimesheetDaoImpl extends GenericDaoImpl<UserTimesheet, Long> im
 	@Override
 	public void updateAcceptInput(List<UserTimesheet> updateList) {
 		if(updateList != null && !updateList.isEmpty()){
+			UserTimesheet oldUserTimesheet = null;
 			for(UserTimesheet userTimesheet : updateList){
-				this.excuteHql("update UserTimesheet set acceptInput = ?0,updator = ?1,updateTime = ?2 where acceptInput != ?3 and userId = ?4 and objId = ?5 and type = ?6 and id = ?7",
-						new Object[]{userTimesheet.getAcceptInput(),
-								userTimesheet.getUpdator(),userTimesheet.getUpdateTime(),
-								userTimesheet.getAcceptInput(),
-								userTimesheet.getUserId(),userTimesheet.getObjId(),userTimesheet.getType(),
-								userTimesheet.getId()});
+				oldUserTimesheet = userTimesheetRepository.findOne(userTimesheet.getId());
+				if(oldUserTimesheet != null){
+					if(oldUserTimesheet.getAcceptInput() != null && oldUserTimesheet.getAcceptExtraInput() == null){
+						this.excuteHql("update UserTimesheet set acceptInput = ?0,updator = ?1,updateTime = ?2 where acceptInput != ?3 and userId = ?4 and objId = ?5 and type = ?6 and id = ?7",
+								new Object[]{userTimesheet.getAcceptInput(),
+										userTimesheet.getUpdator(),userTimesheet.getUpdateTime(),
+										userTimesheet.getAcceptInput(),
+										userTimesheet.getUserId(),userTimesheet.getObjId(),userTimesheet.getType(),
+										userTimesheet.getId()});
+					}else if(oldUserTimesheet.getAcceptExtraInput() != null && oldUserTimesheet.getAcceptInput() == null){
+						this.excuteHql("update UserTimesheet set acceptExtraInput = ?0,updator = ?1,updateTime = ?2 where acceptExtraInput != ?3 and userId = ?4 and objId = ?5 and type = ?6 and id = ?7",
+								new Object[]{userTimesheet.getAcceptExtraInput(),
+										userTimesheet.getUpdator(),userTimesheet.getUpdateTime(),
+										userTimesheet.getAcceptInput(),
+										userTimesheet.getUserId(),userTimesheet.getObjId(),userTimesheet.getType(),
+										userTimesheet.getId()});
+					}else if(oldUserTimesheet.getAcceptInput() != null && oldUserTimesheet.getAcceptExtraInput() != null){
+						if(userTimesheet.getAcceptInput() == null){
+							this.excuteHql("update UserTimesheet set acceptExtraInput = ?0,updator = ?1,updateTime = ?2 where acceptExtraInput = ?3 and userId = ?4 and objId = ?5 and type = ?6 and id = ?7",
+									new Object[]{userTimesheet.getAcceptExtraInput(),
+											userTimesheet.getUpdator(),userTimesheet.getUpdateTime(),
+											userTimesheet.getAcceptExtraInput(),
+											userTimesheet.getUserId(),userTimesheet.getObjId(),userTimesheet.getType(),
+											userTimesheet.getId()});
+						}else if(userTimesheet.getAcceptExtraInput() == null){
+							this.excuteHql("update UserTimesheet set acceptInput = ?0,updator = ?1,updateTime = ?2 where acceptInput != ?3 and userId = ?4 and objId = ?5 and type = ?6 and id = ?7",
+									new Object[]{userTimesheet.getAcceptInput(),
+											userTimesheet.getUpdator(),userTimesheet.getUpdateTime(),
+											userTimesheet.getAcceptInput(),
+											userTimesheet.getUserId(),userTimesheet.getObjId(),userTimesheet.getType(),
+											userTimesheet.getId()});
+						}else{
+							this.excuteHql("update UserTimesheet set acceptInput = ?0,acceptExtraInput = ?1,updator = ?2,updateTime = ?3 where (acceptInput != ?4 or acceptExtraInput != ?5) and userId = ?6 and objId = ?7 and type = ?8 and id = ?9",
+									new Object[]{userTimesheet.getAcceptInput(),userTimesheet.getAcceptExtraInput(),
+											userTimesheet.getUpdator(),userTimesheet.getUpdateTime(),
+											userTimesheet.getAcceptInput(),userTimesheet.getAcceptExtraInput(),
+											userTimesheet.getUserId(),userTimesheet.getObjId(),userTimesheet.getType(),
+											userTimesheet.getId()});
+						}
+					}
+				}
 			}
 		}
 	}

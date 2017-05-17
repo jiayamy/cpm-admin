@@ -21,9 +21,13 @@
             	"dataNull":"data can't be null",
             	"dataError":"data should between 0 to 8, 1 decimal places",
             	"dayDataMax":"day data should less than 8 ",
+            	"dayExtraDataMax":"day extra work should less than 8 ",
             	"dataChanged":"data changed, plz open again to operate",
             	"holiday":"holiday{{ param }} can only be 0",
-            	"overDay":"tomorrow and beyond's day data can only be 0"
+            	"objId":"user is not participate in {{param}},working hours can only be 0",
+            	"overDay":"tomorrow and beyond's day data can only be 0",
+            	"extraError":"extra work,not in project or contract,can only be 0",
+            	"extraDataError":"data should between 2 to 8, 1 decimal places"
             },
             "detail": {
                 "title": "User Timesheet"
@@ -36,6 +40,8 @@
             "objName": "Obj Name",
             "realInput": "Real Input",
             "acceptInput": "Accept Input",
+            "extraInput": "Extra Input",
+            "inputType": "Input Type",
             "status": "Status",
             "creator": "Creator",
             "createTime": "Create Time",
