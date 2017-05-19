@@ -43,4 +43,9 @@ public interface UserRepository extends JpaRepository<User, Long> {
 	
 	@Query("from User")
 	List<User> findUser();
+	@Query("from User u where u.activated = true")
+	List<User> getAllUserByActivated();
+	
+	@Query("from User where id = ?1")
+	User getRoleByUserId(Long userId); 
 }

@@ -33,6 +33,7 @@ import com.wondertek.cpm.domain.vo.ParticipateInfo;
 import com.wondertek.cpm.domain.vo.ProjectInfoVo;
 import com.wondertek.cpm.domain.vo.UserTimesheetForOther;
 import com.wondertek.cpm.domain.vo.UserTimesheetForUser;
+import com.wondertek.cpm.domain.vo.UserTimesheetVo;
 import com.wondertek.cpm.repository.ContractUserDao;
 import com.wondertek.cpm.repository.HolidayInfoRepository;
 import com.wondertek.cpm.repository.ProjectUserDao;
@@ -1379,5 +1380,10 @@ public class UserTimesheetService {
 			return pageDay;
 		}
 		return null;
+	}
+
+	public List<UserTimesheetVo> findByWorkDay(String fDay, String lDay) {
+		List<UserTimesheetVo> list = userTimesheetDao.findByWorkDay(fDay,lDay);
+		return list;
 	}
 }

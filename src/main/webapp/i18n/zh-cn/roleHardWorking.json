@@ -1,0 +1,18 @@
+{
+    "cpmApp": {
+        "roleHardWorking" : {
+            "home": {
+                "title": "员工勤奋度统计"
+            },
+            "detail": {
+                "title": "员工勤奋度统计详情"
+            },
+            "roleSerialNum" : " 员工编号",
+            "roleName" : " 员工姓名",
+            "hardWorking" : " 勤奋度",
+            "originMonth" : "统计月",
+            "userName" : "员工",
+            "transChart": "图表"
+        }
+    }
+}

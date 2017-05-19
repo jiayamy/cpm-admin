@@ -129,6 +129,11 @@ public final class AuthoritiesConstants {
 	 */
     public static final String ROLE_STAT_SALES_BONUS = "ROLE_STAT_SALES_BONUS";
     
+    /**
+	 * 员工勤奋度信息权限
+	 */
+    public static final String ROLE_WORKHARDING = "ROLE_WORKHARDING";
+    
     private AuthoritiesConstants() {
     }
 }

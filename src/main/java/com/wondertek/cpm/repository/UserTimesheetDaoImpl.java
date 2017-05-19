@@ -19,6 +19,7 @@ import com.wondertek.cpm.domain.ContractInfo;
 import com.wondertek.cpm.domain.DeptInfo;
 import com.wondertek.cpm.domain.User;
 import com.wondertek.cpm.domain.UserTimesheet;
+import com.wondertek.cpm.domain.vo.UserTimesheetVo;
 @Repository("userTimesheetDao")
 public class UserTimesheetDaoImpl extends GenericDaoImpl<UserTimesheet, Long> implements UserTimesheetDao  {
 	
@@ -472,5 +473,40 @@ public class UserTimesheetDaoImpl extends GenericDaoImpl<UserTimesheet, Long> im
 			this.excuteHql("update ContractInfo set taxes = amount * taxRate / 100,shareCost = amount * shareRate / 100 where id = ?0",
 					new Object[]{contractInfo.getId()});
 		}
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<UserTimesheetVo> findByWorkDay(String fDay, String lDay) {
+		StringBuffer sb = new StringBuffer();
+    	List<Object> params = new ArrayList<Object>();
+    	int count = 0;//jpa格式 问号后的数组，一定要从0开始
+    	
+    	sb.append(" select uts.userId,sum(uts.realInput),sum(uts.acceptInput),sum(uts.extraInput),sum(uts.acceptExtraInput) from UserTimesheet uts");
+    	
+    	sb.append(" where uts.workDay >= ?"+(count++)+" and uts.workDay < ?"+(count++)+" group by uts.userId");
+    	params.add(StringUtil.stringToLong(fDay));
+    	params.add(StringUtil.stringToLong(lDay));
+    	sb.append(")");
+    	
+    	List<Object[]> page = this.queryAllHql(sb.toString(), params.toArray());
+    	
+    	List<UserTimesheetVo> list = new ArrayList<UserTimesheetVo>();
+    	if(page != null && !page.isEmpty()){
+    		for(Object[] o : page){
+    			list.add(transProjectUserVo(o));
+			}
+    	}
+    	return list;
+	}
+
+	private UserTimesheetVo transProjectUserVo(Object[] o) {
+		UserTimesheetVo userTimesheetVo = new UserTimesheetVo();
+		userTimesheetVo.setUserId(StringUtil.nullToLong(o[0]));
+		userTimesheetVo.setSumRealInput(StringUtil.nullToDouble(o[1]));
+		userTimesheetVo.setSumAcceptInput(StringUtil.nullToDouble(o[2]));
+		userTimesheetVo.setSumExtraInput(StringUtil.nullToDouble(o[3]));
+		userTimesheetVo.setSumAcceptExtraInput(StringUtil.nullToDouble(o[4]));
+		return userTimesheetVo;
 	}
 }

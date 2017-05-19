@@ -642,6 +642,7 @@ CREATE
 	insert into jhi_authority (name, detail_) values ('ROLE_STAT_SALES_BONUS', '统计报表-销售项目信息');
 	insert into jhi_authority (name, detail_) values ('ROLE_STAT_PROJECT_OVERALL', '统计报表-项目总体情况控制');
 	insert into jhi_authority (name, detail_) values ('ROLE_STAT_SUPPORT_BONUS', '统计报表-项目支撑奖金');
+	insert into jhi_authority (name, detail_) values ('ROLE_WORKHARDING', '统计报表-员工勤奋度');
 	
 	--20170301
 	ALTER TABLE jhi_user MODIFY COLUMN grade_ INT DEFAULT '1';
