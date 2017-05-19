@@ -363,4 +363,14 @@ public class UserService {
 		}
 		return returnMap;
 	}
+
+	public List<User> getAllUserByActivated() {
+		List<User> userList = userRepository.getAllUserByActivated();
+		return userList;
+	}
+
+	public User getRoleByUserId(Long userId) {
+		User user = userRepository.getRoleByUserId(userId);
+		return user;
+	}
 }

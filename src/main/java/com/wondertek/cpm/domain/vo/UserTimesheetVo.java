@@ -16,12 +16,20 @@ public class UserTimesheetVo {
 	private Double acceptInput;	//	工时产出（认可工时，统计员工贡献度需要）
 	private String workArea;	//		工作地区
 	private Integer status;		//	状态（可用，删除）
+	private Double sumRealInput;  //  正常工时总和
+	private Double sumAcceptInput;  // 认可工时总和
+	private Double sumExtraInput;	// 加班工时总和
+	private Double sumAcceptExtraInput;  //认可加班工时总和
 	private String creator;
 	private ZonedDateTime createTime;
 	private String updator;
 	private ZonedDateTime updateTime;
 	private Double extraInput;			//加班工时
 	private Double acceptExtraInput;	//认可加班工时
+	
+	public UserTimesheetVo(){
+		
+	}
 	/**
 	 * 查看所有的
 	 */
@@ -152,7 +160,31 @@ public class UserTimesheetVo {
 	public void setStatus(Integer status) {
 		this.status = status;
 	}
-
+	
+	public Double getSumRealInput() {
+		return sumRealInput;
+	}
+	public void setSumRealInput(Double sumRealInput) {
+		this.sumRealInput = sumRealInput;
+	}
+	public Double getSumAcceptInput() {
+		return sumAcceptInput;
+	}
+	public void setSumAcceptInput(Double sumAcceptInput) {
+		this.sumAcceptInput = sumAcceptInput;
+	}
+	public Double getSumExtraInput() {
+		return sumExtraInput;
+	}
+	public void setSumExtraInput(Double sumExtraInput) {
+		this.sumExtraInput = sumExtraInput;
+	}
+	public Double getSumAcceptExtraInput() {
+		return sumAcceptExtraInput;
+	}
+	public void setSumAcceptExtraInput(Double sumAcceptExtraInput) {
+		this.sumAcceptExtraInput = sumAcceptExtraInput;
+	}
 	public String getCreator() {
 		return creator;
 	}

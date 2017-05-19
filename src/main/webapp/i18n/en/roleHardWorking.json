@@ -1,0 +1,18 @@
+{
+    "cpmApp": {
+        "roleHardWorking" : {
+            "home": {
+                "title": "Role HardworWing Stat"
+            },
+            "detail": {
+                "title": "Role HardworWing Stat"
+            },
+            "roleSerialNum " : "Role SerialNum",
+            "roleName " : "Role Name",
+            "hardWorking " : "HardWorking",
+            "originMonth" : "Origin Month",
+            "userName" : "User Name"
+            "transChart": "chart"
+        }
+    }
+}

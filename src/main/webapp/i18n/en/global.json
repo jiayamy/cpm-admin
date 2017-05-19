@@ -54,7 +54,8 @@
                 "projectMonthlyStat": "Project Monthly Stat",
                 "bonus": "Bonus Info",
                 "salePurchaseInternalCost": "Sales Purchase Internal Cost",
-                "projectSupportBonus": "Project Support Bonus"
+                "projectSupportBonus": "Project Support Bonus",
+                "roleHardWorking":"Role HardWorking"
             },
             "entities": {
                 "main": "Entities",

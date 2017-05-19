@@ -1,0 +1,54 @@
+
+<div>
+    <h2><span data-translate="cpmApp.roleHardWorking.detail.title">Role HardworWing Stat</span></h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <div class="container-fluid">
+        <div class="row">
+            <form name="searchForm" class="form-horizontal">
+	           <div class="form-group">
+	               <div class="col-sm-4">
+	               		<div class="row">
+							<label class="col-sm-4 control-label" data-translate="cpmApp.roleHardWorking.originMonth">Origin Month</label>
+				            <div class="col-sm-8">
+				                <p class="input-group">
+				                    <input id="search_fromDate" type="text" class="form-control" name="beginningMonth" datetime-picker="yyyyMM"
+					           		 		enable-time="false" ng-model="vm.searchQuery.beginningMonth" is-open="vm.datePickerOpenStatus.beginningMonth"/>
+					          		<span class="input-group-btn">
+					           			<button type="button" class="btn btn-default" ng-click="vm.openCalendar('beginningMonth')"><i class="glyphicon glyphicon-calendar"></i></button>
+					            	</span>
+				                </p>
+				            </div>
+	               		</div>
+					</div>
+					
+		            <div class="col-sm-4 pull-right">
+		            	<div class="col-sm-4">
+		            		&nbsp;
+		            	</div>
+		            	<div class="col-sm-8">
+		            		 <span  class="width-min" >
+		                        <button class="btn btn-info" ng-click="vm.search()">
+		                            <span class="glyphicon glyphicon-search"></span>
+		                            <span data-translate="entity.action.search"></span>
+		                        </button>
+		                    </span>
+		                    <span class="width-min" ng-if="vm.haveSearch">
+		                        <button class="btn btn-info" ng-click="vm.clear()">
+		                            <span class="glyphicon glyphicon-trash"></span>
+		                            <span data-translate="entity.action.clear"></span>
+		                        </button>
+		                    </span>
+		            	</div>
+		            </div>
+				</div>
+           </form>
+        </div>
+    </div>
+    <div id="tabcontent1" style="height: 420px;"></div>
+	<button type="submit"
+            ui-sref="{{ vm.previousState }}"
+            class="btn btn-info">
+        <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span data-translate="entity.action.back"> Back</span>
+    </button>
+</div>
