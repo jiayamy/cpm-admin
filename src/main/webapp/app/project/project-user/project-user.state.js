@@ -13,7 +13,7 @@
             parent: 'project',
             url: '/project-user?page&sort&projectId&userId&userName',
             data: {
-                authorities: ['ROLE_WORKHARDING'],
+                authorities: ['ROLE_PROJECT_USER'],
                 pageTitle: 'cpmApp.projectUser.home.title'
             },
             views: {
@@ -68,7 +68,7 @@
             parent: 'project-user',
             url: '/queryDept?selectType&showChild',
             data: {
-                authorities: ['ROLE_WORKHARDING']
+                authorities: ['ROLE_PROJECT_USER']
             },
             onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
                 $uibModal.open({
