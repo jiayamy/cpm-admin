@@ -27,7 +27,8 @@
             "humanCost": "项目人工成本(万)",
             "payment": "项目报销成本(万)",
             "statWeek": "统计周",
-            "createTime": "统计日期"
+            "createTime": "统计日期",
+            "totalInput":"项目总工时(H)"
         }
     }
 }

@@ -975,3 +975,9 @@ CREATE TABLE
     
     insert into w_system_config (id, key_, value_, description_, creator_, create_time, updator_, update_time) values (1, 'dept.sale.topId', '36', '顶级销售部门ID', null, null, 'zhangjun', '2017-04-26 17:48:24');
 insert into w_system_config (id, key_, value_, description_, creator_, create_time, updator_, update_time) values (22, 'contract.external.month.day', '22', '外包合同一个月有效工作日', null, null, 'admin', '2017-05-02 15:48:37');
+
+--20170517
+	alter table w_user_timesheet add extra_input double(15,2) comment '加班工时';
+	alter table w_user_timesheet add accept_extra_input double(15,2) comment '认可加班工时';
+	alter table w_project_weekly_stat add total_input double(15,2) comment '项目总工时';
+	alter table w_project_monthly_stat add total_input double(15,2) comment '项目总工时';

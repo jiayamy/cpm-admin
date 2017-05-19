@@ -141,7 +141,7 @@ public class ProjectWeeklyStatResource {
     		fromDate = DateUtil.getWholeWeekByDate(DateUtil.parseDate("yyyyMMdd", fromDate))[6];
     	}
     	Date fDay = DateUtil.parseDate("yyyyMMdd", fromDate);
-    	List<String> legend = new ArrayList<String>(Arrays.asList(new String[]{"人工成本","报销成本"}));
+    	List<String> legend = new ArrayList<String>(Arrays.asList(new String[]{"人工成本","报销成本","项目总工时"}));
     	chartReportVo.setLegend(legend);
     	Long sevenDay = 7*24*60*60*1000L;
     	Long temp = fDay.getTime();

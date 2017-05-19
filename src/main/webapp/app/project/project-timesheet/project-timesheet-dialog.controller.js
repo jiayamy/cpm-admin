@@ -304,7 +304,7 @@
 							vm.isSaving = false;
 							return false;
 						}
-						if (cds1 > d1 || cds2 > ds2 || cds3 > ds3 || cds4 > ds4
+						if (cds1 > ds1 || cds2 > ds2 || cds3 > ds3 || cds4 > ds4
 								|| cds5 > ds5 || cds6 > ds6 || cds7 > ds7) {
 							AlertService
 									.error("cpmApp.projectTimesheet.save.overExtraInput");

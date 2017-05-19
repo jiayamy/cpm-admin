@@ -27,7 +27,8 @@
             "humanCost": "Human Cost",
             "payment": "Payment",
             "statWeek": "Stat Week",
-            "createTime": "Create Time"
+            "createTime": "Create Time",
+            "totalInput": "Project Total Input(H)"
         }
     }
 }
