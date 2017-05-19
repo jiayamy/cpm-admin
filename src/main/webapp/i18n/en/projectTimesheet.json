@@ -25,6 +25,8 @@
             "userName": "User Name",
             "realInput": "Real Input",
             "acceptInput": "Accept Input",
+            "extraInput":"Extra Input",
+            "acceptExtraInput":"Accept Extra Input",
             "objName":"Contract Info",
             "workDay": "Work Day",
             "status": "Status",

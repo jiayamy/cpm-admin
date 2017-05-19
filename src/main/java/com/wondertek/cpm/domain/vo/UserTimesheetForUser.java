@@ -5,6 +5,7 @@ public class UserTimesheetForUser {
 	private Integer type;		//	类型（合同、项目、公共成本、日期）
 	private Long objId;			//	对象ID
 	private String objName;		//	对象名称
+	private String inputType;	//		工时类型名称
 	private String data1;		//	可能为工时或者地区
 	private Long id1;			//		对应的ID
 	private String data2;		//	
@@ -141,5 +142,13 @@ public class UserTimesheetForUser {
 	}
 	public void setId7(Long id7) {
 		this.id7 = id7;
+	}
+
+	public String getInputType() {
+		return inputType;
+	}
+
+	public void setInputType(String inputType) {
+		this.inputType = inputType;
 	}
 }

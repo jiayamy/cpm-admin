@@ -75,6 +75,8 @@
                     <th jh-sort-by="wut.objName"><span data-translate="cpmApp.projectTimesheet.objName">Obj Name</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="wut.realInput"><span data-translate="cpmApp.projectTimesheet.realInput">Real Input</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="wut.acceptInput"><span data-translate="cpmApp.projectTimesheet.acceptInput">Accept Input</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="wut.extraInput"><span data-translate="cpmApp.projectTimesheet.extraInput">Extra Input</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="wut.acceptExtraInput"><span data-translate="cpmApp.projectTimesheet.acceptExtraInput">Accept Extra Input</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="wut.updator"><span data-translate="cpmApp.projectTimesheet.updator">Updator</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="wut.updateTime" class="hidden-xs"><span data-translate="cpmApp.projectTimesheet.updateTime">Update Time</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th></th>
@@ -87,6 +89,8 @@
                     <td>{{projectTimesheet.objName}}</td>
                     <td>{{projectTimesheet.realInput}}</td>
                     <td ng-class="{'btn-info':(projectTimesheet.realInput != projectTimesheet.acceptInput)}">{{projectTimesheet.acceptInput}}</td>
+                    <td>{{projectTimesheet.extraInput}}</td>
+                    <td ng-class="{'btn-info':(projectTimesheet.extraInput != projectTimesheet.acceptExtraInput)}">{{projectTimesheet.acceptExtraInput}}</td>
                     <td>{{projectTimesheet.updator}}</td>
                     <td class="hidden-xs">{{projectTimesheet.updateTime | date:'medium'}}</td>
                     <td class="text-right">
