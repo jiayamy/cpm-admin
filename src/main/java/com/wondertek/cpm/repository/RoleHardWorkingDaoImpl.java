@@ -46,7 +46,6 @@ public class RoleHardWorkingDaoImpl extends GenericDaoImpl<RoleHardWorking, Long
 		countHql.append(" select count(rhw.id)");
 		
 		querywhere.append(" from RoleHardWorking rhw where 1 = 1");
-		System.out.println("originMonth=="+roleHardWorking.getOriginMonth()+"    UserId=="+roleHardWorking.getUserId());
 		List<Object> params = new ArrayList<Object>();
 		
 		if(roleHardWorking.getOriginMonth()!=null){

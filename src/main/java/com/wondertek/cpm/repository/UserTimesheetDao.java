@@ -8,7 +8,7 @@ import com.wondertek.cpm.domain.ContractInfo;
 import com.wondertek.cpm.domain.DeptInfo;
 import com.wondertek.cpm.domain.User;
 import com.wondertek.cpm.domain.UserTimesheet;
-import com.wondertek.cpm.domain.vo.UserTimesheetVo;
+import com.wondertek.cpm.domain.vo.UserTimesheetForHardWorkingVo;
 
 public interface UserTimesheetDao extends GenericDao<UserTimesheet, Long> {
 	/**
@@ -56,5 +56,6 @@ public interface UserTimesheetDao extends GenericDao<UserTimesheet, Long> {
 	 */
 	public void saveByDelete(UserTimesheet userTimesheet, ContractInfo contractInfo);
 	
-	public List<UserTimesheetVo> findByWorkDay(String fDay, String lDay);
+	
+	public List<UserTimesheetForHardWorkingVo> findByWorkDay(Long fromDay, Long endDay);
 }

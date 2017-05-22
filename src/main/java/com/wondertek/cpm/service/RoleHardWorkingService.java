@@ -41,7 +41,7 @@ public class RoleHardWorkingService {
 	
 
 
-	public void saveAll(RoleHardWorking roleHardWorking) {
+	public void saveRoleHardWorking(RoleHardWorking roleHardWorking) {
 		roleHardWorkingRepository.save(roleHardWorking);
 	}
 
@@ -52,7 +52,7 @@ public class RoleHardWorkingService {
     		Page<RoleHardWorking> page = roleHardWorkingDao.getPageByParams(roleHardWorking,pageable);
         	return page;
     	}else{
-    		return new PageImpl(new ArrayList<ProjectMonthlyStatVo>(), pageable, 0);
+    		return new PageImpl(new ArrayList<RoleHardWorking>(), pageable, 0);
     	}
 	}
 
@@ -95,6 +95,6 @@ public class RoleHardWorkingService {
     	}
     	return null;
 	}
-	
+
 	
 }

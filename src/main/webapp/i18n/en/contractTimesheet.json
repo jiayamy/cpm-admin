@@ -25,6 +25,8 @@
             "userName": "User Name",
             "realInput": "Real Input",
             "acceptInput": "Accept Input",
+            "extraInput":"Extra Input",
+            "acceptExtraInput":"Accept Extra Input",
             "objName":"Contract Info",
             "workDay": "Work Day",
             "status": "Status",
@@ -38,7 +40,8 @@
             "thursday":"Thursday",
             "friday":"Friday",
             "saturday":"Saturday",
-            "sunday":"Sunday"
+            "sunday":"Sunday",
+            "inputType":"Input Type"
         }
     }
 }
