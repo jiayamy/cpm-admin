@@ -16,6 +16,7 @@ public class ProjectMonthlyStatVo implements Serializable {
 	private Double payment;
 	private Long statWeek;
 	private ZonedDateTime createTime;
+	private Double totalInput;			//项目总工时
 	public Long getId() {
 		return id;
 	}
@@ -71,7 +72,13 @@ public class ProjectMonthlyStatVo implements Serializable {
 	public void setCreateTime(ZonedDateTime createTime) {
 		this.createTime = createTime;
 	}
-	@Override
+	public Double getTotalInput() {
+		return totalInput;
+	}
+	public void setTotalInput(Double totalInput) {
+		this.totalInput = totalInput;
+	}
+@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
@@ -79,10 +86,12 @@ public class ProjectMonthlyStatVo implements Serializable {
 		result = prime * result + ((finishRate == null) ? 0 : finishRate.hashCode());
 		result = prime * result + ((humanCost == null) ? 0 : humanCost.hashCode());
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		result = prime * result + ((payment == null) ? 0 : payment.hashCode());
 		result = prime * result + ((projectId == null) ? 0 : projectId.hashCode());
 		result = prime * result + ((serialNum == null) ? 0 : serialNum.hashCode());
 		result = prime * result + ((statWeek == null) ? 0 : statWeek.hashCode());
+		result = prime * result + ((totalInput == null) ? 0 : totalInput.hashCode());
 		return result;
 	}
 	@Override
@@ -114,6 +123,11 @@ public class ProjectMonthlyStatVo implements Serializable {
 				return false;
 		} else if (!id.equals(other.id))
 			return false;
+		if (name == null) {
+			if (other.name != null)
+				return false;
+		} else if (!name.equals(other.name))
+			return false;
 		if (payment == null) {
 			if (other.payment != null)
 				return false;
@@ -134,15 +148,17 @@ public class ProjectMonthlyStatVo implements Serializable {
 				return false;
 		} else if (!statWeek.equals(other.statWeek))
 			return false;
+		if (totalInput == null) {
+			if (other.totalInput != null)
+				return false;
+		} else if (!totalInput.equals(other.totalInput))
+			return false;
 		return true;
 	}
 	@Override
 	public String toString() {
-		return "ProjectMonthlyStatVo [id=" + id + ", projectId=" + projectId + ", serialNum=" + serialNum
-				+ ", finishRate=" + finishRate + ", humanCost=" + humanCost + ", payment=" + payment + ", statWeek="
-				+ statWeek + ", createTime=" + createTime + "]";
+		return "ProjectMonthlyStatVo [id=" + id + ", projectId=" + projectId + ", serialNum=" + serialNum + ", name="
+				+ name + ", finishRate=" + finishRate + ", humanCost=" + humanCost + ", payment=" + payment
+				+ ", statWeek=" + statWeek + ", createTime=" + createTime + ", totalInput=" + totalInput + "]";
 	}
-	
-	
-	
 }

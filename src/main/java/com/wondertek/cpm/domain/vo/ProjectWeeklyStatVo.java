@@ -24,6 +24,9 @@ public class ProjectWeeklyStatVo implements Serializable{
     private String serialNum;
     
     private String name;
+    
+    private Double totalInput;			//项目周总工时
+    
 	public Long getId() {
 		return id;
 	}
@@ -95,6 +98,12 @@ public class ProjectWeeklyStatVo implements Serializable{
 	public void setName(String name) {
 		this.name = name;
 	}
-    
-    
+
+	public Double getTotalInput() {
+		return totalInput;
+	}
+
+	public void setTotalInput(Double totalInput) {
+		this.totalInput = totalInput;
+	}
 }

@@ -204,6 +204,18 @@ public class ProjectStateTask {
 					log.error("no projectPayment found belong to " + projectInfo.getSerialNum());
 				}
 				projectWeeklyStat.setPayment(payment);
+				//项目总工时
+				Double totalInput = 0D;
+				List<UserTimesheet> projectUserTimesheets = userTimesheetRepository.findByDateAndObjIdAndType(
+							StringUtil.nullToLong(dates[6]),id, UserTimesheet.TYPE_PROJECT);
+				if(projectUserTimesheets != null && projectUserTimesheets.size() > 0){
+					for(UserTimesheet userTimesheet : projectUserTimesheets){
+						totalInput += StringUtil.nullToDouble(userTimesheet.getAcceptInput()) 
+								+ StringUtil.nullToDouble(userTimesheet.getAcceptExtraInput());
+					}
+				}
+				projectWeeklyStat.setTotalInput(totalInput);
+				
 				projectWeeklyStat.setCreateTime(ZonedDateTime.now());
 				projectWeeklyStat.setStatWeek(StringUtil.nullToLong(dates[6]));
 				projectWeeklyStatRepository.save(projectWeeklyStat);
@@ -316,6 +328,17 @@ public class ProjectStateTask {
 					log.error("no projectPayment found belong to " + projectInfo.getSerialNum());
 				}
 				projectMonthlyStat.setPayment(payment);
+				//项目总工时
+				Double totalInput = 0D;
+				List<UserTimesheet> projectUserTimesheets = userTimesheetRepository.findByDateAndObjIdAndType(StringUtil.nullToLong(lDay), id, UserTimesheet.TYPE_PROJECT);
+				if(projectUserTimesheets != null && projectUserTimesheets.size() > 0){
+					for(UserTimesheet userTimesheet : projectUserTimesheets){
+						totalInput += StringUtil.nullToDouble(userTimesheet.getAcceptInput()) 
+								+ StringUtil.nullToDouble(userTimesheet.getAcceptExtraInput());
+					}
+				}
+				projectMonthlyStat.setTotalInput(totalInput);
+				
 				projectMonthlyStat.setCreateTime(ZonedDateTime.now());
 				projectMonthlyStat.setStatWeek(StringUtil.nullToLong(lMonth));
 				projectMonthlyStatRepository.save(projectMonthlyStat);

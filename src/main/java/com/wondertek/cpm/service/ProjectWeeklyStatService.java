@@ -105,12 +105,16 @@ public class ProjectWeeklyStatService {
     		List<ChartReportDataVo> datas = new ArrayList<>();
         	ChartReportDataVo data1 = new ChartReportDataVo();
         	ChartReportDataVo data2 = new ChartReportDataVo();
+        	ChartReportDataVo data3 = new ChartReportDataVo();
         	data1.setName("人工成本");
         	data1.setType("line");
         	data2.setName("报销成本");
         	data2.setType("line");
+        	data3.setName("项目总工时");
+        	data3.setType("line");
         	List<Double> dataD1 = new ArrayList<>();
         	List<Double> dataD2 = new ArrayList<>();
+        	List<Double> dataD3 = new ArrayList<>();
         	Long temp = fromDate.getTime();
         	Long sevenDay = 7*24*60*60*1000L;
         	while(temp <= toDate.getTime()){
@@ -118,18 +122,23 @@ public class ProjectWeeklyStatService {
         		ProjectWeeklyStatVo projectWeeklyStatVo = projectWeeklyStatDao.getByStatWeekAndProjectId(statWeek, projectId, user, deptInfo);
         		Double humanCost = 0D;
         		Double payment = 0D;
+        		Double totalInput = 0D;
         		if(projectWeeklyStatVo != null){
         			humanCost = projectWeeklyStatVo.getHumanCost();
         			payment = projectWeeklyStatVo.getPayment();
+        			totalInput = projectWeeklyStatVo.getTotalInput();
         		}
         		dataD1.add(humanCost);
         		dataD2.add(payment);
+        		dataD3.add(totalInput);
         		temp += sevenDay;
         	}
         	data1.setData(dataD1);
         	data2.setData(dataD2);
+        	data3.setData(dataD3);
         	datas.add(data1);
         	datas.add(data2);
+        	datas.add(data3);
         	return datas;
     	}
     	return null;

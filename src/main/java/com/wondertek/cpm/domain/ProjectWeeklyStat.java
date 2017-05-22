@@ -1,13 +1,19 @@
 package com.wondertek.cpm.domain;
 
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.springframework.data.elasticsearch.annotations.Document;
-
-import javax.persistence.*;
 import java.io.Serializable;
 import java.time.ZonedDateTime;
 import java.util.Objects;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.springframework.data.elasticsearch.annotations.Document;
 
 /**
  * 项目周统计
@@ -42,6 +48,9 @@ public class ProjectWeeklyStat implements Serializable {
     @Column(name = "create_time")
     private ZonedDateTime createTime;
 
+    @Column(name = "total_input")
+    private Double totalInput;			//周项目总工时
+    
     public Long getId() {
         return id;
     }
@@ -123,7 +132,15 @@ public class ProjectWeeklyStat implements Serializable {
         this.createTime = createTime;
     }
 
-    @Override
+    public Double getTotalInput() {
+		return totalInput;
+	}
+
+	public void setTotalInput(Double totalInput) {
+		this.totalInput = totalInput;
+	}
+
+	@Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -152,6 +169,7 @@ public class ProjectWeeklyStat implements Serializable {
             ", payment='" + payment + "'" +
             ", statWeek='" + statWeek + "'" +
             ", createTime='" + createTime + "'" +
+            ", totalInput='" + totalInput + "'" +
             '}';
     }
 }

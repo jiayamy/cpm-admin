@@ -1126,7 +1126,6 @@ public class UserTimesheetService {
     		List<HolidayInfo> list = holidayInfoRepository.findHolidayByCurrDay(StringUtil.longArrayToLongArray(lds));
     		if(list != null && !list.isEmpty()){
     			StringBuffer sb = new StringBuffer();		//正常工时的假期信息
-    			StringBuffer sbExtra = new StringBuffer();	//加班工时的假期信息
     			long currDay = 0;
     			for(HolidayInfo holidayInfo : list){
     				currDay = holidayInfo.getCurrDay().longValue();
@@ -1137,24 +1136,12 @@ public class UserTimesheetService {
     						}
     						sb.append(currDay);
     					}
-    					if(tds1 > 0){
-    						if(sbExtra.length() != 0){
-    							sbExtra.append(",");
-    						}
-    						sbExtra.append(currDay);
-    					}
     				}else if(currDay == lds[1]){
     					if(td2 > 0){
     						if(sb.length() != 0){
     							sb.append(",");
     						}
     						sb.append(currDay);
-    					}
-    					if(tds2 > 0){
-    						if(sbExtra.length() != 0){
-    							sbExtra.append(",");
-    						}
-    						sbExtra.append(currDay);
     					}
     				}else if(currDay == lds[2]){
     					if(td3 > 0){
@@ -1163,24 +1150,12 @@ public class UserTimesheetService {
     						}
     						sb.append(currDay);
     					} 
-    					if(tds3 > 0){
-    						if(sbExtra.length() != 0){
-    							sbExtra.append(",");
-    						}
-    						sbExtra.append(currDay);
-    					}
     				}else if(currDay == lds[3]){
     					if(td4 > 0){
     						if(sb.length() != 0){
     							sb.append(",");
     						}
     						sb.append(currDay);
-    					}
-    					if(tds4 > 0){
-    						if(sbExtra.length() != 0){
-    							sbExtra.append(",");
-    						}
-    						sbExtra.append(currDay);
     					}
     				}else if(currDay == lds[4]){
     					if(td5 > 0){
@@ -1189,24 +1164,12 @@ public class UserTimesheetService {
     						}
     						sb.append(currDay);
     					}
-    					if(tds5 > 0){
-    						if(sbExtra.length() != 0){
-    							sbExtra.append(",");
-    						}
-    						sbExtra.append(currDay);
-    					}
     				}else if(currDay == lds[5]){
     					if(td6 > 0){
     						if(sb.length() != 0){
     							sb.append(",");
     						}
     						sb.append(currDay);
-    					}
-    					if(tds6 > 0){
-    						if(sbExtra.length() != 0){
-    							sbExtra.append(",");
-    						}
-    						sbExtra.append(currDay);
     					}
     				}else if(currDay == lds[6]){
     					if(td7 > 0){
@@ -1215,18 +1178,9 @@ public class UserTimesheetService {
     						}
     						sb.append(currDay);
     					}
-    					if(tds7 > 0){
-    						if(sbExtra.length() != 0){
-    							sbExtra.append(",");
-    						}
-    						sbExtra.append(currDay);
-    					}
     				}
     			}
     			if(sb.length() != 0){
-    				return "cpmApp.userTimesheet.save.holiday#" + sb.toString();
-    			}
-    			if(sbExtra.length() != 0){
     				return "cpmApp.userTimesheet.save.holiday#" + sb.toString();
     			}
     		}
@@ -2036,7 +1990,6 @@ public class UserTimesheetService {
     		List<HolidayInfo> list = holidayInfoRepository.findHolidayByCurrDay(StringUtil.longArrayToLongArray(lds));
     		if(list != null && !list.isEmpty()){
     			StringBuffer sb = new StringBuffer();
-    			StringBuffer sbExtra = new StringBuffer();
     			long currDay = 0;
     			for(HolidayInfo holidayInfo : list){
     				currDay = holidayInfo.getCurrDay().longValue();
@@ -2047,24 +2000,12 @@ public class UserTimesheetService {
     						}
     						sb.append(currDay);
     					}
-    					if(tds1 > 0){
-    						if(sbExtra.length() != 0){
-    							sbExtra.append(",");
-    						}
-    						sbExtra.append(currDay);
-    					}
     				}else if(currDay == lds[1]){
     					if(td2 > 0){
     						if(sb.length() != 0){
     							sb.append(",");
     						}
     						sb.append(currDay);
-    					}
-    					if(tds2 > 0){
-    						if(sbExtra.length() != 0){
-    							sbExtra.append(",");
-    						}
-    						sbExtra.append(currDay);
     					}
     				}else if(currDay == lds[2]){
     					if(td3 > 0){
@@ -2073,24 +2014,12 @@ public class UserTimesheetService {
     						}
     						sb.append(currDay);
     					} 
-    					if(tds3 > 0){
-    						if(sbExtra.length() != 0){
-    							sbExtra.append(",");
-    						}
-    						sbExtra.append(currDay);
-    					}
     				}else if(currDay == lds[3]){
     					if(td4 > 0){
     						if(sb.length() != 0){
     							sb.append(",");
     						}
     						sb.append(currDay);
-    					}
-    					if(tds4 > 0){
-    						if(sbExtra.length() != 0){
-    							sbExtra.append(",");
-    						}
-    						sbExtra.append(currDay);
     					}
     				}else if(currDay == lds[4]){
     					if(td5 > 0){
@@ -2099,24 +2028,12 @@ public class UserTimesheetService {
     						}
     						sb.append(currDay);
     					}
-    					if(tds5 > 0){
-    						if(sbExtra.length() != 0){
-    							sbExtra.append(",");
-    						}
-    						sbExtra.append(currDay);
-    					}
     				}else if(currDay == lds[5]){
     					if(td6 > 0){
     						if(sb.length() != 0){
     							sb.append(",");
     						}
     						sb.append(currDay);
-    					}
-    					if(tds6 > 0){
-    						if(sbExtra.length() != 0){
-    							sbExtra.append(",");
-    						}
-    						sbExtra.append(currDay);
     					}
     				}else if(currDay == lds[6]){
     					if(td7 > 0){
@@ -2125,18 +2042,9 @@ public class UserTimesheetService {
     						}
     						sb.append(currDay);
     					}
-    					if(tds7 > 0){
-    						if(sbExtra.length() != 0){
-    							sbExtra.append(",");
-    						}
-    						sbExtra.append(currDay);
-    					}
     				}
     			}
     			if(sb.length() != 0){
-    				return "cpmApp.contractTimesheet.save.holiday#" + sb.toString();
-    			}
-    			if(sbExtra.length() != 0){
     				return "cpmApp.contractTimesheet.save.holiday#" + sb.toString();
     			}
     		}

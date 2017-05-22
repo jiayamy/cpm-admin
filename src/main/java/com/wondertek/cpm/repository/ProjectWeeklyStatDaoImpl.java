@@ -43,7 +43,7 @@ public class ProjectWeeklyStatDaoImpl extends GenericDaoImpl<ProjectWeeklyStat, 
 		StringBuffer sb = new StringBuffer();
 		StringBuffer querysql = new StringBuffer();
 		StringBuffer countsql = new StringBuffer();
-		querysql.append(" select m.id, m.project_id, m.finish_rate, m.human_cost, m.payment_, m.stat_week, m.create_time, i.serial_num, i.name_ ");
+		querysql.append(" select m.id, m.project_id, m.finish_rate, m.human_cost, m.payment_, m.stat_week, m.create_time, i.serial_num, i.name_, m.total_input ");
 		countsql.append(" select count(m.id)");
 		sb.append(" from w_project_weekly_stat m");
 		sb.append(" left join w_project_info i on m.project_id = i.id");
@@ -79,7 +79,7 @@ public class ProjectWeeklyStatDaoImpl extends GenericDaoImpl<ProjectWeeklyStat, 
 		StringBuffer countsql = new StringBuffer();
 		int count = 0;//jpa格式 问号后的数组，一定要从0开始
 		
-		querysql.append(" select m.id, m.projectId, m.finishRate, m.humanCost, m.payment, m.statWeek, m.createTime, i.serialNum, i.name ");
+		querysql.append(" select m.id, m.projectId, m.finishRate, m.humanCost, m.payment, m.statWeek, m.createTime,m.totalInput, i.serialNum, i.name ");
 		countsql.append(" select count(m.id)");
 		sb.append(" from ProjectWeeklyStat m");
 		sb.append(" left join ProjectInfo i on m.projectId = i.id");
@@ -143,8 +143,9 @@ public class ProjectWeeklyStatDaoImpl extends GenericDaoImpl<ProjectWeeklyStat, 
 		vo.setPayment(StringUtil.nullToDouble(o[4]));
 		vo.setStatWeek(StringUtil.nullToLong(o[5]));
 		vo.setCreateTime((ZonedDateTime) o[6]);
-		vo.setSerialNum(StringUtil.null2Str(o[7]));
-		vo.setName(StringUtil.null2Str(o[8]));
+		vo.setTotalInput(StringUtil.nullToDouble(o[7]));
+		vo.setSerialNum(StringUtil.null2Str(o[8]));
+		vo.setName(StringUtil.null2Str(o[9]));
 		return vo;
 	}
 	
@@ -159,6 +160,7 @@ public class ProjectWeeklyStatDaoImpl extends GenericDaoImpl<ProjectWeeklyStat, 
 		vo.setCreateTime(DateUtil.getZonedDateTime((Timestamp) o[6]));
 		vo.setSerialNum(StringUtil.null2Str(o[7]));
 		vo.setName(StringUtil.null2Str(o[8]));
+		vo.setTotalInput(StringUtil.nullToDouble(o[9]));
 		return vo;
 	}
 
@@ -167,7 +169,7 @@ public class ProjectWeeklyStatDaoImpl extends GenericDaoImpl<ProjectWeeklyStat, 
 		StringBuffer sb = new StringBuffer();
 		StringBuffer querysql = new StringBuffer();
 		StringBuffer countsql = new StringBuffer();
-		querysql.append(" select m.id, m.project_id, m.finish_rate, m.human_cost, m.payment_, m.stat_week, m.create_time, i.serial_num, i.name_ ");
+		querysql.append(" select m.id, m.project_id, m.finish_rate, m.human_cost, m.payment_, m.stat_week, m.create_time, i.serial_num, i.name_, m.total_input ");
 		countsql.append(" select count(m.id)");
 		sb.append(" from w_project_weekly_stat m");
 		sb.append(" left join w_project_info i on m.project_id = i.id");
