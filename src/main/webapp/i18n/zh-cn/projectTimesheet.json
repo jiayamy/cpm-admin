@@ -17,7 +17,7 @@
             	"dataExtraError":"加班工时只能为2到8之间的小数，且最多精切到小数点后1位",
             	"dayDataMax":"每天的工时不可大于8",
             	"dataChanged":"数据已变更，请重新打开后在执行保存操作",
-            	"holiday":"假期[{{ param }}]的工时(或加班工时)只能为0",
+            	"holiday":"假期[{{ param }}]的工时只能为0",
             	"overDay":"明天及以后的工时/加班工时只能为0",
             	"overInput":"认可工时不可大于工时投入",
             	"overExtraInput":"认可加班工时不可大于加班工时投入",
