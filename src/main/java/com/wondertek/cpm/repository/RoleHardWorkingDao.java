@@ -11,5 +11,6 @@ public interface RoleHardWorkingDao extends GenericDao<RoleHardWorking, Long>{
 	Page<RoleHardWorking> getPageByParams(RoleHardWorking roleHardWorking,Pageable pageable);
 
 	RoleHardWorking getByOriginMonthAndUserId(Long originMonth, Long userId);
+
 	
 }

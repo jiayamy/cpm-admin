@@ -112,6 +112,7 @@
                 }
             },
             params: {
+            	beginningMonth : null,
                 id : null
             },
             resolve: {

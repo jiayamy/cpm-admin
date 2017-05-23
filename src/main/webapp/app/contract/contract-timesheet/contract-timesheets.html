@@ -73,8 +73,10 @@
                     <th jh-sort-by="wut.workDay"><span data-translate="cpmApp.contractTimesheet.workDay">Work Day</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="wut.userName"><span data-translate="cpmApp.contractTimesheet.userName">User Name</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="wut.objName"><span data-translate="cpmApp.contractTimesheet.objName">Obj Name</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="wut.realInput"><span data-translate="cpmApp.contractTimesheet.realInput">Real Input</span> <span class="glyphicon glyphicon-sort"></span></th>
+                     <th jh-sort-by="wut.realInput"><span data-translate="cpmApp.contractTimesheet.realInput">Real Input</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="wut.acceptInput"><span data-translate="cpmApp.contractTimesheet.acceptInput">Accept Input</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="wut.extraInput"><span data-translate="cpmApp.contractTimesheet.extraInput">Extra Input</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="wut.acceptExtraInput"><span data-translate="cpmApp.contractTimesheet.acceptExtraInput">Accept Extra Input</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="wut.updator"><span data-translate="cpmApp.contractTimesheet.updator">Updator</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="wut.updateTime" class="hidden-xs"><span data-translate="cpmApp.contractTimesheet.updateTime">Update Time</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th></th>
@@ -87,6 +89,8 @@
                     <td>{{contractTimesheet.objName}}</td>
                     <td>{{contractTimesheet.realInput}}</td>
                     <td ng-class="{'btn-info':(contractTimesheet.realInput != contractTimesheet.acceptInput)}">{{contractTimesheet.acceptInput}}</td>
+                    <td>{{contractTimesheet.extraInput}}</td>
+                    <td ng-class="{'btn-info':(contractTimesheet.extraInput != contractTimesheet.acceptExtraInput)}">{{contractTimesheet.acceptExtraInput}}</td>
                     <td>{{contractTimesheet.updator}}</td>
                     <td class="hidden-xs">{{contractTimesheet.updateTime | date:'medium'}}</td>
                     <td class="text-right">
