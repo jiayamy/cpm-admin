@@ -20,7 +20,6 @@ import com.wondertek.cpm.domain.DeptInfo;
 import com.wondertek.cpm.domain.User;
 import com.wondertek.cpm.domain.UserTimesheet;
 import com.wondertek.cpm.domain.vo.UserTimesheetForHardWorkingVo;
-import com.wondertek.cpm.domain.vo.UserTimesheetVo;
 @Repository("userTimesheetDao")
 public class UserTimesheetDaoImpl extends GenericDaoImpl<UserTimesheet, Long> implements UserTimesheetDao  {
 	
@@ -246,7 +245,7 @@ public class UserTimesheetDaoImpl extends GenericDaoImpl<UserTimesheet, Long> im
 	@Override
 	public void saveByUser(List<UserTimesheet> saveList,List<UserTimesheet> updateList) {
 		Double changeAmount = 0d;
-		Double updateWorkTime = 0d;
+		//Double updateWorkTime = 0d;
 		List<Object> offerList = new ArrayList<Object>();
 		Map<Long, Double> amountMap = new HashMap<Long, Double>();
 		//查询出外包合同月对应的工作日
@@ -271,8 +270,8 @@ public class UserTimesheetDaoImpl extends GenericDaoImpl<UserTimesheet, Long> im
 		Boolean isModified = Boolean.FALSE;
 		if(updateList != null && !updateList.isEmpty()){
 			for(UserTimesheet userTimesheet : updateList){
+				oldUserTimesheet = userTimesheetRepository.findOne(userTimesheet.getId());
 				if (userTimesheet.getType() == UserTimesheet.TYPE_PROJECT) {
-					oldUserTimesheet = userTimesheetRepository.findOne(userTimesheet.getId());
 					if(oldUserTimesheet != null){
 						if (userTimesheet.getRealInput() != oldUserTimesheet.getRealInput()) {
 							offerList = getOffer(userTimesheet.getUserId(), userTimesheet.getObjId(), userTimesheet.getWorkDay());
@@ -285,35 +284,35 @@ public class UserTimesheetDaoImpl extends GenericDaoImpl<UserTimesheet, Long> im
 								}
 							}
 						}
-						if(userTimesheet.getRealInput() < oldUserTimesheet.getAcceptInput()){
-							isModified = Boolean.TRUE;
-							oldUserTimesheet.setAcceptInput(userTimesheet.getRealInput());
-						}
-						if(userTimesheet.getRealInput() != oldUserTimesheet.getRealInput()){
-							isModified = Boolean.TRUE;
-							oldUserTimesheet.setRealInput(userTimesheet.getRealInput());
-						}
-						if((oldUserTimesheet.getWorkArea() == null && userTimesheet.getWorkArea() != null)
-								|| (oldUserTimesheet.getWorkArea() != null && userTimesheet.getWorkArea() == null)
-								|| !oldUserTimesheet.getWorkArea().equals(userTimesheet.getWorkArea())){
-							isModified = Boolean.TRUE;
-							oldUserTimesheet.setWorkArea(userTimesheet.getWorkArea());
-						}
-						if(userTimesheet.getExtraInput() < oldUserTimesheet.getAcceptExtraInput()){
-							isModified = Boolean.TRUE;
-							oldUserTimesheet.setAcceptExtraInput(userTimesheet.getExtraInput());
-						}
-						if(userTimesheet.getExtraInput() != oldUserTimesheet.getExtraInput()){
-							isModified = Boolean.TRUE;
-							oldUserTimesheet.setExtraInput(userTimesheet.getExtraInput());
-						}
-						if(isModified){
-							oldUserTimesheet.setStatus(userTimesheet.getStatus());
-							oldUserTimesheet.setUpdator(userTimesheet.getUpdator());
-							oldUserTimesheet.setUpdateTime(userTimesheet.getUpdateTime());
-							userTimesheetRepository.save(oldUserTimesheet);
-						}
 					}
+				}
+				if(userTimesheet.getRealInput() < oldUserTimesheet.getAcceptInput()){
+					isModified = Boolean.TRUE;
+					oldUserTimesheet.setAcceptInput(userTimesheet.getRealInput());
+				}
+				if(userTimesheet.getRealInput() != oldUserTimesheet.getRealInput()){
+					isModified = Boolean.TRUE;
+					oldUserTimesheet.setRealInput(userTimesheet.getRealInput());
+				}
+				if((oldUserTimesheet.getWorkArea() == null && userTimesheet.getWorkArea() != null)
+						|| (oldUserTimesheet.getWorkArea() != null && userTimesheet.getWorkArea() == null)
+						|| !oldUserTimesheet.getWorkArea().equals(userTimesheet.getWorkArea())){
+					isModified = Boolean.TRUE;
+					oldUserTimesheet.setWorkArea(userTimesheet.getWorkArea());
+				}
+				if(userTimesheet.getExtraInput() < oldUserTimesheet.getAcceptExtraInput()){
+					isModified = Boolean.TRUE;
+					oldUserTimesheet.setAcceptExtraInput(userTimesheet.getExtraInput());
+				}
+				if(userTimesheet.getExtraInput() != oldUserTimesheet.getExtraInput()){
+					isModified = Boolean.TRUE;
+					oldUserTimesheet.setExtraInput(userTimesheet.getExtraInput());
+				}
+				if(isModified){
+					oldUserTimesheet.setStatus(userTimesheet.getStatus());
+					oldUserTimesheet.setUpdator(userTimesheet.getUpdator());
+					oldUserTimesheet.setUpdateTime(userTimesheet.getUpdateTime());
+					userTimesheetRepository.save(oldUserTimesheet);
 				}
 			}
 		}

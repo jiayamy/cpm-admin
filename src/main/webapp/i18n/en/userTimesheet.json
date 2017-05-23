@@ -27,7 +27,7 @@
             	"objId":"user is not participate in {{param}},working hours can only be 0",
             	"overDay":"tomorrow and beyond's day data can only be 0",
             	"extraError":"extra work,not in project or contract,can only be 0",
-            	"extraDataError":"data should between 2 to 8, 1 decimal places"
+            	"extraDataError":"extra work should between 2 to 8, 1 decimal places"
             },
             "detail": {
                 "title": "User Timesheet"
