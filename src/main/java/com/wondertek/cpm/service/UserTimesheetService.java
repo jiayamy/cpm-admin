@@ -225,15 +225,12 @@ public class UserTimesheetService {
 		UserTimesheetForUser areaTimesheet = getDefaultUserTimesheetForUser(null,UserTimesheet.TYPE_AREA,null,null,null,null);
 		//添加默认的公共成本(正常工时)
 		UserTimesheetForUser publicTimesheet = getDefaultUserTimesheetForUser(null,UserTimesheet.TYPE_PUBLIC,null,null,CpmConstants.DFAULT_USER_TIMESHEET_USER_INPUT,UserTimesheet.TYPE_INPUT_NORMAL);
-		//添加默认的公共成本(加班工时)
-		UserTimesheetForUser publicTimesheetExtra = getDefaultUserTimesheetForUser(null,UserTimesheet.TYPE_PUBLIC,null,null,CpmConstants.DFAULT_USER_TIMESHEET_USER_INPUT,UserTimesheet.TYPE_INPUT_EXTRA);
 		//添加项目和合同
 		Optional<User> user = userRepository.findOneByLogin(SecurityUtils.getCurrentUserLogin());
     	if(user.isPresent()){
     		Long userId = user.get().getId();
     		String workArea = user.get().getWorkArea();
     		publicTimesheet.setUserId(userId);
-    		publicTimesheetExtra.setUserId(userId);
     		//查询现有的所有记录
     		List<UserTimesheet> list = userTimesheetDao.getByWorkDayAndUser(lds[0],lds[6],userId);
     		//转换为MAP
@@ -247,7 +244,6 @@ public class UserTimesheetService {
     		Map<Long, UserTimesheet> childs = map.get(key);
     		if(childs != null){
     			setUserTimesheetForUser(areaTimesheet,publicTimesheet,lds,childs);
-    			setExtraUserTimesheetForUser(areaTimesheet,publicTimesheetExtra,lds,childs);
     			map.remove(key);
     		}
     		//现有的所有项目和合同
@@ -274,7 +270,6 @@ public class UserTimesheetService {
     	//添加地区
     	returnList.add(1, areaTimesheet);
     	returnList.add(2, publicTimesheet);
-    	returnList.add(3, publicTimesheetExtra);
 		return returnList;
 	}
     /**
@@ -401,81 +396,6 @@ public class UserTimesheetService {
 		}
 	}
 	
-	private void getExtraOtherTimesheetForUser(List<UserTimesheetForUser> returnList, UserTimesheetForUser areaTimesheet, Map<String, Map<Long, UserTimesheet>> map, Long userId, Long[] lds) {
-		UserTimesheet tmpTimesheet = null;
-		Map<Long, UserTimesheet> childs = null;
-		long workDayL = 0;
-		for(String mapKey : map.keySet()){
-			childs = map.get(mapKey);
-			UserTimesheetForUser timesheet = getDefaultUserTimesheetForUser(userId,null,null,null,CpmConstants.DFAULT_USER_TIMESHEET_USER_INPUT,UserTimesheet.TYPE_INPUT_EXTRA);
-			for(Long workDay : childs.keySet()){
-				tmpTimesheet = childs.get(workDay);
-				timesheet.setType(tmpTimesheet.getType());
-				timesheet.setObjId(tmpTimesheet.getObjId());
-				timesheet.setObjName(tmpTimesheet.getObjName());
-				workDayL = workDay.longValue();
-				if(lds[0] == workDayL){
-					if(tmpTimesheet.getExtraInput() != null){
-						timesheet.setData1(tmpTimesheet.getExtraInput().toString());
-					}
-					if(areaTimesheet.getData1() == null && !StringUtil.isNullStr(tmpTimesheet.getWorkArea())){
-						areaTimesheet.setData1(tmpTimesheet.getWorkArea());
-					}
-					timesheet.setId1(tmpTimesheet.getId());
-				}else if(lds[1] == workDayL){
-					if(tmpTimesheet.getExtraInput() != null){
-						timesheet.setData2(tmpTimesheet.getExtraInput().toString());
-					}
-					if(areaTimesheet.getData2() == null && !StringUtil.isNullStr(tmpTimesheet.getWorkArea())){
-						areaTimesheet.setData2(tmpTimesheet.getWorkArea());
-					}
-					timesheet.setId2(tmpTimesheet.getId());
-				}else if(lds[2] == workDayL){
-					if(tmpTimesheet.getExtraInput() != null){
-						timesheet.setData3(tmpTimesheet.getExtraInput().toString());
-					}
-					if(areaTimesheet.getData3() == null && !StringUtil.isNullStr(tmpTimesheet.getWorkArea())){
-						areaTimesheet.setData3(tmpTimesheet.getWorkArea());
-					}
-					timesheet.setId3(tmpTimesheet.getId());
-				}else if(lds[3] == workDayL){
-					if(tmpTimesheet.getExtraInput() != null){
-						timesheet.setData4(tmpTimesheet.getExtraInput().toString());
-					}
-					if(areaTimesheet.getData4() == null && !StringUtil.isNullStr(tmpTimesheet.getWorkArea())){
-						areaTimesheet.setData4(tmpTimesheet.getWorkArea());
-					}
-					timesheet.setId4(tmpTimesheet.getId());
-				}else if(lds[4] == workDayL){
-					if(tmpTimesheet.getExtraInput() != null){
-						timesheet.setData5(tmpTimesheet.getExtraInput().toString());
-					}
-					if(areaTimesheet.getData5() == null && !StringUtil.isNullStr(tmpTimesheet.getWorkArea())){
-						areaTimesheet.setData5(tmpTimesheet.getWorkArea());
-					}
-					timesheet.setId5(tmpTimesheet.getId());
-				}else if(lds[5] == workDayL){
-					if(tmpTimesheet.getExtraInput() != null){
-						timesheet.setData6(tmpTimesheet.getExtraInput().toString());
-					}
-					if(areaTimesheet.getData6() == null && !StringUtil.isNullStr(tmpTimesheet.getWorkArea())){
-						areaTimesheet.setData6(tmpTimesheet.getWorkArea());
-					}
-					timesheet.setId6(tmpTimesheet.getId());
-				}else if(lds[6] == workDayL){
-					if(tmpTimesheet.getExtraInput() != null){
-						timesheet.setData7(tmpTimesheet.getExtraInput().toString());
-					}
-					if(areaTimesheet.getData7() == null && !StringUtil.isNullStr(tmpTimesheet.getWorkArea())){
-						areaTimesheet.setData7(tmpTimesheet.getWorkArea());
-					}
-					timesheet.setId7(tmpTimesheet.getId());
-				}
-			}
-			returnList.add(timesheet);
-		}
-	}
-
 	/**
 	 * 获取该用户在该项目或者合同或公共成本中的一周记录
 	 */
@@ -1350,6 +1270,8 @@ public class UserTimesheetService {
 		userTimesheet.setUserName(userName);
 		userTimesheet.setWorkArea(workArea);
 		userTimesheet.setWorkDay(workDay);
+		userTimesheet.setExtraInput(0D);
+		userTimesheet.setAcceptExtraInput(0D);
 		return userTimesheet;
 	}
 	
@@ -1370,6 +1292,8 @@ public class UserTimesheetService {
 		userTimesheet.setUserName(userName);
 		userTimesheet.setWorkArea(workArea);
 		userTimesheet.setWorkDay(workDay);
+		userTimesheet.setRealInput(0D);
+		userTimesheet.setAcceptInput(0D);
 		return userTimesheet;
 	}
 	
@@ -1378,19 +1302,19 @@ public class UserTimesheetService {
 		for(String key : updateKeySet){
 			if(saveMap.containsKey(key)){
 				if(StringUtil.nullToDouble(updateMap.get(key).getRealInput()) == 0){
-					updateMap.get(key).setRealInput(saveMap.get(key).getRealInput());
+					updateMap.get(key).setRealInput(StringUtil.nullToDouble(saveMap.get(key).getRealInput()));
 				}
 				if(StringUtil.nullToDouble(updateMap.get(key).getAcceptInput()) == 0){
-					updateMap.get(key).setAcceptInput(saveMap.get(key).getAcceptInput());
+					updateMap.get(key).setAcceptInput(StringUtil.nullToDouble(saveMap.get(key).getAcceptInput()));
 				}
 				if(StringUtil.nullToDouble(updateMap.get(key).getExtraInput()) == 0){
-					updateMap.get(key).setExtraInput(saveMap.get(key).getExtraInput());
+					updateMap.get(key).setExtraInput(StringUtil.nullToDouble(saveMap.get(key).getExtraInput()));
 				}
 				if(StringUtil.nullToDouble(updateMap.get(key).getRealInput()) == 0){
-					updateMap.get(key).setAcceptExtraInput(saveMap.get(key).getAcceptExtraInput());
+					updateMap.get(key).setAcceptExtraInput(StringUtil.nullToDouble(saveMap.get(key).getAcceptExtraInput()));
 				}
+				saveMap.remove(key);
 			}
-			saveMap.remove(key);
 		}
 		return saveMap;
 	}
@@ -1400,19 +1324,19 @@ public class UserTimesheetService {
 		for(String key : updateKeySet){
 			if(saveMap.containsKey(key)){
 				if(StringUtil.nullToDouble(updateMap.get(key).getRealInput()) == 0){
-					updateMap.get(key).setRealInput(saveMap.get(key).getRealInput());
+					updateMap.get(key).setRealInput(StringUtil.nullToDouble(saveMap.get(key).getRealInput()));
 				}
 				if(StringUtil.nullToDouble(updateMap.get(key).getAcceptInput()) == 0){
-					updateMap.get(key).setAcceptInput(saveMap.get(key).getAcceptInput());
+					updateMap.get(key).setAcceptInput(StringUtil.nullToDouble(saveMap.get(key).getAcceptInput()));
 				}
 				if(StringUtil.nullToDouble(updateMap.get(key).getExtraInput()) == 0){
-					updateMap.get(key).setExtraInput(saveMap.get(key).getExtraInput());
+					updateMap.get(key).setExtraInput(StringUtil.nullToDouble(saveMap.get(key).getExtraInput()));
 				}
 				if(StringUtil.nullToDouble(updateMap.get(key).getRealInput()) == 0){
-					updateMap.get(key).setAcceptExtraInput(saveMap.get(key).getAcceptExtraInput());
+					updateMap.get(key).setAcceptExtraInput(StringUtil.nullToDouble(saveMap.get(key).getAcceptExtraInput()));
 				}
+				saveMap.remove(key);
 			}
-			saveMap.remove(key);
 		}
 		return updateMap;
 	}
@@ -1554,8 +1478,8 @@ public class UserTimesheetService {
 		
 		UserTimesheet tmp = childs.get(lds[0]);
 		if(tmp != null){
-			userTimesheetForOther.setData1(StringUtil.nullToDouble(tmp.getRealInput()).toString());
-			userTimesheetForOther.setCheck1(StringUtil.nullToDouble(tmp.getAcceptInput()).toString());
+			userTimesheetForOther.setData1(tmp.getRealInput().toString());
+			userTimesheetForOther.setCheck1(tmp.getAcceptInput().toString());
 			userTimesheetForOther.setUserName(tmp.getUserName());
 			userTimesheetForOther.setId1(tmp.getId());
 		}else{
@@ -1564,8 +1488,8 @@ public class UserTimesheetService {
 		}
 		tmp = childs.get(lds[1]);
 		if(tmp != null){
-			userTimesheetForOther.setData2(StringUtil.nullToDouble(tmp.getRealInput()).toString());
-			userTimesheetForOther.setCheck2(StringUtil.nullToDouble(tmp.getAcceptInput()).toString());
+			userTimesheetForOther.setData2(tmp.getRealInput().toString());
+			userTimesheetForOther.setCheck2(tmp.getAcceptInput().toString());
 			userTimesheetForOther.setUserName(tmp.getUserName());
 			userTimesheetForOther.setId2(tmp.getId());
 		}else{
@@ -1574,8 +1498,8 @@ public class UserTimesheetService {
 		}
 		tmp = childs.get(lds[2]);
 		if(tmp != null){
-			userTimesheetForOther.setData3(StringUtil.nullToDouble(tmp.getRealInput()).toString());
-			userTimesheetForOther.setCheck3(StringUtil.nullToDouble(tmp.getAcceptInput()).toString());
+			userTimesheetForOther.setData3(tmp.getRealInput().toString());
+			userTimesheetForOther.setCheck3(tmp.getAcceptInput().toString());
 			userTimesheetForOther.setUserName(tmp.getUserName());
 			userTimesheetForOther.setId3(tmp.getId());
 		}else{
@@ -1584,8 +1508,8 @@ public class UserTimesheetService {
 		}
 		tmp = childs.get(lds[3]);
 		if(tmp != null){
-			userTimesheetForOther.setData4(StringUtil.nullToDouble(tmp.getRealInput()).toString());
-			userTimesheetForOther.setCheck4(StringUtil.nullToDouble(tmp.getAcceptInput()).toString());
+			userTimesheetForOther.setData4(tmp.getRealInput().toString());
+			userTimesheetForOther.setCheck4(tmp.getAcceptInput().toString());
 			userTimesheetForOther.setUserName(tmp.getUserName());
 			userTimesheetForOther.setId4(tmp.getId());
 		}else{
@@ -1594,8 +1518,8 @@ public class UserTimesheetService {
 		}
 		tmp = childs.get(lds[4]);
 		if(tmp != null){
-			userTimesheetForOther.setData5(StringUtil.nullToDouble(tmp.getRealInput()).toString());
-			userTimesheetForOther.setCheck5(StringUtil.nullToDouble(tmp.getAcceptInput()).toString());
+			userTimesheetForOther.setData5(tmp.getRealInput().toString());
+			userTimesheetForOther.setCheck5(tmp.getAcceptInput().toString());
 			userTimesheetForOther.setUserName(tmp.getUserName());
 			userTimesheetForOther.setId5(tmp.getId());
 		}else{
@@ -1604,8 +1528,8 @@ public class UserTimesheetService {
 		}
 		tmp = childs.get(lds[5]);
 		if(tmp != null){
-			userTimesheetForOther.setData6(StringUtil.nullToDouble(tmp.getRealInput()).toString());
-			userTimesheetForOther.setCheck6(StringUtil.nullToDouble(tmp.getAcceptInput()).toString());
+			userTimesheetForOther.setData6(tmp.getRealInput().toString());
+			userTimesheetForOther.setCheck6(tmp.getAcceptInput().toString());
 			userTimesheetForOther.setUserName(tmp.getUserName());
 			userTimesheetForOther.setId6(tmp.getId());
 		}else{
@@ -1614,8 +1538,8 @@ public class UserTimesheetService {
 		}
 		tmp = childs.get(lds[6]);
 		if(tmp != null){
-			userTimesheetForOther.setData7(StringUtil.nullToDouble(tmp.getRealInput()).toString());
-			userTimesheetForOther.setCheck7(StringUtil.nullToDouble(tmp.getAcceptInput()).toString());
+			userTimesheetForOther.setData7(tmp.getRealInput().toString());
+			userTimesheetForOther.setCheck7(tmp.getAcceptInput().toString());
 			userTimesheetForOther.setUserName(tmp.getUserName());
 			userTimesheetForOther.setId7(tmp.getId());
 		}else{
@@ -1648,8 +1572,8 @@ public class UserTimesheetService {
 		userTimesheetForOther.setInputType(UserTimesheet.TYPE_INPUT_EXTRA);
 		UserTimesheet tmp = childs.get(lds[0]);
 		if(tmp != null){
-			userTimesheetForOther.setData1(StringUtil.nullToDouble(tmp.getExtraInput()).toString());
-			userTimesheetForOther.setCheck1(StringUtil.nullToDouble(tmp.getAcceptExtraInput()).toString());
+			userTimesheetForOther.setData1(tmp.getExtraInput().toString());
+			userTimesheetForOther.setCheck1(tmp.getAcceptExtraInput().toString());
 			userTimesheetForOther.setUserName(tmp.getUserName());
 			userTimesheetForOther.setId1(tmp.getId());
 		}else{
@@ -1658,8 +1582,8 @@ public class UserTimesheetService {
 		}
 		tmp = childs.get(lds[1]);
 		if(tmp != null){
-			userTimesheetForOther.setData2(StringUtil.nullToDouble(tmp.getExtraInput()).toString());
-			userTimesheetForOther.setCheck2(StringUtil.nullToDouble(tmp.getAcceptExtraInput()).toString());
+			userTimesheetForOther.setData2(tmp.getExtraInput().toString());
+			userTimesheetForOther.setCheck2(tmp.getAcceptExtraInput().toString());
 			userTimesheetForOther.setUserName(tmp.getUserName());
 			userTimesheetForOther.setId2(tmp.getId());
 		}else{
@@ -1668,8 +1592,8 @@ public class UserTimesheetService {
 		}
 		tmp = childs.get(lds[2]);
 		if(tmp != null){
-			userTimesheetForOther.setData3(StringUtil.nullToDouble(tmp.getExtraInput()).toString());
-			userTimesheetForOther.setCheck3(StringUtil.nullToDouble(tmp.getAcceptExtraInput()).toString());
+			userTimesheetForOther.setData3(tmp.getExtraInput().toString());
+			userTimesheetForOther.setCheck3(tmp.getAcceptExtraInput().toString());
 			userTimesheetForOther.setUserName(tmp.getUserName());
 			userTimesheetForOther.setId3(tmp.getId());
 		}else{
@@ -1678,8 +1602,8 @@ public class UserTimesheetService {
 		}
 		tmp = childs.get(lds[3]);
 		if(tmp != null){
-			userTimesheetForOther.setData4(StringUtil.nullToDouble(tmp.getExtraInput()).toString());
-			userTimesheetForOther.setCheck4(StringUtil.nullToDouble(tmp.getAcceptExtraInput()).toString());
+			userTimesheetForOther.setData4(tmp.getExtraInput().toString());
+			userTimesheetForOther.setCheck4(tmp.getAcceptExtraInput().toString());
 			userTimesheetForOther.setUserName(tmp.getUserName());
 			userTimesheetForOther.setId4(tmp.getId());
 		}else{
@@ -1688,8 +1612,8 @@ public class UserTimesheetService {
 		}
 		tmp = childs.get(lds[4]);
 		if(tmp != null){
-			userTimesheetForOther.setData5(StringUtil.nullToDouble(tmp.getExtraInput()).toString());
-			userTimesheetForOther.setCheck5(StringUtil.nullToDouble(tmp.getAcceptExtraInput()).toString());
+			userTimesheetForOther.setData5(tmp.getExtraInput().toString());
+			userTimesheetForOther.setCheck5(tmp.getAcceptExtraInput().toString());
 			userTimesheetForOther.setUserName(tmp.getUserName());
 			userTimesheetForOther.setId5(tmp.getId());
 		}else{
@@ -1698,8 +1622,8 @@ public class UserTimesheetService {
 		}
 		tmp = childs.get(lds[5]);
 		if(tmp != null){
-			userTimesheetForOther.setData6(StringUtil.nullToDouble(tmp.getExtraInput()).toString());
-			userTimesheetForOther.setCheck6(StringUtil.nullToDouble(tmp.getAcceptExtraInput()).toString());
+			userTimesheetForOther.setData6(tmp.getExtraInput().toString());
+			userTimesheetForOther.setCheck6(tmp.getAcceptExtraInput().toString());
 			userTimesheetForOther.setUserName(tmp.getUserName());
 			userTimesheetForOther.setId6(tmp.getId());
 		}else{
@@ -1708,8 +1632,8 @@ public class UserTimesheetService {
 		}
 		tmp = childs.get(lds[6]);
 		if(tmp != null){
-			userTimesheetForOther.setData7(StringUtil.nullToDouble(tmp.getExtraInput()).toString());
-			userTimesheetForOther.setCheck7(StringUtil.nullToDouble(tmp.getAcceptExtraInput()).toString());
+			userTimesheetForOther.setData7(tmp.getExtraInput().toString());
+			userTimesheetForOther.setCheck7(tmp.getAcceptExtraInput().toString());
 			userTimesheetForOther.setUserName(tmp.getUserName());
 			userTimesheetForOther.setId7(tmp.getId());
 		}else{

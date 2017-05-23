@@ -206,13 +206,11 @@ public class ProjectStateTask {
 				projectWeeklyStat.setPayment(payment);
 				//项目总工时
 				Double totalInput = 0D;
-				List<UserTimesheet> projectUserTimesheets = userTimesheetRepository.findByDateAndObjIdAndType(
-							StringUtil.nullToLong(dates[6]),id, UserTimesheet.TYPE_PROJECT);
-				if(projectUserTimesheets != null && projectUserTimesheets.size() > 0){
-					for(UserTimesheet userTimesheet : projectUserTimesheets){
-						totalInput += StringUtil.nullToDouble(userTimesheet.getAcceptInput()) 
-								+ StringUtil.nullToDouble(userTimesheet.getAcceptExtraInput());
-					}
+				List<Object[]> inputList =  userTimesheetRepository.findSumByDateAndObjIdAndType(StringUtil.nullToLong(dates[6]),id, UserTimesheet.TYPE_PROJECT);
+				if(inputList != null && inputList.size() > 0){
+					totalInput += StringUtil.nullToDouble(inputList.get(0)[0]);
+				}else{
+					log.error("no totalInput found belong to " + projectInfo.getSerialNum());
 				}
 				projectWeeklyStat.setTotalInput(totalInput);
 				
@@ -330,12 +328,11 @@ public class ProjectStateTask {
 				projectMonthlyStat.setPayment(payment);
 				//项目总工时
 				Double totalInput = 0D;
-				List<UserTimesheet> projectUserTimesheets = userTimesheetRepository.findByDateAndObjIdAndType(StringUtil.nullToLong(lDay), id, UserTimesheet.TYPE_PROJECT);
-				if(projectUserTimesheets != null && projectUserTimesheets.size() > 0){
-					for(UserTimesheet userTimesheet : projectUserTimesheets){
-						totalInput += StringUtil.nullToDouble(userTimesheet.getAcceptInput()) 
-								+ StringUtil.nullToDouble(userTimesheet.getAcceptExtraInput());
-					}
+				List<Object[]> inputList = userTimesheetRepository.findSumByDateAndObjIdAndType(StringUtil.nullToLong(lDay), id, UserTimesheet.TYPE_PROJECT);
+				if(inputList != null && inputList.size() > 0){
+					totalInput += StringUtil.nullToDouble(inputList.get(0)[0]);
+				}else{
+					log.error("no totalInput found belong to " + projectInfo.getSerialNum());
 				}
 				projectMonthlyStat.setTotalInput(totalInput);
 				
