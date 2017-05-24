@@ -261,7 +261,7 @@
 							vm.isSaving = false;
 							return false;
 						}
-						//校验是否大于0或者小于8
+						//校验是否大于2或者小于8
 						cds1 = parseFloat(tmp.check1);
 						cds2 = parseFloat(tmp.check2);
 						cds3 = parseFloat(tmp.check3);

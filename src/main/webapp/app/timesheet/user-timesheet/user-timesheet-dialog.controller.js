@@ -256,7 +256,7 @@
 	            			AlertService.error("cpmApp.userTimesheet.save.dataError");
 	            			return false;
 	            		}
-	            		//校验是否大于0或者小于8
+	            		//校验是否大于2或者小于8
 	            		ds1 = parseFloat(tmps.data1);
 	            		ds2 = parseFloat(tmps.data2);
 	            		ds3 = parseFloat(tmps.data3);
