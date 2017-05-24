@@ -135,30 +135,7 @@
                 }],
                 previousState: ["$state", function ($state) {
                     var currentStateData = {
-                        name: 'role-hardWorking',
-                        params: {
-                            page: {
-                                value: '1',
-                                squash: true
-                            },
-                            sort: {
-                                value: 'rhw.id,asc',
-                                squash: true
-                            },
-                            userId : null
-                            
-                        },
-                        url: $state.href($state.current.name, {
-                            page: {
-                                value: '1',
-                                squash: true
-                            },
-                            sort: {
-                                value: 'rhw.id,asc',
-                                squash: true
-                            },
-                            userId : null
-                        })
+                        name: 'role-hardWorking'
                     };
                     return currentStateData;
                 }]

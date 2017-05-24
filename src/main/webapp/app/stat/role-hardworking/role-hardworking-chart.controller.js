@@ -122,13 +122,6 @@
             });
         }
         
-        vm.backDetail = backDetail;
-        function backDetail(){
-        	$state.go('role-hardWorking.chart', {
-        		id: pagingParams.id
-            });
-        }
-        
         function clear() {
         	var today = new Date();
             if(date){

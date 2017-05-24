@@ -36,18 +36,17 @@ public class RoleHardWorkingDaoImpl extends GenericDaoImpl<RoleHardWorking, Long
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public Page<RoleHardWorking> getPageByParams(RoleHardWorking roleHardWorking,Pageable pageable) {
-		
 		int count = 0;
-		
 		StringBuffer querywhere = new StringBuffer();
 		StringBuffer queryHql = new StringBuffer();
 		StringBuffer countHql = new StringBuffer();
+		
 		queryHql.append(" select rhw.id,rhw.serialNum,rhw.roleName,rhw.hardWorking,rhw.originMonth");
 		countHql.append(" select count(rhw.id)");
 		
 		querywhere.append(" from RoleHardWorking rhw where 1 = 1");
-		List<Object> params = new ArrayList<Object>();
 		
+		List<Object> params = new ArrayList<Object>();
 		if(roleHardWorking.getOriginMonth()!=null){
 			querywhere.append(" and rhw.originMonth = ?"+(count++)+"");
 			params.add(roleHardWorking.getOriginMonth());
@@ -58,7 +57,6 @@ public class RoleHardWorkingDaoImpl extends GenericDaoImpl<RoleHardWorking, Long
 		}
     	
     	StringBuffer orderHql = new StringBuffer();
-    	
     	if(pageable.getSort() != null){//页面都会有个默认排序
     		for (Order order : pageable.getSort()) {
     			if(CpmConstants.ORDER_IGNORE_SCORE.equalsIgnoreCase(order.getProperty())){
@@ -84,17 +82,12 @@ public class RoleHardWorkingDaoImpl extends GenericDaoImpl<RoleHardWorking, Long
     		);
     	
     	List<RoleHardWorking> returnList = new ArrayList<RoleHardWorking>();
-    	
-    	
     	if(page.getContent() != null){
 			for(Object[] o : page.getContent()){
 				returnList.add(transRoleHardWorking(o));
 			}
 		}
     	return new PageImpl(returnList, pageable, page.getTotalElements());
-	
-	
-		
 	}
 
 	private RoleHardWorking transRoleHardWorking(Object[] o) {
@@ -113,6 +106,7 @@ public class RoleHardWorkingDaoImpl extends GenericDaoImpl<RoleHardWorking, Long
 		StringBuffer sb = new StringBuffer();
 		StringBuffer querysql = new StringBuffer();
 		StringBuffer countsql = new StringBuffer();
+		
 		querysql.append(" select wrh.id, wrh.serial_num, wrh.last_name, wrh.hardworking, wrh.origin_month");
 		countsql.append(" select count(wrh.id)");
 		sb.append(" from w_role_hardworking wrh");
