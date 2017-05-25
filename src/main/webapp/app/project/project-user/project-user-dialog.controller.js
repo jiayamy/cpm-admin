@@ -15,7 +15,6 @@
         
         //关联合同的类型，添加人员等级
         if (vm.projectUser.type == 2) {
-			vm.isOutsourcing = true;
 			loadRanks(contractId);
 		}
         
@@ -28,6 +27,7 @@
 	    		function(data, headers){
 	    			vm.ranks = data;
 	        		if(vm.ranks && vm.ranks.length > 0){
+	        			vm.isOutsourcing = true;
 	        			for(var i = 0; i < vm.ranks.length; i++){
 	        				if(entity.rank == vm.ranks[i].val){
 	        					vm.projectUser.rank = vm.ranks[i];
@@ -76,9 +76,10 @@
         vm.changeProject = changeProject;
         function changeProject(){
         	if (vm.projectUser.projectId.type == 2) {
-				vm.isOutsourcing = true;
-				vm.isRank = true;
 				loadRanks(vm.projectUser.projectId.p1);
+				if(vm.isOutsourcing){
+					vm.isRank = true;
+				}
 			}else {
 				vm.isOutsourcing = false;
 			}
@@ -98,7 +99,9 @@
             projectUser.leaveDay = DateUtils.convertLocalDateToFormat(vm.projectUser.leaveDay,"yyyyMMdd");
             if (vm.projectUser.type == 2 || vm.projectUser.projectId.type == 2) {
 				projectUser.rank = vm.projectUser.rank && vm.projectUser.rank.key ? vm.projectUser.rank.val : "";
-				vm.isRank = true;
+				if(vm.isOutsourcing){
+					vm.isRank = true;
+				}
 			}
             if(!projectUser.projectId || !projectUser.userId || !projectUser.userName || !projectUser.userRole || !projectUser.joinDay){
             	vm.isSaving = false;

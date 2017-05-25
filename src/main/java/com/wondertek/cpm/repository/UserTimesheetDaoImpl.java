@@ -255,7 +255,7 @@ public class UserTimesheetDaoImpl extends GenericDaoImpl<UserTimesheet, Long> im
 				if (userTimesheet.getType().intValue() == UserTimesheet.TYPE_PROJECT) {
 					offerList = getOffer(userTimesheet.getUserId(), userTimesheet.getObjId(), userTimesheet.getWorkDay());
 					if (offerList != null && !offerList.isEmpty()) {
-						changeAmount = (Double)offerList.get(1) / monthWorkDay * StringUtil.nullToDouble(userTimesheet.getRealInput()) / 8;
+						changeAmount = (Double)offerList.get(1) / monthWorkDay * userTimesheet.getRealInput() / 8;
 						if (!amountMap.containsKey((Long)offerList.get(0))) {
 							amountMap.put((Long)offerList.get(0), changeAmount);
 						}else {

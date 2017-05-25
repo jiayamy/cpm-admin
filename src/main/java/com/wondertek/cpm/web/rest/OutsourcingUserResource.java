@@ -184,9 +184,6 @@ public class OutsourcingUserResource {
     public ResponseEntity<List<LongValue>> queryUserRank(@RequestParam(value = "contractId") Long contractId) throws URISyntaxException {
         log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to queryUserRank");
         List<LongValue> list = outsourcingUserService.queryUserRank(contractId);
-        if (list.size() < 1) {
-        	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.outsourcingUser.save.haveNoUser", "")).body(null);
-		}
         return new ResponseEntity<>(list, null, HttpStatus.OK);
     }
 }

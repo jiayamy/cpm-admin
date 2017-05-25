@@ -148,9 +148,7 @@ public class ContractInfoResource {
         	contractInfoVo1.setFinishRate(contractInfoVo.getFinishRate());
 		}else {
 			if (contractInfoVo1.getType().intValue() == ContractInfo.TYPE_EXTERNAL) {
-				if (StringUtil.isNullStr(contractInfoVo1.getMark())) {
-		        	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.outsourcingUser.save.dataError", "")).body(null);
-				}else {
+				if (!StringUtil.isNullStr(contractInfoVo1.getMark())){
 					String str[] = contractInfoVo1.getMark().split("_");
 					String num = str[0];
 					String createTimeD = str[1];
@@ -177,16 +175,16 @@ public class ContractInfoResource {
         contractInfoVo1.setUpdator(updator);
         ContractInfo result = new ContractInfo();
         if (isNew && contractInfoVo1.getType().intValue() == ContractInfo.TYPE_EXTERNAL) {
-    		List<OutsourcingUser> list = outsourcingUserRepository.findByMark(contractInfoVo1.getMark());
-    		if (list != null && !list.isEmpty()){
-    			 result = contractInfoService.save(new ContractInfo(contractInfoVo1));
-    			 for (OutsourcingUser outsourcingUser : list) {
-    				outsourcingUser.setContractId(result.getId());
- 					outsourcingUser.setMark(null);
- 					outsourcingUserRepository.save(outsourcingUser);
-    			 }
-    		}else {
-	        	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.outsourcingUser.save.userCannotEmpty", "")).body(null);
+        	result = contractInfoService.save(new ContractInfo(contractInfoVo1));
+    		if (!StringUtil.isNullStr(contractInfoVo1.getMark())) {
+				List<OutsourcingUser> list = outsourcingUserRepository.findByMark(contractInfoVo1.getMark());
+				if (list != null && !list.isEmpty()) {
+					for (OutsourcingUser outsourcingUser : list) {
+						outsourcingUser.setContractId(result.getId());
+						outsourcingUser.setMark(null);
+						outsourcingUserRepository.save(outsourcingUser);
+					}
+				}
 			}
         }else {
    			result = contractInfoService.save(new ContractInfo(contractInfoVo1));
