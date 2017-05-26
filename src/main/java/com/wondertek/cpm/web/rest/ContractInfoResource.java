@@ -954,6 +954,9 @@ public class ContractInfoResource {
     			Cell.CELL_TYPE_STRING
     	};
     	XSSFSheet sheet = excelWrite.getCurrentSheet();
+    	sheet.setColumnWidth(1, 3745);
+    	sheet.setColumnWidth(5, 2900);
+    	sheet.setColumnWidth(6, 2900);
     	XSSFWorkbook wb = excelWrite.getXSSFWorkbook();
 		XSSFRow row = null;
 		XSSFCell cell = null;

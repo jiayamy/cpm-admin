@@ -698,6 +698,10 @@ public class ProjectInfoResource {
     			Cell.CELL_TYPE_NUMERIC
     	};
     	XSSFSheet sheet = excelWrite.getCurrentSheet();
+    	sheet.setColumnWidth(1, 3745);
+    	sheet.setColumnWidth(4, 2900);
+    	sheet.setColumnWidth(5, 2900);
+    	sheet.setColumnWidth(8, 5820);
     	XSSFWorkbook wb = excelWrite.getXSSFWorkbook();
 		XSSFRow row = null;
 		XSSFCell cell = null;
