@@ -2,7 +2,6 @@ package com.wondertek.cpm.web.rest;
 
 import java.io.File;
 import java.net.URISyntaxException;
-import java.text.DecimalFormat;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
@@ -411,8 +410,7 @@ public class ProjectInfoResource {
 									.setMsgKey("cpmApp.projectInfo.upload.dataError")
 									.setMsgParam(excelValue.getSheet() + "," + rowNum +","+(columnNum+1)));
 						}else if(val instanceof Double){
-							DecimalFormat format = new DecimalFormat("0");
-							projectInfo.setSerialNum(format.format(val));
+							projectInfo.setSerialNum(((Double)val).longValue() + "");
 						}else{//String
 							projectInfo.setSerialNum(StringUtil.nullToString(val.toString()));
 						}
@@ -453,8 +451,7 @@ public class ProjectInfoResource {
 									.setMsgKey("cpmApp.projectInfo.upload.dataError")
 									.setMsgParam(excelValue.getSheet() + "," + rowNum +","+(columnNum+1)));
 						}else if(val instanceof Double){
-							DecimalFormat format = new DecimalFormat("0");
-							val = format.format(val);
+							val = ((Double)val).longValue();
 						}
 						if(!contractInfosMap.containsKey(StringUtil.nullToString(val.toString()))){
 							return ResponseEntity.ok().body(cpmResponse
@@ -473,8 +470,7 @@ public class ProjectInfoResource {
 									.setMsgKey("cpmApp.projectInfo.upload.dataError")
 									.setMsgParam(excelValue.getSheet() + "," + rowNum +","+(columnNum+1)));
 						}else if(val instanceof Double){
-							DecimalFormat format = new DecimalFormat("0");
-							val = format.format(val);
+							val = ((Double)val).longValue();
 						}
 						String userSerialNum = StringUtil.nullToString(val.toString());
 						if(!userBaseVoMap.containsKey(userSerialNum)){

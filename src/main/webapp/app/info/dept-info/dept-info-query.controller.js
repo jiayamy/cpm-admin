@@ -40,19 +40,19 @@
             
             function onSuccess(data, headers) {
             	vm.deptInfos = data;
-            	//第四级先不展开
+            	//第2级先不展开
             	for(var i = 0; i < vm.deptInfos.length; i++){
                     if(vm.deptInfos[i].children && vm.deptInfos[i].children.length !=0){
                     	vm.deptInfos[i].showChild = true;
-                    	hiddenSpecifiedNode(vm.deptInfos[i].children,1,4);
+                    	hiddenSpecifiedNode(vm.deptInfos[i].children,1,2);
                     }
                 }
             }
-            //4级以后的都隐藏
+            //2级以后的都隐藏
             function hiddenSpecifiedNode(node,currDeptIndex,showDeptIndex){
             	var nextDept = currDeptIndex + 1;
         		for(var i = 0; i < node.length; i++){
-        			if(currDeptIndex >= 4){
+        			if(currDeptIndex >= showDeptIndex){
         				node[i].showChild = false;
         			}
         			if(node[i].children && node[i].children.length !=0){

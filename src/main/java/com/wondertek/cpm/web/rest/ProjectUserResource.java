@@ -3,7 +3,6 @@ package com.wondertek.cpm.web.rest;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
@@ -493,61 +492,34 @@ public class ProjectUserResource {
 											.setMsgParam(excelValue.getSheet() + "," + rowNum + "," + (columnNum + 1)));
 						}
 						// 对从Excel传来的数据进行处理。
-						DecimalFormat df = new DecimalFormat("0");
-						String value = df.format(val);
-						if(value==null){
+						long joinDay = 0;
+						if(val instanceof Date){//date
+							projectUser.setJoinDay(StringUtil.nullToLong(DateUtil.formatDate(DateUtil.DATE_YYYYMMDD_PATTERN, (Date)val)));
+						}else{
 							return ResponseEntity.ok()
 									.body(cpmResponse.setSuccess(Boolean.FALSE).setMsgKey("cpmApp.projectUser.save.joinDayStyleError")	
 											.setMsgParam(excelValue.getSheet() + "," + rowNum + "," + (columnNum + 1)));
-						}else{
-							if (value.length() != 8) {
-								return ResponseEntity.ok()
-										.body(cpmResponse.setSuccess(Boolean.FALSE).setMsgKey("cpmApp.projectUser.save.dateLengthError")
-												.setMsgParam(excelValue.getSheet() + "," + rowNum + "," + (columnNum + 1)));
-							} else {
-								String startDay = DateUtil.formatDate(DateUtil.DATE_YYYYMMDD_PATTERN,DateUtil.parseDate(DateUtil.DATE_YYYYMMDD_PATTERN, value));
-								if(!value.equals(startDay)){
-									return ResponseEntity.ok()
-											.body(cpmResponse.setSuccess(Boolean.FALSE).setMsgKey("cpmApp.projectUser.save.joinDayStyleError")	
-													.setMsgParam(excelValue.getSheet() + "," + rowNum + "," + (columnNum + 1)));
-								}
-							}
 						}
-						long joinDay = Long.parseLong(value);
-						projectUser.setJoinDay(joinDay);
+						joinDay = projectUser.getJoinDay().longValue();
 
 						// 校验第八列，离开日。
 						columnNum++;
 						long leaveDay = 0;
 						val = ls.get(columnNum);
 						if(!StringUtil.isNullStr(val)){
-							String ld = df.format(val);
-							if(ld==null){
-								return ResponseEntity.ok()
-										.body(cpmResponse.setSuccess(Boolean.FALSE).setMsgKey("cpmApp.projectUser.save.joinDayStyleError")	
-												.setMsgParam(excelValue.getSheet() + "," + rowNum + "," + (columnNum + 1)));
+							if(val instanceof Date){//date
+								projectUser.setLeaveDay(StringUtil.nullToLong(DateUtil.formatDate(DateUtil.DATE_YYYYMMDD_PATTERN, (Date)val)));
 							}else{
-								if (ld.length() != 8) {
-									return ResponseEntity.ok()
-											.body(cpmResponse.setSuccess(Boolean.FALSE).setMsgKey("cpmApp.projectUser.save.dateLengthError")
-													.setMsgParam(excelValue.getSheet() + "," + rowNum + "," + (columnNum + 1)));
-								} else {
-									String endDay = DateUtil.formatDate(DateUtil.DATE_YYYYMMDD_PATTERN,DateUtil.parseDate(DateUtil.DATE_YYYYMMDD_PATTERN, ld));
-									if(!ld.equals(endDay)){
-										return ResponseEntity.ok()
-												.body(cpmResponse.setSuccess(Boolean.FALSE).setMsgKey("cpmApp.projectUser.save.leaveDayStyleError")
-														.setMsgParam(excelValue.getSheet() + "," + rowNum + "," + (columnNum + 1)));
-									}
-								}
+								return ResponseEntity.ok()
+										.body(cpmResponse.setSuccess(Boolean.FALSE).setMsgKey("cpmApp.projectUser.save.leaveDayStyleError")	
+												.setMsgParam(excelValue.getSheet() + "," + rowNum + "," + (columnNum + 1)));
 							}
-
-							leaveDay = Long.parseLong(ld);
+							leaveDay = projectUser.getLeaveDay().longValue();
 							if (leaveDay < joinDay) {
 								return ResponseEntity.ok()
 										.body(cpmResponse.setSuccess(Boolean.FALSE).setMsgKey("cpmApp.projectUser.save.improtTimeExitsError")
 												.setMsgParam(excelValue.getSheet() + "," + rowNum));
 							}
-							projectUser.setLeaveDay(leaveDay);
 						}
 						// 根据项目id和员工编号查看w_project_user表中的加盟日和离开日
 						String key = projectId + "_" + user.getId();

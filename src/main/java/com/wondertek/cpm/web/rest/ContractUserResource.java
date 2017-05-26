@@ -465,70 +465,39 @@ public class ContractUserResource {
 						
 						// 校验第五列，加盟日 
 						columnNum++;
+						long joinDay = 0;
 						val = ls.get(columnNum);
 						if (val == null || StringUtil.isNullStr(val)) {
 							return ResponseEntity.ok()
 									.body(cpmResponse.setSuccess(Boolean.FALSE)
 											.setMsgKey("cpmApp.contractUser.save.dataIsError")
 											.setMsgParam(excelValue.getSheet() + "," + rowNum + "," + (columnNum + 1)));
-						}
-						// 对从Excel传来的数据进行处理。
-						DecimalFormat df = new DecimalFormat("0");
-						String value = df.format(val);
-						if(value==null){
+						}else if(val instanceof Date){//date
+							contractUser.setJoinDay(StringUtil.nullToLong(DateUtil.formatDate(DateUtil.DATE_YYYYMMDD_PATTERN, (Date)val)));
+						}else{
 							return ResponseEntity.ok()
 									.body(cpmResponse.setSuccess(Boolean.FALSE).setMsgKey("cpmApp.contractUser.save.joinDayStyleError")	
 											.setMsgParam(excelValue.getSheet() + "," + rowNum + "," + (columnNum + 1)));
-						}else{
-							if (value.length() != 8) {
-								return ResponseEntity.ok()
-										.body(cpmResponse.setSuccess(Boolean.FALSE).setMsgKey("cpmApp.contractUser.save.dateLengthError")
-												.setMsgParam(excelValue.getSheet() + "," + rowNum + "," + (columnNum + 1)));
-							} else {
-								String startDay = DateUtil.formatDate(DateUtil.DATE_YYYYMMDD_PATTERN,DateUtil.parseDate(DateUtil.DATE_YYYYMMDD_PATTERN, value));
-								if(!value.equals(startDay)){
-									return ResponseEntity.ok()
-											.body(cpmResponse.setSuccess(Boolean.FALSE).setMsgKey("cpmApp.contractUser.save.joinDayStyleError")	
-													.setMsgParam(excelValue.getSheet() + "," + rowNum + "," + (columnNum + 1)));
-								}
-							}
 						}
-						
-						long joinDay = Long.parseLong(value);
-						contractUser.setJoinDay(joinDay);
-
+						joinDay = contractUser.getJoinDay().longValue();
 						// 校验第六列，离开日。
 						columnNum++;
 						long leaveDay = 0;
 						val = ls.get(columnNum);
 						if(!StringUtil.isNullStr(val)){
-							String ld = df.format(val);
-							if(ld==null){
-								return ResponseEntity.ok()
-										.body(cpmResponse.setSuccess(Boolean.FALSE).setMsgKey("cpmApp.contractUser.save.joinDayStyleError")	
-												.setMsgParam(excelValue.getSheet() + "," + rowNum + "," + (columnNum + 1)));
+							if(val instanceof Date){//date
+								contractUser.setLeaveDay(StringUtil.nullToLong(DateUtil.formatDate(DateUtil.DATE_YYYYMMDD_PATTERN, (Date)val)));
 							}else{
-								if (ld.length() != 8) {
-									return ResponseEntity.ok()
-											.body(cpmResponse.setSuccess(Boolean.FALSE).setMsgKey("cpmApp.contractUser.save.dateLengthError")
-													.setMsgParam(excelValue.getSheet() + "," + rowNum + "," + (columnNum + 1)));
-								} else {
-									String endDay = DateUtil.formatDate(DateUtil.DATE_YYYYMMDD_PATTERN,DateUtil.parseDate(DateUtil.DATE_YYYYMMDD_PATTERN, ld));
-									if(!ld.equals(endDay)){
-										return ResponseEntity.ok()
-												.body(cpmResponse.setSuccess(Boolean.FALSE).setMsgKey("cpmApp.contractUser.save.leaveDayStyleError")
-														.setMsgParam(excelValue.getSheet() + "," + rowNum + "," + (columnNum + 1)));
-									}
-								}
+								return ResponseEntity.ok()
+										.body(cpmResponse.setSuccess(Boolean.FALSE).setMsgKey("cpmApp.contractUser.save.leaveDayStyleError")	
+												.setMsgParam(excelValue.getSheet() + "," + rowNum + "," + (columnNum + 1)));
 							}
-							
-							leaveDay = Long.parseLong(ld);
-							if (leaveDay < joinDay) {
+							if (contractUser.getLeaveDay().longValue() < contractUser.getJoinDay()) {
 								return ResponseEntity.ok()
 										.body(cpmResponse.setSuccess(Boolean.FALSE).setMsgKey("cpmApp.contractUser.save.improtTimeExitsError")
 												.setMsgParam(excelValue.getSheet() + "," + rowNum));
 							}
-							contractUser.setLeaveDay(leaveDay);
+							leaveDay = contractUser.getLeaveDay().longValue();
 						}
 						String key = contractId + "_" + user.getId();
 						if(!userProjects.containsKey(key)){
