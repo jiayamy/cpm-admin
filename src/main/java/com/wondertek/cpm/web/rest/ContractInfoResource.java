@@ -916,7 +916,7 @@ public class ContractInfoResource {
     			"外部合同",
     			"开始日期",
     			"结束日期",
-    			"合同完成率(%)",
+    			"合同完成率",
     			"状态"
     	};
     	String fileName = "合同信息.xlsx";
