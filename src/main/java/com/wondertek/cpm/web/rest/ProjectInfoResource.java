@@ -1,6 +1,7 @@
 package com.wondertek.cpm.web.rest;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URISyntaxException;
 import java.text.DecimalFormat;
 import java.time.ZoneId;
@@ -13,7 +14,18 @@ import java.util.Map;
 import java.util.Optional;
 
 import javax.inject.Inject;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
+import org.apache.poi.hssf.usermodel.HSSFDataFormat;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFCellStyle;
+import org.apache.poi.xssf.usermodel.XSSFDataFormat;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -35,6 +47,7 @@ import com.codahale.metrics.annotation.Timed;
 import com.wondertek.cpm.CpmConstants;
 import com.wondertek.cpm.ExcelUtil;
 import com.wondertek.cpm.ExcelValue;
+import com.wondertek.cpm.ExcelWrite;
 import com.wondertek.cpm.config.FilePathHelper;
 import com.wondertek.cpm.config.StringUtil;
 import com.wondertek.cpm.domain.ContractBudget;
@@ -609,4 +622,176 @@ public class ProjectInfoResource {
 						.setMsgKey("cpmApp.projectInfo.upload.handleError"));
 		}
     }
+    
+    @GetMapping("/project-infos/exportXls")
+	@Timed
+	@Secured(AuthoritiesConstants.ROLE_PROJECT_INFO)
+    public void exportXls(
+    		HttpServletRequest request, HttpServletResponse response,
+    		@RequestParam(value = "contractId",required=false) String contractId, 
+    		@RequestParam(value = "serialNum",required=false) String serialNum, 
+    		@RequestParam(value = "name",required=false) String name, 
+    		@RequestParam(value = "status",required=false) String status 
+    		)throws URISyntaxException, IOException {
+    	log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to export ProjectInfos by contractId : {}, serialNum : {}, "
+        		+ "name : {}, status : {}", contractId, serialNum, name, status);
+    	ProjectInfo projectInfo = new ProjectInfo();
+        if(!StringUtil.isNullStr(contractId)){
+        	projectInfo.setContractId(StringUtil.nullToLong(contractId));
+        }
+        if(!StringUtil.isNullStr(serialNum)){
+        	projectInfo.setSerialNum(serialNum);
+        }
+        if(!StringUtil.isNullStr(name)){
+        	projectInfo.setName(name);
+        }
+        if(!StringUtil.isNullStr(status)){
+        	projectInfo.setStatus(StringUtil.nullToInteger(status));
+        }
+        
+        Page<ProjectInfoVo> page = projectInfoService.getUserPage(projectInfo, null);
+      //拼接sheet数据
+    	//标题
+    	String[] heads = new String[]{
+    			"项目编号",
+    			"项目名称",
+    			"合同编号",
+    			"负责人",
+    			"开始日期",
+    			"结束日期",
+    			"合同完成率(%)",
+    			"状态",
+    			"更新时间"
+    	};
+    	String fileName = "项目信息.xlsx";
+    	//写入sheet
+    	ServletOutputStream outputStream = response.getOutputStream();
+    	response.setHeader("Content-Disposition","attachment;filename=" + ExcelUtil.getExportName(request, fileName));
+    	response.setContentType("application/x-msdownload");
+    	response.setCharacterEncoding("UTF-8");
+    	
+    	ExcelWrite excelWrite = new ExcelWrite();
+    	//写入标题
+    	excelWrite.createSheetTitle("项目信息", 1, heads);
+    	//写入数据
+    	if(page != null){
+    		handleSheetData(page.getContent(),2,excelWrite,projectInfo);
+    	}
+    	excelWrite.close(outputStream);
+    }
+    
+    /**
+     * 处理sheet数据
+     * @param salesBonus 
+     */
+	private void handleSheetData(List<ProjectInfoVo> page, int startRow, ExcelWrite excelWrite, ProjectInfo projectInfo) {
+		//除表头外的其他数据单元格格式
+    	Integer[] cellType = new Integer[]{
+    			Cell.CELL_TYPE_STRING,
+    			Cell.CELL_TYPE_STRING,
+    			Cell.CELL_TYPE_STRING,
+    			Cell.CELL_TYPE_STRING,
+    			Cell.CELL_TYPE_NUMERIC,
+    			Cell.CELL_TYPE_NUMERIC,
+    			Cell.CELL_TYPE_NUMERIC,
+    			Cell.CELL_TYPE_STRING,
+    			Cell.CELL_TYPE_NUMERIC
+    	};
+    	XSSFSheet sheet = excelWrite.getCurrentSheet();
+    	XSSFWorkbook wb = excelWrite.getXSSFWorkbook();
+		XSSFRow row = null;
+		XSSFCell cell = null;
+		int i = -1;
+		int j = 0;
+		//百分比格式
+		XSSFCellStyle cellStyle = wb.createCellStyle();  
+		cellStyle.setDataFormat(HSSFDataFormat.getBuiltinFormat("0.00%")); 
+		//日期格式
+		XSSFDataFormat format = wb.createDataFormat();
+		XSSFCellStyle cellStyleDate = wb.createCellStyle();  
+		cellStyleDate.setDataFormat(format.getFormat("yyyy/MM/dd")); 
+		
+		XSSFCellStyle cellStyleDateDateil = wb.createCellStyle();  
+		cellStyleDateDateil.setDataFormat(format.getFormat("yyyy/MM/dd HH:mm:ss"));
+		//数据
+		for(ProjectInfoVo vo : page){
+			i++;
+			row = sheet.createRow(i + startRow-1);
+			
+			j = 0;
+			cell = row.createCell(j,cellType[j]);
+			if(vo.getSerialNum() == null){
+				cell.setCellValue("");
+			}else{
+				cell.setCellValue(vo.getSerialNum());
+			}
+			j++;
+			cell = row.createCell(j,cellType[j]);
+			if(vo.getName() == null){
+				cell.setCellValue("");
+			}else{
+				cell.setCellValue(vo.getName());
+			}
+			j++;
+			cell = row.createCell(j,cellType[j]);
+			if(vo.getContractNum() == null){
+				cell.setCellValue("");
+			}else{
+				cell.setCellValue(vo.getContractNum());
+			}
+			j++;
+			cell = row.createCell(j,cellType[j]);
+			if(vo.getPm() == null){
+				cell.setCellValue("");
+			}else{
+				cell.setCellValue(vo.getPm());
+			}
+			j++;
+			cell = row.createCell(j,cellType[j]);
+			if(vo.getStartDay() == null){
+				cell.setCellValue("");
+			}else{
+				cell.setCellValue(Date.from(vo.getStartDay().toInstant()));
+				cell.setCellStyle(cellStyleDate);
+			}
+			j++;
+			cell = row.createCell(j,cellType[j]);
+			if(vo.getEndDay() == null){
+				cell.setCellValue("");
+			}else{
+				cell.setCellValue(Date.from(vo.getEndDay().toInstant()));
+				cell.setCellStyle(cellStyleDate);
+			}
+			j++;
+			cell = row.createCell(j,cellType[j]);
+			if(vo.getFinishRate() == null){
+				cell.setCellValue("");
+			}else{
+				cell.setCellValue(vo.getFinishRate() / 100);
+				cell.setCellStyle(cellStyle);
+			}
+			j++;
+			cell = row.createCell(j,cellType[j]);
+			if(vo.getStatus() == null){
+				cell.setCellValue("");
+			}else{
+				if(vo.getStatus() == ProjectInfo.STATUS_ADD){
+					cell.setCellValue("开发中");
+				}else if(vo.getStatus() == ProjectInfo.STATUS_CLOSED){
+					cell.setCellValue("已结项");
+				}else if(vo.getStatus() == ProjectInfo.STATUS_DELETED){
+					cell.setCellValue("已终止");
+				}
+			}
+			j++;
+			cell = row.createCell(j,cellType[j]);
+			if(vo.getUpdateTime() == null){
+				cell.setCellValue("");
+			}else{
+				cell.setCellValue(Date.from(vo.getUpdateTime().toInstant()));
+				cell.setCellStyle(cellStyleDateDateil);
+			}
+			j++;
+		}
+	}
 }

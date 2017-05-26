@@ -16,6 +16,7 @@
         vm.itemsPerPage = paginationConstants.itemsPerPage;
         vm.search = search;
         vm.clear = clear;
+        vm.exportXls = exportXls;
         
         vm.searchQuery = {};
         //搜索项中的参数
@@ -150,6 +151,55 @@
             vm.searchQuery = {};
             vm.haveSearch = null;
             vm.transition();
+        }
+        
+        function exportXls(){//导出Xls
+        	var url = "api/project-infos/exportXls";
+        	var c = 0;
+    		
+    		var contractId = vm.searchQuery.contractId ? vm.searchQuery.contractId.key : "";
+        	var serialNum = vm.searchQuery.serialNum;
+        	var name = vm.searchQuery.name;
+        	var status = vm.searchQuery.status ? vm.searchQuery.status.key : "";
+			
+			if(contractId){
+				if(c == 0){
+					c++;
+					url += "?";
+				}else{
+					url += "&";
+				}
+				url += "contractId="+encodeURI(contractId);
+			}
+			if(serialNum){
+				if(c == 0){
+					c++;
+					url += "?";
+				}else{
+					url += "&";
+				}
+				url += "serialNum="+encodeURI(serialNum);
+			}
+			if(name){
+				if(c == 0){
+					c++;
+					url += "?";
+				}else{
+					url += "&";
+				}
+				url += "name="+encodeURI(name);
+			}
+			if(status){
+				if(c == 0){
+					c++;
+					url += "?";
+				}else{
+					url += "&";
+				}
+				url += "status="+encodeURI(status);
+			}
+			
+        	window.open(url);
         }
     }
 })();
