@@ -17,6 +17,7 @@
         vm.itemsPerPage = paginationConstants.itemsPerPage;
         vm.clear = clear;
         vm.search = search;
+        vm.exportXls = exportXls;
         
         vm.searchQuery = {};
         vm.searchQuery.serialNum=pagingParams.serialNum;
@@ -173,6 +174,64 @@
             vm.searchQuery = {};
             vm.haveSearch = null;
             vm.transition();
+        }
+        
+        function exportXls(){//导出Xls
+        	var url = "api/contract-infos/exportXls";
+        	var c = 0;
+			var serialNum = vm.searchQuery.serialNum;
+			var name = vm.searchQuery.name;
+			var type = vm.searchQuery.type && vm.searchQuery.type.key ? vm.searchQuery.type.key : vm.searchQuery.type ;
+			var isPrepared = vm.searchQuery.isPrepared && vm.searchQuery.isPrepared.key ? vm.searchQuery.isPrepared.key : vm.searchQuery.isPrepared;
+    		var isEpibolic = vm.searchQuery.isEpibolic && vm.searchQuery.isEpibolic.key ? vm.searchQuery.isEpibolic.key : vm.searchQuery.isEpibolic;
+			
+			if(serialNum){
+				if(c == 0){
+					c++;
+					url += "?";
+				}else{
+					url += "&";
+				}
+				url += "serialNum="+encodeURI(serialNum);
+			}
+			if(name){
+				if(c == 0){
+					c++;
+					url += "?";
+				}else{
+					url += "&";
+				}
+				url += "name="+encodeURI(name);
+			}
+			if(type){
+				if(c == 0){
+					c++;
+					url += "?";
+				}else{
+					url += "&";
+				}
+				url += "type="+encodeURI(type);
+			}
+			if(isPrepared){
+				if(c == 0){
+					c++;
+					url += "?";
+				}else{
+					url += "&";
+				}
+				url += "isPrepared="+encodeURI(isPrepared);
+			}
+			if(isEpibolic){
+				if(c == 0){
+					c++;
+					url += "?";
+				}else{
+					url += "&";
+				}
+				url += "isEpibolic="+encodeURI(isEpibolic);
+			}
+			
+        	window.open(url);
         }
     }
 })();

@@ -14,7 +14,18 @@ import java.util.Map;
 import java.util.Optional;
 
 import javax.inject.Inject;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
+import org.apache.poi.hssf.usermodel.HSSFDataFormat;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFCellStyle;
+import org.apache.poi.xssf.usermodel.XSSFDataFormat;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -36,6 +47,7 @@ import com.codahale.metrics.annotation.Timed;
 import com.wondertek.cpm.CpmConstants;
 import com.wondertek.cpm.ExcelUtil;
 import com.wondertek.cpm.ExcelValue;
+import com.wondertek.cpm.ExcelWrite;
 import com.wondertek.cpm.config.DateUtil;
 import com.wondertek.cpm.config.FilePathHelper;
 import com.wondertek.cpm.config.StringUtil;
@@ -873,4 +885,188 @@ public class ContractInfoResource {
 						.setMsgKey("cpmApp.contractInfo.upload.handleError"));
 		}
     }
+	
+	@GetMapping("/contract-infos/exportXls")
+	@Timed
+	@Secured(AuthoritiesConstants.ROLE_CONTRACT_INFO)
+	public void exportXls(
+    		HttpServletRequest request, HttpServletResponse response,
+    		@RequestParam(value = "serialNum",required=false) String serialNum, //合同编号
+    		@RequestParam(value = "name",required=false) String name, 	//合同名称
+    		@RequestParam(value = "type",required=false) Integer type, //合同类型
+    		@RequestParam(value = "isPrepared",required=false) Boolean isPrepared, //预立合同
+    		@RequestParam(value = "isEpibolic",required=false) Boolean isEpibolic //外部合同
+    	)throws URISyntaxException, IOException {
+		log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to export ContractInfos by name : {}, type : {}, isPrepared : {}, "
+				+ "isEpibolic : {}, serialNum : {}", name, type, isPrepared, isEpibolic, serialNum);
+		ContractInfo contractInfo = new ContractInfo();
+		contractInfo.setSerialNum(serialNum);
+		contractInfo.setName(name);
+		contractInfo.setType(type);
+		contractInfo.setIsPrepared(isPrepared);
+		contractInfo.setIsEpibolic(isEpibolic);
+		
+		Page<ContractInfoVo> page = contractInfoService.getContractInfoPage(contractInfo, null);
+		//拼接sheet数据
+    	//标题
+    	String[] heads = new String[]{
+    			"合同编号",
+    			"合同名称",
+    			"合同类型",
+    			"预立合同",
+    			"外部合同",
+    			"开始日期",
+    			"结束日期",
+    			"合同完成率",
+    			"状态"
+    	};
+    	String fileName = "合同信息.xlsx";
+    	//写入sheet
+    	ServletOutputStream outputStream = response.getOutputStream();
+    	response.setHeader("Content-Disposition","attachment;filename=" + ExcelUtil.getExportName(request, fileName));
+    	response.setContentType("application/x-msdownload");
+    	response.setCharacterEncoding("UTF-8");
+    	
+    	ExcelWrite excelWrite = new ExcelWrite();
+    	//写入标题
+    	excelWrite.createSheetTitle("合同信息", 1, heads);
+    	//写入数据
+    	if(page != null){
+    		handleSheetData(page.getContent(),2,excelWrite,contractInfo);
+    	}
+    	excelWrite.close(outputStream);
+	}
+	
+	/**
+     * 处理sheet数据
+     * @param salesBonus 
+     */
+	private void handleSheetData(List<ContractInfoVo> page, int startRow, ExcelWrite excelWrite, ContractInfo contractInfo) {
+		//除表头外的其他数据单元格格式
+    	Integer[] cellType = new Integer[]{
+    			Cell.CELL_TYPE_STRING,
+    			Cell.CELL_TYPE_STRING,
+    			Cell.CELL_TYPE_STRING,
+    			Cell.CELL_TYPE_STRING,
+    			Cell.CELL_TYPE_STRING,
+    			Cell.CELL_TYPE_NUMERIC,
+    			Cell.CELL_TYPE_NUMERIC,
+    			Cell.CELL_TYPE_NUMERIC,
+    			Cell.CELL_TYPE_STRING
+    	};
+    	XSSFSheet sheet = excelWrite.getCurrentSheet();
+    	XSSFWorkbook wb = excelWrite.getXSSFWorkbook();
+		XSSFRow row = null;
+		XSSFCell cell = null;
+		int i = -1;
+		int j = 0;
+		//百分比格式
+		XSSFCellStyle cellStyle = wb.createCellStyle();  
+		cellStyle.setDataFormat(HSSFDataFormat.getBuiltinFormat("0.00%")); 
+		//日期格式
+		XSSFDataFormat format = wb.createDataFormat();
+		XSSFCellStyle cellStyleDate = wb.createCellStyle();  
+		cellStyleDate.setDataFormat(format.getFormat("yyyy/MM/dd")); 
+		//数据
+		for(ContractInfoVo vo : page){
+			i++;
+			row = sheet.createRow(i + startRow-1);
+			
+			j = 0;
+			cell = row.createCell(j,cellType[j]);
+			if(vo.getSerialNum() == null){
+				cell.setCellValue("");
+			}else{
+				cell.setCellValue(vo.getSerialNum());
+			}
+			j++;
+			cell = row.createCell(j,cellType[j]);
+			if(vo.getName() == null){
+				cell.setCellValue("");
+			}else{
+				cell.setCellValue(vo.getName());
+			}
+			j++;
+			cell = row.createCell(j,cellType[j]);
+			if(vo.getType() == null){
+				cell.setCellValue("");
+			}else{
+				if(ContractInfo.TYPE_INTERNAL.equals(vo.getType())){
+					cell.setCellValue("产品");
+				}else if(ContractInfo.TYPE_EXTERNAL.equals(vo.getType())){
+					cell.setCellValue("外包");
+				}else if(ContractInfo.TYPE_HARDWARE.equals(vo.getType())){
+					cell.setCellValue("硬件");
+				}else if(ContractInfo.TYPE_PUBLIC.equals(vo.getType())){
+					cell.setCellValue("公共成本");
+				}else if(ContractInfo.TYPE_PROJECT.equals(vo.getType())){
+					cell.setCellValue("项目");
+				}else if(ContractInfo.TYPE_EXTEND.equals(vo.getType())){
+					cell.setCellValue("推广");
+				}else if(ContractInfo.TYPE_OTHER.equals(vo.getType())){
+					cell.setCellValue("其他");
+				}
+			}
+			j++;
+			cell = row.createCell(j,cellType[j]);
+			if(vo.getIsPrepared() == null){
+				cell.setCellValue("");
+			}else{
+				if(vo.getIsPrepared()){
+					cell.setCellValue("预立合同");
+				}else{
+					cell.setCellValue("正式合同");
+				}
+			}
+			j++;
+			cell = row.createCell(j,cellType[j]);
+			if(vo.getIsEpibolic() == null){
+				cell.setCellValue("");
+			}else{
+				if(vo.getIsEpibolic()){
+					cell.setCellValue("外部合同");
+				}else{
+					cell.setCellValue("内部合同");
+				}
+			}
+			j++;
+			cell = row.createCell(j,cellType[j]);
+			if(vo.getStartDay() == null){
+				cell.setCellValue("");
+			}else{
+				cell.setCellValue(Date.from(vo.getStartDay().toInstant()));
+				cell.setCellStyle(cellStyleDate);
+			}
+			j++;
+			cell = row.createCell(j,cellType[j]);
+			if(vo.getEndDay() == null){
+				cell.setCellValue("");
+			}else{
+				cell.setCellValue(Date.from(vo.getEndDay().toInstant()));
+				cell.setCellStyle(cellStyleDate);
+			}
+			j++;
+			cell = row.createCell(j,cellType[j]);
+			if(vo.getFinishRate() == null){
+				cell.setCellValue("");
+			}else{
+				cell.setCellValue(vo.getFinishRate() / 100);
+				cell.setCellStyle(cellStyle);
+			}
+			j++;
+			cell = row.createCell(j,cellType[j]);
+			if(vo.getStatus() == null){
+				cell.setCellValue("");
+			}else{
+				if(vo.getStatus() == ContractInfo.STATU_FINISH){
+					cell.setCellValue("已完成");
+				}else if(vo.getStatus() == ContractInfo.STATUS_VALIDABLE){
+					cell.setCellValue("进行中");
+				}else if(vo.getStatus() == ContractInfo.STATUS_DELETED){
+					cell.setCellValue("已终止");
+				}
+			}
+			j++;
+		}
+	}
 }
