@@ -33,6 +33,5 @@ public class DateTest {
 			System.out.println("------" + infos.size());
 			day = day + 100;
 		}
-		
 	}
 }

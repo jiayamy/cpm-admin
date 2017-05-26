@@ -472,7 +472,7 @@ public class ContractInfoResource {
 							contractInfo.setType(ContractInfo.TYPE_OTHER);
 						}
 						//填充是否 预立合同(根据合同编号判断是否预立合同)
-						Boolean isMatched = contractInfo.getSerialNum().substring(0, 2).equalsIgnoreCase("WY");
+						Boolean isMatched = contractInfo.getSerialNum().toUpperCase().startsWith("WY");
 						if(isMatched){
 							contractInfo.setIsPrepared(Boolean.TRUE);
 						}else{
@@ -483,7 +483,6 @@ public class ContractInfoResource {
 						columnNum ++;
 						val = ls.get(columnNum);
 						if(val == null){
-							//contractInfo.setIsEpibolic(Boolean.FALSE);
 							return ResponseEntity.ok()
 									.body(cpmResponse.setSuccess(Boolean.FALSE)
 											.setMsgKey("cpmApp.contractInfo.upload.dataError").setMsgParam(
@@ -502,46 +501,48 @@ public class ContractInfoResource {
 						//检验第五列  外包人员信息
 						columnNum ++;
 						val = ls.get(columnNum);
-						if(contractInfo.getType() == ContractInfo.TYPE_EXTERNAL){
-							if(val == null){
-								return ResponseEntity.ok()
-										.body(cpmResponse.setSuccess(Boolean.FALSE)
-												.setMsgKey("cpmApp.contractInfo.upload.noEmptyError").setMsgParam(
-														excelValue.getSheet() + "," + rowNum + "," + (columnNum + 1)));
-							}
-							outsourcingUsersMap.put(contractInfo.getSerialNum(), new ArrayList<OutsourcingUser>());
-							String[] rank = StringUtil.nullToString(val).split("\\|");
-							for(String str : rank){
-								String[] temp = str.split(",");
-								if(temp.length != 3 || StringUtil.nullToString(temp[0]) == null || 
-										!StringUtil.isNumber(temp[1].trim()) || !StringUtil.isNumber(temp[2].trim())){
-									return ResponseEntity.ok()
-											.body(cpmResponse.setSuccess(Boolean.FALSE)
-													.setMsgKey("cpmApp.contractInfo.upload.rankError").setMsgParam(
-															excelValue.getSheet() + "," + rowNum + "," + (columnNum + 1)));
-								}
-								//外包人员信息
-								OutsourcingUser outsourcingUser = new OutsourcingUser();
-								outsourcingUser.setUpdator(updator);
-								outsourcingUser.setUpdateTime(updateTime);
-								outsourcingUser.setCreator(updator);
-								outsourcingUser.setCreateTime(updateTime);
-								outsourcingUser.setRank(temp[0]);
-								outsourcingUser.setTargetAmount(StringUtil.nullToDouble(temp[1].trim()).intValue());
-								outsourcingUser.setOffer(StringUtil.nullToDouble(temp[2].trim()));
-								if(outsourcingUsersMap.get(contractInfo.getSerialNum()).size() > 0){
-									for(OutsourcingUser outs : outsourcingUsersMap.get(contractInfo.getSerialNum())){
-										if(outsourcingUser.getRank().equals(outs.getRank())){
-											return ResponseEntity.ok()
-													.body(cpmResponse.setSuccess(Boolean.FALSE)
-															.setMsgKey("cpmApp.contractInfo.upload.rankError1").setMsgParam(
-																	excelValue.getSheet() + "," + rowNum + "," + (columnNum + 1)));
+						if(contractInfo.getType() == ContractInfo.TYPE_EXTERNAL){//外包合同
+							//外包人员信息可为空
+//							if(val == null){
+//								return ResponseEntity.ok()
+//										.body(cpmResponse.setSuccess(Boolean.FALSE)
+//												.setMsgKey("cpmApp.contractInfo.upload.noEmptyError").setMsgParam(
+//														excelValue.getSheet() + "," + rowNum + "," + (columnNum + 1)));
+//							}
+							if(!StringUtil.isNullStr(val)){
+								outsourcingUsersMap.put(contractInfo.getSerialNum(), new ArrayList<OutsourcingUser>());
+								String[] rank = StringUtil.nullToString(val).split("\\|");
+								for(String str : rank){
+									String[] temp = str.split(",");
+									if(temp.length != 3 || StringUtil.nullToString(temp[0]) == null || 
+											!StringUtil.isNumber(temp[1].trim()) || !StringUtil.isNumber(temp[2].trim())){
+										return ResponseEntity.ok()
+												.body(cpmResponse.setSuccess(Boolean.FALSE)
+														.setMsgKey("cpmApp.contractInfo.upload.rankError").setMsgParam(
+																excelValue.getSheet() + "," + rowNum + "," + (columnNum + 1)));
+									}
+									//外包人员信息
+									OutsourcingUser outsourcingUser = new OutsourcingUser();
+									outsourcingUser.setUpdator(updator);
+									outsourcingUser.setUpdateTime(updateTime);
+									outsourcingUser.setCreator(updator);
+									outsourcingUser.setCreateTime(updateTime);
+									outsourcingUser.setRank(temp[0]);
+									outsourcingUser.setTargetAmount(StringUtil.nullToDouble(temp[1].trim()).intValue());
+									outsourcingUser.setOffer(StringUtil.nullToDouble(temp[2].trim()));
+									if(outsourcingUsersMap.get(contractInfo.getSerialNum()).size() > 0){
+										for(OutsourcingUser outs : outsourcingUsersMap.get(contractInfo.getSerialNum())){
+											if(outsourcingUser.getRank().equals(outs.getRank())){
+												return ResponseEntity.ok()
+														.body(cpmResponse.setSuccess(Boolean.FALSE)
+																.setMsgKey("cpmApp.contractInfo.upload.rankError1").setMsgParam(
+																		excelValue.getSheet() + "," + rowNum + "," + (columnNum + 1)));
+											}
 										}
 									}
+									outsourcingUsersMap.get(contractInfo.getSerialNum()).add(outsourcingUser);
 								}
-								outsourcingUsersMap.get(contractInfo.getSerialNum()).add(outsourcingUser);
 							}
-							
 						}else{
 							if(val != null){
 								return ResponseEntity.ok()

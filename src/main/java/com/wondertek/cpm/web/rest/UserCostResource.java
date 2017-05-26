@@ -347,6 +347,8 @@ public class UserCostResource {
 											.setSuccess(Boolean.FALSE)
 											.setMsgKey("cpmApp.userCost.upload.dataError")
 											.setMsgParam(excelValue.getSheet() + "," + rowNum +","+(columnNum+1)));
+						}else if(val instanceof Double){
+							val = ((Double)val).longValue();
 						}
 						UserBaseVo vo = userMap.get(val.toString());
 						if(vo == null){

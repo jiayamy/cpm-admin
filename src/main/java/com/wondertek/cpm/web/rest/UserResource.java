@@ -424,6 +424,8 @@ public class UserResource {
 						val = ls.get(columnNum);
 						if(val == null || StringUtil.isNullStr(val)){
 							user.setLogin(user.getSerialNum());
+						}else if(val instanceof Double){
+							user.setLogin(((Double)val).longValue() + "");
 						}else{
 							user.setLogin(StringUtil.null2Str(val));
 						}
@@ -452,6 +454,8 @@ public class UserResource {
 									.setSuccess(Boolean.FALSE)
 									.setMsgKey("userManagement.import.dataError")
 									.setMsgParam(excelValue.getSheet() + "," + rowNum +","+(columnNum+1)));
+						}else if (val instanceof Double) {
+							val = ((Double)val).longValue();
 						}
 						user.setLastName(StringUtil.null2Str(val));
 						
@@ -463,6 +467,8 @@ public class UserResource {
 									.setSuccess(Boolean.FALSE)
 									.setMsgKey("userManagement.import.dataError")
 									.setMsgParam(excelValue.getSheet() + "," + rowNum +","+(columnNum+1)));
+						}else if (val instanceof Double) {
+							val = ((Double)val).longValue();
 						}
 						companyId = companys.get(StringUtil.null2Str(val));
 						if(companyId == null){
@@ -480,6 +486,8 @@ public class UserResource {
 									.setSuccess(Boolean.FALSE)
 									.setMsgKey("userManagement.import.dataError")
 									.setMsgParam(excelValue.getSheet() + "," + rowNum +","+(columnNum+1)));
+						}else if (val instanceof Double) {
+							val = ((Double)val).longValue();
 						}
 						primaryDeptInfos = deptInfos.get(companyId + "_" + StringUtil.null2Str(val));
 						if(primaryDeptInfos == null || primaryDeptInfos.isEmpty()){
@@ -498,6 +506,9 @@ public class UserResource {
 						columnNum++;
 						val = ls.get(columnNum);
 						if(!StringUtil.isNullStr(val)){//校验二级部门是否存在
+							if (val instanceof Double) {
+								val = ((Double)val).longValue();
+							}
 							secondaryDeptInfos = deptInfos.get(companyId + "_" + StringUtil.null2Str(val));
 							if(secondaryDeptInfos == null || secondaryDeptInfos.isEmpty()){
 								return ResponseEntity.ok().body(cpmResponse
@@ -529,6 +540,8 @@ public class UserResource {
 									.setSuccess(Boolean.FALSE)
 									.setMsgKey("userManagement.import.dataError")
 									.setMsgParam(excelValue.getSheet() + "," + rowNum +","+(columnNum+1)));
+						}else if (val instanceof Double) {
+							val = ((Double)val).longValue();
 						}
 						user.setWorkArea(StringUtil.null2Str(val));
 						if(!areas.contains(user.getWorkArea())){//校验工作地点是否存在
