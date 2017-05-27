@@ -33,7 +33,7 @@ public class UserGradeUpdateTask {
 	/**
 	 * 每月更新一下用户的等级
 	 */
-	@Scheduled(cron = "0 0 1 1 * ?")
+	@Scheduled(cron = "0 0 2 1 * ?")
 	protected void updateUserGrade(){
 		log.info("=====begin updateUserGrade=====");
 		//获取所有记录

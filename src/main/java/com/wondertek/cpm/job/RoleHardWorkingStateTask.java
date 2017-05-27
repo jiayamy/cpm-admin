@@ -41,9 +41,10 @@ public class RoleHardWorkingStateTask {
 	@Inject
     private UserService userService; 
 	
-	
-
-	@Scheduled(cron = "0 0 0 1 * ?")
+	/**
+	 * 每个月的第二天的1点开始执行，员工的勤奋度
+	 */
+	@Scheduled(cron = "0 0 3 2 * ?")
 	protected void generateProjectMonthlyState() {
 		Date now = new Date();
 		generateProjectMonthlyState(now);

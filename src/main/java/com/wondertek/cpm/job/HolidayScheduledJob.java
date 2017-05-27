@@ -23,7 +23,9 @@ public class HolidayScheduledJob {
 	
 	@Inject
     private HolidayInfoService holidayInfoService;
-
+	/**
+	 * 每天晚上1点开始执行 一年内的假期的信息
+	 */
 	@Scheduled(cron="0 0 1 * * ?")
 	public void holidayUpdate(){
 		log.debug("holidayUpdate start");

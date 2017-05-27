@@ -139,7 +139,9 @@ public class ContractStateTask {
 			statIdentifyRepository.delete(statIdentifies);
 		}
 	}
-	
+	/**
+	 * 合同周统计，每周一晚上23点执行
+	 */
 	@Scheduled(cron = "0 0 23 ? * MON")
 	protected void generateContractWeeklyStat(){
 		Date now = new Date();
@@ -388,7 +390,9 @@ public class ContractStateTask {
 		}
 		log.info("=====end generate Contract Weekly Stat=====");
 	}
-	
+	/**
+	 * 合同月统计，每个月的第一天的23点30分开始执行
+	 */
 	@Scheduled(cron = "0 30 23 1 * ?")
 	protected void generateContractMonthlyStat(){
 		Date now = new Date();

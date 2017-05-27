@@ -215,6 +215,9 @@ public class AccountScheduledJob {
 			projectOverallRepository.delete(projectOveralls);
 		}
 	}
+	/**
+	 * 合同和项目相关的统计，每周一晚上22点开始执行
+	 */
 	@Scheduled(cron="0 0 22 * * MON")
 	protected void accountScheduled(){
 		//每周一晚上22点开始跑定时任务

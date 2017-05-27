@@ -642,7 +642,6 @@ CREATE
 	insert into jhi_authority (name, detail_) values ('ROLE_STAT_SALES_BONUS', '统计报表-销售项目信息');
 	insert into jhi_authority (name, detail_) values ('ROLE_STAT_PROJECT_OVERALL', '统计报表-项目总体情况控制');
 	insert into jhi_authority (name, detail_) values ('ROLE_STAT_SUPPORT_BONUS', '统计报表-项目支撑奖金');
-	insert into jhi_authority (name, detail_) values ('ROLE_WORKHARDING', '统计报表-员工勤奋度');
 	
 	--20170301
 	ALTER TABLE jhi_user MODIFY COLUMN grade_ INT DEFAULT '1';
@@ -978,7 +977,24 @@ CREATE TABLE
 insert into w_system_config (id, key_, value_, description_, creator_, create_time, updator_, update_time) values (22, 'contract.external.month.day', '22', '外包合同一个月有效工作日', null, null, 'admin', '2017-05-02 15:48:37');
 
 --20170517
-	alter table w_user_timesheet add extra_input double(15,2) comment '加班工时';
-	alter table w_user_timesheet add accept_extra_input double(15,2) comment '认可加班工时';
-	alter table w_project_weekly_stat add total_input double(15,2) comment '项目总工时';
-	alter table w_project_monthly_stat add total_input double(15,2) comment '项目总工时';
+	insert into jhi_authority (name, detail_) values ('ROLE_WORKHARDING', '统计报表-员工勤奋度');
+	
+	alter table w_user_timesheet add extra_input double(15,2) DEFAULT '0' comment '加班工时';
+	alter table w_user_timesheet add accept_extra_input double(15,2) DEFAULT '0' comment '认可加班工时';
+	alter table w_project_weekly_stat add total_input double(15,2) DEFAULT '0' comment '项目总工时';
+	alter table w_project_monthly_stat add total_input double(15,2) DEFAULT '0' comment '项目总工时';
+--20170527
+	CREATE TABLE w_role_hardworking
+    (
+        id bigint NOT NULL AUTO_INCREMENT,
+        user_id bigint,
+        serial_num VARCHAR(10) COLLATE utf8_bin NOT NULL,
+        last_name VARCHAR(20) COLLATE utf8_bin NOT NULL,
+        hardworking DOUBLE(15,2) NOT NULL,
+        origin_month bigint NOT NULL,
+        create_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        PRIMARY KEY (id)
+    )
+    ENGINE=InnoDB DEFAULT CHARSET=utf8;
+    
+    

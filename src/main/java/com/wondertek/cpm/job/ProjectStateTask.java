@@ -106,6 +106,9 @@ public class ProjectStateTask {
 			statIdentifyRepository.delete(statIdentifies);
 		}
 	}
+	/**
+	 * 每周的项目周统计，在合同统计之前执行
+	 */
 	@Scheduled(cron = "0 0 21 ? * MON")
 	protected void generateProjectWeeklyState(){
 		Date now = new Date();
@@ -224,7 +227,9 @@ public class ProjectStateTask {
 		}
 		log.info("=====end generate project weekly state=====");
 	}
-	
+	/**
+	 * 项目的月统计，最好在合同的月统计之前执行
+	 */
 	@Scheduled(cron = "0 0 22 1 * ?")
 	protected void generateProjectMonthlyState(){
 		Date now = new Date();
