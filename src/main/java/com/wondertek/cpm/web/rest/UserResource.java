@@ -18,7 +18,15 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import javax.inject.Inject;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -41,6 +49,7 @@ import com.codahale.metrics.annotation.Timed;
 import com.wondertek.cpm.CpmConstants;
 import com.wondertek.cpm.ExcelUtil;
 import com.wondertek.cpm.ExcelValue;
+import com.wondertek.cpm.ExcelWrite;
 import com.wondertek.cpm.config.Constants;
 import com.wondertek.cpm.config.FilePathHelper;
 import com.wondertek.cpm.config.StringUtil;
@@ -677,6 +686,172 @@ public class UserResource {
 			}
 		}
 		return -1L;
+	}
+	
+	@GetMapping("/users/exportXls")
+	@Timed
+	@Secured(AuthoritiesConstants.ROLE_INFO_BASIC)
+	public void exportXls(
+			HttpServletRequest request, HttpServletResponse response,
+    		@RequestParam(value = "loginName",required=false) String login, 
+    		@RequestParam(value = "serialNum",required=false) String serialNum, 
+    		@RequestParam(value = "lastName",required=false) String lastName, 
+    		@RequestParam(value = "deptId",required=false) Long deptId, 
+    		@RequestParam(value = "workArea",required=false) String workArea, 
+    		@RequestParam(value = "grade",required=false) Integer grade,
+    		@ApiParam Pageable pageable) throws IOException{
+		log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to export Users login : {}, serialNum : {}, lastName : {}, "
+    			+ "deptId : {}, workArea : {}, grade : {}", login, serialNum, lastName, deptId, workArea, grade);
+		User user = new User();
+    	user.setLogin(login);
+    	user.setSerialNum(serialNum);
+    	user.setLastName(lastName);
+    	user.setDeptId(deptId);
+    	user.setWorkArea(workArea);
+    	user.setGrade(grade);
+    	
+        Page<User> page = userService.getUserPage(user,null);
+        List<User> objs = page.getContent();
+        if(objs != null){
+        	DeptInfo tmp = null;
+        	for(User o : objs){
+        		if(o.getDeptId() != null){
+        			tmp = deptInfoRepository.findOne(o.getDeptId());
+        			if(tmp != null){
+        				o.setDept(tmp.getName());
+        			}
+        		}
+        	}
+        }
+        
+      //拼接sheet数据
+    	//标题
+    	String[] heads = new String[]{
+    			"登录",
+    			"",
+    			"工号",
+    			"姓名",
+    			"部门",
+    			"级别",
+    			"工作地点",
+    			"岗位",
+    			"管理人员"
+    	};
+    	String fileName = "用户信息.xlsx";
+    	//写入sheet
+    	ServletOutputStream outputStream = response.getOutputStream();
+    	response.setHeader("Content-Disposition","attachment;filename=" + ExcelUtil.getExportName(request, fileName));
+    	response.setContentType("application/x-msdownload");
+    	response.setCharacterEncoding("UTF-8");
+    	
+    	ExcelWrite excelWrite = new ExcelWrite();
+    	//写入标题
+    	excelWrite.createSheetTitle("用户信息", 1, heads);
+    	//写入数据
+    	if(objs != null){
+    		handleSheetData(objs,2,excelWrite,user);
+    	}
+    	excelWrite.close(outputStream);
+	}
+	
+	/**
+     * 处理sheet数据
+     * @param user 
+     */
+	private void handleSheetData(List<User> page, int startRow, ExcelWrite excelWrite, User user) {
+		//除表头外的其他数据单元格格式
+    	Integer[] cellType = new Integer[]{
+    			Cell.CELL_TYPE_STRING,
+    			Cell.CELL_TYPE_STRING,
+    			Cell.CELL_TYPE_STRING,
+    			Cell.CELL_TYPE_STRING,
+    			Cell.CELL_TYPE_STRING,
+    			Cell.CELL_TYPE_NUMERIC,
+    			Cell.CELL_TYPE_STRING,
+    			Cell.CELL_TYPE_STRING,
+    			Cell.CELL_TYPE_STRING
+    	};
+    	XSSFSheet sheet = excelWrite.getCurrentSheet();
+    	sheet.setColumnWidth(4, 6180);
+    	XSSFWorkbook wb = excelWrite.getXSSFWorkbook();
+		XSSFRow row = null;
+		XSSFCell cell = null;
+		int i = -1;
+		int j = 0;
+		//数据
+		for(User vo : page){
+			i++;
+			row = sheet.createRow(i + startRow-1);
+			
+			j = 0;
+			cell = row.createCell(j,cellType[j]);
+			if(vo.getLogin() == null){
+				cell.setCellValue("");
+			}else{
+				cell.setCellValue(vo.getLogin());
+			}
+			j++;
+			cell = row.createCell(j,cellType[j]);
+			if(vo.getActivated()){
+				cell.setCellValue("已激活");
+			}else{
+				cell.setCellValue("失效");
+			}
+			j++;
+			cell = row.createCell(j,cellType[j]);
+			if(vo.getSerialNum() == null){
+				cell.setCellValue("");
+			}else{
+				cell.setCellValue(vo.getSerialNum());
+			}
+			j++;
+			cell = row.createCell(j,cellType[j]);
+			if(vo.getLastName() == null){
+				cell.setCellValue("");
+			}else{
+				cell.setCellValue(vo.getLastName());
+			}
+			j++;
+			cell = row.createCell(j,cellType[j]);
+			if(vo.getDept() == null){
+				cell.setCellValue("");
+			}else{
+				cell.setCellValue(vo.getDept());
+			}
+			j++;
+			cell = row.createCell(j,cellType[j]);
+			if(vo.getGrade() == null){
+				cell.setCellValue("");
+			}else{
+				cell.setCellValue(vo.getGrade());
+			}
+			j++;
+			cell = row.createCell(j,cellType[j]);
+			if(vo.getWorkArea() == null){
+				cell.setCellValue("");
+			}else{
+				cell.setCellValue(vo.getWorkArea());
+			}
+			j++;
+			cell = row.createCell(j,cellType[j]);
+			if(vo.getDuty() == null){
+				cell.setCellValue("");
+			}else{
+				cell.setCellValue(vo.getDuty());
+			}
+			j++;
+			cell = row.createCell(j,cellType[j]);
+			if(vo.getIsManager() == null){
+				cell.setCellValue("");
+			}else{
+				if(vo.getIsManager()){
+					cell.setCellValue("是");
+				}else{
+					cell.setCellValue("否");
+				}
+			}
+			j++;
+		}
 	}
 			
 }

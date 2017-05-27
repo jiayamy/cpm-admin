@@ -27,6 +27,7 @@
         vm.search = search;
         vm.clear = clear;
         vm.setAllChecked = setAllChecked;
+        vm.exportXls = exportXls;
         
         vm.searchQuery = {};
         vm.searchQuery.serialNum = pagingParams.serialNum;
@@ -175,5 +176,79 @@
         	vm.searchQuery.deptName = result.name;
         });
         $scope.$on('$destroy', unsubscribe);
+        
+        function exportXls(){//导出Xls
+        	var url = "api/users/exportXls";
+        	var c = 0;
+    		
+    		var contractId = vm.searchQuery.contractId ? vm.searchQuery.contractId.key : "";
+        	var serialNum = vm.searchQuery.serialNum;
+        	var name = vm.searchQuery.name;
+        	var status = vm.searchQuery.status ? vm.searchQuery.status.key : "";
+        	
+        	var loginName = vm.searchQuery.loginName;
+        	var lastName = vm.searchQuery.lastName;
+        	var serialNum = vm.searchQuery.serialNum;
+        	var deptId = vm.searchQuery.deptId;
+        	var workArea = vm.searchQuery.workArea;
+        	var grade = vm.searchQuery.grade;
+			
+			if(loginName){
+				if(c == 0){
+					c++;
+					url += "?";
+				}else{
+					url += "&";
+				}
+				url += "loginName="+encodeURI(loginName);
+			}
+			if(lastName){
+				if(c == 0){
+					c++;
+					url += "?";
+				}else{
+					url += "&";
+				}
+				url += "lastName="+encodeURI(lastName);
+			}
+			if(serialNum){
+				if(c == 0){
+					c++;
+					url += "?";
+				}else{
+					url += "&";
+				}
+				url += "serialNum="+encodeURI(serialNum);
+			}
+			if(deptId){
+				if(c == 0){
+					c++;
+					url += "?";
+				}else{
+					url += "&";
+				}
+				url += "deptId="+encodeURI(deptId);
+			}
+			if(workArea){
+				if(c == 0){
+					c++;
+					url += "?";
+				}else{
+					url += "&";
+				}
+				url += "workArea="+encodeURI(workArea);
+			}
+			if(grade){
+				if(c == 0){
+					c++;
+					url += "?";
+				}else{
+					url += "&";
+				}
+				url += "grade="+encodeURI(grade);
+			}
+			
+        	window.open(url);
+        }
     }
 })();

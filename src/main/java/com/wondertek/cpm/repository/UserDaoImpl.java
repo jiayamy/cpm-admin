@@ -89,7 +89,7 @@ public class UserDaoImpl extends GenericDaoImpl<User, Long> implements UserDao  
 		whereSql = null;
 		
 		//排序
-		if(pageable.getSort() != null){//页面都会有个默认排序
+		if(pageable != null && pageable.getSort() != null){//页面都会有个默认排序
     		for (Order order : pageable.getSort()) {
     			if(CpmConstants.ORDER_IGNORE_SCORE.equalsIgnoreCase(order.getProperty())){
     				continue;

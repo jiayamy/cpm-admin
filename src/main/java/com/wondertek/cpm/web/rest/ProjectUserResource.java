@@ -277,7 +277,7 @@ public class ProjectUserResource {
 		response.setCharacterEncoding("UTF-8");
 		ExcelWrite excelWrite = new ExcelWrite();
 		// 写入标题
-		excelWrite.createSheetTitle("咨询", 1, heads);
+		excelWrite.createSheetTitle("项目人员信息", 1, heads);
 		// 写入数据
 		if (list != null) {
 			handleSheetData(list, 2, excelWrite);
