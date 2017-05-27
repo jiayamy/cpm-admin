@@ -656,8 +656,7 @@ public class ProjectInfoResource {
     			"开始日期",
     			"结束日期",
     			"完成率",
-    			"状态",
-    			"更新时间"
+    			"状态"
     	};
     	String fileName = "项目信息.xlsx";
     	//写入sheet
@@ -690,14 +689,12 @@ public class ProjectInfoResource {
     			Cell.CELL_TYPE_NUMERIC,
     			Cell.CELL_TYPE_NUMERIC,
     			Cell.CELL_TYPE_NUMERIC,
-    			Cell.CELL_TYPE_STRING,
-    			Cell.CELL_TYPE_NUMERIC
+    			Cell.CELL_TYPE_STRING
     	};
     	XSSFSheet sheet = excelWrite.getCurrentSheet();
     	sheet.setColumnWidth(1, 3745);
     	sheet.setColumnWidth(4, 2900);
     	sheet.setColumnWidth(5, 2900);
-    	sheet.setColumnWidth(8, 5820);
     	XSSFWorkbook wb = excelWrite.getXSSFWorkbook();
 		XSSFRow row = null;
 		XSSFCell cell = null;
@@ -782,14 +779,6 @@ public class ProjectInfoResource {
 				}else if(vo.getStatus() == ProjectInfo.STATUS_DELETED){
 					cell.setCellValue("已终止");
 				}
-			}
-			j++;
-			cell = row.createCell(j,cellType[j]);
-			if(vo.getUpdateTime() == null){
-				cell.setCellValue("");
-			}else{
-				cell.setCellValue(Date.from(vo.getUpdateTime().toInstant()));
-				cell.setCellStyle(cellStyleDateDateil);
 			}
 			j++;
 		}
