@@ -21,6 +21,7 @@ public class ContractCostVo {
 	    private ZonedDateTime createTime;
 	    private String updator;
 	    private ZonedDateTime updateTime;
+	    private Double input;
 	    
 	    
 	    private String contractNum;
@@ -134,12 +135,18 @@ public class ContractCostVo {
 		public void setBudgetTotal(Double budgetTotal) {
 			this.budgetTotal = budgetTotal;
 		}
+		public Double getInput() {
+			return input;
+		}
+		public void setInput(Double input) {
+			this.input = input;
+		}
 		public ContractCostVo() {
 		}
 		public ContractCostVo(Long id, Long contractId, Long budgetId, Long deptId, String dept, String name,
 				Integer type, Long costDay, Double total, String costDesc, Integer status, String creator,
 				ZonedDateTime createTime, String updator, ZonedDateTime updateTime, String contractNum,
-				String contractName, Double budgetTotal) {
+				String contractName, Double budgetTotal,Double input) {
 			this.id = id;
 			this.contractId = contractId;
 			this.budgetId = budgetId;
@@ -158,6 +165,7 @@ public class ContractCostVo {
 			this.contractNum = contractNum;
 			this.contractName = contractName;
 			this.budgetTotal = budgetTotal;
+			this.input = input;
 		}
 		
 		public  ContractCostVo(ContractCost contractCost, String contractNum,String contractName ,Double budgetTotal) {
@@ -176,6 +184,7 @@ public class ContractCostVo {
 			this.createTime = contractCost.getCreateTime();
 			this.updator = contractCost.getUpdator();
 			this.updateTime = contractCost.getUpdateTime();
+			this.input = contractCost.getInput();
 			this.contractNum = contractNum;
 			this.contractName = contractName;
 			this.budgetTotal = budgetTotal;

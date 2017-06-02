@@ -46,6 +46,7 @@
             "name": "名称",
             "type": "类型",
             "costDay": "日期",
+            "input": "工时",
             "total": "金额(元)",
             "costDesc": "描述",
             "status": "状态",

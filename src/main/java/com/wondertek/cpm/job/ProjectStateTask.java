@@ -384,6 +384,7 @@ public class ProjectStateTask {
 					totalHour += userTimesheet.getRealInput();
 				}
 			}
+			projectCost.setInput(totalHour);
 			projectCost.setTotal(total);
 			projectCost.setCostDesc(StringUtil.getScaleDouble(totalHour, 1).toString());
 			projectCost.setStatus(1);

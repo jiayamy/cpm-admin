@@ -1058,6 +1058,7 @@ public class ContractStateTask {
 				}
 				contractCost.setTotal(total);
 				contractCost.setCostDesc(StringUtil.getScaleDouble(totalHour, 1).toString());
+				contractCost.setInput(totalHour);
 				//咨询部分
 				ContractCost contractCost2 = new ContractCost();
 				contractCost2.setContractId(contractInfo.getId());
@@ -1088,8 +1089,9 @@ public class ContractStateTask {
 						}
 					}
 				}
+				contractCost2.setInput(total2Hour);
 				contractCost2.setTotal(total2);
-				contractCost.setCostDesc(StringUtil.getScaleDouble(total2Hour, 1).toString());
+				contractCost2.setCostDesc(StringUtil.getScaleDouble(total2Hour, 1).toString());
 				contractCost2.setName(contractInfo.getSerialNum() + "-" +  DateUtil.formatDate("yyyyMMdd", currentDay).toString());
 				contractCost2.setType(ContractCost.TYPE_HUMAN_COST);
 				contractCost2.setStatus(1);
@@ -1140,6 +1142,7 @@ public class ContractStateTask {
 						}
 					}
 				}
+				contractCost.setInput(totalHour);
 				contractCost.setTotal(total);
 				contractCost.setCostDesc(StringUtil.getScaleDouble(totalHour, 1).toString());
 			}

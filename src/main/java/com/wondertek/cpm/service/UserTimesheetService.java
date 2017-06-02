@@ -35,7 +35,6 @@ import com.wondertek.cpm.domain.vo.ProjectInfoVo;
 import com.wondertek.cpm.domain.vo.UserTimesheetForHardWorkingVo;
 import com.wondertek.cpm.domain.vo.UserTimesheetForOther;
 import com.wondertek.cpm.domain.vo.UserTimesheetForUser;
-import com.wondertek.cpm.domain.vo.UserTimesheetVo;
 import com.wondertek.cpm.repository.ContractUserDao;
 import com.wondertek.cpm.repository.HolidayInfoRepository;
 import com.wondertek.cpm.repository.ProjectUserDao;
@@ -226,12 +225,15 @@ public class UserTimesheetService {
 		UserTimesheetForUser areaTimesheet = getDefaultUserTimesheetForUser(null,UserTimesheet.TYPE_AREA,null,null,null,null);
 		//添加默认的公共成本(正常工时)
 		UserTimesheetForUser publicTimesheet = getDefaultUserTimesheetForUser(null,UserTimesheet.TYPE_PUBLIC,null,null,CpmConstants.DFAULT_USER_TIMESHEET_USER_INPUT,UserTimesheet.TYPE_INPUT_NORMAL);
+		//添加默认的公共成本(加班工时)
+		UserTimesheetForUser publicTimesheetExtra = getDefaultUserTimesheetForUser(null,UserTimesheet.TYPE_PUBLIC,null,null,CpmConstants.DFAULT_USER_TIMESHEET_USER_INPUT,UserTimesheet.TYPE_INPUT_EXTRA);
 		//添加项目和合同
 		Optional<User> user = userRepository.findOneByLogin(SecurityUtils.getCurrentUserLogin());
     	if(user.isPresent()){
     		Long userId = user.get().getId();
     		String workArea = user.get().getWorkArea();
     		publicTimesheet.setUserId(userId);
+    		publicTimesheetExtra.setUserId(userId);
     		//查询现有的所有记录
     		List<UserTimesheet> list = userTimesheetDao.getByWorkDayAndUser(lds[0],lds[6],userId);
     		//转换为MAP
@@ -245,6 +247,7 @@ public class UserTimesheetService {
     		Map<Long, UserTimesheet> childs = map.get(key);
     		if(childs != null){
     			setUserTimesheetForUser(areaTimesheet,publicTimesheet,lds,childs);
+    			setExtraUserTimesheetForUser(areaTimesheet,publicTimesheetExtra,lds,childs);
     			map.remove(key);
     		}
     		//现有的所有项目和合同
@@ -271,6 +274,7 @@ public class UserTimesheetService {
     	//添加地区
     	returnList.add(1, areaTimesheet);
     	returnList.add(2, publicTimesheet);
+    	returnList.add(3, publicTimesheetExtra);
 		return returnList;
 	}
     /**

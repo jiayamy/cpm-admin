@@ -11,11 +11,13 @@
         var vm = this;
 
         vm.projectCost = entity;
+        vm.isShow = false;
         
         if(pageType == 1){
         	vm.types = [{key:1,val:'工时'}];
         	vm.canEdit = false;
         	vm.projectCostDetailTitle = "cpmApp.projectCost.detail.timesheetTitle";
+        	vm.isShow = true;
         }else{
         	vm.types = [{key:2,val:'差旅'},{key:3,val:'采购'},{key:4,val:'商务'}];
         	vm.canEdit = true;
