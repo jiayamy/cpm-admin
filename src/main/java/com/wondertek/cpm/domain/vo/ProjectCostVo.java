@@ -22,6 +22,7 @@ public class ProjectCostVo{
     private ZonedDateTime createTime;
     private String updator;
     private ZonedDateTime updateTime;
+    private Double input;
     
     
 	public ProjectCostVo() {
@@ -39,6 +40,7 @@ public class ProjectCostVo{
 		this.createTime = projectCost.getCreateTime();
 		this.updator = projectCost.getUpdator();
 		this.updateTime = projectCost.getUpdateTime();
+		this.input = projectCost.getInput();
 		
 		this.projectNum = projectNum;
 		this.projectName = projectName;
@@ -127,6 +129,12 @@ public class ProjectCostVo{
 	}
 	public void setUpdateTime(ZonedDateTime updateTime) {
 		this.updateTime = updateTime;
+	}
+	public Double getInput() {
+		return input;
+	}
+	public void setInput(Double input) {
+		this.input = input;
 	}
 
 }

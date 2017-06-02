@@ -53,6 +53,7 @@
             "dept": "部门",
             "name": "名称",
             "type": "成本类型",
+            "input": "工时",
             "total": "成本金额",
             "costDay":"成本日期",
             "costDesc": "成本描述",

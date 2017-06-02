@@ -97,6 +97,12 @@ public class ContractCost implements Serializable {
 
     @Column(name = "update_time")
     private ZonedDateTime updateTime;
+    
+    /**
+     * 工时
+     */
+    @Column(name = "input_")
+    private Double input;
 
     public Long getId() {
         return id;
@@ -284,7 +290,15 @@ public class ContractCost implements Serializable {
         this.updateTime = updateTime;
     }
 
-    @Override
+    public Double getInput() {
+		return input;
+	}
+
+	public void setInput(Double input) {
+		this.input = input;
+	}
+
+	@Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -321,6 +335,7 @@ public class ContractCost implements Serializable {
             ", createTime='" + createTime + "'" +
             ", updator='" + updator + "'" +
             ", updateTime='" + updateTime + "'" +
+            ", input='" + input + "'" +
             '}';
     }
 }

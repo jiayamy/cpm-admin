@@ -17,12 +17,14 @@
         vm.clear = clear;
         vm.search = search;
         vm.loadAll = loadAll;
+        vm.isShow = false;
         
         if(pageType == 1){
         	vm.types = [{key:1,val:'工时'}];
         	vm.viewUiSref = "project-cost-timesheet-detail";
         	vm.canEdit = false;
         	vm.projectCostTitle = "cpmApp.projectCost.home.timesheetTitle";
+        	vm.isShow = true;
         }else{
         	vm.types = [{key:2,val:'差旅'},{key:3,val:'采购'},{key:4,val:'商务'}];
         	vm.viewUiSref = "project-cost-detail";

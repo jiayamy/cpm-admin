@@ -78,9 +78,10 @@
                 <tr jh-sort="vm.predicate" ascending="vm.reverse" callback="vm.transition()">
                     <th jh-sort-by="wcc.name" class="text-center"><span data-translate="cpmApp.contractCost.name">Name</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="wci.serialNum"><span data-translate="cpmApp.contractCost.contractId">Contract Id</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="wci.name"><span data-translate="cpmApp.contractCost.contractName">Contract Id</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="wci.name" class="text-center"><span data-translate="cpmApp.contractCost.contractName">Contract Id</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="wcc.dept"><span data-translate="cpmApp.contractCost.dept">Dept</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="wcc.type"><span data-translate="cpmApp.contractCost.type">Type</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="wcc.input" ng-if="vm.isShow"><span data-translate="cpmApp.contractCost.input">Input</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="wcc.total"><span data-translate="cpmApp.contractCost.total">Total</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="wcc.status"><span data-translate="cpmApp.contractCost.status">Status</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th></th>
@@ -93,6 +94,7 @@
                     <td class="text-center">{{contractCost.contractName}}</td>
                     <td class="text-center">{{contractCost.dept}}</td>
                     <td class="text-center">{{contractCost.typeName}}</td>
+                    <td class="text-center" ng-if="vm.isShow">{{contractCost.input}}</td>
                     <td class="text-center">{{contractCost.total}}</td>
                     <td class="text-center">{{contractCost.statusName}}</td>
                     <td class="text-right">

@@ -34,6 +34,10 @@
  			</div>
  			<div class="col-sm-6">
  				<dl class="dl-horizontal jh-entity-details">
+ 				<dt ng-if="vm.isShow"><span data-translate="cpmApp.projectCost.input">Input</span></dt>
+		        <dd ng-if="vm.isShow">
+		            <span>{{vm.projectCost.input}}</span>
+		        </dd>
   				<dt><span data-translate="cpmApp.projectCost.costDesc">Cost Desc</span></dt>
 		        <dd>
 		            <span>{{vm.projectCost.costDesc}}</span>

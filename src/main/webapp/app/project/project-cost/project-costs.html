@@ -81,6 +81,7 @@
                     <th jh-sort-by="wpi.name"><span data-translate="cpmApp.projectCost.projectName">Project Name</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="wpc.type"><span data-translate="cpmApp.projectCost.type">Type</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="wpc.costDay"><span data-translate="cpmApp.projectCost.costDay">Day</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="wpc.input" ng-if="vm.isShow"><span data-translate="cpmApp.projectCost.input">Input</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="wpc.total"><span data-translate="cpmApp.projectCost.total">Total</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="wpc.status"><span data-translate="cpmApp.projectCost.status">Status</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="wpc.updateTime"><span data-translate="cpmApp.projectCost.updateTime">Update Time</span> <span class="glyphicon glyphicon-sort"></span></th>
@@ -94,7 +95,8 @@
                     <td>{{projectCost.projectName}}</td>
                     <td>{{projectCost.typeName}}</td>
                     <td>{{projectCost.costDay}}</td>
-                    <td>{{projectCost.total}}</td>
+                    <td class="text-center" ng-if="vm.isShow">{{projectCost.input}}</td>
+                    <td class="text-center">{{projectCost.total}}</td>
                     <td>{{projectCost.statusName}}</td>
                     <td>{{projectCost.updateTime | date:'medium'}}</td>
                     <td class="text-right">
