@@ -57,8 +57,8 @@
                 fromDate : pagingParams.fromDate,
                 toDate : pagingParams.toDate,
                 id : pagingParams.id
-            }, onSuccess, onError);
-           function onSuccess(data, headers) {
+            }, onLoadSuccess, onLoadError);
+           function onLoadSuccess(data, headers) {
         	   var series = [];
 	       	   	for(var i = 0; i < 12 ; i++){
 	       	   		series.push({//1
@@ -189,7 +189,7 @@
                 chartBottom.setOption(option);
                 
             }
-            function onError(error) {
+            function onLoadError(error) {
                 AlertService.error(error.data.message);
             }
         }

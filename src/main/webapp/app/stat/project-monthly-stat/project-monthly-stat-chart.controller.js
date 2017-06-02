@@ -46,8 +46,8 @@
                 fromDate : pagingParams.fromDate,
                 toDate : pagingParams.toDate,
                 id : pagingParams.id
-            }, onSuccess, onError);
-           function onSuccess(data, headers) {
+            }, onLoadSuccess, onLoadError);
+           function onLoadSuccess(data, headers) {
                 //第三方参数设置
                 var option = {
                     title: {
@@ -186,7 +186,7 @@
                 chartBottom.setOption(option);
                 
             }
-            function onError(error) {
+            function onLoadError(error) {
                 AlertService.error(error.data.message);
             }
         }
