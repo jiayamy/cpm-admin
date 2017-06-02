@@ -43,14 +43,11 @@
     			vm.showTable = true;
     			OutsourcingUser.getUserList({
     	    		contractId:entity.id
-    	         }, onSuccess, onError);
-    			
-    			function onSuccess(data, headers) {
-                    vm.outsourcingUsers = data;
-                }
-                function onError(error) {
-                    AlertService.error(error.data.message);
-                }
+    	         }, function(data, headers){
+    	        	 vm.outsourcingUsers = data;
+    	         }, function(error) {
+                     AlertService.error(error.data.message);
+                 });
     		}
 		}else{
 			vm.showTable = false;
