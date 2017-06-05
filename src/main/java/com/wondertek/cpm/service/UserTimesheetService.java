@@ -772,10 +772,6 @@ public class UserTimesheetService {
         				return "cpmApp.userTimesheet.save.objId#"+result;
         			}
         		}
-        		if(userTimesheetForUser.getType() == UserTimesheet.TYPE_PUBLIC && UserTimesheet.TYPE_INPUT_EXTRA.equals(userTimesheetForUser.getInputType()) 
-        				&& (d1 != 0 || d2 != 0 || d3 != 0 || d4 != 0|| d5 != 0|| d6 != 0 || d7 != 0)){//检验公共成本类型的加班时数是否为0
-        			return "cpmApp.userTimesheet.save.extraError";
-        		}
         		String key = null;
         		if(userTimesheetForUser.getId1() != null || d1 != 0){
         			if(userTimesheetForUser.getId1() != null){
