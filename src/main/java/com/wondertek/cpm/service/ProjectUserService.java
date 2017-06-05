@@ -23,6 +23,7 @@ import com.wondertek.cpm.config.StringUtil;
 import com.wondertek.cpm.domain.DeptInfo;
 import com.wondertek.cpm.domain.ProjectUser;
 import com.wondertek.cpm.domain.User;
+import com.wondertek.cpm.domain.UserTimesheet;
 import com.wondertek.cpm.domain.vo.ProjectUserVo;
 import com.wondertek.cpm.repository.ProjectUserDao;
 import com.wondertek.cpm.repository.ProjectUserRepository;
@@ -46,6 +47,9 @@ public class ProjectUserService {
     
     @Autowired
     private ProjectUserDao projectUserDao;
+    
+    @Inject
+    private UserTimesheetService userTimesheetService;
 
     /**
      * Save a projectUser.
@@ -101,14 +105,29 @@ public class ProjectUserService {
         ProjectUser projectUser = projectUserRepository.findOne(id);
         if(projectUser != null){
         	long leaveDay = StringUtil.nullToLong(DateUtil.formatDate(DateUtil.DATE_YYYYMMDD_PATTERN, new Date()));
-        	if(projectUser.getLeaveDay() == null || projectUser.getLeaveDay() > leaveDay ){
-        		projectUser.setLeaveDay(leaveDay);
-        		if(projectUser.getJoinDay() > leaveDay){
-        			projectUser.setJoinDay(leaveDay);
+        	if(projectUser.getJoinDay() != null && projectUser.getJoinDay().longValue() > leaveDay){//加盟日大于当前日期，直接删除
+        		projectUserRepository.delete(id);
+        	}else{
+        		//判定加盟日之间是否有日报，没有的话，直接删除
+        		Long workDay = null;
+        		if(projectUser.getLeaveDay() == null){
+        			workDay = userTimesheetService.getWorkDayByParam(projectUser.getUserId(), projectUser.getProjectId(), UserTimesheet.TYPE_PROJECT, 
+        					projectUser.getJoinDay(), leaveDay, 3);
+        		}else{
+        			workDay = userTimesheetService.getWorkDayByParam(projectUser.getUserId(), projectUser.getProjectId(), UserTimesheet.TYPE_PROJECT, 
+        					projectUser.getJoinDay(), projectUser.getLeaveDay(), 3);
         		}
-        		projectUser.setUpdateTime(ZonedDateTime.now());
-        		projectUser.setUpdator(SecurityUtils.getCurrentUserLogin());
-        		projectUserRepository.save(projectUser);
+        		if(workDay == null){
+        			projectUserRepository.delete(id);
+        		}else if(projectUser.getLeaveDay() == null || projectUser.getLeaveDay() > leaveDay){
+        			projectUser.setLeaveDay(leaveDay);
+        			if(projectUser.getJoinDay() > leaveDay){
+        				projectUser.setJoinDay(leaveDay);
+        			}
+        			projectUser.setUpdateTime(ZonedDateTime.now());
+        			projectUser.setUpdator(SecurityUtils.getCurrentUserLogin());
+        			projectUserRepository.save(projectUser);
+        		}
         	}
         }
     }

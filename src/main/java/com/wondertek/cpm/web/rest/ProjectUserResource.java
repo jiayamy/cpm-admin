@@ -54,6 +54,7 @@ import com.wondertek.cpm.config.StringUtil;
 import com.wondertek.cpm.domain.ProjectInfo;
 import com.wondertek.cpm.domain.ProjectUser;
 import com.wondertek.cpm.domain.User;
+import com.wondertek.cpm.domain.UserTimesheet;
 import com.wondertek.cpm.domain.vo.ProjectUserVo;
 import com.wondertek.cpm.security.AuthoritiesConstants;
 import com.wondertek.cpm.security.SecurityUtils;
@@ -61,6 +62,7 @@ import com.wondertek.cpm.service.OutsourcingUserService;
 import com.wondertek.cpm.service.ProjectInfoService;
 import com.wondertek.cpm.service.ProjectUserService;
 import com.wondertek.cpm.service.UserService;
+import com.wondertek.cpm.service.UserTimesheetService;
 import com.wondertek.cpm.web.rest.errors.CpmResponse;
 import com.wondertek.cpm.web.rest.util.HeaderUtil;
 import com.wondertek.cpm.web.rest.util.PaginationUtil;
@@ -87,6 +89,9 @@ public class ProjectUserResource {
 	
 	@Inject
 	private OutsourcingUserService outSourcingUserService;
+	
+	@Inject
+	private UserTimesheetService userTimesheetService;
 
 	/**
 	 * PUT /project-users : Updates an existing projectUser.
@@ -146,11 +151,36 @@ public class ProjectUserResource {
 			} else if (old.getProjectId() != projectUser.getProjectId().longValue()) {
 				return ResponseEntity.badRequest()
 						.headers(HeaderUtil.createError("cpmApp.projectUser.save.projectIdError", "")).body(null);
-			}
-			long leaveDay = StringUtil.nullToLong(DateUtil.formatDate(DateUtil.DATE_YYYYMMDD_PATTERN, new Date()));
-			if (old.getLeaveDay() != null && old.getLeaveDay() <= leaveDay) {
+			} else if (old.getUserId().longValue() != projectUser.getUserId()){
 				return ResponseEntity.badRequest()
-						.headers(HeaderUtil.createError("cpmApp.projectUser.save.leaveDayError", "")).body(null);
+						.headers(HeaderUtil.createError("cpmApp.projectUser.save.userIdChangeError", "")).body(null);
+			}
+			long nowDay = StringUtil.nullToLong(DateUtil.formatDate(DateUtil.DATE_YYYYMMDD_PATTERN, new Date()));
+			//校验加盟日修改
+			if ((projectUser.getJoinDay() <= nowDay || old.getJoinDay() <= nowDay) 
+					&& projectUser.getJoinDay().longValue() != old.getJoinDay()){//有一个加盟日小于今天的都需要校验日报
+				Long workDay = null;
+				if(projectUser.getJoinDay().longValue() > old.getJoinDay()){//修改的加盟日大于原有的加盟日
+					workDay = userTimesheetService.getWorkDayByParam(projectUser.getUserId(), projectUser.getProjectId(), UserTimesheet.TYPE_PROJECT, old.getJoinDay(), projectUser.getJoinDay(), 1);
+				}
+				if(workDay != null){
+					return ResponseEntity.badRequest()
+							.headers(HeaderUtil.createError("cpmApp.projectUser.save.joinDayNotModify", workDay.toString())).body(null);
+				}
+			}
+			//校验离开日修改
+			if ((projectUser.getLeaveDay() != null && projectUser.getLeaveDay() <= nowDay)
+					&& (old.getLeaveDay() == null || projectUser.getLeaveDay().longValue() != old.getLeaveDay())){//离开日修改为当前日期之前才需要校验
+				Long workDay = null;
+				if(old.getLeaveDay() == null){//原来为空
+					workDay = userTimesheetService.getWorkDayByParam(projectUser.getUserId(), projectUser.getProjectId(), UserTimesheet.TYPE_PROJECT, projectUser.getLeaveDay(), nowDay, 2);
+				}else if(old.getLeaveDay().longValue() > projectUser.getLeaveDay()){//原来的日期大于现在的日期，需要校验
+					workDay = userTimesheetService.getWorkDayByParam(projectUser.getUserId(), projectUser.getProjectId(), UserTimesheet.TYPE_PROJECT, projectUser.getLeaveDay(), old.getLeaveDay(), 2);
+				}
+				if(workDay != null){
+					return ResponseEntity.badRequest()
+							.headers(HeaderUtil.createError("cpmApp.projectUser.save.leaveDayNotModify", workDay.toString())).body(null);
+				}
 			}
 			projectUser.setCreateTime(old.getCreateTime());
 			projectUser.setCreator(old.getCreator());
@@ -236,11 +266,11 @@ public class ProjectUserResource {
 			return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.projectUser.save.noPerm", ""))
 					.body(null);
 		}
-		long leaveDay = StringUtil.nullToLong(DateUtil.formatDate(DateUtil.DATE_YYYYMMDD_PATTERN, new Date()));
-		if (projectUserVo.getLeaveDay() != null && projectUserVo.getLeaveDay() <= leaveDay) {
-			return ResponseEntity.badRequest()
-					.headers(HeaderUtil.createError("cpmApp.projectUser.save.leaveDayError", "")).body(null);
-		}
+//		long leaveDay = StringUtil.nullToLong(DateUtil.formatDate(DateUtil.DATE_YYYYMMDD_PATTERN, new Date()));
+//		if (projectUserVo.getLeaveDay() != null && projectUserVo.getLeaveDay() <= leaveDay) {
+//			return ResponseEntity.badRequest()
+//					.headers(HeaderUtil.createError("cpmApp.projectUser.save.leaveDayError", "")).body(null);
+//		}
 		// 查看项目是否删除或者结项
 		ProjectInfo projectInfo = projectInfoService.findOne(projectUserVo.getProjectId());
 		if (projectInfo.getStatus() != ProjectInfo.STATUS_ADD) {

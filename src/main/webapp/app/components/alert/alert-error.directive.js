@@ -66,7 +66,7 @@
                 }
                 if (errorHeader) {
                     var entityName = $translate.instant('global.menu.entities.' + entityKey);
-                    addErrorAlert(errorHeader, errorHeader, {entityName: entityName});
+                    addErrorAlert(errorHeader, errorHeader, {entityName: entityName,entityKey:entityKey});
                 } else if (httpResponse.data && httpResponse.data.fieldErrors) {
                     for (i = 0; i < httpResponse.data.fieldErrors.length; i++) {
                         var fieldError = httpResponse.data.fieldErrors[i];

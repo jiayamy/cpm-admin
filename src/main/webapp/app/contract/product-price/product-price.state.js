@@ -100,45 +100,6 @@
                 }]
             }
         })
-        .state('product-price-detail.edit', {
-            parent: 'product-price-detail',
-            url: '/edit',
-            data: {
-                authorities: ['ROLE_CONTRACT_PRODUCTPRICE']
-            },
-            views:{
-            	'content@':{
-            		 templateUrl: 'app/contract/product-price/product-price-dialog.html',
-            		 controller: 'ProductPriceDialogController',
-            		 controllerAs: 'vm'
-            	}       
-            },
-            resolve: {
-            	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
-            		return $ocLazyLoad.load('app/contract/product-price/product-price-dialog.controller.js');
-                }],
-            	translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
-                    $translatePartialLoader.addPart('productPrice');
-                    $translatePartialLoader.addPart('global');
-                    return $translate.refresh();
-                }],
-                entity: ['$stateParams', '$ocLazyLoad','$injector', function($stateParams, $ocLazyLoad,$injector) {
-                	return $ocLazyLoad.load('app/contract/product-price/product-price.service.js').then(
-                			function(){
-                				return $injector.get('ProductPrice').get({id : $stateParams.id}).$promise;
-                			}
-                	);
-                }],
-                previousState: ["$state", function ($state) {
-                    var currentStateData = {
-                        name: $state.current.name || 'product-price-detail',
-                        params: $state.params,
-                        url: $state.href($state.current.name, $state.params)
-                    };
-                    return currentStateData;
-                }]
-            }
-        })
         .state('product-price.new', {
             parent: 'product-price',
             url: '/new',

@@ -37,13 +37,13 @@
 	                    <td>{{userTimesheet.typeName}}</td>
 	                    <td>{{userTimesheet.objName}}</td>
 	                    <td>{{userTimesheet.inputType}}</td>
-	                    <td>{{userTimesheet.data1}}</td>
-	                    <td>{{userTimesheet.data2}}</td>
-	                    <td>{{userTimesheet.data3}}</td>
-	                    <td>{{userTimesheet.data4}}</td>
-	                    <td>{{userTimesheet.data5}}</td>
-	                    <td>{{userTimesheet.data6}}</td>
-	                    <td>{{userTimesheet.data7}}</td>
+	                    <td ng-class="{'wd-ut-notholiday':vm.isNotHoliday(userTimesheet.data1)}">{{userTimesheet.data1}}</td>
+	                    <td ng-class="{'wd-ut-notholiday':vm.isNotHoliday(userTimesheet.data2)}">{{userTimesheet.data2}}</td>
+	                    <td ng-class="{'wd-ut-notholiday':vm.isNotHoliday(userTimesheet.data3)}">{{userTimesheet.data3}}</td>
+	                    <td ng-class="{'wd-ut-notholiday':vm.isNotHoliday(userTimesheet.data4)}">{{userTimesheet.data4}}</td>
+	                    <td ng-class="{'wd-ut-notholiday':vm.isNotHoliday(userTimesheet.data5)}">{{userTimesheet.data5}}</td>
+	                    <td ng-class="{'wd-ut-notholiday':vm.isNotHoliday(userTimesheet.data6)}">{{userTimesheet.data6}}</td>
+	                    <td ng-class="{'wd-ut-notholiday':vm.isNotHoliday(userTimesheet.data7)}">{{userTimesheet.data7}}</td>
 	                </tr>
 	                <tr ng-repeat="userTimesheet in vm.areas">
 	                    <td>{{userTimesheet.typeName}}</td>

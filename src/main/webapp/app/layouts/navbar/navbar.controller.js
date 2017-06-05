@@ -5,9 +5,9 @@
         .module('cpmApp')
         .controller('NavbarController', NavbarController);
 
-    NavbarController.$inject = ['$state', 'Auth', 'Principal', 'ProfileService', 'LoginService'];
+    NavbarController.$inject = ['$scope', '$state', 'Auth', 'Principal', 'ProfileService', 'LoginService'];
 
-    function NavbarController ($state, Auth, Principal, ProfileService, LoginService) {
+    function NavbarController ($scope, $state, Auth, Principal, ProfileService, LoginService) {
         var vm = this;
 
         vm.isNavbarCollapsed = true;
@@ -17,7 +17,15 @@
             vm.inProduction = response.inProduction;
             vm.swaggerEnabled = response.swaggerEnabled;
         });
-
+        $scope.$on('authenticationSuccess', function() {
+            getAccount();
+        });
+        getAccount();
+        function getAccount() {
+            Principal.identity().then(function(account) {
+                vm.account = account;
+            });
+        }
         vm.login = login;
         vm.logout = logout;
         vm.toggleNavbar = toggleNavbar;

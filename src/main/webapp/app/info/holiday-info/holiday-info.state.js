@@ -98,45 +98,6 @@
                 }]
             }
         })
-        .state('holiday-info-detail.edit', {
-            parent: 'holiday-info-detail',
-            url: '/edit',
-            data: {
-                authorities: ['ROLE_INFO_BASIC']
-            },
-            views: {
-                'content@': {
-                    templateUrl: 'app/info/holiday-info/holiday-info-dialog.html',
-                    controller: 'HolidayInfoDialogController',
-                    controllerAs: 'vm'
-                }
-            },
-            resolve: {
-            	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
-                    return $ocLazyLoad.load('app/info/holiday-info/holiday-info-dialog.controller.js');
-                }],
-	            translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
-	                $translatePartialLoader.addPart('holidayInfo');
-	                $translatePartialLoader.addPart('global');
-	                return $translate.refresh();
-	            }],
-	            entity: ['$stateParams', '$ocLazyLoad','$injector', function($stateParams, $ocLazyLoad, $injector) {
-                	return $ocLazyLoad.load('app/info/holiday-info/holiday-info.service.js').then(
-                			function(){
-                				return $injector.get('HolidayInfo').get({id : $stateParams.id}).$promise;
-                			}
-                	);
-                }],
-	            previousState: ["$state", function ($state) {
-	                var currentStateData = {
-	                    name: $state.current.name || 'holiday-info-detail',
-	                    params: $state.params,
-	                    url: $state.href($state.current.name, $state.params)
-	                };
-	                return currentStateData;
-	            }]
-            }
-        })
         .state('holiday-info.new', {
             parent: 'holiday-info',
             url: '/new',

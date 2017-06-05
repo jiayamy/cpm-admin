@@ -50,6 +50,9 @@
                 }
             }).catch(function () {
                 vm.authenticationError = true;
+                $timeout(function () {
+                	vm.authenticationError = false;
+                }, 500);
             });
         }
         function register () {

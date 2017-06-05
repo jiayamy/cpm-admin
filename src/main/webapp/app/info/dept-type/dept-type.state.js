@@ -97,34 +97,6 @@
                 }]
             }
         })
-        .state('dept-type-detail.edit', {
-            parent: 'dept-type-detail',
-            url: '/edit',
-            data: {
-                authorities: ['ROLE_INFO_BASIC']
-            },
-            onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
-                $uibModal.open({
-                    templateUrl: 'app/info/dept-type/dept-type-dialog.html',
-                    controller: 'DeptTypeDialogController',
-                    controllerAs: 'vm',
-                    backdrop: 'static',
-                    size: 'lg',
-                    resolve: {
-                    	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
-                            return $ocLazyLoad.load('app/info/dept-type/dept-type-dialog.controller.js');
-                        }],
-                        entity: ['DeptType', function(DeptType) {
-                            return DeptType.get({id : $stateParams.id}).$promise;
-                        }]
-                    }
-                }).result.then(function() {
-                    $state.go('^', {}, { reload: false });
-                }, function() {
-                    $state.go('^');
-                });
-            }]
-        })
         .state('dept-type.new', {
             parent: 'dept-type',
             url: '/new',

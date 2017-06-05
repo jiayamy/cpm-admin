@@ -3,7 +3,6 @@ package com.wondertek.cpm.web.rest;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
@@ -56,6 +55,7 @@ import com.wondertek.cpm.domain.ContractInfo;
 import com.wondertek.cpm.domain.ContractUser;
 import com.wondertek.cpm.domain.DeptInfo;
 import com.wondertek.cpm.domain.User;
+import com.wondertek.cpm.domain.UserTimesheet;
 import com.wondertek.cpm.domain.vo.ContractUserVo;
 import com.wondertek.cpm.repository.ContractInfoRepository;
 import com.wondertek.cpm.security.AuthoritiesConstants;
@@ -64,6 +64,7 @@ import com.wondertek.cpm.service.ContractInfoService;
 import com.wondertek.cpm.service.ContractUserService;
 import com.wondertek.cpm.service.DeptInfoService;
 import com.wondertek.cpm.service.UserService;
+import com.wondertek.cpm.service.UserTimesheetService;
 import com.wondertek.cpm.web.rest.errors.CpmResponse;
 import com.wondertek.cpm.web.rest.util.HeaderUtil;
 import com.wondertek.cpm.web.rest.util.PaginationUtil;
@@ -91,6 +92,8 @@ public class ContractUserResource {
     @Inject
     private UserService userService;
     
+    @Inject
+    private UserTimesheetService userTimesheetService;
     
     @Inject
     private DeptInfoService deptInfoService;
@@ -140,11 +143,38 @@ public class ContractUserResource {
 				return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.contractUser.save.idNone", "")).body(null);
 			}else if (old.getContractId() != contractUser.getContractId().longValue()) {
 				return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.contractUser.save.contractIdError", "")).body(null);
+			} else if (old.getUserId().longValue() != contractUser.getUserId()){
+				return ResponseEntity.badRequest()
+						.headers(HeaderUtil.createError("cpmApp.contractUser.save.userIdChangeError", "")).body(null);
 			}
-			long leaveDay = StringUtil.nullToLong(DateUtil.formatDate(DateUtil.DATE_YYYYMMDD_PATTERN, new Date()));
-	        if(old.getLeaveDay() != null && old.getLeaveDay() <= leaveDay){
-	        	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.contractUser.save.leaveDayError", "")).body(null);
-	        }
+			long nowDay = StringUtil.nullToLong(DateUtil.formatDate(DateUtil.DATE_YYYYMMDD_PATTERN, new Date()));
+			//校验加盟日修改
+			if ((contractUser.getJoinDay() <= nowDay || old.getJoinDay() <= nowDay)
+				&& contractUser.getJoinDay().longValue() != old.getJoinDay()){//有一个加盟日小于今天的都需要校验日报
+				Long workDay = null;
+				if(contractUser.getJoinDay().longValue() > old.getJoinDay()){//修改的加盟日大于原有的加盟日
+					workDay = userTimesheetService.getWorkDayByParam(contractUser.getUserId(), contractUser.getContractId(), UserTimesheet.TYPE_CONTRACT, old.getJoinDay(), contractUser.getJoinDay(), 1);
+				}
+				if(workDay != null){
+					return ResponseEntity.badRequest()
+							.headers(HeaderUtil.createError("cpmApp.contractUser.save.joinDayNotModify", workDay.toString())).body(null);
+				}
+			}
+			//校验离开日修改
+			if ((contractUser.getLeaveDay() != null && contractUser.getLeaveDay() <= nowDay)
+				&& (old.getLeaveDay() == null || contractUser.getLeaveDay().longValue() != old.getLeaveDay())){//离开日修改为当前日期之前才需要校验
+				Long workDay = null;
+				if(old.getLeaveDay() == null){//原来为空
+					workDay = userTimesheetService.getWorkDayByParam(contractUser.getUserId(), contractUser.getContractId(), UserTimesheet.TYPE_CONTRACT, contractUser.getLeaveDay(), nowDay, 2);
+				}else if(old.getLeaveDay().longValue() > contractUser.getLeaveDay()){//原来的日期大于现在的日期，需要校验
+					workDay = userTimesheetService.getWorkDayByParam(contractUser.getUserId(), contractUser.getContractId(), UserTimesheet.TYPE_CONTRACT, contractUser.getLeaveDay(), old.getLeaveDay(), 2);
+				}
+				if(workDay != null){
+					return ResponseEntity.badRequest()
+							.headers(HeaderUtil.createError("cpmApp.contractUser.save.leaveDayNotModify", workDay.toString())).body(null);
+				}
+			}
+			
 			contractUser.setCreateTime(old.getCreateTime());
 			contractUser.setCreator(old.getCreator());
 		}
@@ -212,10 +242,10 @@ public class ContractUserResource {
         if (contractInfo.getStatus() != ContractInfo.STATUS_VALIDABLE) {
         	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.contractUser.save.contractInfoError", "")).body(null);
 		}
-        long leaveDay = StringUtil.nullToLong(DateUtil.formatDate(DateUtil.DATE_YYYYMMDD_PATTERN, new Date()));
-        if(contractVo.getLeaveDay() != null && contractVo.getLeaveDay() <= leaveDay){
-        	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.contractUser.save.leaveDayError", "")).body(null);
-        }
+//        long leaveDay = StringUtil.nullToLong(DateUtil.formatDate(DateUtil.DATE_YYYYMMDD_PATTERN, new Date()));
+//        if(contractVo.getLeaveDay() != null && contractVo.getLeaveDay() <= leaveDay){
+//        	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.contractUser.save.leaveDayError", "")).body(null);
+//        }
         contractUserService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert("contractUser", id.toString())).build();
     }

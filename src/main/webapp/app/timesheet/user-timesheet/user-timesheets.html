@@ -80,6 +80,7 @@
                     <th jh-sort-by="objName"><span data-translate="cpmApp.userTimesheet.objName">Obj Name</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="realInput"><span data-translate="cpmApp.userTimesheet.realInput">Real Input</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="extraInput"><span data-translate="cpmApp.userTimesheet.extraInput">Extra Input</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="updateTime"><span data-translate="cpmApp.userTimesheet.updateTime">Update Time</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th></th>
                 </tr>
             </thead>
@@ -90,6 +91,7 @@
                     <td>{{userTimesheet.objName}}</td>
                     <td>{{userTimesheet.realInput}}</td>
                     <td>{{userTimesheet.extraInput}}</td>
+                    <td>{{userTimesheet.updateTime | date:'medium'}}</td>
                     <td class="text-right">
                         <div class="btn-group flex-btn-group-container">
                             <button type="submit"

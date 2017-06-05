@@ -211,7 +211,7 @@ public class UserTimesheetService {
 		//查询当天的周一至周日
 		String[] ds = DateUtil.getWholeWeekByDate(workDayDate);
 		//添加第一行日期
-		returnList.add(new UserTimesheetForUser(UserTimesheet.TYPE_DAY,ds[0],ds[1],ds[2],ds[3],ds[4],ds[5],ds[6]));
+//		returnList.add(new UserTimesheetForUser(UserTimesheet.TYPE_DAY,ds[0],ds[1],ds[2],ds[3],ds[4],ds[5],ds[6]));
 		Long[] lds = new Long[7];
 		lds[0] = StringUtil.nullToLong(ds[0]);
 		lds[1] = StringUtil.nullToLong(ds[1]);
@@ -220,7 +220,8 @@ public class UserTimesheetService {
 		lds[4] = StringUtil.nullToLong(ds[4]);
 		lds[5] = StringUtil.nullToLong(ds[5]);
 		lds[6] = StringUtil.nullToLong(ds[6]);
-		
+		//添加默认日期
+		addDaysByUser(returnList,ds,lds);
 		//添加第二行地区
 		UserTimesheetForUser areaTimesheet = getDefaultUserTimesheetForUser(null,UserTimesheet.TYPE_AREA,null,null,null,null);
 		//添加默认的公共成本(正常工时)
@@ -277,7 +278,41 @@ public class UserTimesheetService {
     	returnList.add(3, publicTimesheetExtra);
 		return returnList;
 	}
-    /**
+    private void addDaysByUser(List<UserTimesheetForUser> returnList, String[] ds, Long[] lds) {
+		Map<Long,Long> holidayMaps = holidayInfoService.findHolidayByCurrDay(StringUtil.longArrayToLongArray(lds));
+		String data1 = ds[0];
+		String data2 = ds[1];
+		String data3 = ds[2];
+		String data4 = ds[3];
+		String data5 = ds[4];
+		String data6 = ds[5];
+		String data7 = ds[6];
+		if(!holidayMaps.containsKey(lds[0])){
+			data1 += "*";
+		}
+		if(!holidayMaps.containsKey(lds[1])){
+			data2 += "*";
+		}
+		if(!holidayMaps.containsKey(lds[2])){
+			data3 += "*";
+		}
+		if(!holidayMaps.containsKey(lds[3])){
+			data4 += "*";
+		}
+		if(!holidayMaps.containsKey(lds[4])){
+			data5 += "*";
+		}
+		if(!holidayMaps.containsKey(lds[5])){
+			data6 += "*";
+		}
+		if(!holidayMaps.containsKey(lds[6])){
+			data7 += "*";
+		}
+		//添加第一行日期
+		returnList.add(new UserTimesheetForUser(UserTimesheet.TYPE_DAY,data1,data2,data3,data4,data5,data6,data7));
+	}
+
+	/**
      * 检查地点是否都已经填充
      */
 	private void checkAreaTimesheet(UserTimesheetForUser areaTimesheet, String workArea) {
@@ -617,13 +652,13 @@ public class UserTimesheetService {
     		//日期
     		UserTimesheetForUser dayTimesheet = userTimesheetForUsers.get(0);
     		Long[] lds = new Long[7];
-    		lds[0] = StringUtil.nullToLong(dayTimesheet.getData1());
-    		lds[1] = StringUtil.nullToLong(dayTimesheet.getData2());
-    		lds[2] = StringUtil.nullToLong(dayTimesheet.getData3());
-    		lds[3] = StringUtil.nullToLong(dayTimesheet.getData4());
-    		lds[4] = StringUtil.nullToLong(dayTimesheet.getData5());
-    		lds[5] = StringUtil.nullToLong(dayTimesheet.getData6());
-    		lds[6] = StringUtil.nullToLong(dayTimesheet.getData7());
+    		lds[0] = StringUtil.nullToLong(removeAsteriskFromDay(dayTimesheet.getData1()));
+    		lds[1] = StringUtil.nullToLong(removeAsteriskFromDay(dayTimesheet.getData2()));
+    		lds[2] = StringUtil.nullToLong(removeAsteriskFromDay(dayTimesheet.getData3()));
+    		lds[3] = StringUtil.nullToLong(removeAsteriskFromDay(dayTimesheet.getData4()));
+    		lds[4] = StringUtil.nullToLong(removeAsteriskFromDay(dayTimesheet.getData5()));
+    		lds[5] = StringUtil.nullToLong(removeAsteriskFromDay(dayTimesheet.getData6()));
+    		lds[6] = StringUtil.nullToLong(removeAsteriskFromDay(dayTimesheet.getData7()));
     		if(lds[0] == 0 || lds[1] == 0 || lds[2] == 0 || lds[3] == 0 || lds[4] == 0 || lds[5] == 0 || lds[6] == 0){
     			return "cpmApp.userTimesheet.save.paramError";
     		}
@@ -1420,7 +1455,8 @@ public class UserTimesheetService {
 		returnList.add(dayInfo);
 		
 		//查询现有的所有记录
-		List<UserTimesheet> list = userTimesheetDao.getByWorkDayAndObjType(lds[0],lds[6],objId,type);
+//		List<UserTimesheet> list = userTimesheetDao.getByWorkDayAndObjType(lds[0],lds[6],objId,type);
+		List<UserTimesheet> list = userTimesheetDao.getByWorkDayAndObjType(lds[0],lds[6],objId,type,userTimesheet.getUserId());//只展示一个
 		
 		//转换为MAP
 		Map<Long,Map<Long,UserTimesheet>> map = trans2OtherMap(list);
@@ -2042,5 +2078,11 @@ public class UserTimesheetService {
 				}
 			}
 		}
+	}
+	/**
+	 * 查看某个项目或合同，在某个区间内该用户是否填写了日报
+	 */
+	public Long getWorkDayByParam(Long userId,Long objId,Integer type,Long fromDay,Long endDay, int iType){
+		return userTimesheetDao.getWorkDayByParam(userId,objId,type,fromDay,endDay,iType);
 	}
 }

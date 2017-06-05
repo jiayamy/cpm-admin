@@ -64,6 +64,7 @@
             },
             "account": {
                 "main": "个人账号",
+                "showLastName":"{{username}}",
                 "settings": "设置",
                 "password": "密码",
                 "sessions": "会话",

@@ -42,7 +42,11 @@ public interface UserTimesheetDao extends GenericDao<UserTimesheet, Long> {
 	/**
 	 * 获取某个类型的对象在某个时间段内的所有日报
 	 */
-	public List<UserTimesheet> getByWorkDayAndObjType(Long long1, Long long2, Long objId, Integer type);
+	public List<UserTimesheet> getByWorkDayAndObjType(Long startDay, Long endDay, Long objId, Integer type);
+	/**
+	 * 获取某个类型的对象在某个时间段内的所有日报
+	 */
+	public List<UserTimesheet> getByWorkDayAndObjType(Long startDay, Long endDay, Long objId, Integer type, Long userId);
 	/**
 	 * 更新认可工时
 	 */
@@ -58,4 +62,8 @@ public interface UserTimesheetDao extends GenericDao<UserTimesheet, Long> {
 	
 	
 	public List<UserTimesheetForHardWorkingVo> findByWorkDay(Long fromDay, Long endDay);
+	/**
+	 * 某个项目的某个区间内是否有日报
+	 */
+	public Long getWorkDayByParam(Long userId, Long objId, Integer type, Long fromDay, Long endDay, int iType);
 }

@@ -205,46 +205,6 @@
                 }]
             }
         })
-        .state('project-cost-detail.edit', {
-            parent: 'project-cost-detail',
-            url: '/edit',
-            data: {
-                authorities: ['ROLE_PROJECT_COST'],
-                pageTitle: 'cpmApp.projectCost.detail.title'
-            },
-            views: {
-                'content@': {
-                    templateUrl: 'app/project/project-cost/project-cost-dialog.html',
-                    controller: 'ProjectCostDialogController',
-                    controllerAs: 'vm'
-                }
-            },
-            resolve: {
-            	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
-            		return $ocLazyLoad.load('app/project/project-cost/project-cost-dialog.controller.js');
-                }],
-                translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
-                    $translatePartialLoader.addPart('projectCost');
-                    $translatePartialLoader.addPart('global');
-                    return $translate.refresh();
-                }],
-                entity: ['$stateParams', '$ocLazyLoad','$injector', function($stateParams, $ocLazyLoad,$injector) {
-                	return $ocLazyLoad.load('app/project/project-cost/project-cost.service.js').then(
-                			function(){
-                				return $injector.get('ProjectCost').get({id : $stateParams.id}).$promise;
-                			}
-                	);
-                }],
-                previousState: ["$state", function ($state) {
-                    var currentStateData = {
-                        name: $state.current.name || 'project-cost-detail',
-                        params: $state.params,
-                        url: $state.href($state.current.name, $state.params)
-                    };
-                    return currentStateData;
-                }]
-            }
-        })
         .state('project-cost.new', {
             parent: 'project-cost',
             url: '/new',

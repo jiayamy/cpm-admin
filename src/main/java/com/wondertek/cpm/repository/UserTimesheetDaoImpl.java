@@ -393,7 +393,12 @@ public class UserTimesheetDaoImpl extends GenericDaoImpl<UserTimesheet, Long> im
 		return this.queryAllHql("from UserTimesheet where workDay >= ?0 and workDay <= ?1 and status = ?2 and objId = ?3 and type = ?4 order by workDay asc,id asc",
 				new Object[]{startDay,endDay,CpmConstants.STATUS_VALID,objId,type});
 	}
-
+	@Override
+	public List<UserTimesheet> getByWorkDayAndObjType(Long startDay, Long endDay, Long objId, Integer type, Long userId){
+		return this.queryAllHql("from UserTimesheet where workDay >= ?0 and workDay <= ?1 and status = ?2 and objId = ?3 and type = ?4 and userId = ?5 order by workDay asc,id asc",
+				new Object[]{startDay,endDay,CpmConstants.STATUS_VALID,objId,type,userId});
+	}
+	
 	@Override
 	public void updateAcceptInput(List<UserTimesheet> updateList) {
 		if(updateList != null && !updateList.isEmpty()){
@@ -488,5 +493,43 @@ public class UserTimesheetDaoImpl extends GenericDaoImpl<UserTimesheet, Long> im
 		roleHardWorkingVo.setSumExtraInput(StringUtil.nullToDouble(o[3]));
 		roleHardWorkingVo.setSumAcceptExtraInput(StringUtil.nullToDouble(o[4]));
 		return roleHardWorkingVo;
+	}
+
+	@Override
+	public Long getWorkDayByParam(Long userId, Long objId, Integer type, Long fromDay, Long endDay, int iType) {
+		StringBuffer queryHql = new StringBuffer();
+    	List<Object> params = new ArrayList<Object>();
+    	int count = 0;//jpa格式 问号后的数组，一定要从0开始
+    	
+    	if(fromDay.longValue() == endDay){
+    		queryHql.append(" select max(uts.workDay) from UserTimesheet uts");
+    		queryHql.append(" where uts.workDay = ?"+(count++));
+    		params.add(fromDay);
+    	}else if(iType == 1){
+    		queryHql.append(" select min(uts.workDay) from UserTimesheet uts");
+    		queryHql.append(" where uts.workDay >= ?"+(count++)+" and uts.workDay < ?"+(count++));
+    		params.add(fromDay);
+    		params.add(endDay);
+    	}else if(iType == 2){
+    		queryHql.append(" select max(uts.workDay) from UserTimesheet uts");
+    		queryHql.append(" where uts.workDay > ?"+(count++)+" and uts.workDay <= ?"+(count++));
+    		params.add(fromDay);
+    		params.add(endDay);
+    	}else{//3
+    		queryHql.append(" select max(uts.workDay) from UserTimesheet uts");
+    		queryHql.append(" where uts.workDay > ?"+(count++)+" and uts.workDay <= ?"+(count++));
+    		params.add(fromDay);
+    		params.add(endDay);
+    	}
+    	queryHql.append(" and uts.status = 1 and uts.userId = ?"+(count++)+" and uts.objId = ?"+(count++)+" and uts.type = ?"+(count++));
+    	params.add(userId);
+    	params.add(objId);
+    	params.add(type);
+    	
+    	List<Long> workDays = this.queryAllHql(queryHql.toString(), params.toArray());
+    	if(workDays != null && !workDays.isEmpty()){
+    		return workDays.get(0);
+    	}
+    	return null;
 	}
 }

@@ -136,46 +136,6 @@
                 }]
             }
         })
-        .state('contract-timesheet-detail.edit', {
-            parent: 'contract-timesheet-detail',
-            url: '/edit',
-            data: {
-                authorities: ['ROLE_CONTRACT_TIMESHEET']
-            },
-            views: {
-                'content@': {
-                    templateUrl: 'app/contract/contract-timesheet/contract-timesheet-dialog.html',
-                    controller: 'ContractTimesheetDialogController',
-                    controllerAs: 'vm'
-                }
-            },
-            resolve: {
-            	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
-                    return $ocLazyLoad.load('app/contract/contract-timesheet/contract-timesheet-dialog.controller.js');
-                }],
-                translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
-                    $translatePartialLoader.addPart('contractTimesheet');
-                    $translatePartialLoader.addPart('userTimesheet');
-                    $translatePartialLoader.addPart('global');
-                    return $translate.refresh();
-                }],
-                entity: ['$stateParams', '$ocLazyLoad','$injector', function($stateParams, $ocLazyLoad,$injector) {
-                	return $ocLazyLoad.load('app/contract/contract-timesheet/contract-timesheet.service.js').then(
-                			function(){
-                				return $injector.get('ContractTimesheet').get({id : $stateParams.id}).$promise;
-                			}
-                	);
-                }],
-                previousState: ["$state", function ($state) {
-                    var currentStateData = {
-                        name: $state.current.name || 'contract-timesheet-detail',
-                        params: $state.params,
-                        url: $state.href($state.current.name, $state.params)
-                    };
-                    return currentStateData;
-                }]
-            }
-        })
         .state('contract-timesheet.edit', {
             parent: 'contract-timesheet',
             url: '/edit/{id}',

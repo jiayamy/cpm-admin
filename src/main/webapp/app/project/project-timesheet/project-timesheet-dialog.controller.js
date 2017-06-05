@@ -19,7 +19,22 @@
         vm.searchQuery.workDay = DateUtils.convertDayToDate(entity.workDay);
         vm.search = search;
         vm.noData = true;
-        
+        vm.isNotHoliday = isNotHoliday;
+        function isNotHoliday(data){
+        	if(data.length > 8){
+        		return true;
+        	}
+        	return false;
+        }
+        vm.isNotSame = isNotSame;
+        function isNotSame(data,check){
+        	data = parseFloat(data);
+        	check = parseFloat(check);
+        	if(check != data){
+        		return true;
+        	}
+        	return false;
+        }
         loadAll();
         function search(){
         	loadAll();

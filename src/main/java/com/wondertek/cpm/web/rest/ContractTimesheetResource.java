@@ -31,7 +31,6 @@ import com.wondertek.cpm.config.DateUtil;
 import com.wondertek.cpm.config.StringUtil;
 import com.wondertek.cpm.domain.UserTimesheet;
 import com.wondertek.cpm.domain.vo.UserTimesheetForOther;
-import com.wondertek.cpm.domain.vo.UserTimesheetForUser;
 import com.wondertek.cpm.domain.vo.UserTimesheetVo;
 import com.wondertek.cpm.security.AuthoritiesConstants;
 import com.wondertek.cpm.security.SecurityUtils;

@@ -41,6 +41,9 @@
             	"projectIdError":"项目不允许重新选择",
             	"leaveDayError":"已离开的人员不可再次更新或删除",
             	"noPerm":"无权操作",
+            	"joinDayNotModify":"加盟日修改的区间，用户已填写{{entityKey}}日报，请选择其他日期",
+            	"leaveDayNotModify":"离开日修改的区间，用户已填写{{entityKey}}日报，请选择其他日期",
+            	"userIdChangeError":"员工不可重新选择",
             	"projectError" : "项目已经终止或者结项"
             },
             "projectId": "项目编号",

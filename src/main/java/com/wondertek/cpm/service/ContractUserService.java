@@ -23,6 +23,7 @@ import com.wondertek.cpm.domain.ContractInfo;
 import com.wondertek.cpm.domain.ContractUser;
 import com.wondertek.cpm.domain.DeptInfo;
 import com.wondertek.cpm.domain.User;
+import com.wondertek.cpm.domain.UserTimesheet;
 import com.wondertek.cpm.domain.vo.ContractUserVo;
 import com.wondertek.cpm.domain.vo.ProjectUserVo;
 import com.wondertek.cpm.repository.ContractUserDao;
@@ -43,10 +44,10 @@ public class ContractUserService {
     private ContractUserRepository contractUserRepository;
     @Inject
     private UserRepository userRepository;
-    
     @Inject
     private ContractUserDao contractUserDao;
-
+    @Inject
+    private UserTimesheetService userTimesheetService;
     /**
      * Save a contractUser.
      *
@@ -95,14 +96,29 @@ public class ContractUserService {
         ContractUser contractUser = contractUserRepository.findOne(id);
         if (contractUser != null) {
         	long leaveDay = StringUtil.nullToLong(DateUtil.formatDate(DateUtil.DATE_YYYYMMDD_PATTERN, new Date()));
-        	if(contractUser.getLeaveDay() == null || contractUser.getLeaveDay() > leaveDay ){
-        		contractUser.setLeaveDay(leaveDay);
-        		if(contractUser.getJoinDay() > leaveDay){
-        			contractUser.setJoinDay(leaveDay);
+        	if(contractUser.getJoinDay() != null && contractUser.getJoinDay().longValue() > leaveDay){//加盟日大于当前日期，直接删除
+        		contractUserRepository.delete(id);
+        	}else{
+        		//判定加盟日之间是否有日报，没有的话，直接删除
+        		Long workDay = null;
+        		if(contractUser.getLeaveDay() == null){
+        			workDay = userTimesheetService.getWorkDayByParam(contractUser.getUserId(), contractUser.getContractId(), UserTimesheet.TYPE_CONTRACT, 
+        					contractUser.getJoinDay(), leaveDay, 3);
+        		}else{
+        			workDay = userTimesheetService.getWorkDayByParam(contractUser.getUserId(), contractUser.getContractId(), UserTimesheet.TYPE_CONTRACT, 
+        					contractUser.getJoinDay(), contractUser.getLeaveDay(), 3);
         		}
-        		contractUser.setUpdateTime(ZonedDateTime.now());
-        		contractUser.setUpdator(SecurityUtils.getCurrentUserLogin());
-        		contractUserRepository.save(contractUser);
+        		if(workDay == null){
+        			contractUserRepository.delete(id);
+        		}else if(contractUser.getLeaveDay() == null || contractUser.getLeaveDay() > leaveDay){
+        			contractUser.setLeaveDay(leaveDay);
+        			if(contractUser.getJoinDay() > leaveDay){
+        				contractUser.setJoinDay(leaveDay);
+        			}
+        			contractUser.setUpdateTime(ZonedDateTime.now());
+        			contractUser.setUpdator(SecurityUtils.getCurrentUserLogin());
+        			contractUserRepository.save(contractUser);
+        		}
         	}
 		}
     }

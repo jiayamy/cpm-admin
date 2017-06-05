@@ -73,3 +73,11 @@ form .wd-response .wd-progress {
   		top: 50%; 
 	}	
 }
+
+.wd-ut-error {
+	background-color: lightblue;
+}
+
+.wd-ut-notholiday {
+	color: #a90b0b;
+}

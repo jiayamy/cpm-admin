@@ -21,6 +21,14 @@
         vm.searchQuery = {};
         vm.searchQuery.workDay = DateUtils.convertDayToDate(entity.workDay);
         vm.search = search;
+        vm.isNotHoliday = isNotHoliday;
+        function isNotHoliday(data){
+        	if(data.length > 8){
+        		return true;
+        	}
+        	return false;
+        }
+        
         loadWorkArea();
         loadAll();
         

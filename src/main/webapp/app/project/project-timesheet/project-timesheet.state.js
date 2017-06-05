@@ -137,48 +137,6 @@
                 }]
             }
         })
-        .state('project-timesheet-detail.edit', {
-            parent: 'project-timesheet-detail',
-            url: '/edit',
-            data: {
-                authorities: ['ROLE_PROJECT_TIMESHEET']
-            },
-            views: {
-                'content@': {
-                    templateUrl: 'app/project/project-timesheet/project-timesheet-dialog.html',
-                    controller: 'ProjectTimesheetDialogController',
-                    controllerAs: 'vm'
-                }
-            },
-            resolve: {
-            	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
-            		return $ocLazyLoad.load('app/project/project-timesheet/project-timesheet-dialog.controller.js');
-                }],
-                translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
-                    $translatePartialLoader.addPart('projectTimesheet');
-                    $translatePartialLoader.addPart('contractTimesheet');
-                    $translatePartialLoader.addPart('userTimesheet');
-                    $translatePartialLoader.addPart('global');
-                    
-                    return $translate.refresh();
-                }],
-                entity: ['$stateParams', '$ocLazyLoad','$injector', function($stateParams, $ocLazyLoad,$injector) {
-                	return $ocLazyLoad.load('app/project/project-timesheet/project-timesheet.service.js').then(
-                			function(){
-                				return $injector.get('ProjectTimesheet').get({id : $stateParams.id}).$promise;
-                			}
-                	);
-                }],
-                previousState: ["$state", function ($state) {
-                    var currentStateData = {
-                        name: $state.current.name || 'project-timesheet-detail',
-                        params: $state.params,
-                        url: $state.href($state.current.name, $state.params)
-                    };
-                    return currentStateData;
-                }]
-            }
-        })
         .state('project-timesheet.edit', {
             parent: 'project-timesheet',
             url: '/edit/{id}',
