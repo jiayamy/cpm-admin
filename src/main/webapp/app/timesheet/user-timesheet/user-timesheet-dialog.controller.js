@@ -264,13 +264,6 @@
 	            		ds5 = parseFloat(tmps.data5);
 	            		ds6 = parseFloat(tmps.data6);
 	            		ds7 = parseFloat(tmps.data7);
-	            		//检验无具体项目加班是否为0
-	            		if(tmps.type == 1 && 
-	            				(ds1 != 0 || ds2 != 0 || ds3 != 0 || ds4 != 0 || ds5 != 0|| ds6 != 0 || ds7 != 0)){
-	            			vm.isSaving = false;
-	            			AlertService.error("cpmApp.userTimesheet.save.extraError");
-	            			return false;
-	            		}
 	            		if((ds1 < 2 && ds1 != 0) || ds1 > 8 || (ds2 < 2 && ds2 != 0) || ds2 > 8 || (ds3 < 2 && ds3 != 0) || ds3 > 8 || (ds4 < 2 && ds4 != 0) || ds4 > 8
 	            				 || (ds5 < 2 && ds5 != 0) || ds5 > 8 || (ds6 < 2 && ds6 != 0) || ds6 > 8 || (ds7 < 2 && ds7 != 0) || ds7 > 8){
 	            			vm.isSaving = false;
