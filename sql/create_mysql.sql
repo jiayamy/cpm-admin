@@ -997,4 +997,6 @@ insert into w_system_config (id, key_, value_, description_, creator_, create_ti
     )
     ENGINE=InnoDB DEFAULT CHARSET=utf8;
     
-    
+--20170605
+ALTER TABLE w_contract_cost ADD (input_ DOUBLE(15,2) DEFAULT '0');
+ALTER TABLE w_project_cost ADD (input_ DOUBLE(15,2) DEFAULT '0');
