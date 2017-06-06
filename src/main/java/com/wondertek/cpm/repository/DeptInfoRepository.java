@@ -11,11 +11,13 @@ import com.wondertek.cpm.domain.DeptInfo;
 /**
  * Spring Data JPA repository for the DeptInfo entity.
  */
-@SuppressWarnings("unused")
 public interface DeptInfoRepository extends JpaRepository<DeptInfo,Long> {
 
 	@Query("from DeptInfo di where di.status = ?1 order by id asc")
 	List<DeptInfo> findAllByStatus(int status);
+	
+	@Query("select id from DeptInfo di where di.status = ?1 and name like ?2 order by id asc")
+	List<Long> findAllByStatus(int status, String name);
 	
 	@Query("select d.id from DeptInfo d where d.type = ?1 and status = 1")
 	List<Long> findIdsByType(Long type);

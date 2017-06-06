@@ -20,6 +20,10 @@
     <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
                 ng-click="vm.clear()">&times;</button>
+        <button class="btn btn-info" ng-click="vm.searchForm()" style="margin:-2px 20px 5px 5px;padding: 6px 12px;float:right;">
+            <span class="glyphicon glyphicon-search"></span>
+        </button>
+        <input type="text" class="" ng-model="vm.searchQuery.name" style="width: 150px;margin:5px;padding: 6px;float:right;margin-top:-2px;">
         <h4 class="modal-title" id="myDeptInfoLabel" data-translate="cpmApp.deptInfo.home.createOrEditLabel">Create or edit a Dept Info</h4>
     </div>
     <div class="modal-body">

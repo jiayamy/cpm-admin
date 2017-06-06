@@ -27,7 +27,7 @@ public class UserDTO {
     private String lastName;
 
     @Email
-    @Size(min = 5, max = 100)
+    @Size(max = 100)
     private String email;
 
     private boolean activated = false;

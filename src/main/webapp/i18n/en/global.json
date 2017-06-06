@@ -55,6 +55,7 @@
                 "bonus": "Bonus Info",
                 "salePurchaseInternalCost": "Sales Purchase Internal Cost",
                 "projectSupportBonus": "Project Support Bonus",
+                "saleWeeklyStat": "Sale Weekly Stat",
                 "roleHardWorking":"Role HardWorking"
             },
             "entities": {
@@ -63,6 +64,7 @@
             },
             "account": {
                 "main": "Account",
+                "showLastName":"{{username}}",
                 "settings": "Settings",
                 "password": "Password",
                 "sessions": "Sessions",
@@ -98,7 +100,8 @@
         "messages": {
             "info": {
                 "authenticated": "If you want to <a class=\"alert-link\" href=\"\" ng-click=\"vm.login()\">sign in</a>, you can try the default accounts:<br/>- Administrator (login=\"admin\" and password=\"admin\") <br/>- User (login=\"user\" and password=\"user\").",
-                "register": "You don't have an account yet? <a class=\"alert-link\" href=\"\" ng-click=\"vm.register()\">Register a new account</a>"
+                "register": "You don't have an account yet? <a class=\"alert-link\" href=\"\" ng-click=\"vm.register()\">Register a new account</a>",
+                "desc":"统筹调配 科学管理<br/>合理风控 目标高效"
             },
             "error": {
                 "dontmatch": "The password and its confirmation do not match!"
@@ -140,13 +143,14 @@
             "edit": "Edit",
             "open": "Open",
             "save": "Save",
-            "view": "View"
+            "view": "View",
             "add": "New",
             "close":"Close",
             "search":"Search",
             "clear":"Clear",
             "export":"Export",
-            "upload":"Upload"
+            "upload":"Upload",
+            "downloadTpl":"Download Tpl"
         },
         "detail": {
             "field": "Field",

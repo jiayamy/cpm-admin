@@ -121,16 +121,44 @@ public class DeptInfoService {
      * @return
      */
     @Transactional(readOnly = true)
-	public List<DeptTree> getDeptAndUserTree(Integer selectType, Boolean showChild, Boolean showUser) {
+	public List<DeptTree> getDeptAndUserTree(Integer selectType, Boolean showChild, Boolean showUser, String name) {
 		List<DeptTree> returnList = new ArrayList<DeptTree>();
 		//查询出所有的用户
 		List<User> allUser = null;
-		if(showUser){
-			allUser = userRepository.findAllByActivated(Boolean.TRUE);
+		List<DeptInfo> allDeptInfo = null;
+		if(StringUtil.isNullStr(name)){
+			if(showUser){
+				allUser = userRepository.findAllByActivated(Boolean.TRUE);
+			}
+			//查询出所有的部门
+			allDeptInfo = deptInfoRepository.findAllByStatus(CpmConstants.STATUS_VALID);
+		}else{
+			//找出所有的存在的人名
+			if(showUser){
+				allUser = userRepository.findAllByActivated(Boolean.TRUE,"%"+name+"%");
+			}
+			//找出所有的组织，以及上级组织，直至顶部
+			//找出所有的组织，方便后面不需要在每次从数据库获取
+			Map<Long,DeptInfo> allDeptMap = new HashMap<Long,DeptInfo>();
+			List<DeptInfo> allDept = deptInfoRepository.findAllByStatus(CpmConstants.STATUS_VALID);
+			if(allDept != null){
+				for(DeptInfo deptInfo : allDept){
+					allDeptMap.put(deptInfo.getId(), deptInfo);
+				}
+			}
+			//目前需要的组织
+			List<Long> selectDeptIds = deptInfoRepository.findAllByStatus(CpmConstants.STATUS_VALID,"%"+name+"%");
+			if(allUser != null){
+				for(User user : allUser){
+					if(user.getDeptId() != null && !selectDeptIds.contains(user.getDeptId())){
+						selectDeptIds.add(user.getDeptId());
+					}
+				}
+			}
+			//找出子组织的所有上级组织，并封装到list里面去
+			allDeptInfo = new ArrayList<DeptInfo>();
+			getRecursionSelectDeptInfo(allDeptInfo,allDeptMap,selectDeptIds);
 		}
-		//查询出所有的部门
-		List<DeptInfo> allDeptInfo = deptInfoRepository.findAllByStatus(CpmConstants.STATUS_VALID);
-		
 		//放在map中方便切换
 		Map<Long,List<User>> deptUsers = sortUserByDept(allUser);
 		Map<Long,List<DeptInfo>> childDepts = sortDeptByParent(allDeptInfo);
@@ -139,6 +167,44 @@ public class DeptInfoService {
 		getDeptAndUserTree(CpmConstants.DEFAULT_DEPT_TOPID,CpmConstants.DEFAULT_BLANK,returnList,deptUsers,childDepts,selectType,showChild);
 		return returnList;
 	}
+    /**
+     * 找出所有的指定部门以及上级部门
+     */
+	private void getRecursionSelectDeptInfo(List<DeptInfo> returnDeptInfo, Map<Long, DeptInfo> allDeptMap,List<Long> selectDeptIds) {
+		Map<Long,Long> selectDeptMap = new HashMap<Long,Long>();
+		if(selectDeptIds != null){
+			DeptInfo deptInfo = null;
+			for(Long selectDeptId : selectDeptIds){
+				if(allDeptMap.containsKey(selectDeptId) && !selectDeptMap.containsKey(selectDeptId)){
+					//添加当前组织
+					deptInfo = allDeptMap.get(selectDeptId);
+					returnDeptInfo.add(deptInfo);
+					selectDeptMap.put(deptInfo.getId(), deptInfo.getId());
+					
+					//查找上级组织
+					getRecursionSelectDeptInfo(returnDeptInfo,allDeptMap,selectDeptMap,deptInfo.getParentId());
+				}
+			}
+		}
+	}
+	/**
+	 * 递归获取组织信息，直到顶级节点
+	 */
+	private void getRecursionSelectDeptInfo(List<DeptInfo> returnDeptInfo, Map<Long, DeptInfo> allDeptMap,Map<Long, Long> selectDeptMap, Long selectDeptId) {
+		if(selectDeptId != null){//不是顶级节点
+			DeptInfo deptInfo = null;
+			if(allDeptMap.containsKey(selectDeptId) && !selectDeptMap.containsKey(selectDeptId)){
+				//添加当前组织
+				deptInfo = allDeptMap.get(selectDeptId);
+				returnDeptInfo.add(deptInfo);
+				selectDeptMap.put(deptInfo.getId(), deptInfo.getId());
+				
+				//查找上级组织
+				getRecursionSelectDeptInfo(returnDeptInfo,allDeptMap,selectDeptMap,deptInfo.getParentId());
+			}
+		}
+	}
+
 	private void getDeptAndUserTree(Long parentId,String parentName, List<DeptTree> returnList, Map<Long, List<User>> deptUsers, 
 			Map<Long, List<DeptInfo>> childDepts, Integer selectType, Boolean showChild) {
 		//下面的所有用户

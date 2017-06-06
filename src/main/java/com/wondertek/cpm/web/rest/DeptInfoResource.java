@@ -169,10 +169,11 @@ public class DeptInfoResource {
     public ResponseEntity<List<DeptTree>> getDeptAndUserTree(
     			@RequestParam(value = "selectType",required=false) Integer selectType,
     			@RequestParam(value = "showChild",required=false) Boolean showChild,
-    			@RequestParam(value = "showUser",required=false) Boolean showUser
+    			@RequestParam(value = "showUser",required=false) Boolean showUser,
+    			@RequestParam(value = "name",required=false) String name
     		) throws URISyntaxException {
         log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to get a page of getDeptAndUserTree by selectType : {}, showChild : {}, "
-        		+ "showUser : {}", selectType, showChild, showUser);
+        		+ "showUser : {}, name : {}", selectType, showChild, showUser, name);
         if(selectType == null){
         	selectType = DeptTree.SELECTTYPE_NONE;
         }
@@ -182,7 +183,7 @@ public class DeptInfoResource {
         if(showUser == null){
         	showUser = Boolean.TRUE;
         }
-        List<DeptTree> list = deptInfoService.getDeptAndUserTree(selectType,showChild,showUser);
+        List<DeptTree> list = deptInfoService.getDeptAndUserTree(selectType,showChild,showUser,name);
         return new ResponseEntity<>(list, null, HttpStatus.OK);
     }
     /**
@@ -193,7 +194,7 @@ public class DeptInfoResource {
     @Secured(AuthoritiesConstants.USER)
     public ResponseEntity<List<DeptTree>> getDeptTree() throws URISyntaxException {
         log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to get a page of getDeptAndUserTree");
-        List<DeptTree> list = deptInfoService.getDeptAndUserTree(DeptTree.SELECTTYPE_NONE,Boolean.TRUE,Boolean.FALSE);
+        List<DeptTree> list = deptInfoService.getDeptAndUserTree(DeptTree.SELECTTYPE_NONE,Boolean.TRUE,Boolean.FALSE,null);
         return new ResponseEntity<>(list, null, HttpStatus.OK);
     }
     

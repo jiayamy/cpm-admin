@@ -4,7 +4,7 @@
         "filter": {
             "title1": "Filter by name",
             "title2": "Filter by type",
-            "title3": "Filter by source",
+            "title3": "Filter by source"
         },
         "table": {
             "header": {

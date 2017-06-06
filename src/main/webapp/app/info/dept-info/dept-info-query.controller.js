@@ -14,9 +14,26 @@
         vm.isChildShowed = isChildShowed;
         vm.showOrHiddenChild = showOrHiddenChild;
         vm.selectNode = selectNode;
+        vm.searchQuery = {};
+        vm.searchQuery.name = "";
+        vm.haveSearch = false;
+        vm.searchForm = searchForm;
+        vm.clearForm = clearForm;
         
+        function searchForm(){
+        	if(vm.searchQuery.name == undefined){
+        		vm.clearForm();
+        		return;
+        	}
+        	vm.haveSearch = true;
+        	loadAll();
+        }
+        function clearForm(){
+        	vm.haveSearch = false;
+        	vm.searchQuery.name = "";
+        	loadAll();
+        }
         loadAll();
-        
         //entity 中4个参数 selectType showChild dataType showUser
         //selectType 0:不选择，1：选择所有，2：只选择部门，3：只选择用户，默认不选择
         //showChild true/false。是否展示所有的子部门，默认展示
@@ -32,10 +49,12 @@
         	if(entity.showUser == undefined){
         		entity.showUser = "true";
         	}
+        	
             DeptInfo.getDeptAndUserTree({
             	selectType:entity.selectType,
             	showChild:entity.showChild,
-            	showUser:entity.showUser
+            	showUser:entity.showUser,
+            	name:vm.searchQuery.name
             }, onSuccess, onError);
             
             function onSuccess(data, headers) {
@@ -44,7 +63,9 @@
             	for(var i = 0; i < vm.deptInfos.length; i++){
                     if(vm.deptInfos[i].children && vm.deptInfos[i].children.length !=0){
                     	vm.deptInfos[i].showChild = true;
-                    	hiddenSpecifiedNode(vm.deptInfos[i].children,1,2);
+                    	if(!vm.haveSearch){
+                    		hiddenSpecifiedNode(vm.deptInfos[i].children,1,2);
+                    	}
                     }
                 }
             }

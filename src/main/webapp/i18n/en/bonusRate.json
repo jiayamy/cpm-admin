@@ -15,7 +15,7 @@
             "created": "Create Success",
             "updated": "Update Success!",
             "deleted": "Delete Success",
-            "deptType":DeptType",
+            "deptType":"DeptType",
 			"delete": {
             	"question": "Confirm to delete?"
 			},

@@ -12,7 +12,7 @@
             "updated": "update Success!",
             "deleted": "delete Success",
             "delete": {
-                "question": "confirm to delete?"
+                "question": "confirm to delete?",
                 "status2Error":"status-deleted can't be deleted again",
                 "type1Error":"type-humanCost can't be deleted"
             },
