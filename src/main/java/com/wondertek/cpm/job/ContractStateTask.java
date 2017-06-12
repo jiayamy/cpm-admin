@@ -56,7 +56,11 @@ import com.wondertek.cpm.repository.SystemConfigRepository;
 import com.wondertek.cpm.repository.UserCostRepository;
 import com.wondertek.cpm.repository.UserRepository;
 import com.wondertek.cpm.repository.UserTimesheetRepository;
-
+/**
+ * 合同相关统计
+ * @author lvliuzhong
+ *
+ */
 @Component
 @EnableScheduling
 public class ContractStateTask {
@@ -122,25 +126,28 @@ public class ContractStateTask {
 	private SystemConfigRepository systemConfigRepository;
 	
 	private void init(){
+		//外部报价
 		List<ExternalQuotation> externalQuotations = externalQuotationRepository.findAll();
 		if(externalQuotations != null && externalQuotations.size() > 0){
 			for(ExternalQuotation externalQuotation : externalQuotations){
 				externalQuotationMap.put(externalQuotation.getGrade(), externalQuotation.getHourCost());
 			}
 		}
+		//用户信息
 		List<User> users = userRepository.findAll();
 		if(users != null && users.size() > 0){
 			for(User user : users){
 				userIdGradeMap.put(user.getId(), user.getGrade());
 			}
 		}
+		//运行状态标识
 		List<StatIdentify> statIdentifies = statIdentifyRepository.findByStatus(StatIdentify.STATUS_UNAVALIABLE);
 		if(statIdentifies != null && statIdentifies.size() > 0){
 			statIdentifyRepository.delete(statIdentifies);
 		}
 	}
 	/**
-	 * 合同周统计，每周一晚上23点执行
+	 * TODO 合同周统计，每周一晚上23点执行
 	 */
 	@Scheduled(cron = "0 0 23 ? * MON")
 	protected void generateContractWeeklyStat(){
@@ -160,7 +167,7 @@ public class ContractStateTask {
 		if(contractInfos != null && contractInfos.size() > 0){
 			for(ContractInfo contractInfo : contractInfos){
 				log.info("=========begin generate Contract : "+contractInfo.getSerialNum()+"=========");
-				//初始化contractcost
+				//初始化合同工时
 				try {
 					while(true){
 						StatIdentify statIdentify = statIdentifyRepository.findByObjIdAndType(contractInfo.getId(), StatIdentify.TYPE_CONTRACT);
@@ -324,6 +331,7 @@ public class ContractStateTask {
 					if(projectInfos != null && projectInfos.size() > 0){
 						for(ProjectInfo projectInfo : projectInfos){
 							//人工成本
+							//TODO 存在问题，需要重新修改
 							List<UserTimesheet> userTimesheets3 = userTimesheetRepository.
 									findByDateAndObjIdAndType(statWeek, projectInfo.getId(), UserTimesheet.TYPE_PROJECT);
 							if(userTimesheets3 != null && userTimesheets3.size() > 0){
@@ -391,7 +399,7 @@ public class ContractStateTask {
 		log.info("=====end generate Contract Weekly Stat=====");
 	}
 	/**
-	 * 合同月统计，每个月的第一天的23点30分开始执行
+	 * TODO 合同月统计，每个月的第一天的23点30分开始执行
 	 */
 	@Scheduled(cron = "0 30 23 1 * ?")
 	protected void generateContractMonthlyStat(){
@@ -1010,13 +1018,14 @@ public class ContractStateTask {
 		}
 		log.info("=====end generate Sale Contract Weekly Stat=====");
 	}
-	
+	/**
+	 * 初始化合同工时成本
+	 */
 	private void initContractHumanCost(ContractInfo contractInfo, Date beginTime, Date endTime){
 		if(endTime.getTime() < beginTime.getTime()){
 			return;
 		}
 		Long countDay = (endTime.getTime() - beginTime.getTime())/(24*60*60*1000);
-		Integer contractType = contractInfo.getType();
 		Date currentDay = beginTime;
 		
 		for(int i = 0; i <= countDay; i++){
@@ -1024,7 +1033,9 @@ public class ContractStateTask {
 			Long costMonth = StringUtil.nullToLong(DateUtil.formatDate("yyyyMM", currentDay).toString());
 			ContractCost contractCost = new ContractCost();
 			contractCost.setContractId(contractInfo.getId());
-			if(contractInfo.getDeptId() != null && contractInfo.getDeptId() != 0 && contractInfo.getConsultantsDeptId() != null && contractInfo.getConsultantsDeptId() != 0){
+			//销售和咨询都有
+			if(contractInfo.getDeptId() != null && contractInfo.getDeptId() != 0 
+					&& contractInfo.getConsultantsDeptId() != null && contractInfo.getConsultantsDeptId() != 0){
 				//销售部分
 				contractCost.setDeptId(contractInfo.getDeptId());
 				DeptInfo deptInfo = deptInfoRepository.findOne(contractInfo.getDeptId());

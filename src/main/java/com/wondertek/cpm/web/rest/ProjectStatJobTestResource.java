@@ -23,10 +23,10 @@ public class ProjectStatJobTestResource extends ProjectStateTask{
 	
 	private final Logger log = LoggerFactory.getLogger(ProjectStatJobTestResource.class);
 	
-	@GetMapping("/ProjectMonthlyStatTest/")
+	@GetMapping("/projectStateJob/projectMonthlyStatTest")
 	@Timed
 	@Secured(AuthoritiesConstants.ADMIN)
-	public @ResponseBody String ContractMonthlyStatTest(@RequestParam(value="date", required = false) Long date) {
+	public @ResponseBody String projectMonthlyState(@RequestParam(value="date", required = false) Long date) {
 		log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to Test Resource: date : {}" , date);
 		if(date == null){
 			//每周一晚上22点开始跑定时任务
@@ -37,10 +37,10 @@ public class ProjectStatJobTestResource extends ProjectStateTask{
 		return "success";
 	}
 	
-	@GetMapping("/ProjectWeeklyStatTest/")
+	@GetMapping("/projectStateJob/projectWeeklyStatTest")
 	@Timed
 	@Secured(AuthoritiesConstants.ADMIN)
-	public @ResponseBody String ProjectWeeklyStatTest(@RequestParam(value="date", required = false) Long date) {
+	public @ResponseBody String projectWeeklyStatTest(@RequestParam(value="date", required = false) Long date) {
 		log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to Test Resource: date : {}" , date);
 		if(date == null){
 			//每周一晚上22点开始跑定时任务
