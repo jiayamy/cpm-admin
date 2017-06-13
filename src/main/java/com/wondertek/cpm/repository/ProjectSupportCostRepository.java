@@ -2,7 +2,10 @@ package com.wondertek.cpm.repository;
 
 import java.util.List;
 
+import javax.transaction.Transactional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 import com.wondertek.cpm.domain.ProjectSupportCost;
@@ -23,4 +26,9 @@ public interface ProjectSupportCostRepository extends JpaRepository<ProjectSuppo
 	
 	@Query(" from ProjectSupportCost where contractId = ?1 and deptType = ?2 and userId = ?3 and statWeek = ?4")
 	ProjectSupportCost findByContractIdAndDeptTypeAndUserIdAndStatWeek(Long contractId, Long deptType, Long userId, Long statWeek);
+	
+	@Modifying
+	@Transactional
+	@Query("delete from ProjectSupportCost psc where psc.statWeek = ?1")
+	void deleteByStatWeek(Long statWeek);
 }

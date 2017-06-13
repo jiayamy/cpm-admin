@@ -160,6 +160,7 @@ public class AccountScheduledJob {
 	private void init(){
 		//奖金提成比率
 		List<BonusRate> bonusRates = bonusRateRepository.findAll();
+		bonusRateMap.clear();
 		if(bonusRates != null && bonusRates.size() > 0){
 			for(BonusRate bonusRate : bonusRates){
 				bonusRateMap.put(bonusRate.getDeptType()+"-"+bonusRate.getContractType(), bonusRate.getRate());
@@ -167,6 +168,7 @@ public class AccountScheduledJob {
 		}
 		//公摊成本比例
 		List<ShareCostRate> shareCostRates = shareCostRateRepository.findAll();
+		shareCostRateMap.clear();
 		if(shareCostRates != null && shareCostRates.size() > 0){
 			for(ShareCostRate shareCostRate : shareCostRates){
 				shareCostRateMap.put(shareCostRate.getDeptType()+"-"+shareCostRate.getContractType(), shareCostRate.getShareRate());
@@ -174,6 +176,7 @@ public class AccountScheduledJob {
 		}
 		//外部报价
 		List<ExternalQuotation> externalQuotations = externalQuotationRepository.findAll();
+		externalQuotationMap.clear();
 		if(externalQuotations != null && externalQuotations.size() > 0){
 			for(ExternalQuotation externalQuotation : externalQuotations){
 				externalQuotationMap.put(externalQuotation.getGrade(), externalQuotation.getHourCost());
@@ -181,6 +184,7 @@ public class AccountScheduledJob {
 		}
 		//部门信息
 		List<DeptInfo> deptInfos = deptInfoRepository.findAll();
+		deptIdTypeMap.clear();
 		if(deptInfos != null && deptInfos.size() > 0){
 			for(DeptInfo deptInfo : deptInfos){
 				deptIdTypeMap.put(deptInfo.getId(), deptInfo.getType());
@@ -192,52 +196,24 @@ public class AccountScheduledJob {
 	 * @param statWeek
 	 */
 	private void clear(Long statWeek){
-		//后期全部修改为直接使用sql或hql删除、不要查询后删除
 		//项目支撑成本信息
-		List<ProjectSupportCost> projectSupportCosts = projectSupportCostRepository.findByStatWeek(statWeek);
-		if(projectSupportCosts != null){
-			projectSupportCostRepository.delete(projectSupportCosts);
-		}
+		projectSupportCostRepository.deleteByStatWeek(statWeek);
 		//项目支撑奖金
-		List<ProjectSupportBonus> projectSupportBonuses = projectSupportBonusRepository.findByStatWeek(statWeek);
-		if(projectSupportBonuses != null){
-			projectSupportBonusRepository.delete(projectSupportBonuses);
-		}
+		projectSupportBonusRepository.deleteByStatWeek(statWeek);
 		//产品销售奖金
-		List<ProductSalesBonus> productSalesBonuses = productSalesBonusRepository.findByStatWeek(statWeek);
-		if(productSalesBonuses != null){
-			productSalesBonusRepository.delete(productSalesBonuses);
-		}
+		productSalesBonusRepository.deleteByStatWeek(statWeek);
 		//合同内部采购信息
-		List<ContractInternalPurchase> contractInternalPurchases = contractInternalPurchaseRepository.findByStatWeek(statWeek);
-		if(contractInternalPurchases != null){
-			contractInternalPurchaseRepository.delete(contractInternalPurchases);
-		}
+		contractInternalPurchaseRepository.deleteByStatWeek(statWeek);
 		//销售奖金
-		List<SalesBonus> salesBonuses = salesBonusRepository.findByStatWeek(statWeek);
-		if(salesBonuses != null){
-			salesBonusRepository.delete(salesBonuses);
-		}
+		salesBonusRepository.deleteByStatWeek(statWeek);
 		//咨询奖金
-		List<ConsultantsBonus> consultantsBonuses = consultantsBonusRepository.findByStatWeek(statWeek);
-		if(consultantsBonuses != null){
-			consultantsBonusRepository.delete(consultantsBonuses);
-		}
+		consultantsBonusRepository.deleteByStatWeek(statWeek);
 		//合同的项目奖金
-		List<ContractProjectBonus> contractProjectBonuses = contractProjectBonusRepository.findByStatWeek(statWeek);
-		if(contractProjectBonuses != null){
-			contractProjectBonusRepository.delete(contractProjectBonuses);
-		}
+		contractProjectBonusRepository.deleteByStatWeek(statWeek);
 		//奖金总表
-		List<Bonus> bonuses = bonusRepository.findByStatWeek(statWeek);
-		if(bonuses != null){
-			bonusRepository.delete(bonuses);
-		}
+		bonusRepository.deleteByStatWeek(statWeek);
 		//项目总体情况控制表
-		List<ProjectOverall> projectOveralls = projectOverallRepository.findByStatWeek(statWeek);
-		if(projectOveralls != null){
-			projectOverallRepository.delete(projectOveralls);
-		}
+		projectOverallRepository.deleteByStatWeek(statWeek);
 	}
 	/**
 	 * 合同和项目相关的统计，每周一晚上22点开始执行

@@ -13,14 +13,14 @@ import com.wondertek.cpm.domain.PurchaseItem;
  */
 public interface PurchaseItemRepository extends JpaRepository<PurchaseItem,Long> {
 	
-	@Query(" from PurchaseItem where contractId = ?1 and type = ?2 and status = 1 ")
-	List<PurchaseItem> findByContractIdAndType(Long contractId, Integer type);
+	@Query(" from PurchaseItem where contractId = ?1 and type = ?2 and updateTime <= ?3 and status = 1 ")
+	List<PurchaseItem> findByContractIdAndTypeAndBeforeUpdateTime(Long contractId, Integer type, ZonedDateTime updateTime);
 	
 	@Query(" from PurchaseItem where contractId = ?1 and source = ?2 and status = 1")
 	List<PurchaseItem> findByContractIdAndSource(Long contractId, Integer source);
 	
-	@Query(" from PurchaseItem where contractId = ?1 and source = ?2 and type = ?3 and status = 1 ")
-	List<PurchaseItem> findByContractIdAndSourceAndType(Long contractId, Integer source, Integer type);
+	@Query(" from PurchaseItem where contractId = ?1 and source = ?2 and type = ?3 and updateTime <= ?4 and status = 1 ")
+	List<PurchaseItem> findByContractIdAndSourceAndTypeAndBeforeUpdateTime(Long contractId, Integer source, Integer type, ZonedDateTime updateTime);
 	
 	@Query("select wpi from PurchaseItem wpi, ContractBudget wcb, DeptInfo wdi where wpi.budgetId = wcb.id and wcb.deptId = wdi.id and wpi.contractId = ?1 and wdi.type = ?2 and wpi.source = ?3 and wpi.type = ?4 and wpi.status = 1")
 	List<PurchaseItem> findByContractIdAndDeptTypeAndSourceAndType(Long contractId, Long deptType, Integer source, Integer type);

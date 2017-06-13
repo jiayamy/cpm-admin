@@ -2,7 +2,10 @@ package com.wondertek.cpm.repository;
 
 import java.util.List;
 
+import javax.transaction.Transactional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 import com.wondertek.cpm.domain.ProjectSupportBonus;
@@ -23,4 +26,9 @@ public interface ProjectSupportBonusRepository extends JpaRepository<ProjectSupp
 	
 	@Query(" from ProjectSupportBonus where statWeek = ?1")
 	List<ProjectSupportBonus> findByStatWeek(Long statWeek);
+	
+	@Modifying
+	@Transactional
+	@Query("delete from ProjectSupportBonus psb where psb.statWeek = ?1")
+	void deleteByStatWeek(Long statWeek);
 }
