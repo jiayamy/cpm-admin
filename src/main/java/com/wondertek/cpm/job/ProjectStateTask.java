@@ -1,6 +1,7 @@
 package com.wondertek.cpm.job;
 
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -309,8 +310,10 @@ public class ProjectStateTask {
 			projectCost.setType(ProjectCost.TYPE_HUMAN_COST);
 			Double total = 0D; 
 			Double totalHour = 0D;
+			List<Long> userTimesheetIds = new ArrayList<Long>();//被统计的员工日报id
 			List<UserTimesheet> userTimesheets = userTimesheetRepository.findByWorkDayAndObjIdAndType(workDay, projectInfo.getId(), UserTimesheet.TYPE_PROJECT);
 			for(UserTimesheet userTimesheet : userTimesheets){
+				userTimesheetIds.add(userTimesheet.getId());
 				UserCost userCost = userCostRepository.findMaxByCostMonthAndUserId(costMonth, userTimesheet.getUserId());
 				if(userCost != null){
 					if(!isEpibolic){
@@ -335,6 +338,9 @@ public class ProjectStateTask {
 			projectCost.setUpdateTime(ZonedDateTime.now());
 			projectCost.setCostDay(workDay);
 			projectCostRepository.save(projectCost);
+			if (!userTimesheetIds.isEmpty()) {
+				userTimesheetRepository.updateCharacterById(userTimesheetIds);//更新已经被统计的对应日报记录
+			}
 			currentDay = new Date(currentDay.getTime() + (24*60*60*1000));
 		}
 		

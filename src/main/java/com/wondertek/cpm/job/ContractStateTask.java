@@ -999,6 +999,7 @@ public class ContractStateTask {
 			Long costMonth = StringUtil.nullToLong(DateUtil.formatDate("yyyyMM", currentDay).toString());
 			ContractCost contractCost = new ContractCost();
 			contractCost.setContractId(contractInfo.getId());
+			List<Long> userTimesheetIds = new ArrayList<Long>();//被统计的员工日报id
 			//销售和咨询都有
 			if(contractInfo.getDeptId() != null && contractInfo.getDeptId() != 0 
 					&& contractInfo.getConsultantsDeptId() != null && contractInfo.getConsultantsDeptId() != 0){
@@ -1018,6 +1019,7 @@ public class ContractStateTask {
 				
 				if(userTimesheets != null && userTimesheets.size() > 0){
 					for(UserTimesheet userTimesheet : userTimesheets){
+						userTimesheetIds.add(userTimesheet.getId());
 						UserCost userCost = userCostRepository.findMaxByCostMonthAndUserId(costMonth, userTimesheet.getUserId());
 						if(userCost != null){
 							if(contractInfo.getIsEpibolic() != null && !contractInfo.getIsEpibolic()){
@@ -1051,6 +1053,7 @@ public class ContractStateTask {
 				}
 				if(userTimesheets2 != null && userTimesheets2.size() > 0){
 					for(UserTimesheet userTimesheet : userTimesheets2){
+						userTimesheetIds.add(userTimesheet.getId());
 						UserCost userCost = userCostRepository.findMaxByCostMonthAndUserId(costMonth, userTimesheet.getUserId());
 						if(userCost != null){
 							if(contractInfo.getIsEpibolic() != null && !contractInfo.getIsEpibolic()){
@@ -1104,6 +1107,7 @@ public class ContractStateTask {
 				Double totalHour = 0D;
 				if(userTimesheets != null && userTimesheets.size() > 0){
 					for(UserTimesheet userTimesheet : userTimesheets){
+						userTimesheetIds.add(userTimesheet.getId());
 						UserCost userCost = userCostRepository.findMaxByCostMonthAndUserId(costMonth, userTimesheet.getUserId());
 						if(userCost != null){
 							if(contractInfo.getIsEpibolic() != null && !contractInfo.getIsEpibolic()){
@@ -1132,6 +1136,9 @@ public class ContractStateTask {
 			contractCost.setUpdateTime(ZonedDateTime.now());
 			contractCost.setCostDay(workDay);
 			contractCostRepository.save(contractCost);
+			if(!userTimesheetIds.isEmpty()){
+				userTimesheetRepository.updateCharacterById(userTimesheetIds);//更新已经被统计的对应日报记录
+			}
 			currentDay = new Date(currentDay.getTime() + (24*60*60*1000));
 		}
 		
