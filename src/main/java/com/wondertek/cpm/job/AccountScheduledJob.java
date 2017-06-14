@@ -60,7 +60,18 @@ import com.wondertek.cpm.repository.ShareCostRateRepository;
 import com.wondertek.cpm.repository.UserCostRepository;
 import com.wondertek.cpm.repository.UserRepository;
 import com.wondertek.cpm.repository.UserTimesheetRepository;
-
+/**
+ * 财务部需求，周统计，可单独跑
+ * 与合同相关的统计
+ * 	销售内部采购成本
+ * 	项目支撑奖金
+ * 	销售项目信息
+ * 	咨询项目信息
+ * 	奖金总表
+ * 	项目总体情况控制
+ * @author lvliuzhong
+ *
+ */
 @Component
 @EnableScheduling
 public class AccountScheduledJob {
@@ -147,25 +158,33 @@ public class AccountScheduledJob {
 	 * 数据初始化
 	 */
 	private void init(){
+		//奖金提成比率
 		List<BonusRate> bonusRates = bonusRateRepository.findAll();
+		bonusRateMap.clear();
 		if(bonusRates != null && bonusRates.size() > 0){
 			for(BonusRate bonusRate : bonusRates){
 				bonusRateMap.put(bonusRate.getDeptType()+"-"+bonusRate.getContractType(), bonusRate.getRate());
 			}
 		}
+		//公摊成本比例
 		List<ShareCostRate> shareCostRates = shareCostRateRepository.findAll();
+		shareCostRateMap.clear();
 		if(shareCostRates != null && shareCostRates.size() > 0){
 			for(ShareCostRate shareCostRate : shareCostRates){
 				shareCostRateMap.put(shareCostRate.getDeptType()+"-"+shareCostRate.getContractType(), shareCostRate.getShareRate());
 			}
 		}
+		//外部报价
 		List<ExternalQuotation> externalQuotations = externalQuotationRepository.findAll();
+		externalQuotationMap.clear();
 		if(externalQuotations != null && externalQuotations.size() > 0){
 			for(ExternalQuotation externalQuotation : externalQuotations){
 				externalQuotationMap.put(externalQuotation.getGrade(), externalQuotation.getHourCost());
 			}
 		}
+		//部门信息
 		List<DeptInfo> deptInfos = deptInfoRepository.findAll();
+		deptIdTypeMap.clear();
 		if(deptInfos != null && deptInfos.size() > 0){
 			for(DeptInfo deptInfo : deptInfos){
 				deptIdTypeMap.put(deptInfo.getId(), deptInfo.getType());
@@ -177,49 +196,33 @@ public class AccountScheduledJob {
 	 * @param statWeek
 	 */
 	private void clear(Long statWeek){
-		//后期全部修改为直接使用sql或hql删除、不要查询后删除
-		List<ProjectSupportCost> projectSupportCosts = projectSupportCostRepository.findByStatWeek(statWeek);
-		if(projectSupportCosts != null){
-			projectSupportCostRepository.delete(projectSupportCosts);
-		}
-		List<ProjectSupportBonus> projectSupportBonuses = projectSupportBonusRepository.findByStatWeek(statWeek);
-		if(projectSupportBonuses != null){
-			projectSupportBonusRepository.delete(projectSupportBonuses);
-		}
-		List<ProductSalesBonus> productSalesBonuses = productSalesBonusRepository.findByStatWeek(statWeek);
-		if(productSalesBonuses != null){
-			productSalesBonusRepository.delete(productSalesBonuses);
-		}
-		List<ContractInternalPurchase> contractInternalPurchases = contractInternalPurchaseRepository.findByStatWeek(statWeek);
-		if(contractInternalPurchases != null){
-			contractInternalPurchaseRepository.delete(contractInternalPurchases);
-		}
-		List<SalesBonus> salesBonuses = salesBonusRepository.findByStatWeek(statWeek);
-		if(salesBonuses != null){
-			salesBonusRepository.delete(salesBonuses);
-		}
-		List<ConsultantsBonus> consultantsBonuses = consultantsBonusRepository.findByStatWeek(statWeek);
-		if(consultantsBonuses != null){
-			consultantsBonusRepository.delete(consultantsBonuses);
-		}
-		List<ContractProjectBonus> contractProjectBonuses = contractProjectBonusRepository.findByStatWeek(statWeek);
-		if(contractProjectBonuses != null){
-			contractProjectBonusRepository.delete(contractProjectBonuses);
-		}
-		List<Bonus> bonuses = bonusRepository.findByStatWeek(statWeek);
-		if(bonuses != null){
-			bonusRepository.delete(bonuses);
-		}
-		List<ProjectOverall> projectOveralls = projectOverallRepository.findByStatWeek(statWeek);
-		if(projectOveralls != null){
-			projectOverallRepository.delete(projectOveralls);
-		}
+		//项目支撑成本信息
+		projectSupportCostRepository.deleteByStatWeek(statWeek);
+		//项目支撑奖金
+		projectSupportBonusRepository.deleteByStatWeek(statWeek);
+		//产品销售奖金
+		productSalesBonusRepository.deleteByStatWeek(statWeek);
+		//合同内部采购信息
+		contractInternalPurchaseRepository.deleteByStatWeek(statWeek);
+		//销售奖金
+		salesBonusRepository.deleteByStatWeek(statWeek);
+		//咨询奖金
+		consultantsBonusRepository.deleteByStatWeek(statWeek);
+		//合同的项目奖金
+		contractProjectBonusRepository.deleteByStatWeek(statWeek);
+		//奖金总表
+		bonusRepository.deleteByStatWeek(statWeek);
+		//项目总体情况控制表
+		projectOverallRepository.deleteByStatWeek(statWeek);
 	}
 	/**
 	 * 合同和项目相关的统计，每周一晚上22点开始执行
+	 * 关系：
+	 * 	
 	 */
 	@Scheduled(cron="0 0 22 * * MON")
 	protected void accountScheduled(){
+		//TODO 统计开始
 		//每周一晚上22点开始跑定时任务
 		accountScheduled(new Date());
 	}
@@ -247,7 +250,7 @@ public class AccountScheduledJob {
 		//删除历史记录
 		clear(statWeek);
 		
-		//合同
+		//TODO 统计的合同
 		List<ContractInfo> contractInfos = contractInfoRepository.findByStartDayAndStatusOrUpdateTime(ContractInfo.STATUS_VALIDABLE, beginTime, endTime);
 		if(contractInfos != null && contractInfos.size() > 0){
 			for(ContractInfo contractInfo : contractInfos){
@@ -281,7 +284,7 @@ public class AccountScheduledJob {
 				if(contractFinishInfo != null){
 					contractFinishRate = StringUtil.nullToDouble(contractFinishInfo.getFinishRate());
 				}
-				
+				//TODO 销售奖金
 				log.info("====begin generate Sales Bonus belong to Contract : "+contractInfo.getSerialNum()+"========");
 				if(contractInfo.getSalesmanId() != null && contractInfo.getSalesman() != null){
 					SalesBonus salesBonus = new  SalesBonus();
@@ -320,7 +323,7 @@ public class AccountScheduledJob {
 					log.info("No Sales Founded belong to contract : " + contractInfo.getSerialNum());
 				}
 				log.info("====end generate Sales Bonus belong to Contract : "+contractInfo.getSerialNum()+"========");
-				
+				//TODO 咨询奖金
 				log.info("====begin generate Consultants Bonus belong to Contract : "+contractInfo.getSerialNum()+"=======");
 				if(contractInfo.getConsultantsId() != null && contractInfo.getConsultants() != null){
 					ConsultantsBonus consultantsBonus = new ConsultantsBonus();
@@ -352,7 +355,7 @@ public class AccountScheduledJob {
 					log.info("No Consultants Founded belong to contract :" + contractInfo.getSerialNum());
 				}
 				log.info("====end generate Consultants Bonus belong to Contract : "+contractInfo.getSerialNum()+"=======");
-				//合同下项目
+				//TODO 合同下项目
 				List<Long> contractDeptTypes = new ArrayList<>();//合同内部门类型列表
 				List<ProjectInfo> projectInfos = projectInfoRepository.findAllByContractId(contractId);
 				if(projectInfos != null && projectInfos.size() > 0){
@@ -372,8 +375,8 @@ public class AccountScheduledJob {
 						Long deptType = deptIdTypeMap.get(projectInfo.getDeptId());
 						if(deptType != null && !contractDeptTypes.contains(deptType)){
 							contractDeptTypes.add(deptType);
-							
 						}
+						//TODO 统计项目支撑成本
 						//上一周的（统计都是当前统计上一周的）
 						List<UserTimesheet> userTimesheets = userTimesheetRepository.findByTypeAndObjIdAndEndDay(UserTimesheet.TYPE_PROJECT, projectId, statWeek);
 						if(userTimesheets != null && userTimesheets.size() > 0){
@@ -459,7 +462,7 @@ public class AccountScheduledJob {
 							log.info("No UserTimeSheet Founded Belong to : " + projectInfo.getSerialNum());
 						}
 						
-						//项目支撑奖金
+						//TODO 项目支撑奖金
 						log.info("====begin generate Project Support Bonus "+projectInfo.getSerialNum()+"========");
 						ProjectSupportBonus projectSupportBonus = new ProjectSupportBonus();
 						projectSupportBonus.setStatWeek(statWeek);
@@ -517,7 +520,7 @@ public class AccountScheduledJob {
 						log.info("====end generate Project Support Bonus "+projectInfo.getSerialNum()+"========");
 					}
 					
-					//项目支撑成本
+					//TODO 项目支撑成本
 					List<ProjectSupportCost> saveList = new ArrayList<ProjectSupportCost>();
 					for(String key : thisSupportCostMap.keySet()){//每个部门类型中的每个用户都有一条记录
 						if(lastSupportCostMap.containsKey(key)){
@@ -618,7 +621,7 @@ public class AccountScheduledJob {
 //				}
 //				log.info("====end generate Product Sales Bonus to Contract : "+contractInfo.getSerialNum()+"======");
 				
-				//项目总体情况控制表
+				//TODO 项目总体情况控制表
 				log.info("====begin generate Project Overall to Contract : "+contractInfo.getSerialNum()+"=======");
 				ProjectOverall projectOverall = new ProjectOverall();
 				projectOverall.setStatWeek(statWeek);
@@ -691,7 +694,7 @@ public class AccountScheduledJob {
 				projectOverallRepository.save(projectOverall);
 				log.info("====end generate Project Overall to Contract : "+contractInfo.getSerialNum()+"=======");
 				
-				//奖金总表
+				//TODO 奖金总表
 				log.info("====begin generate Bonus to Contract : "+contractInfo.getSerialNum()+"=======");
 				Bonus bonus = new Bonus();
 				bonus.setStatWeek(statWeek);
@@ -710,6 +713,7 @@ public class AccountScheduledJob {
 				ProjectOverall projectOverall2 = projectOverallRepository.findByContractIdAndStatWeek(contractId, statWeek);
 				Bonus bonus2 = bonusRepository.findByContractIdAndStatWeek(contractId, statWeek);
 				for(int i = 0; i < contractDeptTypes.size(); i++){
+					//TODO 合同内部采购信息
 					ContractInternalPurchase contractInternalPurchase = new ContractInternalPurchase();
 					contractInternalPurchase.setStatWeek(statWeek);
 					//项目总体控制表主键
@@ -724,7 +728,7 @@ public class AccountScheduledJob {
 					contractInternalPurchase.setCreator(creator);
 					contractInternalPurchase.setCreateTime(ZonedDateTime.now());
 					contractInternalPurchaseRepository.save(contractInternalPurchase);
-					
+					//TODO 合同项目奖金
 					ContractProjectBonus contractProjectBonus = new ContractProjectBonus();
 					contractProjectBonus.setStatWeek(statWeek);
 					contractProjectBonus.setBonusId(bonus2.getId());

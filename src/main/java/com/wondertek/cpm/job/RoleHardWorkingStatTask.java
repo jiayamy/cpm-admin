@@ -23,11 +23,15 @@ import com.wondertek.cpm.repository.RoleHardWorkingRepository;
 import com.wondertek.cpm.service.RoleHardWorkingService;
 import com.wondertek.cpm.service.UserService;
 import com.wondertek.cpm.service.UserTimesheetService;
-
+/**
+ * 员工勤奋度
+ * @author lvliuzhong
+ *
+ */
 @Component
 @EnableScheduling
-public class RoleHardWorkingStateTask {
-	private Logger log = LoggerFactory.getLogger(RoleHardWorkingStateTask.class);
+public class RoleHardWorkingStatTask {
+	private Logger log = LoggerFactory.getLogger(RoleHardWorkingStatTask.class);
 
 	@Inject
 	private RoleHardWorkingService roleHardWorkingService;
@@ -45,12 +49,12 @@ public class RoleHardWorkingStateTask {
 	 * 每个月的第二天的1点开始执行，员工的勤奋度
 	 */
 	@Scheduled(cron = "0 0 3 2 * ?")
-	protected void generateProjectMonthlyState() {
+	protected void generateMonthlyState() {
 		Date now = new Date();
-		generateProjectMonthlyState(now);
+		generateMonthlyState(now);
 	}
 
-	protected void generateProjectMonthlyState(Date now) {
+	protected void generateMonthlyState(Date now) {
 		log.info("=====begin generate role hardworking state=====");
 		ZonedDateTime date = ZonedDateTime.now();
 		Long fromDay = StringUtil.nullToLong(DateUtil.formatDate("yyyyMMdd", DateUtil.lastMonthBegin(now)));

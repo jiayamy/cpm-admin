@@ -86,16 +86,19 @@ public class ProjectStateTask {
 	
 	private void init(){
 		List<ContractInfo> contractInfos = contractInfoRepository.findAll();
+		contractIsEpibolicMap.clear();
 		for(ContractInfo contractInfo : contractInfos){
 			contractIsEpibolicMap.put(contractInfo.getId(), contractInfo.getIsEpibolic() != null ? contractInfo.getIsEpibolic() : Boolean.FALSE);
 		}
 		List<ExternalQuotation> externalQuotations = externalQuotationRepository.findAll();
+		externalQuotationMap.clear();
 		if(externalQuotations != null && externalQuotations.size() > 0){
 			for(ExternalQuotation externalQuotation : externalQuotations){
 				externalQuotationMap.put(externalQuotation.getGrade(), externalQuotation.getHourCost());
 			}
 		}
 		List<User> users = userRepository.findAll();
+		userIdGradeMap.clear();
 		if(users != null && users.size() > 0){
 			for(User user : users){
 				userIdGradeMap.put(user.getId(), user.getGrade());
@@ -107,7 +110,7 @@ public class ProjectStateTask {
 		}
 	}
 	/**
-	 * 每周的项目周统计，在合同统计之前执行
+	 * TODO 每周的项目周统计，在合同统计之前执行
 	 */
 	@Scheduled(cron = "0 0 21 ? * MON")
 	protected void generateProjectWeeklyState(){
@@ -125,46 +128,8 @@ public class ProjectStateTask {
 			for (ProjectInfo projectInfo : projectInfos) {
 				log.info("======begin generate project : "+projectInfo.getSerialNum()+"=====");
 				Long id = projectInfo.getId();
-				//初始化projectcost
-				try {
-					while(true){
-						StatIdentify statIdentify = statIdentifyRepository.findByObjIdAndType(projectInfo.getId(), StatIdentify.TYPE_PROJECT);
-						if(statIdentify != null){
-							Integer status = statIdentify.getStatus();
-							if(status == StatIdentify.STATUS_UNAVALIABLE){
-								log.info("====waiting for statIdentfiy belong to project : " + projectInfo.getSerialNum());
-								Thread.sleep(5*1000);
-							}else{
-								initIdentify(projectInfo);
-								break;
-							}
-						}else{
-							initIdentify(projectInfo);
-							break;
-						}
-					}
-					if(projectInfo.getStatus() == ProjectInfo.STATUS_ADD){
-						ProjectCost projectCost = projectCostRepository.findMaxByProjectIdAndCostDayAndType(projectInfo.getId(), StringUtil.nullToLong(dates[0]), StringUtil.nullToLong(dates[6]), ProjectCost.TYPE_HUMAN_COST);
-						if(projectCost != null){
-							Date initDate = DateUtil.addOneDay(DateUtil.parseDate("yyyyMMdd", projectCost.getCostDay().toString()));
-							initProjectHumanCost(projectInfo, initDate, DateUtil.lastSundayEnd(now));
-						}else{
-							initProjectHumanCost(projectInfo, DateUtil.lastMonday(now), DateUtil.lastSundayEnd(now));
-						}
-					}else{
-						ProjectCost projectCost = projectCostRepository.findMaxByProjectIdAndCostDayAndType(projectInfo.getId(), StringUtil.nullToLong(dates[0]), StringUtil.nullToLong(dates[6]), ProjectCost.TYPE_HUMAN_COST);
-						if(projectCost != null){
-							Date initDate = DateUtil.addOneDay(DateUtil.parseDate("yyyyMMdd", projectCost.getCostDay().toString()));
-							initProjectHumanCost(projectInfo, initDate, Date.from(projectInfo.getUpdateTime().toInstant()));
-						}else{
-							initProjectHumanCost(projectInfo, DateUtil.lastMonday(now), Date.from(projectInfo.getUpdateTime().toInstant()));
-						}
-					}
-				} catch (Exception e) {
-					e.printStackTrace();
-				}finally {
-					overIdentify(projectInfo);
-				}
+				//初始化projectcost项目成本中人工成本
+				initProjectCost(projectInfo,dates[0],dates[6],DateUtil.lastMonday(now),DateUtil.lastSundayEnd(now));
 				
 				//初始上周的stat
 				List<ProjectWeeklyStat> projectWeeklyStats = projectWeeklyStatRepository.findByStatWeekAndProjectId(StringUtil.nullToLong(dates[6]), id);
@@ -185,28 +150,12 @@ public class ProjectStateTask {
 					log.error("no projectFinishInfo found belong to " + projectInfo.getSerialNum());
 					projectWeeklyStat.setFinishRate(0D);
 				}
-				//人工成本
-				Double humanCost = 0D;
-				List<ProjectCost> projectCosts2 = projectCostRepository.findByProjectIdAndType(id, ProjectCost.TYPE_HUMAN_COST);
-				if(projectCosts2 != null && projectCosts2.size() > 0){
-					for(ProjectCost projectCost : projectCosts2){
-						humanCost += projectCost.getTotal();
-					}
-				}else{
-					log.error("no humanCost found belong to " + projectInfo.getSerialNum());
-				}
-				projectWeeklyStat.setHumanCost(humanCost);
-				//报销成本
-				List<ProjectCost> projectCosts = projectCostRepository.findAllByProjectIdAndNoType(id, ProjectCost.TYPE_HUMAN_COST);
-				Double payment = 0D;
-				if(projectCosts != null && projectCosts.size() > 0){
-					for (ProjectCost projectCost2 : projectCosts) {
-						payment += projectCost2.getTotal();
-					}
-				}else{
-					log.error("no projectPayment found belong to " + projectInfo.getSerialNum());
-				}
-				projectWeeklyStat.setPayment(payment);
+				//人工成本,从项目成本中查询数据
+				Double humanCost = projectCostRepository.findTotalByProjectIdAndTypeAndBeforeCostDay(id, ProjectCost.TYPE_HUMAN_COST, StringUtil.nullToLong(dates[6]));
+				projectWeeklyStat.setHumanCost(StringUtil.nullToDouble(humanCost));
+				//报销成本，从项目成本中查询数据
+				Double payment = projectCostRepository.findTotalByProjectIdAndNoTypeAndBeforeCostDay(id, ProjectCost.TYPE_HUMAN_COST,StringUtil.nullToLong(dates[6]));
+				projectWeeklyStat.setPayment(StringUtil.nullToDouble(payment));
 				//项目总工时
 				Double totalInput = 0D;
 				List<Object[]> inputList =  userTimesheetRepository.findSumByDateAndObjIdAndType(StringUtil.nullToLong(dates[6]),id, UserTimesheet.TYPE_PROJECT);
@@ -250,46 +199,7 @@ public class ProjectStateTask {
 				
 				Long id = projectInfo.getId();
 				//初始化cost
-				try {
-					while(true){
-						StatIdentify statIdentify = statIdentifyRepository.findByObjIdAndType(projectInfo.getId(), StatIdentify.TYPE_PROJECT);
-						if(statIdentify != null){
-							Integer status = statIdentify.getStatus();
-							if(status == StatIdentify.STATUS_UNAVALIABLE){
-								log.info("====waiting for statIdentfiy belong to project : " + projectInfo.getSerialNum());
-								Thread.sleep(5*1000);
-							}else{
-								initIdentify(projectInfo);
-								break;
-							}
-						}else{
-							initIdentify(projectInfo);
-							break;
-						}
-					}
-					if(projectInfo.getStatus() == ProjectInfo.STATUS_ADD){
-						ProjectCost projectCost = projectCostRepository.findMaxByProjectIdAndCostDayAndType(projectInfo.getId(), StringUtil.nullToLong(fDay), StringUtil.nullToLong(lDay), ProjectCost.TYPE_HUMAN_COST);
-						if(projectCost != null){
-							Date initDate = DateUtil.addOneDay(DateUtil.parseDate("yyyyMMdd", projectCost.getCostDay().toString()));
-							initProjectHumanCost(projectInfo, initDate, DateUtil.lastMonthend(now));
-						}else{
-							initProjectHumanCost(projectInfo, DateUtil.lastMonthBegin(now), DateUtil.lastMonthend(now));
-						}
-					}else{
-						ProjectCost projectCost = projectCostRepository.findMaxByProjectIdAndCostDayAndType(projectInfo.getId(), StringUtil.nullToLong(fDay), StringUtil.nullToLong(lDay), ProjectCost.TYPE_HUMAN_COST);
-						if(projectCost != null){
-							Date initDate = DateUtil.addOneDay(DateUtil.parseDate("yyyyMMdd", projectCost.getCostDay().toString()));
-							initProjectHumanCost(projectInfo, initDate, Date.from(projectInfo.getUpdateTime().toInstant()));
-						}else{
-							initProjectHumanCost(projectInfo, DateUtil.lastMonthBegin(now), Date.from(projectInfo.getUpdateTime().toInstant()));
-						}
-						
-					}
-				} catch (Exception e) {
-					e.printStackTrace();
-				}finally {
-					overIdentify(projectInfo);
-				}
+				initProjectCost(projectInfo,fDay,lDay,DateUtil.lastMonthBegin(now),DateUtil.lastMonthend(now));
 				//初始上月的stat
 				List<ProjectMonthlyStat> projectMonthlyStats = projectMonthlyStatRepository.findByStatWeekAndProjectId(StringUtil.nullToLong(lMonth), projectInfo.getId());
 				if(projectMonthlyStats != null && projectMonthlyStats.size() > 0){
@@ -310,27 +220,11 @@ public class ProjectStateTask {
 					projectMonthlyStat.setFinishRate(0D);
 				}
 				//人工成本
-				Double humanCost = 0D;
-				List<ProjectCost> projectCosts2 = projectCostRepository.findByProjectIdAndType(id, ProjectCost.TYPE_HUMAN_COST);
-				if(projectCosts2 != null && projectCosts2.size() > 0){
-					for(ProjectCost projectCost : projectCosts2){
-						humanCost += projectCost.getTotal();
-					}
-				}else{
-					log.error("no humanCost found belong to " + projectInfo.getSerialNum());
-				}
-				projectMonthlyStat.setHumanCost(humanCost);
+				Double humanCost = projectCostRepository.findTotalByProjectIdAndTypeAndBeforeCostDay(id, ProjectCost.TYPE_HUMAN_COST, StringUtil.nullToLong(lDay));
+				projectMonthlyStat.setHumanCost(StringUtil.nullToDouble(humanCost));
 				//报销成本
-				List<ProjectCost> projectCosts = projectCostRepository.findAllByProjectIdAndNoType(id, ProjectCost.TYPE_HUMAN_COST);
-				Double payment = 0D;
-				if(projectCosts != null && projectCosts.size() > 0){
-					for (ProjectCost projectCost2 : projectCosts) {
-						payment += projectCost2.getTotal();
-					}
-				}else{
-					log.error("no projectPayment found belong to " + projectInfo.getSerialNum());
-				}
-				projectMonthlyStat.setPayment(payment);
+				Double payment = projectCostRepository.findTotalByProjectIdAndNoTypeAndBeforeCostDay(id, ProjectCost.TYPE_HUMAN_COST, StringUtil.nullToLong(lDay));;
+				projectMonthlyStat.setPayment(StringUtil.nullToDouble(payment));
 				//项目总工时
 				Double totalInput = 0D;
 				List<Object[]> inputList = userTimesheetRepository.findSumByDateAndObjIdAndType(StringUtil.nullToLong(lDay), id, UserTimesheet.TYPE_PROJECT);
@@ -351,7 +245,54 @@ public class ProjectStateTask {
 		}
 		log.info("=====end generate project monthly state=====");
 	}
-	
+	/**
+	 * 初始化项目工时成本
+	 * @param dates 
+	 * @param now 
+	 */
+	private void initProjectCost(ProjectInfo projectInfo, String startDayStr, String endDayStr,
+			Date startDay, Date endDay) {
+		try {
+			//查看该项目是否在初始化工时信息
+			while(true){
+				StatIdentify statIdentify = statIdentifyRepository.findByObjIdAndType(projectInfo.getId(), StatIdentify.TYPE_PROJECT);
+				if(statIdentify != null){
+					Integer status = statIdentify.getStatus();
+					if(status == StatIdentify.STATUS_UNAVALIABLE){
+						log.info("====waiting for statIdentfiy belong to project : " + projectInfo.getSerialNum());
+						Thread.sleep(5*1000);
+					}else{
+						initIdentify(projectInfo);
+						break;
+					}
+				}else{
+					initIdentify(projectInfo);
+					break;
+				}
+			}
+			//该项目在起始日期内最后一条工时成本信息
+			ProjectCost projectCost = projectCostRepository.findMaxByProjectIdAndCostDayAndType(projectInfo.getId(), StringUtil.nullToLong(startDayStr), StringUtil.nullToLong(endDayStr), ProjectCost.TYPE_HUMAN_COST);
+			if(projectInfo.getStatus() == ProjectInfo.STATUS_ADD){
+				if(projectCost != null){//起始结束日期内有项目工时成本
+					Date initDate = DateUtil.addOneDay(DateUtil.parseDate("yyyyMMdd", projectCost.getCostDay().toString()));
+					initProjectHumanCost(projectInfo, initDate, endDay);
+				}else{
+					initProjectHumanCost(projectInfo, startDay, endDay);
+				}
+			}else{
+				if(projectCost != null){
+					Date initDate = DateUtil.addOneDay(DateUtil.parseDate("yyyyMMdd", projectCost.getCostDay().toString()));
+					initProjectHumanCost(projectInfo, initDate, Date.from(projectInfo.getUpdateTime().toInstant()));
+				}else{
+					initProjectHumanCost(projectInfo, startDay, Date.from(projectInfo.getUpdateTime().toInstant()));
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}finally {
+			overIdentify(projectInfo);
+		}
+	}
 	private void initProjectHumanCost(ProjectInfo projectInfo, Date beginTime, Date endTime){
 		if(endTime.getTime() < beginTime.getTime()){
 			return;

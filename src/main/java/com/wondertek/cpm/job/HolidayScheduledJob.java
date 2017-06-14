@@ -7,6 +7,7 @@ import javax.inject.Inject;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -17,6 +18,7 @@ import com.wondertek.cpm.domain.HolidayInfo;
 import com.wondertek.cpm.service.HolidayInfoService;
 
 @Component
+@EnableScheduling
 public class HolidayScheduledJob {
 	
 	private final Logger log = LoggerFactory.getLogger(HolidayScheduledJob.class);

@@ -20,7 +20,7 @@ public interface ContractInfoRepository extends JpaRepository<ContractInfo,Long>
 	@Query(" from ContractInfo where startDay <= ?3 and ( status = ?1 or (updateTime >= ?2 and updateTime <= ?3))")
 	List<ContractInfo> findByStartDayAndStatusOrUpdateTime(Integer status, ZonedDateTime beginTime, ZonedDateTime endTime);
 	
-	@Query(" from ContractInfo where status = ?1 or updateTime >= ?2")
+	@Query(" from ContractInfo where createTime <= ?2 and (status = ?1 or updateTime >= ?2)")
 	List<ContractInfo> findByStatusOrEndTime(Integer status, ZonedDateTime endTime);
 	
 	@Query(" from ContractInfo where mark = ?1")

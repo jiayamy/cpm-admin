@@ -12,11 +12,17 @@ import com.wondertek.cpm.domain.ProjectCost;
  */
 public interface ProjectCostRepository extends JpaRepository<ProjectCost,Long> {
 	
-	@Query("from ProjectCost where projectId = ?1 and type=?2 and status=1")
-	List<ProjectCost> findByProjectIdAndType(Long projectId, Integer type);
+	@Query("from ProjectCost where projectId = ?1 and type=?2 and costDay <= ?3 and status=1")
+	List<ProjectCost> findByProjectIdAndTypeAndBeforeCostDay(Long projectId, Integer type, Long costDay);
 	
-	@Query("from ProjectCost where projectId = ?1 and type!=?2 and status=1")
-	List<ProjectCost> findAllByProjectIdAndNoType(Long projectId, Integer type);
+	@Query("select sum(total) from ProjectCost where projectId = ?1 and type=?2 and costDay <= ?3 and status=1")
+	Double findTotalByProjectIdAndTypeAndBeforeCostDay(Long projectId, Integer type, Long costDay);
+	
+	@Query("from ProjectCost where projectId = ?1 and type!=?2 and costDay <= ?3 and status=1")
+	List<ProjectCost> findAllByProjectIdAndNoTypeAndBeforeCostDay(Long projectId, Integer type, Long costDay);
+	
+	@Query("select sum(total) from ProjectCost where projectId = ?1 and type!=?2 and costDay <= ?3 and status=1")
+	Double findTotalByProjectIdAndNoTypeAndBeforeCostDay(Long projectId, Integer type, Long costDay);
 	
 	@Query(" from ProjectCost where id in (select max(id) from ProjectCost where status = 1 and projectId = ?1 and costDay >= ?2 and costDay <= ?3 and type = ?4 group by projectId)")
 	ProjectCost findMaxByProjectIdAndCostDayAndType(Long projectId, Long beginTime, Long endTime, Integer type);

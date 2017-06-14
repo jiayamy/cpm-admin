@@ -23,10 +23,10 @@ public class ContractStatJobTestResource extends ContractStateTask{
 	
 	private final Logger log = LoggerFactory.getLogger(ContractStatJobTestResource.class);
 	
-	@GetMapping("/ContractMonthlyStatTest/")
+	@GetMapping("/contractStatJob/contractMonthlyStatTest")
 	@Timed
 	@Secured(AuthoritiesConstants.ADMIN)
-	public @ResponseBody String ContractMonthlyStatTest(@RequestParam(value="date", required = false) Long date) {
+	public @ResponseBody String contractMonthlyStatTest(@RequestParam(value="date", required = false) Long date) {
 		log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to Test Resource: date : {}" , date);
 		if(date == null){
 			//每周一晚上22点开始跑定时任务
@@ -37,16 +37,30 @@ public class ContractStatJobTestResource extends ContractStateTask{
 		return "success";
 	}
 	
-	@GetMapping("/ContractWeeklyStatTest/")
+	@GetMapping("/contractStatJob/contractWeeklyStatTest")
 	@Timed
 	@Secured(AuthoritiesConstants.ADMIN)
-	public @ResponseBody String ContractWeeklyStatTest(@RequestParam(value="date", required = false) Long date) {
+	public @ResponseBody String contractWeeklyStatTest(@RequestParam(value="date", required = false) Long date) {
 		log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to Test Resource: date : {}" , date);
 		if(date == null){
 			//每周一晚上22点开始跑定时任务
 			generateContractWeeklyStat(new Date());
 		}else{
 			generateContractWeeklyStat(DateUtil.parseDate("yyyyMMdd", date.toString()));
+		}
+		return "success";
+	}
+	
+	@GetMapping("/contractStatJob/saleContractWeeklyStat")
+	@Timed
+	@Secured(AuthoritiesConstants.ADMIN)
+	public @ResponseBody String saleContractWeeklyStat(@RequestParam(value="date", required = false) Long date) {
+		log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to Test Resource: date : {}" , date);
+		if(date == null){
+			//每周一晚上22点开始跑定时任务
+			generateSaleContractWeeklyStat(new Date());
+		}else{
+			generateSaleContractWeeklyStat(DateUtil.parseDate("yyyyMMdd", date.toString()));
 		}
 		return "success";
 	}

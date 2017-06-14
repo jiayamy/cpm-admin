@@ -13,26 +13,26 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.codahale.metrics.annotation.Timed;
 import com.wondertek.cpm.config.DateUtil;
-import com.wondertek.cpm.job.AccountScheduledJob;
+import com.wondertek.cpm.job.RoleHardWorkingStatTask;
 import com.wondertek.cpm.security.AuthoritiesConstants;
 import com.wondertek.cpm.security.SecurityUtils;
 
 @RestController
 @RequestMapping("/api")
-public class AccountScheduleJobTestResource extends AccountScheduledJob{
+public class RoleHardWorkingStatJobTestResource extends RoleHardWorkingStatTask{
 	
-	private final Logger log = LoggerFactory.getLogger(AccountScheduledJob.class);
+	private final Logger log = LoggerFactory.getLogger(RoleHardWorkingStatJobTestResource.class);
 	
-	@GetMapping("/accountScheduledJob/accountScheduledTest/")
+	@GetMapping("/roleHardWorkingStatJob/monthlyStateTest/")
 	@Timed
 	@Secured(AuthoritiesConstants.ADMIN)
-	public @ResponseBody String accountScheduledTest(@RequestParam(value="date", required = false) Long date) {
+	public @ResponseBody String monthlyStateTest(@RequestParam(value="date", required = false) Long date) {
 		log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to Test Resource: date : {}" , date);
 		if(date == null){
 			//每周一晚上22点开始跑定时任务
-			accountScheduled(new Date());
+			generateMonthlyState(new Date());
 		}else{
-			accountScheduled(DateUtil.parseDate("yyyyMMdd", date.toString()));
+			generateMonthlyState(DateUtil.parseDate("yyyyMMdd", date.toString()));
 		}
 		return "success";
 	}
