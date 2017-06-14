@@ -103,7 +103,7 @@
             parent: 'project-info',
             url: '/new',
             data: {
-                authorities: ['ROLE_PROJECT_INFO'],
+                authorities: ['ROLE_PROJECT_INFO_END'],
                 pageTitle: 'cpmApp.projectInfo.detail.title'
             },
             views: {
@@ -161,7 +161,7 @@
             parent: 'project-info.new',
             url: '/queryDept?selectType&showChild',
             data: {
-                authorities: ['ROLE_PROJECT_INFO']
+                authorities: ['ROLE_PROJECT_INFO_END']
             },
             onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
                 $uibModal.open({
@@ -192,7 +192,7 @@
             parent: 'project-info',
             url: '/edit/{id}',
             data: {
-                authorities: ['ROLE_PROJECT_INFO'],
+                authorities: ['ROLE_PROJECT_INFO_END'],
                 pageTitle: 'cpmApp.projectInfo.detail.title'
             },
             views: {
@@ -268,7 +268,7 @@
             parent: 'project-info',
             url: '/delete/{id}',
             data: {
-                authorities: ['ROLE_PROJECT_INFO']
+                authorities: ['ROLE_PROJECT_INFO_END']
             },
             onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
                 $uibModal.open({
@@ -295,7 +295,8 @@
             parent: 'project-info',
             url: '/end/{id}',
             data: {
-                authorities: ['ROLE_PROJECT_INFO']
+//                authorities: ['ROLE_PROJECT_INFO']
+            	authorities: ['ROLE_PROJECT_INFO_END']
             },
             onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
                 $uibModal.open({

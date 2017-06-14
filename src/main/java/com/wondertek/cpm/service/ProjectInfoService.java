@@ -25,12 +25,15 @@ import com.wondertek.cpm.domain.ProjectFinishInfo;
 import com.wondertek.cpm.domain.ProjectInfo;
 import com.wondertek.cpm.domain.User;
 import com.wondertek.cpm.domain.vo.LongValue;
+import com.wondertek.cpm.domain.vo.ProjectInfoUserVo;
 import com.wondertek.cpm.domain.vo.ProjectInfoVo;
 import com.wondertek.cpm.repository.ProjectFinishInfoRepository;
 import com.wondertek.cpm.repository.ProjectInfoDao;
 import com.wondertek.cpm.repository.ProjectInfoRepository;
 import com.wondertek.cpm.repository.ProjectUserDao;
+import com.wondertek.cpm.repository.ProjectUserRepository;
 import com.wondertek.cpm.repository.UserRepository;
+import com.wondertek.cpm.repository.UserTimesheetRepository;
 import com.wondertek.cpm.security.SecurityUtils;
 
 /**
@@ -52,6 +55,10 @@ public class ProjectInfoService {
     private ProjectInfoDao projectInfoDao;
     @Inject
     private ProjectUserDao projectUserDao;
+    @Inject
+    private UserTimesheetRepository userTimesheetRepository;
+    @Inject
+    private ProjectUserRepository projectUserRepository;
 
     /**
      * Save a projectInfo.
@@ -243,5 +250,59 @@ public class ProjectInfoService {
 			map.put(pi.getSerialNum(), pi.getId());
 		}
 		return map;
+	}
+	
+	public List<ProjectInfoUserVo> queryProjectInfoUser(Long projectId){
+		List<ProjectInfoUserVo> result = new ArrayList<ProjectInfoUserVo>();
+		List<String> infoUsers = new ArrayList<String>();	//日报中的人员(String-serialNum)
+		List<Object[]> projectUsers = null;					//项目中的人员
+		Double sum = 0D;
+		List<Object[]> projectInfoUserVos = userTimesheetRepository.findProjectInfoUserByObjIdAndType(projectId);
+		if(projectInfoUserVos != null && !projectInfoUserVos.isEmpty()){
+			for(Object[] ob : projectInfoUserVos){
+				ProjectInfoUserVo vo = new ProjectInfoUserVo();
+				vo.setUserName(StringUtil.null2Str(ob[0]));
+				vo.setSerialNum(StringUtil.null2Str(ob[1]));
+				vo.setTotalInput(StringUtil.nullToDouble(ob[2]));
+				infoUsers.add(vo.getSerialNum());
+				sum += vo.getTotalInput();
+				result.add(vo);
+			}
+		}
+		//检查是否还有项目人员没有统计到
+		projectUsers = projectUserRepository.getUsersByProjectId(projectId);
+		if(projectUsers != null && !projectUsers.isEmpty()){
+			if(projectUsers.size() > infoUsers.size()){
+				for(Object[] ob : projectUsers){
+					if(!infoUsers.contains(ob[0])){
+						ProjectInfoUserVo add = new ProjectInfoUserVo();
+						add.setSerialNum(StringUtil.null2Str(ob[0]));
+						add.setUserName(StringUtil.null2Str(ob[1]));
+						add.setTotalInput(0D);
+						infoUsers.add(add.getSerialNum());
+						result.add(add);
+					}
+				}
+			}
+		}
+		//检查项目负责人是否被统计
+		List<Object[]> pmInfo = projectInfoRepository.findPmByProjectId(projectId);
+		if(pmInfo != null && !pmInfo.isEmpty()){
+			for(Object[] ob : pmInfo){
+				if(!infoUsers.contains(ob[0])){
+					ProjectInfoUserVo pmVo = new ProjectInfoUserVo();
+					pmVo.setSerialNum(StringUtil.null2Str(ob[0]));
+					pmVo.setUserName(StringUtil.null2Str(ob[1]));
+					pmVo.setTotalInput(0D);
+					result.add(pmVo);
+				}
+			}
+		}
+		//添加合计
+		ProjectInfoUserVo total = new ProjectInfoUserVo();
+		total.setSerialNum("合计");
+		total.setTotalInput(sum);
+		result.add(total);
+		return result;
 	}
 }

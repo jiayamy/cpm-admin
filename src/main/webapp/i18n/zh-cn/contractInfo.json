@@ -47,7 +47,7 @@
             },
             "required":{
             	"salesmanAndconsultants":"销售和咨询必填一个",
-            	"serialNum": "本字段不能为空.WY开头编号为预立合同"
+            	"serialNum": "本字段不能为空.WY/MY/HY开头编号为预立合同"
             },
             "upload":{
             	"requiredError":"上传文件数据有误，请重新核对",

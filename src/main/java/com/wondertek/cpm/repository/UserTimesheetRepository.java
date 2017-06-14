@@ -3,7 +3,9 @@ package com.wondertek.cpm.repository;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.wondertek.cpm.domain.UserTimesheet;
 
@@ -68,4 +70,18 @@ public interface UserTimesheetRepository extends JpaRepository<UserTimesheet,Lon
 	
 	@Query("select sum(acceptInput),sum(acceptExtraInput) from UserTimesheet where workDay <= ?1 and objId = ?2 and type = ?3 and status = 1 ")
 	public List<Object[]> findSumByDateAndObjIdAndType(Long endDay, Long objId, Integer type);
+	
+	@Query(value = "select ju.last_name,ju.serial_num, sum(wut.accept_input)+sum(wut.accept_extra_input) as totalInput from w_user_timesheet wut ,jhi_user ju  where wut.user_id = ju.id and wut.obj_id = ?1 and wut.type_ = 3 group by wut.user_id",nativeQuery = true)
+	public List<Object[]> findProjectInfoUserByObjIdAndType(Long objId);
+	
+	@Modifying
+	@Transactional
+	@Query(" update UserTimesheet set character = 1 where id in ?1")
+	public void updateCharacterById(List<Long> ids);
+	
+	@Query("select count(id) from UserTimesheet where id = ?1 and (realInput != ?2 or acceptInput != ?3 or extraInput != ?4 or acceptExtraInput != ?5) and character = 1")
+	public int getCountByIdAndInputs(Long id,Double realInput,Double acceptInput,Double extraInput,Double acceptExtraInput);
+	
+	@Query(" from UserTimesheet ut where id = ?1 and (realInput != ?2 or acceptInput != ?3 or extraInput != ?4 or acceptExtraInput != ?5) and character = 1")
+	public UserTimesheet getUserTimesheetByIdAndInputs(Long id,Double realInput,Double acceptInput,Double extraInput,Double acceptExtraInput);
 }

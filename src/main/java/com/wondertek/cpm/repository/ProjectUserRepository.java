@@ -20,4 +20,7 @@ public interface ProjectUserRepository extends JpaRepository<ProjectUser,Long> {
 	@Query("from ProjectUser pu where pu.projectId = ?1 and pu.userId = ?2")
 	List<ProjectUser> getdates(Long projectId, Long userId);
 	
+	@Query(" select ju.serialNum,ju.lastName from ProjectUser pu ,User ju where pu.userId = ju.id and pu.projectId = ?1")
+	List<Object[]> getUsersByProjectId(Long projectId);
+	
 }

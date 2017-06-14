@@ -77,6 +77,10 @@ public final class AuthoritiesConstants {
 	 */
     public static final String ROLE_PROJECT_INFO = "ROLE_PROJECT_INFO";
     /**
+     * 项目信息-立结项
+     */
+    public static final String ROLE_PROJECT_INFO_END = "ROLE_PROJECT_INFO_END";
+    /**
 	 * 项目人员权限
 	 */
     public static final String ROLE_PROJECT_USER = "ROLE_PROJECT_USER";

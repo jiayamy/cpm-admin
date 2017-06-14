@@ -1,11 +1,12 @@
 package com.wondertek.cpm.repository;
 
-import com.wondertek.cpm.domain.ProjectInfo;
-
-import org.springframework.data.jpa.repository.*;
-
 import java.time.ZonedDateTime;
 import java.util.List;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+
+import com.wondertek.cpm.domain.ProjectInfo;
 
 /**
  * Spring Data JPA repository for the ProjectInfo entity.
@@ -35,4 +36,7 @@ public interface ProjectInfoRepository extends JpaRepository<ProjectInfo,Long> {
 
 	@Query(" from ProjectInfo")
 	List<ProjectInfo> getProjectInfo();
+	
+	@Query(" select ju.serialNum,ju.lastName from ProjectInfo pi,User ju where pi.pmId = ju.id and pi.id = ?1")
+	List<Object[]> findPmByProjectId(Long projectId);
 }

@@ -1149,6 +1149,16 @@ public class UserTimesheetService {
     		if(count > 0){
     			return "cpmApp.userTimesheet.save.dataChanged";
     		}
+    		//判断character为1的情况
+    		if(!updateList.isEmpty()){
+    			for(UserTimesheet ut : updateList){
+    				int count1 = userTimesheetRepository.getCountByIdAndInputs(ut.getId(), ut.getRealInput(), 
+    						ut.getAcceptInput(), ut.getExtraInput(), ut.getAcceptExtraInput());
+    				if(count1 > 0){
+    					return "cpmApp.userTimesheet.save.character#" + ut.getWorkDay()+"-"+ut.getObjName();
+    				}
+    			}
+    		}
     		//保存记录
     		userTimesheetDao.saveByUser(saveList,updateList);
     		return "cpmApp.userTimesheet.save.success";
@@ -1308,6 +1318,7 @@ public class UserTimesheetService {
 		userTimesheet.setWorkDay(workDay);
 		userTimesheet.setExtraInput(0D);
 		userTimesheet.setAcceptExtraInput(0D);
+		userTimesheet.setCharacter(UserTimesheet.CHARACTER_ABLE);
 		return userTimesheet;
 	}
 	
@@ -1330,6 +1341,7 @@ public class UserTimesheetService {
 		userTimesheet.setWorkDay(workDay);
 		userTimesheet.setRealInput(0D);
 		userTimesheet.setAcceptInput(0D);
+		userTimesheet.setCharacter(UserTimesheet.CHARACTER_ABLE);
 		return userTimesheet;
 	}
 	
@@ -2006,6 +2018,16 @@ public class UserTimesheetService {
     			}
     			if(sb.length() != 0){
     				return "cpmApp.contractTimesheet.save.holiday#" + sb.toString();
+    			}
+    		}
+    		//判断character为1的情况
+    		if(!updateList.isEmpty()){
+    			for(UserTimesheet ut : updateList){
+    				UserTimesheet old = userTimesheetRepository.getUserTimesheetByIdAndInputs(ut.getId(), ut.getRealInput(), 
+    						ut.getAcceptInput(), ut.getExtraInput(), ut.getAcceptExtraInput());
+    				if(old != null){
+    					return "cpmApp.contractTimesheet.save.character#" + old.getWorkDay()+"-"+old.getObjName();
+    				}
     			}
     		}
     		//保存记录

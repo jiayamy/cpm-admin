@@ -32,6 +32,9 @@ public class UserTimesheet implements Serializable {
     public static final Integer TYPE_CONTRACT = 2;
     public static final Integer TYPE_PROJECT = 3;
     
+    public static final Integer CHARACTER_ABLE = 0;
+    public static final Integer CHARACTER_UNABLE = 1;
+    
     public static final String TYPE_INPUT_NORMAL = "正常工时";
     public static final String TYPE_INPUT_EXTRA = "加班工时";
     
@@ -112,6 +115,12 @@ public class UserTimesheet implements Serializable {
      */
     @Column(name = "accept_extra_input")
     private Double acceptExtraInput;
+    
+    /**
+     * 统计状态值，0统计前,1统计后(0-可修改，1-不可以修改)
+     */
+    @Column(name = "character_")
+    private Integer character;
 
     public Long getId() {
         return id;
@@ -310,6 +319,14 @@ public class UserTimesheet implements Serializable {
 		this.acceptExtraInput = acceptExtraInput;
 	}
 
+	public Integer getCharacter() {
+		return character;
+	}
+
+	public void setCharacter(Integer character) {
+		this.character = character;
+	}
+
 	@Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -336,7 +353,7 @@ public class UserTimesheet implements Serializable {
 				+ ", type=" + type + ", objId=" + objId + ", objName=" + objName + ", realInput=" + realInput
 				+ ", acceptInput=" + acceptInput + ", status=" + status + ", workArea=" + workArea + ", creator="
 				+ creator + ", createTime=" + createTime + ", updator=" + updator + ", updateTime=" + updateTime
-				+ ", extraInput=" + extraInput + ", acceptExtraInput=" + acceptExtraInput + "]";
+				+ ", extraInput=" + extraInput + ", acceptExtraInput=" + acceptExtraInput + ", character=" + character + "]";
 	}
 
 }

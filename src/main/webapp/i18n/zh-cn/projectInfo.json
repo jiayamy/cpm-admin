@@ -5,7 +5,8 @@
                 "title": "项目信息",
                 "createLabel": "新增",
                 "createOrEditLabel": "项目信息",
-                "import": "导入"
+                "import": "导入",
+                "projectUserInfos": "项目人员信息"
             },
             "created": "新建成功",
             "updated": "修改成功",
@@ -62,6 +63,11 @@
             	"numFile":"选择的文件数量不能大于1！",
             	"handleError":"处理出错",
             	"handleSucc":"处理成功"
+            },
+            "user":{
+            	"serialNum": "工号",
+            	"userName" : "姓名",
+            	"totalInput": "总工时"
             },
             "serialNum": "项目编号",
             "contractId": "合同编号",
