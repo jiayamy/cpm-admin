@@ -163,8 +163,12 @@ public class ContractStateTask {
 		String [] dates = DateUtil.getWholeWeekByDate(DateUtil.lastSaturday(now));
 		ZonedDateTime beginTime = DateUtil.getZonedDateTime(DateUtil.lastMonday(now).getTime());
 		ZonedDateTime endTime = DateUtil.getZonedDateTime(DateUtil.lastSundayEnd(now).getTime());
+		//上周一
 		Long fDay = StringUtil.nullToLong(dates[0]);
+		//上周日
 		Long statWeek = StringUtil.nullToLong(dates[6]);
+		//上上周日
+		Long lstatWeek = StringUtil.nullToLong(DateUtil.getWholeWeekByDate(DateUtil.addDayNum(-1, DateUtil.lastMonday(now)))[6]);
 		List<ContractInfo> contractInfos = contractInfoRepository.findByStatusOrEndTime(ContractInfo.STATUS_VALIDABLE, beginTime);
 		if(contractInfos != null && contractInfos.size() > 0){
 			for(ContractInfo contractInfo : contractInfos){
@@ -275,7 +279,7 @@ public class ContractStateTask {
 					//项目报销成本
 					Double projectPayment = 0D;
 					List<ProjectInfo> projectInfos = projectInfoRepository.findByContractId(id);
-					ContractWeeklyStat lastCWS = contractWeeklyStatRepository.findMaxByStatWeekBeforeAndContractId(fDay, id);//上上周记录
+					ContractWeeklyStat lastCWS = contractWeeklyStatRepository.findOneByStatWeekAndContractId(lstatWeek, id);//上上周记录
 					if(projectInfos != null && projectInfos.size() > 0){
 						for(ProjectInfo projectInfo : projectInfos){
 							//人工成本
@@ -375,9 +379,14 @@ public class ContractStateTask {
 		init();
 		ZonedDateTime beginTime = DateUtil.getZonedDateTime(DateUtil.lastMonthBegin(now).getTime());
 		ZonedDateTime endTime = DateUtil.getZonedDateTime(DateUtil.lastMonthend(now).getTime());
+		//上月第一天
 		Long fDay = StringUtil.nullToLong(DateUtil.formatDate("yyyyMMdd", DateUtil.lastMonthBegin(now)));
+		//上月最后天
 		Long lDay = StringUtil.nullToLong(DateUtil.formatDate("yyyyMMdd", DateUtil.lastMonthend(now)));
+		//上个月
 		String lMonth = DateUtil.formatDate("yyyyMM", DateUtil.lastMonthBegin(now));
+		//上上个月
+		String nMonth = DateUtil.formatDate("yyyyMM", DateUtil.addDayNum(-1, DateUtil.lastMonthBegin(now)));
 		List<ContractInfo> contractInfos = contractInfoRepository.findByStatusOrEndTime(ContractInfo.STATUS_VALIDABLE, beginTime);
 		if(contractInfos != null && contractInfos.size() > 0){
 			for(ContractInfo contractInfo : contractInfos){
@@ -491,7 +500,7 @@ public class ContractStateTask {
 					Double projectHumanCost = 0D;
 					//项目报销成本
 					Double projectPayment = 0D;
-					ContractMonthlyStat lastCMS = contractMonthlyStatRepository.findMaxByStatWeekBeforeAndContractId(StringUtil.nullToLong(lMonth), id);//上上个月记录
+					ContractMonthlyStat lastCMS = contractMonthlyStatRepository.findOneByStatWeekAndContractId(StringUtil.nullToLong(nMonth), id);//上上个月记录
 					List<ProjectInfo> projectInfos = projectInfoRepository.findByContractId(id);
 					if(projectInfos != null && projectInfos.size() > 0){
 						for(ProjectInfo projectInfo : projectInfos){
