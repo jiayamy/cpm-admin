@@ -35,6 +35,6 @@ public interface ProductSalesBonusRepository extends JpaRepository<ProductSalesB
 	
 	@Modifying
 	@Transactional
-	@Query("delete from ProductSalesBonus psb where psb.statWeek = ?1")
-	void deleteByStatWeek(Long statWeek);
+	@Query("delete from ProductSalesBonus psb where psb.contractId = ?1 and psb.statWeek = ?2")
+	void deleteByContractIdAndStatWeek(Long contractId, Long statWeek);
 }

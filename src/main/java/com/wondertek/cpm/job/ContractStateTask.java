@@ -154,9 +154,9 @@ public class ContractStateTask {
 	@Scheduled(cron = "0 0 23 ? * MON")
 	protected void generateContractWeeklyStat(){
 		Date now = new Date();
-		generateContractWeeklyStat(now);
+		generateContractWeeklyStat(null, now);
 	}
-	protected void generateContractWeeklyStat(Date now){
+	protected void generateContractWeeklyStat(Long contractId, Date now){
 		log.info("=====begin generate Contract Weekly Stat=====");
 		init();
 		
@@ -172,6 +172,9 @@ public class ContractStateTask {
 		List<ContractInfo> contractInfos = contractInfoRepository.findByStatusOrEndTime(ContractInfo.STATUS_VALIDABLE, beginTime);
 		if(contractInfos != null && contractInfos.size() > 0){
 			for(ContractInfo contractInfo : contractInfos){
+				if(contractId != null && !contractId.equals(contractInfo.getId())){
+					continue;
+				}
 				log.info("=========begin generate Contract : "+contractInfo.getSerialNum()+"=========");
 				//初始化合同工时
 				initContractCost(contractInfo, fDay, statWeek, DateUtil.lastMonday(now), DateUtil.lastSundayEnd(now));
@@ -358,6 +361,9 @@ public class ContractStateTask {
 				contractWeeklyStat.setCreateTime(ZonedDateTime.now());
 				contractWeeklyStatRepository.save(contractWeeklyStat);
 				log.info(" =======contract : "+contractInfo.getSerialNum()+" weekly stat saved======= ");
+				if(contractId != null && contractId.equals(contractInfo.getId())){
+					break;
+				}
 			}
 		}else{
 			log.error("no contractInfos found");
@@ -371,10 +377,10 @@ public class ContractStateTask {
 	@Scheduled(cron = "0 30 23 1 * ?")
 	protected void generateContractMonthlyStat(){
 		Date now = new Date();
-		generateContractMonthlyStat(now);
+		generateContractMonthlyStat(null,now);
 	}
 	
-	protected void generateContractMonthlyStat(Date now){
+	protected void generateContractMonthlyStat(Long contractId, Date now){
 		log.info("=====begin generate Contract Monthly Stat=====");
 		init();
 		ZonedDateTime beginTime = DateUtil.getZonedDateTime(DateUtil.lastMonthBegin(now).getTime());
@@ -390,6 +396,9 @@ public class ContractStateTask {
 		List<ContractInfo> contractInfos = contractInfoRepository.findByStatusOrEndTime(ContractInfo.STATUS_VALIDABLE, beginTime);
 		if(contractInfos != null && contractInfos.size() > 0){
 			for(ContractInfo contractInfo : contractInfos){
+				if(contractId != null && !contractId.equals(contractInfo.getId())){
+					continue;
+				}
 				log.info("=====begin generate Contract : "+contractInfo.getSerialNum()+"=======");
 				//初始contractCost
 				initContractCost(contractInfo, fDay, lDay, DateUtil.lastMonthBegin(now), DateUtil.lastMonthend(now));
@@ -570,6 +579,9 @@ public class ContractStateTask {
 				contractMonthlyStat.setCreateTime(ZonedDateTime.now());
 				contractMonthlyStatRepository.save(contractMonthlyStat);
 				log.info(" =======contract : "+contractInfo.getSerialNum()+" monthly stat saved======= ");
+				if(contractId != null && contractId.equals(contractInfo.getId())){
+					break;
+				}
 			}
 		}else{
 			log.error("no contractInfos found");
@@ -583,10 +595,10 @@ public class ContractStateTask {
 	@Scheduled(cron = "0 59 23 ? * MON")
 	protected void generateSaleContractWeeklyStat(){
 		Date now = new Date();
-		generateSaleContractWeeklyStat(now);
+		generateSaleContractWeeklyStat(null, now);
 	}
 	
-	protected void generateSaleContractWeeklyStat(Date now){
+	protected void generateSaleContractWeeklyStat(Long contrId, Date now){
 		log.info("=====begin generate Sale Contract Weekly Stat=====");
 		init();
 		
@@ -678,6 +690,9 @@ public class ContractStateTask {
 			Map<Long,SaleWeeklyStat> saleWeeklyStatsMap = new HashMap<Long,SaleWeeklyStat>();//key:一级部门id
 			
 			for(ContractInfo contractInfo : contractInfos){
+				if(contrId != null && !contrId.equals(contractInfo.getId())){
+					continue;
+				}
 				log.info("=========begin generate Sale Contract : "+contractInfo.getSerialNum()+"=========");
 				SaleWeeklyStat saleWeeklyStat = new SaleWeeklyStat();
 				//合同id
@@ -922,6 +937,9 @@ public class ContractStateTask {
 				}else{
 					saleWeeklyStat.setDeptId(primaryKey);//把deptId改为所属的一级部门id
 					saleWeeklyStatsMap.put(primaryKey, saleWeeklyStat);
+				}
+				if(contrId != null && contrId.equals(contractInfo.getId())){
+					break;
 				}
 			}
 			//填充其余销售部门

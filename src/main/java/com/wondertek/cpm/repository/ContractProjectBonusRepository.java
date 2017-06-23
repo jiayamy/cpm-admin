@@ -17,6 +17,6 @@ public interface ContractProjectBonusRepository extends JpaRepository<ContractPr
 	
 	@Modifying
 	@Transactional
-	@Query("delete from ContractProjectBonus cpb where cpb.statWeek = ?1")
-	void deleteByStatWeek(Long statWeek);
+	@Query("delete from ContractProjectBonus cpb where cpb.contractId = ?1 and cpb.statWeek = ?2")
+	void deleteByContractIdAndStatWeek(Long contractId, Long statWeek);
 }

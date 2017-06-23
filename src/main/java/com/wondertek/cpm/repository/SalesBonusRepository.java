@@ -26,6 +26,6 @@ public interface SalesBonusRepository extends JpaRepository<SalesBonus,Long> {
 	
 	@Modifying
 	@Transactional
-	@Query("delete from SalesBonus sb where sb.statWeek = ?1")
-	void deleteByStatWeek(Long statWeek);
+	@Query("delete from SalesBonus sb where sb.contractId = ?1 and sb.statWeek = ?2")
+	void deleteByContractIdAndStatWeek(Long contractId, Long statWeek);
 }

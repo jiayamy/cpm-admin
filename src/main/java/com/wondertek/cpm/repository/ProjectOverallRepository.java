@@ -20,6 +20,6 @@ public interface ProjectOverallRepository extends JpaRepository<ProjectOverall,L
 	
 	@Modifying
 	@Transactional
-	@Query("delete from ProjectOverall po where po.statWeek = ?1")
-	void deleteByStatWeek(Long statWeek);
+	@Query("delete from ProjectOverall po where po.contractId = ?1 and po.statWeek = ?2")
+	void deleteByContractIdAndStatWeek(Long contractId, Long statWeek);
 }

@@ -20,6 +20,6 @@ public interface ContractInternalPurchaseRepository extends JpaRepository<Contra
 	
 	@Modifying
 	@Transactional
-	@Query("delete from ContractInternalPurchase cip where cip.statWeek = ?1")
-	void deleteByStatWeek(Long statWeek);
+	@Query("delete from ContractInternalPurchase cip where cip.contractId = ?1 and cip.statWeek = ?2")
+	void deleteByContractIdAndStatWeek(Long contractId, Long statWeek);
 }

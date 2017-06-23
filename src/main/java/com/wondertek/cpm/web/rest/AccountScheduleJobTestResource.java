@@ -26,13 +26,15 @@ public class AccountScheduleJobTestResource extends AccountScheduledJob{
 	@GetMapping("/accountScheduledJob/accountScheduledTest/")
 	@Timed
 	@Secured(AuthoritiesConstants.ADMIN)
-	public @ResponseBody String accountScheduledTest(@RequestParam(value="date", required = false) Long date) {
-		log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to Test Resource: date : {}" , date);
-		if(date == null){
-			//每周一晚上22点开始跑定时任务
-			accountScheduled(new Date());
+	public @ResponseBody String accountScheduledTest(
+			@RequestParam(value = "contractId", required = false) Long contractId,
+			@RequestParam(value="date", required = false) Long date) {
+		log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to Test Resource:contractId:{} and date : {}" ,contractId,  date);
+		if(date != null){
+			accountScheduled(contractId, DateUtil.parseDate("yyyyMMdd", date.toString()));
 		}else{
-			accountScheduled(DateUtil.parseDate("yyyyMMdd", date.toString()));
+			//每周一晚上22点开始跑定时任务
+			accountScheduled(contractId, new Date());
 		}
 		return "success";
 	}

@@ -20,6 +20,6 @@ public interface BonusRepository extends JpaRepository<Bonus,Long>{
 	
 	@Modifying
 	@Transactional
-	@Query("delete from Bonus b where b.statWeek = ?1")
-	void deleteByStatWeek(Long statWeek);
+	@Query("delete from Bonus b where b.contractId = ?1 and b.statWeek = ?2")
+	void deleteByContractIdAndStatWeek(Long contractId, Long statWeek);
 }

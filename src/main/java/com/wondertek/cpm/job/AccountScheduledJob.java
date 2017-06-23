@@ -195,25 +195,25 @@ public class AccountScheduledJob {
 	 * 删除记录
 	 * @param statWeek
 	 */
-	private void clear(Long statWeek){
+	private void clear(Long contractId, Long statWeek){
 		//项目支撑成本信息
-		projectSupportCostRepository.deleteByStatWeek(statWeek);
+		projectSupportCostRepository.deleteByContractIdAndStatWeek(contractId,statWeek);
 		//项目支撑奖金
-		projectSupportBonusRepository.deleteByStatWeek(statWeek);
+		projectSupportBonusRepository.deleteByContractIdAndStatWeek(contractId, statWeek);
 		//产品销售奖金
-		productSalesBonusRepository.deleteByStatWeek(statWeek);
+		productSalesBonusRepository.deleteByContractIdAndStatWeek(contractId, statWeek);
 		//合同内部采购信息
-		contractInternalPurchaseRepository.deleteByStatWeek(statWeek);
+		contractInternalPurchaseRepository.deleteByContractIdAndStatWeek(contractId, statWeek);
 		//销售奖金
-		salesBonusRepository.deleteByStatWeek(statWeek);
+		salesBonusRepository.deleteByContractIdAndStatWeek(contractId, statWeek);
 		//咨询奖金
-		consultantsBonusRepository.deleteByStatWeek(statWeek);
+		consultantsBonusRepository.deleteByContractIdAndStatWeek(contractId,statWeek);
 		//合同的项目奖金
-		contractProjectBonusRepository.deleteByStatWeek(statWeek);
+		contractProjectBonusRepository.deleteByContractIdAndStatWeek(contractId, statWeek);
 		//奖金总表
-		bonusRepository.deleteByStatWeek(statWeek);
+		bonusRepository.deleteByContractIdAndStatWeek(contractId, statWeek);
 		//项目总体情况控制表
-		projectOverallRepository.deleteByStatWeek(statWeek);
+		projectOverallRepository.deleteByContractIdAndStatWeek(contractId, statWeek);
 	}
 	/**
 	 * 合同和项目相关的统计，每周一晚上22点开始执行
@@ -224,9 +224,9 @@ public class AccountScheduledJob {
 	protected void accountScheduled(){
 		//TODO 统计开始
 		//每周一晚上22点开始跑定时任务
-		accountScheduled(new Date());
+		accountScheduled(null, new Date());
 	}
-	protected void accountScheduled(Date statTime){
+	protected void accountScheduled(Long contrId, Date statTime){
 		log.info("=====begin Account Scheduled=====statTime:" + DateUtil.formatDate(DateUtil.DATE_FORMAT, statTime));
 		//数据初始化
 		init();
@@ -247,15 +247,18 @@ public class AccountScheduledJob {
 		Long costMonth = StringUtil.nullToLong(DateUtil.formatDate("yyyyMM", DateUtil.lastSundayEnd(statTime)).toString());//上周周日所在月
 		String creator = "admin";
 		
-		//删除历史记录
-		clear(statWeek);
-		
 		//TODO 统计的合同
 		List<ContractInfo> contractInfos = contractInfoRepository.findByStartDayAndStatusOrUpdateTime(ContractInfo.STATUS_VALIDABLE, beginTime, endTime);
 		if(contractInfos != null && contractInfos.size() > 0){
 			for(ContractInfo contractInfo : contractInfos){
 				Long contractId = contractInfo.getId();
 				Integer contractType = contractInfo.getType();
+				if(contrId != null && !contrId.equals(contractId)){
+					continue;
+				}
+				//删除历史记录
+				clear(contractId, statWeek);
+				
 				//收款金额
 				Double contractReceiveTotal = 0D;
 				List<ContractReceive> contractReceives = contractReceiveRepository.findAllByContractIdAndReceiveDayBefore(contractId, statWeek);
@@ -743,6 +746,9 @@ public class AccountScheduledJob {
 					contractProjectBonusRepository.save(contractProjectBonus);
 				}
 				log.info("====end generate Contract Internal Purchase & Contract Project Bonus to Contract : "+contractInfo.getSerialNum()+"=====");
+				if(contrId != null && contrId.equals(contractId)){
+					break;
+				}
 			}
 		}else{
 			log.info("No ContractInfo Founded");

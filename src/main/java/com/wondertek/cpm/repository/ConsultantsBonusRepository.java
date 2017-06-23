@@ -23,6 +23,6 @@ public interface ConsultantsBonusRepository extends JpaRepository<ConsultantsBon
 	
 	@Modifying
 	@Transactional
-	@Query("delete from ConsultantsBonus cb where cb.statWeek = ?1")
-	void deleteByStatWeek(Long statWeek);
+	@Query("delete from ConsultantsBonus cb where cb.contractId = ?1 and cb.statWeek = ?2")
+	void deleteByContractIdAndStatWeek(Long contractId, Long statWeek);
 }

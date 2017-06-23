@@ -29,6 +29,6 @@ public interface ProjectSupportBonusRepository extends JpaRepository<ProjectSupp
 	
 	@Modifying
 	@Transactional
-	@Query("delete from ProjectSupportBonus psb where psb.statWeek = ?1")
-	void deleteByStatWeek(Long statWeek);
+	@Query("delete from ProjectSupportBonus psb where psb.contractId = ?1 and psb.statWeek = ?2")
+	void deleteByContractIdAndStatWeek(Long contractId, Long statWeek);
 }

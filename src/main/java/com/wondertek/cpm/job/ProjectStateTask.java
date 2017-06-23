@@ -116,9 +116,9 @@ public class ProjectStateTask {
 	@Scheduled(cron = "0 0 21 ? * MON")
 	protected void generateProjectWeeklyState(){
 		Date now = new Date();
-		generateProjectWeeklyState(now);
+		generateProjectWeeklyState(null, now);
 	}
-	protected void generateProjectWeeklyState(Date now){
+	protected void generateProjectWeeklyState(Long projectId, Date now){
 		log.info("=====begin generate project weekly state=====");
 		init();
 		String [] dates = DateUtil.getWholeWeekByDate(DateUtil.lastSaturday(now));
@@ -127,6 +127,9 @@ public class ProjectStateTask {
 		List<ProjectInfo> projectInfos = projectInfoRepository.findByStatusOrBeginTime(ProjectInfo.STATUS_ADD, beginTime);
 		if(projectInfos != null && projectInfos.size() > 0){
 			for (ProjectInfo projectInfo : projectInfos) {
+				if(projectId != null && !projectId.equals(projectInfo.getId())){
+					continue;
+				}
 				log.info("======begin generate project : "+projectInfo.getSerialNum()+"=====");
 				Long id = projectInfo.getId();
 				//初始化projectcost项目成本中人工成本
@@ -171,6 +174,9 @@ public class ProjectStateTask {
 				projectWeeklyStat.setStatWeek(StringUtil.nullToLong(dates[6]));
 				projectWeeklyStatRepository.save(projectWeeklyStat);
 				log.info("project : "+projectInfo.getSerialNum()+" weekly state saved");
+				if(projectId != null && projectId.equals(projectInfo.getId())){
+					break;
+				}
 			}
 		}else{
 			log.error("no projectinfo found");
@@ -183,9 +189,9 @@ public class ProjectStateTask {
 	@Scheduled(cron = "0 0 22 1 * ?")
 	protected void generateProjectMonthlyState(){
 		Date now = new Date();
-		generateProjectMonthlyState(now);
+		generateProjectMonthlyState(null, now);
 	}
-	protected void generateProjectMonthlyState(Date now){
+	protected void generateProjectMonthlyState(Long projectId, Date now){
 		log.info("=====begin generate project monthly state=====");
 		init();
 		ZonedDateTime beginTime = DateUtil.getZonedDateTime(DateUtil.lastMonthBegin(now).getTime());
@@ -196,6 +202,9 @@ public class ProjectStateTask {
 		List<ProjectInfo> projectInfos = projectInfoRepository.findByStatusOrBeginTime(ProjectInfo.STATUS_ADD, beginTime);
 		if(projectInfos != null && projectInfos.size() > 0){
 			for (ProjectInfo projectInfo : projectInfos) {
+				if(projectId != null && !projectId.equals(projectInfo.getId())){
+					continue;
+				}
 				log.info("=======begin generate project : "+projectInfo.getSerialNum()+"=======");
 				
 				Long id = projectInfo.getId();
@@ -240,6 +249,9 @@ public class ProjectStateTask {
 				projectMonthlyStat.setStatWeek(StringUtil.nullToLong(lMonth));
 				projectMonthlyStatRepository.save(projectMonthlyStat);
 				log.info("project : "+projectInfo.getSerialNum()+" monthly state saved");
+				if(projectId != null && projectId.equals(projectInfo.getId())){
+					break;
+				}
 			}
 		}else{
 			log.error("no projectinfo found");
