@@ -42,7 +42,8 @@
                 "projectCost": "项目报销",
                 "projectCostTimesheet": "工时成本",
                 "projectTimesheet": "项目日报",
-                "projectOverAllController": "项目总体情况控制"
+                "projectOverAllController": "项目总体情况控制",
+                "projectUserInput": "项目人员工时"
             },
             "stat":{
             	"main":"统计报表",
@@ -150,7 +151,8 @@
             "clear":"重置",
             "export":"导出",
             "upload":"上传",
-            "downloadTpl":"下载模板"
+            "downloadTpl":"下载模板",
+            "ensure":"确认"
         },
         "detail": {
             "field": "字段",
