@@ -58,6 +58,11 @@
             	url:'api/project-infos/queryUserProject',
             	method:'GET',
             	isArray:true
+            },
+            'queryProjectInfoUser':{
+            	url:'api/project-infos/queryProjectInfoUser',
+            	method:'GET',
+            	isArray:true
             }
         });
     }

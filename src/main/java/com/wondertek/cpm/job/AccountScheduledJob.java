@@ -160,6 +160,7 @@ public class AccountScheduledJob {
 	private void init(){
 		//奖金提成比率
 		List<BonusRate> bonusRates = bonusRateRepository.findAll();
+		bonusRateMap.clear();
 		if(bonusRates != null && bonusRates.size() > 0){
 			for(BonusRate bonusRate : bonusRates){
 				bonusRateMap.put(bonusRate.getDeptType()+"-"+bonusRate.getContractType(), bonusRate.getRate());
@@ -167,6 +168,7 @@ public class AccountScheduledJob {
 		}
 		//公摊成本比例
 		List<ShareCostRate> shareCostRates = shareCostRateRepository.findAll();
+		shareCostRateMap.clear();
 		if(shareCostRates != null && shareCostRates.size() > 0){
 			for(ShareCostRate shareCostRate : shareCostRates){
 				shareCostRateMap.put(shareCostRate.getDeptType()+"-"+shareCostRate.getContractType(), shareCostRate.getShareRate());
@@ -174,6 +176,7 @@ public class AccountScheduledJob {
 		}
 		//外部报价
 		List<ExternalQuotation> externalQuotations = externalQuotationRepository.findAll();
+		externalQuotationMap.clear();
 		if(externalQuotations != null && externalQuotations.size() > 0){
 			for(ExternalQuotation externalQuotation : externalQuotations){
 				externalQuotationMap.put(externalQuotation.getGrade(), externalQuotation.getHourCost());
@@ -181,6 +184,7 @@ public class AccountScheduledJob {
 		}
 		//部门信息
 		List<DeptInfo> deptInfos = deptInfoRepository.findAll();
+		deptIdTypeMap.clear();
 		if(deptInfos != null && deptInfos.size() > 0){
 			for(DeptInfo deptInfo : deptInfos){
 				deptIdTypeMap.put(deptInfo.getId(), deptInfo.getType());
@@ -191,53 +195,25 @@ public class AccountScheduledJob {
 	 * 删除记录
 	 * @param statWeek
 	 */
-	private void clear(Long statWeek){
-		//后期全部修改为直接使用sql或hql删除、不要查询后删除
+	private void clear(Long contractId, Long statWeek){
 		//项目支撑成本信息
-		List<ProjectSupportCost> projectSupportCosts = projectSupportCostRepository.findByStatWeek(statWeek);
-		if(projectSupportCosts != null){
-			projectSupportCostRepository.delete(projectSupportCosts);
-		}
+		projectSupportCostRepository.deleteByContractIdAndStatWeek(contractId,statWeek);
 		//项目支撑奖金
-		List<ProjectSupportBonus> projectSupportBonuses = projectSupportBonusRepository.findByStatWeek(statWeek);
-		if(projectSupportBonuses != null){
-			projectSupportBonusRepository.delete(projectSupportBonuses);
-		}
+		projectSupportBonusRepository.deleteByContractIdAndStatWeek(contractId, statWeek);
 		//产品销售奖金
-		List<ProductSalesBonus> productSalesBonuses = productSalesBonusRepository.findByStatWeek(statWeek);
-		if(productSalesBonuses != null){
-			productSalesBonusRepository.delete(productSalesBonuses);
-		}
+		productSalesBonusRepository.deleteByContractIdAndStatWeek(contractId, statWeek);
 		//合同内部采购信息
-		List<ContractInternalPurchase> contractInternalPurchases = contractInternalPurchaseRepository.findByStatWeek(statWeek);
-		if(contractInternalPurchases != null){
-			contractInternalPurchaseRepository.delete(contractInternalPurchases);
-		}
+		contractInternalPurchaseRepository.deleteByContractIdAndStatWeek(contractId, statWeek);
 		//销售奖金
-		List<SalesBonus> salesBonuses = salesBonusRepository.findByStatWeek(statWeek);
-		if(salesBonuses != null){
-			salesBonusRepository.delete(salesBonuses);
-		}
+		salesBonusRepository.deleteByContractIdAndStatWeek(contractId, statWeek);
 		//咨询奖金
-		List<ConsultantsBonus> consultantsBonuses = consultantsBonusRepository.findByStatWeek(statWeek);
-		if(consultantsBonuses != null){
-			consultantsBonusRepository.delete(consultantsBonuses);
-		}
+		consultantsBonusRepository.deleteByContractIdAndStatWeek(contractId,statWeek);
 		//合同的项目奖金
-		List<ContractProjectBonus> contractProjectBonuses = contractProjectBonusRepository.findByStatWeek(statWeek);
-		if(contractProjectBonuses != null){
-			contractProjectBonusRepository.delete(contractProjectBonuses);
-		}
+		contractProjectBonusRepository.deleteByContractIdAndStatWeek(contractId, statWeek);
 		//奖金总表
-		List<Bonus> bonuses = bonusRepository.findByStatWeek(statWeek);
-		if(bonuses != null){
-			bonusRepository.delete(bonuses);
-		}
+		bonusRepository.deleteByContractIdAndStatWeek(contractId, statWeek);
 		//项目总体情况控制表
-		List<ProjectOverall> projectOveralls = projectOverallRepository.findByStatWeek(statWeek);
-		if(projectOveralls != null){
-			projectOverallRepository.delete(projectOveralls);
-		}
+		projectOverallRepository.deleteByContractIdAndStatWeek(contractId, statWeek);
 	}
 	/**
 	 * 合同和项目相关的统计，每周一晚上22点开始执行
@@ -248,9 +224,9 @@ public class AccountScheduledJob {
 	protected void accountScheduled(){
 		//TODO 统计开始
 		//每周一晚上22点开始跑定时任务
-		accountScheduled(new Date());
+		accountScheduled(null, new Date());
 	}
-	protected void accountScheduled(Date statTime){
+	protected void accountScheduled(Long contrId, Date statTime){
 		log.info("=====begin Account Scheduled=====statTime:" + DateUtil.formatDate(DateUtil.DATE_FORMAT, statTime));
 		//数据初始化
 		init();
@@ -271,15 +247,18 @@ public class AccountScheduledJob {
 		Long costMonth = StringUtil.nullToLong(DateUtil.formatDate("yyyyMM", DateUtil.lastSundayEnd(statTime)).toString());//上周周日所在月
 		String creator = "admin";
 		
-		//删除历史记录
-		clear(statWeek);
-		
 		//TODO 统计的合同
 		List<ContractInfo> contractInfos = contractInfoRepository.findByStartDayAndStatusOrUpdateTime(ContractInfo.STATUS_VALIDABLE, beginTime, endTime);
 		if(contractInfos != null && contractInfos.size() > 0){
 			for(ContractInfo contractInfo : contractInfos){
 				Long contractId = contractInfo.getId();
 				Integer contractType = contractInfo.getType();
+				if(contrId != null && !contrId.equals(contractId)){
+					continue;
+				}
+				//删除历史记录
+				clear(contractId, statWeek);
+				
 				//收款金额
 				Double contractReceiveTotal = 0D;
 				List<ContractReceive> contractReceives = contractReceiveRepository.findAllByContractIdAndReceiveDayBefore(contractId, statWeek);
@@ -767,6 +746,9 @@ public class AccountScheduledJob {
 					contractProjectBonusRepository.save(contractProjectBonus);
 				}
 				log.info("====end generate Contract Internal Purchase & Contract Project Bonus to Contract : "+contractInfo.getSerialNum()+"=====");
+				if(contrId != null && contrId.equals(contractId)){
+					break;
+				}
 			}
 		}else{
 			log.info("No ContractInfo Founded");

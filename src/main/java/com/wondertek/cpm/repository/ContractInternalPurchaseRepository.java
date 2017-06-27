@@ -2,7 +2,10 @@ package com.wondertek.cpm.repository;
 
 import java.util.List;
 
+import javax.transaction.Transactional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 import com.wondertek.cpm.domain.ContractInternalPurchase;
@@ -14,4 +17,9 @@ public interface ContractInternalPurchaseRepository extends JpaRepository<Contra
 	
 	@Query(" from ContractInternalPurchase where statWeek  = ?1")
 	List<ContractInternalPurchase> findByStatWeek(Long statWeek);
+	
+	@Modifying
+	@Transactional
+	@Query("delete from ContractInternalPurchase cip where cip.contractId = ?1 and cip.statWeek = ?2")
+	void deleteByContractIdAndStatWeek(Long contractId, Long statWeek);
 }

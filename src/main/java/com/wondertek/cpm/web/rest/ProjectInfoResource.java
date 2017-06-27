@@ -54,6 +54,7 @@ import com.wondertek.cpm.domain.ContractInfo;
 import com.wondertek.cpm.domain.DeptInfo;
 import com.wondertek.cpm.domain.ProjectInfo;
 import com.wondertek.cpm.domain.vo.LongValue;
+import com.wondertek.cpm.domain.vo.ProjectInfoUserVo;
 import com.wondertek.cpm.domain.vo.ProjectInfoVo;
 import com.wondertek.cpm.domain.vo.UserBaseVo;
 import com.wondertek.cpm.repository.ContractBudgetRepository;
@@ -99,7 +100,7 @@ public class ProjectInfoResource {
 
     @PutMapping("/project-infos")
     @Timed
-    @Secured(AuthoritiesConstants.ROLE_PROJECT_INFO)
+    @Secured(AuthoritiesConstants.ROLE_PROJECT_INFO_END)
     public ResponseEntity<ProjectInfo> updateProjectInfo(@RequestBody ProjectInfo projectInfo) throws URISyntaxException {
         log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to update ProjectInfo : {}", projectInfo);
         Boolean isNew = projectInfo.getId() == null;
@@ -250,7 +251,7 @@ public class ProjectInfoResource {
      */
     @DeleteMapping("/project-infos/{id}")
     @Timed
-    @Secured(AuthoritiesConstants.ROLE_PROJECT_INFO)
+    @Secured(AuthoritiesConstants.ROLE_PROJECT_INFO_END)
     public ResponseEntity<Void> deleteProjectInfo(@PathVariable Long id) {
         log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to delete ProjectInfo : {}", id);
         ProjectInfoVo projectInfo = projectInfoService.getUserProjectInfo(id);
@@ -295,7 +296,7 @@ public class ProjectInfoResource {
     
     @GetMapping("/project-infos/end")
     @Timed
-    @Secured(AuthoritiesConstants.ROLE_PROJECT_INFO)
+    @Secured(AuthoritiesConstants.ROLE_PROJECT_INFO_END)
     public ResponseEntity<ProjectInfo> endProjectInfo(@RequestParam(value = "id") Long id) throws URISyntaxException {
     	log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to endProjectInfo by id : {}", id);
     	//有没权限
@@ -353,6 +354,18 @@ public class ProjectInfoResource {
         log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to queryUserContract");
         List<LongValue> list = projectInfoService.queryUserProject();
         return new ResponseEntity<>(list, null, HttpStatus.OK);
+    }
+    
+    /**
+     * 获取项目对应的人员工时信息
+     */
+    @GetMapping("/project-infos/queryProjectInfoUser")
+    @Timed
+    @Secured(AuthoritiesConstants.ROLE_PROJECT_INFO)
+    public ResponseEntity<List<ProjectInfoUserVo>> queryProjectInfoUser(@RequestParam(value = "projectId") Long id){
+    	log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to queryUserContract by projectId : {}", id);
+    	List<ProjectInfoUserVo> list = projectInfoService.queryProjectInfoUser(id);
+		return new ResponseEntity<>(list,null,HttpStatus.OK);
     }
     
     @GetMapping("/project-infos/uploadExcel")

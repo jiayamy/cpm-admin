@@ -13,4 +13,7 @@ public interface ContractMonthlyStatRepository extends JpaRepository<ContractMon
 	
 	@Query(" from ContractMonthlyStat where statWeek = ?1 and contractId = ?2 ")
 	List<ContractMonthlyStat> findByStatWeekAndContractId(Long statWeek, Long contractId);
+	
+	@Query(" from ContractMonthlyStat where statWeek = ?1 and contractId = ?2) ")
+	ContractMonthlyStat findOneByStatWeekAndContractId(Long statWeek, Long contractId);
 }

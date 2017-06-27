@@ -128,6 +128,7 @@ public class ContractStateTask {
 	private void init(){
 		//外部报价
 		List<ExternalQuotation> externalQuotations = externalQuotationRepository.findAll();
+		externalQuotationMap.clear();
 		if(externalQuotations != null && externalQuotations.size() > 0){
 			for(ExternalQuotation externalQuotation : externalQuotations){
 				externalQuotationMap.put(externalQuotation.getGrade(), externalQuotation.getHourCost());
@@ -135,6 +136,7 @@ public class ContractStateTask {
 		}
 		//用户信息
 		List<User> users = userRepository.findAll();
+		userIdGradeMap.clear();
 		if(users != null && users.size() > 0){
 			for(User user : users){
 				userIdGradeMap.put(user.getId(), user.getGrade());
@@ -152,59 +154,31 @@ public class ContractStateTask {
 	@Scheduled(cron = "0 0 23 ? * MON")
 	protected void generateContractWeeklyStat(){
 		Date now = new Date();
-		generateContractWeeklyStat(now);
+		generateContractWeeklyStat(null, now);
 	}
-	protected void generateContractWeeklyStat(Date now){
+	protected void generateContractWeeklyStat(Long contractId, Date now){
 		log.info("=====begin generate Contract Weekly Stat=====");
 		init();
 		
 		String [] dates = DateUtil.getWholeWeekByDate(DateUtil.lastSaturday(now));
 		ZonedDateTime beginTime = DateUtil.getZonedDateTime(DateUtil.lastMonday(now).getTime());
 		ZonedDateTime endTime = DateUtil.getZonedDateTime(DateUtil.lastSundayEnd(now).getTime());
+		//上周一
 		Long fDay = StringUtil.nullToLong(dates[0]);
+		//上周日
 		Long statWeek = StringUtil.nullToLong(dates[6]);
+		//上上周日
+		Long lstatWeek = StringUtil.nullToLong(DateUtil.getWholeWeekByDate(DateUtil.addDayNum(-1, DateUtil.lastMonday(now)))[6]);
 		List<ContractInfo> contractInfos = contractInfoRepository.findByStatusOrEndTime(ContractInfo.STATUS_VALIDABLE, beginTime);
 		if(contractInfos != null && contractInfos.size() > 0){
 			for(ContractInfo contractInfo : contractInfos){
+				if(contractId != null && !contractId.equals(contractInfo.getId())){
+					continue;
+				}
 				log.info("=========begin generate Contract : "+contractInfo.getSerialNum()+"=========");
 				//初始化合同工时
-				try {
-					while(true){
-						StatIdentify statIdentify = statIdentifyRepository.findByObjIdAndType(contractInfo.getId(), StatIdentify.TYPE_CONTRACT);
-						if(statIdentify != null){
-							Integer status = statIdentify.getStatus();
-							if(status == StatIdentify.STATUS_UNAVALIABLE){
-								log.info("====waiting for statIdentfiy belong to project : " + contractInfo.getSerialNum());
-								Thread.sleep(5*1000);
-							}else{
-								initIdentify(contractInfo);
-								break;
-							}
-						}else{
-							initIdentify(contractInfo);
-							break;
-						}
-					}
-					ContractCost contractCost2 = contractCostRepository.findMaxByContractIdAndCostDayAndType(contractInfo.getId(), fDay, statWeek, ContractCost.TYPE_HUMAN_COST);
-					if(contractCost2 != null){
-						Date initDate = DateUtil.addOneDay(DateUtil.parseDate("yyyyMMdd", contractCost2.getCostDay().toString()));
-						if(contractInfo.getStatus() == ContractInfo.STATUS_VALIDABLE){
-							initContractHumanCost(contractInfo, initDate, DateUtil.lastSundayEnd(now));
-						}else{
-							initContractHumanCost(contractInfo, initDate, Date.from(contractInfo.getUpdateTime().toInstant()));
-						}
-					}else{
-						if(contractInfo.getStatus() == ContractInfo.STATUS_VALIDABLE){
-							initContractHumanCost(contractInfo, DateUtil.lastMonday(now), DateUtil.lastSundayEnd(now));
-						}else{
-							initContractHumanCost(contractInfo, DateUtil.lastMonday(now), Date.from(contractInfo.getUpdateTime().toInstant()));
-						}
-					}
-				} catch (Exception e) {
-					e.printStackTrace();
-				}finally {
-					overIdentify(contractInfo);
-				}
+				initContractCost(contractInfo, fDay, statWeek, DateUtil.lastMonday(now), DateUtil.lastSundayEnd(now));
+				
 				//初始上周stat
 				List<ContractWeeklyStat> contractWeeklyStats = contractWeeklyStatRepository.findByStatWeekAndContractId(statWeek, contractInfo.getId());
 				if(contractWeeklyStats != null){
@@ -245,18 +219,8 @@ public class ContractStateTask {
 						DeptInfo deptInfo = deptInfoRepository.findOne(salesDeptId);
 						List<Long> deptIds = deptInfoRepository.findIdsByType(StringUtil.nullToLong(deptInfo.getType()));
 						if(deptIds != null && deptIds.size() > 0){
-							List<ContractCost> contractCosts = contractCostRepository.findByDeptIdsAndTypeAndContractId(deptIds, ContractCost.TYPE_HUMAN_COST, id);
-							if(contractCosts != null && contractCosts.size() > 0){
-								for(ContractCost contractCost : contractCosts){
-									salesHumanCost += contractCost.getTotal();
-								}
-							}
-							List<ContractCost> contractCosts2 = contractCostRepository.findByDeptIdsAndNoTypeAndContractId(deptIds, ContractCost.TYPE_HUMAN_COST, id);
-							if(contractCosts2 != null && contractCosts2.size() >0){
-								for(ContractCost contractCost : contractCosts2){
-									salesPayment += contractCost.getTotal();
-								}
-							}
+							salesHumanCost = StringUtil.nullToDouble(contractCostRepository.findTotalByDeptIdsAndTypeAndContractIdAndBeforeCostDay(deptIds, ContractCost.TYPE_HUMAN_COST, id, statWeek));
+							salesPayment = StringUtil.nullToDouble(contractCostRepository.findTotalByDeptIdsAndNoTypeAndContractIdAndBeforeCostDay(deptIds, ContractCost.TYPE_HUMAN_COST, id, statWeek));
 						}else{
 							log.error("no sales deptInfo found belong to " + contractInfo.getSerialNum());
 						}
@@ -272,18 +236,8 @@ public class ContractStateTask {
 						DeptInfo deptInfo = deptInfoRepository.findOne(consultDeptId);
 						List<Long> deptIds2 = deptInfoRepository.findIdsByType(StringUtil.nullToLong(deptInfo.getType()));
 						if(deptIds2 != null && deptIds2.size() > 0){
-							List<ContractCost> contractCosts = contractCostRepository.findByDeptIdsAndTypeAndContractId(deptIds2, ContractCost.TYPE_HUMAN_COST, id);
-							if(contractCosts != null && contractCosts.size() > 0){
-								for(ContractCost contractCost : contractCosts){
-									consultHumanCost += contractCost.getTotal();
-								}
-							}
-							List<ContractCost> contractCosts2 = contractCostRepository.findByDeptIdsAndNoTypeAndContractId(deptIds2, ContractCost.TYPE_HUMAN_COST, id);
-							if(contractCosts2 != null && contractCosts2.size() >0){
-								for(ContractCost contractCost : contractCosts2){
-									consultPayment += contractCost.getTotal();
-								}
-							}
+							consultHumanCost = StringUtil.nullToDouble(contractCostRepository.findTotalByDeptIdsAndTypeAndContractIdAndBeforeCostDay(deptIds2, ContractCost.TYPE_HUMAN_COST, id,statWeek));
+							consultPayment = StringUtil.nullToDouble(contractCostRepository.findTotalByDeptIdsAndNoTypeAndContractIdAndBeforeCostDay(deptIds2, ContractCost.TYPE_HUMAN_COST, id,statWeek));
 						}else{
 							log.error("no consult deptInfo found belong to " + contractInfo.getSerialNum());
 						}
@@ -291,7 +245,7 @@ public class ContractStateTask {
 					contractWeeklyStat.setConsultHumanCost(consultHumanCost);
 					contractWeeklyStat.setConsultPayment(consultPayment);
 					//硬件采购成本
-					List<PurchaseItem> purchaseItems = purchaseItemRepository.findByContractIdAndType(id, PurchaseItem.TYPE_HARDWARE);
+					List<PurchaseItem> purchaseItems = purchaseItemRepository.findByContractIdAndTypeAndBeforeUpdateTime(id, PurchaseItem.TYPE_HARDWARE, endTime);
 					Double hardwarePurchase = 0D;
 					if(purchaseItems != null && purchaseItems.size() > 0){
 						for(PurchaseItem purchaseItem : purchaseItems){
@@ -302,7 +256,7 @@ public class ContractStateTask {
 					}
 					contractWeeklyStat.setHardwarePurchase(hardwarePurchase);
 					//外部软件采购成本
-					List<PurchaseItem> purchaseItems2 = purchaseItemRepository.findByContractIdAndSourceAndType(id, PurchaseItem.SOURCE_EXTERNAL, PurchaseItem.TYPE_SOFTWARE);
+					List<PurchaseItem> purchaseItems2 = purchaseItemRepository.findByContractIdAndSourceAndTypeAndBeforeUpdateTime(id, PurchaseItem.SOURCE_EXTERNAL, PurchaseItem.TYPE_SOFTWARE, endTime);
 					Double externalSoftware = 0D;
 					if(purchaseItems2 != null && purchaseItems2.size() > 0){
 						for(PurchaseItem purchaseItem : purchaseItems2){
@@ -313,7 +267,7 @@ public class ContractStateTask {
 					}
 					contractWeeklyStat.setExternalSoftware(externalSoftware);
 					//内部软件采购成本
-					List<PurchaseItem> purchaseItems3 = purchaseItemRepository.findByContractIdAndSourceAndType(id, PurchaseItem.SOURCE_INTERNAL, PurchaseItem.TYPE_SOFTWARE);
+					List<PurchaseItem> purchaseItems3 = purchaseItemRepository.findByContractIdAndSourceAndTypeAndBeforeUpdateTime(id, PurchaseItem.SOURCE_INTERNAL, PurchaseItem.TYPE_SOFTWARE, endTime);
 					Double internalSoftware = 0D;
 					if(purchaseItems3 != null && purchaseItems3.size() > 0){
 						for(PurchaseItem purchaseItem : purchaseItems3){
@@ -328,37 +282,55 @@ public class ContractStateTask {
 					//项目报销成本
 					Double projectPayment = 0D;
 					List<ProjectInfo> projectInfos = projectInfoRepository.findByContractId(id);
+					ContractWeeklyStat lastCWS = contractWeeklyStatRepository.findOneByStatWeekAndContractId(lstatWeek, id);//上上周记录
 					if(projectInfos != null && projectInfos.size() > 0){
 						for(ProjectInfo projectInfo : projectInfos){
 							//人工成本
-							//TODO 存在问题，需要重新修改
-							List<UserTimesheet> userTimesheets3 = userTimesheetRepository.
-									findByDateAndObjIdAndType(statWeek, projectInfo.getId(), UserTimesheet.TYPE_PROJECT);
-							if(userTimesheets3 != null && userTimesheets3.size() > 0){
-								for(UserTimesheet userTimesheet : userTimesheets3){
+							if(lastCWS != null && lastCWS.getProjectHumanCost() != null && lastCWS.getProjectHumanCost() > 0){
+								//上上周记录
+								projectHumanCost += lastCWS.getProjectHumanCost();
+								//上周记录统计
+								List<UserTimesheet> userTimesheets = userTimesheetRepository.findByObjIdAndTypeAndWordDayBetween(projectInfo.getId(), UserTimesheet.TYPE_PROJECT, fDay, statWeek);
+								if(userTimesheets != null && userTimesheets.size() > 0){
 									Long costMonth = StringUtil.nullToLong(DateUtil.formatDate("yyyyMM", DateUtil.lastSundayEnd(now)).toString());
-									UserCost userCost = userCostRepository.findMaxByCostMonthAndUserId(costMonth, userTimesheet.getUserId());
-									if(userCost != null){
-										if(contractInfo.getIsEpibolic() != null && !contractInfo.getIsEpibolic()){
-											projectHumanCost += userTimesheet.getRealInput() * (userCost.getInternalCost()/168);
+									for(UserTimesheet userTimesheet : userTimesheets){
+										UserCost userCost = userCostRepository.findMaxByCostMonthAndUserId(costMonth, userTimesheet.getUserId());
+										if(userCost != null){
+											if(contractInfo.getIsEpibolic() != null && !contractInfo.getIsEpibolic()){
+												projectHumanCost += userTimesheet.getRealInput() * (userCost.getInternalCost()/168);
+											}else{
+												projectHumanCost += userTimesheet.getRealInput() * StringUtil.nullToDouble((externalQuotationMap.get(userIdGradeMap.get(userTimesheet.getUserId()))));
+											}
 										}else{
-											projectHumanCost += userTimesheet.getRealInput() * StringUtil.nullToDouble((externalQuotationMap.get(userIdGradeMap.get(userTimesheet.getUserId()))));
+											log.error("no UserCost founded belong to User : " + userTimesheet.getUserId() + ":" + userTimesheet.getUserName());
 										}
-									}else{
-										log.error("no UserCost founded belong to User : " + userTimesheet.getUserId() + ":" + userTimesheet.getUserName());
 									}
-									
 								}
-							}else{
-								log.error(" no user Timesheets founded for project human cost belong to " + contractInfo.getSerialNum());
+							}else{//查找全部日报
+								List<UserTimesheet> userTimesheets3 = userTimesheetRepository.findByDateAndObjIdAndType(statWeek, projectInfo.getId(), UserTimesheet.TYPE_PROJECT);
+								if(userTimesheets3 != null && userTimesheets3.size() > 0){
+									for(UserTimesheet userTimesheet : userTimesheets3){
+										Long costMonth = 0L;
+										if(userTimesheet.getWorkDay() != null && userTimesheet.getWorkDay().toString().length() > 5){
+											costMonth = StringUtil.nullToLong(StringUtil.nullToString(userTimesheet.getWorkDay()).substring(0, 6));
+										}
+										UserCost userCost = userCostRepository.findMaxByCostMonthAndUserId(costMonth, userTimesheet.getUserId());
+										if(userCost != null){
+											if(contractInfo.getIsEpibolic() != null && !contractInfo.getIsEpibolic()){
+												projectHumanCost += userTimesheet.getRealInput() * (userCost.getInternalCost()/168);
+											}else{
+												projectHumanCost += userTimesheet.getRealInput() * StringUtil.nullToDouble((externalQuotationMap.get(userIdGradeMap.get(userTimesheet.getUserId()))));
+											}
+										}else{
+											log.error("no UserCost founded belong to User : " + userTimesheet.getUserId() + ":" + userTimesheet.getUserName());
+										}
+									}
+								}else{
+									log.error(" no user Timesheets founded for project human cost belong to " + contractInfo.getSerialNum());
+								}
 							}
 							//报销成本
-							List<ProjectCost> projectCosts2 = projectCostRepository.findAllByProjectIdAndNoType(projectInfo.getId(), ProjectCost.TYPE_HUMAN_COST);
-							if(projectCosts2 != null && projectCosts2.size() > 0){
-								for(ProjectCost projectCost : projectCosts2){
-									projectPayment += projectCost.getTotal();
-								}
-							}
+							projectPayment = StringUtil.nullToDouble(projectCostRepository.findTotalByProjectIdAndNoTypeAndBeforeCostDay(projectInfo.getId(), ProjectCost.TYPE_HUMAN_COST, statWeek));
 						}
 					}else{
 						log.error("no project found belong to " + contractInfo.getSerialNum());
@@ -366,19 +338,16 @@ public class ContractStateTask {
 					contractWeeklyStat.setProjectHumanCost(projectHumanCost);
 					contractWeeklyStat.setProjectPayment(projectPayment);
 					//所有成本
-					Double costTotal = salesHumanCost + salesPayment + consultHumanCost + consultPayment + hardwarePurchase + externalSoftware
-							+ internalSoftware + projectHumanCost + projectPayment + StringUtil.nullToDouble(contractInfo.getShareCost()) + StringUtil.nullToDouble(contractInfo.getTaxes());
+					Double costTotal = salesHumanCost + salesPayment + consultHumanCost + consultPayment
+							+ hardwarePurchase + externalSoftware + internalSoftware + projectHumanCost 
+							+ projectPayment + StringUtil.nullToDouble(contractInfo.getShareCost()) + StringUtil.nullToDouble(contractInfo.getTaxes());
 					contractWeeklyStat.setCostTotal(costTotal);
 					//合同毛利
 					Double grossProfit = receiveTotal - costTotal;
 					contractWeeklyStat.setGrossProfit(grossProfit);
 				}else{ //公共合同
 					//项目人工成本
-					Double projectHumanCost = 0D;
-					List<ContractCost> contractCosts = contractCostRepository.findByContractIdAndType(id, ContractCost.TYPE_HUMAN_COST);
-					for(ContractCost contractCost : contractCosts){
-						projectHumanCost += contractCost.getTotal();
-					}
+					Double projectHumanCost = StringUtil.nullToDouble(contractCostRepository.findTotalByContractIdAndTypeAndBeforeCostDay(id, ContractCost.TYPE_HUMAN_COST, statWeek));
 					contractWeeklyStat.setProjectHumanCost(projectHumanCost);
 					Double costTotal = projectHumanCost;
 					contractWeeklyStat.setCostTotal(costTotal);
@@ -392,71 +361,48 @@ public class ContractStateTask {
 				contractWeeklyStat.setCreateTime(ZonedDateTime.now());
 				contractWeeklyStatRepository.save(contractWeeklyStat);
 				log.info(" =======contract : "+contractInfo.getSerialNum()+" weekly stat saved======= ");
+				if(contractId != null && contractId.equals(contractInfo.getId())){
+					break;
+				}
 			}
 		}else{
 			log.error("no contractInfos found");
 		}
 		log.info("=====end generate Contract Weekly Stat=====");
 	}
+	
 	/**
 	 * TODO 合同月统计，每个月的第一天的23点30分开始执行
 	 */
 	@Scheduled(cron = "0 30 23 1 * ?")
 	protected void generateContractMonthlyStat(){
 		Date now = new Date();
-		generateContractMonthlyStat(now);
+		generateContractMonthlyStat(null,now);
 	}
 	
-	protected void generateContractMonthlyStat(Date now){
+	protected void generateContractMonthlyStat(Long contractId, Date now){
 		log.info("=====begin generate Contract Monthly Stat=====");
 		init();
 		ZonedDateTime beginTime = DateUtil.getZonedDateTime(DateUtil.lastMonthBegin(now).getTime());
 		ZonedDateTime endTime = DateUtil.getZonedDateTime(DateUtil.lastMonthend(now).getTime());
-		String fDay = DateUtil.formatDate("yyyyMMdd", DateUtil.lastMonthBegin(now));
-		String lDay = DateUtil.formatDate("yyyyMMdd", DateUtil.lastMonthend(now));
+		//上月第一天
+		Long fDay = StringUtil.nullToLong(DateUtil.formatDate("yyyyMMdd", DateUtil.lastMonthBegin(now)));
+		//上月最后天
+		Long lDay = StringUtil.nullToLong(DateUtil.formatDate("yyyyMMdd", DateUtil.lastMonthend(now)));
+		//上个月
 		String lMonth = DateUtil.formatDate("yyyyMM", DateUtil.lastMonthBegin(now));
+		//上上个月
+		String nMonth = DateUtil.formatDate("yyyyMM", DateUtil.addDayNum(-1, DateUtil.lastMonthBegin(now)));
 		List<ContractInfo> contractInfos = contractInfoRepository.findByStatusOrEndTime(ContractInfo.STATUS_VALIDABLE, beginTime);
 		if(contractInfos != null && contractInfos.size() > 0){
 			for(ContractInfo contractInfo : contractInfos){
+				if(contractId != null && !contractId.equals(contractInfo.getId())){
+					continue;
+				}
 				log.info("=====begin generate Contract : "+contractInfo.getSerialNum()+"=======");
 				//初始contractCost
-				try {
-					while(true){
-						StatIdentify statIdentify = statIdentifyRepository.findByObjIdAndType(contractInfo.getId(), StatIdentify.TYPE_CONTRACT);
-						if(statIdentify != null){
-							Integer status = statIdentify.getStatus();
-							if(status == StatIdentify.STATUS_UNAVALIABLE){
-								log.info("====waiting for statIdentfiy belong to project : " + contractInfo.getSerialNum());
-								Thread.sleep(5*1000);
-							}else{
-								initIdentify(contractInfo);
-								break;
-							}
-						}else{
-							initIdentify(contractInfo);
-							break;
-						}
-					}
-					ContractCost contractCost2 = contractCostRepository.findMaxByContractIdAndCostDayAndType(contractInfo.getId(), StringUtil.nullToLong(fDay), StringUtil.nullToLong(lDay), ContractCost.TYPE_HUMAN_COST);
-					if(contractCost2 != null){
-						Date initDate = DateUtil.addOneDay(DateUtil.parseDate("yyyyMMdd", contractCost2.getCostDay().toString()));
-						if(contractInfo.getStatus() == ContractInfo.STATUS_VALIDABLE){
-							initContractHumanCost(contractInfo, initDate, DateUtil.lastMonthend(now));
-						}else{
-							initContractHumanCost(contractInfo, initDate, Date.from(contractInfo.getUpdateTime().toInstant()));
-						}
-					}else{
-						if(contractInfo.getStatus() == ContractInfo.STATUS_VALIDABLE){
-							initContractHumanCost(contractInfo, DateUtil.lastMonthBegin(now), DateUtil.lastMonthend(now));
-						}else{
-							initContractHumanCost(contractInfo, DateUtil.lastMonthBegin(now), Date.from(contractInfo.getUpdateTime().toInstant()));
-						}
-					}
-				} catch (Exception e) {
-					e.printStackTrace();
-				}finally {
-					overIdentify(contractInfo);
-				}
+				initContractCost(contractInfo, fDay, lDay, DateUtil.lastMonthBegin(now), DateUtil.lastMonthend(now));
+				
 				//初始monthlystat
 				List<ContractMonthlyStat> contractMonthlyStats = contractMonthlyStatRepository.findByStatWeekAndContractId(StringUtil.nullToLong(lMonth), contractInfo.getId());
 				if(contractMonthlyStats != null && contractMonthlyStats.size() > 0){
@@ -464,7 +410,6 @@ public class ContractStateTask {
 						contractMonthlyStatRepository.delete(contractMonthlyStat);
 					}
 				}
-				
 				ContractMonthlyStat contractMonthlyStat = new ContractMonthlyStat();
 				Long id = contractInfo.getId();
 				//合同id
@@ -479,7 +424,7 @@ public class ContractStateTask {
 					contractMonthlyStat.setFinishRate(0D);
 				}
 				//合同回款总额
-				List<ContractReceive> contractReceives = contractReceiveRepository.findAllByContractIdAndReceiveDayBefore(id, StringUtil.nullToLong(lDay));
+				List<ContractReceive> contractReceives = contractReceiveRepository.findAllByContractIdAndReceiveDayBefore(id, lDay);
 				Double receiveTotal = 0D;
 				if(contractReceives != null && contractReceives.size() > 0){
 					for(ContractReceive contractReceive : contractReceives){
@@ -500,18 +445,8 @@ public class ContractStateTask {
 						DeptInfo deptInfo = deptInfoRepository.findOne(salesDeptId);
 						List<Long> deptIds = deptInfoRepository.findIdsByType(StringUtil.nullToLong(deptInfo.getType()));
 						if(deptIds != null && deptIds.size() > 0){
-							List<ContractCost> contractCosts = contractCostRepository.findByDeptIdsAndTypeAndContractId(deptIds, ContractCost.TYPE_HUMAN_COST, id);
-							if(contractCosts != null && contractCosts.size() >0){
-								for(ContractCost contractCost : contractCosts){
-									salesHumanCost += contractCost.getTotal();
-								}
-							}
-							List<ContractCost> contractCosts2 = contractCostRepository.findByDeptIdsAndNoTypeAndContractId(deptIds, ContractCost.TYPE_HUMAN_COST, id);
-							if(contractCosts2 != null && contractCosts2.size() >0){
-								for(ContractCost contractCost : contractCosts2){
-									salesPayment += contractCost.getTotal();
-								}
-							}
+							salesHumanCost = StringUtil.nullToDouble(contractCostRepository.findTotalByDeptIdsAndTypeAndContractIdAndBeforeCostDay(deptIds, ContractCost.TYPE_HUMAN_COST, id, lDay));
+							salesPayment = StringUtil.nullToDouble(contractCostRepository.findTotalByDeptIdsAndNoTypeAndContractIdAndBeforeCostDay(deptIds, ContractCost.TYPE_HUMAN_COST, id, lDay));
 						}else{
 							log.error("no sales deptInfo found belong to " + contractInfo.getSerialNum());
 						}
@@ -528,27 +463,16 @@ public class ContractStateTask {
 						DeptInfo deptInfo = deptInfoRepository.findOne(consultDeptId);
 						List<Long> deptIds2 = deptInfoRepository.findIdsByType(StringUtil.nullToLong(deptInfo.getType()));
 						if(deptIds2 != null && deptIds2.size() > 0){
-							List<ContractCost> contractCosts = contractCostRepository.findByDeptIdsAndTypeAndContractId(deptIds2, ContractCost.TYPE_HUMAN_COST, id);
-							if(contractCosts != null && contractCosts.size() >0){
-								for(ContractCost contractCost : contractCosts){
-									consultHumanCost += contractCost.getTotal();
-								}
-							}
-							List<ContractCost> contractCosts2 = contractCostRepository.findByDeptIdsAndNoTypeAndContractId(deptIds2, ContractCost.TYPE_HUMAN_COST, id);
-							if(contractCosts2 != null && contractCosts2.size() >0){
-								for(ContractCost contractCost : contractCosts2){
-									consultPayment += contractCost.getTotal();
-								}
-							}
+							consultHumanCost = StringUtil.nullToDouble(contractCostRepository.findTotalByDeptIdsAndTypeAndContractIdAndBeforeCostDay(deptIds2, ContractCost.TYPE_HUMAN_COST, id, lDay));
+							consultPayment = StringUtil.nullToDouble(contractCostRepository.findTotalByDeptIdsAndNoTypeAndContractIdAndBeforeCostDay(deptIds2, ContractCost.TYPE_HUMAN_COST, id, lDay));
 						}else{
 							log.error("no consult deptInfo found belong to " + contractInfo.getSerialNum());
 						}
 					}
 					contractMonthlyStat.setConsultHumanCost(consultHumanCost);
 					contractMonthlyStat.setConsultPayment(consultPayment);
-					
 					//硬件采购成本
-					List<PurchaseItem> purchaseItems = purchaseItemRepository.findByContractIdAndType(id, PurchaseItem.TYPE_HARDWARE);
+					List<PurchaseItem> purchaseItems = purchaseItemRepository.findByContractIdAndTypeAndBeforeUpdateTime(id, PurchaseItem.TYPE_HARDWARE, endTime);
 					Double hardwarePurchase = 0D;
 					if(purchaseItems != null && purchaseItems.size() > 0){
 						for(PurchaseItem purchaseItem : purchaseItems){
@@ -559,7 +483,7 @@ public class ContractStateTask {
 					}
 					contractMonthlyStat.setHardwarePurchase(hardwarePurchase);
 					//外部软件采购成本
-					List<PurchaseItem> purchaseItems2 = purchaseItemRepository.findByContractIdAndSourceAndType(id, PurchaseItem.SOURCE_EXTERNAL, PurchaseItem.TYPE_SOFTWARE);
+					List<PurchaseItem> purchaseItems2 = purchaseItemRepository.findByContractIdAndSourceAndTypeAndBeforeUpdateTime(id, PurchaseItem.SOURCE_EXTERNAL, PurchaseItem.TYPE_SOFTWARE, endTime);
 					Double externalSoftware = 0D;
 					if(purchaseItems2 != null && purchaseItems2.size() > 0){
 						for(PurchaseItem purchaseItem : purchaseItems2){
@@ -570,7 +494,7 @@ public class ContractStateTask {
 					}
 					contractMonthlyStat.setExternalSoftware(externalSoftware);
 					//内部软件采购成本
-					List<PurchaseItem> purchaseItems3 = purchaseItemRepository.findByContractIdAndSourceAndType(id, PurchaseItem.SOURCE_INTERNAL, PurchaseItem.TYPE_HARDWARE);
+					List<PurchaseItem> purchaseItems3 = purchaseItemRepository.findByContractIdAndSourceAndTypeAndBeforeUpdateTime(id, PurchaseItem.SOURCE_INTERNAL, PurchaseItem.TYPE_HARDWARE, endTime);
 					Double internalSoftware = 0D;
 					if(purchaseItems3 != null && purchaseItems3.size() > 0){
 						for(PurchaseItem purchaseItem : purchaseItems3){
@@ -585,31 +509,46 @@ public class ContractStateTask {
 					Double projectHumanCost = 0D;
 					//项目报销成本
 					Double projectPayment = 0D;
+					ContractMonthlyStat lastCMS = contractMonthlyStatRepository.findOneByStatWeekAndContractId(StringUtil.nullToLong(nMonth), id);//上上个月记录
 					List<ProjectInfo> projectInfos = projectInfoRepository.findByContractId(id);
 					if(projectInfos != null && projectInfos.size() > 0){
 						for(ProjectInfo projectInfo : projectInfos){
 							//人工成本
-							List<UserTimesheet> userTimesheets3 = userTimesheetRepository.
-									findByDateAndObjIdAndType( StringUtil.nullToLong(lDay), projectInfo.getId(), UserTimesheet.TYPE_PROJECT);
-							if(userTimesheets3 != null && userTimesheets3.size() > 0){
-								for(UserTimesheet userTimesheet : userTimesheets3){
-									UserCost userCost = userCostRepository.findMaxByCostMonthAndUserId(StringUtil.nullToLong(lMonth), userTimesheet.getUserId());
-									if(contractInfo.getIsEpibolic() != null && !contractInfo.getIsEpibolic()){
-										projectHumanCost += userTimesheet.getRealInput() * (userCost.getInternalCost()/168);
-									}else{
-										projectHumanCost += userTimesheet.getRealInput() * StringUtil.nullToDouble((externalQuotationMap.get(userIdGradeMap.get(userTimesheet.getUserId()))));
+							if(lastCMS != null && lastCMS.getProjectHumanCost() != null && lastCMS.getProjectHumanCost() > 0){
+								projectHumanCost += lastCMS.getProjectHumanCost();
+								List<UserTimesheet> userTimesheets = userTimesheetRepository.findByObjIdAndTypeAndWordDayBetween(projectInfo.getId(), UserTimesheet.TYPE_PROJECT, fDay, lDay);
+								if(userTimesheets != null && userTimesheets.size() > 0){
+									for(UserTimesheet userTimesheet : userTimesheets){
+										UserCost userCost = userCostRepository.findMaxByCostMonthAndUserId(StringUtil.nullToLong(lMonth), userTimesheet.getUserId());
+										if(contractInfo.getIsEpibolic() != null && !contractInfo.getIsEpibolic()){
+											projectHumanCost += userTimesheet.getRealInput() * (userCost.getInternalCost()/168);
+										}else{
+											projectHumanCost += userTimesheet.getRealInput() * StringUtil.nullToDouble((externalQuotationMap.get(userIdGradeMap.get(userTimesheet.getUserId()))));
+										}
 									}
 								}
 							}else{
-								log.error(" no user Timesheets founded for project human cost belong to " + contractInfo.getSerialNum());
-							}
-							//报销成本
-							List<ProjectCost> projectCosts2 = projectCostRepository.findAllByProjectIdAndNoType(projectInfo.getId(), ProjectCost.TYPE_HUMAN_COST);
-							if(projectCosts2 != null && projectCosts2.size() > 0){
-								for(ProjectCost projectCost : projectCosts2){
-									projectPayment += projectCost.getTotal();
+								List<UserTimesheet> userTimesheets3 = userTimesheetRepository.
+										findByDateAndObjIdAndType(lDay, projectInfo.getId(), UserTimesheet.TYPE_PROJECT);
+								if(userTimesheets3 != null && userTimesheets3.size() > 0){
+									for(UserTimesheet userTimesheet : userTimesheets3){
+										Long cMonth = 0L;
+										if(userTimesheet.getWorkDay() != null && userTimesheet.getWorkDay().toString().length() > 5){
+											cMonth = StringUtil.nullToLong(StringUtil.nullToString(userTimesheet.getWorkDay()).substring(0, 6));
+										}
+										UserCost userCost = userCostRepository.findMaxByCostMonthAndUserId(cMonth, userTimesheet.getUserId());
+										if(contractInfo.getIsEpibolic() != null && !contractInfo.getIsEpibolic()){
+											projectHumanCost += userTimesheet.getRealInput() * (userCost.getInternalCost()/168);
+										}else{
+											projectHumanCost += userTimesheet.getRealInput() * StringUtil.nullToDouble((externalQuotationMap.get(userIdGradeMap.get(userTimesheet.getUserId()))));
+										}
+									}
+								}else{
+									log.error(" no user Timesheets founded for project human cost belong to " + contractInfo.getSerialNum());
 								}
 							}
+							//报销成本
+							projectPayment = StringUtil.nullToDouble(projectCostRepository.findTotalByProjectIdAndNoTypeAndBeforeCostDay(projectInfo.getId(), ProjectCost.TYPE_HUMAN_COST, lDay));
 						}
 					}else{
 						log.error("no project found belong to " + contractInfo.getSerialNum());
@@ -625,11 +564,7 @@ public class ContractStateTask {
 					contractMonthlyStat.setGrossProfit(grossProfit);
 				}else{//公共合同
 					//项目人工成本
-					Double projectHumanCost = 0D;
-					List<ContractCost> contractCosts = contractCostRepository.findByContractIdAndType(id, ContractCost.TYPE_HUMAN_COST);
-					for(ContractCost contractCost : contractCosts){
-						projectHumanCost += contractCost.getTotal();
-					}
+					Double projectHumanCost = StringUtil.nullToDouble(contractCostRepository.findTotalByContractIdAndTypeAndBeforeCostDay(id, ContractCost.TYPE_HUMAN_COST, lDay));
 					contractMonthlyStat.setProjectHumanCost(projectHumanCost);
 					Double costTotal = projectHumanCost;
 					contractMonthlyStat.setCostTotal(costTotal);
@@ -644,6 +579,9 @@ public class ContractStateTask {
 				contractMonthlyStat.setCreateTime(ZonedDateTime.now());
 				contractMonthlyStatRepository.save(contractMonthlyStat);
 				log.info(" =======contract : "+contractInfo.getSerialNum()+" monthly stat saved======= ");
+				if(contractId != null && contractId.equals(contractInfo.getId())){
+					break;
+				}
 			}
 		}else{
 			log.error("no contractInfos found");
@@ -657,10 +595,10 @@ public class ContractStateTask {
 	@Scheduled(cron = "0 59 23 ? * MON")
 	protected void generateSaleContractWeeklyStat(){
 		Date now = new Date();
-		generateSaleContractWeeklyStat(now);
+		generateSaleContractWeeklyStat(null, now);
 	}
 	
-	protected void generateSaleContractWeeklyStat(Date now){
+	protected void generateSaleContractWeeklyStat(Long contrId, Date now){
 		log.info("=====begin generate Sale Contract Weekly Stat=====");
 		init();
 		
@@ -752,6 +690,9 @@ public class ContractStateTask {
 			Map<Long,SaleWeeklyStat> saleWeeklyStatsMap = new HashMap<Long,SaleWeeklyStat>();//key:一级部门id
 			
 			for(ContractInfo contractInfo : contractInfos){
+				if(contrId != null && !contrId.equals(contractInfo.getId())){
+					continue;
+				}
 				log.info("=========begin generate Sale Contract : "+contractInfo.getSerialNum()+"=========");
 				SaleWeeklyStat saleWeeklyStat = new SaleWeeklyStat();
 				//合同id
@@ -997,6 +938,9 @@ public class ContractStateTask {
 					saleWeeklyStat.setDeptId(primaryKey);//把deptId改为所属的一级部门id
 					saleWeeklyStatsMap.put(primaryKey, saleWeeklyStat);
 				}
+				if(contrId != null && contrId.equals(contractInfo.getId())){
+					break;
+				}
 			}
 			//填充其余销售部门
 			for(Long deptId : primarySaleDeptIdsList){
@@ -1018,6 +962,55 @@ public class ContractStateTask {
 		}
 		log.info("=====end generate Sale Contract Weekly Stat=====");
 	}
+	
+	/**
+	 * 初始合同工时
+	 * @param contractInfo
+	 * @param beginDayStr
+	 * @param endDayStr
+	 * @param beginDay
+	 * @param endDay
+	 */
+	private void initContractCost(ContractInfo contractInfo, Long beginDayStr, Long endDayStr, Date beginDay, Date endDay) {
+		try {
+			while(true){
+				StatIdentify statIdentify = statIdentifyRepository.findByObjIdAndType(contractInfo.getId(), StatIdentify.TYPE_CONTRACT);
+				if(statIdentify != null){
+					Integer status = statIdentify.getStatus();
+					if(status == StatIdentify.STATUS_UNAVALIABLE){
+						log.info("====waiting for statIdentfiy belong to project : " + contractInfo.getSerialNum());
+						Thread.sleep(5*1000);
+					}else{
+						initIdentify(contractInfo);
+						break;
+					}
+				}else{
+					initIdentify(contractInfo);
+					break;
+				}
+			}
+			ContractCost contractCost2 = contractCostRepository.findMaxByContractIdAndCostDayAndType(contractInfo.getId(), beginDayStr, endDayStr, ContractCost.TYPE_HUMAN_COST);
+			if(contractCost2 != null){
+				Date initDate = DateUtil.addOneDay(DateUtil.parseDate("yyyyMMdd", contractCost2.getCostDay().toString()));
+				if(contractInfo.getStatus() == ContractInfo.STATUS_VALIDABLE){
+					initContractHumanCost(contractInfo, initDate, endDay);
+				}else{
+					initContractHumanCost(contractInfo, initDate, Date.from(contractInfo.getUpdateTime().toInstant()));
+				}
+			}else{
+				if(contractInfo.getStatus() == ContractInfo.STATUS_VALIDABLE){
+					initContractHumanCost(contractInfo, beginDay, endDay);
+				}else{
+					initContractHumanCost(contractInfo, beginDay, Date.from(contractInfo.getUpdateTime().toInstant()));
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}finally {
+			overIdentify(contractInfo);
+		}
+	}
+	
 	/**
 	 * 初始化合同工时成本
 	 */
@@ -1033,6 +1026,7 @@ public class ContractStateTask {
 			Long costMonth = StringUtil.nullToLong(DateUtil.formatDate("yyyyMM", currentDay).toString());
 			ContractCost contractCost = new ContractCost();
 			contractCost.setContractId(contractInfo.getId());
+			List<Long> userTimesheetIds = new ArrayList<Long>();//被统计的员工日报id
 			//销售和咨询都有
 			if(contractInfo.getDeptId() != null && contractInfo.getDeptId() != 0 
 					&& contractInfo.getConsultantsDeptId() != null && contractInfo.getConsultantsDeptId() != 0){
@@ -1052,6 +1046,7 @@ public class ContractStateTask {
 				
 				if(userTimesheets != null && userTimesheets.size() > 0){
 					for(UserTimesheet userTimesheet : userTimesheets){
+						userTimesheetIds.add(userTimesheet.getId());
 						UserCost userCost = userCostRepository.findMaxByCostMonthAndUserId(costMonth, userTimesheet.getUserId());
 						if(userCost != null){
 							if(contractInfo.getIsEpibolic() != null && !contractInfo.getIsEpibolic()){
@@ -1085,6 +1080,7 @@ public class ContractStateTask {
 				}
 				if(userTimesheets2 != null && userTimesheets2.size() > 0){
 					for(UserTimesheet userTimesheet : userTimesheets2){
+						userTimesheetIds.add(userTimesheet.getId());
 						UserCost userCost = userCostRepository.findMaxByCostMonthAndUserId(costMonth, userTimesheet.getUserId());
 						if(userCost != null){
 							if(contractInfo.getIsEpibolic() != null && !contractInfo.getIsEpibolic()){
@@ -1138,6 +1134,7 @@ public class ContractStateTask {
 				Double totalHour = 0D;
 				if(userTimesheets != null && userTimesheets.size() > 0){
 					for(UserTimesheet userTimesheet : userTimesheets){
+						userTimesheetIds.add(userTimesheet.getId());
 						UserCost userCost = userCostRepository.findMaxByCostMonthAndUserId(costMonth, userTimesheet.getUserId());
 						if(userCost != null){
 							if(contractInfo.getIsEpibolic() != null && !contractInfo.getIsEpibolic()){
@@ -1166,6 +1163,9 @@ public class ContractStateTask {
 			contractCost.setUpdateTime(ZonedDateTime.now());
 			contractCost.setCostDay(workDay);
 			contractCostRepository.save(contractCost);
+			if(!userTimesheetIds.isEmpty()){
+				userTimesheetRepository.updateCharacterById(userTimesheetIds);//更新已经被统计的对应日报记录
+			}
 			currentDay = new Date(currentDay.getTime() + (24*60*60*1000));
 		}
 		
@@ -1198,5 +1198,4 @@ public class ContractStateTask {
 			statIdentifyRepository.saveAndFlush(statIdentify);
 		}
 	}
-	
 }

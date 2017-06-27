@@ -23,7 +23,8 @@
             	"overInput":"认可正常工时不可大于正常工时投入",
             	"overExtraInput":"认可加班工时不可大于加班工时投入",
             	"inputZeroCheck":"正常工时投入为0，认可正常工时也只能为0",
-            	"extraInputZeroCheck" : "加班工时投入为0，认可加班工时也只能为0"
+            	"extraInputZeroCheck" : "加班工时投入为0，认可加班工时也只能为0",
+            	"character" : "{{param}}--已经统计完毕，不允许修改"
             },
             "contractId": "合同名称",
             "userName": "员工",

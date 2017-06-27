@@ -115,7 +115,7 @@
                                     class="btn btn-danger btn-sm">
                                 <span class="glyphicon glyphicon-remove-circle"></span>
                             </button>
-                            <button type="submit" ng-if="contractBudget.haveCreateProject" has-authority="ROLE_PROJECT_INFO"
+                            <button type="submit" ng-if="contractBudget.haveCreateProject" has-authority="ROLE_PROJECT_INFO_END"
                             		data-toggle="tooltip" title="创建项目"
                                     ui-sref="contract-budget.createProject({id:contractBudget.id})"
                                     class="btn btn-warning btn-sm" ng-disabled="contractBudget.isCreateDisabled">

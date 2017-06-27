@@ -472,7 +472,12 @@ public class ContractInfoResource {
 							contractInfo.setType(ContractInfo.TYPE_OTHER);
 						}
 						//填充是否 预立合同(根据合同编号判断是否预立合同)
-						Boolean isMatched = contractInfo.getSerialNum().toUpperCase().startsWith("WY");
+						//Boolean isMatched = contractInfo.getSerialNum().toUpperCase().startsWith("WY");
+						Boolean isMatched = Boolean.FALSE;
+						String serialNumStr = contractInfo.getSerialNum().toUpperCase().substring(0, 2);
+						if("WY".equals(serialNumStr) || "MY".equals(serialNumStr) || "HY".equals(serialNumStr)){
+							isMatched = Boolean.TRUE;
+						}
 						if(isMatched){
 							contractInfo.setIsPrepared(Boolean.TRUE);
 						}else{

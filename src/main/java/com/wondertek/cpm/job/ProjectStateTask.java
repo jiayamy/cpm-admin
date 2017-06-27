@@ -1,6 +1,7 @@
 package com.wondertek.cpm.job;
 
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -86,16 +87,19 @@ public class ProjectStateTask {
 	
 	private void init(){
 		List<ContractInfo> contractInfos = contractInfoRepository.findAll();
+		contractIsEpibolicMap.clear();
 		for(ContractInfo contractInfo : contractInfos){
 			contractIsEpibolicMap.put(contractInfo.getId(), contractInfo.getIsEpibolic() != null ? contractInfo.getIsEpibolic() : Boolean.FALSE);
 		}
 		List<ExternalQuotation> externalQuotations = externalQuotationRepository.findAll();
+		externalQuotationMap.clear();
 		if(externalQuotations != null && externalQuotations.size() > 0){
 			for(ExternalQuotation externalQuotation : externalQuotations){
 				externalQuotationMap.put(externalQuotation.getGrade(), externalQuotation.getHourCost());
 			}
 		}
 		List<User> users = userRepository.findAll();
+		userIdGradeMap.clear();
 		if(users != null && users.size() > 0){
 			for(User user : users){
 				userIdGradeMap.put(user.getId(), user.getGrade());
@@ -112,9 +116,9 @@ public class ProjectStateTask {
 	@Scheduled(cron = "0 0 21 ? * MON")
 	protected void generateProjectWeeklyState(){
 		Date now = new Date();
-		generateProjectWeeklyState(now);
+		generateProjectWeeklyState(null, now);
 	}
-	protected void generateProjectWeeklyState(Date now){
+	protected void generateProjectWeeklyState(Long projectId, Date now){
 		log.info("=====begin generate project weekly state=====");
 		init();
 		String [] dates = DateUtil.getWholeWeekByDate(DateUtil.lastSaturday(now));
@@ -123,9 +127,12 @@ public class ProjectStateTask {
 		List<ProjectInfo> projectInfos = projectInfoRepository.findByStatusOrBeginTime(ProjectInfo.STATUS_ADD, beginTime);
 		if(projectInfos != null && projectInfos.size() > 0){
 			for (ProjectInfo projectInfo : projectInfos) {
+				if(projectId != null && !projectId.equals(projectInfo.getId())){
+					continue;
+				}
 				log.info("======begin generate project : "+projectInfo.getSerialNum()+"=====");
 				Long id = projectInfo.getId();
-				//初始化projectcost
+				//初始化projectcost项目成本中人工成本
 				initProjectCost(projectInfo,dates[0],dates[6],DateUtil.lastMonday(now),DateUtil.lastSundayEnd(now));
 				
 				//初始上周的stat
@@ -147,28 +154,12 @@ public class ProjectStateTask {
 					log.error("no projectFinishInfo found belong to " + projectInfo.getSerialNum());
 					projectWeeklyStat.setFinishRate(0D);
 				}
-				//人工成本
-				Double humanCost = 0D;
-				List<ProjectCost> projectCosts2 = projectCostRepository.findByProjectIdAndType(id, ProjectCost.TYPE_HUMAN_COST);
-				if(projectCosts2 != null && projectCosts2.size() > 0){
-					for(ProjectCost projectCost : projectCosts2){
-						humanCost += projectCost.getTotal();
-					}
-				}else{
-					log.error("no humanCost found belong to " + projectInfo.getSerialNum());
-				}
-				projectWeeklyStat.setHumanCost(humanCost);
-				//报销成本
-				List<ProjectCost> projectCosts = projectCostRepository.findAllByProjectIdAndNoType(id, ProjectCost.TYPE_HUMAN_COST);
-				Double payment = 0D;
-				if(projectCosts != null && projectCosts.size() > 0){
-					for (ProjectCost projectCost2 : projectCosts) {
-						payment += projectCost2.getTotal();
-					}
-				}else{
-					log.error("no projectPayment found belong to " + projectInfo.getSerialNum());
-				}
-				projectWeeklyStat.setPayment(payment);
+				//人工成本,从项目成本中查询数据
+				Double humanCost = projectCostRepository.findTotalByProjectIdAndTypeAndBeforeCostDay(id, ProjectCost.TYPE_HUMAN_COST, StringUtil.nullToLong(dates[6]));
+				projectWeeklyStat.setHumanCost(StringUtil.nullToDouble(humanCost));
+				//报销成本，从项目成本中查询数据
+				Double payment = projectCostRepository.findTotalByProjectIdAndNoTypeAndBeforeCostDay(id, ProjectCost.TYPE_HUMAN_COST,StringUtil.nullToLong(dates[6]));
+				projectWeeklyStat.setPayment(StringUtil.nullToDouble(payment));
 				//项目总工时
 				Double totalInput = 0D;
 				List<Object[]> inputList =  userTimesheetRepository.findSumByDateAndObjIdAndType(StringUtil.nullToLong(dates[6]),id, UserTimesheet.TYPE_PROJECT);
@@ -183,6 +174,9 @@ public class ProjectStateTask {
 				projectWeeklyStat.setStatWeek(StringUtil.nullToLong(dates[6]));
 				projectWeeklyStatRepository.save(projectWeeklyStat);
 				log.info("project : "+projectInfo.getSerialNum()+" weekly state saved");
+				if(projectId != null && projectId.equals(projectInfo.getId())){
+					break;
+				}
 			}
 		}else{
 			log.error("no projectinfo found");
@@ -195,9 +189,9 @@ public class ProjectStateTask {
 	@Scheduled(cron = "0 0 22 1 * ?")
 	protected void generateProjectMonthlyState(){
 		Date now = new Date();
-		generateProjectMonthlyState(now);
+		generateProjectMonthlyState(null, now);
 	}
-	protected void generateProjectMonthlyState(Date now){
+	protected void generateProjectMonthlyState(Long projectId, Date now){
 		log.info("=====begin generate project monthly state=====");
 		init();
 		ZonedDateTime beginTime = DateUtil.getZonedDateTime(DateUtil.lastMonthBegin(now).getTime());
@@ -208,6 +202,9 @@ public class ProjectStateTask {
 		List<ProjectInfo> projectInfos = projectInfoRepository.findByStatusOrBeginTime(ProjectInfo.STATUS_ADD, beginTime);
 		if(projectInfos != null && projectInfos.size() > 0){
 			for (ProjectInfo projectInfo : projectInfos) {
+				if(projectId != null && !projectId.equals(projectInfo.getId())){
+					continue;
+				}
 				log.info("=======begin generate project : "+projectInfo.getSerialNum()+"=======");
 				
 				Long id = projectInfo.getId();
@@ -233,27 +230,11 @@ public class ProjectStateTask {
 					projectMonthlyStat.setFinishRate(0D);
 				}
 				//人工成本
-				Double humanCost = 0D;
-				List<ProjectCost> projectCosts2 = projectCostRepository.findByProjectIdAndType(id, ProjectCost.TYPE_HUMAN_COST);
-				if(projectCosts2 != null && projectCosts2.size() > 0){
-					for(ProjectCost projectCost : projectCosts2){
-						humanCost += projectCost.getTotal();
-					}
-				}else{
-					log.error("no humanCost found belong to " + projectInfo.getSerialNum());
-				}
-				projectMonthlyStat.setHumanCost(humanCost);
+				Double humanCost = projectCostRepository.findTotalByProjectIdAndTypeAndBeforeCostDay(id, ProjectCost.TYPE_HUMAN_COST, StringUtil.nullToLong(lDay));
+				projectMonthlyStat.setHumanCost(StringUtil.nullToDouble(humanCost));
 				//报销成本
-				List<ProjectCost> projectCosts = projectCostRepository.findAllByProjectIdAndNoType(id, ProjectCost.TYPE_HUMAN_COST);
-				Double payment = 0D;
-				if(projectCosts != null && projectCosts.size() > 0){
-					for (ProjectCost projectCost2 : projectCosts) {
-						payment += projectCost2.getTotal();
-					}
-				}else{
-					log.error("no projectPayment found belong to " + projectInfo.getSerialNum());
-				}
-				projectMonthlyStat.setPayment(payment);
+				Double payment = projectCostRepository.findTotalByProjectIdAndNoTypeAndBeforeCostDay(id, ProjectCost.TYPE_HUMAN_COST, StringUtil.nullToLong(lDay));;
+				projectMonthlyStat.setPayment(StringUtil.nullToDouble(payment));
 				//项目总工时
 				Double totalInput = 0D;
 				List<Object[]> inputList = userTimesheetRepository.findSumByDateAndObjIdAndType(StringUtil.nullToLong(lDay), id, UserTimesheet.TYPE_PROJECT);
@@ -268,6 +249,9 @@ public class ProjectStateTask {
 				projectMonthlyStat.setStatWeek(StringUtil.nullToLong(lMonth));
 				projectMonthlyStatRepository.save(projectMonthlyStat);
 				log.info("project : "+projectInfo.getSerialNum()+" monthly state saved");
+				if(projectId != null && projectId.equals(projectInfo.getId())){
+					break;
+				}
 			}
 		}else{
 			log.error("no projectinfo found");
@@ -302,7 +286,7 @@ public class ProjectStateTask {
 			//该项目在起始日期内最后一条工时成本信息
 			ProjectCost projectCost = projectCostRepository.findMaxByProjectIdAndCostDayAndType(projectInfo.getId(), StringUtil.nullToLong(startDayStr), StringUtil.nullToLong(endDayStr), ProjectCost.TYPE_HUMAN_COST);
 			if(projectInfo.getStatus() == ProjectInfo.STATUS_ADD){
-				if(projectCost != null){
+				if(projectCost != null){//起始结束日期内有项目工时成本
 					Date initDate = DateUtil.addOneDay(DateUtil.parseDate("yyyyMMdd", projectCost.getCostDay().toString()));
 					initProjectHumanCost(projectInfo, initDate, endDay);
 				}else{
@@ -338,8 +322,10 @@ public class ProjectStateTask {
 			projectCost.setType(ProjectCost.TYPE_HUMAN_COST);
 			Double total = 0D; 
 			Double totalHour = 0D;
+			List<Long> userTimesheetIds = new ArrayList<Long>();//被统计的员工日报id
 			List<UserTimesheet> userTimesheets = userTimesheetRepository.findByWorkDayAndObjIdAndType(workDay, projectInfo.getId(), UserTimesheet.TYPE_PROJECT);
 			for(UserTimesheet userTimesheet : userTimesheets){
+				userTimesheetIds.add(userTimesheet.getId());
 				UserCost userCost = userCostRepository.findMaxByCostMonthAndUserId(costMonth, userTimesheet.getUserId());
 				if(userCost != null){
 					if(!isEpibolic){
@@ -364,6 +350,9 @@ public class ProjectStateTask {
 			projectCost.setUpdateTime(ZonedDateTime.now());
 			projectCost.setCostDay(workDay);
 			projectCostRepository.save(projectCost);
+			if (!userTimesheetIds.isEmpty()) {
+				userTimesheetRepository.updateCharacterById(userTimesheetIds);//更新已经被统计的对应日报记录
+			}
 			currentDay = new Date(currentDay.getTime() + (24*60*60*1000));
 		}
 		

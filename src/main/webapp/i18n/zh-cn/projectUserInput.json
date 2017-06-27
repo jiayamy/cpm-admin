@@ -1,0 +1,33 @@
+{
+    "cpmApp": {
+        "projectUserInput" : {
+            "home": {
+                "title": "项目人员工时",
+                "export": "导出"
+            },
+            "detail": {
+                "title": "项目人员工时详情"
+            },
+            "startTime": "开始日期",
+            "endTime": "结束日期",
+            "user": "项目人员",
+            "userSerialNum" : "员工工号",
+            "userName" : "员工姓名",
+            "realInput": "正常工时",
+            "acceptInput" : "认可正常工时",
+            "extraInput" : "加班工时",
+            "acceptExtraInput" : "认可加班工时",
+            "contractId" : "合同",
+            "contractName" : "合同名称",
+            "contractSerialNum": "合同编号",
+            "projectId" : "项目",
+            "projectName" : "项目名称",
+            "projectSerialNum" : "项目编号",
+            "pmSerialNum" : "项目经理工号",
+            "pmName" : "项目经理",
+            "pmDeptType" : "项目经理部门",
+            "noPerm": "没有权限访问",
+            "showTotal": "显示合计"
+        }
+    }
+}

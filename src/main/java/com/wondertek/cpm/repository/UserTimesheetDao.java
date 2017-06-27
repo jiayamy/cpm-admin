@@ -8,6 +8,7 @@ import com.wondertek.cpm.domain.ContractInfo;
 import com.wondertek.cpm.domain.DeptInfo;
 import com.wondertek.cpm.domain.User;
 import com.wondertek.cpm.domain.UserTimesheet;
+import com.wondertek.cpm.domain.vo.ProjectUserInputVo;
 import com.wondertek.cpm.domain.vo.UserTimesheetForHardWorkingVo;
 
 public interface UserTimesheetDao extends GenericDao<UserTimesheet, Long> {
@@ -66,4 +67,8 @@ public interface UserTimesheetDao extends GenericDao<UserTimesheet, Long> {
 	 * 某个项目的某个区间内是否有日报
 	 */
 	public Long getWorkDayByParam(Long userId, Long objId, Integer type, Long fromDay, Long endDay, int iType);
+	/**
+	 * 查找项目人员工时
+	 */
+	public List<ProjectUserInputVo> getProjectUserInputsByParam(Long startTime,Long endTime,List<Long> userIds,User user,DeptInfo deptInfo);
 }

@@ -128,7 +128,7 @@
         		vm.contractInfo.isPrepared = false;
         	}else{
         		var s = vm.contractInfo.serialNum.toUpperCase();
-        		if(s.substr(0,2) == "WY"){
+        		if(s.substr(0,2) == "WY" || s.substr(0,2) == "MY" || s.substr(0,2) == "HY"){
         			vm.contractInfo.isPrepared = true;
         		}else{
         			vm.contractInfo.isPrepared = false;

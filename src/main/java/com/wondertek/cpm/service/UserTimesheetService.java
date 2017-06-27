@@ -32,6 +32,7 @@ import com.wondertek.cpm.domain.vo.ContractInfoVo;
 import com.wondertek.cpm.domain.vo.LongValue;
 import com.wondertek.cpm.domain.vo.ParticipateInfo;
 import com.wondertek.cpm.domain.vo.ProjectInfoVo;
+import com.wondertek.cpm.domain.vo.ProjectUserInputVo;
 import com.wondertek.cpm.domain.vo.UserTimesheetForHardWorkingVo;
 import com.wondertek.cpm.domain.vo.UserTimesheetForOther;
 import com.wondertek.cpm.domain.vo.UserTimesheetForUser;
@@ -1149,6 +1150,16 @@ public class UserTimesheetService {
     		if(count > 0){
     			return "cpmApp.userTimesheet.save.dataChanged";
     		}
+    		//判断character为1的情况
+    		if(!updateList.isEmpty()){
+    			for(UserTimesheet ut : updateList){
+    				int count1 = userTimesheetRepository.getCountByIdAndInputs(ut.getId(), ut.getRealInput(), 
+    						ut.getAcceptInput(), ut.getExtraInput(), ut.getAcceptExtraInput());
+    				if(count1 > 0){
+    					return "cpmApp.userTimesheet.save.character#" + ut.getWorkDay()+"-"+ut.getObjName();
+    				}
+    			}
+    		}
     		//保存记录
     		userTimesheetDao.saveByUser(saveList,updateList);
     		return "cpmApp.userTimesheet.save.success";
@@ -1308,6 +1319,7 @@ public class UserTimesheetService {
 		userTimesheet.setWorkDay(workDay);
 		userTimesheet.setExtraInput(0D);
 		userTimesheet.setAcceptExtraInput(0D);
+		userTimesheet.setCharacter(UserTimesheet.CHARACTER_ABLE);
 		return userTimesheet;
 	}
 	
@@ -1330,6 +1342,7 @@ public class UserTimesheetService {
 		userTimesheet.setWorkDay(workDay);
 		userTimesheet.setRealInput(0D);
 		userTimesheet.setAcceptInput(0D);
+		userTimesheet.setCharacter(UserTimesheet.CHARACTER_ABLE);
 		return userTimesheet;
 	}
 	
@@ -2008,6 +2021,16 @@ public class UserTimesheetService {
     				return "cpmApp.contractTimesheet.save.holiday#" + sb.toString();
     			}
     		}
+    		//判断character为1的情况
+    		if(!updateList.isEmpty()){
+    			for(UserTimesheet ut : updateList){
+    				UserTimesheet old = userTimesheetRepository.getUserTimesheetByIdAndInputs(ut.getId(), ut.getRealInput(), 
+    						ut.getAcceptInput(), ut.getExtraInput(), ut.getAcceptExtraInput());
+    				if(old != null){
+    					return "cpmApp.contractTimesheet.save.character#" + old.getWorkDay()+"-"+old.getObjName();
+    				}
+    			}
+    		}
     		//保存记录
     		userTimesheetDao.updateAcceptInput(updateList);
     		
@@ -2080,5 +2103,54 @@ public class UserTimesheetService {
 	 */
 	public Long getWorkDayByParam(Long userId,Long objId,Integer type,Long fromDay,Long endDay, int iType){
 		return userTimesheetDao.getWorkDayByParam(userId,objId,type,fromDay,endDay,iType);
+	}
+	
+	/**
+	 * 查找项目人员工时
+	 */
+	public List<ProjectUserInputVo> getProjectUserInputsByParam(Long startTime,Long endTime,List<Long> userIds,Boolean showTotal){
+		List<Object[]> objs = userRepository.findUserInfoByLogin(SecurityUtils.getCurrentUserLogin());
+		if (objs != null) {
+			Object[] o = objs.get(0);
+			User user = (User)o[0];
+			DeptInfo deptInfo = (DeptInfo)o[1];
+			
+			List<ProjectUserInputVo> dbList = userTimesheetDao.getProjectUserInputsByParam(startTime, endTime, userIds,user,deptInfo);
+			List<ProjectUserInputVo> returnList = new ArrayList<ProjectUserInputVo>();
+			Map<String,ProjectUserInputVo> sumMap = new HashMap<String,ProjectUserInputVo>();//合计
+			if (showTotal == true) {
+				if (dbList != null && dbList.size() > 0) {
+					ProjectUserInputVo temp = null;
+					int i = 0;
+					for (ProjectUserInputVo vo : dbList) {
+						if (sumMap.containsKey(vo.getProjectSerialNum())) {
+							temp = sumMap.get(vo.getProjectSerialNum());
+							temp.setRealInput(temp.getRealInput() + vo.getRealInput());
+							temp.setAcceptInput(temp.getAcceptInput() + vo.getAcceptInput());
+							temp.setExtraInput(temp.getExtraInput() + vo.getExtraInput());
+							temp.setAcceptExtraInput(temp.getAcceptExtraInput() + vo.getAcceptExtraInput());
+							returnList.add(vo);
+						} else {
+							if (returnList.size() > 0) {
+								returnList.add(sumMap.get(returnList.get(returnList.size() - 1).getProjectSerialNum()));//添加合计
+								returnList.add(vo);
+							} else {
+								returnList.add(vo);
+							}
+							sumMap.put(vo.getProjectSerialNum(),
+									new ProjectUserInputVo(vo.getProjectSerialNum(), "合计", vo.getRealInput(),
+											vo.getAcceptInput(), vo.getExtraInput(), vo.getAcceptExtraInput()));
+							if (i == dbList.size() - 1) {
+								returnList.add(sumMap.get(vo.getProjectSerialNum()));
+							}
+						}
+						i++;
+					}
+				}
+				return returnList;
+			}
+			return dbList;
+		}
+		return null;
 	}
 }

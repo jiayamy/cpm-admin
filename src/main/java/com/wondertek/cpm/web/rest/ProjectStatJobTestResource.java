@@ -26,13 +26,15 @@ public class ProjectStatJobTestResource extends ProjectStateTask{
 	@GetMapping("/projectStateJob/projectMonthlyStatTest")
 	@Timed
 	@Secured(AuthoritiesConstants.ADMIN)
-	public @ResponseBody String projectMonthlyState(@RequestParam(value="date", required = false) Long date) {
+	public @ResponseBody String projectMonthlyState(
+			@RequestParam(value = "projectId", required = false) Long projectId,
+			@RequestParam(value="date", required = false) Long date) {
 		log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to Test Resource: date : {}" , date);
-		if(date == null){
-			//每周一晚上22点开始跑定时任务
-			generateProjectMonthlyState(new Date());
+		if(date != null){
+			generateProjectMonthlyState(projectId, DateUtil.parseDate("yyyyMMdd", date.toString()));
 		}else{
-			generateProjectMonthlyState(DateUtil.parseDate("yyyyMMdd", date.toString()));
+			//每周一晚上22点开始跑定时任务
+			generateProjectMonthlyState(projectId, new Date());
 		}
 		return "success";
 	}
@@ -40,13 +42,15 @@ public class ProjectStatJobTestResource extends ProjectStateTask{
 	@GetMapping("/projectStateJob/projectWeeklyStatTest")
 	@Timed
 	@Secured(AuthoritiesConstants.ADMIN)
-	public @ResponseBody String projectWeeklyStatTest(@RequestParam(value="date", required = false) Long date) {
-		log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to Test Resource: date : {}" , date);
-		if(date == null){
-			//每周一晚上22点开始跑定时任务
-			generateProjectWeeklyState(new Date());
+	public @ResponseBody String projectWeeklyStatTest(
+			@RequestParam(value = "projectId", required = false) Long projectId,
+			@RequestParam(value="date", required = false) Long date) {
+		log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to Test Resource: projectId : {}, date : {}" , projectId, date);
+		if(date != null){
+			generateProjectWeeklyState(projectId, DateUtil.parseDate("yyyyMMdd", date.toString()));
 		}else{
-			generateProjectWeeklyState(DateUtil.parseDate("yyyyMMdd", date.toString()));
+			//每周一晚上22点开始跑定时任务
+			generateProjectWeeklyState(projectId, new Date());
 		}
 		return "success";
 	}
