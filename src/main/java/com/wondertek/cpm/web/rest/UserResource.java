@@ -417,7 +417,7 @@ public class UserResource {
 						}else if (val instanceof Double) {
 							user.setSerialNum(((Double)val).longValue() +"");
 						}else {
-							user.setSerialNum(StringUtil.null2Str(val));
+							user.setSerialNum(StringUtil.null2Str(val).trim());
 						}
 						//记录中是否存在同一工号
 						if(serialNumExistMap.containsKey(user.getSerialNum())){
@@ -436,7 +436,7 @@ public class UserResource {
 						}else if(val instanceof Double){
 							user.setLogin(((Double)val).longValue() + "");
 						}else{
-							user.setLogin(StringUtil.null2Str(val));
+							user.setLogin(StringUtil.null2Str(val).trim());
 						}
 						//记录中是否存在同一登录账号
 						if(loginExistMap.containsKey(user.getSerialNum())){
@@ -466,7 +466,7 @@ public class UserResource {
 						}else if (val instanceof Double) {
 							val = ((Double)val).longValue();
 						}
-						user.setLastName(StringUtil.null2Str(val));
+						user.setLastName(StringUtil.null2Str(val).trim());
 						
 						//校验第四列 公司名 系统设置-部门信息中的顶级部门名称。方便获取下面的一级部门和二级部门
 						columnNum++;
@@ -479,7 +479,7 @@ public class UserResource {
 						}else if (val instanceof Double) {
 							val = ((Double)val).longValue();
 						}
-						companyId = companys.get(StringUtil.null2Str(val));
+						companyId = companys.get(StringUtil.null2Str(val).trim());
 						if(companyId == null){
 							return ResponseEntity.ok().body(cpmResponse
 									.setSuccess(Boolean.FALSE)
@@ -498,7 +498,7 @@ public class UserResource {
 						}else if (val instanceof Double) {
 							val = ((Double)val).longValue();
 						}
-						primaryDeptInfos = deptInfos.get(companyId + "_" + StringUtil.null2Str(val));
+						primaryDeptInfos = deptInfos.get(companyId + "_" + StringUtil.null2Str(val).trim());
 						if(primaryDeptInfos == null || primaryDeptInfos.isEmpty()){
 							return ResponseEntity.ok().body(cpmResponse
 									.setSuccess(Boolean.FALSE)
@@ -518,7 +518,7 @@ public class UserResource {
 							if (val instanceof Double) {
 								val = ((Double)val).longValue();
 							}
-							secondaryDeptInfos = deptInfos.get(companyId + "_" + StringUtil.null2Str(val));
+							secondaryDeptInfos = deptInfos.get(companyId + "_" + StringUtil.null2Str(val).trim());
 							if(secondaryDeptInfos == null || secondaryDeptInfos.isEmpty()){
 								return ResponseEntity.ok().body(cpmResponse
 										.setSuccess(Boolean.FALSE)
@@ -527,7 +527,7 @@ public class UserResource {
 							}									
 						}
 						
-						Long deptId = getUserDeptFromDeptInfos(deptInfos,companyId,primaryDeptInfos.get(0),StringUtil.null2Str(val));
+						Long deptId = getUserDeptFromDeptInfos(deptInfos,companyId,primaryDeptInfos.get(0),StringUtil.null2Str(val).trim());
 						if(deptId < 0){
 							return ResponseEntity.ok().body(cpmResponse
 									.setSuccess(Boolean.FALSE)
@@ -539,7 +539,7 @@ public class UserResource {
 						//校验第七列 岗位 可随意 填写
 						columnNum++;
 						val = ls.get(columnNum);
-						user.setDuty(StringUtil.null2Str(val));
+						user.setDuty(StringUtil.null2Str(val).trim());
 						
 						//校验第八列 工作地点 必须是系统设置-“工作地点”中
 						columnNum++;
@@ -552,7 +552,7 @@ public class UserResource {
 						}else if (val instanceof Double) {
 							val = ((Double)val).longValue();
 						}
-						user.setWorkArea(StringUtil.null2Str(val));
+						user.setWorkArea(StringUtil.null2Str(val).trim());
 						if(!areas.contains(user.getWorkArea())){//校验工作地点是否存在
 							return ResponseEntity.ok().body(cpmResponse
 									.setSuccess(Boolean.FALSE)
@@ -568,7 +568,7 @@ public class UserResource {
 						//校验第十列 邮箱 要唯一，可不填写
 						columnNum++;
 						val = ls.get(columnNum);
-						user.setEmail(StringUtil.null2Str(val));
+						user.setEmail(StringUtil.null2Str(val).trim());
 						
 						//校验第十一列 手机号 正常联系方式
 						columnNum++;
@@ -577,7 +577,7 @@ public class UserResource {
 						}else if(val instanceof Double){//double
 							user.setTelephone(""+((Double)val).longValue());
 						}else{
-							user.setTelephone(StringUtil.null2Str(val));
+							user.setTelephone(StringUtil.null2Str(val).trim());
 						}
 						
 						//校验第十二列 性别 女/男
@@ -596,7 +596,7 @@ public class UserResource {
 						}else if(val instanceof Double){//double
 							user.setBirthYear(""+((Double)val).longValue());
 						}else{
-							user.setBirthYear(StringUtil.null2Str(val));
+							user.setBirthYear(StringUtil.null2Str(val).trim());
 						}
 						if(user.getBirthYear() != null && !(user.getBirthYear().length() == 0 || user.getBirthYear().length() == 4)){
 							return ResponseEntity.ok().body(cpmResponse
@@ -612,7 +612,7 @@ public class UserResource {
 						}else if(val instanceof Double){//double
 							user.setBirthDay(""+((Double)val).longValue());
 						}else{
-							user.setBirthDay(StringUtil.null2Str(val));
+							user.setBirthDay(StringUtil.null2Str(val).trim());
 						}
 						if(user.getBirthDay() != null && !(user.getBirthDay().length() == 0 || user.getBirthDay().length() == 4)){
 							return ResponseEntity.ok().body(cpmResponse
