@@ -11,6 +11,7 @@ import java.util.List;
 public class ExcelValue {
 	private int sheet;//sheet编号
 	private List<List<Object>> vals;	//一个sheet里面的所有行里面的值
+	private String sheetName;	//sheet名称
 	
 	public int getSheet() {
 		return sheet;
@@ -29,5 +30,11 @@ public class ExcelValue {
 			vals = new ArrayList<List<Object>>();
 		}
 		vals.add(val);
+	}
+	public String getSheetName() {
+		return sheetName;
+	}
+	public void setSheetName(String sheetName) {
+		this.sheetName = sheetName;
 	}
 }

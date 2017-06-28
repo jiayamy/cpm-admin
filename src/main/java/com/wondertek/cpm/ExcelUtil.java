@@ -213,7 +213,7 @@ public class ExcelUtil {
                     excelValue.addVals(rowList);
                 }
                 list.add(excelValue);
-                log.debug("readXlsx sheet:{},rows:{}",totalRows);
+                log.debug("readXlsx sheet:{},rows:{}",xssfSheet.getSheetName(),totalRows);
             }
             log.debug("readXlsx end");
             return list;
@@ -300,7 +300,7 @@ public class ExcelUtil {
                     excelValue.addVals(rowList);
                 }
                 list.add(excelValue);
-                log.debug("readXlsx sheet:{},rows:{}",totalRows);
+                log.debug("readXlsx sheet:{},rows:{}",hssfSheet.getSheetName(),totalRows);
             }
             log.debug("Upload Excel readXlsx end");
             return list;
@@ -343,4 +343,106 @@ public class ExcelUtil {
 		}
     	return name;
     }
+    /**
+     * 获取数据
+     * 
+     * @param file
+     * @param startNum
+     * @param maxSheet
+     * @param maxCell
+     * @return
+     * @throws IOException
+     */
+    public static List<ExcelValue> readExcel(File file) throws IOException {
+    	if(file == null || file.getName() == null
+        		|| ExcelUtil.EMPTY.equals(file.getName().trim())){
+            return null;
+        }else{
+            String postfix = ExcelUtil.getPostfix(file.getName());
+            if(!ExcelUtil.EMPTY.equals(postfix)){
+                if(ExcelUtil.OFFICE_EXCEL_2003_POSTFIX.equals(postfix)){
+                    return readXls(file);
+                }else if(ExcelUtil.OFFICE_EXCEL_2010_POSTFIX.equals(postfix)){
+                    return readXlsx(file);
+                }else{
+                    return null;
+                }
+            }
+        }
+        return null;
+    }
+    private static List<ExcelValue> readXlsx(File file) {
+    	log.debug("readXlsx start for {}:",file.getName());
+    	InputStream input = null;
+    	try {
+			input = new FileInputStream(file);
+		} catch (FileNotFoundException e) {
+			return null;
+		}
+    	return readXlsx(input);
+    }
+	private static List<ExcelValue> readXlsx(InputStream input) {
+		List<ExcelValue> list = new ArrayList<ExcelValue>();
+        XSSFWorkbook wb = null;
+        ArrayList<Object> rowList = null;
+        int totalRows = 0;	//总行数
+        int totalCells = 0;	//总列数
+        try {
+            // 创建文档
+            wb = new XSSFWorkbook(input);
+            //读取sheet(页)
+            for(int numSheet = 0; numSheet < wb.getNumberOfSheets(); numSheet++){
+                XSSFSheet xssfSheet = wb.getSheetAt(numSheet);
+                if(xssfSheet == null){
+                    continue;
+                }
+                ExcelValue excelValue = new ExcelValue();
+                excelValue.setSheet(numSheet + 1);
+                excelValue.setSheetName(xssfSheet.getSheetName());
+                
+                totalRows = xssfSheet.getLastRowNum();
+                //读取Row
+                for(int rowNum = 0; rowNum < totalRows; rowNum++){
+                    XSSFRow xssfRow = xssfSheet.getRow(rowNum);
+                    rowList = null;
+                    if(xssfRow != null){
+                        rowList = new ArrayList<Object>();
+                        totalCells = xssfRow.getLastCellNum();
+                        //读取列，从第一列开始
+                        for(int c = 0; c < totalCells; c++){
+                            XSSFCell cell = xssfRow.getCell(c);
+                            if(cell == null){
+                                rowList.add(null);
+                                continue;
+                            }
+                            rowList.add(ExcelUtil.get2010XlsxValue(cell));
+                        }
+                    }
+                    excelValue.addVals(rowList);
+                }
+                list.add(excelValue);
+                log.debug("readXlsx sheet:{},rows:{}",xssfSheet.getSheetName(),totalRows);
+            }
+            log.debug("readXlsx end");
+            return list;
+        } catch (IOException e) {
+            log.error("readXlsx error:", e);
+        } finally{
+        	try {
+				wb.close();
+			} catch (IOException e) {
+			}
+            try {
+                input.close();
+            } catch (IOException e) {
+            }
+        }
+    	list.clear();
+    	list = null;
+        return null;
+	}
+
+	private static List<ExcelValue> readXls(File file) {
+		return null;
+	}
 }

@@ -1002,5 +1002,10 @@ ALTER TABLE w_contract_cost ADD (input_ DOUBLE(15,2) DEFAULT '0');
 ALTER TABLE w_project_cost ADD (input_ DOUBLE(15,2) DEFAULT '0');
 
 --20170614
-	INSERT INTO jhi_authority (name, detail_) VALUES ('ROLE_PROJECT_INFO_END', '项目信息-立结项');
-	ALTER TABLE w_user_timesheet ADD character_ int(11) DEFAULT '0' comment '工时成本统计状态(0-没统计前,1-统计后),统计后的记录值不能修改';
+INSERT INTO jhi_authority (name, detail_) VALUES ('ROLE_PROJECT_INFO_END', '项目信息-立结项');
+ALTER TABLE w_user_timesheet ADD character_ int(11) DEFAULT '0' comment '工时成本统计状态(0-没统计前,1-统计后),统计后的记录值不能修改';
+
+--20170628
+delete from w_user_timesheet where status_ = 2;
+ALTER TABLE w_user_timesheet ADD CONSTRAINT idx_user_timesheet_u UNIQUE (work_day, user_id, type_, obj_id);
+ALTER TABLE w_user_timesheet DROP INDEX idx_user_timesheet_u;

@@ -305,4 +305,22 @@ public class ProjectInfoService {
 		result.add(total);
 		return result;
 	}
+	/**
+	 * 返回可用的，项目编号为主键的项目信息
+	 * @return
+	 */
+	public Map<String, ProjectInfo> getUsableProject() {
+		List<ProjectInfo> list = projectInfoRepository.findAll();
+		Map<String, ProjectInfo> returnMap = new HashMap<String, ProjectInfo>();
+		if(list != null){
+			for(ProjectInfo projectInfo : list){
+				if(projectInfo.getStatus() != ProjectInfo.STATUS_DELETED){
+					returnMap.put(projectInfo.getSerialNum(),projectInfo);
+				}
+			}
+			list.clear();
+			list = null;
+		}
+		return returnMap;
+	}
 }
