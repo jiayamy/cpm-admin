@@ -1009,3 +1009,7 @@ ALTER TABLE w_user_timesheet ADD character_ int(11) DEFAULT '0' comment '工时�
 delete from w_user_timesheet where status_ = 2;
 ALTER TABLE w_user_timesheet ADD CONSTRAINT idx_user_timesheet_u UNIQUE (work_day, user_id, type_, obj_id);
 ALTER TABLE w_user_timesheet DROP INDEX idx_user_timesheet_u;
+
+--20170629
+INSERT INTO jhi_authority (name, detail_) VALUES ('ROLE_STAT_PROJECT_USER_INPUT', '统计报表-项目人员工时');
+INSERT INTO jhi_authority (name, detail_) VALUES ('ROLE_STAT_USER_PROJECT_INPUT', '统计报表-人员项目工时');

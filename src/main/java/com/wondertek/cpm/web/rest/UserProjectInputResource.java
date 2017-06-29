@@ -1,6 +1,7 @@
 package com.wondertek.cpm.web.rest;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -18,7 +19,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -28,69 +28,76 @@ import com.wondertek.cpm.ExcelUtil;
 import com.wondertek.cpm.ExcelWrite;
 import com.wondertek.cpm.config.DateUtil;
 import com.wondertek.cpm.config.StringUtil;
-import com.wondertek.cpm.domain.vo.ProjectUserInputVo;
+import com.wondertek.cpm.domain.vo.UserProjectInputVo;
 import com.wondertek.cpm.security.AuthoritiesConstants;
 import com.wondertek.cpm.security.SecurityUtils;
-import com.wondertek.cpm.service.UserTimesheetService;
+import com.wondertek.cpm.service.UserProjectInputService;
 
 @RestController
 @RequestMapping("/api")
-public class ProjectUserInputResource {
-
-	private final Logger log = LoggerFactory.getLogger(ProjectUserInputResource.class);
+public class UserProjectInputResource {
+	
+	private Logger log = LoggerFactory.getLogger(UserProjectInputResource.class);
 	
 	@Inject
-	private UserTimesheetService userTimesheetService;
-	
-	@GetMapping("/project-user-input")
+	private UserProjectInputService userProjectInputService;
+
+	@RequestMapping("/user-project-input")
 	@Timed
-	@Secured(AuthoritiesConstants.ROLE_STAT_PROJECT_USER_INPUT)
-	public ResponseEntity<List<ProjectUserInputVo>> getAllProjectUserInputs(
+	@Secured(AuthoritiesConstants.ROLE_STAT_USER_PROJECT_INPUT)
+	public ResponseEntity<List<UserProjectInputVo>> getUserProjectInputs(
 			@RequestParam(value="startTime",required = false) Long startTime,
 			@RequestParam(value="endTime",required = false) Long endTime,
 			@RequestParam(value="userId",required = false) List<Long> userIds,
+			@RequestParam(value="projectId",required = false) List<Long> projectIds,
 			@RequestParam(value="showTotal",required = false) Boolean showTotal){
 		log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to get datas of ProjectUserInputs by startTime : {}, endTime : {}, "
-        		+ "userIds : {},showTotal : {}", startTime, endTime, userIds, showTotal);
+        		+ "userIds : {},projectId : {},showTotal : {}", startTime, endTime, userIds, projectIds, showTotal);
 		Date now = new Date();
-		if(startTime == null){//默认开始时间为本月初
+		if(startTime == null){//默认本月初
 			startTime = StringUtil.nullToLong(DateUtil.formatDate(DateUtil.DATE_YYYYMMDD_PATTERN, DateUtil.getFirstDayOfMonth(now)));
 		}
-		if(endTime == null){//默认结束时间为当天
+		if(endTime == null){//默认当天
 			endTime = StringUtil.nullToLong(DateUtil.formatDate(DateUtil.DATE_YYYYMMDD_PATTERN, now));
 		}
-		if(showTotal == null){
+		if(startTime > endTime){
+			return new ResponseEntity<List<UserProjectInputVo>>(new ArrayList<UserProjectInputVo>(), HttpStatus.OK);
+		}
+		if(showTotal == null){//默认不显示合计
 			showTotal = Boolean.FALSE;
 		}
-		List<ProjectUserInputVo> inputVos = userTimesheetService.getProjectUserInputsByParam(startTime, endTime, userIds, showTotal);
-		return new ResponseEntity<List<ProjectUserInputVo>>(inputVos, HttpStatus.OK);
+		List<UserProjectInputVo> result = userProjectInputService.getUserProjectInputs(startTime,endTime,userIds,projectIds,showTotal);
+		return new ResponseEntity<List<UserProjectInputVo>>(result, HttpStatus.OK);
 	}
 	
-	@RequestMapping("/project-user-input/exportXls")
+	@RequestMapping("/user-project-input/exportXls")
 	@Timed
-	@Secured(AuthoritiesConstants.ROLE_STAT_PROJECT_USER_INPUT)
+	@Secured(AuthoritiesConstants.ROLE_STAT_USER_PROJECT_INPUT)
 	public void exportXls(
 			HttpServletRequest request,HttpServletResponse response,
-			@RequestParam(value="startTime",required=false) Long startTime,
-			@RequestParam(value="endTime",required=false) Long endTime,
-			@RequestParam(value="userId",required=false) List<Long> userIds,
+			@RequestParam(value="startTime",required = false) Long startTime,
+			@RequestParam(value="endTime",required = false) Long endTime,
+			@RequestParam(value="userId",required = false) List<Long> userIds,
+			@RequestParam(value="projectId",required = false) List<Long> projectIds,
 			@RequestParam(value="showTotal",required = false) Boolean showTotal) throws IOException{
-		log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to export ProjectUserInputs by startTime : {}, endTime : {}, "
-        		+ "userIds : {}, showTotal: {}", startTime, endTime, userIds, showTotal);
+		log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to exprot ProjectUserInputs by startTime : {}, endTime : {}, "
+        		+ "userIds : {},projectId : {},showTotal : {}", startTime, endTime, userIds, projectIds, showTotal);
 		Date now = new Date();
-		if(startTime == null){//默认开始时间为本月初
+		if(startTime == null){//默认本月初
 			startTime = StringUtil.nullToLong(DateUtil.formatDate(DateUtil.DATE_YYYYMMDD_PATTERN, DateUtil.getFirstDayOfMonth(now)));
 		}
-		if(endTime == null){//默认结束时间为当天
+		if(endTime == null){//默认当天
 			endTime = StringUtil.nullToLong(DateUtil.formatDate(DateUtil.DATE_YYYYMMDD_PATTERN, now));
 		}
-		if(showTotal == null){
+		if(showTotal == null){//默认不显示合计
 			showTotal = Boolean.FALSE;
 		}
-		List<ProjectUserInputVo> userInputVos = userTimesheetService.getProjectUserInputsByParam(startTime, endTime, userIds, showTotal);
+		List<UserProjectInputVo> inputVos = userProjectInputService.getUserProjectInputs(startTime,endTime,userIds,projectIds,showTotal);
 		//拼接sheet数据
     	//标题
     	String[] heads = new String[]{
+    			"员工工号",
+    			"员工姓名",
     			"项目编号",
     			"项目名称",
     			"合同编号",
@@ -98,14 +105,12 @@ public class ProjectUserInputResource {
     			"项目经理工号",
     			"项目经理",
     			"项目经理部门",
-    			"员工工号",
-    			"员工姓名",
     			"正常工时",
     			"认可正常工时",
     			"加班工时",
     			"认可加班工时"
     	};
-    	String fileName = "项目人员工时.xlsx";
+    	String fileName = "人员项目工时.xlsx";
     	//写入sheet
     	ServletOutputStream outputStream = response.getOutputStream();
     	response.setHeader("Content-Disposition","attachment;filename=" + ExcelUtil.getExportName(request, fileName));
@@ -114,10 +119,10 @@ public class ProjectUserInputResource {
 		
     	ExcelWrite excelWrite = new ExcelWrite();
     	//写入标题
-    	excelWrite.createSheetTitle("项目人员工时", 1, heads);
+    	excelWrite.createSheetTitle("人员项目工时", 1, heads);
     	//写入数据
-    	if(userInputVos != null){
-    		handleSheetData(userInputVos,2,excelWrite);
+    	if(inputVos != null){
+    		handleSheetData(inputVos,2,excelWrite);
     	}
     	excelWrite.close(outputStream);
 	}
@@ -125,7 +130,7 @@ public class ProjectUserInputResource {
 	/**
      * 处理sheet数据
      */
-	private void handleSheetData(List<ProjectUserInputVo> userInputVos, int startRow, ExcelWrite excelWrite) {
+	private void handleSheetData(List<UserProjectInputVo> userInputVos, int startRow, ExcelWrite excelWrite) {
 		//除表头外的其他数据单元格格式
     	Integer[] cellType = new Integer[]{
     			Cell.CELL_TYPE_STRING,
@@ -143,12 +148,12 @@ public class ProjectUserInputResource {
     			Cell.CELL_TYPE_NUMERIC
     	};
     	XSSFSheet sheet = excelWrite.getCurrentSheet();
-    	sheet.setColumnWidth(0, 3745);
-    	sheet.setColumnWidth(1, 6420);
     	sheet.setColumnWidth(2, 3745);
     	sheet.setColumnWidth(3, 6420);
-    	sheet.setColumnWidth(4, 3345);
-    	sheet.setColumnWidth(6, 4020);
+    	sheet.setColumnWidth(4, 3745);
+    	sheet.setColumnWidth(5, 6420);
+    	sheet.setColumnWidth(6, 3345);
+    	sheet.setColumnWidth(8, 4020);
     	sheet.setColumnWidth(10, 3210);
     	sheet.setColumnWidth(12, 3210);
 		XSSFRow row = null;
@@ -156,11 +161,25 @@ public class ProjectUserInputResource {
 		int i = -1;
 		int j = 0;
 		//数据
-		for(ProjectUserInputVo vo : userInputVos){
+		for(UserProjectInputVo vo : userInputVos){
 			i++;
 			row = sheet.createRow(i + startRow-1);
 			
 			j = 0;
+			cell = row.createCell(j,cellType[j]);
+			if(vo.getUserSerialNum() == null){
+				cell.setCellValue("");
+			}else{
+				cell.setCellValue(vo.getUserSerialNum());
+			}
+			j++;
+			cell = row.createCell(j,cellType[j]);
+			if(vo.getUserName() == null){
+				cell.setCellValue("");
+			}else{
+				cell.setCellValue(vo.getUserName());
+			}
+			j++;
 			cell = row.createCell(j,cellType[j]);
 			if(vo.getProjectSerialNum() == null){
 				cell.setCellValue("");
@@ -208,20 +227,6 @@ public class ProjectUserInputResource {
 				cell.setCellValue("");
 			}else{
 				cell.setCellValue(vo.getPmDeptType());
-			}
-			j++;
-			cell = row.createCell(j,cellType[j]);
-			if(vo.getUserSerialNum() == null){
-				cell.setCellValue("");
-			}else{
-				cell.setCellValue(vo.getUserSerialNum());
-			}
-			j++;
-			cell = row.createCell(j,cellType[j]);
-			if(vo.getUserName() == null){
-				cell.setCellValue("");
-			}else{
-				cell.setCellValue(vo.getUserName());
 			}
 			j++;
 			cell = row.createCell(j,cellType[j]);

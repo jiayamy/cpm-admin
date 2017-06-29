@@ -19,8 +19,8 @@
 	            <div class="col-sm-4">
 	            	<label class="col-sm-4 control-label" data-translate="cpmApp.contractReceive.contractName">ContractInfo Name</label>
 		            <div class="col-sm-8">
-		            	<select class="form-control" ng-model="vm.searchQuery.contractId"
-			            	ng-options="contractInfo.val for contractInfo in vm.contractInfos track by contractInfo.key">
+		            	<select class="form-control" ng-model="vm.searchQuery.contractId" search-select name="contractSerial"
+			            	ng-options="contractInfo.key as contractInfo.val for contractInfo in vm.contractInfos track by contractInfo.key">
 			            	<option value="">--合同名称--</option>
 			            </select>
 		            </div>

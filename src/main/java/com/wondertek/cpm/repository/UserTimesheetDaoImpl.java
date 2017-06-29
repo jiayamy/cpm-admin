@@ -20,6 +20,7 @@ import com.wondertek.cpm.domain.DeptInfo;
 import com.wondertek.cpm.domain.User;
 import com.wondertek.cpm.domain.UserTimesheet;
 import com.wondertek.cpm.domain.vo.ProjectUserInputVo;
+import com.wondertek.cpm.domain.vo.UserProjectInputVo;
 import com.wondertek.cpm.domain.vo.UserTimesheetForHardWorkingVo;
 @Repository("userTimesheetDao")
 public class UserTimesheetDaoImpl extends GenericDaoImpl<UserTimesheet, Long> implements UserTimesheetDao  {
@@ -590,6 +591,82 @@ public class UserTimesheetDaoImpl extends GenericDaoImpl<UserTimesheet, Long> im
 	
 	private ProjectUserInputVo transferInputVo(Object[] o){
 		ProjectUserInputVo vo = new ProjectUserInputVo();
+		vo.setProjectSerialNum(StringUtil.null2Str(o[0]));
+		vo.setProjectName(StringUtil.null2Str(o[1]));
+		vo.setContractSerialNum(StringUtil.null2Str(o[2]));
+		vo.setContractName(StringUtil.null2Str(o[3]));
+		vo.setPmSerialNum(StringUtil.null2Str(o[4]));
+		vo.setPmName(StringUtil.null2Str(o[5]));
+		vo.setPmDeptType(StringUtil.null2Str(o[6]));
+		vo.setUserSerialNum(StringUtil.null2Str(o[7]));
+		vo.setUserName(StringUtil.null2Str(o[8]));
+		vo.setRealInput(StringUtil.nullToDouble(o[9]));
+		vo.setAcceptInput(StringUtil.nullToDouble(o[10]));
+		vo.setExtraInput(StringUtil.nullToDouble(o[11]));
+		vo.setAcceptExtraInput(StringUtil.nullToDouble(o[12]));
+		return vo;
+	}
+
+	@Override
+	public List<UserProjectInputVo> getUserProjectInputsByParam(Long startTime, Long endTime, List<Long> userIds,
+			List<Long> projectIds, User user, DeptInfo deptInfo) {
+		StringBuffer queryHql = new StringBuffer();
+		StringBuffer whereHql = new StringBuffer();
+		List<Object> params = new ArrayList<Object>();
+		int count = 0;
+		
+		queryHql.append(" select wpi.serialNum,wpi.name,wci.serialNum,wci.name,ju1.serialNum,ju1.lastName,wdt.name,");
+		queryHql.append(" ju.serialNum,ju.lastName,sum(wut.realInput),sum(wut.acceptInput),sum(wut.extraInput),sum(wut.acceptExtraInput) from UserTimesheet wut");
+		queryHql.append(" left join ProjectInfo wpi on wut.objId = wpi.id");
+		queryHql.append(" left join ContractInfo wci on wpi.contractId = wci.id");
+		queryHql.append(" left join User ju on wut.userId = ju.id");
+		queryHql.append(" left join User ju1 on wpi.pmId = ju1.id");
+		queryHql.append(" left join DeptInfo wdi on wpi.deptId = wdi.id");
+		queryHql.append(" left join DeptType wdt on wdi.type = wdt.id");
+		
+		whereHql.append(" where wut.type = ?"+(count++));
+		params.add(UserTimesheet.TYPE_PROJECT);
+		//权限
+		whereHql.append(" and (wut.creator = ?"+(count++)+" or wpi.pmId = ?"+(count++));
+		params.add(user.getLogin());
+		params.add(user.getId());
+		if(user.getIsManager()){
+			whereHql.append(" or wdi.idPath like ?"+(count++)+" or wdi.id = ?"+(count++));
+			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
+			params.add(deptInfo.getId());
+		}
+		whereHql.append(")");
+		
+		if (startTime != null) {
+			whereHql.append(" and wut.workDay >= ?" + (count++));
+			params.add(startTime);
+		}
+		if(endTime != null){
+			whereHql.append(" and wut.workDay <= ?" + (count++));
+			params.add(endTime);
+		}
+		if(userIds != null && userIds.size() > 0){
+			whereHql.append(" and wut.userId in ?" + (count++));
+			params.add(userIds);
+		}
+		if(projectIds != null && projectIds.size() > 0){
+			whereHql.append(" and wut.objId in ?" + (count++));
+			params.add(projectIds);
+		}
+		whereHql.append(" group by wut.userId,wut.objId");
+		whereHql.append(" order by wut.userId,wut.objId desc");
+		
+		List<Object[]> lists = this.queryAllHql(queryHql.toString() + whereHql.toString(), params.toArray());
+		List<UserProjectInputVo> result = new ArrayList<UserProjectInputVo>();
+		if(lists != null && lists.size() > 0){
+			for(Object[] o : lists){
+				result.add(transferUserProjectInputVo(o));
+			}
+		}
+		return result;
+	}
+	private UserProjectInputVo transferUserProjectInputVo(Object[] o){
+		UserProjectInputVo vo = new UserProjectInputVo();
 		vo.setProjectSerialNum(StringUtil.null2Str(o[0]));
 		vo.setProjectName(StringUtil.null2Str(o[1]));
 		vo.setContractSerialNum(StringUtil.null2Str(o[2]));

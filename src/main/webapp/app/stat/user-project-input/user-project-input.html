@@ -1,0 +1,131 @@
+<div>
+    <h2 data-translate="cpmApp.userProjectInput.home.title">User Project Input</h2>
+    <jhi-alert></jhi-alert>
+    <div class="container-fluid">
+        <form name="searchForm" class="form-horizontal">
+			<div class="form-group">
+	            <div class="col-sm-4">
+	          		<label class="col-sm-4 control-label" data-translate="cpmApp.userProjectInput.startTime">Start Time</label>
+		            <div class="col-sm-8">
+		                <p class="input-group">
+		                    <input id="search_startTime" type="text" class="form-control" name="startTime" datetime-picker="yyyyMMdd"
+			           		 		enable-time="false" ng-model="vm.searchQuery.startTime" is-open="vm.datePickerOpenStatus.startTime"/>
+			          		<span class="input-group-btn">
+			           			<button type="button" class="btn btn-default" ng-click="vm.openCalendar('startTime')"><i class="glyphicon glyphicon-calendar"></i></button>
+			            	</span>
+		                </p>
+		            </div>
+	            </div>
+	            <div class="col-sm-4">
+	          		<label class="col-sm-4 control-label" data-translate="cpmApp.userProjectInput.endTime">End Time</label>
+		            <div class="col-sm-8">
+		                <p class="input-group">
+		                    <input id="search_endTime" type="text" class="form-control" name="endTime" datetime-picker="yyyyMMdd"
+			           		 		enable-time="false" ng-model="vm.searchQuery.endTime" is-open="vm.datePickerOpenStatus.endTime"/>
+			          		<span class="input-group-btn">
+			           			<button type="button" class="btn btn-default" ng-click="vm.openCalendar('endTime')"><i class="glyphicon glyphicon-calendar"></i></button>
+			            	</span>
+		                </p>
+		            </div>
+	            </div>
+	            <div class="col-sm-4">
+					<label class="col-sm-4 control-label" data-translate="cpmApp.userProjectInput.user" for="field_user">User</label>
+	          		<div class="col-sm-8">
+	          			<p class="input-group">
+			          		<input type="text" class="form-control" name="user" id="field_user"
+			                  	ng-model="vm.searchQuery.userName" readonly
+		                   	/>
+		                   	<span class="input-group-btn">
+		                     	<button type="button" class="btn btn-default" ui-sref="user-project-input.queryDept({selectType:3,showChild:true})"><i class="glyphicon glyphicon-user"></i></button>
+		                 	</span>
+	                 	</p>
+	            	</div>
+				</div>
+            </div>
+            <div class="form-group">
+	            <div class="col-sm-4">
+	            	<label class="col-sm-4 control-label" data-translate="cpmApp.userProjectInput.showTotal">Show Total</label>
+	            	<div class="col-sm-8">
+	            		<label class="i-switch m-t-xs m-r">
+			              <input id="showTotal" type="checkbox" ng-model="vm.searchQuery.showTotal" >
+			              <i></i>
+			            </label>
+	            	</div>
+	            </div>
+	            <div class="col-sm-4">
+	            	<!-- <label class="col-sm-4 control-label" data-translate="cpmApp.userProjectInput.projectId">Project ID</label>
+		            <div class="col-sm-8">
+		            	<select class="form-control" ng-model="vm.searchQuery.projectId" name="projectSerial" search-select
+			            	ng-options="projectInfo.key as projectInfo.val for projectInfo in vm.projectInfos track by projectInfo.key">
+			            	<option value="">--项目编号--</option>
+			            </select>
+		            </div> -->
+	            </div>
+	            <div class="col-sm-4 pull-right">
+	            	<div class="col-sm-2">
+						&nbsp;
+					</div>
+	            	<div class="col-sm-10" >
+		            	<span  class="width-min" >
+	                        <button class="btn btn-info" ng-click="vm.search()">
+	                            <span class="glyphicon glyphicon-search"></span>
+	                            <span data-translate="entity.action.search"></span>
+	                        </button>
+	                    </span>
+	                    <span class="width-min" ng-if="vm.haveSearch">
+	                        <button class="btn btn-info" ng-click="vm.clear()">
+	                            <span class="glyphicon glyphicon-trash"></span>
+	                            <span data-translate="entity.action.clear"></span>
+	                        </button>
+	                    </span>
+	                    <span class="width-min">
+	                        <button class="btn btn-info" ng-click="vm.exportXls()">
+	                            <span class="glyphicon glyphicon-save"></span>
+	                            <span data-translate="entity.action.export"></span>
+	                        </button>
+	                    </span>
+	            	</div>
+	            </div>
+            </div>
+		</form>
+    </div>
+    <br/>
+    <div class="table-responsive">
+        <table class="jh-table table table-striped" style="table-layout: fixed; ">
+            <thead>
+                <tr>
+                    <th style="width:70px;"><span data-translate="cpmApp.userProjectInput.userSerialNum">SerialNum</span></th>
+                    <th style="width:70px;"><span data-translate="cpmApp.userProjectInput.userName">User Name</span></th>
+                	<th style="width:80px;"><span data-translate="cpmApp.userProjectInput.projectSerialNum">Project SerialNum</span></th>
+                	<th style="width:100px;"><span data-translate="cpmApp.userProjectInput.projectName">Project Name</span></th>
+                	<th style="width:80px;"><span data-translate="cpmApp.userProjectInput.contractSerialNum">Contract SerialNum</span></th>
+                	<th style="width:100px;"><span data-translate="cpmApp.userProjectInput.contractName">Contract Name</span></th>
+                	<th style="width:80px;"><span data-translate="cpmApp.userProjectInput.pmSerialNum">Pm SerialNum</span></th>
+                	<th style="width:70px;"><span data-translate="cpmApp.userProjectInput.pmName">Pm Name</span></th>
+                	<th style="width:80px;"><span data-translate="cpmApp.userProjectInput.pmDeptType">Pm Dept Type</span></th>
+                    <th style="width:70px;"><span data-translate="cpmApp.userProjectInput.realInput">Input</span></th>
+                    <th style="width:80px;"><span data-translate="cpmApp.userProjectInput.acceptInput">accept Input</span></th>
+                    <th style="width:70px;"><span data-translate="cpmApp.userProjectInput.extraInput">Extra Input</span></th>
+                    <th style="width:80px;"><span data-translate="cpmApp.userProjectInput.acceptExtraInput">Accept Extra Input</span></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="userProjectInput in vm.userProjectInputs">
+                    <td>{{userProjectInput.userSerialNum}}</td>
+                    <td>{{userProjectInput.userName}}</td>
+	                <td>{{userProjectInput.projectSerialNum}}</td>
+	                <td>{{userProjectInput.projectName}}</td>
+	                <td>{{userProjectInput.contractSerialNum}}</td>
+	                <td>{{userProjectInput.contractName}}</td>
+	                <td>{{userProjectInput.pmSerialNum}}</td>
+	                <td>{{userProjectInput.pmName}}</td>
+	                <td>{{userProjectInput.pmDeptType}}</td>
+                    <td>{{userProjectInput.realInput}}</td>
+                    <td>{{userProjectInput.acceptInput}}</td>
+                    <td>{{userProjectInput.extraInput}}</td>
+                    <td>{{userProjectInput.acceptExtraInput}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

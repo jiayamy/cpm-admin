@@ -125,6 +125,10 @@ public final class AuthoritiesConstants {
      */
     public static final String ROLE_STAT_PROJECT_USER_INPUT = "ROLE_STAT_PROJECT_USER_INPUT";
     /**
+     * 人员项目工时
+     */
+    public static final String ROLE_STAT_USER_PROJECT_INPUT = "ROLE_STAT_USER_PROJECT_INPUT";
+    /**
 	 * 项目支撑奖金
 	 */
     public static final String ROLE_STAT_SUPPORT_BONUS = "ROLE_STAT_SUPPORT_BONUS";
