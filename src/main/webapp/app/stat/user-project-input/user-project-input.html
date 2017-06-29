@@ -29,6 +29,26 @@
 		            </div>
 	            </div>
 	            <div class="col-sm-4">
+	            	<label class="col-sm-4 control-label" data-translate="cpmApp.userProjectInput.showTotal">Show Total</label>
+	            	<div class="col-sm-8">
+	            		<label class="i-switch m-t-xs m-r">
+			              <input id="showTotal" type="checkbox" ng-model="vm.searchQuery.showTotal" >
+			              <i></i>
+			            </label>
+	            	</div>
+	            </div>
+            </div>
+            <div class="form-group">
+	            <div class="col-sm-4">
+	            	<label class="col-sm-4 control-label" data-translate="cpmApp.userProjectInput.projectId">Project ID</label>
+		            <div class="col-sm-8">
+		            	<select class="form-control" ng-model="vm.searchQuery.projectId" ui-select2
+			            	ng-options="projectInfo.val for projectInfo in vm.projectInfos track by projectInfo.key">
+			            	<option value="">--项目编号--</option>
+			            </select>
+		            </div>
+	            </div>
+	            <div class="col-sm-4">
 					<label class="col-sm-4 control-label" data-translate="cpmApp.userProjectInput.user" for="field_user">User</label>
 	          		<div class="col-sm-8">
 	          			<p class="input-group">
@@ -41,26 +61,6 @@
 	                 	</p>
 	            	</div>
 				</div>
-            </div>
-            <div class="form-group">
-	            <div class="col-sm-4">
-	            	<label class="col-sm-4 control-label" data-translate="cpmApp.userProjectInput.showTotal">Show Total</label>
-	            	<div class="col-sm-8">
-	            		<label class="i-switch m-t-xs m-r">
-			              <input id="showTotal" type="checkbox" ng-model="vm.searchQuery.showTotal" >
-			              <i></i>
-			            </label>
-	            	</div>
-	            </div>
-	            <div class="col-sm-4">
-	            	<!-- <label class="col-sm-4 control-label" data-translate="cpmApp.userProjectInput.projectId">Project ID</label>
-		            <div class="col-sm-8">
-		            	<select class="form-control" ng-model="vm.searchQuery.projectId" name="projectSerial" search-select
-			            	ng-options="projectInfo.key as projectInfo.val for projectInfo in vm.projectInfos track by projectInfo.key">
-			            	<option value="">--项目编号--</option>
-			            </select>
-		            </div> -->
-	            </div>
 	            <div class="col-sm-4 pull-right">
 	            	<div class="col-sm-2">
 						&nbsp;

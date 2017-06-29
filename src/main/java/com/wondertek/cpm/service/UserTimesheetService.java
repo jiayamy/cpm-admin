@@ -2108,14 +2108,14 @@ public class UserTimesheetService {
 	/**
 	 * 查找项目人员工时
 	 */
-	public List<ProjectUserInputVo> getProjectUserInputsByParam(Long startTime,Long endTime,List<Long> userIds,Boolean showTotal){
+	public List<ProjectUserInputVo> getProjectUserInputsByParam(Long startTime,Long endTime,List<Long> userIds,List<Long> projectIds,Boolean showTotal){
 		List<Object[]> objs = userRepository.findUserInfoByLogin(SecurityUtils.getCurrentUserLogin());
 		if (objs != null) {
 			Object[] o = objs.get(0);
 			User user = (User)o[0];
 			DeptInfo deptInfo = (DeptInfo)o[1];
 			
-			List<ProjectUserInputVo> dbList = userTimesheetDao.getProjectUserInputsByParam(startTime, endTime, userIds,user,deptInfo);
+			List<ProjectUserInputVo> dbList = userTimesheetDao.getProjectUserInputsByParam(startTime, endTime, userIds,projectIds,user,deptInfo);
 			List<ProjectUserInputVo> returnList = new ArrayList<ProjectUserInputVo>();
 			Map<String,ProjectUserInputVo> sumMap = new HashMap<String,ProjectUserInputVo>();//合计
 			if (showTotal) {

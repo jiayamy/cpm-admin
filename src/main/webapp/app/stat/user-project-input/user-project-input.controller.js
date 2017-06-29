@@ -34,6 +34,7 @@
         vm.searchQuery.userId = pagingParams.userId;
         vm.searchQuery.userName = pagingParams.userName;
         vm.searchQuery.showTotal = pagingParams.showTotal;
+        vm.searchQuery.projectId = pagingParams.projectId;
         
         vm.userProjectInputs = [];
         
@@ -41,7 +42,7 @@
         vm.openCalendar = openCalendar;
         
         if (!vm.searchQuery.startTime && !vm.searchQuery.endTime
-        		&& !vm.searchQuery.userId && !vm.searchQuery.showTotal){
+        		&& !vm.searchQuery.userId && !vm.searchQuery.showTotal && !vm.searchQuery.projectId){
         	vm.haveSearch = null;
         }else{
         	vm.haveSearch = true;
@@ -99,7 +100,7 @@
         
         function search() {
             if (!vm.searchQuery.startTime && !vm.searchQuery.endTime
-            		&& !vm.searchQuery.userId && !vm.searchQuery.showTotal){
+            		&& !vm.searchQuery.userId && !vm.searchQuery.showTotal && !vm.searchQuery.projectId){
                 return vm.clear();
             }
             vm.haveSearch = true;
@@ -123,7 +124,8 @@
             	endTime: DateUtils.convertLocalDateToFormat(vm.searchQuery.endTime,"yyyyMMdd"),
                 userId:vm.searchQuery.userId,
                 userName:vm.searchQuery.userName,
-                showTotal:vm.searchQuery.showTotal
+                showTotal:vm.searchQuery.showTotal,
+                projectId:vm.searchQuery.projectId?vm.searchQuery.projectId.key:""
             });
         }
         
@@ -161,6 +163,7 @@
         	var endTime = DateUtils.convertLocalDateToFormat(vm.searchQuery.endTime,"yyyyMMdd");
         	var userId = vm.searchQuery.userId;
         	var showTotal = vm.searchQuery.showTotal;
+        	var projectId = vm.searchQuery.projectId?vm.searchQuery.projectId.key:"";
 			
 			if(startTime){
 				if(c == 0){
@@ -188,6 +191,15 @@
 					url += "&";
 				}
 				url += "userId="+encodeURI(userId);
+			}
+			if(projectId){
+				if(c == 0){
+					c++;
+					url += "?";
+				}else{
+					url += "&";
+				}
+				url += "projectId="+encodeURI(projectId);
 			}
 			if(showTotal){
 				if(c == 0){

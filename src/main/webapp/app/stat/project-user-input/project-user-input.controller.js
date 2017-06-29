@@ -5,9 +5,9 @@
 		.module('cpmApp')
 		.controller('ProjectUserInputController',ProjectUserInputController);
 	
-	ProjectUserInputController.$inject = ['$scope','$rootScope', '$state', 'ProjectUserInput', 'ParseLinks', 'AlertService', 'paginationConstants', 'pagingParams','DateUtils'];
+	ProjectUserInputController.$inject = ['$scope','$rootScope', '$state','ProjectInfo', 'ProjectUserInput', 'ParseLinks', 'AlertService', 'paginationConstants', 'pagingParams','DateUtils'];
 	
-	function ProjectUserInputController($scope,$rootScope, $state, ProjectUserInput, ParseLinks, AlertService, paginationConstants, pagingParams,DateUtils){
+	function ProjectUserInputController($scope,$rootScope, $state,ProjectInfo, ProjectUserInput, ParseLinks, AlertService, paginationConstants, pagingParams,DateUtils){
 		var vm = this;
         vm.transition = transition;
         vm.clear = clear;
@@ -26,7 +26,7 @@
         	//$("#showTotal").attr("checked",true);
         	pagingParams.showTotal = true;
         }else{
-//        	$("#showTotal").removeAttr("checked");
+        	//$("#showTotal").removeAttr("checked");
         	pagingParams.showTotal = false;
         }
         //搜索项中的参数
@@ -35,6 +35,7 @@
         vm.searchQuery.userId = pagingParams.userId;
         vm.searchQuery.userName = pagingParams.userName;
         vm.searchQuery.showTotal = pagingParams.showTotal;
+        vm.searchQuery.projectId = pagingParams.projectId;
         
         vm.projectUserInputs = [];
         
@@ -42,10 +43,34 @@
         vm.openCalendar = openCalendar;
         
         if (!vm.searchQuery.startTime && !vm.searchQuery.endTime
-        		&& !vm.searchQuery.userId && !vm.searchQuery.showTotal){
+        		&& !vm.searchQuery.userId && !vm.searchQuery.showTotal && !vm.searchQuery.projectId){
         	vm.haveSearch = null;
         }else{
         	vm.haveSearch = true;
+        }
+        
+        //加载搜索下拉框
+        vm.projectInfos = [];
+        loadProjectInfos();
+        function loadProjectInfos(){
+        	ProjectInfo.queryProjectInfo(
+        		{
+        			
+        		},
+        		function(data, headers){
+        			vm.projectInfos = data;
+            		if(vm.projectInfos && vm.projectInfos.length > 0){
+            			for(var i = 0; i < vm.projectInfos.length; i++){
+            				if(pagingParams.projectId == vm.projectInfos[i].key){
+            					vm.searchQuery.projectId = vm.projectInfos[i];
+            				}
+            			}
+            		}
+        		},
+        		function(error){
+        			AlertService.error(error.data.message);
+        		}
+        	);
         }
         
         loadAll();
@@ -54,6 +79,7 @@
         		startTime : pagingParams.startTime,
         		endTime : pagingParams.endTime,
         		userId : pagingParams.userId,
+        		projectId : pagingParams.projectId,
         		showTotal : pagingParams.showTotal
         	},onSuccess,onError);
         	function onSuccess(data, headers) {
@@ -75,7 +101,7 @@
         
         function search() {
             if (!vm.searchQuery.startTime && !vm.searchQuery.endTime
-            		&& !vm.searchQuery.userId && !vm.searchQuery.showTotal){
+            		&& !vm.searchQuery.userId && !vm.searchQuery.showTotal && !vm.searchQuery.projectId){
                 return vm.clear();
             }
             vm.haveSearch = true;
@@ -99,7 +125,8 @@
             	endTime: DateUtils.convertLocalDateToFormat(vm.searchQuery.endTime,"yyyyMMdd"),
                 userId:vm.searchQuery.userId,
                 userName:vm.searchQuery.userName,
-                showTotal:vm.searchQuery.showTotal
+                showTotal:vm.searchQuery.showTotal,
+                projectId:vm.searchQuery.projectId?vm.searchQuery.projectId.key:""
             });
         }
         
@@ -137,6 +164,7 @@
         	var endTime = DateUtils.convertLocalDateToFormat(vm.searchQuery.endTime,"yyyyMMdd");
         	var userId = vm.searchQuery.userId;
         	var showTotal = vm.searchQuery.showTotal;
+        	var projectId = vm.searchQuery.projectId?vm.searchQuery.projectId.key:"";
 			
 			if(startTime){
 				if(c == 0){
@@ -164,6 +192,15 @@
 					url += "&";
 				}
 				url += "userId="+encodeURI(userId);
+			}
+			if(projectId){
+				if(c == 0){
+					c++;
+					url += "?";
+				}else{
+					url += "&";
+				}
+				url += "projectId="+encodeURI(projectId);
 			}
 			if(showTotal){
 				if(c == 0){

@@ -71,7 +71,7 @@ public interface UserTimesheetDao extends GenericDao<UserTimesheet, Long> {
 	/**
 	 * 查找项目人员工时
 	 */
-	public List<ProjectUserInputVo> getProjectUserInputsByParam(Long startTime,Long endTime,List<Long> userIds,User user,DeptInfo deptInfo);
+	public List<ProjectUserInputVo> getProjectUserInputsByParam(Long startTime,Long endTime,List<Long> userIds,List<Long> projectIds,User user,DeptInfo deptInfo);
 	/**
 	 * 查找人员项目工时
 	 */

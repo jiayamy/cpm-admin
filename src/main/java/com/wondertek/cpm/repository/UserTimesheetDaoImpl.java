@@ -536,7 +536,7 @@ public class UserTimesheetDaoImpl extends GenericDaoImpl<UserTimesheet, Long> im
 	}
 
 	@Override
-	public List<ProjectUserInputVo> getProjectUserInputsByParam(Long startTime, Long endTime, List<Long> userIds,User user,DeptInfo deptInfo) {
+	public List<ProjectUserInputVo> getProjectUserInputsByParam(Long startTime, Long endTime, List<Long> userIds,List<Long> projectIds,User user,DeptInfo deptInfo) {
 		StringBuffer queryHql = new StringBuffer();
 		StringBuffer whereHql = new StringBuffer();
 		List<Object> params = new ArrayList<Object>();
@@ -575,6 +575,10 @@ public class UserTimesheetDaoImpl extends GenericDaoImpl<UserTimesheet, Long> im
 		if(userIds != null && userIds.size() > 0){
 			whereHql.append(" and wut.userId in ?" + (count++));
 			params.add(userIds);
+		}
+		if(projectIds != null && projectIds.size() > 0){
+			whereHql.append(" and wut.objId in ?" + (count++));
+			params.add(projectIds);
 		}
 		whereHql.append(" group by wut.objId,wut.userId");
 		whereHql.append(" order by wut.objId,wut.userId desc");

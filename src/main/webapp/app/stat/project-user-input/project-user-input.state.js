@@ -11,7 +11,7 @@
 		$stateProvider
 		.state('project-user-input',{
 			parent:'stat',
-			url:'/project-user-input?startTime&endTime&userId&userName&showTotal',
+			url:'/project-user-input?startTime&endTime&userId&userName&showTotal&projectId',
 			data:{
 				authorities:['ROLE_STAT_PROJECT_USER_INPUT'],
 				pageTitel:'cpmApp.projectUserInput.home.title'
@@ -28,13 +28,15 @@
                 endTime: null,
                 userId: null,
                 userName:null,
+                projectId : null,
                 showTotal:null
             },
             resolve:{
             	loadMyCtrl:['$ocLazyLoad',function($ocLazyLoad){
             		return $ocLazyLoad.load([
                                              'app/stat/project-user-input/project-user-input.service.js',
-                                             'app/stat/project-user-input/project-user-input.controller.js']);
+                                             'app/stat/project-user-input/project-user-input.controller.js',
+                                             'app/project/project-info/project-info.service.js']);
             	}],
             	pagingParams:['$stateParams','PaginationUtil',function($stateParams,PaginationUtil){
             		return {
@@ -42,6 +44,7 @@
                         endTime: $stateParams.endTime,
                         userId: $stateParams.userId,
                         userName: $stateParams.userName,
+                        projectId: $stateParams.projectId,
                         showTotal: $stateParams.showTotal
             		}
             	}],

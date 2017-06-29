@@ -49,9 +49,10 @@ public class ProjectUserInputResource {
 			@RequestParam(value="startTime",required = false) Long startTime,
 			@RequestParam(value="endTime",required = false) Long endTime,
 			@RequestParam(value="userId",required = false) List<Long> userIds,
+			@RequestParam(value="projectId",required = false) List<Long> projectIds,
 			@RequestParam(value="showTotal",required = false) Boolean showTotal){
 		log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to get datas of ProjectUserInputs by startTime : {}, endTime : {}, "
-        		+ "userIds : {},showTotal : {}", startTime, endTime, userIds, showTotal);
+        		+ "userIds : {},projectId : {},showTotal : {}", startTime, endTime, userIds,projectIds, showTotal);
 		Date now = new Date();
 		if(startTime == null){//默认开始时间为本月初
 			startTime = StringUtil.nullToLong(DateUtil.formatDate(DateUtil.DATE_YYYYMMDD_PATTERN, DateUtil.getFirstDayOfMonth(now)));
@@ -59,10 +60,10 @@ public class ProjectUserInputResource {
 		if(endTime == null){//默认结束时间为当天
 			endTime = StringUtil.nullToLong(DateUtil.formatDate(DateUtil.DATE_YYYYMMDD_PATTERN, now));
 		}
-		if(showTotal == null){
+		if(showTotal == null){//默认不显示合计
 			showTotal = Boolean.FALSE;
 		}
-		List<ProjectUserInputVo> inputVos = userTimesheetService.getProjectUserInputsByParam(startTime, endTime, userIds, showTotal);
+		List<ProjectUserInputVo> inputVos = userTimesheetService.getProjectUserInputsByParam(startTime, endTime, userIds, projectIds, showTotal);
 		return new ResponseEntity<List<ProjectUserInputVo>>(inputVos, HttpStatus.OK);
 	}
 	
@@ -74,9 +75,10 @@ public class ProjectUserInputResource {
 			@RequestParam(value="startTime",required=false) Long startTime,
 			@RequestParam(value="endTime",required=false) Long endTime,
 			@RequestParam(value="userId",required=false) List<Long> userIds,
+			@RequestParam(value="projectId",required = false) List<Long> projectIds,
 			@RequestParam(value="showTotal",required = false) Boolean showTotal) throws IOException{
 		log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to export ProjectUserInputs by startTime : {}, endTime : {}, "
-        		+ "userIds : {}, showTotal: {}", startTime, endTime, userIds, showTotal);
+        		+ "userIds : {},projectId : {}, showTotal: {}", startTime, endTime, userIds, projectIds, showTotal);
 		Date now = new Date();
 		if(startTime == null){//默认开始时间为本月初
 			startTime = StringUtil.nullToLong(DateUtil.formatDate(DateUtil.DATE_YYYYMMDD_PATTERN, DateUtil.getFirstDayOfMonth(now)));
@@ -87,7 +89,7 @@ public class ProjectUserInputResource {
 		if(showTotal == null){
 			showTotal = Boolean.FALSE;
 		}
-		List<ProjectUserInputVo> userInputVos = userTimesheetService.getProjectUserInputsByParam(startTime, endTime, userIds, showTotal);
+		List<ProjectUserInputVo> userInputVos = userTimesheetService.getProjectUserInputsByParam(startTime, endTime, userIds, projectIds, showTotal);
 		//拼接sheet数据
     	//标题
     	String[] heads = new String[]{

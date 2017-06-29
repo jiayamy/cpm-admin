@@ -7,7 +7,8 @@
     
     searchSelect.$inject = ['$animate','$compile', '$parse'];
     /**
-     * 对应的select标签加上search-select,ng-options,name;即可正常使用(必须加name属性)
+     * 对应的select标签加上search-select,ng-options,name;即可正常使用(必须加name属性)，
+     * 页面search-select=“value”属性指令的值value不为空时有效
      */
     function searchSelect($animate,$compile, $parse){
 
@@ -58,6 +59,7 @@
     	   require: ['ngModel'],
     	   priority: 100,
     	   replace: false,
+//    	   transclude:true,
     	   scope: true,
     	   template: '<div class="chose-container">' +
 		        '<div class="chose-single"><span class="j-view"></span><i class="glyphicon glyphicon-remove"></i></div>' +
@@ -73,113 +75,124 @@
     	   link: {
     	    pre: function selectSearchPreLink(scope, element, attr, ctrls) {
     	 
-    	     var tmplNode = $(this.template).first();
+    	     	var tmplNode = $(this.template).first();
+    	console.log(!attr.searchSelect);
+		    	if(!attr.searchSelect){//页面属性search-select为true时，往页面html中添加template
+		    		 var modelName = attr.ngModel,
+		        	 name = attr.name? attr.name:('def'+Date.now());
+		        	console.log(modelName);
+		        	 tmplNode.attr('id', name + '_chosecontianer');
+		        	 
+		        	 $animate.enter(tmplNode, element.parent(), element);
+		    	}
     	 
-    	     var modelName = attr.ngModel,
-    	      name = attr.name? attr.name:('def'+Date.now());
-    	     tmplNode.attr('id', name + '_chosecontianer');
-    	 
-    	     $animate.enter(tmplNode, element.parent(), element);
+//    	     var modelName = attr.ngModel,
+//    	      name = attr.name? attr.name:('def'+Date.now());
+//    	console.log(modelName);
+//    	     tmplNode.attr('id', name + '_chosecontianer');
+//    	 
+//    	     $animate.enter(tmplNode, element.parent(), element);
     	    },
     	    post: function selectSearchPostLink(scope, element, attr, ctrls) {
-    	     var choseNode = element.next(); //$('#'+attr.name +'_chosecontianer');
-    	     choseNode.addClass(attr.class);
-    	     element.addClass('chose-hide');
-    	     // 当前选中项
-    	     var ngModelCtrl = ctrls[0];
-    	     if (!ngModelCtrl || !attr.name) return;
-    	 
-    	     parseOptions(attr.ngOptions, element, scope);
-    	     var rs = {};
-    	 
-    	     function setView() {
-    			var currentKey = ngModelCtrl.$modelValue;
-    		    if (isNaN(currentKey) || !currentKey) {//判断currentKey是否包含key
-	    			if(!currentKey){
-    				       currentKey = '';
-    				       choseNode.find('.j-view:first').text('请选择');
-    				       choseNode.find('i').addClass('chose-hide');
-	    			}else{
-	    				if(currentKey.key){
-	    					currentKey = currentKey.key;
-	    				}else{
-	    					currentKey = '';
-					        choseNode.find('.j-view:first').text('请选择');
-					        choseNode.find('i').addClass('chose-hide');
-	    				}
-	    			}
-    			}
-		        if ((currentKey + '').length > 0) {
-    				for (var i = 0, l = rs.idArray.length; i < l; i++) {
-	    				if (rs.idArray[i] == currentKey) {
-	    					choseNode.find('.j-view:first').text(rs.labelArray[i]);
-	    					choseNode.find('i').removeClass('chose-hide');
-	    					break;
-	    				}
-    				}
-			  	}
-    		}
-    	 
-    	     function setViewAndData() {
-    	      if (!scope.options) {
-    	       return;
-    	      }
-    	      rs = scope.options;
-    	      setView();
-    	     }
-    	     scope.$watchCollection('options', setViewAndData);
-    	     //scope.$watch(attr.ngModel, setView);
-    	 
-    	 
-    	     function getListNodes(value) {//获取li列表
-    		      var nodes = [];
-    		      value = $.trim(value).toUpperCase();//转化大写字母,搜索不区分大小写
-    		      for (var i = 0, l = rs.labelArray.length; i < l; i++) {
-    			       if (rs.labelArray[i].toUpperCase().indexOf(value) > -1) {
-    				nodes.push($('<li>').data('id', rs.idArray[i]).text(rs.labelArray[i]));
-    				       }
-    			      }
-    		      return nodes;
-    		 }
-    	     choseNode.on('keyup', '.j-key', function() {
-		    		      // 搜索输入框keyup，重新筛选列表
-		    		      var value = $(this).val();
-		    		      choseNode.find('ul:first').empty().append(getListNodes(value));
-		    		      return false;
-    		     	}).on('click', function() {
-	    			      choseNode.find('.j-drop').removeClass('chose-hide');
-	    			      if (choseNode.find('.j-view:first').text() != '请选择') {
-	    				       choseNode.find('i').removeClass('chose-hide');
-	    				      }
-	    			      choseNode.find('ul:first').empty().append(getListNodes(choseNode.find('.j-key').val()));
-	    			      return false;
-    			     }).on('click', 'ul>li', function() {//设置显示值
-    				      var _this = $(this);
-	    				  var res = null;
-	    				  for(var i=0;i<rs.optionValues.length;i++){
-	    					  if(rs.optionValues[i].key == _this.data('id')){
-	    						  res = rs.optionValues[i];
-	    					  }
-	    				  }
-    				      //ngModelCtrl.$setViewValue(_this.data('id'));
-    					  ngModelCtrl.$setViewValue(res);
-    				      ngModelCtrl.$render();
-    				      choseNode.find('.j-drop').addClass('chose-hide');
-    					  choseNode.find('.j-view:first').text(res.val);
-    				      return false;
-    				 }).on('click', 'i', function() {
-					      ngModelCtrl.$setViewValue('');
-					      ngModelCtrl.$render();
-					      choseNode.find('.j-view:first').text('请选择');
-					      return false;
-				     });
-		     $(document).on("click", function(e) {
-						e.stopPropagation();
-						$('.j-drop').addClass('chose-hide');
-						choseNode.find('i').addClass('chose-hide');
-						return true;//事件传递
-			     });
-    	 
+		    		if(!attr.searchSelect){//页面属性search-select为true时，操作template
+		    			var choseNode = element.next(); //$('#'+attr.name +'_chosecontianer');
+		    	    	     choseNode.addClass(attr.class);
+		    	    	     element.addClass('chose-hide');
+		    	    	     // 当前选中项
+		    	    	     var ngModelCtrl = ctrls[0];
+		    	    	     if (!ngModelCtrl || !attr.name) return;
+		    	    	 
+		    	    	     parseOptions(attr.ngOptions, element, scope);
+		    	    	     var rs = {};
+		    	    	 
+		    	    	     function setView() {
+		    	    			var currentKey = ngModelCtrl.$modelValue;
+		    	    		    if (isNaN(currentKey) || !currentKey) {//判断currentKey是否包含key
+		    		    			if(!currentKey){
+		    	    				       currentKey = '';
+		    	    				       choseNode.find('.j-view:first').text('请选择');
+		    	    				       choseNode.find('i').addClass('chose-hide');
+		    		    			}else{
+		    		    				if(currentKey.key){
+		    		    					currentKey = currentKey.key;
+		    		    				}else{
+		    		    					currentKey = '';
+		    						        choseNode.find('.j-view:first').text('请选择');
+		    						        choseNode.find('i').addClass('chose-hide');
+		    		    				}
+		    		    			}
+		    	    			}
+		    			        if ((currentKey + '').length > 0) {
+		    	    				for (var i = 0, l = rs.idArray.length; i < l; i++) {
+		    		    				if (rs.idArray[i] == currentKey) {
+		    		    					choseNode.find('.j-view:first').text(rs.labelArray[i]);
+		    		    					choseNode.find('i').removeClass('chose-hide');
+		    		    					break;
+		    		    				}
+		    	    				}
+		    				  	}
+		    	    		}
+		    	    	 
+		    	    	     function setViewAndData() {
+		    	    	      if (!scope.options) {
+		    	    	       return;
+		    	    	      }
+		    	    	      rs = scope.options;
+		    	    	      setView();
+		    	    	     }
+		    	    	     scope.$watchCollection('options', setViewAndData);
+		    	    	     //scope.$watch(attr.ngModel, setView);
+		    	    	 
+		    	    	 
+		    	    	     function getListNodes(value) {//获取li列表
+		    	    		      var nodes = [];
+		    	    		      value = $.trim(value).toUpperCase();//转化大写字母,搜索不区分大小写
+		    	    		      for (var i = 0, l = rs.labelArray.length; i < l; i++) {
+		    	    			       if (rs.labelArray[i].toUpperCase().indexOf(value) > -1) {
+		    	    				nodes.push($('<li>').data('id', rs.idArray[i]).text(rs.labelArray[i]));
+		    	    				       }
+		    	    			      }
+		    	    		      return nodes;
+		    	    		 }
+		    	    	     choseNode.on('keyup', '.j-key', function() {
+		    			    		      // 搜索输入框keyup，重新筛选列表
+		    			    		      var value = $(this).val();
+		    			    		      choseNode.find('ul:first').empty().append(getListNodes(value));
+		    			    		      return false;
+		    	    		     	}).on('click', function() {
+		    		    			      choseNode.find('.j-drop').removeClass('chose-hide');
+		    		    			      if (choseNode.find('.j-view:first').text() != '请选择') {
+		    		    				       choseNode.find('i').removeClass('chose-hide');
+		    		    				      }
+		    		    			      choseNode.find('ul:first').empty().append(getListNodes(choseNode.find('.j-key').val()));
+		    		    			      return false;
+		    	    			     }).on('click', 'ul>li', function() {//设置显示值
+		    	    				      var _this = $(this);
+		    		    				  var res = null;
+		    		    				  for(var i=0;i<rs.optionValues.length;i++){
+		    		    					  if(rs.optionValues[i].key == _this.data('id')){
+		    		    						  res = rs.optionValues[i];
+		    		    					  }
+		    		    				  }
+		    	    				      //ngModelCtrl.$setViewValue(_this.data('id'));
+		    	    					  ngModelCtrl.$setViewValue(res);
+		    	    				      ngModelCtrl.$render();
+		    	    				      choseNode.find('.j-drop').addClass('chose-hide');
+		    	    					  choseNode.find('.j-view:first').text(res.val);
+		    	    				      return false;
+		    	    				 }).on('click', 'i', function() {
+		    						      ngModelCtrl.$setViewValue('');
+		    						      ngModelCtrl.$render();
+		    						      choseNode.find('.j-view:first').text('请选择');
+		    						      return false;
+		    					     });
+		    			     $(document).on("click", function(e) {
+		    							e.stopPropagation();
+		    							$('.j-drop').addClass('chose-hide');
+		    							choseNode.find('i').addClass('chose-hide');
+		    							return true;//事件传递
+		    				     });
+		    		}
     	    }
     	   }
     	};
