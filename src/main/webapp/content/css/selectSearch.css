@@ -1,0 +1,102 @@
+.chose-hide {
+ position: absolute!important;
+ top: -999em !important;
+}
+.chose-container {
+ border: none!important;
+ float: left;
+ margin-right: 40px;
+ padding: 0!important;
+ position: relative;
+}
+.chose-container .chose-single {
+ padding: 6px 12px;
+ color: #333;
+ width: 100%;
+ border: 1px solid #cccccc;
+ border-top-right-radius: 4px;
+ border-top-left-radius: 4px;
+ border-bottom-right-radius: 4px;
+ border-bottom-left-radius: 4px;
+ display: inline-block;
+ height: 34px;
+}
+.chose-container .chose-single::after {
+ content: '';
+ position: absolute;
+ border-width: 6px 3px;
+ border-style: solid;
+ border-left-color: transparent;
+ border-right-color: transparent;
+ border-bottom-color: transparent;
+ right: 8px;
+ top: 12px;
+}
+.chose-container .chose-single i {
+ width: 12px;
+ float: right;
+ right: 8px;
+ font-size: 12px;
+ height: 12px;
+ position: absolute;
+ right: 35px;
+ top: 12px;
+ background-color: #eee;
+}
+.chose-container .chose-drop {
+ /* width: 177.406px; */
+ width: 100%;
+ position: absolute;
+ border: 1px solid #eee;
+ z-index: 1000;
+ background-color: #fff;
+}
+
+.chose-container .chose-result {
+ max-height: 370px;
+ overflow-y: scroll;
+ overflow-x: hidden;
+ -webkit-margin-before: 1em;
+ -webkit-margin-after: 1em;
+ -webkit-margin-start: 0px;
+ -webkit-margin-end: 0px;
+ -webkit-padding-start: 0px;
+}
+.chose-container .chose-result li {
+ padding: 5px 12px;
+ list-style-type: none;
+ margin: 0;
+}
+.chose-container .chose-result li:hover {
+ background-color: #e1e2e7;
+}
+
+.chose-container .chose-search input[type="text"] {
+  background: url("../images/chosen-sprite.png") no-repeat 100% -20px, #ffffff;
+  border: 1px solid #cccccc;
+  border-top-right-radius: 4px;
+  border-top-left-radius: 4px;
+  border-bottom-right-radius: 4px;
+  border-bottom-left-radius: 4px;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+  margin: 1px 0;
+  padding: 4px 20px 4px 4px;
+  width: 100%;
+}
+
+.chose-container .chose-single span {
+  display: block;
+  margin-right: 26px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@media only screen and (-webkit-min-device-pixel-ratio: 2), only screen and (min-resolution: 2dppx) {
+   .chose-container .chose-drop,
+   .chose-container .chose-result,
+   .chose-container .chose-search input[type='text'],
+   .chose-container .chose-single span,
+   .chose-container .chose-single i
+}

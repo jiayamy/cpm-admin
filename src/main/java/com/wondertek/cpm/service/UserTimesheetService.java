@@ -2118,7 +2118,7 @@ public class UserTimesheetService {
 			List<ProjectUserInputVo> dbList = userTimesheetDao.getProjectUserInputsByParam(startTime, endTime, userIds,user,deptInfo);
 			List<ProjectUserInputVo> returnList = new ArrayList<ProjectUserInputVo>();
 			Map<String,ProjectUserInputVo> sumMap = new HashMap<String,ProjectUserInputVo>();//合计
-			if (showTotal == true) {
+			if (showTotal) {
 				if (dbList != null && dbList.size() > 0) {
 					ProjectUserInputVo temp = null;
 					int i = 0;
@@ -2140,9 +2140,9 @@ public class UserTimesheetService {
 							sumMap.put(vo.getProjectSerialNum(),
 									new ProjectUserInputVo(vo.getProjectSerialNum(), "合计", vo.getRealInput(),
 											vo.getAcceptInput(), vo.getExtraInput(), vo.getAcceptExtraInput()));
-							if (i == dbList.size() - 1) {
-								returnList.add(sumMap.get(vo.getProjectSerialNum()));
-							}
+						}
+						if (i == dbList.size() - 1) {
+							returnList.add(sumMap.get(vo.getProjectSerialNum()));
 						}
 						i++;
 					}

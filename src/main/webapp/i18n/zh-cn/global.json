@@ -43,7 +43,8 @@
                 "projectCostTimesheet": "工时成本",
                 "projectTimesheet": "项目日报",
                 "projectOverAllController": "项目总体情况控制",
-                "projectUserInput": "项目人员工时"
+                "projectUserInput": "项目人员工时",
+                "userProjectInput": "人员项目工时"
             },
             "stat":{
             	"main":"统计报表",

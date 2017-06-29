@@ -3,11 +3,11 @@
 	
 	angular
 		.module('cpmApp')
-		.controller('ProjectUserInputController',ProjectUserInputController);
+		.controller('UserProjectInputController',UserProjectInputController);
 	
-	ProjectUserInputController.$inject = ['$scope','$rootScope', '$state', 'ProjectUserInput', 'ParseLinks', 'AlertService', 'paginationConstants', 'pagingParams','DateUtils'];
+	UserProjectInputController.$inject = ['$scope','$rootScope', '$state', 'UserProjectInput', 'ProjectInfo', 'ParseLinks', 'AlertService', 'paginationConstants', 'pagingParams','DateUtils'];
 	
-	function ProjectUserInputController($scope,$rootScope, $state, ProjectUserInput, ParseLinks, AlertService, paginationConstants, pagingParams,DateUtils){
+	function UserProjectInputController($scope,$rootScope, $state, UserProjectInput, ProjectInfo, ParseLinks, AlertService, paginationConstants, pagingParams,DateUtils){
 		var vm = this;
         vm.transition = transition;
         vm.clear = clear;
@@ -26,7 +26,6 @@
         	//$("#showTotal").attr("checked",true);
         	pagingParams.showTotal = true;
         }else{
-//        	$("#showTotal").removeAttr("checked");
         	pagingParams.showTotal = false;
         }
         //搜索项中的参数
@@ -36,7 +35,7 @@
         vm.searchQuery.userName = pagingParams.userName;
         vm.searchQuery.showTotal = pagingParams.showTotal;
         
-        vm.projectUserInputs = [];
+        vm.userProjectInputs = [];
         
         vm.datePickerOpenStatus = {};
         vm.openCalendar = openCalendar;
@@ -48,16 +47,41 @@
         	vm.haveSearch = true;
         }
         
+        //加载搜索下拉框
+        vm.projectInfos = [];
+        loadProjectInfos();
+        function loadProjectInfos(){
+        	ProjectInfo.queryProjectInfo(
+        		{
+        			
+        		},
+        		function(data, headers){
+        			vm.projectInfos = data;
+            		if(vm.projectInfos && vm.projectInfos.length > 0){
+            			for(var i = 0; i < vm.projectInfos.length; i++){
+            				if(pagingParams.projectId == vm.projectInfos[i].key){
+            					vm.searchQuery.projectId = vm.projectInfos[i];
+            				}
+            			}
+            		}
+        		},
+        		function(error){
+        			AlertService.error(error.data.message);
+        		}
+        	);
+        }
+        
         loadAll();
         function loadAll(){
-        	ProjectUserInput.query({
+        	UserProjectInput.query({
         		startTime : pagingParams.startTime,
         		endTime : pagingParams.endTime,
         		userId : pagingParams.userId,
+        		projectId : pagingParams.projectId,
         		showTotal : pagingParams.showTotal
         	},onSuccess,onError);
         	function onSuccess(data, headers) {
-                vm.projectUserInputs = handleData(data);
+                vm.userProjectInputs = handleData(data);
             }
             function onError(error) {
                 AlertService.error(error.data.message);
@@ -131,7 +155,7 @@
         }
         
         function exportXls(){//导出Xls
-        	var url = "api/project-user-input/exportXls";
+        	var url = "api/user-project-input/exportXls";
         	var c = 0;
         	var startTime = DateUtils.convertLocalDateToFormat(vm.searchQuery.startTime,"yyyyMMdd");
         	var endTime = DateUtils.convertLocalDateToFormat(vm.searchQuery.endTime,"yyyyMMdd");

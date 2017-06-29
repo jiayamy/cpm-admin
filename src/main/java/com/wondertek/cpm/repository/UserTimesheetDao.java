@@ -9,6 +9,7 @@ import com.wondertek.cpm.domain.DeptInfo;
 import com.wondertek.cpm.domain.User;
 import com.wondertek.cpm.domain.UserTimesheet;
 import com.wondertek.cpm.domain.vo.ProjectUserInputVo;
+import com.wondertek.cpm.domain.vo.UserProjectInputVo;
 import com.wondertek.cpm.domain.vo.UserTimesheetForHardWorkingVo;
 
 public interface UserTimesheetDao extends GenericDao<UserTimesheet, Long> {
@@ -71,4 +72,8 @@ public interface UserTimesheetDao extends GenericDao<UserTimesheet, Long> {
 	 * 查找项目人员工时
 	 */
 	public List<ProjectUserInputVo> getProjectUserInputsByParam(Long startTime,Long endTime,List<Long> userIds,User user,DeptInfo deptInfo);
+	/**
+	 * 查找人员项目工时
+	 */
+	public List<UserProjectInputVo> getUserProjectInputsByParam(Long startTime,Long endTime,List<Long> userIds,List<Long> projectId,User user,DeptInfo deptInfo);
 }
