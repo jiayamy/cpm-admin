@@ -2140,9 +2140,9 @@ public class UserTimesheetService {
 							sumMap.put(vo.getProjectSerialNum(),
 									new ProjectUserInputVo(vo.getProjectSerialNum(), "合计", vo.getRealInput(),
 											vo.getAcceptInput(), vo.getExtraInput(), vo.getAcceptExtraInput()));
-							if (i == dbList.size() - 1) {
-								returnList.add(sumMap.get(vo.getProjectSerialNum()));
-							}
+						}
+						if (i == dbList.size() - 1) {
+							returnList.add(sumMap.get(vo.getProjectSerialNum()));
 						}
 						i++;
 					}

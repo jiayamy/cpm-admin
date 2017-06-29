@@ -186,7 +186,7 @@ public class ProjectStateTask {
 	/**
 	 * 项目的月统计，最好在合同的月统计之前执行
 	 */
-	@Scheduled(cron = "0 0 22 1 * ?")
+	@Scheduled(cron = "0 0 22 15 * ?")
 	protected void generateProjectMonthlyState(){
 		Date now = new Date();
 		generateProjectMonthlyState(null, now);

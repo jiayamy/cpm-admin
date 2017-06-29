@@ -48,7 +48,7 @@ public class RoleHardWorkingStatTask {
 	/**
 	 * 每个月的第二天的1点开始执行，员工的勤奋度
 	 */
-	@Scheduled(cron = "0 0 3 2 * ?")
+	@Scheduled(cron = "0 0 3 15 * ?")
 	protected void generateMonthlyState() {
 		Date now = new Date();
 		generateMonthlyState(now);

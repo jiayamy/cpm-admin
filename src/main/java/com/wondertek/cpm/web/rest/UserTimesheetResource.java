@@ -184,7 +184,7 @@ public class UserTimesheetResource {
     	return new ResponseEntity<>(resultMap, null, HttpStatus.OK);
     }
     
-    @GetMapping("/user-timesheets/uploadExcel")
+    @GetMapping("/user-timesheets/uploadProjectExcel")
     @Timed
     @Secured(AuthoritiesConstants.ADMIN)
     public ResponseEntity<CpmResponse> uploadProjectExcel(@RequestParam(value = "filePath",required=true) String filePath)
@@ -218,9 +218,11 @@ public class UserTimesheetResource {
 			Map<Integer,User> users = new HashMap<Integer,User>();
 			Map<Integer,String> userNames = new HashMap<Integer,String>();
 			ZonedDateTime createTime = ZonedDateTime.now();
+			long totalCountInput = 0;
 			long totalCount = 0;
 			long totalSuccCount = 0;
 			long totalErrorCount = 0;
+			List<String> logInfo = new ArrayList<String>();
 			for (ExcelValue excelValue : lists) {
 				users.clear();
 				userNames.clear();
@@ -279,7 +281,9 @@ public class UserTimesheetResource {
 								users.put(i, user);
 								//检查名称是否一致
 								if(userNames.get(i) == null || !userNames.get(i).equals(user.getLastName())){
-									log.debug(file.getName() + " 第" + excelValue.getSheet() + "个sheet["+excelValue.getSheetName()+"]的第" + rowNum + "行第" + (i+1) + "列用户不一致,查出用户名:"+user.getLastName());
+									String msg = file.getName() + " 第" + excelValue.getSheet() + "个sheet["+excelValue.getSheetName()+"]的第" + rowNum + "行第" + (i+1) + "列用户不一致,查出用户名:"+user.getLastName();
+									log.debug(msg);
+									logInfo.add(msg);
 								}
 							}else{
 								return ResponseEntity.ok().body(cpmResponse
@@ -354,19 +358,29 @@ public class UserTimesheetResource {
 						succCount ++;
 					} catch (Exception e) {
 						log.error(e.getMessage() + userTimesheet);
+						logInfo.add("导入失败:" + e.getMessage() + userTimesheet);
 						errorCount ++;
 					}
 				}
-				log.debug(file.getName() + " 第"+excelValue.getSheet()+"个sheet["+excelValue.getSheetName()+"]，总"+users.size()+"个用户,"
-						+ ",工时总数:" + countInput +","
-						+ ",工时记录总数:" + count + ","
-						+ ",导入成功总数:" + succCount + ","
-						+ ",导入失败总数:" + errorCount);
+				String msg = file.getName() + " 第"+excelValue.getSheet()+"个sheet["+excelValue.getSheetName()+"],总"+users.size()+"个用户"
+						+ ",工时总数:" + countInput
+						+ ",工时记录总数:" + count
+						+ ",导入成功总数:" + succCount
+						+ ",导入失败总数:" + errorCount;
+				log.debug(msg);
+				logInfo.add(msg);
+				totalCountInput += countInput;
 				totalCount += count;
 				totalSuccCount += succCount;
 				totalErrorCount += errorCount;
 			}
-			log.debug(file.getName() + " 工时记录总数:" + totalCount
+			if(!logInfo.isEmpty()){
+				for(String msg : logInfo){
+					log.debug(msg);
+				}
+			}
+			log.debug(file.getName() + "工时总数:" + totalCountInput
+					+",工时记录总数:" + totalCount
 					+ ",导入成功总数:" + totalSuccCount + ","
 					+ ",导入失败总数:" + totalErrorCount);
 			return ResponseEntity.ok().body(cpmResponse

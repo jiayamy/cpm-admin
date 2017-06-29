@@ -2,7 +2,7 @@
     <h2 data-translate="cpmApp.projectInfo.home.title">Project Infos</h2>
     <jhi-alert></jhi-alert>
     <div class="container-fluid">
-  		<div class="row form-horizontal" ng-show="false">
+  		<div class="row form-horizontal" ng-show="false" has-authority="ROLE_PROJECT_INFO_END">
         	<div class="form-group">
 	            <div class="col-xs-12">
 	                <button class="btn btn-primary" ui-sref="project-info.new" >
@@ -14,7 +14,7 @@
 	            </div>
 			</div>
         </div>
-        <div class="row form-horizontal">
+        <div class="row form-horizontal" has-authority="ROLE_PROJECT_INFO_END">
 	        <div class="form-group">
 	            <div class="col-xs-12">
 	                <button type="button" class="btn btn-primary" ui-sref="project-info.import">
@@ -29,7 +29,7 @@
 	            <div class="col-sm-4">
 	          		<label class="col-sm-4 control-label" data-translate="cpmApp.projectInfo.contractId">Contract ID</label>
 		            <div class="col-sm-8">
-		            	<select class="form-control" ng-model="vm.searchQuery.contractId"
+		            	<select class="form-control" ng-model="vm.searchQuery.contractId" ui-select2
 			            	ng-options="contractInfo.val for contractInfo in vm.contractInfos track by contractInfo.key">
 			            	<option value="">--合同编号--</option>
 			            </select>
@@ -125,7 +125,7 @@
                                 <span class="glyphicon glyphicon-eye-open"></span>
                             </button>
                             <button type="submit"
-                            		data-toggle="tooltip" title="编辑项目"
+                            		data-toggle="tooltip" title="编辑项目" has-authority="ROLE_PROJECT_INFO_END"
                                     ui-sref="project-info.edit({id:projectInfo.id})"
                                     class="btn btn-primary btn-sm">
                                 <span class="glyphicon glyphicon-pencil"></span>
@@ -137,13 +137,13 @@
                                 <span class="glyphicon glyphicon-indent-left"></span>
                             </button>
                             <button type="submit"
-                            		data-toggle="tooltip" title="项目结项"
+                            		data-toggle="tooltip" title="项目结项" has-authority="ROLE_PROJECT_INFO_END"
                                     ui-sref="project-info.end({id:projectInfo.id})"
                                     class="btn btn-success btn-sm">
                                 <span class="glyphicon glyphicon-off"></span>
                             </button>
                             <button type="submit"
-                            		data-toggle="tooltip" title="终止项目"
+                            		data-toggle="tooltip" title="终止项目" has-authority="ROLE_PROJECT_INFO_END"
                                     ui-sref="project-info.delete({id:projectInfo.id})"
                                     class="btn btn-danger btn-sm">
                                 <span class="glyphicon glyphicon-remove-circle"></span>

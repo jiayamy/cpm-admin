@@ -17,7 +17,8 @@
             'infinite-scroll',
             // jhipster-needle-angularjs-add-module JHipster will add new module here
             'angular-loading-bar',
-            'oc.lazyLoad'
+            'oc.lazyLoad',
+            'ui.select2'
         ])
         .run(run);
 
