@@ -8,7 +8,7 @@
 	              	<div class="col-sm-4">
 		          		<label class="col-sm-4 control-label" data-translate="cpmApp.projectMonthlyStat.projectSerialNum">Project Id</label>
 			            <div class="col-sm-8">
-			            	<select class="form-control" ng-model="vm.searchQuery.projectId" name="projectId"
+			            	<select class="form-control" ng-model="vm.searchQuery.projectId" name="projectId" ui-select2
 				            	ng-options="projectInfo.val for projectInfo in vm.projectInfos track by projectInfo.key">
 				            	<option value="">--项目编号--</option>
 				            </select>

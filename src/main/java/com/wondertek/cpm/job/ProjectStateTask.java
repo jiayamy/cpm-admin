@@ -124,7 +124,7 @@ public class ProjectStateTask {
 		String [] dates = DateUtil.getWholeWeekByDate(DateUtil.lastSaturday(now));
 		ZonedDateTime beginTime = DateUtil.getZonedDateTime(DateUtil.lastMonday(now).getTime());
 		ZonedDateTime endTime = DateUtil.getZonedDateTime(DateUtil.lastSundayEnd(now).getTime());
-		List<ProjectInfo> projectInfos = projectInfoRepository.findByStatusOrBeginTime(ProjectInfo.STATUS_ADD, beginTime);
+		List<ProjectInfo> projectInfos = projectInfoRepository.findByStatusOrBeginTime(ProjectInfo.STATUS_ADD, beginTime, endTime);
 		if(projectInfos != null && projectInfos.size() > 0){
 			for (ProjectInfo projectInfo : projectInfos) {
 				if(projectId != null && !projectId.equals(projectInfo.getId())){
@@ -199,7 +199,7 @@ public class ProjectStateTask {
 		String fDay = DateUtil.formatDate("yyyyMMdd", DateUtil.lastMonthBegin(now));
 		String lDay = DateUtil.formatDate("yyyyMMdd", DateUtil.lastMonthend(now));
 		String lMonth = DateUtil.formatDate("yyyyMM", DateUtil.lastMonthBegin(now));
-		List<ProjectInfo> projectInfos = projectInfoRepository.findByStatusOrBeginTime(ProjectInfo.STATUS_ADD, beginTime);
+		List<ProjectInfo> projectInfos = projectInfoRepository.findByStatusOrBeginTime(ProjectInfo.STATUS_ADD, beginTime, endTime);
 		if(projectInfos != null && projectInfos.size() > 0){
 			for (ProjectInfo projectInfo : projectInfos) {
 				if(projectId != null && !projectId.equals(projectInfo.getId())){

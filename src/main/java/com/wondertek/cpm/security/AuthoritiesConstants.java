@@ -49,9 +49,13 @@ public final class AuthoritiesConstants {
 	 */
     public static final String ROLE_CONTRACT_USER = "ROLE_CONTRACT_USER";
     /**
-	 * 合同预算信息权限
+	 * 合同内部采购单权限
 	 */
     public static final String ROLE_CONTRACT_BUDGET = "ROLE_CONTRACT_BUDGET";
+    /**
+	 * 合同内部采购单编辑权限
+	 */
+    public static final String ROLE_CONTRACT_BUDGET_EDIT = "ROLE_CONTRACT_BUDGET_EDIT";
     /**
 	 * 合同采购子项权限
 	 */
@@ -68,6 +72,10 @@ public final class AuthoritiesConstants {
 	 * 合同成本信息权限
 	 */
     public static final String ROLE_CONTRACT_TIMESHEET = "ROLE_CONTRACT_TIMESHEET";
+    /**
+	 * 合同的立结项
+	 */
+    public static final String ROLE_CONTRACT_END = "ROLE_CONTRACT_END";
     /**
 	 * 项目管理权限
 	 */

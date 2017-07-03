@@ -5,13 +5,13 @@
     	<div class="row form-horizontal">
 	        <div class="form-group">
 	            <div class="col-xs-12">
-	                <button class="btn btn-primary" ui-sref="contract-info.new" >
+	                <button class="btn btn-primary" ui-sref="contract-info.new" has-authority="ROLE_CONTRACT_END" >
 	                    <span class="glyphicon glyphicon-plus"></span>
 	                    <span data-translate="cpmApp.contractInfo.home.createLabel">
 	                        Create new Contract Info
 	                    </span>
 	                </button>
-	                <button type="button" class="btn btn-primary" ui-sref="contract-info.import">
+	                <button type="button" class="btn btn-primary" ui-sref="contract-info.import" has-authority="ROLE_CONTRACT_END">
 			            <span class="glyphicon glyphicon-import"></span>
 		                <span data-translate="cpmApp.contractInfo.home.import">Import Excel</span>
 	                </button>
@@ -131,7 +131,7 @@
                                 <span class="glyphicon glyphicon-eye-open"></span>
                             </button>
                             <button type="submit"
-                            		data-toggle="tooltip" title="编辑合同"
+                            		data-toggle="tooltip" title="编辑合同" has-authority="ROLE_CONTRACT_END"
                                     ui-sref="contract-info.edit({id:contractInfo.id})"
                                     class="btn btn-primary btn-sm">
                                 <span class="glyphicon glyphicon-pencil"></span>
@@ -143,13 +143,13 @@
                                 <span class="glyphicon glyphicon-indent-left"></span>
                             </button>
                             <button type="submit"
-                            		data-toggle="tooltip" title="完成合同"
+                            		data-toggle="tooltip" title="完成合同" has-authority="ROLE_CONTRACT_END"
                                     ui-sref="contract-info.end({id:contractInfo.id})"
                                     class="btn btn-success btn-sm">
                                 <span class="glyphicon glyphicon-off"></span>
                             </button>
                             <button type="submit"
-                            		data-toggle="tooltip" title="终止合同"
+                            		data-toggle="tooltip" title="终止合同" has-authority="ROLE_CONTRACT_END"
                                     ui-sref="contract-info.delete({id:contractInfo.id})"
                                     class="btn btn-danger btn-sm">
                                 <span class="glyphicon glyphicon-remove-circle"></span>

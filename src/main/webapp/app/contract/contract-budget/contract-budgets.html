@@ -5,7 +5,7 @@
         <div class="row form-horizontal">
         	<div class="form-group">
            	 	<div class="col-xs-12">
-                	<button class="btn btn-primary" ui-sref="contract-budget.new">
+                	<button class="btn btn-primary" ui-sref="contract-budget.new" has-authority="ROLE_CONTRACT_BUDGET_EDIT">
                     	<span class="glyphicon glyphicon-plus"></span>
                     	<span data-translate="cpmApp.contractBudget.home.createLabel">
                         	Create new Contract Budget
@@ -103,13 +103,13 @@
                                     class="btn btn-info btn-sm">
                                 <span class="glyphicon glyphicon-eye-open"></span>
                             </button>
-                            <button type="submit" ng-if="contractBudget.haveEdit"
+                            <button type="submit" ng-if="contractBudget.haveEdit" has-authority="ROLE_CONTRACT_BUDGET_EDIT"
                             		data-toggle="tooltip" title="编辑"
                                     ui-sref="contract-budget.edit({id:contractBudget.id})"
                                     class="btn btn-primary btn-sm">
                                 <span class="glyphicon glyphicon-pencil"></span>
                             </button>
-                            <button type="submit" ng-if="contractBudget.haveEdit"
+                            <button type="submit" ng-if="contractBudget.haveEdit" has-authority="ROLE_CONTRACT_BUDGET_EDIT"
                             		data-toggle="tooltip" title="删除"
                                     ui-sref="contract-budget.delete({id:contractBudget.id})"
                                     class="btn btn-danger btn-sm">

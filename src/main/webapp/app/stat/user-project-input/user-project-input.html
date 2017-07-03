@@ -42,7 +42,7 @@
 	            <div class="col-sm-4">
 	            	<label class="col-sm-4 control-label" data-translate="cpmApp.userProjectInput.projectId">Project ID</label>
 		            <div class="col-sm-8">
-		            	<select class="form-control" ng-model="vm.searchQuery.projectId" ui-select2
+		            	<select class="form-control" ng-model="vm.searchQuery.projectId" ui-select2 multiple
 			            	ng-options="projectInfo.val for projectInfo in vm.projectInfos track by projectInfo.key">
 			            	<option value="">--项目编号--</option>
 			            </select>
@@ -96,10 +96,10 @@
                 <tr>
                     <th style="width:70px;"><span data-translate="cpmApp.userProjectInput.userSerialNum">SerialNum</span></th>
                     <th style="width:70px;"><span data-translate="cpmApp.userProjectInput.userName">User Name</span></th>
-                	<th style="width:80px;"><span data-translate="cpmApp.userProjectInput.projectSerialNum">Project SerialNum</span></th>
-                	<th style="width:100px;"><span data-translate="cpmApp.userProjectInput.projectName">Project Name</span></th>
+                	<th style="width:110px;"><span data-translate="cpmApp.userProjectInput.projectSerialNum">Project SerialNum</span></th>
+                	<th style="width:150px;"><span data-translate="cpmApp.userProjectInput.projectName">Project Name</span></th>
                 	<th style="width:80px;"><span data-translate="cpmApp.userProjectInput.contractSerialNum">Contract SerialNum</span></th>
-                	<th style="width:100px;"><span data-translate="cpmApp.userProjectInput.contractName">Contract Name</span></th>
+                	<th style="width:150px;"><span data-translate="cpmApp.userProjectInput.contractName">Contract Name</span></th>
                 	<th style="width:80px;"><span data-translate="cpmApp.userProjectInput.pmSerialNum">Pm SerialNum</span></th>
                 	<th style="width:70px;"><span data-translate="cpmApp.userProjectInput.pmName">Pm Name</span></th>
                 	<th style="width:80px;"><span data-translate="cpmApp.userProjectInput.pmDeptType">Pm Dept Type</span></th>

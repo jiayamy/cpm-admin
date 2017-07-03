@@ -71,7 +71,7 @@ public class ContractBudgetResource {
      */
     @PutMapping("/contract-budgets")
     @Timed
-    @Secured(AuthoritiesConstants.ROLE_CONTRACT_BUDGET)
+    @Secured(AuthoritiesConstants.ROLE_CONTRACT_BUDGET_EDIT)
     public ResponseEntity<Boolean> updateContractBudget(@RequestBody ContractBudget contractBudget) throws URISyntaxException {
         log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to update ContractBudget : {}", contractBudget);
         Boolean isNew = contractBudget.getId() == null;
@@ -185,7 +185,7 @@ public class ContractBudgetResource {
      */
     @DeleteMapping("/contract-budgets/{id}")
     @Timed
-    @Secured(AuthoritiesConstants.ROLE_CONTRACT_BUDGET)
+    @Secured(AuthoritiesConstants.ROLE_CONTRACT_BUDGET_EDIT)
     public ResponseEntity<Void> deleteContractBudget(@PathVariable Long id) {
         log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to delete ContractBudget : {}", id);
         ContractBudgetVo contractBudget = contractBudgetService.getUserBudget(id);

@@ -42,7 +42,7 @@
 	            <div class="col-sm-4">
 	            	<label class="col-sm-4 control-label" data-translate="cpmApp.projectUserInput.projectId">Project ID</label>
 		            <div class="col-sm-8">
-		            	<select class="form-control" ng-model="vm.searchQuery.projectId" ui-select2
+		            	<select class="form-control" ng-model="vm.searchQuery.projectId" ui-select2 multiple
 			            	ng-options="projectInfo.val for projectInfo in vm.projectInfos track by projectInfo.key">
 			            	<option value="">--项目编号--</option>
 			            </select>
@@ -94,10 +94,10 @@
         <table class="jh-table table table-striped" style="table-layout: fixed; ">
             <thead>
                 <tr>
-                	<th style="width:70px;"><span data-translate="cpmApp.projectUserInput.projectSerialNum">Project SerialNum</span></th>
-                	<th style="width:110px;"><span data-translate="cpmApp.projectUserInput.projectName">Project Name</span></th>
+                	<th style="width:110px;"><span data-translate="cpmApp.projectUserInput.projectSerialNum">Project SerialNum</span></th>
+                	<th style="width:150px;"><span data-translate="cpmApp.projectUserInput.projectName">Project Name</span></th>
                 	<th style="width:70px;"><span data-translate="cpmApp.projectUserInput.contractSerialNum">Contract SerialNum</span></th>
-                	<th style="width:110px;"><span data-translate="cpmApp.projectUserInput.contractName">Contract Name</span></th>
+                	<th style="width:150px;"><span data-translate="cpmApp.projectUserInput.contractName">Contract Name</span></th>
                 	<th style="width:80px;"><span data-translate="cpmApp.projectUserInput.pmSerialNum">Pm SerialNum</span></th>
                 	<th style="width:70px;"><span data-translate="cpmApp.projectUserInput.pmName">Pm Name</span></th>
                 	<th style="width:80px;"><span data-translate="cpmApp.projectUserInput.pmDeptType">Pm Dept Type</span></th>

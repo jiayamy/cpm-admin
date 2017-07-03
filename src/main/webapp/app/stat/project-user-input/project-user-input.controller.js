@@ -22,20 +22,9 @@
         if(pagingParams.endTime == undefined){//默认当天
         	pagingParams.endTime = DateUtils.convertLocalDateToFormat(today,"yyyyMMdd");
         }
-        if(pagingParams.showTotal == "true"){
-        	//$("#showTotal").attr("checked",true);
-        	pagingParams.showTotal = true;
-        }else{
-        	//$("#showTotal").removeAttr("checked");
-        	pagingParams.showTotal = false;
-        }
         //搜索项中的参数
         vm.searchQuery.startTime= DateUtils.convertYYYYMMDDDayToDate(pagingParams.startTime);
         vm.searchQuery.endTime= DateUtils.convertYYYYMMDDDayToDate(pagingParams.endTime);
-        vm.searchQuery.userId = pagingParams.userId;
-        vm.searchQuery.userName = pagingParams.userName;
-        vm.searchQuery.showTotal = pagingParams.showTotal;
-        vm.searchQuery.projectId = pagingParams.projectId;
         
         vm.projectUserInputs = [];
         
@@ -59,13 +48,6 @@
         		},
         		function(data, headers){
         			vm.projectInfos = data;
-            		if(vm.projectInfos && vm.projectInfos.length > 0){
-            			for(var i = 0; i < vm.projectInfos.length; i++){
-            				if(pagingParams.projectId == vm.projectInfos[i].key){
-            					vm.searchQuery.projectId = vm.projectInfos[i];
-            				}
-            			}
-            		}
         		},
         		function(error){
         			AlertService.error(error.data.message);
@@ -116,18 +98,31 @@
             vm.searchQuery.endTime = today;
             vm.searchQuery.showTotal = false;
             vm.haveSearch = true;
+            //多选的时候需要清理
+            angular.element('select[ng-model="vm.searchQuery.projectId"]').parent().find('ul[class="select2-choices"]').children().remove(".select2-search-choice");
+            
             vm.transition();
         }
         
         function transition() {
-            $state.transitionTo($state.$current, {
-            	startTime: DateUtils.convertLocalDateToFormat(vm.searchQuery.startTime,"yyyyMMdd"),
-            	endTime: DateUtils.convertLocalDateToFormat(vm.searchQuery.endTime,"yyyyMMdd"),
-                userId:vm.searchQuery.userId,
-                userName:vm.searchQuery.userName,
-                showTotal:vm.searchQuery.showTotal,
-                projectId:vm.searchQuery.projectId?vm.searchQuery.projectId.key:""
-            });
+        	pagingParams.startTime = DateUtils.convertLocalDateToFormat(vm.searchQuery.startTime,"yyyyMMdd");
+        	pagingParams.endTime = DateUtils.convertLocalDateToFormat(vm.searchQuery.endTime,"yyyyMMdd");
+        	pagingParams.userId = vm.searchQuery.userId;
+            pagingParams.userName = vm.searchQuery.userName;
+            pagingParams.showTotal = vm.searchQuery.showTotal;
+            var projectId = '';
+            if(vm.searchQuery.projectId && vm.searchQuery.projectId.length > 0){
+            	var l = vm.searchQuery.projectId.length;
+            	for(var i = 0; i < l ; i++){
+            		projectId += vm.searchQuery.projectId[i].key;
+            		if( i < (l - 1)){
+            			projectId += ',';
+            		}
+            	}
+            }
+            pagingParams.projectId = projectId;
+            	
+        	loadAll();
         }
         
         var unsubscribe = $rootScope.$on('cpmApp:deptInfoSelected', function(event, result) {
@@ -164,8 +159,17 @@
         	var endTime = DateUtils.convertLocalDateToFormat(vm.searchQuery.endTime,"yyyyMMdd");
         	var userId = vm.searchQuery.userId;
         	var showTotal = vm.searchQuery.showTotal;
-        	var projectId = vm.searchQuery.projectId?vm.searchQuery.projectId.key:"";
-			
+        	
+        	var projectId = '';
+            if(vm.searchQuery.projectId && vm.searchQuery.projectId.length > 0){
+            	var l = vm.searchQuery.projectId.length;
+            	for(var i = 0; i < l ; i++){
+            		projectId += vm.searchQuery.projectId[i].key;
+            		if( i < (l - 1)){
+            			projectId += ',';
+            		}
+            	}
+            }
 			if(startTime){
 				if(c == 0){
 					c++;

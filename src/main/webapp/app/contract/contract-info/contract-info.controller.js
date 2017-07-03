@@ -45,7 +45,7 @@
         		vm.searchQuery.isEpibolic = vm.isEpibolics[j];
         	}
         }
-        
+        console.log(vm.searchQuery);
         if(vm.searchQuery.serialNum == undefined && vm.searchQuery.name == undefined && vm.searchQuery.type == undefined
     			&& vm.searchQuery.isPrepared == undefined && vm.searchQuery.isEpibolic == undefined){
         	vm.haveSearch = null;

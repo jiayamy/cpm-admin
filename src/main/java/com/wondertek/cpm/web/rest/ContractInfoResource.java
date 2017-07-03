@@ -91,7 +91,7 @@ public class ContractInfoResource {
 
 	@PutMapping("/contract-infos")
     @Timed
-    @Secured(AuthoritiesConstants.ROLE_CONTRACT_INFO)
+    @Secured(AuthoritiesConstants.ROLE_CONTRACT_END)
     public ResponseEntity<Boolean> updateContractInfo(@RequestBody ContractInfoVo contractInfoVo1) throws URISyntaxException {
         log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to update ContractInfo : {}", contractInfoVo1);
         Boolean isNew = contractInfoVo1.getId() == null;
@@ -258,7 +258,7 @@ public class ContractInfoResource {
 	 */
 	@DeleteMapping("/contract-infos/{id}")
 	@Timed
-	@Secured(AuthoritiesConstants.ROLE_CONTRACT_INFO)
+	@Secured(AuthoritiesConstants.ROLE_CONTRACT_END)
 	public ResponseEntity<Void> deleteContractInfo(@PathVariable Long id) {
 		log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to delete ContractInfo : {}", id);
 		
@@ -330,7 +330,7 @@ public class ContractInfoResource {
 	
 	@GetMapping("/contract-infos/end")
     @Timed
-    @Secured(AuthoritiesConstants.ROLE_CONTRACT_INFO)
+    @Secured(AuthoritiesConstants.ROLE_CONTRACT_END)
     public ResponseEntity<ContractInfo> endContractInfo(@RequestParam(value = "id") Long id) throws URISyntaxException {
     	log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to endContractInfo by id : {}", id);
     	if(id == null){
@@ -355,7 +355,7 @@ public class ContractInfoResource {
 	
 	@GetMapping("/contract-infos/uploadExcel")
     @Timed
-    @Secured(AuthoritiesConstants.ROLE_CONTRACT_INFO)
+    @Secured(AuthoritiesConstants.ROLE_CONTRACT_END)
     public ResponseEntity<CpmResponse> uploadExcel(@RequestParam(value="filePath",required=true) String filePath)
             throws URISyntaxException {
         log.debug(SecurityUtils.getCurrentUserLogin()+" REST request to uploadExcel for filePath : {}",filePath);

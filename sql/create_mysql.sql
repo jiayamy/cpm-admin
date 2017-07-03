@@ -1013,3 +1013,7 @@ ALTER TABLE w_user_timesheet DROP INDEX idx_user_timesheet_u;
 --20170629
 INSERT INTO jhi_authority (name, detail_) VALUES ('ROLE_STAT_PROJECT_USER_INPUT', '统计报表-项目人员工时');
 INSERT INTO jhi_authority (name, detail_) VALUES ('ROLE_STAT_USER_PROJECT_INPUT', '统计报表-人员项目工时');
+
+--20170703
+INSERT INTO jhi_authority (name, detail_) VALUES ('ROLE_CONTRACT_END', '合同信息-立结项');
+INSERT INTO jhi_authority (name, detail_) VALUES ('ROLE_CONTRACT_BUDGET_EDIT', '合同管理-内部采购单-新增修改');

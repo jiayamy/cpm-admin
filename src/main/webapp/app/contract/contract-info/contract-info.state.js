@@ -143,7 +143,7 @@
         	parent: 'contract-info',
             url: '/new',
             data: {
-                authorities: ['ROLE_CONTRACT_INFO']
+                authorities: ['ROLE_CONTRACT_END']
             },
             views:{
             	'content@':{
@@ -185,7 +185,7 @@
         	parent:'contract-info.new',
         	url:'/creatOutsourcingUser/{mark}/{contractId}',
         	data:{
-        		authorities: ['ROLE_CONTRACT_INFO']
+        		authorities: ['ROLE_CONTRACT_END']
         	},
         	onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
                 $uibModal.open({
@@ -220,7 +220,7 @@
         	parent:'contract-info.new',
         	url:'/changeOutsourcingUser/{infoId}',
         	data:{
-        		authorities: ['ROLE_CONTRACT_INFO']
+        		authorities: ['ROLE_CONTRACT_END']
         	},
         	onEnter: ['$stateParams', '$state', '$uibModal','OutsourcingUser',function($stateParams, $state, $uibModal,OutsourcingUser) {
                 $uibModal.open({
@@ -248,7 +248,7 @@
             parent: 'contract-info.new',
             url: '/queryDept?selectType&showChild&dataType',
             data: {
-                authorities: ['ROLE_CONTRACT_INFO']
+                authorities: ['ROLE_CONTRACT_END']
             },
             onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
                 $uibModal.open({
@@ -280,7 +280,7 @@
         	parent:'contract-info',
         	url:'/edit/{id}',
         	data:{
-        		authorities: ['ROLE_CONTRACT_INFO']
+        		authorities: ['ROLE_CONTRACT_END']
         	},
         	views:{
         		'content@':{
@@ -325,7 +325,7 @@
         	parent:'contract-info.edit',
         	url:'/creatOutsourcingUser',
         	data:{
-        		authorities: ['ROLE_CONTRACT_INFO']
+        		authorities: ['ROLE_CONTRACT_END']
         	},
         	onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
                 $uibModal.open({
@@ -358,7 +358,7 @@
             parent: 'contract-info.edit',
             url: '/queryDept?selectType&showChild&dataType',
             data: {
-                authorities: ['ROLE_CONTRACT_INFO']
+                authorities: ['ROLE_CONTRACT_END']
             },
             onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
                 $uibModal.open({
@@ -421,7 +421,7 @@
             parent: 'contract-info',
             url: '/end/{id}',
             data: {
-                authorities: ['ROLE_CONTRACT_INFO']
+                authorities: ['ROLE_CONTRACT_END']
             },
             onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
                 $uibModal.open({
@@ -448,7 +448,7 @@
             parent: 'contract-info',
             url: '/delete/{id}',
             data: {
-                authorities: ['ROLE_CONTRACT_INFO']
+                authorities: ['ROLE_CONTRACT_END']
             },
             onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
                 $uibModal.open({
@@ -475,7 +475,7 @@
         	parent:'contract-info.edit',
         	url:'/changeOutsourcingUser/{infoId}',
         	data:{
-        		authorities: ['ROLE_CONTRACT_INFO']
+        		authorities: ['ROLE_CONTRACT_END']
         	},
         	onEnter: ['$stateParams', '$state', '$uibModal','OutsourcingUser',function($stateParams, $state, $uibModal,OutsourcingUser) {
                 $uibModal.open({
@@ -503,7 +503,7 @@
             parent: 'contract-info',
             url: '/upload',
             data: {
-                authorities: ['ROLE_CONTRACT_INFO'],
+                authorities: ['ROLE_CONTRACT_END'],
             },
             views: {
                 'content@': {

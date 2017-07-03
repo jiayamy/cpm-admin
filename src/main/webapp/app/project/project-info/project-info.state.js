@@ -99,95 +99,6 @@
                 }]
             }
         })
-        .state('project-info.new', {
-            parent: 'project-info',
-            url: '/new',
-            data: {
-                authorities: ['ROLE_PROJECT_INFO_END'],
-                pageTitle: 'cpmApp.projectInfo.detail.title'
-            },
-            views: {
-                'content@': {
-                    templateUrl: 'app/project/project-info/project-info-dialog.html',
-                    controller: 'ProjectInfoDialogController',
-                    controllerAs: 'vm'
-                }
-            },
-            resolve: {
-            	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
-                    return $ocLazyLoad.load('app/project/project-info/project-info-dialog.controller.js');
-                }],
-                translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
-                    $translatePartialLoader.addPart('projectInfo');
-                    $translatePartialLoader.addPart('deptInfo');
-                    $translatePartialLoader.addPart('global');
-                    return $translate.refresh();
-                }],
-                entity: function () {
-                    return {
-                        serialNum: null,
-                        contractId: null,
-                        budgetId: null,
-                        name: null,
-                        pm: null,
-                        dept: null,
-                        startDay: null,
-                        endDay: null,
-                        budgetTotal: null,
-                        status: null,
-                        creator: null,
-                        createTime: null,
-                        updator: null,
-                        updateTime: null,
-                        id: null,
-                        budgetOriginal:0
-                    };
-                },
-                budgetEntity:function(){
-                	return null;
-                },
-                previousState: ["$state", function ($state) {
-                    var currentStateData = {
-                    	queryDept:'project-info.new.queryDept',
-                        name: $state.current.name || 'project-info',
-                        params: $state.params,
-                        url: $state.href($state.current.name, $state.params)
-                    };
-                    return currentStateData;
-                }]
-            }
-        })
-        .state('project-info.new.queryDept', {
-            parent: 'project-info.new',
-            url: '/queryDept?selectType&showChild',
-            data: {
-                authorities: ['ROLE_PROJECT_INFO_END']
-            },
-            onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
-                $uibModal.open({
-                    templateUrl: 'app/info/dept-info/dept-info-query.html',
-                    controller: 'DeptInfoQueryController',
-                    controllerAs: 'vm',
-                    backdrop: 'static',
-                    size: 'lg',
-                    resolve: {
-                    	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
-                    		return $ocLazyLoad.load('app/info/dept-info/dept-info-query.controller.js');
-                        }],
-                        entity: function() {
-                            return {
-                            	selectType : $stateParams.selectType,
-                            	showChild : $stateParams.showChild
-                            }
-                        }
-                    }
-                }).result.then(function() {
-                    $state.go('^', {}, { reload: false });
-                }, function() {
-                    $state.go('^');
-                });
-            }]
-        })
         .state('project-info.edit', {
             parent: 'project-info',
             url: '/edit/{id}',
@@ -237,7 +148,7 @@
             parent: 'project-info.edit',
             url: '/queryDept?selectType&showChild',
             data: {
-                authorities: ['ROLE_PROJECT_INFO']
+                authorities: ['ROLE_PROJECT_INFO_END']
             },
             onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
                 $uibModal.open({
@@ -295,7 +206,6 @@
             parent: 'project-info',
             url: '/end/{id}',
             data: {
-//                authorities: ['ROLE_PROJECT_INFO']
             	authorities: ['ROLE_PROJECT_INFO_END']
             },
             onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
@@ -350,7 +260,7 @@
             parent: 'project-info',
             url: '/upload',
             data: {
-                authorities: ['ROLE_PROJECT_INFO'],
+                authorities: ['ROLE_PROJECT_INFO_END'],
             },
             views: {
                 'content@': {

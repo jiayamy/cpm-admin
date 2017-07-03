@@ -62,6 +62,8 @@
             			for(var i = 0; i < vm.projectInfos.length; i++){
             				if(entity.projectId == vm.projectInfos[i].key){
             					vm.projectUser.projectId = vm.projectInfos[i];
+            					//单选的时候需要赋值
+            					angular.element('select[ng-model="vm.projectUser.projectId"]').parent().find(".select2-chosen").html(vm.projectInfos[i].val);
             				}
             			}
             		}
