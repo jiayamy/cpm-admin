@@ -41,6 +41,7 @@
             			for(var i = 0; i < vm.projectInfos.length; i++){
             				if(entity.projectId == vm.projectInfos[i].key){
             					vm.projectCost.projectId = vm.projectInfos[i];
+            					angular.element('select[ng-model="vm.projectCost.projectId"]').parent().find(".select2-chosen").html(vm.projectInfos[i].val);
             				}
             			}
             		}

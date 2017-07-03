@@ -60,6 +60,7 @@
             			for(var i = 0; i < vm.projectInfos.length; i++){
             				if(pagingParams.projectId == vm.projectInfos[i].key){
             					vm.searchQuery.projectId = vm.projectInfos[i];
+            					angular.element('select[ng-model="vm.searchQuery.projectId"]').parent().find(".select2-chosen").html(vm.projectInfos[i].val);
             				}
             			}
             		}

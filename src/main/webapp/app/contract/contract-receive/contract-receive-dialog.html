@@ -7,7 +7,7 @@
 				<div class="col-sm-6">
 		            <label class="control-label" data-translate="cpmApp.contractReceive.contractId" for="field_contractId">Contract Id</label>
               		<select class="form-control"  name="contractId" id="field_contractId" ng-model="vm.contractReceive.contractId"
-	            		ng-required="true" ng-disabled="vm.contractReceive.id"
+	            		ng-required="true" ng-disabled="vm.contractReceive.id" ui-select2
 		            	ng-options="contractInfo.val for contractInfo in vm.contractInfos track by contractInfo.key">
 		         	</select>
 	                <div class="help-block"

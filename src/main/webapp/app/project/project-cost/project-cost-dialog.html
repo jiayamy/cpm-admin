@@ -7,7 +7,7 @@
 				<div class="col-sm-6">
 		            <label class="control-label" data-translate="cpmApp.projectCost.projectId" for="field_projectId">Project Id</label>
               		<select class="form-control" name="projectId" ng-model="vm.projectCost.projectId" id="field_projectId"
-	            		ng-required="true" ng-disabled="vm.projectCost.id"
+	            		ng-required="true" ng-disabled="vm.projectCost.id" ui-select2
 		            	ng-options="projectInfo.val for projectInfo in vm.projectInfos track by projectInfo.key">
 		         	</select>
 	                <div class="help-block"

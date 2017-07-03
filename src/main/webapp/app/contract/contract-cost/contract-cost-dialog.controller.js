@@ -43,6 +43,7 @@
             			for(var i = 0; i < vm.contractInfos.length; i++){
             				if(entity.contractId == vm.contractInfos[i].key){
             					vm.contractCost.contractId = vm.contractInfos[i];
+            					angular.element('select[ng-model="vm.contractCost.contractId"]').parent().find(".select2-chosen").html(vm.contractInfos[i].val);
             				}
             			}
             		}

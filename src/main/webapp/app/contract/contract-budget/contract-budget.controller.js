@@ -47,6 +47,8 @@
         			for(var i = 0; i < vm.contractInfos.length; i++){
         				if(pagingParams.contractId == vm.contractInfos[i].key){
         					vm.searchQuery.contractId = vm.contractInfos[i];
+        					//单选
+        					angular.element('select[ng-model="vm.searchQuery.contractId"]').parent().find(".select2-chosen").html(vm.contractInfos[i].val);
         				}
         			}
         		}
