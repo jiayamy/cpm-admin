@@ -19,6 +19,7 @@
         vm.haveSearch = false;
         vm.searchForm = searchForm;
         vm.clearForm = clearForm;
+        vm.selectNone = selectNone;
         
         function searchForm(){
         	if(vm.searchQuery.name == undefined){
@@ -89,6 +90,13 @@
         	vm.isSaving = true;
         	$scope.$emit('cpmApp:deptInfoSelected', node,entity.dataType);
             $uibModalInstance.close(node);
+            vm.isSaving = false;
+            return;
+        }
+        function selectNone(){
+        	vm.isSaving = true;
+        	$scope.$emit('cpmApp:deptInfoSelected', {},entity.dataType);
+            $uibModalInstance.close();
             vm.isSaving = false;
             return;
         }

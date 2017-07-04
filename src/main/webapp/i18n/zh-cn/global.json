@@ -153,7 +153,8 @@
             "export":"导出",
             "upload":"上传",
             "downloadTpl":"下载模板",
-            "ensure":"确认"
+            "ensure":"确认",
+            "setNone":"置空"
         },
         "detail": {
             "field": "字段",
