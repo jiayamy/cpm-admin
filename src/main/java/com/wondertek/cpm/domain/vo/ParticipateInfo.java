@@ -37,4 +37,10 @@ public class ParticipateInfo {
 	public void setLeaveDay(Long leaveDay) {
 		this.leaveDay = leaveDay;
 	}
+
+	@Override
+	public String toString() {
+		return "ParticipateInfo [type=" + type + ", objId=" + objId + ", joinDay=" + joinDay + ", leaveDay=" + leaveDay
+				+ "]";
+	}
 }

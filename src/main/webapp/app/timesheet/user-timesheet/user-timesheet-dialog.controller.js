@@ -13,15 +13,35 @@
         vm.previousState = previousState.name;
         vm.userTimesheet = entity;
         vm.save = save;
-        
+        vm.arrowLeft = arrowLeft;
+        vm.arrowRight = arrowRight;
         vm.allAreas = [];
         
         vm.datePickerOpenStatus = {};
         vm.openCalendar = openCalendar;
         vm.searchQuery = {};
         vm.searchQuery.workDay = DateUtils.convertDayToDate(entity.workDay);
+        if(vm.searchQuery.workDay == null){
+        	vm.searchQuery.workDay = new Date();
+        }
         vm.search = search;
         vm.isNotHoliday = isNotHoliday;
+        /**
+         * 往前加一周时间
+         */
+        function arrowLeft(){
+        	var date = DateUtils.convertLocalDateToFormat(vm.searchQuery.workDay,"yyyyMMdd");
+        	vm.searchQuery.workDay = new Date(date.substring(0,4),parseInt(date.substring(4,6))-1,parseInt(date.substring(6,8))-7);
+        	vm.search();
+        }
+        /**
+         * 往后加一周时间
+         */
+        function arrowRight(){
+        	var date = DateUtils.convertLocalDateToFormat(vm.searchQuery.workDay,"yyyyMMdd");
+        	vm.searchQuery.workDay = new Date(date.substring(0,4),parseInt(date.substring(4,6))-1,parseInt(date.substring(6,8))+7);
+        	vm.search();
+        }
         function isNotHoliday(data){
         	if(data.length > 8){
         		return true;

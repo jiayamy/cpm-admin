@@ -1017,3 +1017,5 @@ INSERT INTO jhi_authority (name, detail_) VALUES ('ROLE_STAT_USER_PROJECT_INPUT'
 --20170703
 INSERT INTO jhi_authority (name, detail_) VALUES ('ROLE_CONTRACT_END', '合同信息-立结项');
 INSERT INTO jhi_authority (name, detail_) VALUES ('ROLE_CONTRACT_BUDGET_EDIT', '合同管理-内部采购单-新增修改');
+--20170704
+insert into w_system_config (id, key_, value_, description_, updator_, update_time, creator_, create_time) values (2, 'usertimesheet.depttype.transform', '7=1;2=14', '日报填写时，需要转换的用户部门类型到部门公共项目所属部门类型，格式  type1=type2;type3=type2;...', 'admin', '2017-07-04 15:48:37', 'admin', '2017-07-04 15:48:37');

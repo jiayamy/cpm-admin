@@ -28,6 +28,9 @@ public class UserTimesheet implements Serializable {
     
     public static final Integer TYPE_DAY = -1;
     public static final Integer TYPE_AREA = -2;
+    /**
+     * @deprecated
+     */
     public static final Integer TYPE_PUBLIC = 1;
     public static final Integer TYPE_CONTRACT = 2;
     public static final Integer TYPE_PROJECT = 3;

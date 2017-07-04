@@ -92,7 +92,9 @@ public class UserProjectInputResource {
 		if(showTotal == null){//默认不显示合计
 			showTotal = Boolean.FALSE;
 		}
+		long start = System.currentTimeMillis();
 		List<UserProjectInputVo> inputVos = userProjectInputService.getUserProjectInputs(startTime,endTime,userIds,projectIds,showTotal);
+		long end1 = System.currentTimeMillis();
 		//拼接sheet数据
     	//标题
     	String[] heads = new String[]{
@@ -110,7 +112,7 @@ public class UserProjectInputResource {
     			"加班工时",
     			"认可加班工时"
     	};
-    	String fileName = "人员项目工时.xlsx";
+    	String fileName = "人员项目工时_" + startTime + "-" + endTime + ".xlsx";
     	//写入sheet
     	ServletOutputStream outputStream = response.getOutputStream();
     	response.setHeader("Content-Disposition","attachment;filename=" + ExcelUtil.getExportName(request, fileName));
@@ -119,12 +121,17 @@ public class UserProjectInputResource {
 		
     	ExcelWrite excelWrite = new ExcelWrite();
     	//写入标题
-    	excelWrite.createSheetTitle("人员项目工时", 1, heads);
+    	excelWrite.createSheetTitle("人员项目工时_" + startTime + "-" + endTime, 1, heads);
     	//写入数据
+    	long end2= System.currentTimeMillis();
     	if(inputVos != null){
     		handleSheetData(inputVos,2,excelWrite);
     	}
+    	long end3 = System.currentTimeMillis();
     	excelWrite.close(outputStream);
+    	long end4 = System.currentTimeMillis();
+    	log.debug("导出人员项目工时，总耗时：" + (end4 - start) + "|" + (end4 - end3)  + "|" + (end3 - end2)  + "|" + (end2 - end1) 
+    			 + "|" + (end1 - start) );
 	}
 	
 	/**
@@ -161,7 +168,10 @@ public class UserProjectInputResource {
 		int i = -1;
 		int j = 0;
 		//数据
+		long start = System.currentTimeMillis();
+		long end = System.currentTimeMillis();
 		for(UserProjectInputVo vo : userInputVos){
+			start = System.currentTimeMillis();
 			i++;
 			row = sheet.createRow(i + startRow-1);
 			
@@ -257,6 +267,8 @@ public class UserProjectInputResource {
 				cell.setCellValue(vo.getAcceptExtraInput());
 			}
 			j++;
+			end = System.currentTimeMillis();
+			log.debug("添加人员项目工时第" + i + "行数据，耗时:" + (end-start) + "ms");
 		}
 	}
 }

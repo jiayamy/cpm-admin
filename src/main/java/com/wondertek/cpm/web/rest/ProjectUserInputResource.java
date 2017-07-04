@@ -89,7 +89,9 @@ public class ProjectUserInputResource {
 		if(showTotal == null){
 			showTotal = Boolean.FALSE;
 		}
+		long start = System.currentTimeMillis();
 		List<ProjectUserInputVo> userInputVos = userTimesheetService.getProjectUserInputsByParam(startTime, endTime, userIds, projectIds, showTotal);
+		long end1 = System.currentTimeMillis();
 		//拼接sheet数据
     	//标题
     	String[] heads = new String[]{
@@ -107,7 +109,7 @@ public class ProjectUserInputResource {
     			"加班工时",
     			"认可加班工时"
     	};
-    	String fileName = "项目人员工时.xlsx";
+    	String fileName = "项目人员工时_" + startTime + "-" + endTime + ".xlsx";
     	//写入sheet
     	ServletOutputStream outputStream = response.getOutputStream();
     	response.setHeader("Content-Disposition","attachment;filename=" + ExcelUtil.getExportName(request, fileName));
@@ -116,12 +118,17 @@ public class ProjectUserInputResource {
 		
     	ExcelWrite excelWrite = new ExcelWrite();
     	//写入标题
-    	excelWrite.createSheetTitle("项目人员工时", 1, heads);
+    	excelWrite.createSheetTitle("项目人员工时_" + startTime + "-" + endTime, 1, heads);
     	//写入数据
+    	long end2 = System.currentTimeMillis();
     	if(userInputVos != null){
     		handleSheetData(userInputVos,2,excelWrite);
     	}
+    	long end3 = System.currentTimeMillis();
     	excelWrite.close(outputStream);
+    	long end4 = System.currentTimeMillis();
+    	log.debug("导出项目人员工时，总耗时：" + (end4 - start) + "|" + (end4 - end3)  + "|" + (end3 - end2)  + "|" + (end2 - end1) 
+   			 + "|" + (end1 - start) );
 	}
 	
 	/**
@@ -158,7 +165,10 @@ public class ProjectUserInputResource {
 		int i = -1;
 		int j = 0;
 		//数据
+		long start = System.currentTimeMillis();
+		long end = System.currentTimeMillis();
 		for(ProjectUserInputVo vo : userInputVos){
+			start = System.currentTimeMillis();
 			i++;
 			row = sheet.createRow(i + startRow-1);
 			
@@ -254,6 +264,8 @@ public class ProjectUserInputResource {
 				cell.setCellValue(vo.getAcceptExtraInput());
 			}
 			j++;
+			end = System.currentTimeMillis();
+			log.debug("添加项目人员工时第" + i + "行数据，耗时:" + (end-start) + "ms");
 		}
 	}
 }

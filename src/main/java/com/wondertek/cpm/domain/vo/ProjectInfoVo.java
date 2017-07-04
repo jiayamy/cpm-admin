@@ -145,5 +145,13 @@ public class ProjectInfoVo {
 	public void setBudgetOriginal(Double budgetOriginal) {
 		this.budgetOriginal = budgetOriginal;
 	}
-	
+	@Override
+	public String toString() {
+		return "ProjectInfoVo [id=" + id + ", serialNum=" + serialNum + ", contractId=" + contractId + ", contractNum="
+				+ contractNum + ", budgetId=" + budgetId + ", budgetName=" + budgetName + ", budgetOriginal="
+				+ budgetOriginal + ", name=" + name + ", pm=" + pm + ", dept=" + dept + ", startDay=" + startDay
+				+ ", endDay=" + endDay + ", budgetTotal=" + budgetTotal + ", status=" + status + ", finishRate="
+				+ finishRate + ", creator=" + creator + ", createTime=" + createTime + ", updator=" + updator
+				+ ", updateTime=" + updateTime + "]";
+	}
 }

@@ -72,7 +72,6 @@ public class UserTimesheetService {
     private SystemConfigRepository systemConfigRepository;
     @Autowired
     private ProjectUserDao projectUserDao;
-    
     @Autowired
     private ContractUserDao contractUserDao;
     
@@ -225,17 +224,20 @@ public class UserTimesheetService {
 		addDaysByUser(returnList,ds,lds);
 		//添加第二行地区
 		UserTimesheetForUser areaTimesheet = getDefaultUserTimesheetForUser(null,UserTimesheet.TYPE_AREA,null,null,null,null);
-		//添加默认的公共成本(正常工时)
-		UserTimesheetForUser publicTimesheet = getDefaultUserTimesheetForUser(null,UserTimesheet.TYPE_PUBLIC,null,null,CpmConstants.DFAULT_USER_TIMESHEET_USER_INPUT,UserTimesheet.TYPE_INPUT_NORMAL);
-		//添加默认的公共成本(加班工时)
-		UserTimesheetForUser publicTimesheetExtra = getDefaultUserTimesheetForUser(null,UserTimesheet.TYPE_PUBLIC,null,null,CpmConstants.DFAULT_USER_TIMESHEET_USER_INPUT,UserTimesheet.TYPE_INPUT_EXTRA);
 		//添加项目和合同
-		Optional<User> user = userRepository.findOneByLogin(SecurityUtils.getCurrentUserLogin());
-    	if(user.isPresent()){
-    		Long userId = user.get().getId();
-    		String workArea = user.get().getWorkArea();
-    		publicTimesheet.setUserId(userId);
-    		publicTimesheetExtra.setUserId(userId);
+		List<Object[]> objs = userRepository.findUserInfoByLogin(SecurityUtils.getCurrentUserLogin());
+    	if(objs != null && !objs.isEmpty()){
+    		Object[] o = objs.get(0);
+    		User user = (User) o[0];
+    		DeptInfo deptInfo = (DeptInfo) o[1];
+    		
+    		Long userId = user.getId();
+    		String workArea = user.getWorkArea();
+    		//查找用户默认的公共项目，替换以前的公用成本合同
+    		//转换部门类型
+    		Long type = deptInfo.getType();
+    		type = getUserTimesheetDeptType(type);
+    		List<ProjectInfoVo> projectInfos = projectInfoService.findDeptProject(type,lds);
     		//查询现有的所有记录
     		List<UserTimesheet> list = userTimesheetDao.getByWorkDayAndUser(lds[0],lds[6],userId);
     		//转换为MAP
@@ -244,16 +246,39 @@ public class UserTimesheetService {
     		List<LongValue> ids = contractUserDao.getByUserAndDay(userId,lds);
     		ids.addAll(projectUserDao.getByUserAndDay(userId,lds));
     		
-    		//添加默认的公共成本
-    		String key = getTransMapKey(userId,UserTimesheet.TYPE_PUBLIC,null);
-    		Map<Long, UserTimesheet> childs = map.get(key);
-    		if(childs != null){
-    			setUserTimesheetForUser(areaTimesheet,publicTimesheet,lds,childs);
-    			setExtraUserTimesheetForUser(areaTimesheet,publicTimesheetExtra,lds,childs);
-    			map.remove(key);
+    		String key = null;
+    		Map<Long, UserTimesheet> childs = null;
+    		//添加默认的公共成本，取自NB项目
+    		List<Long> projectIds = new ArrayList<Long>();
+    		if(projectInfos != null){
+    			//添加部门公共项目
+    			for(ProjectInfoVo vo : projectInfos){
+    				projectIds.add(vo.getId());
+    				UserTimesheetForUser timesheet = getDefaultUserTimesheetForUser(userId,UserTimesheet.TYPE_PROJECT,vo.getId(),
+    						StringUtil.null2Str(vo.getSerialNum()) + ":" + StringUtil.null2Str(vo.getName()),
+    						CpmConstants.DFAULT_USER_TIMESHEET_USER_INPUT,UserTimesheet.TYPE_INPUT_NORMAL);
+        			UserTimesheetForUser timesheetExtra = getDefaultUserTimesheetForUser(userId,UserTimesheet.TYPE_PROJECT,vo.getId(),
+        					StringUtil.null2Str(vo.getSerialNum()) + ":" + StringUtil.null2Str(vo.getName()),
+        					CpmConstants.DFAULT_USER_TIMESHEET_USER_INPUT,UserTimesheet.TYPE_INPUT_EXTRA);
+        			
+    				key = getTransMapKey(userId,UserTimesheet.TYPE_PROJECT,vo.getId());
+    				childs = map.get(key);
+    				if(childs != null){
+    					setUserTimesheetForUser(areaTimesheet,timesheet,lds,childs);
+    					setExtraUserTimesheetForUser(areaTimesheet,timesheetExtra,lds,childs);
+    					map.remove(key);
+    				}
+    				returnList.add(timesheet);
+            		returnList.add(timesheetExtra);
+    			}
     		}
     		//现有的所有项目和合同
     		for(LongValue longValue : ids){
+    			//公共项目已经加在第一行了。
+    			if(longValue.getType() != null && longValue.getType() == UserTimesheet.TYPE_PROJECT
+    					&& longValue.getKey() != null && projectIds.contains(longValue.getKey())){
+    				continue;
+    			}
     			UserTimesheetForUser timesheet = getDefaultUserTimesheetForUser(userId,longValue.getType(),longValue.getKey(),longValue.getVal(),CpmConstants.DFAULT_USER_TIMESHEET_USER_INPUT,UserTimesheet.TYPE_INPUT_NORMAL);
     			UserTimesheetForUser timesheetExtra = getDefaultUserTimesheetForUser(userId,longValue.getType(),longValue.getKey(),longValue.getVal(),CpmConstants.DFAULT_USER_TIMESHEET_USER_INPUT,UserTimesheet.TYPE_INPUT_EXTRA);
     			key = getTransMapKey(userId,longValue.getType(),longValue.getKey());
@@ -272,13 +297,36 @@ public class UserTimesheetService {
     		}
     		//填充默认的工作地点
     		checkAreaTimesheet(areaTimesheet,workArea);
+    		//添加地区
+    		returnList.add(1, areaTimesheet);
     	}
-    	//添加地区
-    	returnList.add(1, areaTimesheet);
-    	returnList.add(2, publicTimesheet);
-    	returnList.add(3, publicTimesheetExtra);
 		return returnList;
 	}
+    /**
+     * 获取用户对应的部门类型  转换成 公共项目 对应的部门类型
+     */
+    private Long getUserTimesheetDeptType(Long type) {
+    	String transform = systemConfigRepository.findValueByKey("usertimesheet.depttype.transform");
+    	if(!StringUtil.isNullStr(transform)){
+    		String[] vals = transform.split(";");
+    		if(vals != null){
+    			Long tmp = null;
+    			Long val = null;
+    			for(String depttype : vals){
+    				String[] depttypes = depttype.split("=");
+					if(depttypes.length == 2){
+						tmp = StringUtil.nullToCloneLong(depttypes[0]);
+						val = StringUtil.nullToCloneLong(depttypes[1]);
+						if(tmp != null && val != null && tmp.longValue() == type){
+							return val;
+						}
+					}
+    			}
+    		}
+    	}
+		return type;
+	}
+
     private void addDaysByUser(List<UserTimesheetForUser> returnList, String[] ds, Long[] lds) {
 		Map<Long,Long> holidayMaps = holidayInfoService.findHolidayByCurrDay(StringUtil.longArrayToLongArray(lds));
 		String data1 = ds[0];
@@ -644,9 +692,12 @@ public class UserTimesheetService {
 			return "cpmApp.userTimesheet.save.paramError";
 		}
 		//查看当前用户
-		Optional<User> user = userRepository.findOneByLogin(SecurityUtils.getCurrentUserLogin());
-    	if(user.isPresent()){
-    		User currUser = user.get();
+		List<Object[]> objs = userRepository.findUserInfoByLogin(SecurityUtils.getCurrentUserLogin());
+    	if(objs != null && !objs.isEmpty()){
+    		Object[] o = objs.get(0);
+    		User currUser = (User) o[0];
+    		DeptInfo deptInfo = (DeptInfo) o[1];
+    		
     		Long userId = currUser.getId();
     		String userName = currUser.getLastName();
     		String updator = currUser.getLogin();
@@ -669,7 +720,19 @@ public class UserTimesheetService {
     		//初始化用户在该周参与的项目
     		List<ParticipateInfo> participateInfos = contractUserDao.getInfoByUserAndDay(userId, lds);
     		participateInfos.addAll(projectUserDao.getInfoByUserAndDay(userId, lds));
-    		
+    		//部门公共项目，根据项目的开始和结束时间来判定
+    		Long type = deptInfo.getType();
+    		type = getUserTimesheetDeptType(type);
+    		List<ProjectInfoVo> projectInfos = projectInfoService.findDeptProject(type,lds);
+    		if(projectInfos != null){
+    			for(ProjectInfoVo vo : projectInfos){
+    				participateInfos.add(new ParticipateInfo(vo.getId(), UserTimesheet.TYPE_PROJECT, 
+    						StringUtil.nullToLong(DateUtil.formatDate(DateUtil.DATE_YYYYMMDD_PATTERN, DateUtil.convertZonedDateTime(vo.getStartDay()))),
+    						StringUtil.nullToLong(DateUtil.formatDate(DateUtil.DATE_YYYYMMDD_PATTERN, DateUtil.convertZonedDateTime(vo.getEndDay())))
+    						)
+    				);
+    			}
+    		}
     		//地区
     		UserTimesheetForUser areaTimesheet = userTimesheetForUsers.get(1);
     		String[] areas = new String[7];

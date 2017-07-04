@@ -553,6 +553,8 @@ public class UserTimesheetDaoImpl extends GenericDaoImpl<UserTimesheet, Long> im
 		
 		whereHql.append(" where wut.type = ?"+(count++));
 		params.add(UserTimesheet.TYPE_PROJECT);
+		whereHql.append(" and wut.status = ?" + (count++));
+    	params.add(CpmConstants.STATUS_VALID);
 		//权限
 		whereHql.append(" and (wut.creator = ?"+(count++)+" or wpi.pmId = ?"+(count++));
 		params.add(user.getLogin());
@@ -630,6 +632,8 @@ public class UserTimesheetDaoImpl extends GenericDaoImpl<UserTimesheet, Long> im
 		
 		whereHql.append(" where wut.type = ?"+(count++));
 		params.add(UserTimesheet.TYPE_PROJECT);
+		whereHql.append(" and wut.status = ?" + (count++));
+    	params.add(CpmConstants.STATUS_VALID);
 		//权限
 		whereHql.append(" and (wut.creator = ?"+(count++)+" or wpi.pmId = ?"+(count++));
 		params.add(user.getLogin());

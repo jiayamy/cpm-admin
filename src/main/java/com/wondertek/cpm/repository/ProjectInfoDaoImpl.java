@@ -394,4 +394,50 @@ public class ProjectInfoDaoImpl extends GenericDaoImpl<ProjectInfo, Long> implem
 		}
 		return returnList;
 	}
+
+	@Override
+	public List<ProjectInfoVo> findDeptProject(Long type, Long[] weekDays) {
+		StringBuffer querySql = new StringBuffer();
+		List<Object> params = new ArrayList<Object>();
+		querySql.append("select wpi.id,wpi.serial_num,wpi.contract_id,wpi.budget_id,wpi.name_,wpi.pm_,wpi.dept_,wpi.start_day,wpi.end_day,wpi.budget_total,wpi.status_,wpi.finish_rate,wpi.creator_,wpi.create_time,wpi.updator_,wpi.update_time,");
+		querySql.append("wci.serial_num as contract_num,");
+		querySql.append("wcb.name_ as budget_name,wcb.budget_total as budget_original");
+		
+		querySql.append(" from w_project_info wpi");
+		querySql.append(" left join w_contract_info wci on wci.id = wpi.contract_id");
+		querySql.append(" left join w_contract_budget wcb on wcb.id = wpi.budget_id");
+		querySql.append(" left join w_dept_info wdi on wdi.id = wpi.dept_id");
+		
+		querySql.append(" where");
+		int count = 0;
+		if(weekDays != null && weekDays.length > 0){
+			count ++;
+			querySql.append(" (");
+			for(int i = 0 ; i < weekDays.length; i++){
+				if(i != 0){
+					querySql.append(" or ");
+				}
+				querySql.append("(wpi.start_day <= ? and wpi.end_day >= ?)");
+				params.add(DateUtil.parseDate(DateUtil.DATE_YYYYMMDD_PATTERN, weekDays[i] + ""));
+				params.add(DateUtil.parseDate(DateUtil.DATE_YYYYMMDD_PATTERN, weekDays[i] + ""));
+			}
+			querySql.append(")");
+		}
+		if(count > 0){
+			querySql.append(" and");
+		}
+		querySql.append(" wdi.type_ = ? and wpi.status_ <> ? and wpi.serial_num like 'NB%'");
+		params.add(type);
+		params.add(ProjectInfo.STATUS_DELETED);
+		
+		querySql.append(" order by wpi.id desc");
+		List<Object[]> list = this.queryAllSql(querySql.toString(), params.toArray());
+		List<ProjectInfoVo> returnList = new ArrayList<ProjectInfoVo>();
+		if(list != null){
+			for(Object[] o : list){
+				returnList.add(transProjectInfoVo(o));
+			}
+		}
+		return returnList;
+	}
 }	

@@ -56,4 +56,8 @@ public interface ProjectInfoDao extends GenericDao<ProjectInfo,Long> {
 	 * 查询用户能看到的项目信息
 	 */
 	public List<LongValue> queryUserProject(User user, DeptInfo deptInfo);
+	/**
+	 * 查找用户对应部门的公共项目，NB开头的，只找最新的哪一个
+	 */
+	public List<ProjectInfoVo> findDeptProject(Long type, Long[] weekDays);
 }
