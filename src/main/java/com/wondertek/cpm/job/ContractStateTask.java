@@ -374,7 +374,7 @@ public class ContractStateTask {
 	/**
 	 * TODO 合同月统计，每个月的第一天的23点30分开始执行
 	 */
-	@Scheduled(cron = "0 30 23 15 * ?")
+	@Scheduled(cron = "0 30 23 10 * ?")
 	protected void generateContractMonthlyStat(){
 		Date now = new Date();
 		generateContractMonthlyStat(null,now);
@@ -1164,7 +1164,23 @@ public class ContractStateTask {
 			contractCost.setCostDay(workDay);
 			contractCostRepository.save(contractCost);
 			if(!userTimesheetIds.isEmpty()){
-				userTimesheetRepository.updateCharacterById(userTimesheetIds);//更新已经被统计的对应日报记录
+				if(userTimesheetIds.size() < 1000){
+					userTimesheetRepository.updateCharacterById(userTimesheetIds);//更新已经被统计的对应日报记录
+				}else{
+					List<Long> updateIds = new ArrayList<Long>();
+					for(Long id : userTimesheetIds){
+						updateIds.add(id);
+						if(updateIds.size() >= 1000){
+							userTimesheetRepository.updateCharacterById(updateIds);//更新已经被统计的对应日报记录
+							updateIds.clear();
+						}
+					}
+					if(updateIds.size() > 0){
+						userTimesheetRepository.updateCharacterById(updateIds);//更新已经被统计的对应日报记录
+						updateIds.clear();
+					}
+				}
+				userTimesheetIds.clear();
 			}
 			currentDay = new Date(currentDay.getTime() + (24*60*60*1000));
 		}

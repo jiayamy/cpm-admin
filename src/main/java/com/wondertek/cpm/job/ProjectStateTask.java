@@ -186,7 +186,7 @@ public class ProjectStateTask {
 	/**
 	 * 项目的月统计，最好在合同的月统计之前执行
 	 */
-	@Scheduled(cron = "0 0 22 15 * ?")
+	@Scheduled(cron = "0 0 22 10 * ?")
 	protected void generateProjectMonthlyState(){
 		Date now = new Date();
 		generateProjectMonthlyState(null, now);
@@ -350,8 +350,24 @@ public class ProjectStateTask {
 			projectCost.setUpdateTime(ZonedDateTime.now());
 			projectCost.setCostDay(workDay);
 			projectCostRepository.save(projectCost);
-			if (!userTimesheetIds.isEmpty()) {
-				userTimesheetRepository.updateCharacterById(userTimesheetIds);//更新已经被统计的对应日报记录
+			if(!userTimesheetIds.isEmpty()){
+				if(userTimesheetIds.size() < 1000){
+					userTimesheetRepository.updateCharacterById(userTimesheetIds);//更新已经被统计的对应日报记录
+				}else{
+					List<Long> updateIds = new ArrayList<Long>();
+					for(Long id : userTimesheetIds){
+						updateIds.add(id);
+						if(updateIds.size() >= 1000){
+							userTimesheetRepository.updateCharacterById(updateIds);//更新已经被统计的对应日报记录
+							updateIds.clear();
+						}
+					}
+					if(updateIds.size() > 0){
+						userTimesheetRepository.updateCharacterById(updateIds);//更新已经被统计的对应日报记录
+						updateIds.clear();
+					}
+				}
+				userTimesheetIds.clear();
 			}
 			currentDay = new Date(currentDay.getTime() + (24*60*60*1000));
 		}
