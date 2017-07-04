@@ -17,6 +17,7 @@ public class ProjectMonthlyStatVo implements Serializable {
 	private Long statWeek;
 	private ZonedDateTime createTime;
 	private Double totalInput;			//项目总工时
+	private Double thisInput;
 	public Long getId() {
 		return id;
 	}
@@ -78,7 +79,14 @@ public class ProjectMonthlyStatVo implements Serializable {
 	public void setTotalInput(Double totalInput) {
 		this.totalInput = totalInput;
 	}
-@Override
+	
+	public Double getThisInput() {
+		return thisInput;
+	}
+	public void setThisInput(Double thisInput) {
+		this.thisInput = thisInput;
+	}
+	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
@@ -91,6 +99,7 @@ public class ProjectMonthlyStatVo implements Serializable {
 		result = prime * result + ((projectId == null) ? 0 : projectId.hashCode());
 		result = prime * result + ((serialNum == null) ? 0 : serialNum.hashCode());
 		result = prime * result + ((statWeek == null) ? 0 : statWeek.hashCode());
+		result = prime * result + ((thisInput == null) ? 0 : thisInput.hashCode());
 		result = prime * result + ((totalInput == null) ? 0 : totalInput.hashCode());
 		return result;
 	}
@@ -148,6 +157,11 @@ public class ProjectMonthlyStatVo implements Serializable {
 				return false;
 		} else if (!statWeek.equals(other.statWeek))
 			return false;
+		if (thisInput == null) {
+			if (other.thisInput != null)
+				return false;
+		} else if (!thisInput.equals(other.thisInput))
+			return false;
 		if (totalInput == null) {
 			if (other.totalInput != null)
 				return false;
@@ -159,6 +173,7 @@ public class ProjectMonthlyStatVo implements Serializable {
 	public String toString() {
 		return "ProjectMonthlyStatVo [id=" + id + ", projectId=" + projectId + ", serialNum=" + serialNum + ", name="
 				+ name + ", finishRate=" + finishRate + ", humanCost=" + humanCost + ", payment=" + payment
-				+ ", statWeek=" + statWeek + ", createTime=" + createTime + ", totalInput=" + totalInput + "]";
+				+ ", statWeek=" + statWeek + ", createTime=" + createTime + ", totalInput=" + totalInput
+				+ ", thisInput=" + thisInput + "]";
 	}
 }

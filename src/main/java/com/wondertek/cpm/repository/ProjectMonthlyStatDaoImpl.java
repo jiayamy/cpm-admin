@@ -45,7 +45,7 @@ public class ProjectMonthlyStatDaoImpl extends GenericDaoImpl<ProjectMonthlyStat
 		StringBuffer countsql = new StringBuffer();
 		int count = 0;//jpa格式 问号后的数组，一定要从0开始
 		
-		querysql.append(" select m.id, m.projectId, m.finishRate, m.humanCost, m.payment, m.statWeek, m.createTime, i.serialNum , i.name, m.totalInput");
+		querysql.append(" select m.id, m.projectId, m.finishRate, m.humanCost, m.payment, m.statWeek, m.createTime, i.serialNum , i.name, m.totalInput, m.thisInput");
 		countsql.append(" select count(m.id)");
 		sb.append(" from ProjectMonthlyStat m");
 		sb.append(" left join ProjectInfo i on m.projectId = i.id");
@@ -112,6 +112,7 @@ public class ProjectMonthlyStatDaoImpl extends GenericDaoImpl<ProjectMonthlyStat
 		vo.setSerialNum(StringUtil.null2Str(o[7]));
 		vo.setName(StringUtil.null2Str(o[8]));
 		vo.setTotalInput(StringUtil.nullToDouble(o[9]));
+		vo.setThisInput(StringUtil.nullToDouble(o[10]));
 		return vo;
 	}
 	
@@ -127,6 +128,7 @@ public class ProjectMonthlyStatDaoImpl extends GenericDaoImpl<ProjectMonthlyStat
 		vo.setSerialNum(StringUtil.null2Str(o[7]));
 		vo.setName(StringUtil.null2Str(o[8]));
 		vo.setTotalInput(StringUtil.nullToDouble(o[9]));
+		vo.setThisInput(StringUtil.nullToDouble(o[10]));
 		return vo;
 	}
 	
@@ -134,7 +136,7 @@ public class ProjectMonthlyStatDaoImpl extends GenericDaoImpl<ProjectMonthlyStat
 		StringBuffer sb = new StringBuffer();
 		StringBuffer querysql = new StringBuffer();
 		StringBuffer countsql = new StringBuffer();
-		querysql.append(" select m.id, m.project_id, m.finish_rate, m.human_cost, m.payment_, m.stat_week, m.create_time, i.serial_num , i.name_, m.total_input");
+		querysql.append(" select m.id, m.project_id, m.finish_rate, m.human_cost, m.payment_, m.stat_week, m.create_time, i.serial_num , i.name_, m.total_input, m.this_input");
 		countsql.append(" select count(m.id)");
 		sb.append(" from w_project_monthly_stat m");
 		sb.append(" left join w_project_info i on m.project_id = i.id");
@@ -168,7 +170,7 @@ public class ProjectMonthlyStatDaoImpl extends GenericDaoImpl<ProjectMonthlyStat
 		StringBuffer sb = new StringBuffer();
 		StringBuffer querysql = new StringBuffer();
 		StringBuffer countsql = new StringBuffer();
-		querysql.append(" select m.id, m.project_id, m.finish_rate, m.human_cost, m.payment_, m.stat_week, m.create_time, i.serial_num , i.name_, m.total_input");
+		querysql.append(" select m.id, m.project_id, m.finish_rate, m.human_cost, m.payment_, m.stat_week, m.create_time, i.serial_num , i.name_, m.total_input, m.this_input");
 		countsql.append(" select count(m.id)");
 		sb.append(" from w_project_monthly_stat m");
 		sb.append(" left join w_project_info i on m.project_id = i.id");

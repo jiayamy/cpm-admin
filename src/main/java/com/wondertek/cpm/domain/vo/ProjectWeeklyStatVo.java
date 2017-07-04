@@ -27,6 +27,8 @@ public class ProjectWeeklyStatVo implements Serializable{
     
     private Double totalInput;			//项目周总工时
     
+    private Double thisInput;
+    
 	public Long getId() {
 		return id;
 	}
@@ -105,5 +107,106 @@ public class ProjectWeeklyStatVo implements Serializable{
 
 	public void setTotalInput(Double totalInput) {
 		this.totalInput = totalInput;
+	}
+
+	public Double getThisInput() {
+		return thisInput;
+	}
+
+	public void setThisInput(Double thisInput) {
+		this.thisInput = thisInput;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((createTime == null) ? 0 : createTime.hashCode());
+		result = prime * result + ((finishRate == null) ? 0 : finishRate.hashCode());
+		result = prime * result + ((humanCost == null) ? 0 : humanCost.hashCode());
+		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		result = prime * result + ((payment == null) ? 0 : payment.hashCode());
+		result = prime * result + ((projectId == null) ? 0 : projectId.hashCode());
+		result = prime * result + ((serialNum == null) ? 0 : serialNum.hashCode());
+		result = prime * result + ((statWeek == null) ? 0 : statWeek.hashCode());
+		result = prime * result + ((thisInput == null) ? 0 : thisInput.hashCode());
+		result = prime * result + ((totalInput == null) ? 0 : totalInput.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		ProjectWeeklyStatVo other = (ProjectWeeklyStatVo) obj;
+		if (createTime == null) {
+			if (other.createTime != null)
+				return false;
+		} else if (!createTime.equals(other.createTime))
+			return false;
+		if (finishRate == null) {
+			if (other.finishRate != null)
+				return false;
+		} else if (!finishRate.equals(other.finishRate))
+			return false;
+		if (humanCost == null) {
+			if (other.humanCost != null)
+				return false;
+		} else if (!humanCost.equals(other.humanCost))
+			return false;
+		if (id == null) {
+			if (other.id != null)
+				return false;
+		} else if (!id.equals(other.id))
+			return false;
+		if (name == null) {
+			if (other.name != null)
+				return false;
+		} else if (!name.equals(other.name))
+			return false;
+		if (payment == null) {
+			if (other.payment != null)
+				return false;
+		} else if (!payment.equals(other.payment))
+			return false;
+		if (projectId == null) {
+			if (other.projectId != null)
+				return false;
+		} else if (!projectId.equals(other.projectId))
+			return false;
+		if (serialNum == null) {
+			if (other.serialNum != null)
+				return false;
+		} else if (!serialNum.equals(other.serialNum))
+			return false;
+		if (statWeek == null) {
+			if (other.statWeek != null)
+				return false;
+		} else if (!statWeek.equals(other.statWeek))
+			return false;
+		if (thisInput == null) {
+			if (other.thisInput != null)
+				return false;
+		} else if (!thisInput.equals(other.thisInput))
+			return false;
+		if (totalInput == null) {
+			if (other.totalInput != null)
+				return false;
+		} else if (!totalInput.equals(other.totalInput))
+			return false;
+		return true;
+	}
+
+	@Override
+	public String toString() {
+		return "ProjectWeeklyStatVo [id=" + id + ", projectId=" + projectId + ", finishRate=" + finishRate
+				+ ", humanCost=" + humanCost + ", payment=" + payment + ", statWeek=" + statWeek + ", createTime="
+				+ createTime + ", serialNum=" + serialNum + ", name=" + name + ", totalInput=" + totalInput
+				+ ", thisInput=" + thisInput + "]";
 	}
 }

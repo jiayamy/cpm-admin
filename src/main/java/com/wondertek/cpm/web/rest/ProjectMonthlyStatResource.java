@@ -158,7 +158,7 @@ public class ProjectMonthlyStatResource {
     		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     	}
     	chartReportVo.setSeries(datas);
-    	List<String> legend = new ArrayList<String>(Arrays.asList(new String[]{"人工成本","报销成本","项目总工时"}));
+    	List<String> legend = new ArrayList<String>(Arrays.asList(new String[]{"人工成本","报销成本","项目总工时","当月工时"}));
     	chartReportVo.setLegend(legend);
     	return Optional.ofNullable(chartReportVo).map(result -> new ResponseEntity<>(result,HttpStatus.OK))
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));

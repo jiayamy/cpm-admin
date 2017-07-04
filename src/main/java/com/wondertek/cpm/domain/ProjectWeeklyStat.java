@@ -51,6 +51,9 @@ public class ProjectWeeklyStat implements Serializable {
     @Column(name = "total_input")
     private Double totalInput;			//周项目总工时
     
+    @Column(name = "this_input")
+    private Double thisInput;			//周项目总工时
+    
     public Long getId() {
         return id;
     }
@@ -140,6 +143,14 @@ public class ProjectWeeklyStat implements Serializable {
 		this.totalInput = totalInput;
 	}
 
+	public Double getThisInput() {
+		return thisInput;
+	}
+
+	public void setThisInput(Double thisInput) {
+		this.thisInput = thisInput;
+	}
+
 	@Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -160,16 +171,11 @@ public class ProjectWeeklyStat implements Serializable {
         return Objects.hashCode(id);
     }
 
-    @Override
-    public String toString() {
-        return "ProjectWeeklyStat{" +
-            "id=" + id +
-            ", projectId='" + projectId + "'" +
-            ", humanCost='" + humanCost + "'" +
-            ", payment='" + payment + "'" +
-            ", statWeek='" + statWeek + "'" +
-            ", createTime='" + createTime + "'" +
-            ", totalInput='" + totalInput + "'" +
-            '}';
-    }
+	@Override
+	public String toString() {
+		return "ProjectWeeklyStat [id=" + id + ", projectId=" + projectId + ", finishRate=" + finishRate
+				+ ", humanCost=" + humanCost + ", payment=" + payment + ", statWeek=" + statWeek + ", createTime="
+				+ createTime + ", totalInput=" + totalInput + ", thisInput=" + thisInput + "]";
+	}
+
 }

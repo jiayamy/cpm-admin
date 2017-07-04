@@ -169,6 +169,16 @@ public class ProjectStateTask {
 					log.error("no totalInput found belong to " + projectInfo.getSerialNum());
 				}
 				projectWeeklyStat.setTotalInput(totalInput);
+				//本次工时
+				Double thisInput = 0D;
+				List<Object[]> thisInputList = userTimesheetRepository.findSumByDateAndObjIdAndType(StringUtil.nullToLong(dates[0]), StringUtil.nullToLong(dates[6]),
+						id, UserTimesheet.TYPE_PROJECT);
+				if(thisInputList != null && thisInputList.size() > 0){
+					thisInput += StringUtil.nullToDouble(thisInputList.get(0)[0]);
+				}else{
+					log.error("no thisInput found belong to " + projectInfo.getSerialNum());
+				}
+				projectWeeklyStat.setThisInput(thisInput);
 				
 				projectWeeklyStat.setCreateTime(ZonedDateTime.now());
 				projectWeeklyStat.setStatWeek(StringUtil.nullToLong(dates[6]));
@@ -244,6 +254,16 @@ public class ProjectStateTask {
 					log.error("no totalInput found belong to " + projectInfo.getSerialNum());
 				}
 				projectMonthlyStat.setTotalInput(totalInput);
+				//本次工时
+				Double thisInput = 0D;
+				List<Object[]> thisInputList = userTimesheetRepository.findSumByDateAndObjIdAndType(StringUtil.nullToLong(fDay), StringUtil.nullToLong(lDay), 
+						id, UserTimesheet.TYPE_PROJECT);
+				if(thisInputList != null && thisInputList.size() > 0){
+					thisInput += StringUtil.nullToDouble(thisInputList.get(0)[0]);
+				}else{
+					log.error("no thisInput found belong to " + projectInfo.getSerialNum());
+				}
+				projectMonthlyStat.setThisInput(thisInput);
 				
 				projectMonthlyStat.setCreateTime(ZonedDateTime.now());
 				projectMonthlyStat.setStatWeek(StringUtil.nullToLong(lMonth));

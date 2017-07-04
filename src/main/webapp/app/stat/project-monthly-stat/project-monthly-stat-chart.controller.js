@@ -163,6 +163,26 @@
                                 }]
                             }
 
+                        }, {
+                            name: '',
+                            type: '',
+                            data: [],//必须是Integer类型的,String计算平均值会出错
+                            markPoint: {
+                                data: [{
+                                    type: 'max',
+                                    name: '最大值'
+                                }, {
+                                    type: 'min',
+                                    name: '最小值'
+                                }]
+                            },
+                            markLine: {
+                                data: [{
+                                    type: 'average',
+                                    name: '平均值'
+                                }]
+                            }
+
                         }
                     ]
                 };
@@ -181,6 +201,10 @@
                 option.series[2].data = data.series[2].data;
                 option.series[2].name = data.series[2].name;
                 option.series[2].type = data.series[2].type;
+                option.series[3].data = data.series[3].data;
+                option.series[3].name = data.series[3].name;
+                option.series[3].type = data.series[3].type;
+                
                 chartBottom.hideLoading();
 
                 chartBottom.setOption(option);

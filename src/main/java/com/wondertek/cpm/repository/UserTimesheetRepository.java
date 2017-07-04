@@ -84,4 +84,7 @@ public interface UserTimesheetRepository extends JpaRepository<UserTimesheet,Lon
 	
 	@Query(" from UserTimesheet ut where id = ?1 and (realInput != ?2 or acceptInput != ?3 or extraInput != ?4 or acceptExtraInput != ?5) and character = 1")
 	public UserTimesheet getUserTimesheetByIdAndInputs(Long id,Double realInput,Double acceptInput,Double extraInput,Double acceptExtraInput);
+
+	@Query("select sum(acceptInput),sum(acceptExtraInput) from UserTimesheet where workDay >= ?1 and workDay <= ?2 and objId = ?3 and type = ?4 and status = 1 ")
+	public List<Object[]> findSumByDateAndObjIdAndType(Long startDay, Long endDay, Long objId, Integer type);
 }
