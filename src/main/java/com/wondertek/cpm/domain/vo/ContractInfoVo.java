@@ -450,5 +450,21 @@ public class ContractInfoVo implements Serializable {
 	public void setContractInfo(ContractInfo contractInfo) {
 		this.contractInfo = contractInfo;
 	}
+	@Override
+	public String toString() {
+		return "ContractInfoVo [id=" + id + ", serialNum=" + serialNum + ", name=" + name + ", amount=" + amount
+				+ ", type=" + type + ", isPrepared=" + isPrepared + ", isEpibolic=" + isEpibolic + ", salesmanId="
+				+ salesmanId + ", salesman=" + salesman + ", deptId=" + deptId + ", dept=" + dept + ", consultantsId="
+				+ consultantsId + ", consultants=" + consultants + ", consultantsDeptId=" + consultantsDeptId
+				+ ", consultantsDept=" + consultantsDept + ", consultantsShareRate=" + consultantsShareRate
+				+ ", startDay=" + startDay + ", endDay=" + endDay + ", taxRate=" + taxRate + ", taxes=" + taxes
+				+ ", shareRate=" + shareRate + ", shareCost=" + shareCost + ", paymentWay=" + paymentWay
+				+ ", contractor=" + contractor + ", address=" + address + ", postcode=" + postcode + ", linkman="
+				+ linkman + ", contactDept=" + contactDept + ", telephone=" + telephone + ", receiveTotal="
+				+ receiveTotal + ", finishTotal=" + finishTotal + ", finishRate=" + finishRate + ", status=" + status
+				+ ", creator=" + creator + ", createTime=" + createTime + ", updator=" + updator + ", updateTime="
+				+ updateTime + ", mark=" + mark + ", contractInfo=" + contractInfo + "]";
+	}
+	
 }
 

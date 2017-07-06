@@ -147,4 +147,14 @@ public class OutsourcingUserVo {
 	public void setUpdateTime(ZonedDateTime updateTime) {
 		this.updateTime = updateTime;
 	}
+
+	@Override
+	public String toString() {
+		return "OutsourcingUserVo [id=" + id + ", contractId=" + contractId + ", serialNum=" + serialNum
+				+ ", contractName=" + contractName + ", targetAmount=" + targetAmount + ", rank=" + rank + ", offer="
+				+ offer + ", mark=" + mark + ", creator=" + creator + ", createTime=" + createTime + ", updator="
+				+ updator + ", updateTime=" + updateTime + "]";
+	}
+	
+	
 }

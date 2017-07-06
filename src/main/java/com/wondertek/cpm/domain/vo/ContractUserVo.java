@@ -152,8 +152,13 @@ public class ContractUserVo {
 		this.contractName = contractName;
 		
 	}
+	@Override
+	public String toString() {
+		return "ContractUserVo [id=" + id + ", contractId=" + contractId + ", contractNum=" + contractNum
+				+ ", contractName=" + contractName + ", userId=" + userId + ", userName=" + userName + ", userRole="
+				+ userRole + ", deptId=" + deptId + ", dept=" + dept + ", joinDay=" + joinDay + ", leaveDay=" + leaveDay
+				+ ", creator=" + creator + ", createTime=" + createTime + ", updator=" + updator + ", updateTime="
+				+ updateTime + "]";
+	}
 	
-	
-
-
 }

@@ -50,6 +50,11 @@ public class UserTimesheetForHardWorkingVo {
 		this.sumAcceptExtraInput = sumAcceptExtraInput;
 	}
 
-	
-	
+	@Override
+	public String toString() {
+		return "UserTimesheetForHardWorkingVo [userId=" + userId + ", sumRealInput=" + sumRealInput
+				+ ", sumAcceptRealInput=" + sumAcceptRealInput + ", sumExtraInput=" + sumExtraInput
+				+ ", sumAcceptExtraInput=" + sumAcceptExtraInput + "]";
+	}
+
 }

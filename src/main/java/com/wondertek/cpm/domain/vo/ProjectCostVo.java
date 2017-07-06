@@ -136,5 +136,12 @@ public class ProjectCostVo{
 	public void setInput(Double input) {
 		this.input = input;
 	}
+	@Override
+	public String toString() {
+		return "ProjectCostVo [id=" + id + ", projectId=" + projectId + ", projectNum=" + projectNum + ", projectName="
+				+ projectName + ", name=" + name + ", type=" + type + ", costDay=" + costDay + ", total=" + total
+				+ ", costDesc=" + costDesc + ", status=" + status + ", creator=" + creator + ", createTime="
+				+ createTime + ", updator=" + updator + ", updateTime=" + updateTime + ", input=" + input + "]";
+	}
 
 }

@@ -19,6 +19,7 @@ import com.wondertek.cpm.config.StringUtil;
 import com.wondertek.cpm.domain.RoleHardWorking;
 import com.wondertek.cpm.domain.User;
 import com.wondertek.cpm.domain.vo.UserTimesheetForHardWorkingVo;
+import com.wondertek.cpm.repository.HolidayInfoRepository;
 import com.wondertek.cpm.repository.RoleHardWorkingRepository;
 import com.wondertek.cpm.service.RoleHardWorkingService;
 import com.wondertek.cpm.service.UserService;
@@ -45,10 +46,13 @@ public class RoleHardWorkingStatTask {
 	@Inject
     private UserService userService; 
 	
+	@Inject
+	private HolidayInfoRepository holidayInfoRepository;
+	
 	/**
 	 * 每个月的第二天的1点开始执行，员工的勤奋度
 	 */
-	@Scheduled(cron = "0 0 3 10 * ?")
+	@Scheduled(cron = "0 0 6 10 * ?")
 	protected void generateMonthlyState() {
 		Date now = new Date();
 		generateMonthlyState(now);
@@ -62,7 +66,13 @@ public class RoleHardWorkingStatTask {
 		Long originMonth = StringUtil.nullToLong(DateUtil.formatDate("yyyyMM", DateUtil.lastMonthBegin(now)));
 		// 初始上月的stat
 		roleHardWorkingRepository.deleteAllByOriginMonth(originMonth);
+		//查找这个月的正常工时
+		Long countDay = holidayInfoRepository.findWorkDayByParam(fromDay, endDay);
 		
+		Double totalWorkInput = (double) (8 * countDay);
+		if(totalWorkInput == 0){
+			totalWorkInput = 1d;
+		}
 		//从工时表中获取这个月的所有统计记录
 		Map<Long,UserTimesheetForHardWorkingVo> map = new HashMap<Long,UserTimesheetForHardWorkingVo>();
 		List<UserTimesheetForHardWorkingVo> roleHardWorkingVos = userTimesheetService.findByWorkDay(fromDay,endDay);
@@ -94,7 +104,7 @@ public class RoleHardWorkingStatTask {
 				sumAcceptInput = roleHardWorkingVo.getSumAcceptRealInput();
 				sumExtraInput = roleHardWorkingVo.getSumExtraInput();
 				sumAcceptExtraInput = roleHardWorkingVo.getSumAcceptExtraInput();
-				Double temp =  ((sumAcceptInput + sumAcceptExtraInput)/sumRealInput*100);
+				Double temp =  ((sumAcceptInput + sumAcceptExtraInput)/totalWorkInput*100);
 				
 				roleHardWorking.setUserId(u.getId());
 				roleHardWorking.setSerialNum(u.getSerialNum());
@@ -118,7 +128,7 @@ public class RoleHardWorkingStatTask {
 				sumRealInput = hwVo.getSumRealInput();
 				sumAcceptInput = hwVo.getSumAcceptRealInput();
 				sumExtraInput = hwVo.getSumExtraInput();
-				Double temp =  ((sumAcceptInput + sumAcceptExtraInput)/sumRealInput*100);
+				Double temp =  ((sumAcceptInput + sumAcceptExtraInput)/totalWorkInput*100);
 				roleHardWorking.setHardWorking(temp);
 				roleHardWorking.setOriginMonth(originMonth);
 				roleHardWorking.setCreateTime(date);

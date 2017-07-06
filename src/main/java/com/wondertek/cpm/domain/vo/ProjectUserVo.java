@@ -151,4 +151,13 @@ public class ProjectUserVo {
 	public void setUpdateTime(ZonedDateTime updateTime) {
 		this.updateTime = updateTime;
 	}
+	@Override
+	public String toString() {
+		return "ProjectUserVo [id=" + id + ", projectId=" + projectId + ", projectNum=" + projectNum + ", projectName="
+				+ projectName + ", type=" + type + ", contractId=" + contractId + ", outsourcingUserId="
+				+ outsourcingUserId + ", userId=" + userId + ", userName=" + userName + ", userRole=" + userRole
+				+ ", joinDay=" + joinDay + ", leaveDay=" + leaveDay + ", rank=" + rank + ", creator=" + creator
+				+ ", createTime=" + createTime + ", updator=" + updator + ", updateTime=" + updateTime + "]";
+	}
+	
 }

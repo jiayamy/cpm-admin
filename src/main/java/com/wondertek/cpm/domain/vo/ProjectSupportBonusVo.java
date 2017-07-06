@@ -290,4 +290,16 @@ public class ProjectSupportBonusVo {
 	public void setProjectId(Long projectId) {
 		this.projectId = projectId;
 	}
+
+	@Override
+	public String toString() {
+		return "ProjectSupportBonusVo [id=" + id + ", serialNum=" + serialNum + ", deptId=" + deptId + ", deptTypeName="
+				+ deptTypeName + ", statWeek=" + statWeek + ", contractId=" + contractId + ", projectId=" + projectId
+				+ ", deptType=" + deptType + ", pmId=" + pmId + ", pmName=" + pmName + ", deliveryTime=" + deliveryTime
+				+ ", acceptanceRate=" + acceptanceRate + ", planDays=" + planDays + ", realDays=" + realDays
+				+ ", bonusAdjustRate=" + bonusAdjustRate + ", bonusRate=" + bonusRate + ", bonusAcceptanceRate="
+				+ bonusAcceptanceRate + ", contractAmount=" + contractAmount + ", taxRate=" + taxRate + ", bonusBasis="
+				+ bonusBasis + ", currentBonus=" + currentBonus + ", creator=" + creator + ", createTime=" + createTime
+				+ "]";
+	}
 }

@@ -196,6 +196,16 @@ public class ContractWeeklyStatVo implements Serializable {
 	public void setName(String name) {
 		this.name = name;
 	}
-	
+
+	@Override
+	public String toString() {
+		return "ContractWeeklyStatVo [id=" + id + ", contractId=" + contractId + ", finishRate=" + finishRate
+				+ ", receiveTotal=" + receiveTotal + ", costTotal=" + costTotal + ", grossProfit=" + grossProfit
+				+ ", salesHumanCost=" + salesHumanCost + ", salesPayment=" + salesPayment + ", consultHumanCost="
+				+ consultHumanCost + ", consultPayment=" + consultPayment + ", hardwarePurchase=" + hardwarePurchase
+				+ ", externalSoftware=" + externalSoftware + ", internalSoftware=" + internalSoftware
+				+ ", projectHumanCost=" + projectHumanCost + ", projectPayment=" + projectPayment + ", statWeek="
+				+ statWeek + ", createTime=" + createTime + ", serialNum=" + serialNum + ", name=" + name + "]";
+	}
 	
 }

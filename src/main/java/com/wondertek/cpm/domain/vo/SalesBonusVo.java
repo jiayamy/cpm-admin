@@ -261,5 +261,17 @@ public class SalesBonusVo{
 	public void setCreateTime(ZonedDateTime createTime) {
 		this.createTime = createTime;
 	}
+
+	@Override
+	public String toString() {
+		return "SalesBonusVo [id=" + id + ", statWeek=" + statWeek + ", salesManId=" + salesManId + ", salesMan="
+				+ salesMan + ", annualIndex=" + annualIndex + ", finishTotal=" + finishTotal + ", originYear="
+				+ originYear + ", contractId=" + contractId + ", contractNum=" + contractNum + ", contractAmount="
+				+ contractAmount + ", taxRate=" + taxRate + ", receiveTotal=" + receiveTotal + ", taxes=" + taxes
+				+ ", shareCost=" + shareCost + ", thirdPartyPurchase=" + thirdPartyPurchase + ", bonusBasis="
+				+ bonusBasis + ", bonusRate=" + bonusRate + ", currentBonus=" + currentBonus + ", totalBonus="
+				+ totalBonus + ", finishRate=" + finishRate + ", payBonus=" + payBonus + ", creator=" + creator
+				+ ", createTime=" + createTime + "]";
+	}
     
 }

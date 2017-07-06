@@ -147,7 +147,15 @@ public class ContractMonthlyStatVo implements Serializable{
 	public void setCreateTime(ZonedDateTime createTime) {
 		this.createTime = createTime;
 	}
+	@Override
+	public String toString() {
+		return "ContractMonthlyStatVo [id=" + id + ", contractId=" + contractId + ", serialNum=" + serialNum + ", name="
+				+ name + ", finishRate=" + finishRate + ", receiveTotal=" + receiveTotal + ", costTotal=" + costTotal
+				+ ", grossProfit=" + grossProfit + ", salesHumanCost=" + salesHumanCost + ", salesPayment="
+				+ salesPayment + ", consultHumanCost=" + consultHumanCost + ", consultPayment=" + consultPayment
+				+ ", hardwarePurchase=" + hardwarePurchase + ", externalSoftware=" + externalSoftware
+				+ ", internalSoftware=" + internalSoftware + ", projectHumanCost=" + projectHumanCost
+				+ ", projectPayment=" + projectPayment + ", statWeek=" + statWeek + ", createTime=" + createTime + "]";
+	}
 	
-    
-    
 }

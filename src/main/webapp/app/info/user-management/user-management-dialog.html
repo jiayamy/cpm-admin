@@ -76,14 +76,14 @@
 		   		</div>
 		   		<div class="col-sm-6">
 	                <label class="control-label" for="field_password" data-translate="userManagement.password">Password</label>
-	                <input type="password" autocomplete="off" name="password" ng-minlength="5" ng-maxlength="60" ng-model="vm.user.password" class="form-control" id="field_password" />
+	                <input type="password" autocomplete="off" name="password" ng-minlength="4" ng-maxlength="60" ng-model="vm.user.password" class="form-control" id="field_password" />
 	             	<div ng-show="myForm.password.$invalid">    
 	                    <p class="help-block" 
 	                    	ng-show="myForm.password.$dirty&&myForm.password.$error.maxlength" class="alert alert-danger help-block">
 	                        	 密码不能超过60位
 	                    </p>
 	                    <p ng-show="myForm.password.$dirty&&myForm.password.$error.minlength" class="alert alert-danger help-block">
-	                           	密码不能小于5位
+	                           	密码不能小于4位
 	                    </p>
 	            	</div>
 		   		</div>

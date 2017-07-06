@@ -258,4 +258,14 @@ public class UserTimesheetForOther {
 	public void setId7(Long id7) {
 		this.id7 = id7;
 	}
+
+	@Override
+	public String toString() {
+		return "UserTimesheetForOther [type=" + type + ", userId=" + userId + ", userName=" + userName + ", objId="
+				+ objId + ", inputType=" + inputType + ", data1=" + data1 + ", check1=" + check1 + ", id1=" + id1
+				+ ", data2=" + data2 + ", check2=" + check2 + ", id2=" + id2 + ", data3=" + data3 + ", check3=" + check3
+				+ ", id3=" + id3 + ", data4=" + data4 + ", check4=" + check4 + ", id4=" + id4 + ", data5=" + data5
+				+ ", check5=" + check5 + ", id5=" + id5 + ", data6=" + data6 + ", check6=" + check6 + ", id6=" + id6
+				+ ", data7=" + data7 + ", check7=" + check7 + ", id7=" + id7 + "]";
+	}
 }

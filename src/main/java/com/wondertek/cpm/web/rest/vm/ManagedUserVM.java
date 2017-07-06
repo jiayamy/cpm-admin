@@ -25,8 +25,8 @@ public class ManagedUserVM extends UserDTO {
     private String lastModifiedBy;
 
     private ZonedDateTime lastModifiedDate;
-
-    @Size(min = PASSWORD_MIN_LENGTH, max = PASSWORD_MAX_LENGTH)
+    
+    @Size(max = PASSWORD_MAX_LENGTH)
     private String password;
 
     private String serialNum;

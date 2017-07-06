@@ -100,4 +100,11 @@ public class DeptTree {
 	public void setChildren(List<DeptTree> children) {
 		this.children = children;
 	}
+	@Override
+	public String toString() {
+		return "DeptTree [objId=" + objId + ", name=" + name + ", parentId=" + parentId + ", parentName=" + parentName
+				+ ", isDept=" + isDept + ", supportSelect=" + supportSelect + ", showChild=" + showChild + ", children="
+				+ children + "]";
+	}
+	
 }

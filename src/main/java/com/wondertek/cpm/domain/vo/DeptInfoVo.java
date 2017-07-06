@@ -1,12 +1,6 @@
 package com.wondertek.cpm.domain.vo;
 
 import java.time.ZonedDateTime;
-import java.util.Objects;
-
-import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 
 import com.wondertek.cpm.domain.DeptInfo;
 
@@ -110,5 +104,11 @@ public class DeptInfoVo {
 	}
 	public void setUpdateTime(ZonedDateTime updateTime) {
 		this.updateTime = updateTime;
+	}
+	@Override
+	public String toString() {
+		return "DeptInfoVo [id=" + id + ", name=" + name + ", parentId=" + parentId + ", parentName=" + parentName
+				+ ", type=" + type + ", typeName=" + typeName + ", status=" + status + ", creator=" + creator
+				+ ", createTime=" + createTime + ", updator=" + updator + ", updateTime=" + updateTime + "]";
 	}
 }

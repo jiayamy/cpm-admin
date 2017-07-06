@@ -204,4 +204,12 @@ public class UserTimesheetVo {
 	public void setAcceptExtraInput(Double acceptExtraInput) {
 		this.acceptExtraInput = acceptExtraInput;
 	}
+	@Override
+	public String toString() {
+		return "UserTimesheetVo [id=" + id + ", workDay=" + workDay + ", userId=" + userId + ", userName=" + userName
+				+ ", type=" + type + ", objId=" + objId + ", objName=" + objName + ", realInput=" + realInput
+				+ ", acceptInput=" + acceptInput + ", workArea=" + workArea + ", status=" + status + ", creator="
+				+ creator + ", createTime=" + createTime + ", updator=" + updator + ", updateTime=" + updateTime
+				+ ", extraInput=" + extraInput + ", acceptExtraInput=" + acceptExtraInput + "]";
+	}
 }

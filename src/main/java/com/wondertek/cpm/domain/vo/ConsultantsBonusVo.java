@@ -127,4 +127,14 @@ public class ConsultantsBonusVo implements Serializable {
 	public void setConsultantsSerialNum(String consultantsSerialNum) {
 		this.consultantsSerialNum = consultantsSerialNum;
 	}
+	@Override
+	public String toString() {
+		return "ConsultantsBonusVo [id=" + id + ", statWeek=" + statWeek + ", contractId=" + contractId
+				+ ", contractAmount=" + contractAmount + ", consultantsId=" + consultantsId + ", consultantsSerialNum="
+				+ consultantsSerialNum + ", consultantsName=" + consultantsName + ", bonusBasis=" + bonusBasis
+				+ ", bonusRate=" + bonusRate + ", consultantsShareRate=" + consultantsShareRate + ", currentBonus="
+				+ currentBonus + ", creator=" + creator + ", createTime=" + createTime + ", serialNum=" + serialNum
+				+ ", amount=" + amount + ", name=" + name + ", accumulationBonus=" + accumulationBonus + "]";
+	}
+	
 }

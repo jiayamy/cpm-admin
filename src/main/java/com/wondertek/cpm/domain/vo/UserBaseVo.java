@@ -66,5 +66,10 @@ public class UserBaseVo implements Serializable {
 	}
 	public void setDeptId(Long deptId) {
 		this.deptId = deptId;
+	}
+	@Override
+	public String toString() {
+		return "UserBaseVo [id=" + id + ", lastName=" + lastName + ", grade=" + grade + ", serialNum=" + serialNum
+				+ ", deptId=" + deptId + "]";
 	}   
 }

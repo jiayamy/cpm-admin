@@ -92,4 +92,11 @@ public class ProductPriceVo {
 		this.updator = productPrice.getUpdator();
 		this.units = productPrice.getUnits();
 	}
+	@Override
+	public String toString() {
+		return "ProductPriceVo [id=" + id + ", name=" + name + ", type=" + type + ", source=" + source + ", units="
+				+ units + ", price=" + price + ", createTime=" + createTime + ", updateTime=" + updateTime
+				+ ", creator=" + creator + ", updator=" + updator + "]";
+	}
+	
 }

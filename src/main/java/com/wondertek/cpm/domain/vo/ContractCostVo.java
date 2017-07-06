@@ -189,4 +189,14 @@ public class ContractCostVo {
 			this.contractName = contractName;
 			this.budgetTotal = budgetTotal;
 		}
+		@Override
+		public String toString() {
+			return "ContractCostVo [id=" + id + ", contractId=" + contractId + ", budgetId=" + budgetId + ", deptId="
+					+ deptId + ", dept=" + dept + ", name=" + name + ", type=" + type + ", costDay=" + costDay
+					+ ", total=" + total + ", costDesc=" + costDesc + ", status=" + status + ", creator=" + creator
+					+ ", createTime=" + createTime + ", updator=" + updator + ", updateTime=" + updateTime + ", input="
+					+ input + ", contractNum=" + contractNum + ", contractName=" + contractName + ", budgetTotal="
+					+ budgetTotal + "]";
+		}
+		
 }

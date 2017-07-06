@@ -24,4 +24,10 @@ public class ProjectInfoUserVo {
 	public void setTotalInput(Double totalInput) {
 		this.totalInput = totalInput;
 	}
+	@Override
+	public String toString() {
+		return "ProjectInfoUserVo [serialNum=" + serialNum + ", userName=" + userName + ", totalInput=" + totalInput
+				+ "]";
+	}
+	
 }

@@ -338,4 +338,15 @@ public class PurchaseItemVo  {
 	public void setProductPriceId(Long productPriceId) {
 		this.productPriceId = productPriceId;
 	}
+
+	@Override
+	public String toString() {
+		return "PurchaseItemVo [id=" + id + ", contractId=" + contractId + ", contractNum=" + contractNum
+				+ ", contractName=" + contractName + ", budgetId=" + budgetId + ", budgetName=" + budgetName
+				+ ", productPriceId=" + productPriceId + ", name=" + name + ", quantity=" + quantity + ", price="
+				+ price + ", units=" + units + ", type=" + type + ", source=" + source + ", purchaser=" + purchaser
+				+ ", totalAmount=" + totalAmount + ", status=" + status + ", creator=" + creator + ", createTime="
+				+ createTime + ", updator=" + updator + ", updateTime=" + updateTime + "]";
+	}
+	
 }

@@ -151,4 +151,12 @@ public class UserTimesheetForUser {
 	public void setInputType(String inputType) {
 		this.inputType = inputType;
 	}
+
+	@Override
+	public String toString() {
+		return "UserTimesheetForUser [userId=" + userId + ", type=" + type + ", objId=" + objId + ", objName=" + objName
+				+ ", inputType=" + inputType + ", data1=" + data1 + ", id1=" + id1 + ", data2=" + data2 + ", id2=" + id2
+				+ ", data3=" + data3 + ", id3=" + id3 + ", data4=" + data4 + ", id4=" + id4 + ", data5=" + data5
+				+ ", id5=" + id5 + ", data6=" + data6 + ", id6=" + id6 + ", data7=" + data7 + ", id7=" + id7 + "]";
+	}
 }

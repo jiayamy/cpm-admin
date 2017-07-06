@@ -108,6 +108,12 @@ public class ContractReceiveVo {
 		this.updator = contractReceive.getUpdator();
 		this.updateTime = contractReceive.getUpdateTime();
 	}
-    
+	@Override
+	public String toString() {
+		return "ContractReceiveVo [id=" + id + ", contractId=" + contractId + ", contractNum=" + contractNum
+				+ ", contractName=" + contractName + ", receiveTotal=" + receiveTotal + ", receiveDay=" + receiveDay
+				+ ", receiver=" + receiver + ", status=" + status + ", creator=" + creator + ", createTime="
+				+ createTime + ", updator=" + updator + ", updateTime=" + updateTime + "]";
+	}
     
 }

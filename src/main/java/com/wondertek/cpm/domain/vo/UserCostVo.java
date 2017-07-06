@@ -124,4 +124,13 @@ public class UserCostVo {
 	public void setFund(Double fund) {
 		this.fund = fund;
 	}
+	@Override
+	public String toString() {
+		return "UserCostVo [id=" + id + ", userId=" + userId + ", userName=" + userName + ", costMonth=" + costMonth
+				+ ", internalCost=" + internalCost + ", externalCost=" + externalCost + ", status=" + status
+				+ ", creator=" + creator + ", createTime=" + createTime + ", updator=" + updator + ", updateTime="
+				+ updateTime + ", sal=" + sal + ", socialSecurity=" + socialSecurity + ", fund=" + fund
+				+ ", socialSecurityFund=" + socialSecurityFund + ", otherExpense=" + otherExpense + ", serialNum="
+				+ serialNum + "]";
+	}
 }

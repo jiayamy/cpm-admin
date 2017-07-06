@@ -247,4 +247,15 @@ public class ContractBudgetVo {
 	public void setUpdator(String updator) {
 		this.updator = updator;
 	}
+
+	@Override
+	public String toString() {
+		return "ContractBudgetVo [id=" + id + ", contractId=" + contractId + ", serialNum=" + serialNum + ", name="
+				+ name + ", contractName=" + contractName + ", purchaseType=" + purchaseType + ", userName=" + userName
+				+ ", userId=" + userId + ", dept=" + dept + ", deptId=" + deptId + ", budgetTotal=" + budgetTotal
+				+ ", status=" + status + ", creator=" + creator + ", createTime=" + createTime + ", updator=" + updator
+				+ ", updateTime=" + updateTime + ", isEdit=" + isEdit + ", isCreate=" + isCreate
+				+ ", hasCreatedProject=" + hasCreatedProject + ", isValidable=" + isValidable + "]";
+	}
+	
 }

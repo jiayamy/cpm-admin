@@ -1,15 +1,16 @@
 package com.wondertek.cpm.service.dto;
 
-import com.wondertek.cpm.config.Constants;
+import java.util.Set;
+import java.util.stream.Collectors;
 
-import com.wondertek.cpm.domain.Authority;
-import com.wondertek.cpm.domain.User;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 
 import org.hibernate.validator.constraints.Email;
 
-import javax.validation.constraints.*;
-import java.util.Set;
-import java.util.stream.Collectors;
+import com.wondertek.cpm.config.Constants;
+import com.wondertek.cpm.domain.Authority;
+import com.wondertek.cpm.domain.User;
 
 /**
  * A DTO representing a user, with his authorities.

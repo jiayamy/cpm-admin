@@ -47,6 +47,11 @@ public class ChartReportVo implements Serializable{
 	public void setTitle(String title) {
 		this.title = title;
 	}
-    
+
+	@Override
+	public String toString() {
+		return "ChartReportVo [legend=" + legend + ", category=" + category + ", series=" + series + ", title=" + title
+				+ "]";
+	}
     
 }

@@ -60,4 +60,9 @@ public class LongValue {
 	public void setP2(Double p2) {
 		this.p2 = p2;
 	}
+	@Override
+	public String toString() {
+		return "LongValue [key=" + key + ", type=" + type + ", val=" + val + ", p1=" + p1 + ", p2=" + p2 + "]";
+	}
+	
 }

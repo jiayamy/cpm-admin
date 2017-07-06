@@ -330,5 +330,18 @@ public class ProjectOverallVo {
 		public void setConsultants(String consultants) {
 			this.consultants = consultants;
 		}
-	    
+
+		@Override
+		public String toString() {
+			return "ProjectOverallVo [id=" + id + ", statWeek=" + statWeek + ", contractResponse=" + contractResponse
+					+ ", contractId=" + contractId + ", contractAmount=" + contractAmount + ", taxRate=" + taxRate
+					+ ", identifiableIncome=" + identifiableIncome + ", contractFinishRate=" + contractFinishRate
+					+ ", acceptanceIncome=" + acceptanceIncome + ", receiveTotal=" + receiveTotal
+					+ ", receivableAccount=" + receivableAccount + ", shareCost=" + shareCost + ", thirdPartyPurchase="
+					+ thirdPartyPurchase + ", internalPurchase=" + internalPurchase + ", bonus=" + bonus
+					+ ", grossProfit=" + grossProfit + ", grossProfitRate=" + grossProfitRate + ", creator=" + creator
+					+ ", createTime=" + createTime + ", serialNum=" + serialNum + ", salesman=" + salesman
+					+ ", consultants=" + consultants + ", implementationCost=" + implementationCost + ", academicCost="
+					+ academicCost + "]";
+		}
 }

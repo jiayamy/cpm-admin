@@ -373,7 +373,7 @@ public class ContractStateTask {
 	/**
 	 * TODO 合同月统计，每个月的第一天的23点30分开始执行
 	 */
-	@Scheduled(cron = "0 30 23 10 * ?")
+	@Scheduled(cron = "0 30 3 10 * ?")
 	protected void generateContractMonthlyStat(){
 		Date now = new Date();
 		generateContractMonthlyStat(null,now);

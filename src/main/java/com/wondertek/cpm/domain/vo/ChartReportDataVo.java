@@ -39,6 +39,10 @@ public class ChartReportDataVo implements Serializable{
 	public void setData(List<Double> data) {
 		this.data = data;
 	}
-	
+
+	@Override
+	public String toString() {
+		return "ChartReportDataVo [name=" + name + ", type=" + type + ", data=" + data + "]";
+	}
 	
 }

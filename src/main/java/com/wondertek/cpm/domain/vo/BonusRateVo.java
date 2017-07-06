@@ -97,4 +97,12 @@ public class BonusRateVo{
 	public void setUpdateTime(ZonedDateTime updateTime) {
 		this.updateTime = updateTime;
 	}
+
+	@Override
+	public String toString() {
+		return "BonusRateVo [id=" + id + ", deptType=" + deptType + ", dept=" + dept + ", rate=" + rate
+				+ ", contractType=" + contractType + ", creator=" + creator + ", createTime=" + createTime
+				+ ", updator=" + updator + ", updateTime=" + updateTime + "]";
+	}
+	
 }
