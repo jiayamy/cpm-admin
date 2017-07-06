@@ -1,7 +1,5 @@
 package com.wondertek.cpm.repository;
 
-import java.util.List;
-
 import javax.transaction.Transactional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -14,9 +12,6 @@ public interface ProjectOverallRepository extends JpaRepository<ProjectOverall,L
 	
 	@Query(" from ProjectOverall where contractId = ?1 and statWeek = ?2")
 	ProjectOverall findByContractIdAndStatWeek(Long contractId, Long statWeek);
-	
-	@Query(" from ProjectOverall where statWeek = ?1")
-	List<ProjectOverall> findByStatWeek(Long statWeek);
 	
 	@Modifying
 	@Transactional

@@ -23,17 +23,8 @@ public interface UserTimesheetRepository extends JpaRepository<UserTimesheet,Lon
 	@Query(" from UserTimesheet where userId = ?2 and id = ?1")
 	public UserTimesheet findOneByIdAndUserId(Long id, Long userId);
 	
-	@Query(" from UserTimesheet where workDay >= ?1 and workDay <= ?2 and status = 1")
-	public List<UserTimesheet> findByWorkday(Long beginDay, Long endDay);
-	
-	@Query(" from UserTimesheet where workDay <= ?1 and type = ?2 and status = 1 ")
-	public List<UserTimesheet> findByDateAndType(Long endDay, Integer type);
-	
 	@Query(" from UserTimesheet where workDay <= ?1 and objId = ?2 and type = ?3 and status = 1 ")
 	public List<UserTimesheet> findByDateAndObjIdAndType(Long endDay, Long objId, Integer type);
-	
-	@Query("select t from UserTimesheet t , User u , DeptInfo d where t.userId = u.id and u.deptId = d.id and d.type = ?2 and t.workDay <= ?1 and t.objId = ?3 and t.type = ?4 and t.status = 1")
-	public List<UserTimesheet> findByDateAndDeptTypeAndObjIdType(Long endDay, Long deptType, Long objId, Integer type);
 	
 	@Query("select t from UserTimesheet t , User u , DeptInfo d where t.userId = u.id and u.deptId = d.id and d.type = ?2 and t.workDay = ?1 and t.objId = ?3 and t.type = ?4 and t.status = 1")
 	public List<UserTimesheet> findByWorkDayAndDeptTypeAndObjIdAndType(Long workDay, Long deptType, Long objId, Integer type);
@@ -50,9 +41,6 @@ public interface UserTimesheetRepository extends JpaRepository<UserTimesheet,Lon
 	@Query(" from UserTimesheet where workDay = ?1 and objId = ?2 and type = ?3 and status = 1")
 	public List<UserTimesheet> findByWorkDayAndObjIdAndType(Long workDay, Long objId, Integer type);
 	
-	@Query(" from UserTimesheet where workDay = ?1 and type = ?2 and status = 1")
-	public List<UserTimesheet> findByWorkDayAndType(Long workDay, Integer type);
-	
 	@Query(" from UserTimesheet where userId = ?1 and type = ?2 and objId = ?3 and workDay <= ?4 and status = 1")
 	public List<UserTimesheet> findByUserIdAndTypeAndObjIdAndWorkDay(Long userId, Integer type, Long objId, Long workDay);
 	
@@ -64,9 +52,6 @@ public interface UserTimesheetRepository extends JpaRepository<UserTimesheet,Lon
 	
 	@Query(" from UserTimesheet where objId = ?1 and type = ?2 and workDay >= ?3 and workDay <= ?4 and status = 1 ")
 	public List<UserTimesheet> findByObjIdAndTypeAndWordDayBetween(Long objId, Integer type, Long startDay, Long endDay);
-	
-	@Query("select wut.realInput from UserTimesheet wut where wut.id = ?1")
-	public Double findRealInputById(Long id1);
 	
 	@Query("select sum(acceptInput),sum(acceptExtraInput) from UserTimesheet where workDay <= ?1 and objId = ?2 and type = ?3 and status = 1 ")
 	public List<Object[]> findSumByDateAndObjIdAndType(Long endDay, Long objId, Integer type);

@@ -59,7 +59,7 @@ public class RoleHardWorkingService {
 
 	public RoleHardWorking findOne(Long statId) {
 		
-		return roleHardWorkingRepository.findById(statId);
+		return roleHardWorkingRepository.findOne(statId);
 	}
 
 	@Transactional(readOnly = true)

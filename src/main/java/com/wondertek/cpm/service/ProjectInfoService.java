@@ -244,7 +244,7 @@ public class ProjectInfoService {
 	}
 
 	public Map<String, Long> getProjectInfo() {
-		List<ProjectInfo> projectInfos =  projectInfoRepository.getProjectInfo();
+		List<ProjectInfo> projectInfos =  projectInfoRepository.findAll();
 		Map<String,Long> map = new HashMap<String,Long>();
 		for(ProjectInfo pi : projectInfos){
 			map.put(pi.getSerialNum(), pi.getId());

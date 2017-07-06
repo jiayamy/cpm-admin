@@ -28,7 +28,6 @@ import com.wondertek.cpm.domain.ContractProjectBonus;
 import com.wondertek.cpm.domain.ContractReceive;
 import com.wondertek.cpm.domain.DeptInfo;
 import com.wondertek.cpm.domain.ExternalQuotation;
-import com.wondertek.cpm.domain.ProductSalesBonus;
 import com.wondertek.cpm.domain.ProjectInfo;
 import com.wondertek.cpm.domain.ProjectOverall;
 import com.wondertek.cpm.domain.ProjectSupportBonus;
@@ -248,7 +247,7 @@ public class AccountScheduledJob {
 		String creator = "admin";
 		
 		//TODO 统计的合同
-		List<ContractInfo> contractInfos = contractInfoRepository.findByStartDayAndStatusOrUpdateTime(ContractInfo.STATUS_VALIDABLE, beginTime, endTime);
+		List<ContractInfo> contractInfos = contractInfoRepository.findByStatusOrEndTime(ContractInfo.STATUS_VALIDABLE, beginTime, endTime);
 		if(contractInfos != null && contractInfos.size() > 0){
 			for(ContractInfo contractInfo : contractInfos){
 				Long contractId = contractInfo.getId();

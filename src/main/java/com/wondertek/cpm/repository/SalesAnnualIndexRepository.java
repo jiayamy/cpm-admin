@@ -16,7 +16,6 @@ public interface SalesAnnualIndexRepository extends JpaRepository<SalesAnnualInd
 	List<SalesAnnualIndex> findByStatYear(Long statYear);
 	@Query(" from SalesAnnualIndex where statYear = ?1 and userId = ?2")
 	SalesAnnualIndex findByStatYearAndUserId(Long statYear, Long userId);
-	@Query(" select s from SalesAnnualIndex s,DeptInfo d,User u where s.userId = u.id and u.deptId = d.id and s.statYear = ?1 and d.id = ?2")
-	List<SalesAnnualIndex> findByStatYearAndDeptId(Long statYear, Long deptId);
-	
+	@Query(" select sum(s.annualIndex) from SalesAnnualIndex s,DeptInfo d,User u where s.userId = u.id and u.deptId = d.id and s.statYear = ?1 and d.id in (?2)")
+	Double findByStatYearAndDeptId(Long statYear, List<Long> deptIds);
 }

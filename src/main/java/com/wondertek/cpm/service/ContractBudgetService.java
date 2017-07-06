@@ -124,7 +124,7 @@ public class ContractBudgetService {
 	}
 
 	public ContractBudget findOneById(Long id) {
-		return contractBudgetRepository.findOneById(id);
+		return contractBudgetRepository.findOne(id);
 	}
 
 	public List<LongValue> queryUserContract() {

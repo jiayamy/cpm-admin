@@ -10,7 +10,6 @@ import com.wondertek.cpm.domain.HolidayInfo;
 /**
  * Spring Data JPA repository for the HolidayInfo entity.
  */
-@SuppressWarnings("unused")
 public interface HolidayInfoRepository extends JpaRepository<HolidayInfo,Long> {
 
 	@Query("from HolidayInfo h where h.currDay=?1")

@@ -14,10 +14,10 @@ import com.wondertek.cpm.domain.ContractFinishInfo;
 public interface ContractFinishInfoRepository extends JpaRepository<ContractFinishInfo,Long> {
 
 	@Query("from ContractFinishInfo where contractId = ?1 and createTime < ?2 order by createTime asc")
-	List<ContractFinishInfo> findAllByContractIdAndCreateTimeBefore(Long contractId, ZonedDateTime createTime);
+	List<ContractFinishInfo> findAllByContractIdAndCreateTimeBefore(Long contractId, ZonedDateTime endTime);
 	
 	@Query(" from ContractFinishInfo where id in (select max(id) from ContractFinishInfo where contractId = ?1 and createTime <= ?2)")
-	ContractFinishInfo findMaxByContractIdAndCreateTimeBefore(Long contractId, ZonedDateTime createTime);
+	ContractFinishInfo findMaxByContractIdAndCreateTimeBefore(Long contractId, ZonedDateTime endTime);
 	
 	@Query(" from ContractFinishInfo where contractId = ?1 and createTime > ?2 and createTime <= ?3 order by createTime asc")
 	List<ContractFinishInfo> findAllByContractIdAndCreateTimeBetween(Long contractId, ZonedDateTime beginTime, ZonedDateTime endTime);

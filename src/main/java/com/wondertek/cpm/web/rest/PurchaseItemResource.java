@@ -1,9 +1,7 @@
 package com.wondertek.cpm.web.rest;
 
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,7 +18,6 @@ import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -31,7 +28,6 @@ import com.codahale.metrics.annotation.Timed;
 import com.wondertek.cpm.config.StringUtil;
 import com.wondertek.cpm.domain.ContractBudget;
 import com.wondertek.cpm.domain.ContractInfo;
-import com.wondertek.cpm.domain.ProductPrice;
 import com.wondertek.cpm.domain.PurchaseItem;
 import com.wondertek.cpm.domain.vo.LongValue;
 import com.wondertek.cpm.domain.vo.ProductPriceVo;
@@ -85,7 +81,7 @@ public class PurchaseItemResource {
         	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.purchaseItem.save.requiedError", "")).body(null);
 		}
         ContractInfo contractInfo = contractInfoRepository.findOne(purchaseItem.getContractId());
-        ContractBudget contractBudget = contractBudetRepository.findOneById(purchaseItem.getBudgetId());
+        ContractBudget contractBudget = contractBudetRepository.findOne(purchaseItem.getBudgetId());
         //判断合同和内部采购单的状态是否可用
         if (contractInfo == null || contractBudget == null) {
         	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.purchaseItem.save.dataError", "")).body(null);
@@ -176,7 +172,7 @@ public class PurchaseItemResource {
         log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to delete PurchaseItem : {}", id);
         PurchaseItemVo purchaseItem = purchaseItemService.getPurchaseItem(id);
         ContractInfo contractInfo = contractInfoRepository.findOne(purchaseItem.getContractId());
-        ContractBudget contractBudget = contractBudetRepository.findOneById(purchaseItem.getBudgetId());
+        ContractBudget contractBudget = contractBudetRepository.findOne(purchaseItem.getBudgetId());
         
         if (purchaseItem == null) {
     		return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.purchaseItem.save.noPerm", "")).body(null);

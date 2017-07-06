@@ -115,7 +115,7 @@ public class ProjectInfoResource {
         	if(projectInfo.getPmId() == null || projectInfo.getDeptId() == null){
         		return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.projectInfo.save.requriedError", "")).body(null);
         	}
-        	ContractBudget contractBudget = contractBudgetRepository.findOneById(projectInfo.getBudgetId());
+        	ContractBudget contractBudget = contractBudgetRepository.findOne(projectInfo.getBudgetId());
 	        if (contractBudget == null) {
 	        	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.projectInfo.save.saveError", "")).body(null);
 			}

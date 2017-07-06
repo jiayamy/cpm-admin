@@ -36,12 +36,9 @@ public interface ContractCostRepository extends JpaRepository<ContractCost,Long>
 	@Query(" from ContractCost where deptId = ?1 and type = ?2 and contractId = ?3 and costDay = ?4 and status = 1")
 	ContractCost findByDeptIdAndTypeAndContractIdAndCostDay(Long deptId, Integer type, Long contractId, Long costDay);
 	
-	@Query(" from ContractCost where deptId = ?1 and type = ?2 and contractId = ?3 and costDay >= ?4 and costDay <= ?5 and status = 1")
-	List<ContractCost> findByDeptIdAndTypeAndContractIdAndCostDayBetween(Long deptId,Integer type, Long contractId, Long beginTime, Long endTime);
+	@Query("select sum(total) from ContractCost where deptId = ?1 and type = ?2 and contractId = ?3 and costDay >= ?4 and costDay <= ?5 and status = 1")
+	Double findByDeptIdAndTypeAndContractIdAndCostDayBetween(Long deptId,Integer type, Long contractId, Long beginTime, Long endTime);
 	
-	@Query(" from ContractCost where deptId = ?1 and type != ?2 and contractId = ?3 and costDay >= ?4 and costDay <= ?5 and status = 1")
-	List<ContractCost> findByDeptIdAndNoTypeAndContractIdAndCostDayBetween(Long deptId,Integer type, Long contractId, Long beginTime, Long endTime);
-	
-	@Query(" from ContractCost where contractId = ?1 and type = ?2 and deptId = ?3 and costDay >= ?4 and costDay <= ?5 and status = 1")
-	List<ContractCost> findByContractIdAndTypeAndDeptIdAndCostDayBetween(Long contractId, Integer type,Long deptId, Long beginTime, Long endTime);
+	@Query("select sum(total) from ContractCost where deptId = ?1 and type != ?2 and contractId = ?3 and costDay >= ?4 and costDay <= ?5 and status = 1")
+	Double findByDeptIdAndNoTypeAndContractIdAndCostDayBetween(Long deptId,Integer type, Long contractId, Long beginTime, Long endTime);
 }

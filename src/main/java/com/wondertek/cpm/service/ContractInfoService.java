@@ -219,7 +219,7 @@ public class ContractInfoService {
 	}
 
 	public Map<String, Long> getContractInfo() {
-		List<ContractInfo> infos = contractInfoRepository.findContractInfo();
+		List<ContractInfo> infos = contractInfoRepository.findAll();
 		Map<String,Long> returnMap = new HashMap<String,Long>();
 		if(infos != null){
 			for(ContractInfo contractInfo : infos){

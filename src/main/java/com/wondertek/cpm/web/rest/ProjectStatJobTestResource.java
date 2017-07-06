@@ -35,7 +35,7 @@ public class ProjectStatJobTestResource extends ProjectStateTask{
 	@GetMapping("/projectStateJob/projectMonthlyStatTest")
 	@Timed
 	@Secured(AuthoritiesConstants.ADMIN)
-	public @ResponseBody String projectMonthlyState(
+	public @ResponseBody String projectMonthlyStatTest(
 			@RequestParam(value = "projectId", required = false) Long projectId,
 			@RequestParam(value="date", required = false) Long date) {
 		log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to Test Resource: projectId : {}, date : {}" , projectId, date);
@@ -47,10 +47,10 @@ public class ProjectStatJobTestResource extends ProjectStateTask{
 		}
 		return "success";
 	}
-	@GetMapping("/projectStateJob/projectMonthlyStateAll")
+	@GetMapping("/projectStateJob/projectMonthlyAllStateTest")
 	@Timed
 	@Secured(AuthoritiesConstants.ADMIN)
-	public @ResponseBody String projectMonthlyStateAll(
+	public @ResponseBody String projectMonthlyAllStateTest(
 			@RequestParam(value = "projectId", required = false) String projectId) {
 		log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to Test Resource: projectId : {}" , projectId);
 		
@@ -92,10 +92,10 @@ public class ProjectStatJobTestResource extends ProjectStateTask{
 		return "success";
 	}
 	
-	@GetMapping("/projectStateJob/projectWeeklyStatAll")
+	@GetMapping("/projectStateJob/projectWeeklyAllStatTest")
 	@Timed
 	@Secured(AuthoritiesConstants.ADMIN)
-	public @ResponseBody String projectWeeklyStatAll(
+	public @ResponseBody String projectWeeklyAllStatTest(
 			@RequestParam(value = "projectId", required = false) String projectId) {
 		log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to Test Resource: projectId : {}" , projectId);
 		
@@ -105,7 +105,6 @@ public class ProjectStatJobTestResource extends ProjectStateTask{
 			Date now = new Date();
 			Calendar cal = Calendar.getInstance();
 			for(ProjectInfo pi : projectInfos){
-				pi.getCreateTime();
 				cal.setTime(DateUtil.getMonday(DateUtil.convertZonedDateTime(pi.getCreateTime())));
 				
 				while(true){
