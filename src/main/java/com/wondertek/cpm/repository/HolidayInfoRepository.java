@@ -23,4 +23,7 @@ public interface HolidayInfoRepository extends JpaRepository<HolidayInfo,Long> {
 
 	@Query("select count(1) from HolidayInfo where currDay >= ?1 and currDay <= ?2 and type = 1")
 	public Long findWorkDayByParam(Long startDay,Long endDay);
+	
+	@Query("from HolidayInfo where currDay >= ?1 and currDay <= ?2")
+	public List<HolidayInfo> findDayByParam(Long startDay,Long endDay);
 }

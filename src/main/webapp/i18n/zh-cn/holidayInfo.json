@@ -32,7 +32,22 @@
             "creator": "创建者",
             "createTime": "创建时间",
             "updator": "更新者",
-            "updateTime": "更新时间"
+            "updateTime": "更新时间",
+            "calendar":"日历",
+            "monday":"一",
+            "tuesday":"二",
+            "wednesday":"三",
+            "thursday":"四",
+            "friday":"五",
+            "saturday":"六",
+            "sunday":"日",
+            "week":"周",
+            "mark":"{{name}}",
+            "workday":"工作",
+            "weekend":"休息",
+            "onDuty":"上班",
+            "holiday":"国假",
+            "annualLeave":"年假"
         }
     }
 }

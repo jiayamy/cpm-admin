@@ -31,6 +31,9 @@
          */
         function arrowLeft(){
         	var date = DateUtils.convertLocalDateToFormat(vm.searchQuery.workDay,"yyyyMMdd");
+        	if(date == null){
+        		return;
+        	}
         	vm.searchQuery.workDay = new Date(date.substring(0,4),parseInt(date.substring(4,6))-1,parseInt(date.substring(6,8))-7);
         	vm.search();
         }
@@ -39,6 +42,9 @@
          */
         function arrowRight(){
         	var date = DateUtils.convertLocalDateToFormat(vm.searchQuery.workDay,"yyyyMMdd");
+        	if(date == null){
+        		return;
+        	}
         	vm.searchQuery.workDay = new Date(date.substring(0,4),parseInt(date.substring(4,6))-1,parseInt(date.substring(6,8))+7);
         	vm.search();
         }

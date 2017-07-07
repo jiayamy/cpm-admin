@@ -24,8 +24,8 @@ public class DateTest {
 //		pageDay = pageDay.replaceAll("[*]", "");
 //		System.out.println(pageDay);
 		
-		Long day = 20170101L;
-		while(day < 20173000){
+		Long day = 20170706L;
+		while(day < 20170708L){
 			List<MonthInfo> infos = DateUtil.getMonthData(day+"");
 			for(MonthInfo MonthInfo : infos){
 				System.out.println(MonthInfo);

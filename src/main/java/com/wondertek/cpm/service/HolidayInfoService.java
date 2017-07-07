@@ -158,4 +158,15 @@ public class HolidayInfoService {
 		}
 		return returnMap;
 	}
+
+	public Map<Long, HolidayInfo> getInfoByCurrDay(Long fromCurrDay, Long toCurrDay) {
+		List<HolidayInfo> list = holidayInfoRepository.findDayByParam(fromCurrDay,toCurrDay);
+		Map<Long,HolidayInfo> returnMap = new HashMap<Long,HolidayInfo>();
+		if(list != null){
+			for(HolidayInfo info : list){
+				returnMap.put(info.getCurrDay(), info);
+			}
+		}
+		return returnMap;
+	}
 }

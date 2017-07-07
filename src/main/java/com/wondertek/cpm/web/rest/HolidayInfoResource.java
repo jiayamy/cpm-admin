@@ -5,6 +5,7 @@ import java.net.URISyntaxException;
 import java.text.SimpleDateFormat;
 import java.time.ZonedDateTime;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,6 +32,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.codahale.metrics.annotation.Timed;
 import com.wondertek.cpm.TimerHolidayUtil;
+import com.wondertek.cpm.config.CalendarDay;
+import com.wondertek.cpm.config.CalendarMonth;
+import com.wondertek.cpm.config.CalendarWeek;
+import com.wondertek.cpm.config.DateUtil;
+import com.wondertek.cpm.config.StringUtil;
 import com.wondertek.cpm.domain.HolidayInfo;
 import com.wondertek.cpm.security.AuthoritiesConstants;
 import com.wondertek.cpm.security.SecurityUtils;
@@ -186,7 +192,7 @@ public class HolidayInfoResource {
      */
     @DeleteMapping("/holiday-infos/{id}")
     @Timed
-    @Secured(AuthoritiesConstants.ROLE_INFO_BASIC)
+    @Secured(AuthoritiesConstants.ADMIN)
     public ResponseEntity<Void> deleteHolidayInfo(@PathVariable Long id) {
         log.debug(SecurityUtils.getCurrentUserLogin()+" REST request to delete HolidayInfo : {}",id);
 //        holidayInfoService.delete(id);
@@ -219,5 +225,179 @@ public class HolidayInfoResource {
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
 
+    @GetMapping("/holiday-infos/queryCalendar")
+    @Timed
+    @Secured(AuthoritiesConstants.ROLE_INFO_BASIC)
+    public ResponseEntity<CalendarMonth> queryCalendar(
+    		@RequestParam(value = "currDay",required=false) Long currDay){
+    	Date date = null;
+    	if(currDay == null || currDay.toString().length() != 8){
+    		date = new Date();
+    	}else{
+    		date = DateUtil.parseDate(DateUtil.DATE_YYYYMMDD_PATTERN, currDay.toString());//当天的日期
+    	}
+    	Calendar cal = Calendar.getInstance();
+		cal.setTime(date);
+		
+		cal.set(Calendar.DAY_OF_MONTH, cal.getActualMinimum(Calendar.DAY_OF_MONTH));
+    	Long fromCurrDay = StringUtil.nullToLong(DateUtil.formatDate(DateUtil.DATE_YYYYMMDD_PATTERN, cal.getTime()));
+    	
+    	cal.set(Calendar.DAY_OF_MONTH, cal.getActualMaximum(Calendar.DAY_OF_MONTH));
+    	Long toCurrDay = StringUtil.nullToLong(DateUtil.formatDate(DateUtil.DATE_YYYYMMDD_PATTERN, cal.getTime()));
+    	
+    	Map<Long, HolidayInfo> types = holidayInfoService.getInfoByCurrDay(fromCurrDay,toCurrDay);
+    	
+    	CalendarMonth calendarMonth = getCalendarMonth(date, types, Boolean.TRUE);
+    	
+    	return ResponseEntity.ok().body(calendarMonth);
+    }
+    
+    private CalendarMonth getCalendarMonth(Date day,Map<Long, HolidayInfo> types,boolean onlyThisMonth){
+		
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(day);
+		cal.setFirstDayOfWeek(Calendar.SUNDAY);	//周日开始
+		int year = cal.get(Calendar.YEAR);		//所在年
+		int month = cal.get(Calendar.MONTH);	//所在月
+		
+		CalendarMonth calendarMonth = new CalendarMonth();
+		calendarMonth.setYear(year);
+		calendarMonth.setMonth(month + 1);
+		//这一个月的第一周的第一天
+		cal.set(Calendar.WEEK_OF_MONTH, 1);//这个月的第一周
+		cal.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);//这个月的第一周的第一天
+		//获取这一个月的所有日期
+		boolean isThisMonth = false;
+		boolean isLastThisMonth = false;
+		while(true){
+			if(cal.get(Calendar.MONTH) == month){
+				isThisMonth = true;
+			}else{
+				isThisMonth = false;
+			}
+			if(isLastThisMonth && !isThisMonth){//跨月了，到下个月了
+				break;
+			}
+			//一次加一周的记录
+			CalendarWeek calendarWeek = new CalendarWeek();
+			calendarWeek.setWeek(cal.get(Calendar.WEEK_OF_YEAR));
+			
+			cal.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
+			CalendarDay calendarDay = new CalendarDay();
+			if(!onlyThisMonth || (cal.get(Calendar.MONTH) == month)){
+				calendarDay.setDay(cal.get(Calendar.DAY_OF_MONTH));
+				calendarDay.setDayOfWeek(Calendar.SUNDAY);
+				setCalendarDay(calendarDay,types,StringUtil.nullToLong(DateUtil.formatDate(DateUtil.DATE_YYYYMMDD_PATTERN, cal.getTime())),CalendarDay.TYPE_WEEKEND);
+			}
+			calendarWeek.addDay(calendarDay);
+			
+			cal.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+			calendarDay = new CalendarDay();
+			if(!onlyThisMonth || (cal.get(Calendar.MONTH) == month)){
+				calendarDay.setDay(cal.get(Calendar.DAY_OF_MONTH));
+				calendarDay.setDayOfWeek(Calendar.MONDAY);
+				setCalendarDay(calendarDay,types,StringUtil.nullToLong(DateUtil.formatDate(DateUtil.DATE_YYYYMMDD_PATTERN, cal.getTime())),CalendarDay.TYPE_WORKDAY);
+			}
+			calendarWeek.addDay(calendarDay);
 
+			cal.set(Calendar.DAY_OF_WEEK, Calendar.TUESDAY);
+			calendarDay = new CalendarDay();
+			if(!onlyThisMonth || (cal.get(Calendar.MONTH) == month)){
+				calendarDay.setDay(cal.get(Calendar.DAY_OF_MONTH));
+				calendarDay.setDayOfWeek(Calendar.TUESDAY);
+				setCalendarDay(calendarDay,types,StringUtil.nullToLong(DateUtil.formatDate(DateUtil.DATE_YYYYMMDD_PATTERN, cal.getTime())),CalendarDay.TYPE_WORKDAY);
+			}
+			calendarWeek.addDay(calendarDay);
+
+			cal.set(Calendar.DAY_OF_WEEK, Calendar.WEDNESDAY);
+			calendarDay = new CalendarDay();
+			if(!onlyThisMonth || (cal.get(Calendar.MONTH) == month)){
+				calendarDay.setDay(cal.get(Calendar.DAY_OF_MONTH));
+				calendarDay.setDayOfWeek(Calendar.WEDNESDAY);
+				setCalendarDay(calendarDay,types,StringUtil.nullToLong(DateUtil.formatDate(DateUtil.DATE_YYYYMMDD_PATTERN, cal.getTime())),CalendarDay.TYPE_WORKDAY);
+			}
+			calendarWeek.addDay(calendarDay);
+
+			cal.set(Calendar.DAY_OF_WEEK, Calendar.THURSDAY);
+			calendarDay = new CalendarDay();
+			if(!onlyThisMonth || (cal.get(Calendar.MONTH) == month)){
+				calendarDay.setDay(cal.get(Calendar.DAY_OF_MONTH));
+				calendarDay.setDayOfWeek(Calendar.THURSDAY);
+				setCalendarDay(calendarDay,types,StringUtil.nullToLong(DateUtil.formatDate(DateUtil.DATE_YYYYMMDD_PATTERN, cal.getTime())),CalendarDay.TYPE_WORKDAY);
+			}
+			calendarWeek.addDay(calendarDay);
+			
+			cal.set(Calendar.DAY_OF_WEEK, Calendar.FRIDAY);
+			calendarDay = new CalendarDay();
+			if(!onlyThisMonth || (cal.get(Calendar.MONTH) == month)){
+				calendarDay.setDay(cal.get(Calendar.DAY_OF_MONTH));
+				calendarDay.setDayOfWeek(Calendar.FRIDAY);
+				setCalendarDay(calendarDay,types,StringUtil.nullToLong(DateUtil.formatDate(DateUtil.DATE_YYYYMMDD_PATTERN, cal.getTime())),CalendarDay.TYPE_WORKDAY);
+			}
+			calendarWeek.addDay(calendarDay);
+
+			cal.set(Calendar.DAY_OF_WEEK, Calendar.SATURDAY);
+			calendarDay = new CalendarDay();
+			if(!onlyThisMonth || (cal.get(Calendar.MONTH) == month)){
+				calendarDay.setDay(cal.get(Calendar.DAY_OF_MONTH));
+				calendarDay.setDayOfWeek(Calendar.SATURDAY);
+				setCalendarDay(calendarDay,types,StringUtil.nullToLong(DateUtil.formatDate(DateUtil.DATE_YYYYMMDD_PATTERN, cal.getTime())),CalendarDay.TYPE_WEEKEND);
+			}
+			calendarWeek.addDay(calendarDay);
+			
+			isLastThisMonth = isThisMonth;
+			calendarMonth.addWeek(calendarWeek);
+			//下一周的数据
+			cal.add(Calendar.DAY_OF_YEAR, 1);
+		}
+		return calendarMonth;
+	}
+	private void setCalendarDay(CalendarDay calendarDay, Map<Long, HolidayInfo> types, Long day,
+			Integer defaultType) {
+		if(types != null && types.containsKey(day)){
+			calendarDay.setType(types.get(day).getType());
+			calendarDay.setId(types.get(day).getId());
+		}else{
+			calendarDay.setType(defaultType);
+		}
+	}
+	@PutMapping("/holiday-infos/updateByOne")
+    @Timed
+    @Secured(AuthoritiesConstants.ROLE_INFO_BASIC)
+    public ResponseEntity<HolidayInfo> updateByOne(@RequestBody HolidayInfo holidayInfo) throws URISyntaxException {
+        log.debug(SecurityUtils.getCurrentUserLogin()+" REST request to update HolidayInfo : {}", holidayInfo);
+        if(holidayInfo == null){
+        	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.holidayInfo.save.requriedError", "")).body(null);
+        }
+        //判断新增或编辑参数
+        if(holidayInfo.getCurrDay() == null || holidayInfo.getType() == null){
+        	return ResponseEntity.badRequest().headers(HeaderUtil.createError("cpmApp.holidayInfo.save.requriedError", "")).body(null);
+        }
+        //获取当前用户
+        String updator = SecurityUtils.getCurrentUserLogin();
+        ZonedDateTime updateTime = ZonedDateTime.now();
+        Boolean isNew = Boolean.FALSE;
+        HolidayInfo findHoliday  = holidayInfoService.findByCurrDay(holidayInfo.getCurrDay());
+    	if(findHoliday == null){
+    		isNew = Boolean.TRUE;
+    		findHoliday = new HolidayInfo();
+    		findHoliday.setCreateTime(updateTime);
+    		findHoliday.setCreator(updator);
+    		findHoliday.setCurrDay(holidayInfo.getCurrDay());
+    	}
+        findHoliday.setType(holidayInfo.getType());
+    	findHoliday.setUpdateTime(updateTime);
+    	findHoliday.setUpdator(updator);
+    	
+        HolidayInfo result = holidayInfoService.save(findHoliday);
+        if(isNew){
+        	return ResponseEntity.ok()
+                    .headers(HeaderUtil.createEntityCreationAlert("holidayInfo", result.getId().toString()))
+                    .body(result);
+        }else{
+        	return ResponseEntity.ok()
+        			.headers(HeaderUtil.createEntityUpdateAlert("holidayInfo", findHoliday.getId().toString()))
+        			.body(result);
+        }
+    }
 }

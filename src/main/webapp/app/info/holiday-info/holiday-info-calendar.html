@@ -1,0 +1,65 @@
+<div>
+    <h2 data-translate="cpmApp.holidayInfo.home.title">Holiday Info</h2>
+    <div class="container-fluid">
+        <div class="row">
+        	<div class="col-sm-4">
+        	</div>
+            <div class="col-sm-4">
+                <p class="input-group">
+                	<span class="input-group-btn">
+	           			<button type="button" class="btn btn-default" ng-click="vm.arrowLeft()"><i class="glyphicon glyphicon-arrow-left"></i></button>
+	            	</span>
+                    <input type="text" class="form-control" name="currDay" datetime-picker="yyyyMM" ng-change="vm.search(vm.searchQuery)"
+	           		 		enable-time="false" ng-model="vm.searchQuery.currDay" is-open="vm.datePickerOpenStatus.currDay"/>
+	          		<span class="input-group-btn">
+	           			<button type="button" class="btn btn-default" ng-click="vm.openCalendar('currDay')"><i class="glyphicon glyphicon-calendar"></i></button>
+	           			<button type="button" class="btn btn-default" ng-click="vm.arrowRight()"><i class="glyphicon glyphicon-arrow-right"></i></button>
+	            	</span>
+                </p>
+            </div>
+            <div class="col-sm-4">
+        	</div>
+        </div>
+    </div>
+	<form name="editForm" role="form" novalidate ng-submit="vm.save()">
+	    <div class="table-responsive">
+	        <table class="jh-table table table-striped" class="wd-text-align-c" >
+	            <thead>
+	                <tr>
+	                	<th class="wd-text-align-c wd-calendar-week" data-translate="cpmApp.holidayInfo.week">Week</th>
+	                    <th class="wd-text-align-c" data-translate="cpmApp.holidayInfo.sunday">Sunday</th>
+	                    <th class="wd-text-align-c" data-translate="cpmApp.holidayInfo.monday">Monday</th>
+	                    <th class="wd-text-align-c" data-translate="cpmApp.holidayInfo.tuesday">Tuesday</th>
+	                    <th class="wd-text-align-c" data-translate="cpmApp.holidayInfo.wednesday">Wednesday</th>
+	                    <th class="wd-text-align-c" data-translate="cpmApp.holidayInfo.thursday">Thursday</th>
+	                    <th class="wd-text-align-c" data-translate="cpmApp.holidayInfo.friday">Friday</th>
+	                    <th class="wd-text-align-c" data-translate="cpmApp.holidayInfo.saturday">Saturday</th>
+	                </tr>
+	            </thead>
+	            <tbody>
+	            	<tr ng-repeat="week in vm.weeks">
+	                    <td class="wd-calendar-week">{{week.week}}</td>
+	                    <td class="wd-text-align-c" ng-repeat="day in week.days">
+	                    	<span ng-show="vm.showDay(day)" ng-click="vm.clickDay($event,day)">
+		                    	{{day.day}}
+		                    	<span ng-class="vm.getCalendarDayClass(day)" data-translate="cpmApp.holidayInfo.mark" translate-values="{name: vm.getCalendarDayMark(day)}"></span>
+	                    	</span>
+	                    	<span ng-show="vm.showSelect(day)">
+	                    		<select class="form-control" ng-change="vm.selectType(day)"
+	                    			ng-blur="vm.blurSelect(day)"
+	                    			ng-model="day.selectType"
+							        ng-options="holidayType.val for holidayType in vm.holidayTypes track by holidayType.key">
+								</select>
+	                    	</span>
+	                    </td>
+	                </tr>
+	            </tbody>
+	        </table>
+	    </div>
+	    <jhi-alert></jhi-alert>
+	    <jhi-alert-error></jhi-alert-error>
+	    <button id="go_back" type="button" ui-sref="{{vm.previousState}}" class="btn btn-info">
+	        <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span data-translate="entity.action.back"> Back</span>
+	    </button>
+	</form>
+</div>

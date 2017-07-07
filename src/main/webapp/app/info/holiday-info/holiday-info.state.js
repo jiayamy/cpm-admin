@@ -173,33 +173,45 @@
 	            }]
             }
         })
-        .state('holiday-info.delete', {
+        .state('holiday-info.editByCalendar', {
             parent: 'holiday-info',
-            url: '/delete/{id}',
+            url: '/calendar/{id}',
             data: {
                 authorities: ['ROLE_INFO_BASIC']
             },
-            onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
-                $uibModal.open({
-                    templateUrl: 'app/info/holiday-info/holiday-info-delete-dialog.html',
-                    controller: 'HolidayInfoDeleteController',
-                    controllerAs: 'vm',
-                    size: 'md',
-                    resolve: {
-                    	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
-                            return $ocLazyLoad.load('app/info/holiday-info/holiday-info-delete-dialog.controller.js');
-                        }],
-                        entity: ['HolidayInfo', function(HolidayInfo) {
-                            return HolidayInfo.get({id : $stateParams.id}).$promise;
-                        }]
-                    }
-                }).result.then(function() {
-                    $state.go('holiday-info', null, { reload: 'holiday-info' });
-                }, function() {
-                    $state.go('^');
-                });
-            }]
-        });
+            views: {
+                'content@': {
+                    templateUrl: 'app/info/holiday-info/holiday-info-calendar.html',
+                    controller: 'HolidayInfoCalendarController',
+                    controllerAs: 'vm'
+                }
+            },
+            resolve: {
+            	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
+                    return $ocLazyLoad.load('app/info/holiday-info/holiday-info-calendar.controller.js');
+                }],
+	            translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
+	                $translatePartialLoader.addPart('holidayInfo');
+	                $translatePartialLoader.addPart('global');
+	                return $translate.refresh();
+	            }],
+	            entity: ['$stateParams', '$ocLazyLoad','$injector', function($stateParams, $ocLazyLoad, $injector) {
+                	return $ocLazyLoad.load('app/info/holiday-info/holiday-info.service.js').then(
+                			function(){
+                				return $injector.get('HolidayInfo').get({id : $stateParams.id}).$promise;
+                			}
+                	);
+                }],
+	            previousState: ["$state", function ($state) {
+	                var currentStateData = {
+	                    name: $state.current.name || 'holiday-info',
+	                    params: $state.params,
+	                    url: $state.href($state.current.name, $state.params)
+	                };
+	                return currentStateData;
+	            }]
+            }
+        })
     }
 
 })();

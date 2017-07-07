@@ -31,7 +31,9 @@
                     return data;
                 }
             },
-            'update': { method:'PUT' }
+            'update': { method:'PUT' },
+            'updateByOne': { method:'PUT',url:"api/holiday-infos/updateByOne" },
+            'queryCalendar': {method:'GET',url:"api/holiday-infos/queryCalendar"}
         });
     }
 })();
