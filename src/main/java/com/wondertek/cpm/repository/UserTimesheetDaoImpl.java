@@ -111,14 +111,9 @@ public class UserTimesheetDaoImpl extends GenericDaoImpl<UserTimesheet, Long> im
     	sb.append(" left join ContractInfo wci on wci.id = wut.objId");
     	sb.append(" left join DeptInfo wdi on wdi.id = wci.deptId");
     	sb.append(" left join DeptInfo wdi2 on wdi2.id = wci.consultantsDeptId");
-    	sb.append(" left join ProjectInfo wpi on wpi.contractId = wci.id");
-    	sb.append(" left join DeptInfo wdi3 on wpi.deptId = wdi3.id");
     	
     	sb.append(" where (wci.salesmanId = ?" + (count++) + " or wci.consultantsId = ?" + (count++));
     	params.add(user.getId());
-    	params.add(user.getId());
-    	//添加项目经理权限
-    	sb.append(" or wpi.pmId = ?" + (count++));
     	params.add(user.getId());
     	if(user.getIsManager()){
     		sb.append(" or wdi.id = ?" + (count++) + " or wdi.idPath like ?" + (count++));
@@ -128,12 +123,7 @@ public class UserTimesheetDaoImpl extends GenericDaoImpl<UserTimesheet, Long> im
     		sb.append(" or wdi2.id = ?" + (count++) + " or wdi2.idPath like ?" + (count++));
     		params.add(deptInfo.getId());
     		params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
-    		
-    		sb.append(" or wdi3.idPath like ?" + (count++) + " or wdi3.id = ?" + (count++));
-			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
-			params.add(deptInfo.getId());
     	}
-    			
     	sb.append(")");
     	
     	if(!StringUtil.isNullStr(userTimesheet.getObjName())){
@@ -176,8 +166,8 @@ public class UserTimesheetDaoImpl extends GenericDaoImpl<UserTimesheet, Long> im
     		}
     	}
     	Page<UserTimesheet> page = this.queryHqlPage(
-    			"select distinct wut from UserTimesheet wut" + sb.toString() + orderHql.toString(), 
-    			"select count(distinct wut.id) from UserTimesheet wut" + sb.toString(), 
+    			"select wut from UserTimesheet wut" + sb.toString() + orderHql.toString(), 
+    			"select count(wut.id) from UserTimesheet wut" + sb.toString(), 
     			params.toArray(), 
     			pageable
     		);
@@ -347,14 +337,9 @@ public class UserTimesheetDaoImpl extends GenericDaoImpl<UserTimesheet, Long> im
     	sb.append(" left join ContractInfo wci on wci.id = wut.objId");
     	sb.append(" left join DeptInfo wdi on wdi.id = wci.deptId");
     	sb.append(" left join DeptInfo wdi2 on wdi2.id = wci.consultantsDeptId");
-    	sb.append(" left join ProjectInfo wpi on wpi.contractId = wci.id");
-    	sb.append(" left join DeptInfo wdi3 on wpi.deptId = wdi3.id");
     	
     	sb.append(" where (wci.salesmanId = ?" + (count++) + " or wci.consultantsId = ?" + (count++));
     	params.add(user.getId());
-    	params.add(user.getId());
-    	//添加项目经理权限
-    	sb.append(" or wpi.pmId = ?" + (count++));
     	params.add(user.getId());
     	if(user.getIsManager()){
     		sb.append(" or wdi.id = ?" + (count++) + " or wdi.idPath like ?" + (count++));
@@ -364,12 +349,7 @@ public class UserTimesheetDaoImpl extends GenericDaoImpl<UserTimesheet, Long> im
     		sb.append(" or wdi2.id = ?" + (count++) + " or wdi2.idPath like ?" + (count++));
     		params.add(deptInfo.getId());
     		params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
-    		
-    		sb.append(" or wdi3.idPath like ?" + (count++) + " or wdi3.id = ?" + (count++));
-			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
-			params.add(deptInfo.getId());
     	}
-
     	sb.append(")");
     	sb.append(" and wut.type = ?" + (count++) + " and wut.id = ?" + (count++));
     	params.add(UserTimesheet.TYPE_CONTRACT);

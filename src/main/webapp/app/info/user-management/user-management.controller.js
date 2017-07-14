@@ -37,9 +37,13 @@
         vm.searchQuery.deptName = pagingParams.deptName;
         vm.searchQuery.workArea = pagingParams.workArea;
         vm.searchQuery.grade = pagingParams.grade;
+        vm.searchQuery.duty = pagingParams.duty;
+        vm.searchQuery.isManager = pagingParams.isManager;
         if (vm.searchQuery.serialNum == undefined&& vm.searchQuery.lastName == undefined
         		&& vm.searchQuery.loginName == undefined && vm.searchQuery.deptId == undefined
-        		&& vm.searchQuery.workArea == undefined && vm.searchQuery.grade == undefined){
+        		&& vm.searchQuery.workArea == undefined && vm.searchQuery.grade == undefined
+        		 && vm.searchQuery.duty == undefined && vm.searchQuery.isManager == undefined
+        		 ){
         	vm.haveSearch = null;
         }else{
         	vm.haveSearch = true;
@@ -87,6 +91,8 @@
             	deptId:pagingParams.deptId,
             	workArea:pagingParams.workArea,
             	grade:pagingParams.grade,
+            	duty:pagingParams.duty,
+            	isManager:pagingParams.isManager,
                 page: pagingParams.page - 1,
                 size: vm.itemsPerPage,
                 sort: sort()
@@ -144,13 +150,17 @@
                 deptId:vm.searchQuery.deptId,
                 deptName:vm.searchQuery.deptName,
                 workArea:vm.searchQuery.workArea,
-                grade:vm.searchQuery.grade
+                grade:vm.searchQuery.grade,
+                duty:vm.searchQuery.duty,
+                isManager:vm.searchQuery.isManager
             });
         }
         function search() {
         	if (vm.searchQuery.serialNum == undefined&& vm.searchQuery.lastName == undefined
             		&& vm.searchQuery.loginName == undefined&& vm.searchQuery.deptId == undefined
-            		&& vm.searchQuery.workArea == undefined && vm.searchQuery.grade == undefined){
+            		&& vm.searchQuery.workArea == undefined && vm.searchQuery.grade == undefined
+            		&& vm.searchQuery.duty == undefined && vm.searchQuery.isManager == undefined
+            		){
                 return vm.clear();
             }
             vm.links = null;
@@ -192,7 +202,9 @@
         	var deptId = vm.searchQuery.deptId;
         	var workArea = vm.searchQuery.workArea;
         	var grade = vm.searchQuery.grade;
-			
+        	var duty = vm.searchQuery.duty;
+        	var isManager = vm.searchQuery.isManager;
+        	
 			if(loginName){
 				if(c == 0){
 					c++;
@@ -248,6 +260,24 @@
 				url += "grade="+encodeURI(grade);
 			}
 			
+			if(duty){
+				if(c == 0){
+					c++;
+					url += "?";
+				}else{
+					url += "&";
+				}
+				url += "duty="+encodeURI(duty);
+			}
+			if(isManager != undefined){
+				if(c == 0){
+					c++;
+					url += "?";
+				}else{
+					url += "&";
+				}
+				url += "isManager="+encodeURI(isManager);
+			}
         	window.open(url);
         }
     }

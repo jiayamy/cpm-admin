@@ -15,6 +15,6 @@ public interface ContractReceiveRepository extends JpaRepository<ContractReceive
 	@Query(" from ContractReceive where contractId = ?1 and receiveDay <= ?2 and status = 1")
 	List<ContractReceive> findAllByContractIdAndReceiveDayBefore(Long contractId, Long receiveDay);
 	
-	@Query(" from ContractReceive where contractId = ?1 and receiveDay >= ?2 and receiveDay <= ?3")
+	@Query(" from ContractReceive where contractId = ?1 and receiveDay >= ?2 and receiveDay <= ?3 and status = 1")
 	List<ContractReceive> findAllByContractIdAndReceiveDayBetween(Long contractId, Long beginTime,Long endTime);
 }

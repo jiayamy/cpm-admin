@@ -89,8 +89,8 @@
                     <td><a ui-sref="user-timesheet-detail({id:userTimesheet.id})">{{userTimesheet.workDay}}</a></td>
                     <td>{{userTimesheet.type}}</td>
                     <td>{{userTimesheet.objName}}</td>
-                    <td>{{userTimesheet.realInput}}</td>
-                    <td>{{userTimesheet.extraInput}}</td>
+                    <td ng-class="{'btn-warning':(userTimesheet.realInput == 0)}">{{userTimesheet.realInput}}</td>
+                    <td ng-class="{'btn-warning':(userTimesheet.extraInput > 0)}">{{userTimesheet.extraInput}}</td>
                     <td>{{userTimesheet.updateTime | date:'medium'}}</td>
                     <td class="text-right">
                         <div class="btn-group flex-btn-group-container">

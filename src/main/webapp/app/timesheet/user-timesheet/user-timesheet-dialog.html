@@ -100,13 +100,13 @@
 	                    <td>{{userTimesheet.typeName}}</td>
 	                    <td>{{userTimesheet.objName1}}</td>
 	                    <td>{{userTimesheet.inputType}}</td>
-	                    <td><input type="text" ng-model="userTimesheet.data1" required ng-minlength="1" style="width:80px;" /></td>
-	                    <td><input type="text" ng-model="userTimesheet.data2" required ng-minlength="1" style="width:80px;" /></td>
-	                    <td><input type="text" ng-model="userTimesheet.data3" required ng-minlength="1" style="width:80px;" /></td>
-	                    <td><input type="text" ng-model="userTimesheet.data4" required ng-minlength="1" style="width:80px;" /></td>
-	                    <td><input type="text" ng-model="userTimesheet.data5" required ng-minlength="1" style="width:80px;" /></td>
-	                    <td><input type="text" ng-model="userTimesheet.data6" required ng-minlength="1" style="width:80px;" /></td>
-	                    <td><input type="text" ng-model="userTimesheet.data7" required ng-minlength="1" style="width:80px;" /></td>
+	                    <td><input type="text" ng-model="userTimesheet.data1" required ng-minlength="1" style="width:80px;" ng-class="{'btn-warning':vm.checkInput(userTimesheet.inputType,userTimesheet.data1)}" /></td>
+	                    <td><input type="text" ng-model="userTimesheet.data2" required ng-minlength="1" style="width:80px;" ng-class="{'btn-warning':vm.checkInput(userTimesheet.inputType,userTimesheet.data2)}" /></td>
+	                    <td><input type="text" ng-model="userTimesheet.data3" required ng-minlength="1" style="width:80px;" ng-class="{'btn-warning':vm.checkInput(userTimesheet.inputType,userTimesheet.data3)}" /></td>
+	                    <td><input type="text" ng-model="userTimesheet.data4" required ng-minlength="1" style="width:80px;" ng-class="{'btn-warning':vm.checkInput(userTimesheet.inputType,userTimesheet.data4)}" /></td>
+	                    <td><input type="text" ng-model="userTimesheet.data5" required ng-minlength="1" style="width:80px;" ng-class="{'btn-warning':vm.checkInput(userTimesheet.inputType,userTimesheet.data5)}" /></td>
+	                    <td><input type="text" ng-model="userTimesheet.data6" required ng-minlength="1" style="width:80px;" ng-class="{'btn-warning':vm.checkInput(userTimesheet.inputType,userTimesheet.data6)}" /></td>
+	                    <td><input type="text" ng-model="userTimesheet.data7" required ng-minlength="1" style="width:80px;" ng-class="{'btn-warning':vm.checkInput(userTimesheet.inputType,userTimesheet.data7)}" /></td>
 	                </tr>
 	            </tbody>
 	        </table>

@@ -48,6 +48,13 @@
         	vm.searchQuery.workDay = new Date(date.substring(0,4),parseInt(date.substring(4,6))-1,parseInt(date.substring(6,8))+7);
         	vm.search();
         }
+        vm.checkInput = checkInput;
+        function checkInput(inputType,data){
+        	if(inputType == "加班工时" && data > 0){
+        		return true;
+        	}
+        	return false;
+        }
         function isNotHoliday(data){
         	if(data.length > 8){
         		return true;

@@ -917,6 +917,7 @@ public class ContractInfoResource {
     	String[] heads = new String[]{
     			"合同编号",
     			"合同名称",
+    			"合同金额",
     			"合同类型",
     			"预立合同",
     			"外部合同",
@@ -951,6 +952,7 @@ public class ContractInfoResource {
     	Integer[] cellType = new Integer[]{
     			Cell.CELL_TYPE_STRING,
     			Cell.CELL_TYPE_STRING,
+    			Cell.CELL_TYPE_NUMERIC,
     			Cell.CELL_TYPE_STRING,
     			Cell.CELL_TYPE_STRING,
     			Cell.CELL_TYPE_STRING,
@@ -961,8 +963,8 @@ public class ContractInfoResource {
     	};
     	XSSFSheet sheet = excelWrite.getCurrentSheet();
     	sheet.setColumnWidth(1, 3745);
-    	sheet.setColumnWidth(5, 2900);
     	sheet.setColumnWidth(6, 2900);
+    	sheet.setColumnWidth(7, 2900);
     	XSSFWorkbook wb = excelWrite.getXSSFWorkbook();
 		XSSFRow row = null;
 		XSSFCell cell = null;
@@ -993,6 +995,13 @@ public class ContractInfoResource {
 				cell.setCellValue("");
 			}else{
 				cell.setCellValue(vo.getName());
+			}
+			j++;
+			cell = row.createCell(j,cellType[j]);
+			if(vo.getAmount() == null){
+				cell.setCellValue("");
+			}else{
+				cell.setCellValue(vo.getAmount());
 			}
 			j++;
 			cell = row.createCell(j,cellType[j]);

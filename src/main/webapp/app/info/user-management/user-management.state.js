@@ -38,7 +38,9 @@
                 deptId:null,
                 deptName:null,
                 workArea:null,
-                grade:null
+                grade:null,
+                duty:null,
+                isManager:null
             },
             resolve: {
             	loadMyCtrl: ['$ocLazyLoad', function($ocLazyLoad){
@@ -58,7 +60,9 @@
                         deptId: $stateParams.deptId,
                         deptName: $stateParams.deptName,
                         workArea: $stateParams.workArea,
-                        grade: $stateParams.grade
+                        grade: $stateParams.grade,
+                        duty: $stateParams.duty,
+                        isManager: $stateParams.isManager
                     };
                 }],
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {

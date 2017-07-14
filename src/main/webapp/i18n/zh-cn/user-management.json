@@ -41,6 +41,8 @@
         "telephone":"手机号",
         "grade":"级别",
         "isManager":"管理人员",
+        "isManagerYes":"管理人员",
+        "isManagerNo":"普通员工",
         "birthYear":"出生年份",
         "birthDay":"生日",
         "gender":"性别",

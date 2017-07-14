@@ -87,9 +87,9 @@
                     <td><a ui-sref="contract-timesheet-detail({id:contractTimesheet.id})">{{contractTimesheet.workDay}}</a></td>
                     <td>{{contractTimesheet.userName}}</td>
                     <td>{{contractTimesheet.objName}}</td>
-                    <td>{{contractTimesheet.realInput}}</td>
+                    <td ng-class="{'btn-warning':(contractTimesheet.realInput == 0)}">{{contractTimesheet.realInput}}</td>
                     <td ng-class="{'btn-info':(contractTimesheet.realInput != contractTimesheet.acceptInput)}">{{contractTimesheet.acceptInput}}</td>
-                    <td>{{contractTimesheet.extraInput}}</td>
+                    <td ng-class="{'btn-warning':(contractTimesheet.extraInput > 0)}">{{contractTimesheet.extraInput}}</td>
                     <td ng-class="{'btn-info':(contractTimesheet.extraInput != contractTimesheet.acceptExtraInput)}">{{contractTimesheet.acceptExtraInput}}</td>
                     <td>{{contractTimesheet.updator}}</td>
                     <td class="hidden-xs">{{contractTimesheet.updateTime | date:'medium'}}</td>

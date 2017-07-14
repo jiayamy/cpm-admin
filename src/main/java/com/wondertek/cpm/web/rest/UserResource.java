@@ -224,6 +224,8 @@ public class UserResource {
     		@RequestParam(value = "deptId",required=false) Long deptId, 
     		@RequestParam(value = "workArea",required=false) String workArea, 
     		@RequestParam(value = "grade",required=false) Integer grade,
+    		@RequestParam(value = "duty",required=false) String duty,
+    		@RequestParam(value = "isManager",required=false) Boolean isManager,
     		@ApiParam Pageable pageable)
         throws URISyntaxException {
     	log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to get All Users login : {}, serialNum : {}, lastName : {}, "
@@ -235,6 +237,8 @@ public class UserResource {
     	user.setDeptId(deptId);
     	user.setWorkArea(workArea);
     	user.setGrade(grade);
+    	user.setIsManager(isManager);
+    	user.setDuty(duty);
     	
 //        Page<User> page = userRepository.findAllWithAuthorities(pageable);
         Page<User> page = userService.getUserPage(user,pageable);
@@ -696,6 +700,8 @@ public class UserResource {
     		@RequestParam(value = "deptId",required=false) Long deptId, 
     		@RequestParam(value = "workArea",required=false) String workArea, 
     		@RequestParam(value = "grade",required=false) Integer grade,
+    		@RequestParam(value = "duty",required=false) String duty,
+    		@RequestParam(value = "isManager",required=false) Boolean isManager,
     		@ApiParam Pageable pageable) throws IOException{
 		log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to export Users login : {}, serialNum : {}, lastName : {}, "
     			+ "deptId : {}, workArea : {}, grade : {}", login, serialNum, lastName, deptId, workArea, grade);
@@ -706,6 +712,8 @@ public class UserResource {
     	user.setDeptId(deptId);
     	user.setWorkArea(workArea);
     	user.setGrade(grade);
+    	user.setIsManager(isManager);
+    	user.setDuty(duty);
     	
         Page<User> page = userService.getUserPage(user,null);
         List<User> objs = page.getContent();
@@ -842,9 +850,9 @@ public class UserResource {
 				cell.setCellValue("");
 			}else{
 				if(vo.getIsManager()){
-					cell.setCellValue("是");
+					cell.setCellValue("管理人员");
 				}else{
-					cell.setCellValue("否");
+					cell.setCellValue("普通员工");
 				}
 			}
 			j++;

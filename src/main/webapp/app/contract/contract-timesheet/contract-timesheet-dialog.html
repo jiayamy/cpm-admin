@@ -51,32 +51,32 @@
 	                    <td>{{userTimesheet.userName}}</td>
 	                    <td>{{userTimesheet.inputType}}</td>
 	                    <td>
-	                    	<input type="text" ng-model="userTimesheet.data1" ng-disabled="true" style="width:40px;" ng-class="{'wd-ut-error':vm.isNotSame(userTimesheet.data1,userTimesheet.check1)}" />
-	                    	<input type="text" ng-model="userTimesheet.check1" required ng-minlength="1" style="width:40px;" />
+	                    	<input type="text" ng-model="userTimesheet.data1" ng-disabled="true" style="width:40px;" ng-class="{'btn-warning':vm.checkInput(userTimesheet.inputType,userTimesheet.data1)}" />
+	                    	<input type="text" ng-model="userTimesheet.check1" required ng-minlength="1" style="width:40px;" ng-class="{'wd-ut-error':vm.isNotSame(userTimesheet.data1,userTimesheet.check1)}" />
 	                    </td>
 	                    <td>
-	                    	<input type="text" ng-model="userTimesheet.data2" ng-disabled="true" style="width:40px;" ng-class="{'wd-ut-error':vm.isNotSame(userTimesheet.data2,userTimesheet.check2)}" />
-	                    	<input type="text" ng-model="userTimesheet.check2" required ng-minlength="1" style="width:40px;" />
+	                    	<input type="text" ng-model="userTimesheet.data2" ng-disabled="true" style="width:40px;" ng-class="{'btn-warning':vm.checkInput(userTimesheet.inputType,userTimesheet.data2)}" />
+	                    	<input type="text" ng-model="userTimesheet.check2" required ng-minlength="1" style="width:40px;" ng-class="{'wd-ut-error':vm.isNotSame(userTimesheet.data2,userTimesheet.check2)}" />
 	                    </td>
 	                    <td>
-	                    	<input type="text" ng-model="userTimesheet.data3" ng-disabled="true" style="width:40px;" ng-class="{'wd-ut-error':vm.isNotSame(userTimesheet.data3,userTimesheet.check3)}" />
-	                    	<input type="text" ng-model="userTimesheet.check3" required ng-minlength="1" style="width:40px;" />
+	                    	<input type="text" ng-model="userTimesheet.data3" ng-disabled="true" style="width:40px;" ng-class="{'btn-warning':vm.checkInput(userTimesheet.inputType,userTimesheet.data3)}" />
+	                    	<input type="text" ng-model="userTimesheet.check3" required ng-minlength="1" style="width:40px;" ng-class="{'wd-ut-error':vm.isNotSame(userTimesheet.data3,userTimesheet.check3)}" />
 	                    </td>
 	                    <td>
-	                    	<input type="text" ng-model="userTimesheet.data4" ng-disabled="true" style="width:40px;" ng-class="{'wd-ut-error':vm.isNotSame(userTimesheet.data4,userTimesheet.check4)}" />
-	                    	<input type="text" ng-model="userTimesheet.check4" required ng-minlength="1" style="width:40px;" />
+	                    	<input type="text" ng-model="userTimesheet.data4" ng-disabled="true" style="width:40px;" ng-class="{'btn-warning':vm.checkInput(userTimesheet.inputType,userTimesheet.data4)}" />
+	                    	<input type="text" ng-model="userTimesheet.check4" required ng-minlength="1" style="width:40px;" ng-class="{'wd-ut-error':vm.isNotSame(userTimesheet.data4,userTimesheet.check4)}" />
 	                    </td>
 	                    <td>
-	                    	<input type="text" ng-model="userTimesheet.data5" ng-disabled="true" style="width:40px;" ng-class="{'wd-ut-error':vm.isNotSame(userTimesheet.data5,userTimesheet.check5)}" />
-	                    	<input type="text" ng-model="userTimesheet.check5" required ng-minlength="1" style="width:40px;" />
+	                    	<input type="text" ng-model="userTimesheet.data5" ng-disabled="true" style="width:40px;" ng-class="{'btn-warning':vm.checkInput(userTimesheet.inputType,userTimesheet.data5)}" />
+	                    	<input type="text" ng-model="userTimesheet.check5" required ng-minlength="1" style="width:40px;" ng-class="{'wd-ut-error':vm.isNotSame(userTimesheet.data5,userTimesheet.check5)}"  />
 	                    </td>
 	                    <td>
-	                    	<input type="text" ng-model="userTimesheet.data6" ng-disabled="true" style="width:40px;" ng-class="{'wd-ut-error':vm.isNotSame(userTimesheet.data6,userTimesheet.check6)}" />
-	                    	<input type="text" ng-model="userTimesheet.check6" required ng-minlength="1" style="width:40px;" />
+	                    	<input type="text" ng-model="userTimesheet.data6" ng-disabled="true" style="width:40px;" ng-class="{'btn-warning':vm.checkInput(userTimesheet.inputType,userTimesheet.data6)}" />
+	                    	<input type="text" ng-model="userTimesheet.check6" required ng-minlength="1" style="width:40px;" ng-class="{'wd-ut-error':vm.isNotSame(userTimesheet.data6,userTimesheet.check6)}"  />
 	                    </td>
 	                    <td>
-	                    	<input type="text" ng-model="userTimesheet.data7" ng-disabled="true" style="width:40px;" ng-class="{'wd-ut-error':vm.isNotSame(userTimesheet.data7,userTimesheet.check7)}" />
-	                    	<input type="text" ng-model="userTimesheet.check7" required ng-minlength="1" style="width:40px;" />
+	                    	<input type="text" ng-model="userTimesheet.data7" ng-disabled="true" style="width:40px;" ng-class="{'btn-warning':vm.checkInput(userTimesheet.inputType,userTimesheet.data7)}" />
+	                    	<input type="text" ng-model="userTimesheet.check7" required ng-minlength="1" style="width:40px;" ng-class="{'wd-ut-error':vm.isNotSame(userTimesheet.data7,userTimesheet.check7)} />
 	                    </td>
 	                </tr>
 	            </tbody>
