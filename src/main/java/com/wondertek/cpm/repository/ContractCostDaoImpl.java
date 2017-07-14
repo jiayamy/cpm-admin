@@ -45,19 +45,26 @@ public class ContractCostDaoImpl extends GenericDaoImpl<ContractCost, Long> impl
 		List<Object> params = new ArrayList<Object>();
 		int count = 0;//jpa格式 问号后的数组，一定要从0开始
 		
-		queryHql.append("select wcc,wci.serialNum,wci.name,wcb.budgetTotal");
-		countHql.append("select count(wcc.id)");
+		queryHql.append("select distinct wcc,wci.serialNum,wci.name,wcb.budgetTotal");
+		countHql.append("select count(distinct wcc.id)");
 		
 		whereHql.append(" from ContractCost wcc");
 		whereHql.append(" left join ContractInfo wci on wci.id = wcc.contractId");
 		whereHql.append(" left join ContractBudget wcb on wcb.id = wcc.budgetId");
 		whereHql.append(" left join DeptInfo wdi on wdi.id = wci.deptId");
 		whereHql.append(" left join DeptInfo wdi2 on wci.consultantsDeptId = wdi2.id");
+		
+		whereHql.append(" left join ProjectInfo wpi on wcc.contractId = wpi.contractId");
+		whereHql.append(" left join DeptInfo wdi3 on wpi.deptId = wdi3.id");
 		whereHql.append(" where (wci.salesmanId = ?" + (count++) + " or wci.consultantsId = ?" + (count++) + " or wci.creator = ?" + (count++));
 		
 		params.add(user.getId());
 		params.add(user.getId());
 		params.add(user.getLogin());
+		
+		//添加项目经理权限
+		whereHql.append(" or wpi.pmId = ?" + (count++));
+		params.add(user.getId());
 		
 		if (user.getIsManager()) {
 			whereHql.append(" or wdi.idPath like ?" + (count++) + " or wdi.id = ?" + (count++));
@@ -67,7 +74,12 @@ public class ContractCostDaoImpl extends GenericDaoImpl<ContractCost, Long> impl
 			whereHql.append(" or wdi2.idPath like ?" + (count++) + " or wdi2.id = ?" + (count++));
 			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
 			params.add(deptInfo.getId());
+			
+			whereHql.append(" or wdi3.idPath like ?" + (count++) + " or wdi3.id = ?" + (count++));
+			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
+			params.add(deptInfo.getId());
 		}
+				
 		whereHql.append(")");
 		if(pageType == 1){//工时
 			whereHql.append(" and wcc.type = ?" + (count++));	
@@ -142,11 +154,17 @@ public class ContractCostDaoImpl extends GenericDaoImpl<ContractCost, Long> impl
 		queryHql.append(" left join ContractBudget wcb on wcb.id = wcc.budgetId");
 		queryHql.append(" left join DeptInfo wdi on wdi.id = wci.deptId");
 		queryHql.append(" left join DeptInfo wdi2 on wci.consultantsDeptId = wdi2.id");
+		queryHql.append(" left join ProjectInfo wpi on wcc.contractId = wpi.contractId");
+		queryHql.append(" left join DeptInfo wdi3 on wpi.deptId = wdi3.id");
 		queryHql.append(" where (wci.salesmanId = ?" + (count++) + " or wci.consultantsId = ?" + (count++) + " or wci.creator = ?" + (count++));
 		
 		params.add(user.getId());
 		params.add(user.getId());
 		params.add(user.getLogin());
+		
+		//添加项目经理权限
+		queryHql.append(" or wpi.pmId = ?" + (count++));
+		params.add(user.getId());
 		
 		if (user.getIsManager()) {
 			queryHql.append(" or wdi.idPath like ?" + (count++) + " or wdi.id = ?" + (count++));
@@ -156,7 +174,12 @@ public class ContractCostDaoImpl extends GenericDaoImpl<ContractCost, Long> impl
 			queryHql.append(" or wdi2.idPath like ?" + (count++) + " or wdi2.id = ?" + (count++));
 			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
 			params.add(deptInfo.getId());
+			
+			queryHql.append(" or wdi3.idPath like ?" + (count++) + " or wdi3.id = ?" + (count++));
+			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
+			params.add(deptInfo.getId());
 		}
+				
 		queryHql.append(") and wcc.id = ?" + (count++));
 		params.add(id);
 		List<Object[]> list = this.queryAllHql(queryHql.toString(), params.toArray());

@@ -16,12 +16,12 @@ import org.springframework.stereotype.Repository;
 import com.wondertek.cpm.CpmConstants;
 import com.wondertek.cpm.config.DateUtil;
 import com.wondertek.cpm.config.StringUtil;
+import com.wondertek.cpm.config.StringUtil;
 import com.wondertek.cpm.domain.DeptInfo;
 import com.wondertek.cpm.domain.DeptType;
 import com.wondertek.cpm.domain.ProjectOverall;
-import com.wondertek.cpm.domain.User;
-import com.wondertek.cpm.config.StringUtil;
 import com.wondertek.cpm.domain.ProjectOverall;
+import com.wondertek.cpm.domain.User;
 import com.wondertek.cpm.domain.vo.ProjectOverallVo;
 @Repository("projectOverallDao")
 public class ProjectOverallDaoImpl extends GenericDaoImpl<ProjectOverall, Long> implements ProjectOverallDao  {
@@ -48,8 +48,8 @@ public class ProjectOverallDaoImpl extends GenericDaoImpl<ProjectOverall, Long> 
 		StringBuffer orderSql = new StringBuffer();
 		List<Object> params = new ArrayList<Object>();
 		
-		querySql.append("select wpo.id,wpo.contract_response,wpo.contract_id,wpo.contract_amount,wpo.tax_rate,wpo.identifiable_income,wpo.contract_finish_rate,wpo.acceptance_income,wpo.receive_total,wpo.receivable_account,wpo.share_cost,wpo.third_party_purchase,wpo.internal_purchase,wpo.bonus_,wpo.gross_profit,wpo.gross_profit_rate,wci.serial_num,wci.sales_man,wci.consultants_,c.ta1,c.ta2,wpo.stat_week,wpo.create_time");
-		countSql.append("select count(wpo.id)");
+		querySql.append("select distinct wpo.id,wpo.contract_response,wpo.contract_id,wpo.contract_amount,wpo.tax_rate,wpo.identifiable_income,wpo.contract_finish_rate,wpo.acceptance_income,wpo.receive_total,wpo.receivable_account,wpo.share_cost,wpo.third_party_purchase,wpo.internal_purchase,wpo.bonus_,wpo.gross_profit,wpo.gross_profit_rate,wci.serial_num,wci.sales_man,wci.consultants_,c.ta1,c.ta2,wpo.stat_week,wpo.create_time");
+		countSql.append("select count(distinct wpo.id)");
 		
 		whereSql.append(" from w_project_overall wpo");
 		whereSql.append(" inner join ");
@@ -66,6 +66,8 @@ public class ProjectOverallDaoImpl extends GenericDaoImpl<ProjectOverall, Long> 
 		whereSql.append(" on wpo.contract_id = c.contract_id");
 		whereSql.append(" left join w_dept_info wdi on wci.dept_id = wdi.id");
 		whereSql.append(" left join w_dept_info wdi2 on wci.consultants_dept_id = wdi2.id");
+		whereSql.append(" left join w_project_info wpi on wci.id = wpi.contract_id");
+		whereSql.append(" left join w_dept_info wdi3 on wpi.dept_id = wdi3.id");
 		//
 		params.add(projectOverall.getStatWeek());
 		params.add(projectOverall.getStatWeek());
@@ -74,12 +76,19 @@ public class ProjectOverallDaoImpl extends GenericDaoImpl<ProjectOverall, Long> 
 		params.add(user.getLogin());
 		params.add(user.getId());
 		params.add(user.getId());
+		//添加项目经理权限
+    	whereSql.append(" or wpi.pm_id = ?");
+    	params.add(user.getId());
 		if(user.getIsManager()){
 			whereSql.append(" or wdi.id_path like ? or wdi.id = ?");
 			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
 			params.add(deptInfo.getId());
 			
 			whereSql.append(" or wdi2.id_path like ? or wdi2.id = ?");
+			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
+			params.add(deptInfo.getId());
+			
+			whereSql.append(" or wdi3.id_path like ? or wdi3.id = ?");
 			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
 			params.add(deptInfo.getId());
 		}
@@ -170,8 +179,8 @@ public class ProjectOverallDaoImpl extends GenericDaoImpl<ProjectOverall, Long> 
 		StringBuffer whereSql = new StringBuffer();
 		List<Object> params = new ArrayList<Object>();
 		
-		querySql.append("select wpo.id,wpo.contract_response,wpo.contract_id,wpo.contract_amount,wpo.tax_rate,wpo.identifiable_income,wpo.contract_finish_rate,wpo.acceptance_income,wpo.receive_total,wpo.receivable_account,wpo.share_cost,wpo.third_party_purchase,wpo.internal_purchase,wpo.bonus_,wpo.gross_profit,wpo.gross_profit_rate,wci.serial_num,wci.sales_man,wci.consultants_,c.total_amount_5,c.total_amount_4,wpo.stat_week,wpo.create_time");
-		countSql.append("select count(wpo.id)");
+		querySql.append("select distinct wpo.id,wpo.contract_response,wpo.contract_id,wpo.contract_amount,wpo.tax_rate,wpo.identifiable_income,wpo.contract_finish_rate,wpo.acceptance_income,wpo.receive_total,wpo.receivable_account,wpo.share_cost,wpo.third_party_purchase,wpo.internal_purchase,wpo.bonus_,wpo.gross_profit,wpo.gross_profit_rate,wci.serial_num,wci.sales_man,wci.consultants_,c.total_amount_5,c.total_amount_4,wpo.stat_week,wpo.create_time");
+		countSql.append("select count(distinct wpo.id)");
 		
 		whereSql.append(" from w_project_overall wpo");
 		whereSql.append(" inner join w_contract_info wci on wci.id = wpo.contract_id");
@@ -183,17 +192,26 @@ public class ProjectOverallDaoImpl extends GenericDaoImpl<ProjectOverall, Long> 
 		
 		whereSql.append(" left join w_dept_info wdi on wci.dept_id = wdi.id");
 		whereSql.append(" left join w_dept_info wdi2 on wci.consultants_dept_id = wdi2.id");
+		whereSql.append(" left join w_project_info wpi on wci.id = wpi.contract_id");
+		whereSql.append(" left join w_dept_info wdi3 on wpi.dept_id = wdi3.id");
 		//权限
 		whereSql.append(" where (wci.creator_ = ? or wci.sales_man_id = ? or wci.consultants_id = ?");
 		params.add(user.getLogin());
 		params.add(user.getId());
 		params.add(user.getId());
+		//添加项目经理权限
+    	whereSql.append(" or wpi.pm_id = ?");
+    	params.add(user.getId());
 		if(user.getIsManager()){
 			whereSql.append(" or wdi.id_path like ? or wdi.id = ?");
 			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
 			params.add(deptInfo.getId());
 			
 			whereSql.append(" or wdi2.id_path like ? or wdi2.id = ?");
+			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
+			params.add(deptInfo.getId());
+			
+			whereSql.append(" or wdi3.id_path like ? or wdi3.id = ?");
 			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
 			params.add(deptInfo.getId());
 		}
@@ -234,10 +252,15 @@ public class ProjectOverallDaoImpl extends GenericDaoImpl<ProjectOverall, Long> 
 		whereSql.append(" left join ContractInfo wci on wci.id = wpo.contractId");
 		whereSql.append(" left join DeptInfo wdi on wci.deptId = wdi.id");
 		whereSql.append(" left join DeptInfo wdi2 on wci.consultantsDeptId = wdi2.id");
+		whereSql.append(" left join ProjectInfo wpi on wci.id = wpi.contractId");
+		whereSql.append(" left join DeptInfo wdi3 on wpi.deptId = wdi3.id");
 		//权限
 		whereSql.append(" where (wci.creator = ?" + (count++) + " or wci.salesmanId = ?" + (count++) + " or wci.consultantsId = ?" + (count++));
 		params.add(user.getLogin());
 		params.add(user.getId());
+		params.add(user.getId());
+		//添加项目经理权限
+		whereSql.append(" or wpi.pmId = ?" + (count++));
 		params.add(user.getId());
 		if(user.getIsManager()){
 			whereSql.append(" or wdi.idPath like ?" + (count++) + " or wdi.id = ?" + (count++));
@@ -245,6 +268,10 @@ public class ProjectOverallDaoImpl extends GenericDaoImpl<ProjectOverall, Long> 
 			params.add(deptInfo.getId());
 			
 			whereSql.append(" or wdi2.idPath like ?" + (count++) + " or wdi2.id = ?" + (count++));
+			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
+			params.add(deptInfo.getId());
+			
+			whereSql.append(" or wdi3.idPath like ?" + (count++) + " or wdi3.id = ?" + (count++));
 			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
 			params.add(deptInfo.getId());
 		}
@@ -272,7 +299,7 @@ public class ProjectOverallDaoImpl extends GenericDaoImpl<ProjectOverall, Long> 
 		StringBuffer whereSql = new StringBuffer();
 		List<Object> params = new ArrayList<Object>();
 		
-		querySql.append("select wpo.id,wpo.contract_response,wpo.contract_id,wpo.contract_amount,wpo.tax_rate,wpo.identifiable_income,wpo.contract_finish_rate,wpo.acceptance_income,wpo.receive_total,wpo.receivable_account,wpo.share_cost,wpo.third_party_purchase,wpo.internal_purchase,wpo.bonus_,wpo.gross_profit,wpo.gross_profit_rate,wci.serial_num,wci.sales_man,wci.consultants_,c.ta1,c.ta2,wpo.stat_week,wpo.create_time");
+		querySql.append("select distinct wpo.id,wpo.contract_response,wpo.contract_id,wpo.contract_amount,wpo.tax_rate,wpo.identifiable_income,wpo.contract_finish_rate,wpo.acceptance_income,wpo.receive_total,wpo.receivable_account,wpo.share_cost,wpo.third_party_purchase,wpo.internal_purchase,wpo.bonus_,wpo.gross_profit,wpo.gross_profit_rate,wci.serial_num,wci.sales_man,wci.consultants_,c.ta1,c.ta2,wpo.stat_week,wpo.create_time");
 		
 		whereSql.append(" from w_project_overall wpo");
 		whereSql.append(" inner join ");
@@ -289,6 +316,8 @@ public class ProjectOverallDaoImpl extends GenericDaoImpl<ProjectOverall, Long> 
 		whereSql.append(" on wpo.contract_id = c.contract_id");
 		whereSql.append(" left join w_dept_info wdi on wci.dept_id = wdi.id");
 		whereSql.append(" left join w_dept_info wdi2 on wci.consultants_dept_id = wdi2.id");
+		whereSql.append(" left join w_project_info wpi on wci.id = wpi.contract_id");
+		whereSql.append(" left join w_dept_info wdi3 on wpi.dept_id = wdi3.id");
 		//
 		params.add(projectOverall.getStatWeek());
 		params.add(projectOverall.getStatWeek());
@@ -297,12 +326,19 @@ public class ProjectOverallDaoImpl extends GenericDaoImpl<ProjectOverall, Long> 
 		params.add(user.getLogin());
 		params.add(user.getId());
 		params.add(user.getId());
+		//添加项目经理权限
+    	whereSql.append(" or wpi.pm_id = ?");
+    	params.add(user.getId());
 		if(user.getIsManager()){
 			whereSql.append(" or wdi.id_path like ? or wdi.id = ?");
 			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
 			params.add(deptInfo.getId());
 			
 			whereSql.append(" or wdi2.id_path like ? or wdi2.id = ?");
+			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
+			params.add(deptInfo.getId());
+			
+			whereSql.append(" or wdi3.id_path like ? or wdi3.id = ?");
 			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
 			params.add(deptInfo.getId());
 		}

@@ -40,13 +40,15 @@ public class SalesBonusDaoImpl extends GenericDaoImpl<SalesBonus, Long> implemen
 	public List<SalesBonusVo> getUserPage(User user, DeptInfo deptInfo, SalesBonus salesBonus) {
 		StringBuffer querySql = new StringBuffer();
 		List<Object> params = new ArrayList<Object>();
-		querySql.append("select wsb.id,wsb.stat_week,wsb.sales_man_id,wsb.sales_man,wsb.contract_id,wsb.origin_year,wsb.contract_amount,");
+		querySql.append("select distinct wsb.id,wsb.stat_week,wsb.sales_man_id,wsb.sales_man,wsb.contract_id,wsb.origin_year,wsb.contract_amount,");
 		querySql.append("wsb.tax_rate,wsb.receive_total,wsb.taxes_,wsb.share_cost,wsb.third_party_purchase,wsb.bonus_basis,wsb.bonus_rate,wsb.current_bonus,wsb.creator_,wsb.create_time,");
 		querySql.append("wci.serial_num");
 		querySql.append(" from w_sales_bonus wsb");
 		querySql.append(" inner join (select max(wsb2.id) as id from w_sales_bonus wsb2 where wsb2.stat_week <= ? and wsb2.origin_year = ? group by wsb2.contract_id) wsbc on wsbc.id = wsb.id");
 		querySql.append(" inner join w_contract_info wci on wci.id = wsb.contract_id");
 		querySql.append(" left join w_dept_info wdi on wci.dept_id = wdi.id");
+		querySql.append(" left join w_project_info wpi on wci.id = wpi.contract_id");
+		querySql.append(" left join w_dept_info wdi2 on wpi.dept_id = wdi2.id");
 		//参数
 		params.add(salesBonus.getStatWeek());
 		params.add(salesBonus.getOriginYear());
@@ -54,8 +56,15 @@ public class SalesBonusDaoImpl extends GenericDaoImpl<SalesBonus, Long> implemen
 		querySql.append(" where (wci.creator_ = ? or wci.sales_man_id = ?");
 		params.add(user.getLogin());
 		params.add(user.getId());
+		//添加项目经理权限
+		querySql.append(" or wpi.pm_id = ?");
+		params.add(user.getId());
 		if(user.getIsManager()){
 			querySql.append(" or wdi.id_path like ? or wdi.id = ?");
+			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
+			params.add(deptInfo.getId());
+			
+			querySql.append(" or wdi2.id_path like ? or wdi2.id = ?");
 			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
 			params.add(deptInfo.getId());
 		}
@@ -126,12 +135,21 @@ public class SalesBonusDaoImpl extends GenericDaoImpl<SalesBonus, Long> implemen
 		querySql.append(" from w_sales_bonus wsb");
 		querySql.append(" inner join w_contract_info wci on wci.id = wsb.contract_id");
 		querySql.append(" left join w_dept_info wdi on wci.dept_id = wdi.id");
+		querySql.append(" left join w_project_info wpi on wci.id = wpi.contract_id");
+		querySql.append(" left join w_dept_info wdi2 on wpi.dept_id = wdi2.id");
 		//权限
 		querySql.append(" where (wci.creator_ = ? or wci.sales_man_id = ?");
 		params.add(user.getLogin());
 		params.add(user.getId());
+		//添加项目经理权限
+		querySql.append(" or wpi.pm_id = ?");
+		params.add(user.getId());
 		if(user.getIsManager()){
 			querySql.append(" or wdi.id_path like ? or wdi.id = ?");
+			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
+			params.add(deptInfo.getId());
+			
+			querySql.append(" or wdi2.id_path like ? or wdi2.id = ?");
 			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
 			params.add(deptInfo.getId());
 		}
@@ -155,21 +173,30 @@ public class SalesBonusDaoImpl extends GenericDaoImpl<SalesBonus, Long> implemen
 		StringBuffer orderSql = new StringBuffer();
 		List<Object> params = new ArrayList<Object>();
 		
-		querySql.append("select wsb.id,wsb.stat_week,wsb.sales_man_id,wsb.sales_man,wsb.contract_id,wsb.origin_year,wsb.contract_amount,");
+		querySql.append("select distinct wsb.id,wsb.stat_week,wsb.sales_man_id,wsb.sales_man,wsb.contract_id,wsb.origin_year,wsb.contract_amount,");
 		querySql.append("wsb.tax_rate,wsb.receive_total,wsb.taxes_,wsb.share_cost,wsb.third_party_purchase,wsb.bonus_basis,wsb.bonus_rate,wsb.current_bonus,wsb.creator_,wsb.create_time,");
 		querySql.append("wci.serial_num");
 		
-		countSql.append("select count(wsb.id)");
+		countSql.append("select count(distinct wsb.id)");
 		
 		whereSql.append(" from w_sales_bonus wsb");
 		whereSql.append(" inner join w_contract_info wci on wci.id = wsb.contract_id");
 		whereSql.append(" left join w_dept_info wdi on wci.dept_id = wdi.id");
+		whereSql.append(" left join w_project_info wpi on wci.id = wpi.contract_id");
+		whereSql.append(" left join w_dept_info wdi2 on wpi.dept_id = wdi2.id");
 		//权限
 		whereSql.append(" where (wci.creator_ = ? or wci.sales_man_id = ?");
 		params.add(user.getLogin());
 		params.add(user.getId());
+		//添加项目经理权限
+		whereSql.append(" or wpi.pm_id = ?");
+		params.add(user.getId());
 		if(user.getIsManager()){
 			whereSql.append(" or wdi.id_path like ? or wdi.id = ?");
+			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
+			params.add(deptInfo.getId());
+			
+			whereSql.append(" or wdi2.id_path like ? or wdi2.id = ?");
 			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
 			params.add(deptInfo.getId());
 		}

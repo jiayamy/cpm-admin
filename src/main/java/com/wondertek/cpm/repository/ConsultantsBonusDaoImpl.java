@@ -43,23 +43,32 @@ public class ConsultantsBonusDaoImpl extends GenericDaoImpl<ConsultantsBonus, Lo
 		StringBuffer querySql = new StringBuffer();
 		StringBuffer countSql = new StringBuffer();
 		StringBuffer whereSql = new StringBuffer();
-		querySql.append(" select m.id, m.contract_id, m.contract_amount, m.consultants_id, m.consultants_, m.bonus_basis, m.bonus_rate,");
+		querySql.append(" select distinct m.id, m.contract_id, m.contract_amount, m.consultants_id, m.consultants_, m.bonus_basis, m.bonus_rate,");
 		querySql.append(" m.consultants_share_rate , m.current_bonus ,m.creator_ ,m.stat_week ,m.create_time , i.serial_num , i.amount_, i.name_");
 		
-		countSql.append(" select count(m.id)");
+		countSql.append(" select count(distinct m.id)");
 		
 		whereSql.append(" from w_consultants_bonus m");
 		whereSql.append(" inner join (select max(wcb.id) as id from w_consultants_bonus wcb where wcb.stat_week <= ? group by wcb.contract_id) wcbc on wcbc.id = m.id");
 		whereSql.append(" inner join w_contract_info i on i.id = m.contract_id");
 		whereSql.append(" left join w_dept_info wdi on i.consultants_dept_id = wdi.id");
+		whereSql.append(" left join w_project_info wpi on i.id = wpi.contract_id");
+		whereSql.append(" left join w_dept_info wdi2 on wpi.dept_id = wdi2.id");
 		List<Object> params = new ArrayList<Object>();
     	params.add(consultantsBonus.getStatWeek());
     	//权限
     	whereSql.append(" where (i.creator_ = ? or i.consultants_id = ?");
     	params.add(user.getLogin());
     	params.add(user.getId());
+    	//添加项目经理权限
+    	whereSql.append(" or wpi.pm_id = ?");
+    	params.add(user.getId());
     	if(user.getIsManager()){
     		whereSql.append(" or wdi.id_path like ? or wdi.id = ?");
+			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
+			params.add(deptInfo.getId());
+			
+			whereSql.append(" or wdi2.id_path like ? or wdi2.id = ?");
 			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
 			params.add(deptInfo.getId());
 		}
@@ -133,22 +142,31 @@ public class ConsultantsBonusDaoImpl extends GenericDaoImpl<ConsultantsBonus, Lo
 		StringBuffer whereHql = new StringBuffer();
 		int count = 0;//jpa格式 问号后的数组，一定要从0开始
 		
-		queryHql.append(" select m.id, m.contractId, m.contractAmount, m.consultantsId, m.consultants, m.bonusBasis, m.bonusRate,");
+		queryHql.append(" select distinct m.id, m.contractId, m.contractAmount, m.consultantsId, m.consultants, m.bonusBasis, m.bonusRate,");
 		queryHql.append(" m.consultantsShareRate , m.currentBonus ,m.creator ,m.statWeek ,m.createTime , i.serialNum , i.amount,i.name");
 		
-		countHql.append(" select count(m.id)");
+		countHql.append(" select count(distinct m.id)");
 		
 		fromHql.append(" from ConsultantsBonus m");
 		fromHql.append(" left join ContractInfo i on m.contractId = i.id");
 		fromHql.append(" left join DeptInfo di on i.consultantsDeptId = di.id");
+		fromHql.append(" left join ProjectInfo wpi on i.id = wpi.contractId");
+		fromHql.append(" left join DeptInfo wdi2 on wpi.deptId = wdi2.id");
 		
 		List<Object> params = new ArrayList<Object>();
     	//权限
     	whereHql.append(" where (i.creator = ?" + (count++) + " or i.consultantsId = ?" + (count++));
     	params.add(user.getLogin());
     	params.add(user.getId());
+    	//添加项目经理权限
+    	whereHql.append(" or wpi.pmId = ?" + (count++));
+    	params.add(user.getId());
     	if(user.getIsManager()){
     		whereHql.append(" or di.idPath like ?" + (count++) + " or di.id = ?" + (count++));
+			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
+			params.add(deptInfo.getId());
+			
+			whereHql.append(" or wdi2.idPath like ?" + (count++) + " or wdi2.id = ?" + (count++));
 			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
 			params.add(deptInfo.getId());
 		}
@@ -218,12 +236,14 @@ public class ConsultantsBonusDaoImpl extends GenericDaoImpl<ConsultantsBonus, Lo
 	public List<ConsultantsBonusVo> getConsultantsBonusData(User user,DeptInfo deptInfo,ConsultantsBonus consultantsBonus) {
 		StringBuffer querySql = new StringBuffer();
 		StringBuffer whereSql = new StringBuffer();
-		querySql.append(" select m.id, m.contract_id, m.contract_amount, m.consultants_id, m.consultants_, m.bonus_basis, m.bonus_rate,"
+		querySql.append(" select distinct m.id, m.contract_id, m.contract_amount, m.consultants_id, m.consultants_, m.bonus_basis, m.bonus_rate,"
 				+ "m.consultants_share_rate , m.current_bonus ,m.creator_ ,m.stat_week ,m.create_time , i.serial_num , i.amount_, i.name_");
 		whereSql.append(" from w_consultants_bonus m");
 		whereSql.append(" inner join (select max(wcb.id) as id from w_consultants_bonus wcb where wcb.stat_week <= ? group by wcb.contract_id) wcbc on wcbc.id = m.id");
 		whereSql.append(" inner join w_contract_info i on i.id = m.contract_id");
 		whereSql.append(" left join w_dept_info wdi on i.consultants_dept_id = wdi.id");
+		whereSql.append(" left join w_project_info wpi on i.id = wpi.contract_id");
+		whereSql.append(" left join w_dept_info wdi2 on wpi.dept_id = wdi2.id");
 		List<Object> params = new ArrayList<Object>();
 		params.add(consultantsBonus.getStatWeek());
 		
@@ -231,8 +251,15 @@ public class ConsultantsBonusDaoImpl extends GenericDaoImpl<ConsultantsBonus, Lo
     	whereSql.append(" where (i.creator_ = ? or i.consultants_id = ?");
     	params.add(user.getLogin());
     	params.add(user.getId());
+    	//添加项目经理权限
+    	whereSql.append(" or wpi.pm_id = ?");
+    	params.add(user.getId());
     	if(user.getIsManager()){
     		whereSql.append(" or wdi.id_path like ? or wdi.id = ?");
+			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
+			params.add(deptInfo.getId());
+			
+			whereSql.append(" or wdi2.id_path like ? or wdi2.id = ?");
 			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
 			params.add(deptInfo.getId());
 		}

@@ -17,10 +17,8 @@ import com.wondertek.cpm.config.StringUtil;
 import com.wondertek.cpm.domain.Bonus;
 import com.wondertek.cpm.domain.DeptInfo;
 import com.wondertek.cpm.domain.DeptType;
-import com.wondertek.cpm.domain.ProjectOverall;
 import com.wondertek.cpm.domain.User;
 import com.wondertek.cpm.domain.vo.BonusVo;
-import com.wondertek.cpm.domain.vo.ProjectOverallVo;
 @Repository("bonusDao")
 public class BonusDaoImpl extends GenericDaoImpl<Bonus, Long> implements BonusDao  {
 	
@@ -45,8 +43,8 @@ public class BonusDaoImpl extends GenericDaoImpl<Bonus, Long> implements BonusDa
 		StringBuffer whereSql = new StringBuffer();
 		List<Object> params = new ArrayList<Object>();
 		
-		querySql.append("select wci.serial_num,wbs.id,wbs.stat_week,wbs.contract_id,wbs.sales_bonus,wbs.project_bonus,wm.implemtationBonus,wm.academicBonus,wbs.consultants_bonus,wbs.bonus_total,wbs.creator_,wbs.create_time,wbs.contract_amount");
-		countSql.append("select count(wbs.id)");
+		querySql.append("select distinct wci.serial_num,wbs.id,wbs.stat_week,wbs.contract_id,wbs.sales_bonus,wbs.project_bonus,wm.implemtationBonus,wm.academicBonus,wbs.consultants_bonus,wbs.bonus_total,wbs.creator_,wbs.create_time,wbs.contract_amount");
+		countSql.append("select count(distinct wbs.id)");
 		
 		whereSql.append(" from w_bonus wbs");
 		whereSql.append(" inner join ");
@@ -63,6 +61,8 @@ public class BonusDaoImpl extends GenericDaoImpl<Bonus, Long> implements BonusDa
 		whereSql.append(" on wbs.contract_id = wm.contract_id");
 		whereSql.append(" left join w_dept_info wdi on wci.dept_id = wdi.id");
 		whereSql.append(" left join w_dept_info wdi2 on wci.consultants_dept_id = wdi2.id");
+		whereSql.append(" left join w_project_info wpi on wci.id = wpi.contract_id");
+		whereSql.append(" left join w_dept_info wdi3 on wpi.dept_id = wdi3.id");
 		//
 		params.add(bonus.getStatWeek());
 		params.add(DeptType.PROJECT_IMPLEMENTATION);
@@ -73,12 +73,19 @@ public class BonusDaoImpl extends GenericDaoImpl<Bonus, Long> implements BonusDa
 		params.add(user.getLogin());
 		params.add(user.getId());
 		params.add(user.getId());
+		//添加项目经理权限
+    	whereSql.append(" or wpi.pm_id = ?");
+    	params.add(user.getId());
 		if(user.getIsManager()){
 			whereSql.append(" or wdi.id_path like ? or wdi.id = ?");
 			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
 			params.add(deptInfo.getId());
 			
 			whereSql.append(" or wdi2.id_path like ? or wdi2.id = ?");
+			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
+			params.add(deptInfo.getId());
+			
+			whereSql.append(" or wdi3.id_path like ? or wdi3.id = ?");
 			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
 			params.add(deptInfo.getId());
 		}
@@ -130,8 +137,8 @@ public class BonusDaoImpl extends GenericDaoImpl<Bonus, Long> implements BonusDa
 		StringBuffer whereSql = new StringBuffer();
 		List<Object> params = new ArrayList<Object>();
 		
-		querySql.append("select wci.serial_num,wbs.id,wbs.stat_week,wbs.contract_id,wbs.sales_bonus,wbs.project_bonus,wm.implemtationBonus,wm.academicBonus,wbs.consultants_bonus,wbs.bonus_total,wbs.creator_,wbs.create_time,wbs.contract_amount");
-		countSql.append("select count(wbs.id)");
+		querySql.append("select distinct wci.serial_num,wbs.id,wbs.stat_week,wbs.contract_id,wbs.sales_bonus,wbs.project_bonus,wm.implemtationBonus,wm.academicBonus,wbs.consultants_bonus,wbs.bonus_total,wbs.creator_,wbs.create_time,wbs.contract_amount");
+		countSql.append("select count(distinct wbs.id)");
 		
 		whereSql.append(" from w_bonus wbs");
 		whereSql.append(" inner join w_contract_info wci on wbs.contract_id = wci.id");
@@ -145,17 +152,26 @@ public class BonusDaoImpl extends GenericDaoImpl<Bonus, Long> implements BonusDa
 		
 		whereSql.append(" left join w_dept_info wdi on wci.dept_id = wdi.id");
 		whereSql.append(" left join w_dept_info wdi2 on wci.consultants_dept_id = wdi2.id");
+		whereSql.append(" left join w_project_info wpi on wci.id = wpi.contract_id");
+		whereSql.append(" left join w_dept_info wdi3 on wpi.dept_id = wdi3.id");
 		//权限
 		whereSql.append(" where (wci.creator_ = ? or wci.sales_man_id = ? or wci.consultants_id = ?");
 		params.add(user.getLogin());
 		params.add(user.getId());
 		params.add(user.getId());
+		//添加项目经理权限
+    	whereSql.append(" or wpi.pm_id = ?");
+    	params.add(user.getId());
 		if(user.getIsManager()){
 			whereSql.append(" or wdi.id_path like ? or wdi.id = ?");
 			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
 			params.add(deptInfo.getId());
 			
 			whereSql.append(" or wdi2.id_path like ? or wdi2.id = ?");
+			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
+			params.add(deptInfo.getId());
+			
+			whereSql.append(" or wdi3.id_path like ? or wdi3.id = ?");
 			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
 			params.add(deptInfo.getId());
 		}
@@ -193,17 +209,26 @@ public class BonusDaoImpl extends GenericDaoImpl<Bonus, Long> implements BonusDa
 		whereSql.append(" inner join ContractInfo wci on wci.id = wbs.contractId");
 		whereSql.append(" left join DeptInfo wdi on wci.deptId = wdi.id");
 		whereSql.append(" left join DeptInfo wdi2 on wci.consultantsDeptId = wdi2.id");
+		whereSql.append(" left join ProjectInfo wpi on wci.id = wpi.contractId");
+		whereSql.append(" left join DeptInfo wdi3 on wpi.deptId = wdi3.id");
 		//权限
 		whereSql.append(" where (wci.creator = ?" + (count++) + " or wci.salesmanId = ?" + (count++) + " or wci.consultantsId = ?" + (count++));
 		params.add(user.getLogin());
 		params.add(user.getId());
 		params.add(user.getId());
+		//添加项目经理权限
+		whereSql.append(" or wpi.pmId = ?" + (count++));
+    	params.add(user.getId());
 		if(user.getIsManager()){
 			whereSql.append(" or wdi.idPath like ?" + (count++) + " or wdi.id = ?" + (count++));
 			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
 			params.add(deptInfo.getId());
 			
 			whereSql.append(" or wdi2.idPath like ?" + (count++) + " or wdi2.id = ?" + (count++));
+			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
+			params.add(deptInfo.getId());
+			
+			whereSql.append(" or wdi3.idPath like ?" + (count++) + " or wdi3.id = ?" + (count++));
 			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
 			params.add(deptInfo.getId());
 		}
@@ -231,7 +256,7 @@ public class BonusDaoImpl extends GenericDaoImpl<Bonus, Long> implements BonusDa
 		StringBuffer whereSql = new StringBuffer();
 		List<Object> params = new ArrayList<Object>();
 		
-		querySql.append("select wci.serial_num,wbs.id,wbs.stat_week,wbs.contract_id,wbs.sales_bonus,wbs.project_bonus,wm.implemtationBonus,wm.academicBonus,wbs.consultants_bonus,wbs.bonus_total,wbs.creator_,wbs.create_time,wbs.contract_amount");
+		querySql.append("select distinct wci.serial_num,wbs.id,wbs.stat_week,wbs.contract_id,wbs.sales_bonus,wbs.project_bonus,wm.implemtationBonus,wm.academicBonus,wbs.consultants_bonus,wbs.bonus_total,wbs.creator_,wbs.create_time,wbs.contract_amount");
 		
 		whereSql.append(" from w_bonus wbs");
 		whereSql.append(" inner join ");
@@ -248,6 +273,8 @@ public class BonusDaoImpl extends GenericDaoImpl<Bonus, Long> implements BonusDa
 		whereSql.append(" on wbs.contract_id = wm.contract_id");
 		whereSql.append(" left join w_dept_info wdi on wci.dept_id = wdi.id");
 		whereSql.append(" left join w_dept_info wdi2 on wci.consultants_dept_id = wdi2.id");
+		whereSql.append(" left join w_project_info wpi on wci.id = wpi.contract_id");
+		whereSql.append(" left join w_dept_info wdi3 on wpi.dept_id = wdi3.id");
 		//
 		params.add(bonus.getStatWeek());
 		params.add(DeptType.PROJECT_IMPLEMENTATION);
@@ -258,12 +285,19 @@ public class BonusDaoImpl extends GenericDaoImpl<Bonus, Long> implements BonusDa
 		params.add(user.getLogin());
 		params.add(user.getId());
 		params.add(user.getId());
+		//添加项目经理权限
+    	whereSql.append(" or wpi.pm_id = ?");
+    	params.add(user.getId());
 		if(user.getIsManager()){
 			whereSql.append(" or wdi.id_path like ? or wdi.id = ?");
 			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
 			params.add(deptInfo.getId());
 			
 			whereSql.append(" or wdi2.id_path like ? or wdi2.id = ?");
+			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
+			params.add(deptInfo.getId());
+			
+			whereSql.append(" or wdi3.id_path like ? or wdi3.id = ?");
 			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
 			params.add(deptInfo.getId());
 		}
