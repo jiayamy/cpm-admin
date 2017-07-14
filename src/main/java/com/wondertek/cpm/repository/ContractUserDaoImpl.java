@@ -17,7 +17,6 @@ import org.springframework.stereotype.Repository;
 import com.wondertek.cpm.CpmConstants;
 import com.wondertek.cpm.config.DateUtil;
 import com.wondertek.cpm.config.StringUtil;
-import com.wondertek.cpm.domain.ContractInfo;
 import com.wondertek.cpm.domain.ContractUser;
 import com.wondertek.cpm.domain.DeptInfo;
 import com.wondertek.cpm.domain.User;
@@ -25,7 +24,6 @@ import com.wondertek.cpm.domain.UserTimesheet;
 import com.wondertek.cpm.domain.vo.ContractUserVo;
 import com.wondertek.cpm.domain.vo.LongValue;
 import com.wondertek.cpm.domain.vo.ParticipateInfo;
-import com.wondertek.cpm.domain.vo.ProjectUserVo;
 @Repository("contractUserDao")
 public class ContractUserDaoImpl extends GenericDaoImpl<ContractUser, Long> implements ContractUserDao  {
 	
@@ -124,20 +122,25 @@ public class ContractUserDaoImpl extends GenericDaoImpl<ContractUser, Long> impl
 		StringBuffer orderSql = new StringBuffer();
 		List<Object> params = new ArrayList<Object>();
 		
-		querySql.append("select wcu.id,wcu.contract_id,wcu.user_id,wcu.user_name,wcu.dept_id,wcu.dept_,wcu.join_day,wcu.leave_day,wcu.creator_,wcu.create_time,wcu.updator_,wcu.update_time");
+		querySql.append("select distinct wcu.id,wcu.contract_id,wcu.user_id,wcu.user_name,wcu.dept_id,wcu.dept_,wcu.join_day,wcu.leave_day,wcu.creator_,wcu.create_time,wcu.updator_,wcu.update_time");
 		querySql.append(",wci.serial_num,wci.name_");
 		
-		countSql.append("select count(wcu.id)");
+		countSql.append("select count(distinct wcu.id)");
 		
 		whereSql.append(" from w_contract_user wcu");
 		whereSql.append(" left join w_contract_info wci on wci.id = wcu.contract_id");
 		whereSql.append(" left join w_dept_info wdi on wci.dept_id = wdi.id");
 		whereSql.append(" left join w_dept_info wdi2 on wci.consultants_dept_id = wdi2.id");
+		whereSql.append(" left join w_project_info wpi on wcu.contract_id = wpi.contract_id");
+		whereSql.append(" left join w_dept_info wdi3 on wpi.dept_id = wdi3.id");
 		whereSql.append(" where (wci.sales_man_id = ? or wci.consultants_id = ? or wci.creator_ = ?");
 		params.add(user.getId());
 		params.add(user.getId());
 		params.add(user.getLogin());
 		
+		//添加项目经理权限
+		whereSql.append(" or wpi.pm_id = ?");
+		params.add(user.getId());
 		if (user.getIsManager()) {
 			whereSql.append(" or wdi.id_path like ? or wdi.id = ?");
 			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
@@ -147,7 +150,11 @@ public class ContractUserDaoImpl extends GenericDaoImpl<ContractUser, Long> impl
 			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
 			params.add(deptInfo.getId());
 			
+			whereSql.append(" or wdi3.id_path like ? or wdi3.id = ?");
+			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
+			params.add(deptInfo.getId());
 		}
+				
 		whereSql.append(")");
 		
 		//查询条件
@@ -229,10 +236,16 @@ public class ContractUserDaoImpl extends GenericDaoImpl<ContractUser, Long> impl
 		queryHql.append(" left join ContractInfo wci on wci.id = wcu.contractId ");
 		queryHql.append(" left join DeptInfo wdi on wdi.id = wci.deptId");
 		queryHql.append(" left join DeptInfo wdi2 on  wdi2.id = wci.consultantsDeptId");
+		queryHql.append(" left join ProjectInfo wpi on wcu.contractId = wpi.contractId");
+		queryHql.append(" left join DeptInfo wdi3 on wpi.deptId = wdi3.id");
 		queryHql.append(" where (wci.salesmanId = ?" + (count++) + " or wci.consultantsId = ?" + (count++) + " or wci.creator = ?" + (count++));
 		params.add(user.getId());
 		params.add(user.getId());
 		params.add(user.getLogin());
+		
+		//添加项目经理权限
+		queryHql.append(" or wpi.pmId = ?" + (count++));
+		params.add(user.getId());
 		
 		if(user.getIsManager()){
 			queryHql.append(" or wdi.idPath like ?" + (count++) + " or wdi.id = ?" + (count++));
@@ -242,7 +255,12 @@ public class ContractUserDaoImpl extends GenericDaoImpl<ContractUser, Long> impl
 			queryHql.append(" or wdi2.idPath like ?" + (count++) + " or wdi2.id = ?" + (count++));
 			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
 			params.add(deptInfo.getId());
+			
+			queryHql.append(" or wdi3.idPath like ?" + (count++) + " or wdi3.id = ?" + (count++));
+			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
+			params.add(deptInfo.getId());
 		}
+				
 		queryHql.append(") and wcu.id = ?" + (count++));
 		params.add(id);
 		List<Object[]> list = this.queryAllHql(queryHql.toString(),params.toArray());
@@ -265,7 +283,7 @@ public class ContractUserDaoImpl extends GenericDaoImpl<ContractUser, Long> impl
 		StringBuffer whereSql = new StringBuffer();
 		List<Object> params = new ArrayList<Object>();
 		
-		querySql.append("select wcu.id,wcu.contract_id,wcu.user_id,wcu.user_name,wcu.dept_id,wcu.dept_,wcu.join_day,wcu.leave_day,wcu.creator_,wcu.create_time,wcu.updator_,wcu.update_time");
+		querySql.append("select distinct wcu.id,wcu.contract_id,wcu.user_id,wcu.user_name,wcu.dept_id,wcu.dept_,wcu.join_day,wcu.leave_day,wcu.creator_,wcu.create_time,wcu.updator_,wcu.update_time");
 		querySql.append(",wci.serial_num,wci.name_");
 		
 		
@@ -273,10 +291,16 @@ public class ContractUserDaoImpl extends GenericDaoImpl<ContractUser, Long> impl
 		whereSql.append(" left join w_contract_info wci on wci.id = wcu.contract_id");
 		whereSql.append(" left join w_dept_info wdi on wci.dept_id = wdi.id");
 		whereSql.append(" left join w_dept_info wdi2 on wci.consultants_dept_id = wdi2.id");
+		whereSql.append(" left join w_project_info wpi on wcu.contract_id = wpi.contract_id");
+		whereSql.append(" left join w_dept_info wdi3 on wpi.dept_id = wdi3.id");
 		whereSql.append(" where (wci.sales_man_id = ? or wci.consultants_id = ? or wci.creator_ = ?");
 		params.add(user.getId());
 		params.add(user.getId());
 		params.add(user.getLogin());
+		
+		//添加项目经理权限
+		whereSql.append(" or wpi.pm_id = ?");
+		params.add(user.getId());
 		
 		if (user.getIsManager()) {
 			whereSql.append(" or wdi.id_path like ? or wdi.id = ?");
@@ -287,7 +311,11 @@ public class ContractUserDaoImpl extends GenericDaoImpl<ContractUser, Long> impl
 			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
 			params.add(deptInfo.getId());
 			
+			whereSql.append(" or wdi3.id_path like ? or wdi3.id = ?");
+			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
+			params.add(deptInfo.getId());
 		}
+				
 		whereSql.append(")");
 		
 		//查询条件

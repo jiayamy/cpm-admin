@@ -289,7 +289,7 @@ public class ContractInfoResource {
 		return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
 	}
 	/**
-	 * 获取销售或咨询能看到的合同列表
+	 * 获取销售或咨询或项目经理 能看到的合同列表
 	 */
 	@GetMapping("/contract-infos/queryUserContract")
 	@Secured(AuthoritiesConstants.USER)

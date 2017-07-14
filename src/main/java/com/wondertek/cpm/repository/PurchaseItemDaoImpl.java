@@ -14,12 +14,10 @@ import org.springframework.stereotype.Repository;
 
 import com.wondertek.cpm.CpmConstants;
 import com.wondertek.cpm.config.StringUtil;
-import com.wondertek.cpm.domain.ContractInfo;
 import com.wondertek.cpm.domain.DeptInfo;
 import com.wondertek.cpm.domain.ProductPrice;
 import com.wondertek.cpm.domain.PurchaseItem;
 import com.wondertek.cpm.domain.User;
-import com.wondertek.cpm.domain.vo.ContractInfoVo;
 import com.wondertek.cpm.domain.vo.LongValue;
 import com.wondertek.cpm.domain.vo.ProductPriceVo;
 import com.wondertek.cpm.domain.vo.PurchaseItemVo;
@@ -51,22 +49,32 @@ public class PurchaseItemDaoImpl extends GenericDaoImpl<PurchaseItem, Long> impl
 		List<Object> params = new ArrayList<Object>();
 		int count = 0;//jpa格式 问号后的数组，一定要从0开始
 		
-		queryHql.append("select wpi,wci.serialNum,wci.name as contractName,wcb.name as budgetName");
-		countHql.append("select count(wpi.id)");
+		queryHql.append("select distinct wpi,wci.serialNum,wci.name as contractName,wcb.name as budgetName");
+		countHql.append("select count(distinct wpi.id)");
 		
 		whereHql.append(" from PurchaseItem wpi");
 		whereHql.append(" left join User wju on wpi.creator = wju.login");
 		whereHql.append(" left join DeptInfo wdi on wju.deptId = wdi.id");
 		whereHql.append(" left join ContractInfo wci on wci.id = wpi.contractId");
 		whereHql.append(" left join ContractBudget wcb on wcb.id = wpi.budgetId");
+		whereHql.append(" left join ProjectInfo wpi1 on wpi.contractId = wpi1.contractId");
+		whereHql.append(" left join DeptInfo wdi2 on wpi1.deptId = wdi2.id");
 		//权限
 		whereHql.append(" where (wpi.creator = ?" + (count++));
 		params.add(user.getLogin());
+		//添加项目经理权限
+		whereHql.append(" or wpi1.pmId = ?" + (count++));
+		params.add(user.getId());
 		if (user.getIsManager()) {
 			whereHql.append(" or wdi.idPath like ?" + (count++) + " or wdi.id = ?" + (count++));
 			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
 			params.add(deptInfo.getId());
+			
+			whereHql.append(" or wdi2.idPath like ?" + (count++) + " or wdi2.id = ?" + (count++));
+			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
+			params.add(deptInfo.getId());
 		}
+				
 		whereHql.append(")");
 		
 		//查询条件
@@ -140,15 +148,24 @@ public class PurchaseItemDaoImpl extends GenericDaoImpl<PurchaseItem, Long> impl
 		queryHql.append(" left join DeptInfo wdi on wju.deptId = wdi.id");
 		queryHql.append(" left join ContractInfo wci on wci.id = wpi.contractId");
 		queryHql.append(" left join ContractBudget wcb on wcb.id = wpi.budgetId");
-		
+		queryHql.append(" left join ProjectInfo wpi1 on wpi.contractId = wpi1.contractId");
+		queryHql.append(" left join DeptInfo wdi2 on wpi1.deptId = wdi2.id");
 		//权限
 		queryHql.append(" where (wpi.creator = ?" + (count++));
 		params.add(user.getLogin());
+		//添加项目经理权限
+		queryHql.append(" or wpi1.pmId = ?" + (count++));
+		params.add(user.getId());
 		if (user.getIsManager()) {
 			queryHql.append(" or wdi.idPath like ?" + (count++) + " or wdi.id = ?" + (count++));
 			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
 			params.add(deptInfo.getId());
+			
+			queryHql.append(" or wdi2.idPath like ?" + (count++) + " or wdi2.id = ?" + (count++));
+			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
+			params.add(deptInfo.getId());
 		}
+
 		queryHql.append(")");
 		
 		if (id != null) {
@@ -172,12 +189,21 @@ public class PurchaseItemDaoImpl extends GenericDaoImpl<PurchaseItem, Long> impl
 		queryHql.append(" left join PurchaseItem wpi on wci.id = wpi.contractId");
 		queryHql.append(" left join User wju on wpi.creator = wju.login");
 		queryHql.append(" left join DeptInfo wdi on wju.deptId = wdi.id");
+		queryHql.append(" left join ProjectInfo wpi1 on wpi.contractId = wpi1.contractId");
+		queryHql.append(" left join DeptInfo wdi2 on wpi1.deptId = wdi2.id");
 		queryHql.append(" where (wpi.creator = ?" + (count++));
 		
 		params.add(user.getLogin());
 		
+		//添加项目经理权限
+		queryHql.append(" or wpi1.pmId = ?" + (count++));
+		params.add(user.getId());
 		if (user.getIsManager()) {
 			queryHql.append(" or wdi.idPath like ?" + (count++) + " or wdi.id = ?" + (count++));
+			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
+			params.add(deptInfo.getId());
+			
+			queryHql.append(" or wdi2.idPath like ?" + (count++) + " or wdi2.id = ?" + (count++));
 			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
 			params.add(deptInfo.getId());
 		}

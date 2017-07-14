@@ -45,14 +45,16 @@ public class ContractWeeklyStatDaoImpl extends GenericDaoImpl<ContractWeeklyStat
 		StringBuffer countsql = new StringBuffer();
 		int count = 0;//jpa格式 问号后的数组，一定要从0开始
 		
-		querysql.append(" select m.id, m.contractId, m.finishRate, m.receiveTotal, m.costTotal, m.grossProfit, m.salesHumanCost,"
+		querysql.append(" select distinct m.id, m.contractId, m.finishRate, m.receiveTotal, m.costTotal, m.grossProfit, m.salesHumanCost,"
 				+ "m.salesPayment , m.consultHumanCost ,m.consultPayment ,m.hardwarePurchase ,m.externalSoftware ,m.internalSoftware ,m.projectHumanCost ,"
 				+ "m.projectPayment ,m.statWeek ,m.createTime , i.serialNum , i.name");
-		countsql.append(" select count(m.id)");
+		countsql.append(" select count(distinct m.id)");
 		sb.append(" from ContractWeeklyStat m");
 		sb.append(" left join ContractInfo i on m.contractId = i.id");
 		sb.append(" left join DeptInfo wdi on i.deptId = wdi.id");
 		sb.append(" left join DeptInfo wdi2 on i.consultantsDeptId = wdi2.id");
+		sb.append(" left join ProjectInfo wpi on i.id = wpi.contractId");
+		sb.append(" left join DeptInfo wdi3 on wpi.deptId = wdi3.id");
 		List<Object> params = new ArrayList<Object>();
     	sb.append(" where m.id in (select max(id) from ContractWeeklyStat where 1=1 ");
     	if(!StringUtil.isNullStr(contractId)){
@@ -65,12 +67,19 @@ public class ContractWeeklyStatDaoImpl extends GenericDaoImpl<ContractWeeklyStat
     	params.add(user.getLogin());
 		params.add(user.getId());
 		params.add(user.getId());
+		//添加项目经理权限
+		sb.append(" or wpi.pmId = ?" + (count++));
+		params.add(user.getId());
 		if(user.getIsManager()){
 			sb.append(" or wdi.idPath like ?" + (count++) + " or wdi.id = ?" + (count++));
 			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
 			params.add(deptInfo.getId());
 			
 			sb.append(" or wdi2.idPath like ?" + (count++) + " or wdi2.id = ?" + (count++));
+			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
+			params.add(deptInfo.getId());
+			
+			sb.append(" or wdi3.idPath like ?" + (count++) + " or wdi3.id = ?" + (count++));
 			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
 			params.add(deptInfo.getId());
 		}
@@ -121,6 +130,8 @@ public class ContractWeeklyStatDaoImpl extends GenericDaoImpl<ContractWeeklyStat
 		sb.append(" left join w_contract_info i on m.contract_id = i.id");
 		sb.append(" left join w_dept_info wdi on i.dept_id = wdi.id");
 		sb.append(" left join w_dept_info wdi2 on i.consultants_dept_id = wdi2.id");
+		sb.append(" left join w_project_info wpi on i.id = wpi.contract_id");
+		sb.append(" left join w_dept_info wdi3 on wpi.dept_id = wdi3.id");
 		List<Object> params = new ArrayList<Object>();
     	sb.append(" where m.id in (select max(id) from w_contract_weekly_stat where 1=1 ");
     	if(!StringUtil.isNullStr(id)){
@@ -133,12 +144,19 @@ public class ContractWeeklyStatDaoImpl extends GenericDaoImpl<ContractWeeklyStat
     	params.add(user.getLogin());
 		params.add(user.getId());
 		params.add(user.getId());
+		//添加项目经理权限
+		sb.append(" or wpi.pm_id = ?");
+		params.add(user.getId());
 		if(user.getIsManager()){
 			sb.append(" or wdi.id_path like ? or wdi.id = ?");
 			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
 			params.add(deptInfo.getId());
 			
 			sb.append(" or wdi2.id_path like ? or wdi2.id = ?");
+			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
+			params.add(deptInfo.getId());
+			
+			sb.append(" or wdi3.id_path like ? or wdi3.id = ?");
 			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
 			params.add(deptInfo.getId());
 		}
@@ -211,6 +229,8 @@ public class ContractWeeklyStatDaoImpl extends GenericDaoImpl<ContractWeeklyStat
 		sb.append(" left join w_contract_info i on m.contract_id = i.id");
 		sb.append(" left join w_dept_info wdi on i.dept_id = wdi.id");
 		sb.append(" left join w_dept_info wdi2 on i.consultants_dept_id = wdi2.id");
+		sb.append(" left join w_project_info wpi on i.id = wpi.contract_id");
+		sb.append(" left join w_dept_info wdi3 on wpi.dept_id = wdi3.id");
 		List<Object> params = new ArrayList<Object>();
     	sb.append(" where m.id in (select max(id) from w_contract_weekly_stat where 1=1 ");
     	if(!StringUtil.isNullStr(contractId)){
@@ -227,12 +247,19 @@ public class ContractWeeklyStatDaoImpl extends GenericDaoImpl<ContractWeeklyStat
     	params.add(user.getLogin());
 		params.add(user.getId());
 		params.add(user.getId());
+		//添加项目经理权限
+		sb.append(" or wpi.pm_id = ?");
+		params.add(user.getId());
 		if(user.getIsManager()){
 			sb.append(" or wdi.id_path like ? or wdi.id = ?");
 			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
 			params.add(deptInfo.getId());
 			
 			sb.append(" or wdi2.id_path like ? or wdi2.id = ?");
+			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
+			params.add(deptInfo.getId());
+			
+			sb.append(" or wdi3.id_path like ? or wdi3.id = ?");
 			params.add(deptInfo.getIdPath() + deptInfo.getId() + "/%");
 			params.add(deptInfo.getId());
 		}
