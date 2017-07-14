@@ -170,10 +170,11 @@ public class DeptInfoResource {
     			@RequestParam(value = "selectType",required=false) Integer selectType,
     			@RequestParam(value = "showChild",required=false) Boolean showChild,
     			@RequestParam(value = "showUser",required=false) Boolean showUser,
-    			@RequestParam(value = "name",required=false) String name
+    			@RequestParam(value = "name",required=false) String name,
+    			@RequestParam(value = "showDel",required=false) Boolean showDel
     		) throws URISyntaxException {
         log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to get a page of getDeptAndUserTree by selectType : {}, showChild : {}, "
-        		+ "showUser : {}, name : {}", selectType, showChild, showUser, name);
+        		+ "showUser : {}, name : {}, showDel: {}", selectType, showChild, showUser, name,showDel);
         if(selectType == null){
         	selectType = DeptTree.SELECTTYPE_NONE;
         }
@@ -183,7 +184,10 @@ public class DeptInfoResource {
         if(showUser == null){
         	showUser = Boolean.TRUE;
         }
-        List<DeptTree> list = deptInfoService.getDeptAndUserTree(selectType,showChild,showUser,name);
+        if(showDel == null){
+        	showDel = Boolean.FALSE;
+        }
+        List<DeptTree> list = deptInfoService.getDeptAndUserTree(selectType,showChild,showUser,name,showDel);
         return new ResponseEntity<>(list, null, HttpStatus.OK);
     }
     /**
@@ -194,7 +198,7 @@ public class DeptInfoResource {
     @Secured(AuthoritiesConstants.USER)
     public ResponseEntity<List<DeptTree>> getDeptTree() throws URISyntaxException {
         log.debug(SecurityUtils.getCurrentUserLogin() + " REST request to get a page of getDeptAndUserTree");
-        List<DeptTree> list = deptInfoService.getDeptAndUserTree(DeptTree.SELECTTYPE_NONE,Boolean.TRUE,Boolean.FALSE,null);
+        List<DeptTree> list = deptInfoService.getDeptAndUserTree(DeptTree.SELECTTYPE_NONE,Boolean.TRUE,Boolean.FALSE,null,Boolean.FALSE);
         return new ResponseEntity<>(list, null, HttpStatus.OK);
     }
     

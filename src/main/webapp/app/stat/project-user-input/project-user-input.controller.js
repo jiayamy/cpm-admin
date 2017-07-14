@@ -14,13 +14,12 @@
         vm.search = search;
         vm.exportXls = exportXls;
         vm.searchQuery = {};
-        var today = new Date();
+        var today = DateUtils.convertLocalDateToFormat(new Date(),"yyyyMMdd");
         if(pagingParams.startTime == undefined){//默认本月初
-        	var startDay = DateUtils.convertLocalDateToFormat(today,"yyyyMMdd");
-        	pagingParams.startTime = DateUtils.convertLocalDateToFormat(new Date(startDay.substring(0,4),parseInt(startDay.substring(4,6))-1,1),"yyyyMMdd");
+        	pagingParams.startTime = DateUtils.convertLocalDateToFormat(new Date(today.substring(0,4),parseInt(today.substring(4,6))-2,1),"yyyyMMdd");
         }
         if(pagingParams.endTime == undefined){//默认当天
-        	pagingParams.endTime = DateUtils.convertLocalDateToFormat(today,"yyyyMMdd");
+        	pagingParams.endTime = DateUtils.convertLocalDateToFormat(new Date(new Date(today.substring(0,4),parseInt(today.substring(4,6))-1,1).getTime() - 1000*60*60*24),"yyyyMMdd");
         }
         //搜索项中的参数
         vm.searchQuery.startTime= DateUtils.convertYYYYMMDDDayToDate(pagingParams.startTime);
@@ -92,10 +91,10 @@
         
         function clear() {
             vm.searchQuery = {};
-            var today = new Date();
-            var startDay = DateUtils.convertLocalDateToFormat(today,"yyyyMMdd");
-            vm.searchQuery.startTime = new Date(startDay.substring(0,4),parseInt(startDay.substring(4,6))-1,1);
-            vm.searchQuery.endTime = today;
+            var today = DateUtils.convertLocalDateToFormat(new Date(),"yyyyMMdd");
+            vm.searchQuery.startTime = new Date(today.substring(0,4),parseInt(today.substring(4,6))-2,1);
+            vm.searchQuery.endTime = new Date(new Date(today.substring(0,4),parseInt(today.substring(4,6))-1,1).getTime() - 1000*60*60*24);
+            
             vm.searchQuery.showTotal = false;
             vm.haveSearch = true;
             //多选的时候需要清理

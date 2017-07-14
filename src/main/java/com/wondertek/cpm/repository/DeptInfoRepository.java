@@ -19,6 +19,9 @@ public interface DeptInfoRepository extends JpaRepository<DeptInfo,Long> {
 	@Query("select id from DeptInfo di where di.status = ?1 and name like ?2 order by id asc")
 	List<Long> findAllByStatus(int status, String name);
 	
+	@Query("select id from DeptInfo di where name like ?1 order by id asc")
+	List<Long> findAllByParam(String name);
+	
 	@Query("select d.id from DeptInfo d where d.type = ?1 and status = 1")
 	List<Long> findIdsByType(Long type);
 	

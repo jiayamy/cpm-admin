@@ -39,7 +39,10 @@ public interface UserRepository extends JpaRepository<User, Long> {
 	List<User> findAllByActivated(Boolean activated);
     
     @Query("from User u where u.activated = ?1 and lastName like ?2 order by id asc")
-    List<User> findAllByActivated(Boolean true1, String name); 
+    List<User> findAllByActivated(Boolean activated, String name); 
+    
+    @Query("from User u where lastName like ?1 order by id asc")
+    List<User> findAllByParam(String name); 
     
     @Query("select a,b,c from User a,DeptInfo b,DeptType c where a.deptId = b.id and b.type = c.id and a.login = ?1")
 	List<Object[]> findUserInfoByLogin(String login);

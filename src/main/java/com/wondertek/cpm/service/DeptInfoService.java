@@ -121,33 +121,51 @@ public class DeptInfoService {
      * @return
      */
     @Transactional(readOnly = true)
-	public List<DeptTree> getDeptAndUserTree(Integer selectType, Boolean showChild, Boolean showUser, String name) {
+	public List<DeptTree> getDeptAndUserTree(Integer selectType, Boolean showChild, Boolean showUser, String name, Boolean showDel) {
 		List<DeptTree> returnList = new ArrayList<DeptTree>();
 		//查询出所有的用户
 		List<User> allUser = null;
 		List<DeptInfo> allDeptInfo = null;
 		if(StringUtil.isNullStr(name)){
-			if(showUser){
+			if(showUser && showDel){
+				allUser = userRepository.findAll();
+			}else if(showUser){
 				allUser = userRepository.findAllByActivated(Boolean.TRUE);
 			}
 			//查询出所有的部门
-			allDeptInfo = deptInfoRepository.findAllByStatus(CpmConstants.STATUS_VALID);
+			if(showDel){
+				allDeptInfo = deptInfoRepository.findAll();
+			}else{
+				allDeptInfo = deptInfoRepository.findAllByStatus(CpmConstants.STATUS_VALID);
+			}
 		}else{
 			//找出所有的存在的人名
-			if(showUser){
+			if(showUser && showDel){
+				allUser = userRepository.findAllByParam("%"+name+"%");
+			}else if(showUser){
 				allUser = userRepository.findAllByActivated(Boolean.TRUE,"%"+name+"%");
 			}
 			//找出所有的组织，以及上级组织，直至顶部
 			//找出所有的组织，方便后面不需要在每次从数据库获取
 			Map<Long,DeptInfo> allDeptMap = new HashMap<Long,DeptInfo>();
-			List<DeptInfo> allDept = deptInfoRepository.findAllByStatus(CpmConstants.STATUS_VALID);
+			List<DeptInfo> allDept = null;
+			if(showDel){
+				allDept = deptInfoRepository.findAll();
+			}else{
+				allDept = deptInfoRepository.findAllByStatus(CpmConstants.STATUS_VALID);
+			}
 			if(allDept != null){
 				for(DeptInfo deptInfo : allDept){
 					allDeptMap.put(deptInfo.getId(), deptInfo);
 				}
 			}
 			//目前需要的组织
-			List<Long> selectDeptIds = deptInfoRepository.findAllByStatus(CpmConstants.STATUS_VALID,"%"+name+"%");
+			List<Long> selectDeptIds = null;
+			if(showDel){
+				selectDeptIds = deptInfoRepository.findAllByParam("%"+name+"%");
+			}else{
+				selectDeptIds = deptInfoRepository.findAllByStatus(CpmConstants.STATUS_VALID,"%"+name+"%");
+			}
 			if(allUser != null){
 				for(User user : allUser){
 					if(user.getDeptId() != null && !selectDeptIds.contains(user.getDeptId())){

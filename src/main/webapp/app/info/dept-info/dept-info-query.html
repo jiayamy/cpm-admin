@@ -24,6 +24,10 @@
             <span class="glyphicon glyphicon-search"></span>
         </button>
         <input type="text" class="" ng-model="vm.searchQuery.name" style="width: 150px;margin:5px;padding: 6px;float:right;margin-top:-2px;">
+        <label class="wd-i-switch wd-m-t-xs wd-m-r" style="margin:5px;padding: 6px;float:right;" data-toggle="tooltip" title="显示删除">
+          <input id="showTotal" type="checkbox" ng-model="vm.searchQuery.showDel" >
+          <i></i>
+        </label>
         <h4 class="modal-title" id="myDeptInfoLabel" data-translate="cpmApp.deptInfo.home.createOrEditLabel">Create or edit a Dept Info</h4>
     </div>
     <div class="modal-body">

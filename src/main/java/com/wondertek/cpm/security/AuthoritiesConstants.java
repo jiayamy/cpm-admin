@@ -33,6 +33,10 @@ public final class AuthoritiesConstants {
 	 */
     public static final String ROLE_TIMESHEET = "ROLE_TIMESHEET";
     /**
+	 * 日报管理-员工日报权限
+	 */
+    public static final String ROLE_USERCOST = "ROLE_USERCOST";
+    /**
 	 * 合同管理权限
 	 */
     public static final String ROLE_CONTRACT = "ROLE_CONTRACT";

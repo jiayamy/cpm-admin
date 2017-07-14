@@ -24,9 +24,11 @@ spring:
         serialization.indent_output: true
     datasource:
         type: com.zaxxer.hikari.HikariDataSource
+#        url: jdbc:mysql://127.0.0.1:33060/wangda_cpm?useUnicode=true&characterEncoding=utf8&useSSL=false
         url: jdbc:mysql://192.168.1.38:3306/wangda_cpm?useUnicode=true&characterEncoding=utf8&useSSL=false
         name: 
         username: wangda_cpm
+#        password: wangda_cpm_2o17
         password: wangda_cpm
         hikari:
             data-source-properties:

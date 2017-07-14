@@ -6,10 +6,14 @@
         	</div>
             <div class="col-sm-4">
                 <p class="input-group">
+                	<span class="input-group-btn">
+	           			<button type="button" class="btn btn-default" ng-click="vm.arrowLeft()"><i class="glyphicon glyphicon-arrow-left"></i></button>
+	            	</span>
                     <input type="text" class="form-control" name="workDay" datetime-picker="yyyyMMdd" ng-change="vm.search(vm.searchQuery)"
 	           		 		enable-time="false" ng-model="vm.searchQuery.workDay" is-open="vm.datePickerOpenStatus.workDay"/>
 	          		<span class="input-group-btn">
 	           			<button type="button" class="btn btn-default" ng-click="vm.openCalendar('workDay')"><i class="glyphicon glyphicon-calendar"></i></button>
+	           			<button type="button" class="btn btn-default" ng-click="vm.arrowRight()"><i class="glyphicon glyphicon-arrow-right"></i></button>
 	            	</span>
                 </p>
             </div>

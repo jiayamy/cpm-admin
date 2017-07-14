@@ -19,6 +19,32 @@
         vm.searchQuery.workDay = DateUtils.convertDayToDate(entity.workDay);
         vm.search = search;
         vm.noData = true;
+        
+        /**
+         * 往前加一周时间
+         */
+        vm.arrowLeft = arrowLeft;
+        function arrowLeft(){
+        	var date = DateUtils.convertLocalDateToFormat(vm.searchQuery.workDay,"yyyyMMdd");
+        	if(date == null){
+        		return;
+        	}
+        	vm.searchQuery.workDay = new Date(date.substring(0,4),parseInt(date.substring(4,6))-1,parseInt(date.substring(6,8))-7);
+        	vm.search();
+        }
+        /**
+         * 往后加一周时间
+         */
+        vm.arrowRight = arrowRight;
+        function arrowRight(){
+        	var date = DateUtils.convertLocalDateToFormat(vm.searchQuery.workDay,"yyyyMMdd");
+        	if(date == null){
+        		return;
+        	}
+        	vm.searchQuery.workDay = new Date(date.substring(0,4),parseInt(date.substring(4,6))-1,parseInt(date.substring(6,8))+7);
+        	vm.search();
+        }
+        
         vm.isNotHoliday = isNotHoliday;
         function isNotHoliday(data){
         	if(data.length > 8){

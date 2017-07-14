@@ -40,6 +40,7 @@
         //showChild true/false。是否展示所有的子部门，默认展示
         //dataType 选择后返回参数，自己定义
         //showUser 是否显示用户，默认显示
+        //showDel 显示删除的
         function loadAll () {
         	if(entity.selectType == undefined){
         		entity.selectType = "0";
@@ -55,7 +56,8 @@
             	selectType:entity.selectType,
             	showChild:entity.showChild,
             	showUser:entity.showUser,
-            	name:vm.searchQuery.name
+            	name:vm.searchQuery.name,
+            	showDel:vm.searchQuery.showDel
             }, onSuccess, onError);
             
             function onSuccess(data, headers) {

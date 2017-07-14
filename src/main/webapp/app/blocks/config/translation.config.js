@@ -10,7 +10,7 @@
     function translationConfig($translateProvider, tmhDynamicLocaleProvider) {
         // Initialize angular-translate
         $translateProvider.useLoader('$translatePartialLoader', {
-            urlTemplate: 'i18n/{lang}/{part}.json?v=1.4'
+            urlTemplate: 'i18n/{lang}/{part}.json?v=1.5'
         });
 
         $translateProvider.preferredLanguage('zh-cn');
@@ -18,7 +18,7 @@
         $translateProvider.useSanitizeValueStrategy('escaped');
         $translateProvider.addInterpolation('$translateMessageFormatInterpolation');
 
-        tmhDynamicLocaleProvider.localeLocationPattern('i18n/angular-locale_{{locale}}.js?v=1.4');
+        tmhDynamicLocaleProvider.localeLocationPattern('i18n/angular-locale_{{locale}}.js?v=1.5');
         tmhDynamicLocaleProvider.useCookieStorage();
         tmhDynamicLocaleProvider.storageKey('NG_TRANSLATE_LANG_KEY');
     }

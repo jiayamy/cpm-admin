@@ -76,8 +76,7 @@ public class RoleHardWorkingStatTask {
 		//从工时表中获取这个月的所有统计记录
 		Map<Long,UserTimesheetForHardWorkingVo> map = new HashMap<Long,UserTimesheetForHardWorkingVo>();
 		List<UserTimesheetForHardWorkingVo> roleHardWorkingVos = userTimesheetService.findByWorkDay(fromDay,endDay);
-		List<User> user = userService.getAllUserByActivated();
-		
+
 		RoleHardWorking roleHardWorking = new RoleHardWorking();
 		Double sumRealInput = null;
 		Double sumAcceptInput = null;
@@ -90,6 +89,7 @@ public class RoleHardWorkingStatTask {
 			}
 		}
 		
+		List<User> user = userService.getAllUserByActivated();
 		for(User u : user){
 			UserTimesheetForHardWorkingVo roleHardWorkingVo = map.get(u.getId());
 			if(roleHardWorkingVo==null){
@@ -117,14 +117,19 @@ public class RoleHardWorkingStatTask {
 			roleHardWorkingService.saveRoleHardWorking(roleHardWorking);
 			roleHardWorking.setId(null);
 		}
+		user.clear();
+		user = null;
+		Map<String, User> allUsers = userService.getAllUsers();
+		User otherUser = null;
 		if(map.size()>0){
 			for(Long userId : map.keySet()){
 				UserTimesheetForHardWorkingVo hwVo = map.get(userId);
 				roleHardWorking.setUserId(userId);
-				User userById = userService.getRoleByUserId(userId);
-				roleHardWorking.setSerialNum(userById.getSerialNum());
-				roleHardWorking.setRoleName(userById.getLastName());
-				
+				otherUser = allUsers.get(userId);
+				if(otherUser != null){
+					roleHardWorking.setSerialNum(otherUser.getSerialNum());
+					roleHardWorking.setRoleName(otherUser.getLastName());
+				}
 				sumRealInput = hwVo.getSumRealInput();
 				sumAcceptInput = hwVo.getSumAcceptRealInput();
 				sumExtraInput = hwVo.getSumExtraInput();
